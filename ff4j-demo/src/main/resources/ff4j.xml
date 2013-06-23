@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+<features>
+			
+	<feature uid="mercure-desc" description="Display introduction text for Mercury" enable="true" >
+		<auth role="ROLE_USER" />
+	</feature>
+	<feature uid="mercure-link" description="Display wikipedia button for Planet Mercury" enable="true" >
+		<auth role="ROLE_USER" />
+	</feature>
+	
+	<feature uid="venus-desc" description="Display text for Venus" enable="true" >
+		<auth role="ROLE_USER" />
+	</feature>
+	<feature uid="venus-link" description="Display text for Venus" enable="true" >
+		<auth role="ROLE_USER" />
+	</feature>
+	
+	<feature uid="earth-desc" enable="true" >
+		<auth role="ROLE_USER" />
+	</feature>
+	
+	<feature uid="earth-link" enable="true" >
+		<auth role="ROLE_USER" />
+	</feature>
+	
+	<feature uid="mars-desc" enable="true" >
+		<auth role="ROLE_USER" />
+	</feature>
+	<feature uid="mars-link" enable="true" >
+		<auth role="ROLE_USER" />
+	</feature>
+	
+	
+	<feature uid="jupiter-desc"  enable="true" >
+		<auth role="ROLE_USER" />
+	</feature>
+	<feature uid="jupiter-link" enable="true" >
+		<auth role="ROLE_USER" />
+	</feature>
+	
+	
+	<feature uid="saturn-desc" enable="true" >
+		<auth role="ROLE_USER" />
+	</feature>
+	<feature uid="saturn-link" enable="true" >
+		<auth role="ROLE_USER" />
+	</feature>	
+</features>

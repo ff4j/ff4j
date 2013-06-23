@@ -1,0 +1,16 @@
+
+	<?xml version="1.0" encoding="UTF-8" ?>
+	<features>
+	
+		<feature uid="first" enable="true" 
+				 description="A first feature" />
+		
+		<feature uid="second" enable="false" 
+				 description="A second one" />
+		
+		<feature uid="third" enable="false" />
+		
+		<feature uid="forth" enable="true"  />
+		
+	</features>
+	

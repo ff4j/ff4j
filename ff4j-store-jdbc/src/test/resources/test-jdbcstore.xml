@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+			http://www.springframework.org/schema/util    http://www.springframework.org/schema/util/spring-util.xsd
+			http://www.springframework.org/schema/jdbc    http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+			http://www.springframework.org/schema/tx      http://www.springframework.org/schema/tx/spring-tx.xsd" >
+	
+	<tx:annotation-driven transaction-manager="ff.jdbc.txManager" />
+	
+	<bean id="ff.store.jdbc" class="org.ff4j.store.DataBaseFeatureStore" >
+		<property name="dataSource" ref="ff.jdbc.datasource" />
+	</bean>
+
+	<jdbc:embedded-database id="ff.jdbc.datasource" type="HSQL">
+		<jdbc:script location="classpath:schema-ddl.sql"/>
+		<jdbc:script location="classpath:ff-store.sql"  />
+	</jdbc:embedded-database>
+	
+	<bean id="ff.jdbc.txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="ff.jdbc.datasource"/>
+	</bean>
+		
+</beans>
+
