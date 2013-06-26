@@ -59,6 +59,13 @@ public class InMemoryFeatureStore implements FeatureStore {
 		}
 	}
 	
+	/** Default. */
+	public InMemoryFeatureStore(Feature singleFeature) {
+		if (singleFeature != null) {
+			this.featuresMap.put(singleFeature.getUid(), singleFeature);
+		}
+	}
+	
 	/** {@inheritDoc} */
 	public void create(Feature fp) {
 		if (exist(fp.getUid())) {

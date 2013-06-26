@@ -87,7 +87,7 @@ public class Flipper {
 		}
 
 		// If custom strategy has been defined, load
-		if (flipped && fp.getFlippingStrategy() != null) {
+		if (flipped && strats != null) {
 			flipped = flipped && strats.activate(featureID, executionContext);
 		}
 		return flipped;
