@@ -99,7 +99,7 @@ public class Feature {
 	public String toString() {
 		StringBuilder sb = new StringBuilder("Feature '"+ this.uid + "'");
 		sb.append("is '" + (enable ? "enabled":"disabled")  + "'");
-		if (authorizations!= null) {
+		if (authorizations != null && !authorizations.isEmpty()) {
 			sb.append(" roles:");
 			sb.append(authorizations.toString());
 		}
@@ -128,16 +128,6 @@ public class Feature {
 	 */
 	public void toggle() {
 		this.enable = !this.enable;
-	}
-	
-	/**
-	 * Getter accessor for 'enable'.
-	 *
-	 * @return
-	 * 		if target feature is enabled
-	 */
-	public boolean isEnabled() {
-		return enable;
 	}
 
 	/**

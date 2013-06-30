@@ -5,6 +5,8 @@ It allows you to easily enable and disable features at runtime through dedicated
 
 ![Alt ScreenShot](/src/site/screen1.png "FF4J Console")
 
+[Run the demo] (http://ff4j-demo.octo-clu.cloudbees.net/)
+
 # Questions, help?
 
 Read the documentation on the [Wiki](https://github.com/clun/ff4j/wiki).

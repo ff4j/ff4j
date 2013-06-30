@@ -317,7 +317,7 @@ public class FlipperServlet extends HttpServlet{
         	strB.append("<td>");
         	Map <String, String> mapP = new LinkedHashMap<String, String>();
     		mapP.put("uid", fp.getUid());
-        	if (fp.isEnabled()) {
+        	if (fp.isEnable()) {
         		strB.append(FlipperServletGui.renderElementButton(req, "Enabled", "success", "disable", mapP, null));
         	} else {
         		strB.append(FlipperServletGui.renderElementButton(req, "Disabled", "danger", "enable", mapP, null));

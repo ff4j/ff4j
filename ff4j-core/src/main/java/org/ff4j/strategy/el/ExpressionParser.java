@@ -33,12 +33,6 @@ public final class ExpressionParser {
 	private static final char NOT  = ExpressionOperator.NOT.getChar();
 	
 	/**
-	 * Remove public constructor.
-	 */
-	private ExpressionParser() {
-	}
-	
-	/**
 	 * Build Expression tree from string.
 	 *
 	 * @param expression

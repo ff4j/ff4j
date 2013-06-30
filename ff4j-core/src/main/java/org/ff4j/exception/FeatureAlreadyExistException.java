@@ -15,18 +15,6 @@ public class FeatureAlreadyExistException extends RuntimeException {
 	 * 
 	 * @param featureName
 	 *            feature to be processed
-	 * @param cause
-	 *            parent exception.
-	 */
-	public FeatureAlreadyExistException(String featureName, Throwable cause) {
-		super(featureName + " already exist in store, duplicate uid", cause);
-	}
-
-	/**
-	 * Parameterized constructor.
-	 * 
-	 * @param featureName
-	 *            feature to be processed
 	 **/
 	public FeatureAlreadyExistException(String featureName) {
 		super(featureName + " already exist in store, duplicate uid");

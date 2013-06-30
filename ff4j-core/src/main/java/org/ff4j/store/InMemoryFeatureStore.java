@@ -1,6 +1,5 @@
 package org.ff4j.store;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashSet;
@@ -36,13 +35,9 @@ public class InMemoryFeatureStore implements FeatureStore {
 	
 	/** Default. */
 	public InMemoryFeatureStore(String fileName) {
-		try {
-			LOG.info("Load features file with {}", fileName);
-			InputStream xmlIN = getClass().getClassLoader().getResourceAsStream(fileName);
-			this.featuresMap = FeatureLoader.loadFeatures(xmlIN);
-		} catch (IOException e) {
-			throw new IllegalArgumentException("Cannot initialized Memory Store", e);
-		}
+		LOG.info("Load features file with {}", fileName);
+		InputStream xmlIN = getClass().getClassLoader().getResourceAsStream(fileName);
+		this.featuresMap = FeatureLoader.loadFeatures(xmlIN);
 	}
 
 	/** Default. */
@@ -109,19 +104,6 @@ public class InMemoryFeatureStore implements FeatureStore {
 	public void removeRoleFromFeature(String flipId, String roleName) {
 		if (!exist(flipId)) throw new FeatureNotFoundException(flipId);
 		featuresMap.get(flipId).getAuthorizations().remove(roleName);
-	}
-	
-	/**
-	 * Perform in memory modification on features map.
-	 *
-	 * @param featId
-	 * 		feature unique identifier.
-	 * @param status
-	 * 		new status to apply to feature.
-	 */
-	protected void createOrUpdate(String featId, boolean status, String description, Set < String > auth) {
-		LOG.debug("Setting '" + featId + "' to " + (status ? "enabled" : "disabled") + " ("+ description + ")" );
-		featuresMap.put(featId, new Feature(featId, status, description, auth));
 	}
 	
 	/** {@inheritDoc} */

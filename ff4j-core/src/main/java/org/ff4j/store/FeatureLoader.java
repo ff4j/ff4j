@@ -10,7 +10,6 @@ import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.ff4j.Feature;
 import org.ff4j.strategy.FlippingStrategy;
@@ -18,7 +17,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 
 /**
@@ -64,7 +62,7 @@ public class FeatureLoader {
 	public static final String ATT_STRATEGY	 = "strategy";
 	
 	/** XML Generation constants. */
-	private static final String ENCODING	= "UTF-8";
+	private static final String ENCODING	 = "UTF-8";
 	
 	/** XML Generation constants. */
 	private static final String XML_HEADER   = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<features>\n\n";
@@ -82,12 +80,6 @@ public class FeatureLoader {
 	private static final String END_FEATURES = "</features>";
 	
 	/**
-	 * Remove public constructor.
-	 */
-	private FeatureLoader() {
-	}
-	
-	/**
 	 * Load map of {@link Feature} from an inpustream (containing xml text).
 	 *
 	 * @param in
@@ -97,7 +89,7 @@ public class FeatureLoader {
 	 * @throws IOException
 	 * 		exception raised when reading inputstream
 	 */
-	public static LinkedHashMap<String, Feature> loadFeatures(InputStream in) throws IOException {
+	public static LinkedHashMap<String, Feature> loadFeatures(InputStream in) {
 		if (in == null) {
 			throw new IllegalArgumentException("Cannot read features file, check path and access rights");
 		}
@@ -151,9 +143,7 @@ public class FeatureLoader {
 					xmlFeatures.put(uid, new Feature(uid, enable, desc, authorizations, flipStrategy));
 				}
 			}
-		} catch (SAXException e) {
-			throw new IllegalArgumentException("Cannot parse XML data, please check source file ", e);
-		} catch (ParserConfigurationException e) {
+		} catch (Exception e) {
 			throw new IllegalArgumentException("Cannot parse XML data, please check source file ", e);
 		}
 		return xmlFeatures;
@@ -174,7 +164,7 @@ public class FeatureLoader {
 		StringBuilder strBuilder = new StringBuilder(XML_HEADER);
 		if (mapOfFeatures != null && !mapOfFeatures.isEmpty()) {
 			for (Feature feat : mapOfFeatures.values()) {
-				strBuilder.append(MessageFormat.format(XML_FEATURE, feat.getUid(), feat.getDescription(), feat.isEnabled()));
+				strBuilder.append(MessageFormat.format(XML_FEATURE, feat.getUid(), feat.getDescription(), feat.isEnable()));
 				if (feat.getAuthorizations() != null && !feat.getAuthorizations().isEmpty()) {
 					for (String auth : feat.getAuthorizations()) {
 						strBuilder.append(MessageFormat.format(XML_AUTH, auth));

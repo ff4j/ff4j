@@ -21,12 +21,6 @@ public class ExpressionNode {
 	/** La liste des sous nodes. */
 	private List < ExpressionNode > subNodes = new ArrayList<ExpressionNode>();
 	
-	/**
-	 * Providing default constructor.
-	 */
-	public ExpressionNode() {
-	}
-	
 	public ExpressionNode(String sheetValue) {
 		this.value = sheetValue;
 	}

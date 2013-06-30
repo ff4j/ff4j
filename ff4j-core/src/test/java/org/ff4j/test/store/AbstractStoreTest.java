@@ -40,7 +40,7 @@ public abstract class AbstractStoreTest extends TestCase {
 	}
 	
 	@Test
-	public void flipWithInvalidName_NotFoundException() {
+	public void testFlipWithInvalidName_NotFoundException() {
 		try {
 			isFlipped("dummy");
 			fail();
@@ -50,7 +50,7 @@ public abstract class AbstractStoreTest extends TestCase {
 	}
 	
 	@Test
-	public void enableorDisable_NotFoundException() {
+	public void testEnableorDisable_NotFoundException() {
 		try {
 			Flipper.logFeatures();
 			enableFeature("dummy");
@@ -135,7 +135,7 @@ public abstract class AbstractStoreTest extends TestCase {
 	public void testUpdateFlip_CoreData() throws Exception {
 		Feature fpBis = new Feature("first", false, "desc2");
 		testedStore.update(fpBis);
-		Assert.assertFalse(testedStore.read("first").isEnabled());
+		Assert.assertFalse(testedStore.read("first").isEnable());
 		Assert.assertEquals("desc2", testedStore.read("first").getDescription());
 	}
 	

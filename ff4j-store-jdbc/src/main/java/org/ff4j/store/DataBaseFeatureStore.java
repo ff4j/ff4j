@@ -116,7 +116,7 @@ public class DataBaseFeatureStore implements FeatureStore, InitializingBean {
 			throw new FeatureAlreadyExistException(fp.getUid());
 		}
 		// Transaction wraps the method, could pipe several sql queries
-		jdbcTemplate.update(SQL_CREATE, fp.getUid(), fp.isEnabled() ? 1 : 0, fp.getDescription());
+		jdbcTemplate.update(SQL_CREATE, fp.getUid(), fp.isEnable() ? 1 : 0, fp.getDescription());
 		if (fp.getAuthorizations() != null ) {
 			for (String role : fp.getAuthorizations()) {
 				jdbcTemplate.update(SQL_ADD_ROLE, fp.getUid(), role);
@@ -192,8 +192,8 @@ public class DataBaseFeatureStore implements FeatureStore, InitializingBean {
 		}
 		
 		// enable/disable
-		if (fp.isEnabled() != fpExist.isEnabled()) {
-			if (fp.isEnabled()) {
+		if (fp.isEnable() != fpExist.isEnable()) {
+			if (fp.isEnable()) {
 				enable(fp.getUid());
 			} else {
 				disable(fp.getUid());

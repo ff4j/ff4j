@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.ff4j.security.AuthorizationsManager;
 import org.ff4j.store.FeatureStore;
@@ -54,7 +55,7 @@ public class Flipper {
 	 */
 	public static boolean isFlipped(String featureID, Object... executionContext) {
 		Feature fp 		= getStore().read(featureID);
-		boolean flipped = fp.isEnabled();
+		boolean flipped = fp.isEnable();
 
 		// If authorization manager provided, apply security filter
 		if (flipped && authorizationsManager != null) {
@@ -79,16 +80,16 @@ public class Flipper {
 	 */
 	public static boolean isFlipped(String featureID, FlippingStrategy strats, Object... executionContext) {
 		Feature fp 		= getStore().read(featureID);
-		boolean flipped = fp.isEnabled();
+		boolean flipped = fp.isEnable();
 
 		// If authorization manager provided, apply security filter
 		if (flipped && authorizationsManager != null) {
-			flipped = flipped && authorizationsManager.isAllowed(fp);
+			flipped = authorizationsManager.isAllowed(fp);
 		}
 
 		// If custom strategy has been defined, load
 		if (flipped && strats != null) {
-			flipped = flipped && strats.activate(featureID, executionContext);
+			flipped = strats.activate(featureID, executionContext);
 		}
 		return flipped;
 	}
@@ -102,7 +103,7 @@ public class Flipper {
 		List < Feature > listOfFlip = new ArrayList<Feature>();
 		listOfFlip.addAll(getStore().readAll().values());
 		for (Feature fp : listOfFlip) {
-			bools.put(fp.getUid(), fp.isEnabled());
+			bools.put(fp.getUid(), fp.isEnable());
 		}
 		return bools;
 	}
@@ -153,13 +154,10 @@ public class Flipper {
 	 * Log flippingPoint status (debugging purposes).
 	 */
 	public static void logFeatures() {
-		if (logger.isInfoEnabled()) {
-			Map < String, Feature > mapOfFeatures = getStore().readAll();
-			logger.info("Listing current '{}' features states", mapOfFeatures);
-			for (String feat : mapOfFeatures.keySet()) {
-				String featAsString = mapOfFeatures.get(feat).toString();
-				logger.info("-> " + featAsString);
-			}
+		Map < String, Feature > mapOfFeatures = getStore().readAll();
+		logger.info("Listing current '{}' features states", mapOfFeatures);
+		for (Entry<String, Feature> feat : mapOfFeatures.entrySet()) {
+			logger.info("-> " + feat.getValue().toString());
 		}
 	}
 	

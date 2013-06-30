@@ -15,18 +15,6 @@ public class FeatureNotFoundException extends RuntimeException {
 	 * 
 	 * @param featureName
 	 *            feature to be processed
-	 * @param cause
-	 *            parent exception.
-	 */
-	public FeatureNotFoundException(String featureName, Throwable cause) {
-		super(featureName + " does not exist in store", cause);
-	}
-
-	/**
-	 * Parameterized constructor.
-	 * 
-	 * @param featureName
-	 *            feature to be processed
 	 **/
 	public FeatureNotFoundException(String featureName) {
 		super(featureName + " does not exist in store");

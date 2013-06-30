@@ -7,6 +7,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.ff4j.strategy.el.ExpressionNode;
+import org.ff4j.strategy.el.ExpressionOperator;
 import org.ff4j.strategy.el.ExpressionParser;
 import org.junit.Test;
 
@@ -29,6 +30,24 @@ public class SyntaxtAnalyzerTest extends TestCase {
 		ExpressionNode n = ExpressionParser.parseExpression(expression);
 		System.out.println(n.toString());
 		Assert.assertEquals(expected, n.evalue(state));
+	}
+	
+	@Test
+	public void testInit() {
+		new ExpressionParser();
+		
+		ExpressionNode en = new ExpressionNode("sheet");
+		en.setOperator(ExpressionOperator.NOT);
+		en.setValue("sheet");
+		en.setSubNodes(null);
+		
+	}
+	
+	@Test
+	public void testBlank() {
+		Map < String, Boolean > state = new HashMap<String, Boolean>();
+		state.put("A", true);
+		assertNode("|", state, false);
 	}
 	
 	@Test

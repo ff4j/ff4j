@@ -2,22 +2,41 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~ Coordonates ~ -->
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.ff4j</groupId>
 	<artifactId>ff4j-parent</artifactId>
-	<name>Feature Flipping 4 Java</name>
 	<version>0.0.1-SNAPSHOT</version>
+	<name>Feature Flipping 4 Java</name>
 	<packaging>pom</packaging>
+	<url>https://github.com/clun/ff4j</url>
+	<inceptionYear>2013</inceptionYear>
 
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~ License ~ -->
+	<licenses>
+		<license>
+			<name>Apache 2</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	
+    <description>
+     FF4J, stands for Feature Flipping - for Java, implements the Feature Toggle agile development practice.
+     It allows you to easily enable and disable features at runtime through dedicated console. Once enabled you can limit 
+     the usage to a limited subset of user through role administration. Once enabled and granted you can finally implement 
+     an overriding flipping strategy.
+    </description>
+	
 	<!-- ~ Properties ~ -->
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<properties>
+	    
+	    <!-- core -->
+	    <maven.compiler.source>1.6</maven.compiler.source>
+		<maven.compiler.target>1.6</maven.compiler.target>
+		<encoding>UTF-8</encoding>
 
-		<!-- core -->
+		<!-- log -->
 		<version.slf4j>1.7.5</version.slf4j>
 		<version.logback>1.0.13</version.logback>
 
@@ -134,11 +153,6 @@
 
 			<!-- commons -->
 			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<version>${version.log4j}</version>
-			</dependency>
-			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
 				<version>${version.slf4j}</version>
@@ -244,7 +258,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-resources-plugin</artifactId>
-					<version>2.3</version>
+					<version>2.4</version>
 					<configuration>
 						<escapeString>\</escapeString>
 						<encoding>UTF-8</encoding>
@@ -313,6 +327,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>2.5.2</version>
 			</plugin>
 
 			<!-- taglist -->
@@ -327,21 +342,7 @@
 						<tag>@deprecated</tag>
 					</tags>
 				</configuration>
-			</plugin>
-
-			<!-- java metrics NCSS -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>javancss-maven-plugin</artifactId>
-				<configuration>
-					<failOnViolation>false</failOnViolation>
-				</configuration>
-			</plugin>
-
-			<!-- jdepend -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jdepend-maven-plugin</artifactId>
+				<version>2.4</version>
 			</plugin>
 
 		</plugins>
@@ -386,16 +387,17 @@
 		<developer>
 			<id>clunven</id>
 			<name>Cedrick LUNVEN</name>
-			<email>cedrick.lunven@gmail.com</email>
+			<email>clu@octo.com</email>
+			 <url>https://github.com/clun</url>
 			<organization>OCTO Technology</organization>
 			<organizationUrl>http://www.octo.com</organizationUrl>
 			<roles>
-				<role>Architect</role>
-				<role>Analyst</role>
-				<role>Developper</role>
+				<role>architect</role>
+				<role>developer</role>
 			</roles>
+			<timezone>-6</timezone>
 			<properties>				
-				<gtalk>celphys@gmail.com</gtalk>
+				<picUrl>https://en.gravatar.com/userimage/51914944/4da178b06ad331be75ae495215d238c8.png</picUrl>
 			</properties>
 		</developer>
 	</developers>
@@ -408,7 +410,7 @@
   
   	<!-- Jira issue management -->
   	<issueManagement>
-    	<system>Github Issue Tracking</system>
+    	<system>IssueTracking@Github</system>
     	<url><![CDATA[https://github.com/clun/ff4j/issues?sort=created&direction=desc&state=open]]></url>
   	</issueManagement>
   	

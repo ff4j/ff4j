@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+<features>
+	
+	<feature uid="forth" enable="true" description="description" 
+			strategy="org.ff4j.strategy.el.ExpressionFlipStrategy2" >
+	</feature>
+	
+</features>
+
