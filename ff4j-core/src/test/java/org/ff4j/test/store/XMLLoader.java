@@ -24,7 +24,7 @@ public class XMLLoader extends TestCase {
 	public void testLoadConfigurationFile() throws IOException {
 		InputStream in = getClass().getClassLoader().getResourceAsStream("ff4j.xml");
 		Map < String, Feature> maps = FeatureLoader.loadFeatures(in);
-		Assert.assertEquals(4, maps.size());
+		Assert.assertEquals(5, maps.size());
 		Assert.assertEquals(2, maps.get("forth").getAuthorizations().size());
 	}
 	

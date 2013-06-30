@@ -399,21 +399,23 @@
 			</properties>
 		</developer>
 	</developers>
-	
-	 <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  <!-- ~ Other Property Project                                ~ -->
-  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   
-  <ciManagement>
-    <system>Gforge</system>
-    <url>http://gforge.wst.unilog.fr/projects/frameworkbpm/</url>
-    <!-- no notifier as automatic build not set ... yet -->
-  </ciManagement>
+  	<!-- Builds on jenkins continuous integration -->
+  	<ciManagement>
+    	<system>Jenkins@Cloudbees</system>
+    	<url>https://octo-clu.ci.cloudbees.com/</url>
+  	</ciManagement>
   
-  <issueManagement>
-    <system>Github Issue Tracking</system>
-    <url><![CDATA[https://github.com/clun/ff4j/issues?sort=created&direction=desc&state=open]]></url>
-  </issueManagement>
+  	<!-- Jira issue management -->
+  	<issueManagement>
+    	<system>Github Issue Tracking</system>
+    	<url><![CDATA[https://github.com/clun/ff4j/issues?sort=created&direction=desc&state=open]]></url>
+  	</issueManagement>
+  	
+  	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  	<!-- ~ Deploy on Maven Central eventually ~ -->
+  	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  	<distributionManagement/>		
 
 
 </project>

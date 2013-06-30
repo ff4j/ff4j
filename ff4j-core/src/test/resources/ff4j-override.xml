@@ -20,6 +20,8 @@
 		<auth role="Y" />
 	</feature>
 	
+	<feature uid="AwesomeFeature" enable="true" description="some desc" />
+	
 	
 </features>
 

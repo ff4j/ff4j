@@ -35,7 +35,7 @@ public abstract class AbstractStoreTest extends TestCase {
 	
 	@Test
 	public void testStoreHasBeenInitaliaze() throws Exception {
-		Assert.assertEquals(4, Flipper.getStore().readAll().size());
+		Assert.assertEquals(5, Flipper.getStore().readAll().size());
 		Assert.assertTrue(isFlipped("first"));
 	}
 	
@@ -77,7 +77,7 @@ public abstract class AbstractStoreTest extends TestCase {
 		Set < String > rights = new HashSet<String>(Arrays.asList(new String[] {"ROLE_USER"}));
 		Feature fp = new Feature("new", true, "description", rights);
 		testedStore.create(fp);
-		Assert.assertEquals(5, testedStore.readAll().size());
+		Assert.assertEquals(6, testedStore.readAll().size());
 		Assert.assertNotNull(testedStore.read("new"));
 	}
 	
@@ -96,7 +96,7 @@ public abstract class AbstractStoreTest extends TestCase {
 		}
 		
 		// Overriding, no error, no new creation
-		Assert.assertEquals(5, testedStore.readAll().size());
+		Assert.assertEquals(6, testedStore.readAll().size());
 		Assert.assertNotNull(testedStore.read("new"));
 	}
 	
@@ -105,9 +105,9 @@ public abstract class AbstractStoreTest extends TestCase {
 		Set < String > rights = new HashSet<String>(Arrays.asList(new String[] {"ROLE_USER"}));
 		Feature fp2 = new Feature("new", true, "description", rights);
 		testedStore.create(fp2);
-		Assert.assertEquals(5, testedStore.readAll().size());
+		Assert.assertEquals(6, testedStore.readAll().size());
 		testedStore.delete(fp2.getUid());
-		Assert.assertEquals(4, testedStore.readAll().size());
+		Assert.assertEquals(5, testedStore.readAll().size());
 	}
 	
 	@Test

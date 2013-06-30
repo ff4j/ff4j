@@ -8,15 +8,15 @@ public class GettingStartedCode01 {
 	
 	@Test
 	public void helloTest() {
-		if (Flipper.isFlipped("sayHello")) {
+		if (Flipper.isFlipped("first")) {
 			System.out.println("Hello World !! Yes it Works !");
 		} else {
 			fail();
 		}
 
-		Flipper.disableFeature("sayHello");
+		Flipper.disableFeature("first");
 
-		if (Flipper.isFlipped("sayHello")) {
+		if (Flipper.isFlipped("first")) {
 			fail();
 		} else {
 			System.out.println("Back to reality !!");
