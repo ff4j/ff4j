@@ -36,7 +36,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 import org.ff4j.Feature;
-import org.ff4j.Flipper;
+import org.ff4j.FF4j;
 import org.ff4j.store.FeatureLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,7 +98,7 @@ public class FlipperServlet extends HttpServlet{
 					message = "Role <b>" + req.getParameter(ROLE) + 
 							"</b> has been successfully removed from flipPoint <b>" + req.getParameter(FEATID) + " </b>";
 				} else if (OP_EXPORT.equalsIgnoreCase(operation)) {
-					InputStream in = FeatureLoader.exportFeatures(Flipper.getStore().readAll());
+					InputStream in = FeatureLoader.exportFeatures(FF4j.getStore().readAll());
 					ServletOutputStream sos = res.getOutputStream();
 					res.setContentType("text/xml");
 					res.setHeader("Content-Disposition", "attachment; filename=\"ff4j.xml\"");
@@ -186,7 +186,7 @@ public class FlipperServlet extends HttpServlet{
     private void opEnableFeature(HttpServletRequest req) {
     	final String featureId = req.getParameter(FEATID);
     	if (featureId != null && !featureId.isEmpty()) {
-			Flipper.enableFeature(featureId);
+			FF4j.enableFeature(featureId);
     	}
     }
     
@@ -199,7 +199,7 @@ public class FlipperServlet extends HttpServlet{
     private void opDisableFeature(HttpServletRequest req) {
     	final String featureId = req.getParameter(FEATID);
     	if (featureId != null && !featureId.isEmpty()) {
-    		Flipper.disableFeature(featureId);
+    		FF4j.disableFeature(featureId);
     	}
     }
     
@@ -214,7 +214,7 @@ public class FlipperServlet extends HttpServlet{
     	final String featureDesc = req.getParameter(DESCRIPTION); 
     	if (featureId != null && !featureId.isEmpty()) {
     		Feature fp = new Feature(featureId, false, featureDesc);
-			Flipper.getStore().create(fp);
+			FF4j.getStore().create(fp);
     	}
     }
     
@@ -227,7 +227,7 @@ public class FlipperServlet extends HttpServlet{
     private void opDeleteFeature(HttpServletRequest req) {
     	final String featureId   = req.getParameter(FEATID);
     	if (featureId != null && !featureId.isEmpty()) {
-			Flipper.getStore().delete(featureId);
+			FF4j.getStore().delete(featureId);
     	}
     }
     
@@ -241,9 +241,9 @@ public class FlipperServlet extends HttpServlet{
     	final String featureId   = req.getParameter(FEATID);
     	final String description = req.getParameter(DESCRIPTION);
     	if (featureId != null && !featureId.isEmpty()) {
-    		Feature fp = Flipper.getStore().read(featureId);
+    		Feature fp = FF4j.getStore().read(featureId);
     		fp.setDescription(description);
-			Flipper.getStore().update(fp);
+			FF4j.getStore().update(fp);
     	}
     }
     
@@ -256,7 +256,7 @@ public class FlipperServlet extends HttpServlet{
     private void opAddRoleToFeature(HttpServletRequest req) {
     	final String flipId   = req.getParameter(FEATID);
     	final String roleName = req.getParameter(ROLE);
-    	Flipper.getStore().grantRoleOnFeature(flipId, roleName);
+    	FF4j.getStore().grantRoleOnFeature(flipId, roleName);
     }
     
     /**
@@ -268,7 +268,7 @@ public class FlipperServlet extends HttpServlet{
     private void opRemoveRoleFromFeature(HttpServletRequest req) {
     	final String flipId   = req.getParameter(FEATID);
     	final String roleName = req.getParameter(ROLE);
-    	Flipper.getStore().removeRoleFromFeature(flipId, roleName);
+    	FF4j.getStore().removeRoleFromFeature(flipId, roleName);
     }
     
     /**
@@ -283,10 +283,10 @@ public class FlipperServlet extends HttpServlet{
 		LinkedHashMap<String, Feature> mapsOfFeat = FeatureLoader.loadFeatures(in);
 		for (String featureName : mapsOfFeat.keySet()) {
 			LOG.info("Processing FlipPoint " + featureName);
-			if (Flipper.getStore().exist(featureName)) {
-				Flipper.getStore().update(mapsOfFeat.get(featureName));
+			if (FF4j.getStore().exist(featureName)) {
+				FF4j.getStore().update(mapsOfFeat.get(featureName));
 			} else {
-				Flipper.getStore().create(mapsOfFeat.get(featureName));
+				FF4j.getStore().create(mapsOfFeat.get(featureName));
 			}
 		}
 	}
@@ -301,8 +301,8 @@ public class FlipperServlet extends HttpServlet{
      */
     private String renderSectionFeatures(HttpServletRequest req, String message, String type) {
     	Map <String, Feature> mapOfFlipPoints = new LinkedHashMap<String, Feature>();
-    	if (Flipper.getFeatures() != null && !Flipper.getFeatures().isEmpty()) {
-    		mapOfFlipPoints.putAll(Flipper.getFeatures());
+    	if (FF4j.getFeatures() != null && !FF4j.getFeatures().isEmpty()) {
+    		mapOfFlipPoints.putAll(FF4j.getFeatures());
     	}
         StringBuilder strB = new StringBuilder(FlipperServletGui.renderButtonsMainGroup(req));
         if (message != null && !message.isEmpty()) {
@@ -326,10 +326,10 @@ public class FlipperServlet extends HttpServlet{
         	strB.append("<td style=\"width:20px;\">" + renderButtonEditFeature(req, fp.getUid())  + "</td>");
         	strB.append("<td style=\"width:20px;\">" + renderButtonDeleteFeature(req, fp.getUid()) + "</td>");
         	strB.append("<td style=\"width:85px;\">");
-        	if (Flipper.getAuthorizationsManager() != null) {
+        	if (FF4j.getAuthorizationsManager() != null) {
         		strB.append(renderButtonUserRole(req, fp));
         	} else {
-        		strB.append("no security policy");
+        		strB.append("<center><span style=\"color:#AAAAAA\">N/A</span></center>");
         	}
         	strB.append("</td>");
         	strB.append("</tr>");

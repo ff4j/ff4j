@@ -1,8 +1,8 @@
 package org.ff4j.test.store;
 
-import static org.ff4j.Flipper.disableFeature;
-import static org.ff4j.Flipper.enableFeature;
-import static org.ff4j.Flipper.isFlipped;
+import static org.ff4j.FF4j.disableFeature;
+import static org.ff4j.FF4j.enableFeature;
+import static org.ff4j.FF4j.isFlipped;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -12,7 +12,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.ff4j.Feature;
-import org.ff4j.Flipper;
+import org.ff4j.FF4j;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.store.DataBaseFeatureStore;
@@ -42,12 +42,12 @@ public class JdbcStoreTest extends TestCase {
 		jdbcStore.setDataSource(db);
 		jdbcStore.afterPropertiesSet();
 		testedStore = jdbcStore;
-		Flipper.initStore(testedStore);
+		FF4j.initStore(testedStore);
 	}
 
 	@Test
 	public void testStoreHasBeenInitaliaze() throws Exception {
-		Assert.assertEquals(4, Flipper.getStore().readAll().size());
+		Assert.assertEquals(4, FF4j.getStore().readAll().size());
 		Assert.assertTrue(isFlipped("first"));
 	}
 
@@ -64,7 +64,7 @@ public class JdbcStoreTest extends TestCase {
 	@Test
 	public void enableorDisable_NotFoundException() {
 		try {
-			Flipper.logFeatures();
+			FF4j.logFeatures();
 			enableFeature("dummy");
 			fail();
 		} catch (FeatureNotFoundException fue) {
@@ -188,7 +188,7 @@ public class JdbcStoreTest extends TestCase {
 
 	@Test
 	public void testLoad() {
-		Flipper.logFeatures();
+		FF4j.logFeatures();
 	}
 
 	
@@ -197,7 +197,6 @@ public class JdbcStoreTest extends TestCase {
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		db.shutdown();
-		Flipper.initStore(null);
 	}
 
 }

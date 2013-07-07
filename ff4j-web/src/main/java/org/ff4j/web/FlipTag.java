@@ -8,7 +8,7 @@ import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import org.ff4j.Feature;
-import org.ff4j.Flipper;
+import org.ff4j.FF4j;
 import org.ff4j.store.FeatureStore;
 
 
@@ -35,7 +35,7 @@ public class FlipTag extends BodyTagSupport {
 	public int doAfterBody() throws JspException {
 		try {
 			// Checking Feature value
-			if (Flipper.isFlipped(getFeatureid())) {
+			if (FF4j.isFlipped(getFeatureid())) {
 				BodyContent bodycontent = getBodyContent();
 				String body = bodycontent.getString();
 				JspWriter out = bodycontent.getEnclosingWriter();

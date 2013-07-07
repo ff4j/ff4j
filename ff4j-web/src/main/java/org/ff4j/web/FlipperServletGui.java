@@ -7,7 +7,7 @@ import java.util.TreeSet;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ff4j.Feature;
-import org.ff4j.Flipper;
+import org.ff4j.FF4j;
 
 
 /**
@@ -311,7 +311,7 @@ public class FlipperServletGui {
     
 	static String renderButtonEditFeature(HttpServletRequest req, String uid) {
     	StringBuilder strBuilder = new StringBuilder("<a data-toggle=\"modal\" href=\"#modalEditFlip\"");
-    	String desc = Flipper.getStore().read(uid).getDescription();
+    	String desc = FF4j.getStore().read(uid).getDescription();
     	strBuilder.append("\" data-id=\""+ uid + "\" data-desc=\""+ desc + "\" style=\"width:6px;\" class=\"open-EditFlipDialog btn\">");
     	strBuilder.append("<i class=\"icon-pencil\" style=\"margin-left:-5px;\"></i>");
     	strBuilder.append("</a>");
@@ -319,7 +319,7 @@ public class FlipperServletGui {
     }
     
 	static String renderButtonUserRole(HttpServletRequest req, Feature fp) {
-		Set < String > setOfRoles = new TreeSet<String>(Flipper.getAuthorizationsManager().getAllUserRoles());
+		Set < String > setOfRoles = new TreeSet<String>(FF4j.getAuthorizationsManager().getAllUserRoles());
 		StringBuilder strBuilder = new StringBuilder("<div class=\"btn-group\">");
 		strBuilder.append("<button class=\"btn\"><i class=\"icon-user\"></i></button>");
 		strBuilder.append("<button class=\"btn dropdown-toggle\" data-toggle=\"dropdown\"><span class=\"caret\"></span></button>");

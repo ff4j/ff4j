@@ -1,8 +1,8 @@
 package org.ff4j.test.store;
 
-import static org.ff4j.Flipper.disableFeature;
-import static org.ff4j.Flipper.enableFeature;
-import static org.ff4j.Flipper.isFlipped;
+import static org.ff4j.FF4j.disableFeature;
+import static org.ff4j.FF4j.enableFeature;
+import static org.ff4j.FF4j.isFlipped;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -12,7 +12,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.ff4j.Feature;
-import org.ff4j.Flipper;
+import org.ff4j.FF4j;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.store.FeatureStore;
@@ -28,14 +28,14 @@ public abstract class AbstractStoreTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		testedStore = initStore();
-		Flipper.initStore(testedStore);
+		FF4j.initStore(testedStore);
 	}
 	
 	protected abstract FeatureStore initStore() throws Exception;
 	
 	@Test
 	public void testStoreHasBeenInitaliaze() throws Exception {
-		Assert.assertEquals(5, Flipper.getStore().readAll().size());
+		Assert.assertEquals(5, FF4j.getStore().readAll().size());
 		Assert.assertTrue(isFlipped("first"));
 	}
 	
@@ -52,7 +52,7 @@ public abstract class AbstractStoreTest extends TestCase {
 	@Test
 	public void testEnableorDisable_NotFoundException() {
 		try {
-			Flipper.logFeatures();
+			FF4j.logFeatures();
 			enableFeature("dummy");
 			fail();
 		 } catch(FeatureNotFoundException fue) {
@@ -164,6 +164,6 @@ public abstract class AbstractStoreTest extends TestCase {
 	
 	@Test
 	public void testLoad() {
-		Flipper.logFeatures();
+		FF4j.logFeatures();
 	}
 }

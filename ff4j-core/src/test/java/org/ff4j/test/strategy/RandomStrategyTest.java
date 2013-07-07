@@ -3,7 +3,7 @@ package org.ff4j.test.strategy;
 import junit.framework.Assert;
 
 import org.ff4j.Feature;
-import org.ff4j.Flipper;
+import org.ff4j.FF4j;
 import org.ff4j.strategy.RandomFlipStrategy;
 import org.junit.Test;
 
@@ -20,11 +20,11 @@ public class RandomStrategyTest {
 	 */
 	@Test
 	public void testRandomStrategy() {
-		Flipper.createFeature(new Feature("default", true, "desc", null, new RandomFlipStrategy()));
+		FF4j.createFeature(new Feature("default", true, "desc", null, new RandomFlipStrategy()));
 		int nbOK = 0;
 		int nbKO = 0;
 		for(int i=0;i<1000;i++) {
-			if (Flipper.isFlipped("default")) {
+			if (FF4j.isFlipped("default")) {
 				nbOK++;
 			} else {
 				nbKO++;

@@ -21,27 +21,84 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class Flipper {
+public class FF4j {
 	
 	/** Logger for Advisor. */
-	final static Logger logger = LoggerFactory.getLogger(Flipper.class);
+	final static Logger logger = LoggerFactory.getLogger(FF4j.class);
 	
 	/** Store will handle feature. */
-	private static FeatureStore backingStore = null;
+	private FeatureStore backingStore = null;
 	
 	/** security policy. */
-	private static AuthorizationsManager authorizationsManager = null;
+	private AuthorizationsManager authorizationsManager = null;
 	
-	public Flipper() {
+	/** Single instance as static. */
+	private static FF4j instance = null;
+	
+	/**
+	 * Allow creation through IOc even of static access.
+	 */
+	public FF4j() {
+		instance = this;
+		logger.debug("Initialization through default constructor");
 	}
 	
-	public Flipper(FeatureStore fs) {
+	/**
+	 * Allow creation through IOc even of static access.
+	 */
+	public FF4j(FeatureStore fs) {
 		initStore(fs);
+		logger.debug("Initialization with store within constructor {}", fs.toString());
+	}
+
+	/**
+	 * Allow creation through IOc even of static access.
+	 */
+	public FF4j(FeatureStore fs, AuthorizationsManager secu) {
+		initStore(fs);
+		initAuthorizationManager(secu);
+		logger.debug("Initialization with store & authManager within constructor {} {}", fs.toString(), secu.toString());
 	}
 	
-	public Flipper(FeatureStore fs, AuthorizationsManager secu) {
-		initStore(fs);
-		setAuthorizationsManager(secu);
+	/**
+	 * Synchronized getInstance.
+	 *
+	 * @return
+	 * 		single instance.
+	 */
+	private static synchronized FF4j getInstance() {
+		if (instance == null) {
+			instance = new FF4j();
+		}
+		return instance;
+	}
+	
+	/**
+	 * Static initialisation of FeatureStore.
+	 *
+	 * @param fs
+	 * 		feature store.
+	 * @return
+	 * 		current FF4j context
+	 */
+	public static FF4j initStore(FeatureStore fs) {
+		getInstance().setStore(fs);
+		logger.debug("Store has been initialized statically (initStore) {}", fs.toString());
+		return getInstance();
+	}
+	
+	/**
+	 * Static initialization of AuthorizationManager.
+	 *
+	 * @param am
+	 * 		authorization manager
+	 * @return
+	 * 		current FF4j context
+	 */
+	public static FF4j initAuthorizationManager(AuthorizationsManager am) {
+		getInstance().setAuthorizationsManager(am);
+		logger.debug("AuthManager has been initialized initStore {}", am.toString());
+		return getInstance();
 	}
 	
 	/**
@@ -58,8 +115,8 @@ public class Flipper {
 		boolean flipped = fp.isEnable();
 
 		// If authorization manager provided, apply security filter
-		if (flipped && authorizationsManager != null) {
-			flipped = flipped && authorizationsManager.isAllowed(fp);
+		if (flipped && getAuthorizationsManager() != null) {
+			flipped = flipped && getAuthorizationsManager().isAllowed(fp);
 		}
 
 		// If custom strategy has been defined, load
@@ -81,10 +138,9 @@ public class Flipper {
 	public static boolean isFlipped(String featureID, FlippingStrategy strats, Object... executionContext) {
 		Feature fp 		= getStore().read(featureID);
 		boolean flipped = fp.isEnable();
-
 		// If authorization manager provided, apply security filter
-		if (flipped && authorizationsManager != null) {
-			flipped = authorizationsManager.isAllowed(fp);
+		if (flipped && getAuthorizationsManager() != null) {
+			flipped = getAuthorizationsManager().isAllowed(fp);
 		}
 
 		// If custom strategy has been defined, load
@@ -132,8 +188,9 @@ public class Flipper {
 	 * @param featureID
 	 * 		unique feature identifier.
 	 */
-	public static void createFeature(Feature fp) {
+	public static FF4j createFeature(Feature fp) {
 		getStore().create(fp);
+		return instance;
 	}
 	
 	/**
@@ -161,49 +218,52 @@ public class Flipper {
 		}
 	}
 	
+	/**
+	 * Access store as static way (single store).
+	 *
+	 * @return
+	 * 		current store
+	 */
 	public static FeatureStore getStore() {
-		// Defaut Backing Store
-		if (backingStore == null) {
-			logger.info("Initialized store to default : InMemory");
-			backingStore = new InMemoryFeatureStore();
+		if (getInstance().backingStore == null) {
+			logger.debug("Access getStore() without initialization, create default");
+			getInstance().setStore(new InMemoryFeatureStore());
 		}
-		return Flipper.backingStore;
+		return getInstance().backingStore;
 	}
 
 	/**
-	 * @param store
-	 */
-	public static void initStore(FeatureStore store) {
-		Flipper.backingStore = store;
-	}
-	
-		
-	public static AuthorizationsManager getAuthorizationsManager() {
-		return authorizationsManager;
-	}
-	
-	/**
-	 * @param store
-	 */
-	public static void initAuthManager(AuthorizationsManager authorizationsHandler) {
-		Flipper.authorizationsManager = authorizationsHandler;
-	}
-	
-	/**
-	 * NON Static to be use by Spring Injection of Control
+	 * NON Static to be use by Injection of Control.
+	 *
 	 * @param fbs
-	 */
-	public void setAuthorizationsManager(AuthorizationsManager authorizationsHandler) {
-		Flipper.initAuthManager(authorizationsHandler);
-	}
-
-	/**
-	 * NON Static to be use by Spring Injection of Control
-	 * @param fbs
+	 * 		target store.
 	 */
 	public void setStore(FeatureStore fbs) {
-		Flipper.initStore(fbs);
+		getInstance().backingStore = fbs;
+		logger.debug("Store has been initialized setStore {}", fbs.toString());
 	}
 	
+	
+	/**
+	 * Access AuthorisationManager through 
+	 *
+	 * @return
+	 */
+	public static AuthorizationsManager getAuthorizationsManager() {
+		return getInstance().authorizationsManager;
+	}
+	
+	/**
+	 * NON Static to be use by Spring Injection of Control
+	 * @param fbs
+	 */
+	public void setAuthorizationsManager(AuthorizationsManager authM) {
+		getInstance().authorizationsManager = authM;
+	}
+
+	/** {@inheritDoc} */
+	public String toString() {
+		return "FF4j [backingStore=" + backingStore + ", authorizationsManager=" + authorizationsManager + "]";
+	}
 	
 }

@@ -27,37 +27,37 @@ import org.springframework.transaction.annotation.Transactional;
 public class DataBaseFeatureStore implements FeatureStore, InitializingBean {
 
 	/** sql query expression */
-	private static final String SQL_FPOINT_ALL	= "SELECT UID,ENABLE,DESCRIPTION FROM FLIP_POINT";
+	private static final String SQL_FPOINT_ALL	= "SELECT UID,ENABLE,DESCRIPTION FROM FF4J_FEATURES";
 	
 	/** sql query expression */
-	private static final String SQL_FPOINT		= "SELECT UID,ENABLE,DESCRIPTION FROM FLIP_POINT WHERE UID = ?";
+	private static final String SQL_FPOINT		= "SELECT UID,ENABLE,DESCRIPTION FROM FF4J_FEATURES WHERE UID = ?";
 	
 	/** sql query expression */
-	private static final String SQL_EXIST		= "SELECT COUNT(UID) FROM FLIP_POINT WHERE UID = ?";
+	private static final String SQL_EXIST		= "SELECT COUNT(UID) FROM FF4J_FEATURES WHERE UID = ?";
 	
 	/** sql query expression */
-	private static final String SQL_DISABLE 	= "UPDATE FLIP_POINT SET ENABLE = 0 WHERE UID = ?";
+	private static final String SQL_DISABLE 	= "UPDATE FF4J_FEATURES SET ENABLE = 0 WHERE UID = ?";
 	
 	/** sql query expression */
-	private static final String SQL_ENABLE 		= "UPDATE FLIP_POINT SET ENABLE = 1 WHERE UID = ?";
+	private static final String SQL_ENABLE 		= "UPDATE FF4J_FEATURES SET ENABLE = 1 WHERE UID = ?";
 	
 	/** sql query expression */
-	private static final String SQL_CREATE   	= "INSERT INTO FLIP_POINT(UID, ENABLE, DESCRIPTION) VALUES(?, ?, ?)";
+	private static final String SQL_CREATE   	= "INSERT INTO FF4J_FEATURES(UID, ENABLE, DESCRIPTION) VALUES(?, ?, ?)";
 	
 	/** sql query expression */
-	private static final String SQL_DELETE   	= "DELETE FROM FLIP_POINT WHERE UID = ?";
+	private static final String SQL_DELETE   	= "DELETE FROM FF4J_FEATURES WHERE UID = ?";
 	
 	/** sql query expression */
-	private static final String SQL_UPDATE      = "UPDATE FLIP_POINT SET DESCRIPTION = ? WHERE UID = ?";
+	private static final String SQL_UPDATE      = "UPDATE FF4J_FEATURES SET DESCRIPTION = ? WHERE UID = ?";
 	
 	/** sql query expression */
-	private static final String SQL_ADD_ROLE    = "INSERT INTO FLIP_POINT_ROLE(FPOINT_UID, ROLE_NAME) VALUES (?,?)";
+	private static final String SQL_ADD_ROLE    = "INSERT INTO FF4J_ROLES(FEAT_UID, ROLE_NAME) VALUES (?,?)";
 	
 	/** sql query expression */
-	private static final String SQL_DELETE_ROLE = "DELETE FROM FLIP_POINT_ROLE WHERE FPOINT_UID = ? AND ROLE_NAME = ?";
+	private static final String SQL_DELETE_ROLE = "DELETE FROM FF4J_ROLES WHERE FEAT_UID = ? AND ROLE_NAME = ?";
 	
 	/** sql query expression */
-	private static final String SQL_GET_FPOINT_USRROLE  = "SELECT ROLE_NAME FROM FLIP_POINT_ROLE WHERE FPOINT_UID = ?";
+	private static final String SQL_GET_FPOINT_USRROLE  = "SELECT ROLE_NAME FROM FF4J_ROLES WHERE FEAT_UID = ?";
 	
 	/** Row Mapper for FlipPoint. */
 	private static FlippingPointRowMapper FPOINT_MAPPER  = new FlippingPointRowMapper();
@@ -207,6 +207,11 @@ public class DataBaseFeatureStore implements FeatureStore, InitializingBean {
 	@Required
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
+	}
+
+	/** {@inheritDoc} */
+	public String toString() {
+		return "DataBaseFeatureStore [dataSource=" + dataSource + "]";
 	}
 
 }

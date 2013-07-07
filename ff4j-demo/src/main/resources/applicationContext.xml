@@ -26,9 +26,11 @@
 		<beans:property name="store">
 			<beans:bean class="org.ff4j.store.InMemoryFeatureStore" />
 		</beans:property>
+		<!-- 
 		<beans:property name="authorizationsManager" >
 			<beans:bean class="org.ff4j.security.SpringSecurityAuthorisationManager" />
 		</beans:property>
+		-->
 	</beans:bean>
 
 </beans:beans>

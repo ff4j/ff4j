@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.ff4j.Feature;
-import org.ff4j.Flipper;
+import org.ff4j.FF4j;
 import org.ff4j.security.SpringSecurityAuthorisationManager;
 import org.ff4j.store.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
@@ -68,7 +68,7 @@ public class FlipSecurityTests {
 	public void setUp() throws Exception {
 		securityCtx = SecurityContextHolder.getContext();
 		SecurityContextHolder.setContext(initSecurityContext());
-		Flipper f = new Flipper(initStore());
+		FF4j f = new FF4j(initStore());
 		f.setAuthorizationsManager(new SpringSecurityAuthorisationManager());
 	}
 
@@ -84,10 +84,10 @@ public class FlipSecurityTests {
         Assert.assertEquals(1, auth.getAuthorities().size());
         
         // not autorized because bad credential
-        Assert.assertFalse(Flipper.isFlipped("third"));
+        Assert.assertFalse(FF4j.isFlipped("third"));
         
         // not autorized because bad credential
-        Assert.assertTrue(Flipper.isFlipped("first"));
+        Assert.assertTrue(FF4j.isFlipped("first"));
 	}
 
 }

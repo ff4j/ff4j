@@ -1,8 +1,8 @@
 package org.ff4j.test.strategy;
 
-import static org.ff4j.Flipper.disableFeature;
-import static org.ff4j.Flipper.enableFeature;
-import static org.ff4j.Flipper.isFlipped;
+import static org.ff4j.FF4j.disableFeature;
+import static org.ff4j.FF4j.enableFeature;
+import static org.ff4j.FF4j.isFlipped;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.ff4j.Feature;
-import org.ff4j.Flipper;
+import org.ff4j.FF4j;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.el.ExpressionFlipStrategy;
 import org.junit.Assert;
@@ -36,7 +36,7 @@ public class ExpressionFlipingStategyTest extends TestCase {
 		listOfFlipPoint.add(new Feature("B", false, "description",  rights1, exs));
 		listOfFlipPoint.add(new Feature("C",  false, "description", rights1, exs));
 		listOfFlipPoint.add(new Feature("D",  true,  "description", rights1, exs));
-		Flipper.initStore(new InMemoryFeatureStore(listOfFlipPoint));
+		FF4j.initStore(new InMemoryFeatureStore(listOfFlipPoint));
 	}
 	
 	@Test

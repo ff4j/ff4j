@@ -3,7 +3,7 @@ package org.ff4j.strategy.el;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.ff4j.Flipper;
+import org.ff4j.FF4j;
 import org.ff4j.strategy.FlippingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,7 @@ public class ExpressionFlipStrategy implements FlippingStrategy {
 			} else {
 				LOG.debug("Getting syntax tree from cache" + cachedExpression.get(expression));
 			}
-			return cachedExpression.get(expression).evalue(Flipper.getFeaturesStatus());
+			return cachedExpression.get(expression).evalue(FF4j.getFeaturesStatus());
 		}
 	}
 

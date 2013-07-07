@@ -136,6 +136,11 @@ public class InMemoryFeatureStore implements FeatureStore {
 	public LinkedHashMap<String, Feature> readAll() {
 		return featuresMap;
 	}
+
+	/** {@inheritDoc} */
+	public String toString() {
+		return "InMemoryFeatureStore [featuresMap=" + featuresMap + "]";
+	}
 	
 	
 }
