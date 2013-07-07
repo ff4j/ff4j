@@ -3,10 +3,8 @@ package org.ff4j.security.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.ff4j.Feature;
 import org.ff4j.FF4j;
 import org.ff4j.security.SpringSecurityAuthorisationManager;
-import org.ff4j.store.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.junit.After;
 import org.junit.Assert;
@@ -31,45 +29,20 @@ public class FlipSecurityTests {
 	
 	/** Security context. */
 	private SecurityContext securityCtx;
-
-	/*
-	 * initializing store 
-	 */
-	private FeatureStore initStore() throws Exception {
-		List < String > rights1  = new ArrayList<String>();
-		rights1.add(new String("ROLE_USER"));
-		List < String > rights2  = new ArrayList<String>();
-		rights2.add(new String("X"));
-		rights2.add(new String("Y"));
-		List<Feature> listOfFlipPoint = new ArrayList<Feature>();
-		listOfFlipPoint.add(new Feature("first",  true,  "description", rights1));
-		listOfFlipPoint.add(new Feature("second", false, "description", rights1));
-		listOfFlipPoint.add(new Feature("third",  true, "description", rights2));
-		listOfFlipPoint.add(new Feature("forth",  true,  "description", rights2));
-		List < String > allroles = new ArrayList<String>();
-		allroles.addAll(rights1);
-		allroles.addAll(rights2);
-		return new InMemoryFeatureStore(listOfFlipPoint);
-	}
-	
-	private SecurityContext initSecurityContext() {
-		SecurityContext context = new SecurityContextImpl();
-		List < GrantedAuthority> listOfRoles = new ArrayList<GrantedAuthority>();
-		listOfRoles.add( new GrantedAuthorityImpl("ROLE_USER"));
-		User u1 = new User("user1", "user1", true, true, true, true, listOfRoles);
-		UsernamePasswordAuthenticationToken token = 
-				new UsernamePasswordAuthenticationToken(u1.getUsername(), u1.getPassword(), u1.getAuthorities());
-		token.setDetails(u1);
-		context.setAuthentication(token);
-		return context;
-	}
 	
 	@Before
 	public void setUp() throws Exception {
 		securityCtx = SecurityContextHolder.getContext();
-		SecurityContextHolder.setContext(initSecurityContext());
-		FF4j f = new FF4j(initStore());
-		f.setAuthorizationsManager(new SpringSecurityAuthorisationManager());
+		// Init SpringSecurity Context
+		SecurityContext context = new SecurityContextImpl();
+		List < GrantedAuthority> listOfRoles = new ArrayList<GrantedAuthority>();
+		listOfRoles.add( new GrantedAuthorityImpl("ROLE_USER"));
+		User u1 = new User("user1", "user1", true, true, true, true, listOfRoles);
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(u1.getUsername(), u1.getPassword(), u1.getAuthorities());
+		token.setDetails(u1);
+		context.setAuthentication(token);
+		SecurityContextHolder.setContext(context);
+		// <--
 	}
 
 	@After
@@ -79,14 +52,16 @@ public class FlipSecurityTests {
 
 	@Test
 	public void testIsAuthenticatedAndAuthorized() {
+		
+		// check authentication	
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Assert.assertTrue(auth.isAuthenticated());
-        Assert.assertEquals(1, auth.getAuthorities().size());
-        
+		
+		// init
+		new FF4j(new InMemoryFeatureStore(), new SpringSecurityAuthorisationManager());
         // not autorized because bad credential
         Assert.assertFalse(FF4j.isFlipped("third"));
-        
-        // not autorized because bad credential
+        // autorized because role ROLE_USER
         Assert.assertTrue(FF4j.isFlipped("first"));
 	}
 

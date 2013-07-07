@@ -11,4 +11,9 @@ public class RandomFlipStrategy implements FlippingStrategy {
 		return Math.random() > 0.5;
 	}
 
+	/** {@inheritDoc} */
+	public void init(String featureName, String initValue) {
+		// Nothing to do
+	}
+
 }

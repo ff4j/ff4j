@@ -17,3 +17,4 @@ public class JdbcStoreTestSpring {
 		Assert.assertTrue(FF4j.isFlipped("first"));
 	}
 }
+

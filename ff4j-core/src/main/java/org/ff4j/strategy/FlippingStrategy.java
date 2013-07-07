@@ -18,5 +18,14 @@ public interface FlippingStrategy {
 	 * 		if flipping should be performed
 	 */
 	 boolean activate(String featureName, Object... executionContext);
+	 
+	 /**
+	  * Allow to parameterized Flipping Strategy
+	  * @param featureName
+	  * 		current featureName
+	  * @param initValue
+	  * 		initial Value
+	  */
+	 void init(String featureName, String initValue);
 
 }

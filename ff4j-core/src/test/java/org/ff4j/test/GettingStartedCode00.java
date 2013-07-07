@@ -9,11 +9,10 @@ import org.junit.Test;
 public class GettingStartedCode00 {
 	
 	@Test
+	@SuppressWarnings("static-access")
 	public void testSimplier() {
 		
-		FF4j.createFeature(new Feature("AwesomeFeature1", true, "some desc"));
-		
-		if (FF4j.isFlipped("AwesomeFeature1")) {
+		if (FF4j.createFeature(new Feature("AwesomeFeature1", true, "some desc")).isFlipped("AwesomeFeature1")) {
 			System.out.println("Hello");
 		} else {
 			fail();

@@ -43,6 +43,15 @@ public class FF4j {
 		logger.debug("Initialization through default constructor");
 	}
 	
+
+	/**
+	 * Allow creation through IOc even of static access.
+	 */
+	public FF4j(String xmlFile) {
+		initStore(new InMemoryFeatureStore(xmlFile));
+		logger.debug("Initialization with store within constructor {}", xmlFile);
+	}
+	
 	/**
 	 * Allow creation through IOc even of static access.
 	 */
@@ -178,8 +187,9 @@ public class FF4j {
 	 * @param featureID
 	 * 		unique feature identifier.
 	 */
-	public static void enableFeature(String featureID) {
+	public static FF4j enableFeature(String featureID) {
 		getStore().enable(featureID);
+		return instance;
 	}
 	
 	/**
@@ -199,8 +209,9 @@ public class FF4j {
 	 * @param featureID
 	 * 		unique feature identifier.
 	 */
-	public static void disableFeature(String featureID) {
+	public static FF4j disableFeature(String featureID) {
 		getStore().disable(featureID);
+		return instance;
 	}
 	
 	public static Feature getFeature(String featureId) {
@@ -210,12 +221,13 @@ public class FF4j {
 	/**
 	 * Log flippingPoint status (debugging purposes).
 	 */
-	public static void logFeatures() {
+	public static FF4j logFeatures() {
 		Map < String, Feature > mapOfFeatures = getStore().readAll();
 		logger.info("Listing current '{}' features states", mapOfFeatures);
 		for (Entry<String, Feature> feat : mapOfFeatures.entrySet()) {
 			logger.info("-> " + feat.getValue().toString());
 		}
+		return instance;
 	}
 	
 	/**

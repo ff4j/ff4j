@@ -35,11 +35,6 @@ public class FlipperTest {
 		FF4j.getFeature("first").setFlippingStrategy(new RandomFlipStrategy());
 		FF4j.isFlipped("first", new RandomFlipStrategy(), "test");
 		
-		
-		
-		
-		
-		
 	}
 
 }

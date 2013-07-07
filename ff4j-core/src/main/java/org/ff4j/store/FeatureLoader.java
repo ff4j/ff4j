@@ -61,6 +61,8 @@ public class FeatureLoader {
 	
 	public static final String ATT_STRATEGY	 = "strategy";
 	
+	public static final String ATT_EXPRESSION = "expression";
+	
 	/** XML Generation constants. */
 	private static final String ENCODING	 = "UTF-8";
 	
@@ -126,6 +128,10 @@ public class FeatureLoader {
 						try {
 							String clazzName = nnm.getNamedItem(ATT_STRATEGY).getNodeValue();
 							flipStrategy = (FlippingStrategy) Class.forName(clazzName).newInstance();
+							if (nnm.getNamedItem(ATT_EXPRESSION) != null) {
+								String expr = nnm.getNamedItem(ATT_EXPRESSION).getNodeValue();
+								flipStrategy.init(uid, expr);
+							}
 						} catch(Exception e) {
 							throw new IllegalArgumentException("Invalid attribute 'strategy' on feature " + uid, e);
 						}
