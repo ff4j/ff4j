@@ -71,6 +71,7 @@
 		<module>ff4j-web</module>
 		<module>ff4j-store-jdbc</module>
 		<module>ff4j-security-spring</module>
+		<module>ff4j-aop</module>
 		<module>ff4j-demo</module>
 	</modules>
 

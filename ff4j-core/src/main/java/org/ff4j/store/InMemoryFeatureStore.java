@@ -28,9 +28,17 @@ public class InMemoryFeatureStore implements FeatureStore {
 	/** InMemory FlipPoint Map */
 	protected LinkedHashMap< String, Feature > featuresMap = new LinkedHashMap<String, Feature>();
 	
+	
+	
 	/** Default. */
 	public InMemoryFeatureStore() {
-		this(CONF_FILENAME);
+		try {
+			LOG.info("Attempt to load default features file '{}'", CONF_FILENAME);
+			InputStream xmlIN = getClass().getClassLoader().getResourceAsStream(CONF_FILENAME);
+			this.featuresMap = FeatureLoader.loadFeatures(xmlIN);
+		} catch(IllegalArgumentException ioex) {
+			LOG.info("File '{}' has not been found, initializing store as empty store", CONF_FILENAME);
+		}
 	}
 	
 	/** Default. */

@@ -92,7 +92,7 @@ public class FF4j {
 	 */
 	public static FF4j initStore(FeatureStore fs) {
 		getInstance().setStore(fs);
-		logger.debug("Store has been initialized statically (initStore) {}", fs.toString());
+		logger.info("Store has been initialized statically (initStore) {}", fs.toString());
 		return getInstance();
 	}
 	
@@ -106,7 +106,7 @@ public class FF4j {
 	 */
 	public static FF4j initAuthorizationManager(AuthorizationsManager am) {
 		getInstance().setAuthorizationsManager(am);
-		logger.debug("AuthManager has been initialized initStore {}", am.toString());
+		logger.info("AuthManager has been initialized initStore {}", am.toString());
 		return getInstance();
 	}
 	
@@ -252,7 +252,7 @@ public class FF4j {
 	 */
 	public void setStore(FeatureStore fbs) {
 		getInstance().backingStore = fbs;
-		logger.debug("Store has been initialized setStore {}", fbs.toString());
+		logger.info("Store has been initialized with : {}", fbs.toString());
 	}
 	
 	

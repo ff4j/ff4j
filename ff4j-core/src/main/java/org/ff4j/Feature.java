@@ -47,6 +47,20 @@ public class Feature {
 	 * @param pDescription
 	 * 		description of feature.
 	 */
+	public Feature(final String uid, final boolean penable) {
+		this(uid, penable, "");
+	}
+	
+	/**
+	 * Simplest Constructor (without security concerns) 
+	 * 
+	 * @param uid
+	 * 		unique feature name (required)
+	 * @param pactive
+	 * 		initial feature state
+	 * @param pDescription
+	 * 		description of feature.
+	 */
 	public Feature(final String uid, final boolean penable, final String pdescription) {
 		if (uid == null || uid.isEmpty()) {
 			throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
