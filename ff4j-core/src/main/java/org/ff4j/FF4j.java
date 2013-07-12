@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.security.AuthorizationsManager;
 import org.ff4j.store.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
@@ -31,6 +32,9 @@ public class FF4j {
 	
 	/** security policy. */
 	private AuthorizationsManager authorizationsManager = null;
+	
+	/** Do not through {@link FeatureNotFoundException} exception anymore but create it. */
+	private boolean autocreate = false;
 	
 	/** Single instance as static. */
 	private static FF4j instance = null;
@@ -110,6 +114,7 @@ public class FF4j {
 		return getInstance();
 	}
 	
+	
 	/**
 	 * Elegant way to ask for flipping.
 	 *
@@ -120,9 +125,8 @@ public class FF4j {
 	 * @return
 	 */
 	public static boolean isFlipped(String featureID, Object... executionContext) {
-		Feature fp 		= getStore().read(featureID);
+		Feature fp = getFeature(featureID);
 		boolean flipped = fp.isEnable();
-
 		// If authorization manager provided, apply security filter
 		if (flipped && getAuthorizationsManager() != null) {
 			flipped = flipped && getAuthorizationsManager().isAllowed(fp);
@@ -145,7 +149,7 @@ public class FF4j {
 	 * @return
 	 */
 	public static boolean isFlipped(String featureID, FlippingStrategy strats, Object... executionContext) {
-		Feature fp 		= getStore().read(featureID);
+		Feature fp 		= getFeature(featureID);
 		boolean flipped = fp.isEnable();
 		// If authorization manager provided, apply security filter
 		if (flipped && getAuthorizationsManager() != null) {
@@ -157,6 +161,16 @@ public class FF4j {
 			flipped = strats.activate(featureID, executionContext);
 		}
 		return flipped;
+	}
+
+	/**
+	 * Activate feature autocreation.
+	 *
+	 * @param bool
+	 * 		boolean to activate auto-activation
+	 */
+	public static void autoCreateFeature(boolean bool) {
+		getInstance().autocreate = bool;
 	}
 	
 	/**
@@ -204,6 +218,28 @@ public class FF4j {
 	}
 	
 	/**
+	 * Create new Feature.
+	 *
+	 * @param featureID
+	 * 		unique feature identifier.
+	 */
+	public static FF4j createFeature(String featureName, boolean enable, String description) {
+		getStore().create(new Feature(featureName, enable, description));
+		return instance;
+	}
+	
+	/**
+	 * Create new Feature.
+	 *
+	 * @param featureID
+	 * 		unique feature identifier.
+	 */
+	public static FF4j createFeature(String featureName) {
+		getStore().create(new Feature(featureName, false, ""));
+		return instance;
+	}
+	
+	/**
 	 * Disable Feature.
 	 *
 	 * @param featureID
@@ -214,8 +250,27 @@ public class FF4j {
 		return instance;
 	}
 	
-	public static Feature getFeature(String featureId) {
-		return getStore().read(featureId);
+	/**
+	 * The feature will be create automatically if the boolea, autocreate is enabled.
+	 *
+	 * @param featureID
+	 * 		target feature ID
+	 * @return
+	 * 		target feature.
+	 */
+	public static Feature getFeature(String featureID) {
+		Feature fp = null;
+		try {
+			fp = getStore().read(featureID);
+		} catch(FeatureNotFoundException fnfe) {
+			if (getInstance().autocreate) {
+				fp = new Feature(featureID, false);
+				getStore().create(fp);
+			} else {
+				throw fnfe;
+			}
+		}
+		return fp;
 	}
 
 	/**
@@ -272,10 +327,21 @@ public class FF4j {
 	public void setAuthorizationsManager(AuthorizationsManager authM) {
 		getInstance().authorizationsManager = authM;
 	}
+	
+	/**
+	 * Setter accessor for attribute 'autocreate'.
+	 * @param autocreate
+	 * 		new value for 'autocreate '
+	 */
+	public void setAutocreate(boolean autocreate) {
+		getInstance().autocreate = autocreate;
+	}
 
 	/** {@inheritDoc} */
 	public String toString() {
 		return "FF4j [backingStore=" + backingStore + ", authorizationsManager=" + authorizationsManager + "]";
 	}
+
+	
 	
 }
