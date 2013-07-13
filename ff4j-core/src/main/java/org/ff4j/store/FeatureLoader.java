@@ -155,6 +155,7 @@ public class FeatureLoader {
 		return xmlFeatures;
 	}
 	
+	
 	/**
 	 * Create XML output stream from a map of {@link Feature}.
 	 *

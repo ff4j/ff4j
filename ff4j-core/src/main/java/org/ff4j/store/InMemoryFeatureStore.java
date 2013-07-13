@@ -28,14 +28,10 @@ public class InMemoryFeatureStore implements FeatureStore {
 	/** InMemory FlipPoint Map */
 	protected LinkedHashMap< String, Feature > featuresMap = new LinkedHashMap<String, Feature>();
 	
-	
-	
 	/** Default. */
 	public InMemoryFeatureStore() {
 		try {
-			LOG.info("Attempt to load default features file '{}'", CONF_FILENAME);
-			InputStream xmlIN = getClass().getClassLoader().getResourceAsStream(CONF_FILENAME);
-			this.featuresMap = FeatureLoader.loadFeatures(xmlIN);
+			setLocation(CONF_FILENAME);
 		} catch(IllegalArgumentException ioex) {
 			LOG.info("File '{}' has not been found, initializing store as empty store", CONF_FILENAME);
 		}
@@ -43,9 +39,7 @@ public class InMemoryFeatureStore implements FeatureStore {
 	
 	/** Default. */
 	public InMemoryFeatureStore(String fileName) {
-		LOG.info("Load features file with {}", fileName);
-		InputStream xmlIN = getClass().getClassLoader().getResourceAsStream(fileName);
-		this.featuresMap = FeatureLoader.loadFeatures(xmlIN);
+		setLocation(fileName);
 	}
 
 	/** Default. */
@@ -148,6 +142,17 @@ public class InMemoryFeatureStore implements FeatureStore {
 	/** {@inheritDoc} */
 	public String toString() {
 		return "InMemoryFeatureStore [featuresMap=" + featuresMap + "]";
+	}
+
+	/**
+	 * Setter accessor for attribute 'locations'.
+	 * @param locations
+	 * 		new value for 'locations '
+	 */
+	public void setLocation(String locations) {
+		LOG.info("Attempt to load default features file '{}'", locations);
+		InputStream xmlIN = getClass().getClassLoader().getResourceAsStream(locations);
+		this.featuresMap = FeatureLoader.loadFeatures(xmlIN);
 	}
 	
 	

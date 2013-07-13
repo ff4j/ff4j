@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+<features>
+
+	<feature uid="first" enable="true" description="description" >
+		<auth role="ROLE_USER" />
+	</feature>
+	
+	
+</features>
+

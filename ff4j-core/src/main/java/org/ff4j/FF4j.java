@@ -1,13 +1,17 @@
 package org.ff4j;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.security.AuthorizationsManager;
+import org.ff4j.store.FeatureLoader;
 import org.ff4j.store.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.FlippingStrategy;
@@ -283,6 +287,16 @@ public class FF4j {
 			logger.info("-> " + feat.getValue().toString());
 		}
 		return instance;
+	}
+	
+	/**
+	 * Export Feature through FF4J.
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	public static InputStream exportFeatures() throws IOException {
+		return FeatureLoader.exportFeatures(getStore().readAll());
 	}
 	
 	/**
