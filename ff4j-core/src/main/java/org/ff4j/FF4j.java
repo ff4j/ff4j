@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.security.AuthorizationsManager;
@@ -133,7 +133,7 @@ public class FF4j {
 		boolean flipped = fp.isEnable();
 		// If authorization manager provided, apply security filter
 		if (flipped && getAuthorizationsManager() != null) {
-			flipped = flipped && getAuthorizationsManager().isAllowed(fp);
+			flipped = flipped && isAllowed(fp);
 		}
 
 		// If custom strategy has been defined, load
@@ -157,7 +157,7 @@ public class FF4j {
 		boolean flipped = fp.isEnable();
 		// If authorization manager provided, apply security filter
 		if (flipped && getAuthorizationsManager() != null) {
-			flipped = getAuthorizationsManager().isAllowed(fp);
+			flipped = isAllowed(fp);
 		}
 
 		// If custom strategy has been defined, load
@@ -165,6 +165,21 @@ public class FF4j {
 			flipped = strats.activate(featureID, executionContext);
 		}
 		return flipped;
+	}
+	
+	/** {@inheritDoc} */
+	public static boolean isAllowed(Feature featureName) {
+		// Load Spring Security GrantedAuthorities
+		Set<String> userRoles = getAuthorizationsManager().getAuthenticatedUserRoles();
+		// Filter with expected roles
+		for (String expectedRole : featureName.getAuthorizations()) {
+			if (userRoles.contains(expectedRole)) return true;
+		}
+		return false;
+	}
+	
+	public static Set < String> getEveryOneRoles() {
+		return getAuthorizationsManager().getEveryOneRoles();
 	}
 
 	/**

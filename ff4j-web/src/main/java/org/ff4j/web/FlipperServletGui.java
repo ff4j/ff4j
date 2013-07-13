@@ -319,7 +319,10 @@ public class FlipperServletGui {
     }
     
 	static String renderButtonUserRole(HttpServletRequest req, Feature fp) {
-		Set < String > setOfRoles = new TreeSet<String>(FF4j.getAuthorizationsManager().getAllUserRoles());
+		Set < String > setOfRoles = new TreeSet<String>();
+		if (FF4j.getAuthorizationsManager().getEveryOneRoles() != null) {
+			setOfRoles.addAll(FF4j.getAuthorizationsManager().getEveryOneRoles());
+		}
 		StringBuilder strBuilder = new StringBuilder("<div class=\"btn-group\">");
 		strBuilder.append("<button class=\"btn\"><i class=\"icon-user\"></i></button>");
 		strBuilder.append("<button class=\"btn dropdown-toggle\" data-toggle=\"dropdown\"><span class=\"caret\"></span></button>");

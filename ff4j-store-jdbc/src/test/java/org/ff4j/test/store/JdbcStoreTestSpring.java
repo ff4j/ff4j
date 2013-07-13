@@ -20,7 +20,7 @@ public class JdbcStoreTestSpring {
 	public void testWithSpring() throws IOException {
 		Assert.assertTrue(FF4j.isFlipped("first"));
 		
-		InputStream data = FeatureLoader.exportFeatures(FF4j.getStore().readAll());
+		
 	}
 }
 

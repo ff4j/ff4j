@@ -9,7 +9,10 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import org.ff4j.Feature;
 import org.ff4j.FF4j;
+import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.store.FeatureStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -28,6 +31,9 @@ public class FlipTag extends BodyTagSupport {
 	/** serial. */
 	private static final long serialVersionUID = -4924423673988080781L;
 	
+	/** Logger for Advisor. */
+	final static Logger logger = LoggerFactory.getLogger(FlipTag.class);
+	
 	/** Injected by JSP itSelf. */
 	private String featureid = "";
 	
@@ -43,6 +49,8 @@ public class FlipTag extends BodyTagSupport {
 					out.print(body);
 				}
 			}
+		} catch(FeatureNotFoundException fef) {
+			logger.warn("This feature foes not exis");
 		} catch (IOException ioe) {
 			throw new JspException("Error occur when processing TAG FF4J", ioe);
 		}
