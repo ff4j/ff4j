@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.ff4j</groupId>
 	<artifactId>ff4j-parent</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<name>Feature Flipping 4 Java</name>
 	<packaging>pom</packaging>
 	<url>http://ff4j.org</url>
