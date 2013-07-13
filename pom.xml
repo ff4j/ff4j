@@ -1,17 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-	<!-- ~ Coordonates ~ -->
+   
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.ff4j</groupId>
 	<artifactId>ff4j-parent</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<name>Feature Flipping 4 Java</name>
 	<packaging>pom</packaging>
-	<url>https://github.com/clun/ff4j</url>
+	<url>http://ff4j.org</url>
 	<inceptionYear>2013</inceptionYear>
-
+    
+    <parent>
+     <groupId>org.sonatype.oss</groupId>
+     <artifactId>oss-parent</artifactId>
+     <version>7</version>
+    </parent>
+    
+	<scm>
+      <connection>scm:git:git@github.com:clun/ff4j.git</connection>
+      <developerConnection>scm:git:git@github.com:clun/ff4j.git</developerConnection>
+      <url>git@github.com:clun/ff4j.git</url>
+      <!--<url>https://github.com/clun/ff4j</url>-->
+    </scm>
+	
 	<!-- ~ License ~ -->
 	<licenses>
 		<license>
@@ -27,7 +39,7 @@
      the usage to a limited subset of user through role administration. Once enabled and granted you can finally implement 
      an overriding flipping strategy.
     </description>
-	
+ 
 	<!-- ~ Properties ~ -->
 	<properties>
 	    
@@ -72,17 +84,11 @@
 		<module>ff4j-store-jdbc</module>
 		<module>ff4j-security-spring</module>
 		<module>ff4j-aop</module>
-		<module>ff4j-demo</module>
+		<!-- trop gros --> 
+		<!--<module>ff4j-demo</module>-->
 	</modules>
 
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~ GutHUB Connection ~ -->
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<scm>
-		<connection>scm:git:git@github.com:clun/ff4j.git</connection>
-		<url>scm:git:git@github.com:clun/ff4j.git</url>
-		<developerConnection>scm:git:git@github.com:clun/ff4j.git</developerConnection>
-	</scm>
+	
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~ Dependencies ~ -->
@@ -447,7 +453,7 @@
   	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   	<!-- ~ Deploy on Maven Central eventually ~ -->
   	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  	<distributionManagement/>		
+  	<distributionManagement />
 
 
 </project>
