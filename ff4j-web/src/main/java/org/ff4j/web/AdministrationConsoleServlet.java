@@ -1,21 +1,21 @@
 package org.ff4j.web;
 
-import static org.ff4j.web.FlipperServletGui.DESCRIPTION;
-import static org.ff4j.web.FlipperServletGui.FEATID;
-import static org.ff4j.web.FlipperServletGui.FLIPFILE;
-import static org.ff4j.web.FlipperServletGui.OPERATION;
-import static org.ff4j.web.FlipperServletGui.OP_ADD_FEATURE;
-import static org.ff4j.web.FlipperServletGui.OP_ADD_ROLE;
-import static org.ff4j.web.FlipperServletGui.OP_DISABLE;
-import static org.ff4j.web.FlipperServletGui.OP_EDIT_FEATURE;
-import static org.ff4j.web.FlipperServletGui.OP_ENABLE;
-import static org.ff4j.web.FlipperServletGui.OP_EXPORT;
-import static org.ff4j.web.FlipperServletGui.OP_RMV_FEATURE;
-import static org.ff4j.web.FlipperServletGui.OP_RMV_ROLE;
-import static org.ff4j.web.FlipperServletGui.ROLE;
-import static org.ff4j.web.FlipperServletGui.renderButtonDeleteFeature;
-import static org.ff4j.web.FlipperServletGui.renderButtonEditFeature;
-import static org.ff4j.web.FlipperServletGui.renderButtonUserRole;
+import static org.ff4j.web.AdministrationConsoleRenderer.DESCRIPTION;
+import static org.ff4j.web.AdministrationConsoleRenderer.FEATID;
+import static org.ff4j.web.AdministrationConsoleRenderer.FLIPFILE;
+import static org.ff4j.web.AdministrationConsoleRenderer.OPERATION;
+import static org.ff4j.web.AdministrationConsoleRenderer.OP_ADD_FEATURE;
+import static org.ff4j.web.AdministrationConsoleRenderer.OP_ADD_ROLE;
+import static org.ff4j.web.AdministrationConsoleRenderer.OP_DISABLE;
+import static org.ff4j.web.AdministrationConsoleRenderer.OP_EDIT_FEATURE;
+import static org.ff4j.web.AdministrationConsoleRenderer.OP_ENABLE;
+import static org.ff4j.web.AdministrationConsoleRenderer.OP_EXPORT;
+import static org.ff4j.web.AdministrationConsoleRenderer.OP_RMV_FEATURE;
+import static org.ff4j.web.AdministrationConsoleRenderer.OP_RMV_ROLE;
+import static org.ff4j.web.AdministrationConsoleRenderer.ROLE;
+import static org.ff4j.web.AdministrationConsoleRenderer.renderButtonDeleteFeature;
+import static org.ff4j.web.AdministrationConsoleRenderer.renderButtonEditFeature;
+import static org.ff4j.web.AdministrationConsoleRenderer.renderButtonUserRole;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,13 +46,13 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FlipperServlet extends HttpServlet{
+public class AdministrationConsoleServlet extends HttpServlet{
 
 	/** serial number. */
 	private static final long serialVersionUID = -3982043895954284269L;
 	
 	/** Logger for Advisor. */
-	final static Logger LOG = LoggerFactory.getLogger(FlipperServlet.class);
+	final static Logger LOG = LoggerFactory.getLogger(AdministrationConsoleServlet.class);
 	
 	/** {@inheritDoc} */
 	protected void doGet(HttpServletRequest req, HttpServletResponse res)
@@ -166,13 +166,13 @@ public class FlipperServlet extends HttpServlet{
 		// Render PAGE
 		res.setContentType("text/html");
 		PrintWriter out = res.getWriter();
-		out.println(FlipperServletGui.HEADER);
-		out.println(FlipperServletGui.renderNavBar(req));
+		out.println(AdministrationConsoleRenderer.HEADER);
+		out.println(AdministrationConsoleRenderer.renderNavBar(req));
 		out.println("<div class=\"container\">");
 		out.print(renderSectionFeatures(req, message, messagetype));
-		out.println(FlipperServletGui.renderModalEditFlip(req));
-		out.println(FlipperServletGui.renderModalNewFlipPoint(req));
-		out.println(FlipperServletGui.renderModalImportFlipPoints(req));
+		out.println(AdministrationConsoleRenderer.renderModalEditFlip(req));
+		out.println(AdministrationConsoleRenderer.renderModalNewFlipPoint(req));
+		out.println(AdministrationConsoleRenderer.renderModalImportFlipPoints(req));
 		out.println("</body>");
 		out.println("</html>");
 	}
@@ -304,12 +304,12 @@ public class FlipperServlet extends HttpServlet{
     	if (FF4j.getFeatures() != null && !FF4j.getFeatures().isEmpty()) {
     		mapOfFlipPoints.putAll(FF4j.getFeatures());
     	}
-        StringBuilder strB = new StringBuilder(FlipperServletGui.renderButtonsMainGroup(req));
+        StringBuilder strB = new StringBuilder(AdministrationConsoleRenderer.renderButtonsMainGroup(req));
         if (message != null && !message.isEmpty()) {
-        	strB.append(FlipperServletGui.renderMessageBox(message, type));
+        	strB.append(AdministrationConsoleRenderer.renderMessageBox(message, type));
  		}
         //strB.append(renderButtonImportFeatures(req));
-        strB.append(FlipperServletGui.TABLE_HEADER);
+        strB.append(AdministrationConsoleRenderer.TABLE_HEADER);
         for (Feature fp : mapOfFlipPoints.values()) {
         	strB.append("<tr>");
         	strB.append("<td style=\"width:150px;font-weight:bold\">" + fp.getUid() + "</td>");
@@ -318,9 +318,9 @@ public class FlipperServlet extends HttpServlet{
         	Map <String, String> mapP = new LinkedHashMap<String, String>();
     		mapP.put("uid", fp.getUid());
         	if (fp.isEnable()) {
-        		strB.append(FlipperServletGui.renderElementButton(req, "Enabled", "success", "disable", mapP, null));
+        		strB.append(AdministrationConsoleRenderer.renderElementButton(req, "Enabled", "success", "disable", mapP, null));
         	} else {
-        		strB.append(FlipperServletGui.renderElementButton(req, "Disabled", "danger", "enable", mapP, null));
+        		strB.append(AdministrationConsoleRenderer.renderElementButton(req, "Disabled", "danger", "enable", mapP, null));
         	}
         	strB.append("</td>");
         	strB.append("<td style=\"width:20px;\">" + renderButtonEditFeature(req, fp.getUid())  + "</td>");
@@ -335,7 +335,7 @@ public class FlipperServlet extends HttpServlet{
         	strB.append("</tr>");
 		}
         strB.append(MessageFormat.format(
-        		FlipperServletGui.TABLE_FEATURES_FOOTER, req.getContextPath() + req.getServletPath()));
+        		AdministrationConsoleRenderer.TABLE_FEATURES_FOOTER, req.getContextPath() + req.getServletPath()));
         
         return strB.toString();
     }

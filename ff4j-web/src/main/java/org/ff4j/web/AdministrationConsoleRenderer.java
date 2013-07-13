@@ -15,7 +15,7 @@ import org.ff4j.FF4j;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FlipperServletGui {
+public class AdministrationConsoleRenderer {
 	
 	/** User operation. */
 	static final String OP_EDIT_FEATURE  = "editfp";

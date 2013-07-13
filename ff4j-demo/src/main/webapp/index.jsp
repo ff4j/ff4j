@@ -49,6 +49,7 @@ body {
         <a href="<%=request.getContextPath()%>/ff4j-console" class="btn btn-success btn-large" >
 			<i class="icon-th-large icon-white"></i>&nbsp;Access FF4J Console
 		</a>
+		
 		</p><br/>
       </div>
 

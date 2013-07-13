@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+<features>
+	
+	<feature uid="displayCallMeButton" enable="true" 
+		strategy="org.ff4j.test.strategy.OfficeHoursFlippingStrategy"
+		expression="9-18" />
+
+</features>
+

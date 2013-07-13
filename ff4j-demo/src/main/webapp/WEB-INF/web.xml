@@ -40,7 +40,7 @@
 	<!-- Feature Flipping -->
 	<servlet>
 		<servlet-name>ff4j-console</servlet-name>
-		<servlet-class>org.ff4j.web.FlipperServlet</servlet-class>
+		<servlet-class>org.ff4j.web.AdministrationConsoleServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>ff4j-console</servlet-name>

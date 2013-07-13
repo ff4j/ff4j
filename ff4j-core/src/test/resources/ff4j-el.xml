@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE configuration>
 <features>
+
 	<feature uid="A" enable="true" />
+	
 	<feature uid="B" enable="false" />
+	
 	<feature uid="C" enable="false" />
+	
 	<feature uid="D" enable="true" 
 		strategy="org.ff4j.strategy.el.ExpressionFlipStrategy"
 		expression="A &amp; B | !C" />
+
 </features>
 
