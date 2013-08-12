@@ -4,9 +4,9 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~     COORDINATES          ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<artifactId>ff4j-store-jdbc</artifactId>
+	<artifactId>ff4j-store-remoting</artifactId>
 	<packaging>jar</packaging>
-	<name>ff4j-store-jdbc</name>
+	<name>ff4j-store-remoting</name>
 	
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~   PARENT                 ~ -->
@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.ff4j</groupId>
 		<artifactId>ff4j-parent</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.1-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
@@ -26,11 +26,9 @@
 			<version>${project.version}</version>
 		</dependency>
 		
-		<!-- spring-jdbc -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-jdbc</artifactId>
-		</dependency>
+		<!-- spring-jersey-client -->
+		<!--http client -->
+		
 		
 		<!-- tests -->
 		<dependency>

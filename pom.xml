@@ -81,6 +81,7 @@
 		<module>ff4j-core</module>
 		<module>ff4j-web</module>
 		<module>ff4j-store-jdbc</module>
+		<module>ff4j-store-remoting</module> <!-- since 1.0.1 -->
 		<module>ff4j-security-spring</module>
 		<module>ff4j-aop</module>
 		<!-- trop gros --> 
@@ -268,6 +269,32 @@
 					<configuration>
 						<escapeString>\</escapeString>
 						<encoding>UTF-8</encoding>
+					</configuration>
+				</plugin>
+			
+				<!-- Shutdown eclipse warning (works with intelliJ)-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-enforcer-plugin</artifactId>
+										<versionRange>[1.0.0,)</versionRange>
+										<goals>
+											<goal>enforce</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
 

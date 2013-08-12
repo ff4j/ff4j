@@ -1,12 +1,10 @@
 package org.ff4j.test.store;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import junit.framework.Assert;
 
 import org.ff4j.FF4j;
-import org.ff4j.store.FeatureLoader;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;

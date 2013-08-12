@@ -18,42 +18,50 @@ import org.ff4j.strategy.FlippingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * Providing static method to handle features.
+ * Main component of the framework, its allow through static methods to interact with features.
  * 
- * <br/>FeatureFlipper is a bean in order to be mocked.
+ * <p>It embedded a {@link FeatureStore} to record features statused. By default feature are stored into memory but you
+ * would like to persist them in an external storage as database. There are different technologies for store, please check <pre>ff4j-store-*
+ * components.</pre></p> 
  *
+ * <p>It embedded a {@link AuthorizationsManager} to limit usage of features through a security filter.</p>
+ * <br/><b>Caution :</b>FF4J does not created roles, it's rely on external security provider as SpringSecurity Apache Chiro.
+ * 
+ * <ul>Other conception concerns : 
+ *  <li>Most of methods are static to simplify usage.
+ *  <li>Most of methods return the instance to perform fluent api : <pre>FF4J.doSomething().doSomething(). and so on.</pre>
+ * </ul>
+ * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public class FF4j {
 	
-	/** Logger for Advisor. */
+	/** Logger for the class. */
 	final static Logger logger = LoggerFactory.getLogger(FF4j.class);
 	
 	/** Store will handle feature. */
 	private FeatureStore backingStore = null;
 	
-	/** security policy. */
+	/** Security policy. */
 	private AuthorizationsManager authorizationsManager = null;
 	
 	/** Do not through {@link FeatureNotFoundException} exception anymore but create it. */
 	private boolean autocreate = false;
 	
-	/** Single instance as static. */
+	/** Singleton instance. */
 	private static FF4j instance = null;
 	
 	/**
-	 * Allow creation through IOc even of static access.
+	 * Allow creation through IoC (even with static access).
 	 */
 	public FF4j() {
 		instance = this;
 		logger.debug("Initialization through default constructor");
 	}
-	
 
 	/**
-	 * Allow creation through IOc even of static access.
+	 * Allow creation through IoC and configuration file (if not defined default is <pre>ff4j.xml</pre>).
 	 */
 	public FF4j(String xmlFile) {
 		initStore(new InMemoryFeatureStore(xmlFile));
@@ -78,7 +86,7 @@ public class FF4j {
 	}
 	
 	/**
-	 * Synchronized getInstance.
+	 * Single Pattern : Getting singleton instance synchronusly
 	 *
 	 * @return
 	 * 		single instance.
@@ -127,6 +135,7 @@ public class FF4j {
 	 * @param executionContext
 	 * 		current execution context
 	 * @return
+	 * 		current feature status
 	 */
 	public static boolean isFlipped(String featureID, Object... executionContext) {
 		Feature fp = getFeature(featureID);
@@ -136,7 +145,7 @@ public class FF4j {
 			flipped = flipped && isAllowed(fp);
 		}
 
-		// If custom strategy has been defined, load
+		// If custom strategy has been defined, delegate flipping to 
 		if (flipped && fp.getFlippingStrategy() != null) {
 			flipped = flipped && fp.getFlippingStrategy().activate(featureID, executionContext);
 		}
@@ -169,7 +178,7 @@ public class FF4j {
 	
 	/** {@inheritDoc} */
 	public static boolean isAllowed(Feature featureName) {
-		// Load Spring Security GrantedAuthorities
+		// Load SecurityProvider roles (e.g : SpringSecurity GrantedAuthorities)
 		Set<String> userRoles = getAuthorizationsManager().getAuthenticatedUserRoles();
 		// Filter with expected roles
 		for (String expectedRole : featureName.getAuthorizations()) {
@@ -178,6 +187,12 @@ public class FF4j {
 		return false;
 	}
 	
+	/**
+	 * Retrieve an union of roles for everyOne.
+	 *
+	 * @return
+	 * 		union of user roles
+	 */
 	public static Set < String> getEveryOneRoles() {
 		return getAuthorizationsManager().getEveryOneRoles();
 	}

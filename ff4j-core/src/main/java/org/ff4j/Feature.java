@@ -7,7 +7,6 @@ import java.util.Set;
 import org.ff4j.security.AuthorizationsManager;
 import org.ff4j.strategy.FlippingStrategy;
 
-
 /**
  * Represents a feature flag identified by an unique identifier.
  * 
@@ -38,14 +37,22 @@ public class Feature {
 	private FlippingStrategy flippingStrategy;
 
 	/**
-	 * Simplest Constructor (without security concerns) 
+	 * Simplest constructor initializing feature to disable.
+	 *
+	 * @param uid
+	 * 		unique feature name (required)
+	 */
+	public Feature(final String uid) {
+		this(uid, false, "");
+	}
+	
+	/**
+	 * Simple constructor initializing feature with status enable/disable.
 	 * 
 	 * @param uid
 	 * 		unique feature name (required)
 	 * @param pactive
 	 * 		initial feature state
-	 * @param pDescription
-	 * 		description of feature.
 	 */
 	public Feature(final String uid, final boolean penable) {
 		this(uid, penable, "");
@@ -107,7 +114,6 @@ public class Feature {
 			this.flippingStrategy = strat;
 		}
 	}
-	
 
 	/** {@inheritDoc} */
 	public String toString() {
@@ -138,7 +144,7 @@ public class Feature {
 	}
 	
 	/**
-	 * Toggle target feature from enable to disable or the contrary
+	 * Toggle target feature (from enable to disable and vice versa)
 	 */
 	public void toggle() {
 		this.enable = !this.enable;
@@ -175,6 +181,7 @@ public class Feature {
 
 	/**
 	 * Setter accessor for attribute 'enable'.
+	 *
 	 * @param enable
 	 * 		new value for 'enable '
 	 */
@@ -194,6 +201,7 @@ public class Feature {
 
 	/**
 	 * Setter accessor for attribute 'description'.
+	 *
 	 * @param description
 	 * 		new value for 'description '
 	 */
