@@ -1,8 +1,8 @@
 package org.ff4j.aop;
 
 import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.aop.TargetSource;
 import org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator;
@@ -21,7 +21,7 @@ public class FeatureAutoProxy extends AbstractAutoProxyCreator implements Initia
 	private static final long serialVersionUID = -364406999854610869L;
 	
 	/** Processed Interfaces. */
-	private Set < String > processedInterface = new HashSet<String>();
+	private Map<String, Boolean> processedInterface = new HashMap<String, Boolean>();
 	
 	/** {@inheritDoc} */
 	public void afterPropertiesSet() throws Exception {
@@ -36,12 +36,20 @@ public class FeatureAutoProxy extends AbstractAutoProxyCreator implements Initia
 			for (Class<?> currentInterface : beanClass.getInterfaces()) {
 				String currentInterfaceName = currentInterface.getCanonicalName();
 				
-				if (!currentInterfaceName.startsWith("java.") && !processedInterface.contains(currentInterfaceName)) {
-					processedInterface.add(currentInterfaceName);
-					for (Method method : currentInterface.getDeclaredMethods()) {
-						if (method.isAnnotationPresent(Flip.class)) {
+				if (!currentInterfaceName.startsWith("java.")) {
+					Boolean isInterfaceFlipped = processedInterface.get(currentInterfaceName);
+					if(isInterfaceFlipped != null) {
+						if(isInterfaceFlipped){
 							return PROXY_WITHOUT_ADDITIONAL_INTERCEPTORS;
 						}
+					} else {
+						for (Method method : currentInterface.getDeclaredMethods()) {
+							if (method.isAnnotationPresent(Flip.class)) {
+								processedInterface.put(currentInterfaceName, true);
+								return PROXY_WITHOUT_ADDITIONAL_INTERCEPTORS;
+							}
+						}
+						processedInterface.put(currentInterfaceName, false);
 					}
 				}
 			}
@@ -50,8 +58,3 @@ public class FeatureAutoProxy extends AbstractAutoProxyCreator implements Initia
 	}
 	
 }
-
-	
-
-	
-

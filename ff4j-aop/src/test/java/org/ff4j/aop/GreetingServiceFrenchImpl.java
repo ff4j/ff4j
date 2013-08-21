@@ -9,4 +9,9 @@ public class GreetingServiceFrenchImpl implements GreetingService {
 		return "Bonjour " + name;
 	}
 
+	@Override
+	public String sayHelloWithClass(String name) {
+		return "Salut " + name;
+	}
+
 }

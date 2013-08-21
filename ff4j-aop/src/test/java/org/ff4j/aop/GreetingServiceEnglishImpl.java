@@ -9,5 +9,9 @@ public class GreetingServiceEnglishImpl implements GreetingService {
 		return "Hello " + name;
 	}
 
-}
+	@Override
+	public String sayHelloWithClass(String name) {
+		return "Hi " + name;
+	}
 
+}
