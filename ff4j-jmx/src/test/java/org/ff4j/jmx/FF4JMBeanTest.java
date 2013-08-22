@@ -29,6 +29,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration("classpath:applicationContext-ff4j-jmx-test.xml")
 public class FF4JMBeanTest {
 
+	private static final String FF4J_OBJECT_NAME = "org.ff4j.jmx:type=FF4J";
 	private JMXConnectorServer jmxConnectionServer;
 	private JMXConnector jmxConnectionFactory = null;
 	private MBeanServerConnection mbeanServerConnection;
@@ -72,7 +73,7 @@ public class FF4JMBeanTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void should_retrieve_features_status() throws Exception {
-		ObjectName objectName = new ObjectName("FF4J:name=FF4JMBean");
+		ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
 		Map<String, Boolean> featuresStatus = (Map<String, Boolean>) mbeanServerConnection.getAttribute(objectName, "FeaturesStatus");
 
 		assertThat(featuresStatus)//
@@ -85,7 +86,7 @@ public class FF4JMBeanTest {
 	public void should_retrieve_changed_features_status() throws Exception {
 		FF4j.enableFeature("jmxDisabledFeature");
 		
-		ObjectName objectName = new ObjectName("FF4J:name=FF4JMBean");
+		ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
 		Map<String, Boolean> featuresStatus = (Map<String, Boolean>) mbeanServerConnection.getAttribute(objectName, "FeaturesStatus");
 
 		assertThat(featuresStatus)//
@@ -95,7 +96,7 @@ public class FF4JMBeanTest {
 
 	@Test
 	public void should_enable_feature() throws Exception {
-		ObjectName objectName = new ObjectName("FF4J:name=FF4JMBean");
+		ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
 		mbeanServerConnection.invoke(objectName, "enableFeature", new Object[] { "jmxDisabledFeature" }, new String[] { "java.lang.String" });
 
 		assertThat(FF4j.getFeature("jmxDisabledFeature").isEnable()).isTrue();
@@ -103,7 +104,7 @@ public class FF4JMBeanTest {
 
 	@Test
 	public void should_disable_feature() throws Exception {
-		ObjectName objectName = new ObjectName("FF4J:name=FF4JMBean");
+		ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
 		mbeanServerConnection.invoke(objectName, "disableFeature", new Object[] { "jmxEnabledFeature" }, new String[] { "java.lang.String" });
 
 		assertThat(FF4j.getFeature("jmxEnabledFeature").isEnable()).isFalse();
@@ -112,7 +113,7 @@ public class FF4JMBeanTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void should_get_feature_auth_roles() throws Exception {
-		ObjectName objectName = new ObjectName("FF4J:name=FF4JMBean");
+		ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
 		Set<String> featureAuthRoles = (Set<String>) mbeanServerConnection.invoke(objectName, "getFeatureAuthRoles", new Object[] { "jmxFeatureWithAuth" }, new String[] { "java.lang.String" });
 
 		assertThat(featureAuthRoles).containsOnly("ROLE_USER", "ROLE_ADMIN");
@@ -121,7 +122,7 @@ public class FF4JMBeanTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void should_add_auth_role_to_feature() throws Exception {
-		ObjectName objectName = new ObjectName("FF4J:name=FF4JMBean");
+		ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
 		Set<String> featureAuthRoles = (Set<String>) mbeanServerConnection.invoke(objectName, "addAuthRoleToFeature", new Object[] { "NEW_ROLE", "jmxEnabledFeature" }, new String[] {
 				"java.lang.String", "java.lang.String" });
 
@@ -131,7 +132,7 @@ public class FF4JMBeanTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void should_remove_auth_role_from_feature() throws Exception {
-		ObjectName objectName = new ObjectName("FF4J:name=FF4JMBean");
+		ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
 		Set<String> featureAuthRoles = (Set<String>) mbeanServerConnection.invoke(objectName, "removeAuthRoleFromFeature", new Object[] { "ROLE_USER", "jmxFeatureWithAuth" }, new String[] {
 				"java.lang.String", "java.lang.String" });
 

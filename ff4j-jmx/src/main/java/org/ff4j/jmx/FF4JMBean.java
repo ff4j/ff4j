@@ -10,7 +10,7 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Component;
 
 @Component
-@ManagedResource(objectName = "FF4J:name=FF4JMBean")
+@ManagedResource(objectName = "org.ff4j.jmx:type=FF4J")
 public class FF4JMBean {
 
 	@ManagedAttribute(description = "Returns feature ids with state")

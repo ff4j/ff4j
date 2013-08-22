@@ -1,6 +1,6 @@
 # What is FF4J-jmx ? #
 FF4J-jmx provides a ready-to-expose MBean on top of FF4J.  
-The MBean will be registered with ObjectName **```FF4J:name=FF4JMBean```**.
+The MBean will be registered with ObjectName **```org.ff4j.jmx:type=FF4J```**.
 
 # What can I do with FF4J-jmx ? #
 ### Attributes ###
