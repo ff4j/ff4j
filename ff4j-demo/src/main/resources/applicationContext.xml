@@ -1,10 +1,11 @@
 <beans:beans xmlns="http://www.springframework.org/schema/security"
-	xmlns:beans="http://www.springframework.org/schema/beans" 
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
-	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-	http://www.springframework.org/schema/security
-	http://www.springframework.org/schema/security/spring-security-3.0.3.xsd">
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.3.xsd 
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd" >
 
 	<http auto-config="true">
 		<intercept-url pattern="/*.htm" 		access="ROLE_USER" />
@@ -29,5 +30,26 @@
 			<beans:bean class="org.ff4j.security.SpringSecurityAuthorisationManager" />
 		</beans:property>
 	</beans:bean>
+	
+	<!-- this bean must not be lazily initialized if the exporting is to happen -->
+	<beans:bean id="exporter" class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
+		<beans:property name="assembler" ref="assembler" />
+		<beans:property name="namingStrategy" ref="namingStrategy" />
+		<beans:property name="autodetect" value="true" />
+	</beans:bean>
 
+	<beans:bean id="jmxAttributeSource" class="org.springframework.jmx.export.annotation.AnnotationJmxAttributeSource" />
+
+	<!-- will create management interface using annotation metadata -->
+	<beans:bean id="assembler" class="org.springframework.jmx.export.assembler.MetadataMBeanInfoAssembler">
+		<beans:property name="attributeSource" ref="jmxAttributeSource" />
+	</beans:bean>
+
+	<!-- will pick up the ObjectName from the annotation -->
+	<beans:bean id="namingStrategy" class="org.springframework.jmx.export.naming.MetadataNamingStrategy">
+		<beans:property name="attributeSource" ref="jmxAttributeSource" />
+	</beans:bean>
+	
+	<context:component-scan base-package="org.ff4j.jmx" />
+	
 </beans:beans>
