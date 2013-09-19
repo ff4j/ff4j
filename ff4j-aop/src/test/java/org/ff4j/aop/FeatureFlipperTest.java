@@ -26,29 +26,29 @@ public class FeatureFlipperTest {
 
 	@BeforeClass
 	public static void createFeatures() {
-		FF4j.createFeature("language-french");
-		FF4j.createFeature("language-english");
+		FF4j.sAutoCreateFeature(true);
+		FF4j.sCreateFeature("language-french");
+		FF4j.sCreateFeature("language-english");
 	}
 
 	@After
 	public void disableFeatures() {
-		FF4j.disableFeature("language-french");
-		FF4j.disableFeature("language-english");
+		FF4j.sDisableFeature("language-french");
+		FF4j.sDisableFeature("language-english");
 	}
 
 	@Test
 	public void testAnnotatedFlipping_with_alterBean() {
 		Assert.assertTrue(greeting.sayHello("CLU").startsWith("Hello"));
 
-		FF4j.enableFeature("language-french");
+		FF4j.sEnableFeature("language-french");
 		Assert.assertTrue("Service did not flipped", greeting.sayHello("CLU").startsWith("Bonjour"));
 	}
 
 	@Test
 	public void testAnnotatedFlipping_with_alterClazz() {
 		Assert.assertTrue(greeting.sayHelloWithClass("CLU").startsWith("Hi"));
-
-		FF4j.enableFeature("language-french");
+		FF4j.sEnableFeature("language-french");
 		Assert.assertTrue("Service did not flipped", greeting.sayHelloWithClass("CLU").startsWith("Salut"));
 	}
 
@@ -56,7 +56,7 @@ public class FeatureFlipperTest {
 	public void testAnnotatedFlipping_if_qualified_implementation_is_not_the_first_class_qualified_name_in_natural_ordering() {
 		Assert.assertTrue(goodbye.sayGoodbye("CLU").startsWith("Au revoir"));
 
-		FF4j.enableFeature("language-english");
+		FF4j.sEnableFeature("language-english");
 		Assert.assertTrue("Service did not flipped", goodbye.sayGoodbye("CLU").startsWith("Goodbye"));
 	}
 
@@ -64,7 +64,7 @@ public class FeatureFlipperTest {
 	public void testAnnotatedFlipping_with_alterClazz_if_qualified_implementation_is_not_the_first_class_qualified_name_in_natural_ordering() {
 		Assert.assertTrue(goodbye.sayGoodbyeWithClass("CLU").startsWith("A plus"));
 
-		FF4j.enableFeature("language-english");
+		FF4j.sEnableFeature("language-english");
 		Assert.assertTrue("Service did not flipped", goodbye.sayGoodbyeWithClass("CLU").startsWith("See you"));
 	}
 }

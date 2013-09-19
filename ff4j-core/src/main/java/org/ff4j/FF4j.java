@@ -2,9 +2,6 @@ package org.ff4j;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -19,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Main component of the framework, its allow through static methods to interact with features.
+ * Main component of the framework, it allows to interact with features. It provides both static and direct access.
  * 
  * <p>It embedded a {@link FeatureStore} to record features statused. By default feature are stored into memory but you
  * would like to persist them in an external storage as database. There are different technologies for store, please check <pre>ff4j-store-*
@@ -41,7 +38,7 @@ public class FF4j {
 	final static Logger logger = LoggerFactory.getLogger(FF4j.class);
 	
 	/** Store will handle feature. */
-	private FeatureStore backingStore = null;
+	private FeatureStore store = null;
 	
 	/** Security policy. */
 	private AuthorizationsManager authorizationsManager = null;
@@ -49,83 +46,50 @@ public class FF4j {
 	/** Do not through {@link FeatureNotFoundException} exception anymore but create it. */
 	private boolean autocreate = false;
 	
-	/** Singleton instance. */
-	private static FF4j instance = null;
+	/**
+	 * Singleton pattern is now considered as an anti-pattern as you cannot implement 2 different behaviors in the same classpath
+	 * for the same component. For example you would like to use 2 different configuration files.
+	 * 
+	 * Nevertheless singletons allow to propose static method and a simplier usage. In feature Flipping, in 95% of use case a Singleton
+	 * is enough, but we provided both implementations to be as clean as possible.
+	 **/
+	private static FF4j singleton = null;
+	
+	
 	
 	/**
-	 * Allow creation through IoC (even with static access).
+	 * Default constructor with no arguments. It allows instanciation through IoC.
 	 */
 	public FF4j() {
-		instance = this;
-		logger.debug("Initialization through default constructor");
+		if (singleton == null) singleton = this;
 	}
 
 	/**
-	 * Allow creation through IoC and configuration file (if not defined default is <pre>ff4j.xml</pre>).
+	 * Allow creation through IoC and configuration file (if nothing defined default is <pre>ff4j.xml</pre>).
 	 */
 	public FF4j(String xmlFile) {
-		initStore(new InMemoryFeatureStore(xmlFile));
-		logger.debug("Initialization with store within constructor {}", xmlFile);
+		this(new InMemoryFeatureStore(xmlFile));
 	}
 	
 	/**
 	 * Allow creation through IOc even of static access.
 	 */
 	public FF4j(FeatureStore fs) {
-		initStore(fs);
+		this();
+		this.store = fs;
+		singleton.store = fs;
 		logger.debug("Initialization with store within constructor {}", fs.toString());
 	}
 
 	/**
 	 * Allow creation through IOc even of static access.
 	 */
-	public FF4j(FeatureStore fs, AuthorizationsManager secu) {
-		initStore(fs);
-		initAuthorizationManager(secu);
-		logger.debug("Initialization with store & authManager within constructor {} {}", fs.toString(), secu.toString());
+	public FF4j(FeatureStore fs, AuthorizationsManager authMng) {
+		this(fs);
+		this.authorizationsManager = authMng;
+		singleton.authorizationsManager = authMng;
+		logger.debug("Initialization with store & authManager within constructor {} {}", fs.toString(), authMng.toString());
 	}
-	
-	/**
-	 * Single Pattern : Getting singleton instance synchronusly
-	 *
-	 * @return
-	 * 		single instance.
-	 */
-	private static synchronized FF4j getInstance() {
-		if (instance == null) {
-			instance = new FF4j();
-		}
-		return instance;
-	}
-	
-	/**
-	 * Static initialisation of FeatureStore.
-	 *
-	 * @param fs
-	 * 		feature store.
-	 * @return
-	 * 		current FF4j context
-	 */
-	public static FF4j initStore(FeatureStore fs) {
-		getInstance().setStore(fs);
-		logger.info("Store has been initialized statically (initStore) {}", fs.toString());
-		return getInstance();
-	}
-	
-	/**
-	 * Static initialization of AuthorizationManager.
-	 *
-	 * @param am
-	 * 		authorization manager
-	 * @return
-	 * 		current FF4j context
-	 */
-	public static FF4j initAuthorizationManager(AuthorizationsManager am) {
-		getInstance().setAuthorizationsManager(am);
-		logger.info("AuthManager has been initialized initStore {}", am.toString());
-		return getInstance();
-	}
-	
 	
 	/**
 	 * Elegant way to ask for flipping.
@@ -137,14 +101,13 @@ public class FF4j {
 	 * @return
 	 * 		current feature status
 	 */
-	public static boolean isFlipped(String featureID, Object... executionContext) {
+	public boolean isFlipped(String featureID, Object... executionContext) {
 		Feature fp = getFeature(featureID);
 		boolean flipped = fp.isEnable();
 		// If authorization manager provided, apply security filter
 		if (flipped && getAuthorizationsManager() != null) {
 			flipped = flipped && isAllowed(fp);
 		}
-
 		// If custom strategy has been defined, delegate flipping to 
 		if (flipped && fp.getFlippingStrategy() != null) {
 			flipped = flipped && fp.getFlippingStrategy().activate(featureID, executionContext);
@@ -161,14 +124,13 @@ public class FF4j {
 	 * 		current execution context
 	 * @return
 	 */
-	public static boolean isFlipped(String featureID, FlippingStrategy strats, Object... executionContext) {
-		Feature fp 		= getFeature(featureID);
+	public boolean isFlipped(String featureID, FlippingStrategy strats, Object... executionContext) {
+		Feature fp = getFeature(featureID);
 		boolean flipped = fp.isEnable();
 		// If authorization manager provided, apply security filter
 		if (flipped && getAuthorizationsManager() != null) {
 			flipped = isAllowed(fp);
 		}
-
 		// If custom strategy has been defined, load
 		if (flipped && strats != null) {
 			flipped = strats.activate(featureID, executionContext);
@@ -176,11 +138,15 @@ public class FF4j {
 		return flipped;
 	}
 	
-	/** {@inheritDoc} */
-	public static boolean isAllowed(Feature featureName) {
+	/**
+	 * 
+	 * @param featureName
+	 * @return
+	 */
+	public boolean isAllowed(Feature featureName) {
 		// Load SecurityProvider roles (e.g : SpringSecurity GrantedAuthorities)
+		if (featureName.getAuthorizations().isEmpty()) return true;
 		Set<String> userRoles = getAuthorizationsManager().getAuthenticatedUserRoles();
-		// Filter with expected roles
 		for (String expectedRole : featureName.getAuthorizations()) {
 			if (userRoles.contains(expectedRole)) return true;
 		}
@@ -188,44 +154,10 @@ public class FF4j {
 	}
 	
 	/**
-	 * Retrieve an union of roles for everyOne.
-	 *
-	 * @return
-	 * 		union of user roles
-	 */
-	public static Set < String> getEveryOneRoles() {
-		return getAuthorizationsManager().getEveryOneRoles();
-	}
-
-	/**
-	 * Activate feature autocreation.
-	 *
-	 * @param bool
-	 * 		boolean to activate auto-activation
-	 */
-	public static void autoCreateFeature(boolean bool) {
-		getInstance().autocreate = bool;
-	}
-	
-	/**
 	 * 
 	 * @return
 	 */
-	public static Map < String, Boolean > getFeaturesStatus() {
-		Map < String, Boolean > bools = new HashMap<String, Boolean>();
-		List < Feature > listOfFlip = new ArrayList<Feature>();
-		listOfFlip.addAll(getStore().readAll().values());
-		for (Feature fp : listOfFlip) {
-			bools.put(fp.getUid(), fp.isEnable());
-		}
-		return bools;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public static Map <String, Feature> getFeatures() {
+	public Map <String, Feature> getFeatures() {
 		return getStore().readAll();
 	}
 	
@@ -235,9 +167,9 @@ public class FF4j {
 	 * @param featureID
 	 * 		unique feature identifier.
 	 */
-	public static FF4j enableFeature(String featureID) {
+	public FF4j enableFeature(String featureID) {
 		getStore().enable(featureID);
-		return instance;
+		return this;
 	}
 	
 	/**
@@ -246,9 +178,9 @@ public class FF4j {
 	 * @param featureID
 	 * 		unique feature identifier.
 	 */
-	public static FF4j createFeature(Feature fp) {
+	public FF4j createFeature(Feature fp) {
 		getStore().create(fp);
-		return instance;
+		return this;
 	}
 	
 	/**
@@ -257,9 +189,9 @@ public class FF4j {
 	 * @param featureID
 	 * 		unique feature identifier.
 	 */
-	public static FF4j createFeature(String featureName, boolean enable, String description) {
+	public FF4j createFeature(String featureName, boolean enable, String description) {
 		getStore().create(new Feature(featureName, enable, description));
-		return instance;
+		return this;
 	}
 	
 	/**
@@ -268,9 +200,9 @@ public class FF4j {
 	 * @param featureID
 	 * 		unique feature identifier.
 	 */
-	public static FF4j createFeature(String featureName) {
+	public FF4j createFeature(String featureName) {
 		getStore().create(new Feature(featureName, false, ""));
-		return instance;
+		return this;
 	}
 	
 	/**
@@ -279,9 +211,9 @@ public class FF4j {
 	 * @param featureID
 	 * 		unique feature identifier.
 	 */
-	public static FF4j disableFeature(String featureID) {
+	public FF4j disableFeature(String featureID) {
 		getStore().disable(featureID);
-		return instance;
+		return this;
 	}
 	
 	/**
@@ -292,12 +224,12 @@ public class FF4j {
 	 * @return
 	 * 		target feature.
 	 */
-	public static Feature getFeature(String featureID) {
+	public Feature getFeature(String featureID) {
 		Feature fp = null;
 		try {
 			fp = getStore().read(featureID);
 		} catch(FeatureNotFoundException fnfe) {
-			if (getInstance().autocreate) {
+			if (this.autocreate) {
 				fp = new Feature(featureID, false);
 				getStore().create(fp);
 			} else {
@@ -310,13 +242,13 @@ public class FF4j {
 	/**
 	 * Log flippingPoint status (debugging purposes).
 	 */
-	public static FF4j logFeatures() {
+	public FF4j logFeatures() {
 		Map < String, Feature > mapOfFeatures = getStore().readAll();
 		logger.info("Listing current '{}' features states", mapOfFeatures);
 		for (Entry<String, Feature> feat : mapOfFeatures.entrySet()) {
 			logger.info("-> " + feat.getValue().toString());
 		}
-		return instance;
+		return this;
 	}
 	
 	/**
@@ -325,9 +257,186 @@ public class FF4j {
 	 * @return
 	 * @throws IOException
 	 */
-	public static InputStream exportFeatures() throws IOException {
+	public InputStream exportFeatures() throws IOException {
 		return FeatureLoader.exportFeatures(getStore().readAll());
 	}
+	
+	/** {@inheritDoc} */
+	public String toString() {
+		return "FF4j [backingStore=" + store + ", authorizationsManager=" + authorizationsManager + "]";
+	}
+	
+	// --- Static Access : Work only with a singleton => no impact on existing other beans (specially for InMemoryStore) 
+	
+	/**
+	 * Singleton Pattern, access to singleton.
+	 *
+	 * @return
+	 * 		singleton instance.
+	 */
+	public static synchronized FF4j getInstance() {
+		if (singleton == null) {
+			singleton = new FF4j();
+		}
+		return singleton;
+	}
+	
+	/**
+	 * Static initialisation of FeatureStore.
+	 *
+	 * @param fs
+	 * 		feature store.
+	 * @return
+	 * 		current FF4j context
+	 */
+	public static void sInitStore(FeatureStore fs) {
+		getInstance().setStore(fs);
+		logger.info("Store has been initialized statically (initStore) {}", fs.toString());
+	}
+	
+	/**
+	 * Static initialization of AuthorizationManager.
+	 *
+	 * @param am
+	 * 		authorization manager
+	 * @return
+	 * 		current FF4j context
+	 */
+	public static void sInitAuthorizationManager(AuthorizationsManager am) {
+		getInstance().setAuthorizationsManager(am);
+		logger.info("AuthManager has been initialized initStore {}", am.toString());
+	}
+	
+	/**
+	 * Calling the is Flipped method in a static way.
+	 *
+	 * @param featureID
+	 * 		feature unique identifier.
+	 * @param executionContext
+	 * 		current execution context
+	 * @return
+	 */
+	public static boolean sIsFlipped(String featureID, FlippingStrategy strats, Object... executionContext) {
+		return getInstance().isFlipped(featureID, strats, executionContext);
+	}
+	
+	/**
+	 * Elegant way to ask for flipping.
+	 *
+	 * @param featureID
+	 * 		feature unique identifier.
+	 * @param executionContext
+	 * 		current execution context
+	 * @return
+	 * 		current feature status
+	 */
+	public static boolean sIsFlipped(String featureID, Object... executionContext) {
+		return getInstance().isFlipped(featureID, executionContext);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static Map <String, Feature> sGetFeatures() {
+		return getInstance().getFeatures();
+	}
+	
+	/**
+	 * Create new Feature.
+	 *
+	 * @param featureID
+	 * 		unique feature identifier.
+	 */
+	public static void sCreateFeature(Feature fp) {
+		getInstance().createFeature(fp);
+	}
+	
+	/**
+	 * Enable Feature.
+	 *
+	 * @param featureID
+	 * 		unique feature identifier.
+	 */
+	public static void sEnableFeature(String featureID) {
+		getInstance().enableFeature(featureID);
+	}
+	
+	/**
+	 * Create new Feature.
+	 *
+	 * @param featureID
+	 * 		unique feature identifier.
+	 */
+	public static void sCreateFeature(String featureName, boolean enable, String description) {
+		getInstance().createFeature(featureName, enable, description);
+	}
+
+	/**
+	 * Create new Feature.
+	 *
+	 * @param featureID
+	 * 		unique feature identifier.
+	 */
+	public static void sCreateFeature(String featureName) {
+		getInstance().createFeature(featureName);
+	}
+	
+	/**
+	 * Disable Feature.
+	 *
+	 * @param featureID
+	 * 		unique feature identifier.
+	 */
+	public static void sDisableFeature(String featureID) {
+		getInstance().disableFeature(featureID);
+	}
+	
+	/**
+	 * The feature will be create automatically if the boolea, autocreate is enabled.
+	 *
+	 * @param featureID
+	 * 		target feature ID
+	 * @return
+	 * 		target feature.
+	 */
+	public static Feature sGetFeature(String featureID) {
+		return getInstance().getFeature(featureID);
+	}
+	
+	/** {@inheritDoc} */
+	public static boolean sIsAllowed(Feature featureName) {
+		return getInstance().isAllowed(featureName);
+	}
+
+	/**
+	 * Activate feature autocreation.
+	 *
+	 * @param bool
+	 * 		boolean to activate auto-activation
+	 */
+	public static void sAutoCreateFeature(boolean bool) {
+		getInstance().autocreate = bool;
+	}
+	
+	/**
+	 * Export Feature through FF4J.
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	public static InputStream sExportFeatures() throws IOException {
+		return getInstance().exportFeatures();
+	}
+	
+	/**
+	 * Log flippingPoint status (debugging purposes).
+	 */
+	public static void sLogFeatures() {
+		getInstance().logFeatures();
+	}
+	
+	// -------- Accessors Getters & Setters --------------------------
 	
 	/**
 	 * Access store as static way (single store).
@@ -335,12 +444,12 @@ public class FF4j {
 	 * @return
 	 * 		current store
 	 */
-	public static FeatureStore getStore() {
-		if (getInstance().backingStore == null) {
+	public FeatureStore getStore() {
+		if (store == null) {
 			logger.debug("Access getStore() without initialization, create default");
-			getInstance().setStore(new InMemoryFeatureStore());
+			this.store = new InMemoryFeatureStore();
 		}
-		return getInstance().backingStore;
+		return store;
 	}
 
 	/**
@@ -350,26 +459,8 @@ public class FF4j {
 	 * 		target store.
 	 */
 	public void setStore(FeatureStore fbs) {
-		getInstance().backingStore = fbs;
+		this.store = fbs;
 		logger.info("Store has been initialized with : {}", fbs.toString());
-	}
-	
-	
-	/**
-	 * Access AuthorisationManager through 
-	 *
-	 * @return
-	 */
-	public static AuthorizationsManager getAuthorizationsManager() {
-		return getInstance().authorizationsManager;
-	}
-	
-	/**
-	 * NON Static to be use by Spring Injection of Control
-	 * @param fbs
-	 */
-	public void setAuthorizationsManager(AuthorizationsManager authM) {
-		getInstance().authorizationsManager = authM;
 	}
 	
 	/**
@@ -378,14 +469,27 @@ public class FF4j {
 	 * 		new value for 'autocreate '
 	 */
 	public void setAutocreate(boolean autocreate) {
-		getInstance().autocreate = autocreate;
+		this.autocreate = autocreate;
+	}	
+
+	/**
+	 * Getter accessor for attribute 'authorizationsManager'.
+	 *
+	 * @return
+	 *       current value of 'authorizationsManager'
+	 */
+	public AuthorizationsManager getAuthorizationsManager() {
+		return authorizationsManager;
 	}
 
-	/** {@inheritDoc} */
-	public String toString() {
-		return "FF4j [backingStore=" + backingStore + ", authorizationsManager=" + authorizationsManager + "]";
+	/**
+	 * Setter accessor for attribute 'authorizationsManager'.
+	 *
+	 * @param authorizationsManager
+	 * 		new value for 'authorizationsManager '
+	 */
+	public void setAuthorizationsManager(AuthorizationsManager authorizationsManager) {
+		this.authorizationsManager = authorizationsManager;
 	}
-
-	
 	
 }

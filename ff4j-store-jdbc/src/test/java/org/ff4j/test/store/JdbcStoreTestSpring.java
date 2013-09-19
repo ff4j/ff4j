@@ -16,7 +16,7 @@ public class JdbcStoreTestSpring {
 
 	@Test
 	public void testWithSpring() throws IOException {
-		Assert.assertTrue(FF4j.isFlipped("first"));
+		Assert.assertTrue(FF4j.sIsFlipped("first"));
 		
 		
 	}

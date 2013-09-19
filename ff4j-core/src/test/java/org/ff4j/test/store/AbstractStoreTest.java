@@ -1,8 +1,9 @@
 package org.ff4j.test.store;
 
-import static org.ff4j.FF4j.disableFeature;
-import static org.ff4j.FF4j.enableFeature;
-import static org.ff4j.FF4j.isFlipped;
+import static org.ff4j.FF4j.sDisableFeature;
+import static org.ff4j.FF4j.sEnableFeature;
+import static org.ff4j.FF4j.sIsFlipped;
+import static org.ff4j.FF4j.sLogFeatures;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -11,13 +12,12 @@ import java.util.Set;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.ff4j.Feature;
 import org.ff4j.FF4j;
+import org.ff4j.Feature;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.store.FeatureStore;
 import org.junit.Test;
-
 
 public abstract class AbstractStoreTest extends TestCase {
 	
@@ -28,22 +28,23 @@ public abstract class AbstractStoreTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		testedStore = initStore();
-		FF4j.initStore(testedStore);
+		FF4j.sInitStore(testedStore);
+		FF4j.sAutoCreateFeature(false);
 	}
 	
 	protected abstract FeatureStore initStore() throws Exception;
 	
 	@Test
 	public void testStoreHasBeenInitaliaze() throws Exception {
-		Assert.assertEquals(5, FF4j.getStore().readAll().size());
-		Assert.assertTrue(isFlipped("first"));
+		Assert.assertEquals(5, FF4j.getInstance().getStore().readAll().size());
+		Assert.assertTrue(sIsFlipped("first"));
 	}
 	
 	@Test
 	public void testFlipWithInvalidName_NotFoundException() {
 		try {
-			isFlipped("dummy");
-			fail();
+			sIsFlipped("dummyDum");
+			fail("Dummy should not exist");
 		 } catch(FeatureNotFoundException fue) {
 			 Assert.assertTrue(fue.getMessage().contains("dummy"));
 		 }
@@ -52,8 +53,8 @@ public abstract class AbstractStoreTest extends TestCase {
 	@Test
 	public void testEnableorDisable_NotFoundException() {
 		try {
-			FF4j.logFeatures();
-			enableFeature("dummy");
+			sLogFeatures();
+			sEnableFeature("dummy");
 			fail();
 		 } catch(FeatureNotFoundException fue) {
 			 Assert.assertTrue(fue.getMessage().contains("dummy"));
@@ -62,14 +63,14 @@ public abstract class AbstractStoreTest extends TestCase {
 	
 	@Test
 	public void testEnableFeature() {
-		enableFeature("first");
-		Assert.assertTrue(isFlipped("first"));
+		sEnableFeature("first");
+		Assert.assertTrue(sIsFlipped("first"));
 	}
 	
 	@Test
 	public void testDisableFeature() {
-		disableFeature("first");
-		Assert.assertFalse(isFlipped("first"));
+		sDisableFeature("first");
+		Assert.assertFalse(sIsFlipped("first"));
 	}
 	
 	@Test
@@ -164,6 +165,6 @@ public abstract class AbstractStoreTest extends TestCase {
 	
 	@Test
 	public void testLoad() {
-		FF4j.logFeatures();
+		FF4j.sLogFeatures();
 	}
 }

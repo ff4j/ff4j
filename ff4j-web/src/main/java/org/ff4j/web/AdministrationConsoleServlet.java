@@ -98,7 +98,7 @@ public class AdministrationConsoleServlet extends HttpServlet{
 					message = "Role <b>" + req.getParameter(ROLE) + 
 							"</b> has been successfully removed from flipPoint <b>" + req.getParameter(FEATID) + " </b>";
 				} else if (OP_EXPORT.equalsIgnoreCase(operation)) {
-					InputStream in = FeatureLoader.exportFeatures(FF4j.getStore().readAll());
+					InputStream in = FeatureLoader.exportFeatures(FF4j.getInstance().getStore().readAll());
 					ServletOutputStream sos = res.getOutputStream();
 					res.setContentType("text/xml");
 					res.setHeader("Content-Disposition", "attachment; filename=\"ff4j.xml\"");
@@ -186,7 +186,7 @@ public class AdministrationConsoleServlet extends HttpServlet{
     private void opEnableFeature(HttpServletRequest req) {
     	final String featureId = req.getParameter(FEATID);
     	if (featureId != null && !featureId.isEmpty()) {
-			FF4j.enableFeature(featureId);
+			FF4j.getInstance().enableFeature(featureId);
     	}
     }
     
@@ -199,7 +199,7 @@ public class AdministrationConsoleServlet extends HttpServlet{
     private void opDisableFeature(HttpServletRequest req) {
     	final String featureId = req.getParameter(FEATID);
     	if (featureId != null && !featureId.isEmpty()) {
-    		FF4j.disableFeature(featureId);
+    		FF4j.getInstance().disableFeature(featureId);
     	}
     }
     
@@ -214,7 +214,7 @@ public class AdministrationConsoleServlet extends HttpServlet{
     	final String featureDesc = req.getParameter(DESCRIPTION); 
     	if (featureId != null && !featureId.isEmpty()) {
     		Feature fp = new Feature(featureId, false, featureDesc);
-			FF4j.getStore().create(fp);
+			FF4j.getInstance().getStore().create(fp);
     	}
     }
     
@@ -227,7 +227,7 @@ public class AdministrationConsoleServlet extends HttpServlet{
     private void opDeleteFeature(HttpServletRequest req) {
     	final String featureId   = req.getParameter(FEATID);
     	if (featureId != null && !featureId.isEmpty()) {
-			FF4j.getStore().delete(featureId);
+			FF4j.getInstance().getStore().delete(featureId);
     	}
     }
     
@@ -241,9 +241,9 @@ public class AdministrationConsoleServlet extends HttpServlet{
     	final String featureId   = req.getParameter(FEATID);
     	final String description = req.getParameter(DESCRIPTION);
     	if (featureId != null && !featureId.isEmpty()) {
-    		Feature fp = FF4j.getStore().read(featureId);
+    		Feature fp = FF4j.getInstance().getStore().read(featureId);
     		fp.setDescription(description);
-			FF4j.getStore().update(fp);
+			FF4j.getInstance().getStore().update(fp);
     	}
     }
     
@@ -256,7 +256,7 @@ public class AdministrationConsoleServlet extends HttpServlet{
     private void opAddRoleToFeature(HttpServletRequest req) {
     	final String flipId   = req.getParameter(FEATID);
     	final String roleName = req.getParameter(ROLE);
-    	FF4j.getStore().grantRoleOnFeature(flipId, roleName);
+    	FF4j.getInstance().getStore().grantRoleOnFeature(flipId, roleName);
     }
     
     /**
@@ -268,7 +268,7 @@ public class AdministrationConsoleServlet extends HttpServlet{
     private void opRemoveRoleFromFeature(HttpServletRequest req) {
     	final String flipId   = req.getParameter(FEATID);
     	final String roleName = req.getParameter(ROLE);
-    	FF4j.getStore().removeRoleFromFeature(flipId, roleName);
+    	FF4j.getInstance().getStore().removeRoleFromFeature(flipId, roleName);
     }
     
     /**
@@ -283,10 +283,10 @@ public class AdministrationConsoleServlet extends HttpServlet{
 		LinkedHashMap<String, Feature> mapsOfFeat = FeatureLoader.loadFeatures(in);
 		for (String featureName : mapsOfFeat.keySet()) {
 			LOG.info("Processing FlipPoint " + featureName);
-			if (FF4j.getStore().exist(featureName)) {
-				FF4j.getStore().update(mapsOfFeat.get(featureName));
+			if (FF4j.getInstance().getStore().exist(featureName)) {
+				FF4j.getInstance().getStore().update(mapsOfFeat.get(featureName));
 			} else {
-				FF4j.getStore().create(mapsOfFeat.get(featureName));
+				FF4j.getInstance().getStore().create(mapsOfFeat.get(featureName));
 			}
 		}
 	}
@@ -301,8 +301,8 @@ public class AdministrationConsoleServlet extends HttpServlet{
      */
     private String renderSectionFeatures(HttpServletRequest req, String message, String type) {
     	Map <String, Feature> mapOfFlipPoints = new LinkedHashMap<String, Feature>();
-    	if (FF4j.getFeatures() != null && !FF4j.getFeatures().isEmpty()) {
-    		mapOfFlipPoints.putAll(FF4j.getFeatures());
+    	if (FF4j.getInstance().getFeatures() != null && !FF4j.getInstance().getFeatures().isEmpty()) {
+    		mapOfFlipPoints.putAll(FF4j.getInstance().getFeatures());
     	}
         StringBuilder strB = new StringBuilder(AdministrationConsoleRenderer.renderButtonsMainGroup(req));
         if (message != null && !message.isEmpty()) {
@@ -326,7 +326,7 @@ public class AdministrationConsoleServlet extends HttpServlet{
         	strB.append("<td style=\"width:20px;\">" + renderButtonEditFeature(req, fp.getUid())  + "</td>");
         	strB.append("<td style=\"width:20px;\">" + renderButtonDeleteFeature(req, fp.getUid()) + "</td>");
         	strB.append("<td style=\"width:85px;\">");
-        	if (FF4j.getAuthorizationsManager() != null) {
+        	if (FF4j.getInstance().getAuthorizationsManager() != null) {
         		strB.append(renderButtonUserRole(req, fp));
         	} else {
         		strB.append("<center><span style=\"color:#AAAAAA\">N/A</span></center>");

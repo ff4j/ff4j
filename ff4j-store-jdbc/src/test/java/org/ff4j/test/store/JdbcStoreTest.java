@@ -1,8 +1,8 @@
 package org.ff4j.test.store;
 
-import static org.ff4j.FF4j.disableFeature;
-import static org.ff4j.FF4j.enableFeature;
-import static org.ff4j.FF4j.isFlipped;
+import static org.ff4j.FF4j.sDisableFeature;
+import static org.ff4j.FF4j.sEnableFeature;
+import static org.ff4j.FF4j.sIsFlipped;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -42,19 +42,19 @@ public class JdbcStoreTest extends TestCase {
 		jdbcStore.setDataSource(db);
 		jdbcStore.afterPropertiesSet();
 		testedStore = jdbcStore;
-		FF4j.initStore(testedStore);
+		FF4j.sInitStore(testedStore);
 	}
 
 	@Test
 	public void testStoreHasBeenInitaliaze() throws Exception {
-		Assert.assertEquals(4, FF4j.getStore().readAll().size());
-		Assert.assertTrue(isFlipped("first"));
+		Assert.assertEquals(4, FF4j.getInstance().getStore().readAll().size());
+		Assert.assertTrue(sIsFlipped("first"));
 	}
 
 	@Test
 	public void flipWithInvalidName_NotFoundException() {
 		try {
-			isFlipped("dummy");
+			sIsFlipped("dummy");
 			fail();
 		} catch (FeatureNotFoundException fue) {
 			Assert.assertTrue(fue.getMessage().contains("dummy"));
@@ -64,8 +64,8 @@ public class JdbcStoreTest extends TestCase {
 	@Test
 	public void enableorDisable_NotFoundException() {
 		try {
-			FF4j.logFeatures();
-			enableFeature("dummy");
+			FF4j.sLogFeatures();
+			sEnableFeature("dummy");
 			fail();
 		} catch (FeatureNotFoundException fue) {
 			Assert.assertTrue(fue.getMessage().contains("dummy"));
@@ -74,14 +74,14 @@ public class JdbcStoreTest extends TestCase {
 
 	@Test
 	public void testEnableFeature() {
-		enableFeature("first");
-		Assert.assertTrue(isFlipped("first"));
+		sEnableFeature("first");
+		Assert.assertTrue(sIsFlipped("first"));
 	}
 
 	@Test
 	public void testDisableFeature() {
-		disableFeature("first");
-		Assert.assertFalse(isFlipped("first"));
+		sDisableFeature("first");
+		Assert.assertFalse(sIsFlipped("first"));
 	}
 
 	@Test
@@ -188,7 +188,7 @@ public class JdbcStoreTest extends TestCase {
 
 	@Test
 	public void testLoad() {
-		FF4j.logFeatures();
+		FF4j.sLogFeatures();
 	}
 
 	

@@ -17,6 +17,13 @@
 	
 	<bean id="dbStore" class="org.ff4j.store.DataBaseFeatureStore" p:dataSource-ref="ff.jdbc.datasource" />
 	
+	<!-- enable the configuration of transactional behavior based on annotations -->
+ 	<tx:annotation-driven transaction-manager="txManager"/>
+  
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+ 	 <property name="dataSource" ref="ff.jdbc.datasource"/>
+	</bean>
+
 	<jdbc:embedded-database id="ff.jdbc.datasource" type="HSQL">
 		<jdbc:script location="classpath:schema-ddl.sql"/>
 		<jdbc:script location="classpath:ff-store.sql"  />

@@ -1,7 +1,6 @@
 package org.ff4j.test.strategy;
 
-import static org.ff4j.FF4j.enableFeature;
-import static org.ff4j.FF4j.isFlipped;
+import static org.ff4j.FF4j.*;
 import junit.framework.TestCase;
 
 import org.ff4j.FF4j;
@@ -20,13 +19,13 @@ public class ExpressionFlipingStategyTest extends TestCase {
 	public void testExpression() throws Exception {
 		
 		new FF4j("ff4j-el.xml");
-		Assert.assertTrue(isFlipped("D"));
+		Assert.assertTrue(sIsFlipped("D"));
 		
-		enableFeature("C");
-		Assert.assertFalse(isFlipped("D"));
+		sEnableFeature("C");
+		Assert.assertFalse(sIsFlipped("D"));
 		
-		enableFeature("B");
-		Assert.assertTrue(isFlipped("D"));
+		sEnableFeature("B");
+		Assert.assertTrue(sIsFlipped("D"));
 		
 	}
 		

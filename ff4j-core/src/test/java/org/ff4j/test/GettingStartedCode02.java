@@ -15,19 +15,19 @@ public class GettingStartedCode02 {
 		new FF4j(new InMemoryFeatureStore("ff4j-simple.xml"));
 
 		// Create new
-		FF4j.createFeature(new Feature("AwesomeFeature2", true, "some desc"));
+		FF4j.sCreateFeature(new Feature("AwesomeFeature2", true, "some desc"));
 		
 		// Testing feature...
-		if (FF4j.isFlipped("AwesomeFeature")) {
+		if (FF4j.sIsFlipped("AwesomeFeature")) {
 			System.out.println("Yes it's great !!");
 		} else {
 			fail();
 		}
 		// Update the feature status
-		FF4j.disableFeature("AwesomeFeature");
+		FF4j.sDisableFeature("AwesomeFeature");
 		
 		// Testing feature...
-		if (FF4j.isFlipped("AwesomeFeature")) {
+		if (FF4j.sIsFlipped("AwesomeFeature")) {
 			fail();
 		} else {
 			System.out.println("Back to reality !!");

@@ -41,7 +41,7 @@ public class FlipTag extends BodyTagSupport {
 	public int doAfterBody() throws JspException {
 		try {
 			// Checking Feature value
-			if (FF4j.isFlipped(getFeatureid())) {
+			if (FF4j.sIsFlipped(getFeatureid())) {
 				BodyContent bodycontent = getBodyContent();
 				String body = bodycontent.getString();
 				JspWriter out = bodycontent.getEnclosingWriter();

@@ -311,7 +311,7 @@ public class AdministrationConsoleRenderer {
     
 	static String renderButtonEditFeature(HttpServletRequest req, String uid) {
     	StringBuilder strBuilder = new StringBuilder("<a data-toggle=\"modal\" href=\"#modalEditFlip\"");
-    	String desc = FF4j.getStore().read(uid).getDescription();
+    	String desc = FF4j.getInstance().getStore().read(uid).getDescription();
     	strBuilder.append("\" data-id=\""+ uid + "\" data-desc=\""+ desc + "\" style=\"width:6px;\" class=\"open-EditFlipDialog btn\">");
     	strBuilder.append("<i class=\"icon-pencil\" style=\"margin-left:-5px;\"></i>");
     	strBuilder.append("</a>");
@@ -320,8 +320,8 @@ public class AdministrationConsoleRenderer {
     
 	static String renderButtonUserRole(HttpServletRequest req, Feature fp) {
 		Set < String > setOfRoles = new TreeSet<String>();
-		if (FF4j.getAuthorizationsManager().getEveryOneRoles() != null) {
-			setOfRoles.addAll(FF4j.getAuthorizationsManager().getEveryOneRoles());
+		if (FF4j.getInstance().getAuthorizationsManager().getEveryOneRoles() != null) {
+			setOfRoles.addAll(FF4j.getInstance().getAuthorizationsManager().getEveryOneRoles());
 		}
 		StringBuilder strBuilder = new StringBuilder("<div class=\"btn-group\">");
 		strBuilder.append("<button class=\"btn\"><i class=\"icon-user\"></i></button>");

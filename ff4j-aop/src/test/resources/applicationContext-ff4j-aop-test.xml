@@ -9,5 +9,6 @@
                
      <context:component-scan base-package="org.ff4j.aop"/>
      
+     <bean id="ff4j" class="org.ff4j.FF4j" />
      
 </beans>

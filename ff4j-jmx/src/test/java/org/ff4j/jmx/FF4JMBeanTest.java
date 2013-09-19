@@ -55,7 +55,7 @@ public class FF4JMBeanTest {
 	}
 
 	private void populateFF4JStore() {
-		FF4j.initStore(new InMemoryFeatureStore("ff4j.xml"));
+		FF4j.sInitStore(new InMemoryFeatureStore("ff4j.xml"));
 	}
 
 	@After
@@ -84,7 +84,7 @@ public class FF4JMBeanTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void should_retrieve_changed_features_status() throws Exception {
-		FF4j.enableFeature("jmxDisabledFeature");
+		FF4j.sEnableFeature("jmxDisabledFeature");
 		
 		ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
 		Map<String, Boolean> featuresStatus = (Map<String, Boolean>) mbeanServerConnection.getAttribute(objectName, "FeaturesStatus");
@@ -99,7 +99,7 @@ public class FF4JMBeanTest {
 		ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
 		mbeanServerConnection.invoke(objectName, "enableFeature", new Object[] { "jmxDisabledFeature" }, new String[] { "java.lang.String" });
 
-		assertThat(FF4j.getFeature("jmxDisabledFeature").isEnable()).isTrue();
+		assertThat(FF4j.sGetFeature("jmxDisabledFeature").isEnable()).isTrue();
 	}
 
 	@Test
@@ -107,7 +107,7 @@ public class FF4JMBeanTest {
 		ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
 		mbeanServerConnection.invoke(objectName, "disableFeature", new Object[] { "jmxEnabledFeature" }, new String[] { "java.lang.String" });
 
-		assertThat(FF4j.getFeature("jmxEnabledFeature").isEnable()).isFalse();
+		assertThat(FF4j.sGetFeature("jmxEnabledFeature").isEnable()).isFalse();
 	}
 
 	@SuppressWarnings("unchecked")

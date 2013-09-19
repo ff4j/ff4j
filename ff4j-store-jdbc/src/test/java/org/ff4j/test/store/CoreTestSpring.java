@@ -14,7 +14,7 @@ public class CoreTestSpring {
 
 	@Test
 	public void testWithSpring() {
-		Assert.assertTrue(FF4j.isFlipped("first"));
+		Assert.assertTrue(FF4j.sIsFlipped("first"));
 	}
 }
 

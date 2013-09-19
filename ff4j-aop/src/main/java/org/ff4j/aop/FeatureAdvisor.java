@@ -1,7 +1,6 @@
 package org.ff4j.aop;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -12,12 +11,14 @@ import javax.lang.model.type.NullType;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.ff4j.FF4j;
+import org.ff4j.strategy.FlippingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.Advised;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanCreationException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -29,7 +30,7 @@ import org.springframework.stereotype.Component;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 @Component("ff.advisor")
-public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, ApplicationContextAware {
+public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, ApplicationContextAware, InitializingBean {
 	
 	/** Logger for Advisor. */
 	final static Logger logger = LoggerFactory.getLogger(FeatureAdvisor.class);
@@ -40,8 +41,23 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
 	/** Processed Interfaces. */
 	private Set < String > targetInterfacesNames = new HashSet<String>();
 	
+	/** Strategies should be instanciate only once, keep references */
+	private Map < String, FlippingStrategy > strategySingletons = new HashMap<String, FlippingStrategy>(); 
+	
 	/** Spring Application Context. */
 	private ApplicationContext appCtx;
+	
+	/** Injection of current FF4J bean. */
+	//@Autowired
+	//private FF4j ff4j;
+	
+	/** {@inheritDoc} */
+	public void afterPropertiesSet() throws Exception {
+		//if (ff4j == null) {
+		//	logger.info("ff4j-aop : FF4J bean has not been found in application context, will use static access to ");
+		//	ff4j = FF4j.getInstance();
+		//}
+	}
 	
 	/** {@inheritDoc} */
 	public Object postProcessBeforeInitialization(Object bean, String beanName)
@@ -88,18 +104,25 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
 			
 			// Assess if flipped is required upon parameters
 			boolean shouldFlip = false;
+			// A strategy has been provided ?
 			if (ff.strategy() != NullType.class) {
-				// a strategy has been provided
+				// Does this strategy has already be invoked ?
+				String strategyClassName = ff.strategy().getCanonicalName();
+				if (!strategySingletons.containsKey(strategyClassName)) {
+					strategySingletons.put(strategyClassName, (FlippingStrategy) ff.strategy().newInstance());
+				}
+				FlippingStrategy targetStrategy = strategySingletons.get(strategyClassName);
+				
 				if (!"".equals(ff.expression())) {
 					// an expression has been provided
-					shouldFlip = FF4j.isFlipped(ff.name(), ff.strategy().newInstance(), ff.expression());
+					shouldFlip = FF4j.sIsFlipped(ff.name(), targetStrategy, ff.expression());
 				} else {
 					// no expression provided, only strategy (value must be provided in ff4j conf file or store)
-					shouldFlip = FF4j.isFlipped(ff.name(), ff.strategy().newInstance());
+					shouldFlip = FF4j.sIsFlipped(ff.name(), targetStrategy);
 				}
 			} else {
 				// no strategy, simple flip
-				shouldFlip = FF4j.isFlipped(ff.name());
+				shouldFlip = FF4j.sIsFlipped(ff.name());
 			}
 			
 			// Locating alternativ target
@@ -178,4 +201,6 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
 	throws BeansException {
 		this.appCtx = applicationContext;
 	}
+
+	
 }

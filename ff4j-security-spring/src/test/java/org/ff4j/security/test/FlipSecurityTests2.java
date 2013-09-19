@@ -55,20 +55,17 @@ public class FlipSecurityTests2 {
 
 	@Test
 	public void testIsAuthenticatedAndAuthorized() {
-		
 		// check authentication	
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Assert.assertTrue(auth.isAuthenticated());
 		
-		FF4j.logFeatures();
+		FF4j.sLogFeatures();
 		
 		// autorized because role ROLE_USER
-        Assert.assertTrue(FF4j.isFlipped("first"));
-        
+        Assert.assertTrue(FF4j.sIsFlipped("first"));
 		
         // not autorized because bad credential
-        Assert.assertFalse(FF4j.isFlipped("third"));
-
+        Assert.assertFalse(FF4j.sIsFlipped("third"));
       
 	}
 
