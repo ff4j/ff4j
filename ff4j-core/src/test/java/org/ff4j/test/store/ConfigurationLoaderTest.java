@@ -10,7 +10,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.ff4j.Feature;
-import org.ff4j.store.FeatureLoader;
+import org.ff4j.FeatureLoader;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.junit.Test;
 

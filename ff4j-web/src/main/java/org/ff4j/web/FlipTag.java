@@ -7,13 +7,10 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
-import org.ff4j.Feature;
 import org.ff4j.FF4j;
 import org.ff4j.exception.FeatureNotFoundException;
-import org.ff4j.store.FeatureStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * Taglib to filter display based on {@link Feature} status within {@link FeatureStore}.

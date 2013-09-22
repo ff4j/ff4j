@@ -2,6 +2,7 @@ package org.ff4j.jmx;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.ff4j.FF4j;
@@ -20,8 +21,8 @@ public class FF4JMBean {
 		Map < String, Boolean > mapsOfBool = new HashMap<String, Boolean>();
 		Map <String , Feature > mapsOfFeat = FF4j.sGetFeatures();
 		if (mapsOfFeat != null && !mapsOfFeat.isEmpty()) {
-			for (String featName : mapsOfFeat.keySet()) {
-				mapsOfBool.put(featName, mapsOfFeat.get(featName).isEnable());
+			for (Entry<String, Feature> feat : mapsOfFeat.entrySet()) {
+				mapsOfBool.put(feat.getKey(), feat.getValue().isEnable());
 			}
 		}
 		return mapsOfBool;

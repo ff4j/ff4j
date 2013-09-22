@@ -7,17 +7,17 @@ package org.ff4j.exception;
  */
 public class FeatureNotFoundException extends RuntimeException {
 
-	/** serial. */
-	private static final long serialVersionUID = -232699648959802172L;
+    /** serial. */
+    private static final long serialVersionUID = -232699648959802172L;
 
-	/**
-	 * Parameterized constructor.
-	 * 
-	 * @param featureName
-	 *            feature to be processed
-	 **/
-	public FeatureNotFoundException(String featureName) {
-		super(featureName + " does not exist in store");
-	}
+    /**
+     * Parameterized constructor.
+     * 
+     * @param featureName
+     *            feature to be processed
+     **/
+    public FeatureNotFoundException(String featureName) {
+        super(featureName + " does not exist in store");
+    }
 
 }

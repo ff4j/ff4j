@@ -24,6 +24,7 @@ import java.text.MessageFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -37,7 +38,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 import org.ff4j.Feature;
 import org.ff4j.FF4j;
-import org.ff4j.store.FeatureLoader;
+import org.ff4j.FeatureLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,23 +71,23 @@ public class AdministrationConsoleServlet extends HttpServlet{
 				if (OP_DISABLE.equalsIgnoreCase(operation)) {
 					opDisableFeature(req);
 					messagetype = "info";
-					message = "FliPoint <b>" + req.getParameter(FEATID) + " </b> has been successfully DISABLED";
+					message = "Feature <b>" + req.getParameter(FEATID) + " </b> has been successfully DISABLED";
 				} else if (OP_ENABLE.equalsIgnoreCase(operation)) {
 					opEnableFeature(req);
 					messagetype = "info";
-					message = "FliPoint <b>" + req.getParameter(FEATID) + " </b> has been successfully ENABLED";
+					message = "Feature <b>" + req.getParameter(FEATID) + " </b> has been successfully ENABLED";
 				} else if (OP_EDIT_FEATURE.equalsIgnoreCase(operation)) {
 					opUpdateFeatureDescription(req);
 					messagetype = "info";
-					message = "FliPoint <b>" + req.getParameter(FEATID) + " </b> has been successfully updated";
+					message = "Feature <b>" + req.getParameter(FEATID) + " </b> has been successfully updated";
 				} else if (OP_ADD_FEATURE.equalsIgnoreCase(operation)) {
 					opAddNewFeature(req);
 					messagetype = "info";
-					message = "FliPoint <b>" + req.getParameter(FEATID) + " </b> has been successfully added";
+					message = "Feature <b>" + req.getParameter(FEATID) + " </b> has been successfully added";
 				} else if (OP_RMV_FEATURE.equalsIgnoreCase(operation)) {
 					opDeleteFeature(req);
 					messagetype = "info";
-					message = "FliPoint <b>" + req.getParameter(FEATID) + " </b> has been successfully deleted";
+					message = "Feature <b>" + req.getParameter(FEATID) + " </b> has been successfully deleted";
 				} else if (OP_ADD_ROLE.equalsIgnoreCase(operation)) {
 					opAddRoleToFeature(req);
 					messagetype = "info";
@@ -108,7 +109,9 @@ public class AdministrationConsoleServlet extends HttpServlet{
 					while ((in != null) && ((length = in.read(bbuf))  != -1)) {
 						sos.write(bbuf, 0, length);
 					}
-					in.close();
+					if (in != null) { 
+						in.close();
+					}
 					sos.flush();
 					sos.close();
 				}
@@ -281,12 +284,12 @@ public class AdministrationConsoleServlet extends HttpServlet{
      */
 	private void opImportFile(InputStream in) throws IOException {
 		LinkedHashMap<String, Feature> mapsOfFeat = FeatureLoader.loadFeatures(in);
-		for (String featureName : mapsOfFeat.keySet()) {
-			LOG.info("Processing FlipPoint " + featureName);
-			if (FF4j.getInstance().getStore().exist(featureName)) {
-				FF4j.getInstance().getStore().update(mapsOfFeat.get(featureName));
+		for (Entry<String, Feature> feature : mapsOfFeat.entrySet()) {
+			LOG.info("Processing Feature " + feature.getKey());
+			if (FF4j.getInstance().getStore().exist(feature.getKey())) {
+				FF4j.getInstance().getStore().update(feature.getValue());
 			} else {
-				FF4j.getInstance().getStore().create(mapsOfFeat.get(featureName));
+				FF4j.getInstance().getStore().create(feature.getValue());
 			}
 		}
 	}
