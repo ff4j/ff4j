@@ -4,7 +4,7 @@ import java.util.LinkedHashMap;
 
 import junit.framework.Assert;
 
-import org.ff4j.Feature;
+import org.ff4j.core.Feature;
 import org.ff4j.store.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.RandomFlipStrategy;

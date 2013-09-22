@@ -2,8 +2,8 @@ package org.ff4j.test.strategy;
 
 import junit.framework.Assert;
 
-import org.ff4j.Feature;
 import org.ff4j.FF4j;
+import org.ff4j.core.Feature;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.RandomFlipStrategy;
 import org.ff4j.test.DefaultAuthorisationManager;

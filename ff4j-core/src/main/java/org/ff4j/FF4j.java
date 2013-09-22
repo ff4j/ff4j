@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.ff4j.core.Feature;
+import org.ff4j.core.FeatureLoader;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.security.AuthorizationsManager;
 import org.ff4j.store.FeatureStore;

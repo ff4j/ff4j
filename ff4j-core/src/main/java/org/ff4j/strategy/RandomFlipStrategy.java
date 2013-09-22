@@ -8,7 +8,7 @@ package org.ff4j.strategy;
 public class RandomFlipStrategy implements FlippingStrategy {
 
     /** Return equiprobability as 50%. */
-    private final static double HALF = 0.5;
+    private static final double HALF = 0.5;
 
     /** {@inheritDoc} */
     @Override

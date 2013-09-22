@@ -7,8 +7,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.ff4j.Feature;
-import org.ff4j.FeatureLoader;
+import org.ff4j.core.Feature;
+import org.ff4j.core.FeatureLoader;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.slf4j.Logger;
@@ -27,7 +27,7 @@ public class InMemoryFeatureStore implements FeatureStore {
     static final String CONF_FILENAME = "ff4j.xml";
 
     /** InMemory Feature Map */
-    protected Map<String, Feature> featuresMap = new LinkedHashMap<String, Feature>();
+    private Map<String, Feature> featuresMap = new LinkedHashMap<String, Feature>();
 
     /** Default. */
     public InMemoryFeatureStore() {
@@ -44,7 +44,7 @@ public class InMemoryFeatureStore implements FeatureStore {
     }
 
     /** Default. */
-    public InMemoryFeatureStore(LinkedHashMap<String, Feature> maps) {
+    public InMemoryFeatureStore(Map<String, Feature> maps) {
         this.featuresMap = maps;
     }
 
@@ -142,16 +142,18 @@ public class InMemoryFeatureStore implements FeatureStore {
     /** {@inheritDoc} */
     @Override
     public void enable(String featID) {
-        if (!exist(featID))
+        if (!exist(featID)) {
             throw new FeatureNotFoundException(featID);
+        }
         featuresMap.get(featID).enable();
     }
 
     /** {@inheritDoc} */
     @Override
     public void disable(String featID) {
-        if (!exist(featID))
+        if (!exist(featID)) {
             throw new FeatureNotFoundException(featID);
+        }
         featuresMap.get(featID).disable();
     }
 

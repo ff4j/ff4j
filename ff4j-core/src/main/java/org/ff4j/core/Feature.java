@@ -1,4 +1,4 @@
-package org.ff4j;
+package org.ff4j.core;
 
 import java.util.Collection;
 import java.util.HashSet;

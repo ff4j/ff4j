@@ -13,7 +13,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.ff4j.FF4j;
-import org.ff4j.Feature;
+import org.ff4j.core.Feature;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.store.FeatureStore;

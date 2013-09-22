@@ -8,7 +8,7 @@ import java.util.TreeSet;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ff4j.FF4j;
-import org.ff4j.Feature;
+import org.ff4j.core.Feature;
 
 /**
  * Used to build GUI Interface for feature flip servlet. It contains gui component render and parmeters

@@ -10,7 +10,7 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
-import org.ff4j.Feature;
+import org.ff4j.core.Feature;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.springframework.beans.factory.annotation.Required;

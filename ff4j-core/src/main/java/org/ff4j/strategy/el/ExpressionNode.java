@@ -40,31 +40,47 @@ public class ExpressionNode {
      * @return constante will be substitue.
      */
     public boolean evalue(Map<String, Boolean> stateMap) {
+        if (value != null && !value.isEmpty()) {
+            return evaluateValue(stateMap);
+        } else if (ExpressionOperator.NOT.equals(operator)) {
+            return evaluateOperatorNot(stateMap);
+        } else if (ExpressionOperator.AND.equals(operator)) {
+            return evaluateOperatorAnd(stateMap);
+        } else if (ExpressionOperator.OR.equals(operator)) {
+            return evaluateOperatorOr(stateMap);
+        }
+        return true;
+    }
+
+    private boolean evaluateValue(Map<String, Boolean> stateMap) {
+        if (stateMap.containsKey(value)) {
+            return stateMap.get(value);
+        }
+        return false;
+    }
+
+    private boolean evaluateOperatorNot(Map<String, Boolean> stateMap) {
+        return !subNodes.get(0).evalue(stateMap);
+    }
+
+    private boolean evaluateOperatorAnd(Map<String, Boolean> stateMap) {
         boolean status = true;
         int idx = 0;
-        if (value != null && !value.isEmpty()) {
-            return stateMap.containsKey(value) ? stateMap.get(value) : false;
-        } else {
-            switch (operator) {
-                case NOT:
-                    return !subNodes.get(0).evalue(stateMap);
-                case AND:
-                    idx = 0;
-                    while (status && idx < subNodes.size()) {
-                        status = status && subNodes.get(idx).evalue(stateMap);
-                        idx++;
-                    }
-                break;
-                case OR:
-                    idx = 0;
-                    // No ternaire expression, simplier
-                    status = false;
-                    while (!status && idx < subNodes.size()) {
-                        status = subNodes.get(idx).evalue(stateMap);
-                        idx++;
-                    }
-                break;
-            }
+        while (status && idx < subNodes.size()) {
+            status = status && subNodes.get(idx).evalue(stateMap);
+            idx++;
+        }
+        return status;
+    }
+
+    private boolean evaluateOperatorOr(Map<String, Boolean> stateMap) {
+        boolean status = true;
+        int idx = 0;
+        // No ternaire expression, simplier
+        status = false;
+        while (!status && idx < subNodes.size()) {
+            status = subNodes.get(idx).evalue(stateMap);
+            idx++;
         }
         return status;
     }

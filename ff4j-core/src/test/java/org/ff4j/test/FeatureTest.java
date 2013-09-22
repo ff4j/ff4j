@@ -3,7 +3,7 @@ package org.ff4j.test;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import org.ff4j.Feature;
+import org.ff4j.core.Feature;
 import org.ff4j.strategy.RandomFlipStrategy;
 import org.junit.Assert;
 import org.junit.Test;

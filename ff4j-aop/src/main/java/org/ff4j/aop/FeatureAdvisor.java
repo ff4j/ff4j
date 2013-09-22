@@ -54,7 +54,7 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
 
     /** {@inheritDoc} */
     @Override
-    public Object invoke(final MethodInvocation pMInvoc) {
+    public Object invoke(final MethodInvocation pMInvoc) throws Throwable {
         // Related method
         Method method = pMInvoc.getMethod();
         // Create a logger for declaring class
@@ -96,14 +96,8 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
 
             }
         }
-
-        // No flip, default method invocation
-        try {
-            return pMInvoc.proceed();
-        } catch (Throwable e) {
-            throw new IllegalArgumentException("ff4j-aop: Cannot invoke method " + method.getName() + " on class "
-                    + pMInvoc.getClass(), e);
-        }
+        // do not catch throwable
+        return pMInvoc.proceed();
     }
 
     /** {@inheritDoc} */

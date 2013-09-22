@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.ff4j.FF4j;
-import org.ff4j.Feature;
+import org.ff4j.core.Feature;
 import org.ff4j.store.FeatureStore;
 import org.ff4j.strategy.FlippingStrategy;
 import org.slf4j.Logger;

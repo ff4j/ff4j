@@ -2,7 +2,7 @@ package org.ff4j.store;
 
 import java.util.Map;
 
-import org.ff4j.Feature;
+import org.ff4j.core.Feature;
 
 /**
  * Represents a Backing store for {@link Feature}
