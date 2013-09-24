@@ -1,8 +1,9 @@
-<web-app id="WebApp_ID" version="2.4"
-	xmlns="http://java.sun.com/xml/ns/j2ee" 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
-	http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app
+  xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+  version="3.0">
 
 	<display-name>FeatureFlag Demo App</display-name>
 
@@ -38,23 +39,17 @@
 	</servlet-mapping>
 
 	<!-- Feature Flipping -->
-	<servlet>
-		<servlet-name>ff4j-console</servlet-name>
-		<servlet-class>org.ff4j.web.AdministrationConsoleServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>ff4j-console</servlet-name>
-		<url-pattern>/ff4j-console</url-pattern>
-	</servlet-mapping>
-	
-	
-	
-	
+	<!--<servlet>-->
+	<!--	<servlet-name>ff4j-console</servlet-name>-->
+	<!--	<servlet-class>org.ff4j.web.AdministrationConsoleServlet</servlet-class>-->
+	<!--</servlet>-->
+	<!--<servlet-mapping>-->
+	<!--	<servlet-name>ff4j-console</servlet-name>-->
+	<!--	<url-pattern>/ff4j-console</url-pattern>-->
+	<!--</servlet-mapping>-->
 	
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
 	
-	
-
 </web-app>

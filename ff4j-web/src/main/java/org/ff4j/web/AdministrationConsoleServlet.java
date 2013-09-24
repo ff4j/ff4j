@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
+//@WebServlet(name = "ff4j-console", urlPatterns = "/ff4j-console")
 public class AdministrationConsoleServlet extends HttpServlet {
 
     /** serial number. */

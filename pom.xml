@@ -84,6 +84,7 @@
 		<module>ff4j-store-jdbc</module>
 		<module>ff4j-store-remoting</module> <!-- since 1.0.1 -->
 		<module>ff4j-security-spring</module>
+		<module>ff4j-cache-ehcache</module>
 		<module>ff4j-aop</module>
 		<module>ff4j-jmx</module>
 		<!-- trop gros --> 

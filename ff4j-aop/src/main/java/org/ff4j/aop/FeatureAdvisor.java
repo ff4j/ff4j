@@ -228,7 +228,7 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
         Class<?> currentClass = pMInvoc.getThis().getClass();
         if (alterClass != null && (alterClass != NullType.class)) {
             if (currentClass.equals(alterClass)) {
-                LOGGER.debug("FeatureFlipping on method:{} class:{} already on the alterClazz {}", method.getName(), method
+                logger.debug("FeatureFlipping on method:{} class:{} already on the alterClazz {}", method.getName(), method
                         .getDeclaringClass().getName(), alterClass);
                 callAlterBeanMethod = true;
             }
