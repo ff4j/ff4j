@@ -4,54 +4,40 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.ff4j.core.Feature;
-import org.ff4j.store.FeatureStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Default InMemory implementation of cacheProxy.
+ * Proposition of inmemory cache implementation.
+ * 
+ * Warn : DO NOT USE THIS CACHE WHEN WORKING WITH EXTERNAL FEATURESTORE (as Database) and cluster application : EACH NODE GOT ITS
+ * MEMORY AND AN MODIFICATION IN STORE WON'T REFRESH THIS CACHE. Please use REDIS/MEMCACHED implementations.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public final class InMemoryFeatureStoreCacheProxy extends AbstractFeatureStoreCacheProxy {
-
-    /** Logger for the class. */
-    static final Logger LOG = LoggerFactory.getLogger(InMemoryFeatureStoreCacheProxy.class);
+public class FeatureCacheProviderInMemory implements FeatureCacheManager {
 
     /** Default TTL is one hour. */
-    private static final long DEFAULT_TTL = 3600L;
+    public static final long DEFAULT_TTL = 3600L;
 
-    /** Time to live for cache entries. */
-    private long ttl = DEFAULT_TTL;
+    /** externalized as constant. */
+    public static final long TO_MILLIS = 1000L;
+
+    /** cache name if several caches within memory. */
+    public static final String DEFAULT_CACHENAME = "ff4j-cache";
+
+    /** Logger for the class. */
+    static final Logger LOG = LoggerFactory.getLogger(FeatureCacheProviderInMemory.class);
 
     /** Cached Feature Map */
-    protected Map<String, InMemoryCacheEntry<Feature>> cache = new WeakHashMap<String, InMemoryCacheEntry<Feature>>();
+    private final Map<String, InMemoryCacheEntry<Feature>> cache = new WeakHashMap<String, InMemoryCacheEntry<Feature>>();
 
     /**
-     * Default constructor to be called by IoC.
+     * Time to live : The maximum number of seconds an element can exist in the cache regardless of use. The element expires at
+     * this limit and will no longer be returned from the cache. The default value is 0, which means no TTL eviction takes place
+     * (infinite lifetime).
      */
-    public InMemoryFeatureStoreCacheProxy() {}
-
-    /**
-     * Constructor with target {@link FeatureStore}.
-     * 
-     * @param target
-     *            target {@link FeatureStore}
-     */
-    public InMemoryFeatureStoreCacheProxy(FeatureStore target) {
-        setTarget(target);
-    }
-
-    /**
-     * Constructor with target {@link FeatureStore}.
-     * 
-     * @param target
-     *            target {@link FeatureStore}
-     */
-    public InMemoryFeatureStoreCacheProxy(FeatureStore target, long ttlSecond) {
-        setTarget(target);
-        setTtl(ttlSecond);
-    }
+    private long ttl = DEFAULT_TTL;
 
     /** {@inheritDoc} */
     @Override
@@ -88,7 +74,7 @@ public final class InMemoryFeatureStoreCacheProxy extends AbstractFeatureStoreCa
         InMemoryCacheEntry<Feature> ice = cache.get(featureId);
         if (ice != null) {
             // a feature is stored in cache with this identifier
-            if ((System.currentTimeMillis() - ice.getInsertedDate()) >= (1000L * ttl)) {
+            if ((System.currentTimeMillis() - ice.getInsertedDate()) >= (TO_MILLIS * ttl)) {
                 // it has reach its time-to-live
                 LOG.debug("{} has reached its maximum ttl, evict from cache", featureId);
                 evict(featureId);
@@ -97,12 +83,8 @@ public final class InMemoryFeatureStoreCacheProxy extends AbstractFeatureStoreCa
                 return ice.getEntry();
             }
         }
-        // ... from here cache does not contain expected id
-        Feature feat = getTarget().read(featureId);
-        LOG.debug("Reading {} from target store to populate cache", featureId);
-        // propagate FeatureNotFoundException if expected
-        put(feat);
-        return feat;
+        // not in cache
+        return null;
     }
 
     /** {@inheritDoc} */

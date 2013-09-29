@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.Advised;
 import org.springframework.aop.support.AopUtils;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -34,7 +33,7 @@ import org.springframework.stereotype.Component;
 public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, ApplicationContextAware {
 
     /** Logger for Advisor. */
-    final static Logger LOGGER = LoggerFactory.getLogger(FeatureAdvisor.class);
+    static final Logger LOGGER = LoggerFactory.getLogger(FeatureAdvisor.class);
 
     /** Log with target className. */
     private final Map<String, Logger> targetLoggers = new HashMap<String, Logger>();
@@ -55,18 +54,11 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
     /** {@inheritDoc} */
     @Override
     public Object invoke(final MethodInvocation pMInvoc) throws Throwable {
-        // Related method
         Method method = pMInvoc.getMethod();
-        // Create a logger for declaring class
         Logger targetLogger = getLogger(method);
-
-        // Method exist in class with no annotations
         if (method.isAnnotationPresent(Flip.class)) {
             Flip ff = method.getAnnotation(Flip.class);
-
-            // Locating alternative target
             if (shouldFlip(ff)) {
-
                 /*
                  * Test alterBean property of annotation. AlterBean can be filled but with same bean name, no alterBean required
                  */
@@ -76,15 +68,7 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
 
                 // Test alterClazz Property of annotation
                 if (shouldCallAlterClazzMethod(pMInvoc, ff.alterClazz(), targetLogger)) {
-                    Map<String, ?> beans = appCtx.getBeansOfType(method.getDeclaringClass());
-                    for (Object bean : beans.values()) {
-                        if (isBeanAProxyOfAlterClass(bean, ff.alterClazz())) {
-                            return callAlterClazzMethod(pMInvoc, bean, targetLogger);
-                        }
-                    }
-                    throw new BeanCreationException("ff4j-aop : bean with class '" + ff.alterClazz()
-                            + "' has not been found in applicationContext still declared in 'alterClazz' property of bean "
-                            + method.getDeclaringClass());
+                    return callAlterClazzMethodOnFirst(pMInvoc, ff, targetLogger);
                 }
 
                 // Error if not field
@@ -102,7 +86,7 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
 
     /** {@inheritDoc} */
     @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessBeforeInitialization(Object bean, String beanName) {
         // Before Initializing allow to check Annotations
         Class<?> target = bean.getClass();
         // Scan interface only once.
@@ -120,7 +104,7 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
 
     /** {@inheritDoc} */
     @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessAfterInitialization(Object bean, String beanName) {
         return bean;
     }
 
@@ -227,13 +211,25 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
         Method method = pMInvoc.getMethod();
         Class<?> currentClass = pMInvoc.getThis().getClass();
         if (alterClass != null && (alterClass != NullType.class)) {
-            if (currentClass.equals(alterClass)) {
+            callAlterBeanMethod = !currentClass.equals(alterClass);
+            if (!callAlterBeanMethod) {
                 logger.debug("FeatureFlipping on method:{} class:{} already on the alterClazz {}", method.getName(), method
                         .getDeclaringClass().getName(), alterClass);
-                callAlterBeanMethod = true;
             }
         }
         return callAlterBeanMethod;
+    }
+
+    private Object callAlterClazzMethodOnFirst(final MethodInvocation pMInvoc, Flip ff, Logger targetLogger) {
+        Map<String, ?> beans = appCtx.getBeansOfType(pMInvoc.getMethod().getDeclaringClass());
+        for (Object bean : beans.values()) {
+            if (isBeanAProxyOfAlterClass(bean, ff.alterClazz())) {
+                return callAlterClazzMethod(pMInvoc, bean, targetLogger);
+            }
+        }
+        throw new BeanCreationException("ff4j-aop : bean with class '" + ff.alterClazz()
+                + "' has not been found in applicationContext still declared in 'alterClazz' property of bean "
+                + pMInvoc.getMethod().getDeclaringClass());
     }
 
     private Object callAlterClazzMethod(final MethodInvocation pMInvoc, Object targetBean, Logger targetLogger) {
@@ -266,7 +262,7 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
 
     /** {@inheritDoc} */
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(ApplicationContext applicationContext) {
         this.appCtx = applicationContext;
     }
 

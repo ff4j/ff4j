@@ -1,15 +1,13 @@
 package org.ff4j.cache;
 
 import org.ff4j.core.Feature;
-import org.ff4j.exception.FeatureNotFoundException;
-import org.ff4j.store.FeatureStore;
 
 /**
  * Cache Layer on top of {@link FeatureStore} to enhance performances.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public interface CacheProvider {
+public interface FeatureCacheManager {
 
     /**
      * Remove everything present within cache.

@@ -54,14 +54,16 @@ public class AdministrationConsoleServlet extends HttpServlet {
     private static final long serialVersionUID = -3982043895954284269L;
 
     /** Logger for Advisor. */
-    final static Logger LOG = LoggerFactory.getLogger(AdministrationConsoleServlet.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AdministrationConsoleServlet.class);
+
+    /** Buffer size. */
+    private static final int BUFFER_SIZE = 4096;
 
     /** {@inheritDoc} */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-
         String message = null;
-        String messagetype = "error";
+        String messagetype = "info";
 
         // Routing on pagename
         String operation = req.getParameter(OPERATION);
@@ -71,56 +73,69 @@ public class AdministrationConsoleServlet extends HttpServlet {
             if (operation != null && !operation.isEmpty()) {
                 if (OP_DISABLE.equalsIgnoreCase(operation)) {
                     opDisableFeature(req);
-                    messagetype = "info";
                     message = "Feature <b>" + req.getParameter(FEATID) + " </b> has been successfully DISABLED";
                 } else if (OP_ENABLE.equalsIgnoreCase(operation)) {
                     opEnableFeature(req);
-                    messagetype = "info";
                     message = "Feature <b>" + req.getParameter(FEATID) + " </b> has been successfully ENABLED";
                 } else if (OP_EDIT_FEATURE.equalsIgnoreCase(operation)) {
                     opUpdateFeatureDescription(req);
-                    messagetype = "info";
                     message = "Feature <b>" + req.getParameter(FEATID) + " </b> has been successfully updated";
                 } else if (OP_ADD_FEATURE.equalsIgnoreCase(operation)) {
                     opAddNewFeature(req);
-                    messagetype = "info";
                     message = "Feature <b>" + req.getParameter(FEATID) + " </b> has been successfully added";
                 } else if (OP_RMV_FEATURE.equalsIgnoreCase(operation)) {
                     opDeleteFeature(req);
-                    messagetype = "info";
                     message = "Feature <b>" + req.getParameter(FEATID) + " </b> has been successfully deleted";
                 } else if (OP_ADD_ROLE.equalsIgnoreCase(operation)) {
                     opAddRoleToFeature(req);
-                    messagetype = "info";
                     message = "Role <b>" + req.getParameter(ROLE) + "</b> has been successfully added to flipPoint <b>"
                             + req.getParameter(FEATID) + " </b>";
                 } else if (OP_RMV_ROLE.equalsIgnoreCase(operation)) {
                     opRemoveRoleFromFeature(req);
-                    messagetype = "info";
                     message = "Role <b>" + req.getParameter(ROLE) + "</b> has been successfully removed from flipPoint <b>"
                             + req.getParameter(FEATID) + " </b>";
                 } else if (OP_EXPORT.equalsIgnoreCase(operation)) {
-                    InputStream in = FeatureLoader.exportFeatures(FF4j.getInstance().getStore().readAll());
-                    ServletOutputStream sos = res.getOutputStream();
-                    res.setContentType("text/xml");
-                    res.setHeader("Content-Disposition", "attachment; filename=\"ff4j.xml\"");
-                    // res.setContentLength()
-                    byte[] bbuf = new byte[4096];
-                    int length = 0;
-                    while ((in != null) && ((length = in.read(bbuf)) != -1)) {
-                        sos.write(bbuf, 0, length);
-                    }
-                    if (in != null) {
-                        in.close();
-                    }
-                    sos.flush();
-                    sos.close();
+                    buildResponseForExportFeature(res);
                 }
             }
         } catch (Exception e) {
+            messagetype = "error";
             message = e.getMessage();
         }
         renderPage(req, res, message, messagetype);
+    }
+
+    /**
+     * Build Http response when invoking export features.
+     * 
+     * @param res
+     *            http response
+     * @throws IOException
+     *             error when building response
+     */
+    private void buildResponseForExportFeature(HttpServletResponse res) throws IOException {
+        InputStream in = FeatureLoader.exportFeatures(FF4j.getInstance().getStore().readAll());
+        ServletOutputStream sos = null;
+        try {
+            sos = res.getOutputStream();
+            res.setContentType("text/xml");
+            res.setHeader("Content-Disposition", "attachment; filename=\"ff4j.xml\"");
+            // res.setContentLength()
+            byte[] bbuf = new byte[BUFFER_SIZE];
+            int length = 0;
+            while ((in != null) && (length != -1)) {
+                length = in.read(bbuf);
+                sos.write(bbuf, 0, length);
+            }
+        } finally {
+            if (in != null) {
+                in.close();
+            }
+            if (sos != null) {
+                sos.flush();
+                sos.close();
+            }
+        }
     }
 
     /** {@inheritDoc} */
@@ -133,7 +148,9 @@ public class AdministrationConsoleServlet extends HttpServlet {
             for (FileItem item : items) {
                 if (item.isFormField()) {
                     if (OPERATION.equalsIgnoreCase(item.getFieldName())) {
-                        // String operation = item.getString();
+                        String operation = item.getString();
+                        LOG.debug("{} operation called", operation);
+                        // Proceed here action accessing through POST
                     }
                 } else if (FLIPFILE.equalsIgnoreCase(item.getFieldName())) {
                     String filename = FilenameUtils.getName(item.getName());
@@ -311,7 +328,6 @@ public class AdministrationConsoleServlet extends HttpServlet {
         if (message != null && !message.isEmpty()) {
             strB.append(AdministrationConsoleRenderer.renderMessageBox(message, type));
         }
-        // strB.append(renderButtonImportFeatures(req));
         strB.append(AdministrationConsoleRenderer.TABLE_HEADER);
         for (Feature fp : mapOfFlipPoints.values()) {
             strB.append("<tr>");

@@ -20,7 +20,7 @@ public final class AdministrationConsoleRenderer {
     /** User operation. */
     static final String OP_EDIT_FEATURE = "editfp";
 
-    /** User operation. */
+    /** User operation: remove feature. */
     static final String OP_RMV_FEATURE = "rmvfp";
 
     /** User operation. */
@@ -98,10 +98,10 @@ public final class AdministrationConsoleRenderer {
     static final String TABLE_HEADER = ""
             + "<div class=\"container\" style=\"padding:10px\">"
             + "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"table table-striped table-bordered table-condensed\" id=\"example\">"
-            + "	<thead>" + "  <tr>" + "		<th>Feature</th>" + "		<th style=\"width:500px;text-align:center\">Description</th>"
-            + "		<th style=\"width:80px;text-align:center\">Status</th>" + "		<th style=\"width:20px;text-align:center\">E</th>"
-            + "		<th style=\"width:20px;text-align:center\">D</th>"
-            + "		<th style=\"width:65px;text-align:center\">&nbsp;Roles</th>" + "</tr>" + "</thead><tbody>";
+            + "<thead>" + "  <tr>" + "<th>Feature</th>" + "<th style=\"width:500px;text-align:center\">Description</th>"
+            + "<th style=\"width:80px;text-align:center\">Status</th>" + "<th style=\"width:20px;text-align:center\">E</th>"
+            + "<th style=\"width:20px;text-align:center\">D</th>" + "<th style=\"width:65px;text-align:center\">&nbsp;Roles</th>"
+            + "</tr>" + "</thead><tbody>";
 
     /** Cache for page blocks. */
     static final String TABLE_FEATURES_FOOTER = "" + "</tbody></table></form></fieldset>";
@@ -222,28 +222,27 @@ public final class AdministrationConsoleRenderer {
     }
 
     static String renderButtonsMainGroup(HttpServletRequest req) {
-        StringBuilder strBuilder = new StringBuilder("<ul class=\"nav\" style=\"margin-top:60px;margin-bottom-20px;\">"
-                + "<li style=\"float:right;margin-right:-10px;\">");
+        StringBuilder strBuilder = new StringBuilder("<ul class=\"nav\" style=\"margin-top:60px;margin-bottom-20px;\">");
+        strBuilder.append("<li style=\"float:right;margin-right:-10px;\">");
         strBuilder.append("<a href=\"" + req.getContextPath());
         strBuilder.append(req.getServletPath());
         strBuilder.append("?op=" + OP_EXPORT + "\" class=\"btn\">");
         strBuilder.append("<i class=\"icon-download\" style=\"margin-left:-5px;\"></i>&nbsp;Export ");
         strBuilder.append("</a>");
-        strBuilder
-                .append("</li><li style=\"float:right;margin-right:10px;\">"
-                        + "	<a data-toggle=\"modal\" href=\"#modalImportFlip\" class=\"open-ImportFlipDialog btn \" style=\"width:70px\">"
-                        + "   <i class=\"icon-upload \"></i>&nbsp;Import"
-                        + "  </a>"
-                        + "</li><li style=\"float:right;margin-right:10px;\">"
-                        + "	<a data-toggle=\"modal\" href=\"#modalAddFlip\" class=\"open-AddFlipDialog btn\"  style=\"width:100px\">"
-                        + "   <i class=\"icon-plus\"></i>&nbsp;New Flipoint" + "  </a>"
-                        + "</li></ul><p style=\"margin:10px;\"/>&nbsp;<br/>");
+        strBuilder.append("</li><li style=\"float:right;margin-right:10px;\">"
+                + "<a data-toggle=\"modal\" href=\"#modalImportFlip\" class=\"open-ImportFlipDialog btn \" style=\"width:70px\">"
+                + "   <i class=\"icon-upload \"></i>&nbsp;Import" + "  </a>"
+                + "</li><li style=\"float:right;margin-right:10px;\">"
+                + "<a data-toggle=\"modal\" href=\"#modalAddFlip\" class=\"open-AddFlipDialog btn\"  style=\"width:100px\">"
+                + "   <i class=\"icon-plus\"></i>&nbsp;New Flipoint" + "  </a>"
+                + "</li></ul><p style=\"margin:10px;\"/>&nbsp;<br/>");
 
         return strBuilder.toString();
     }
 
     static String renderButtonDeleteFeature(HttpServletRequest req, String uid) {
-        StringBuilder strBuilder = new StringBuilder("<a href=\"" + req.getContextPath());
+        StringBuilder strBuilder = new StringBuilder("<a href=\"");
+        strBuilder.append(req.getContextPath());
         strBuilder.append(req.getServletPath());
         strBuilder.append("?op=" + OP_RMV_FEATURE + "&" + FEATID + "=" + uid);
         strBuilder.append("\" style=\"width:6px;\" class=\"btn\">");
@@ -297,7 +296,8 @@ public final class AdministrationConsoleRenderer {
 
     static String renderElementButton(HttpServletRequest req, String label, String color, String action, Map<String, String> pp,
             String icon) {
-        StringBuilder strBuilder = new StringBuilder("<a href=\"" + req.getContextPath());
+        StringBuilder strBuilder = new StringBuilder("<a href=\"");
+        strBuilder.append(req.getContextPath());
         strBuilder.append(req.getServletPath());
         strBuilder.append("?op=" + action);
         if (pp != null && !pp.isEmpty()) {

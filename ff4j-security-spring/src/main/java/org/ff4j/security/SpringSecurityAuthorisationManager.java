@@ -13,38 +13,39 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * Implementation of {@link AuthorizationsManager} with SpringSecurity framework.
+ * 
  * @author clunven
- *
+ * 
  */
 public class SpringSecurityAuthorisationManager implements AuthorizationsManager {
 
-	/** Logger for Advisor. */
-	final static Logger LOG = LoggerFactory.getLogger(SpringSecurityAuthorisationManager.class);
-	
-	/**
-	 * Log Once the warning
-	 */
-	public SpringSecurityAuthorisationManager() {
-		LOG.warn("Only user roles are loaded - cannot retrieve roles of EVERYONE as a list");
-	}
-	
+    /** Logger for Advisor. */
+    static final Logger LOG = LoggerFactory.getLogger(SpringSecurityAuthorisationManager.class);
 
-	@Override
-	public Set<String> getAuthenticatedUserRoles() {
-		Set<String> listOfRoles = new LinkedHashSet<String>();
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
-			Collection<GrantedAuthority> rights = auth.getAuthorities();
-			for (GrantedAuthority grantedAuthority : rights) {
-				listOfRoles.add(grantedAuthority.getAuthority());
-			}
-		}
-		return listOfRoles;
-	}
+    /**
+     * Log Once the warning
+     */
+    public SpringSecurityAuthorisationManager() {
+        LOG.warn("Only user roles are loaded - cannot retrieve roles of EVERYONE as a list");
+    }
 
-	/** {@inheritDoc} */
-	public Set<String> getEveryOneRoles() {
-		return getAuthenticatedUserRoles();
-	}
+    @Override
+    public Set<String> getAuthenticatedUserRoles() {
+        Set<String> listOfRoles = new LinkedHashSet<String>();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!(auth instanceof AnonymousAuthenticationToken)) {
+            Collection<GrantedAuthority> rights = auth.getAuthorities();
+            for (GrantedAuthority grantedAuthority : rights) {
+                listOfRoles.add(grantedAuthority.getAuthority());
+            }
+        }
+        return listOfRoles;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> getEveryOneRoles() {
+        return getAuthenticatedUserRoles();
+    }
 
 }

@@ -16,6 +16,13 @@
 		<artifactId>ff4j-parent</artifactId>
 		<version>1.0.1-SNAPSHOT</version>
 	</parent>
+	
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~      PROPERTIES          ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<properties>
+		<version.ehcache>2.6.6</version.ehcache>
+	</properties>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~      DEPENDENCIES        ~ -->
@@ -27,6 +34,13 @@
 			<groupId>org.ff4j</groupId>
 			<artifactId>ff4j-core</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		
+		<!--  cache provider -->
+		<dependency>
+    		<groupId>net.sf.ehcache</groupId>
+    		<artifactId>ehcache-core</artifactId>
+    		<version>${version.ehcache}</version>
 		</dependency>
 
 		<!-- tests -->

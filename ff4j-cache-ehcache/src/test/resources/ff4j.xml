@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+<features>
+
+	<feature uid="AwesomeFeature" enable="true" description="some desc" />
+
+	<feature uid="first" enable="true" description="description" >
+		<auth role="ROLE_USER" />
+	</feature>
+	
+	<feature uid="second" enable="false" description="description" >
+		<auth role="ROLE_USER" />
+	</feature>
+	
+	<feature uid="third" enable="false" >
+		<auth role="X" />
+		<auth role="Y" />
+	</feature>
+	
+	<feature uid="forth" enable="true" description="description" 
+			strategy="org.ff4j.strategy.el.ExpressionFlipStrategy" >
+		<auth role="X" />
+		<auth role="Y" />
+	</feature>
+	
+</features>
+

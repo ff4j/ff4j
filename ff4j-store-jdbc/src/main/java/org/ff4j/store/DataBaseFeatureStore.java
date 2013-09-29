@@ -100,7 +100,7 @@ public class DataBaseFeatureStore implements FeatureStore {
 
     /** {@inheritDoc} */
     @Override
-    public Feature read(String featId) throws FeatureNotFoundException {
+    public Feature read(String featId) {
         List<Feature> dbFlips = getJdbcTemplate().query(SQLQUERY_GET_FEATURE_BY_ID, MAPPER, featId);
         if (dbFlips.isEmpty()) {
             throw new FeatureNotFoundException(featId);

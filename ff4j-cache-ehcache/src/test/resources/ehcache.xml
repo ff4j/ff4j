@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+<ehcache updateCheck="false">
+    
+    <defaultCache 
+        maxElementsInMemory="10000"
+        eternal="false"
+        overflowToDisk="false"
+        timeToIdleSeconds="120"
+        timeToLiveSeconds="120"
+        diskPersistent="false"
+        diskExpiryThreadIntervalSeconds="120"
+        maxEntriesLocalHeap="10000"
+     	maxEntriesLocalDisk="10000000"
+     	memoryStoreEvictionPolicy="LRU" />
+       
+</ehcache>
