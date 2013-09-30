@@ -213,7 +213,7 @@ public final class ExpressionParser {
             if (exprNodes.containsKey(exprNode.getValue())) {
                 ExpressionNode storedNode = exprNodes.get(exprNode.getValue());
                 LOG.info("Replacing '" + exprNode + "' by '" + storedNode + "'");
-                tmpNode.addSubNode(storedNode);
+                tmpNode.getSubNodes().add(storedNode);
                 tmpNode.getSubNodes().remove(exprNode);
             }
         } else {
@@ -221,9 +221,9 @@ public final class ExpressionParser {
             ExpressionNode subNodeNot = exprNode.getSubNodes().get(0);
             if (exprNodes.containsKey(subNodeNot.getValue())) {
                 ExpressionNode notNode = new ExpressionNode(ExpressionOperator.NOT);
-                notNode.addSubNode(exprNodes.get(subNodeNot.getValue()));
+                notNode.getSubNodes().add(exprNodes.get(subNodeNot.getValue()));
                 LOG.info("Replacing '" + subNodeNot + "' by '" + exprNodes.get(subNodeNot.getValue()) + "'");
-                tmpNode.addSubNode(notNode);
+                tmpNode.getSubNodes().add(notNode);
                 tmpNode.getSubNodes().remove(exprNode);
             }
         }
@@ -248,16 +248,16 @@ public final class ExpressionParser {
                     // Handle NOT SHET
                     LOG.debug("Adding NOT subnode [" + andOper.substring(1) + "]");
                     ExpressionNode node = new ExpressionNode(ExpressionOperator.NOT);
-                    node.addSubNode(new ExpressionNode(andOper.substring(1)));
-                    subNodeAND.addSubNode(node);
+                    node.getSubNodes().add(new ExpressionNode(andOper.substring(1)));
+                    subNodeAND.getSubNodes().add(node);
                 } else {
                     // Handle sheet
                     LOG.debug("Adding sheet [" + andOper + "]");
-                    subNodeAND.addSubNode(new ExpressionNode(andOper));
+                    subNodeAND.getSubNodes().add(new ExpressionNode(andOper));
                 }
             }
             if (currentNode != null) {
-                currentNode.addSubNode(subNodeAND);
+                currentNode.getSubNodes().add(subNodeAND);
             } else {
                 return subNodeAND;
             }
@@ -279,9 +279,9 @@ public final class ExpressionParser {
     private static ExpressionNode parseOperatorNot(ExpressionNode currentNode, String expr) {
         LOG.debug("NoBracket NoOR [" + expr + "] : Operator NOT");
         ExpressionNode subNodeNot = new ExpressionNode(ExpressionOperator.NOT);
-        subNodeNot.addSubNode(new ExpressionNode(expr.substring(1)));
+        subNodeNot.getSubNodes().add(new ExpressionNode(expr.substring(1)));
         if (currentNode != null) {
-            currentNode.addSubNode(subNodeNot);
+            currentNode.getSubNodes().add(subNodeNot);
         } else {
             return subNodeNot;
         }
@@ -300,7 +300,7 @@ public final class ExpressionParser {
     private static ExpressionNode parseSheet(ExpressionNode currentNode, String expr) {
         LOG.debug("Adding sheet [" + expr + "]");
         if (currentNode != null) {
-            currentNode.addSubNode(new ExpressionNode(expr));
+            currentNode.getSubNodes().add(new ExpressionNode(expr));
         } else {
             return new ExpressionNode(expr);
         }

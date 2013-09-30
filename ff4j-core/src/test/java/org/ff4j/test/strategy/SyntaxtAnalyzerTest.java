@@ -36,7 +36,6 @@ public class SyntaxtAnalyzerTest extends TestCase {
         ExpressionNode en = new ExpressionNode("sheet");
         en.setOperator(ExpressionOperator.NOT);
         en.setValue("sheet");
-        en.setSubNodes(null);
 
     }
 

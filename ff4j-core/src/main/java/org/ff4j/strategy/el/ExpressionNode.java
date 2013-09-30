@@ -18,7 +18,7 @@ public class ExpressionNode {
     private String value;
 
     /** La liste des sous nodes. */
-    private List<ExpressionNode> subNodes = new ArrayList<ExpressionNode>();
+    private final List<ExpressionNode> subNodes = new ArrayList<ExpressionNode>();
 
     /**
      * Constructor for sheet of tree (no operator).
@@ -58,6 +58,13 @@ public class ExpressionNode {
         return true;
     }
 
+    /**
+     * Evaluate map for substitutions.
+     * 
+     * @param stateMap
+     *            map with expression states
+     * @return state of target key is present
+     */
     private boolean evaluateValue(Map<String, Boolean> stateMap) {
         if (stateMap.containsKey(value)) {
             return stateMap.get(value);
@@ -65,10 +72,24 @@ public class ExpressionNode {
         return false;
     }
 
+    /**
+     * Evaluate operator not.
+     * 
+     * @param stateMap
+     *            map of states
+     * @return state of target key is present
+     */
     private boolean evaluateOperatorNot(Map<String, Boolean> stateMap) {
         return !subNodes.get(0).evalue(stateMap);
     }
 
+    /**
+     * Evaluate operator AND.
+     * 
+     * @param stateMap
+     *            map of states
+     * @return state of target key is present
+     */
     private boolean evaluateOperatorAnd(Map<String, Boolean> stateMap) {
         boolean status = true;
         int idx = 0;
@@ -79,6 +100,13 @@ public class ExpressionNode {
         return status;
     }
 
+    /**
+     * Evaluate operator OR.
+     * 
+     * @param stateMap
+     *            map of states
+     * @return state of target key is present
+     */
     private boolean evaluateOperatorOr(Map<String, Boolean> stateMap) {
         boolean status = true;
         int idx = 0;
@@ -119,32 +147,50 @@ public class ExpressionNode {
         }
     }
 
-    public void addSubNode(ExpressionNode node) {
-        subNodes.add(node);
-    }
-
+    /**
+     * Getter accessor for attribute 'operator'.
+     * 
+     * @return current value of 'operator'
+     */
     public ExpressionOperator getOperator() {
         return operator;
     }
 
+    /**
+     * Setter accessor for attribute 'operator'.
+     * 
+     * @param operator
+     *            new value for 'operator '
+     */
     public void setOperator(ExpressionOperator operator) {
         this.operator = operator;
     }
 
+    /**
+     * Getter accessor for attribute 'value'.
+     * 
+     * @return current value of 'value'
+     */
     public String getValue() {
         return value;
     }
 
+    /**
+     * Setter accessor for attribute 'value'.
+     * 
+     * @param value
+     *            new value for 'value '
+     */
     public void setValue(String value) {
         this.value = value;
     }
 
+    /**
+     * Getter accessor for attribute 'subNodes'.
+     * 
+     * @return current value of 'subNodes'
+     */
     public List<ExpressionNode> getSubNodes() {
         return subNodes;
     }
-
-    public void setSubNodes(List<ExpressionNode> subNodes) {
-        this.subNodes = subNodes;
-    }
-
 }
