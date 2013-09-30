@@ -22,6 +22,9 @@ public class FeatureAutoProxy extends AbstractAutoProxyCreator {
     /** Processed Interfaces. */
     private final Map<String, Boolean> processedInterface = new HashMap<String, Boolean>();
 
+    /**
+     * Constructor invoked through IoC per Spring
+     */
     public FeatureAutoProxy() {
         setInterceptorNames(new String[] {FeatureAdvisor.class.getAnnotation(Component.class).value()});
     }

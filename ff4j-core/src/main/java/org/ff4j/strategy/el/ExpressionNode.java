@@ -20,6 +20,12 @@ public class ExpressionNode {
     /** La liste des sous nodes. */
     private List<ExpressionNode> subNodes = new ArrayList<ExpressionNode>();
 
+    /**
+     * Constructor for sheet of tree (no operator).
+     * 
+     * @param sheetValue
+     *            string expression for sheet, should be feature id
+     */
     public ExpressionNode(String sheetValue) {
         this.value = sheetValue;
     }

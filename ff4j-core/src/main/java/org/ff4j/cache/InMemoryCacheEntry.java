@@ -9,9 +9,7 @@ import java.io.Serializable;
  */
 public final class InMemoryCacheEntry<T> implements Serializable {
 
-    /**
-     * serial.
-     */
+    /** serial. */
     private static final long serialVersionUID = -1444331517339058103L;
 
     /** Insertion date, allow to compute time-to-live. */
@@ -20,6 +18,12 @@ public final class InMemoryCacheEntry<T> implements Serializable {
     /** Current entry to cache. */
     private T entry;
 
+    /**
+     * Parameterized contructor with target cached object.
+     * 
+     * @param entry
+     *            cached object
+     */
     public InMemoryCacheEntry(T entry) {
         this.entry = entry;
         this.insertedDate = System.currentTimeMillis();

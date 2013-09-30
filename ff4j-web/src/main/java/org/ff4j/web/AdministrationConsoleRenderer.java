@@ -71,6 +71,8 @@ public final class AdministrationConsoleRenderer {
     /** Cache for page blocks. */
     private static String htmlNavBar = null;
 
+    private static final String START_LINK = "<a href=\"";
+
     /**
      * Hide constructor as utility class.
      */
@@ -106,15 +108,24 @@ public final class AdministrationConsoleRenderer {
     /** Cache for page blocks. */
     static final String TABLE_FEATURES_FOOTER = "" + "</tbody></table></form></fieldset>";
 
+    /**
+     * Create HTML outpu to render navigation bar.
+     * 
+     * @param req
+     *            http servlet request
+     * @return html output
+     */
     static String renderNavBar(HttpServletRequest req) {
         if (htmlNavBar == null || htmlNavBar.isEmpty()) {
             StringBuilder sb = new StringBuilder();
-            sb.append("<div class=\"navbar navbar-inverse navbar-fixed-top\">\n"
-                    + " <div class=\"navbar-inner\">\n<div class=\"container\">\n"
-                    + " <span class=\"brand\">Administration FF4J</span>\n" + "<a href=\"");
+            sb.append("<div class=\"navbar navbar-inverse navbar-fixed-top\">\n");
+            sb.append("<div class=\"navbar-inner\">\n<div class=\"container\">\n");
+            sb.append("<span class=\"brand\">Administration FF4J</span>\n");
+            sb.append(START_LINK);
             sb.append(req.getContextPath());
-            sb.append("\" class=\"btn btn-warning\" style=\"float:right\"><i class=\"icon-home icon-white\"></i>&nbsp;Back to Home"
-                    + "</a>" + "  </div>" + " </div></div></div>\n");
+            sb.append("\" class=\"btn btn-warning\" style=\"float:right\">");
+            sb.append("<i class=\"icon-home icon-white\"></i>&nbsp;Back to Home");
+            sb.append("</a></div></div></div></div>\n");
             htmlNavBar = sb.toString();
         }
         return htmlNavBar;
@@ -272,7 +283,8 @@ public final class AdministrationConsoleRenderer {
                 .append("<button class=\"btn dropdown-toggle\" data-toggle=\"dropdown\"><span class=\"caret\"></span></button>");
         strBuilder.append("<ul class=\"dropdown-menu\" role=\"menu\">");
         for (String role : setOfRoles) {
-            StringBuilder link = new StringBuilder("<li><a href=\"" + req.getContextPath());
+            StringBuilder link = new StringBuilder("<li><a href=\"");
+            link.append(req.getContextPath());
             link.append(req.getServletPath());
             if (fp.getAuthorizations().contains(role)) {
                 link.append("?op=" + OP_RMV_ROLE);

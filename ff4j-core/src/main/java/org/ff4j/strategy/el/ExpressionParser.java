@@ -29,11 +29,19 @@ public final class ExpressionParser {
     /** Logger for Advisor. */
     static final Logger LOG = LoggerFactory.getLogger(ExpressionParser.class);
 
+    /** caracter parsed. */
     private static final char OPEN_BRACKET = '(';
+
+    /** caracter parsed. */
     private static final char CLOSE_BRACKET = ')';
 
+    /** caracter parsed. */
     private static final char OR = ExpressionOperator.OR.getChar();
+
+    /** caracter parsed. */
     private static final char AND = ExpressionOperator.AND.getChar();
+
+    /** caracter parsed. */
     private static final char NOT = ExpressionOperator.NOT.getChar();
 
     /**
@@ -41,12 +49,27 @@ public final class ExpressionParser {
      */
     private ExpressionParser() {}
 
+    /**
+     * Utility class to store expression and offset of it to avoid multimap
+     * 
+     * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+     */
     private static class ExpressionBracket {
 
+        /** store expression. */
         private final String expr;
 
+        /** offset of end of this expression in parent expression */
         private final int offsetEnd;
 
+        /**
+         * Convenient constructor for initialization.
+         * 
+         * @param e
+         *            target expression
+         * @param o
+         *            target offset
+         */
         public ExpressionBracket(String e, int o) {
             this.expr = e;
             this.offsetEnd = o;
@@ -71,6 +94,13 @@ public final class ExpressionParser {
         }
     }
 
+    /**
+     * Brackets have been detected, extract expression to be recursively parsed.
+     * 
+     * @param workingExpr
+     *            current working expression
+     * @return expression within brackets
+     */
     private static ExpressionBracket extractExprWithinParenthesis(String workingExpr) {
         char[] caracteres = workingExpr.toCharArray();
         int offsetOpenBracket = workingExpr.indexOf(OPEN_BRACKET);
@@ -167,6 +197,16 @@ public final class ExpressionParser {
         return tmpNode;
     }
 
+    /**
+     * Sub expression have been store and substitute by constant, remove constant and evaluate.
+     * 
+     * @param exprNode
+     *            current node
+     * @param tmpNode
+     *            substituted node
+     * @param exprNodes
+     *            availables nodes
+     */
     private static void processSubstitution(ExpressionNode exprNode, ExpressionNode tmpNode, Map<String, ExpressionNode> exprNodes) {
         // Only sheets : (there are only NOT operators with sub levels)
         if (exprNode.getValue() != null && !exprNode.getValue().isEmpty()) {
@@ -227,6 +267,15 @@ public final class ExpressionParser {
         return parseSheet(currentNode, expr);
     }
 
+    /**
+     * Convenient method to parse operator NOT expressions.
+     * 
+     * @param currentNode
+     *            current node
+     * @param expr
+     *            current expression
+     * @return parsed expression as node
+     */
     private static ExpressionNode parseOperatorNot(ExpressionNode currentNode, String expr) {
         LOG.debug("NoBracket NoOR [" + expr + "] : Operator NOT");
         ExpressionNode subNodeNot = new ExpressionNode(ExpressionOperator.NOT);
@@ -239,6 +288,15 @@ public final class ExpressionParser {
         return currentNode;
     }
 
+    /**
+     * Convenient method to parse operator SHEETS expressions.
+     * 
+     * @param currentNode
+     *            current node
+     * @param expr
+     *            current expression
+     * @return parsed expression as node
+     */
     private static ExpressionNode parseSheet(ExpressionNode currentNode, String expr) {
         LOG.debug("Adding sheet [" + expr + "]");
         if (currentNode != null) {
