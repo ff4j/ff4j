@@ -47,7 +47,6 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-//@WebServlet(name = "ff4j-console", urlPatterns = "/ff4j-console")
 public class AdministrationConsoleServlet extends HttpServlet {
 
     /** serial number. */
@@ -73,19 +72,19 @@ public class AdministrationConsoleServlet extends HttpServlet {
             if (operation != null && !operation.isEmpty()) {
                 if (OP_DISABLE.equalsIgnoreCase(operation)) {
                     opDisableFeature(req);
-                    message = "Feature <b>" + req.getParameter(FEATID) + " </b> has been successfully DISABLED";
+                    message = buildMessage(req.getParameter(FEATID), "DISABLED");
                 } else if (OP_ENABLE.equalsIgnoreCase(operation)) {
                     opEnableFeature(req);
-                    message = "Feature <b>" + req.getParameter(FEATID) + " </b> has been successfully ENABLED";
+                    message = buildMessage(req.getParameter(FEATID), "ENABLED");
                 } else if (OP_EDIT_FEATURE.equalsIgnoreCase(operation)) {
                     opUpdateFeatureDescription(req);
-                    message = "Feature <b>" + req.getParameter(FEATID) + " </b> has been successfully updated";
+                    message = buildMessage(req.getParameter(FEATID), "UPDATED");
                 } else if (OP_ADD_FEATURE.equalsIgnoreCase(operation)) {
                     opAddNewFeature(req);
-                    message = "Feature <b>" + req.getParameter(FEATID) + " </b> has been successfully added";
+                    message = buildMessage(req.getParameter(FEATID), "ADDED");
                 } else if (OP_RMV_FEATURE.equalsIgnoreCase(operation)) {
                     opDeleteFeature(req);
-                    message = "Feature <b>" + req.getParameter(FEATID) + " </b> has been successfully deleted";
+                    message = buildMessage(req.getParameter(FEATID), "DELETED");
                 } else if (OP_ADD_ROLE.equalsIgnoreCase(operation)) {
                     opAddRoleToFeature(req);
                     message = "Role <b>" + req.getParameter(ROLE) + "</b> has been successfully added to flipPoint <b>"
@@ -103,6 +102,19 @@ public class AdministrationConsoleServlet extends HttpServlet {
             message = e.getMessage();
         }
         renderPage(req, res, message, messagetype);
+    }
+
+    /**
+     * Build info messages.
+     * 
+     * @param featureName
+     *            target feature name
+     * @param operationd
+     *            target operationId
+     * @return
+     */
+    private String buildMessage(String featureName, String operationId) {
+        return String.format("Feature <b>%s</b> has been successfully %s", featureName, operationId);
     }
 
     /**

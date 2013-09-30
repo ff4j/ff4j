@@ -30,7 +30,7 @@ public class FeatureFlipperTest {
 
     @BeforeClass
     public static void createFeatures() {
-        FF4j.getInstance().autoCreateFeature();
+        FF4j.getInstance().autoCreateFeature(true);
         FF4j.getInstance().createFeature("language-english").createFeature("language-french");
 
     }

@@ -1,11 +1,8 @@
 package org.ff4j.cache;
 
-import java.io.InputStream;
-
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
-import net.sf.ehcache.config.CacheConfiguration;
 
 import org.ff4j.core.Feature;
 import org.slf4j.Logger;
@@ -36,9 +33,6 @@ public class FeatureCacheProviderEhCache implements FeatureCacheManager {
 
     /** Eh Cache - cache-aside mode utlization. */
     private Cache cache = null;
-
-    /** Cache Manager. */
-    private CacheManager cacheManager = null;
 
     /**
      * Default constructor to allow IoC.
@@ -90,7 +84,7 @@ public class FeatureCacheProviderEhCache implements FeatureCacheManager {
      * Ininitialize cache
      */
     private void initializeCache() {
-        cacheManager = CacheManager.create();
+        CacheManager cacheManager = CacheManager.create();
         if (!cacheManager.cacheExists(DEFAULT_CACHENAME)) {
             cacheManager.addCache(DEFAULT_CACHENAME);
         }

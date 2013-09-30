@@ -194,7 +194,16 @@ public class FF4j {
      *            unique feature identifier.
      */
     public FF4j enableFeature(String featureID) {
-        getStore().enable(featureID);
+        try {
+            getStore().enable(featureID);
+        } catch (FeatureNotFoundException fnfe) {
+            if (this.autocreate) {
+                Feature fp = new Feature(featureID, true);
+                createFeature(fp);
+            } else {
+                throw fnfe;
+            }
+        }
         return this;
     }
 
@@ -238,8 +247,28 @@ public class FF4j {
      *            unique feature identifier.
      */
     public FF4j disableFeature(String featureID) {
-        getStore().disable(featureID);
+        try {
+            getStore().disable(featureID);
+        } catch (FeatureNotFoundException fnfe) {
+            if (this.autocreate) {
+                Feature fp = new Feature(featureID, false);
+                createFeature(fp);
+            } else {
+                throw fnfe;
+            }
+        }
         return this;
+    }
+
+    /**
+     * Check if target feature exist.
+     * 
+     * @param featureId
+     *            unique feature identifier.
+     * @return flag to check existence of
+     */
+    public boolean existFeature(String featureId) {
+        return getStore().exist(featureId);
     }
 
     /**
@@ -289,10 +318,12 @@ public class FF4j {
     /**
      * Enable autocreation of features when not found.
      * 
+     * @param flag
+     *            target value for autocreate flag
      * @return current instance
      */
-    public FF4j autoCreateFeature() {
-        setAutocreate(true);
+    public FF4j autoCreateFeature(boolean flag) {
+        setAutocreate(flag);
         return this;
     }
 
@@ -428,7 +459,7 @@ public class FF4j {
      * The feature will be create automatically if the boolea, autocreate is enabled.
      * 
      * @param featureID
-     *            target feature ID
+     *            target feature unique identifier
      * @return target feature.
      */
     public static Feature sGetFeature(String featureID) {
@@ -447,7 +478,7 @@ public class FF4j {
      *            boolean to activate auto-activation
      */
     public static void sAutoCreateFeature(boolean bool) {
-        getInstance().autocreate = bool;
+        getInstance().autoCreateFeature(bool);
     }
 
     /**
@@ -465,6 +496,17 @@ public class FF4j {
      */
     public static void sLogFeatures() {
         getInstance().logFeatures();
+    }
+
+    /**
+     * Static access to existFeeature.
+     * 
+     * @param featureId
+     *            target feature unique identifier
+     * @return flag if feature exist
+     */
+    public static boolean sExistFeature(String featureId) {
+        return getInstance().existFeature(featureId);
     }
 
     // -------- Accessors Getters & Setters --------------------------

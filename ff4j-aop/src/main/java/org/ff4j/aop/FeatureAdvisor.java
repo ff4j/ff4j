@@ -59,9 +59,12 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
         if (method.isAnnotationPresent(Flip.class)) {
             Flip ff = method.getAnnotation(Flip.class);
             if (shouldFlip(ff)) {
-                /*
-                 * Test alterBean property of annotation. AlterBean can be filled but with same bean name, no alterBean required
-                 */
+                // Required parameters
+                if (!assertRequiredParams(ff)) {
+                    String msg = String.format("One of 'alterBeanName','alterClazz' is required ", method.getDeclaringClass());
+                    throw new IllegalArgumentException(msg);
+                }
+
                 if (shouldCallAlterBeanMethod(pMInvoc, ff.alterBean(), targetLogger)) {
                     return callAlterBeanMethod(pMInvoc, ff.alterBean(), targetLogger);
                 }
@@ -71,17 +74,23 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
                     return callAlterClazzMethodOnFirst(pMInvoc, ff, targetLogger);
                 }
 
-                // Error if not field
-                if ((ff.alterBean() == null || ff.alterBean().isEmpty())
-                        && (ff.alterClazz() == null || (ff.alterClazz() == NullType.class))) {
-                    throw new IllegalArgumentException("FeatFlip: 'alterBeanName' or 'alterClazz' should be provided in "
-                            + method.getDeclaringClass());
-                }
-
             }
         }
         // do not catch throwable
         return pMInvoc.proceed();
+    }
+
+    /**
+     * Check requirements for annoting methods.
+     * 
+     * @param ff
+     *            target annotation {@link Flip}
+     * @return is param are correct
+     */
+    private boolean assertRequiredParams(Flip ff) {
+        boolean alterBeanPresent = (ff.alterBean() != null && !ff.alterBean().isEmpty());
+        boolean alterClazPresent = ((ff.alterClazz() != null) && (ff.alterClazz() != NullType.class));
+        return alterBeanPresent || alterClazPresent;
     }
 
     /** {@inheritDoc} */
