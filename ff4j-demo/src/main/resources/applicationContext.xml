@@ -21,11 +21,11 @@
 		</authentication-provider>
 	</authentication-manager>
 	
+	<beans:bean id="ff4j.store" class="org.ff4j.store.InMemoryFeatureStore" />
+	
 	<!-- FF4J -->
 	<beans:bean class="org.ff4j.FF4j" >
-		<beans:property name="store">
-			<beans:bean class="org.ff4j.store.InMemoryFeatureStore" />
-		</beans:property>
+		<beans:property name="store" ref="ff4j.store" />
 		<beans:property name="authorizationsManager" >
 			<beans:bean class="org.ff4j.security.SpringSecurityAuthorisationManager" />
 		</beans:property>
@@ -49,6 +49,14 @@
 	<beans:bean id="namingStrategy" class="org.springframework.jmx.export.naming.MetadataNamingStrategy">
 		<beans:property name="attributeSource" ref="jmxAttributeSource" />
 	</beans:bean>
+	
+	<beans:bean id="ff4j.webservices" class="org.ff4j.web.services.FeatureWebService" >
+		<beans:property name="store" ref="ff4j.store" />
+	</beans:bean>
+	
+	<beans:bean id="mapper1" class="org.ff4j.web.services.exception.FeatureAlreadyExistExceptionMapper" scope="singleton" />
+	<beans:bean id="mapper2" class="org.ff4j.web.services.exception.FeatureNotFoundExceptionMapper" 	scope="singleton" />
+	<beans:bean id="mapper3" class="org.ff4j.web.services.exception.RuntimeExceptionMapper" 			scope="singleton" />
 	
 	<context:component-scan base-package="org.ff4j.jmx" />
 	

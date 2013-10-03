@@ -1,4 +1,4 @@
-package org.ff4j.web.store;
+package org.ff4j.store;
 
 import java.util.Map;
 
