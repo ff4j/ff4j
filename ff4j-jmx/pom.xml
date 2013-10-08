@@ -8,6 +8,10 @@
 	<packaging>jar</packaging>
 	<name>ff4j-jmx</name>
 	
+	<description>
+		This project provides MBEANs to work upon features through JMX.
+	</description>
+	
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~   PARENT                 ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->

@@ -10,6 +10,7 @@
 	<url>http://ff4j.org</url>
 	<inceptionYear>2013</inceptionYear>
     
+    <!-- Deployment on Central Maven -->
     <parent>
      <groupId>org.sonatype.oss</groupId>
      <artifactId>oss-parent</artifactId>
@@ -32,12 +33,26 @@
 		</license>
 	</licenses>
 	
+	<!--  Displayed in about page of site -->
     <description>
-     FF4J, stands for Feature Flipping - for Java, implements the Feature Toggle agile development practice.
-     It allows you to easily enable and disable features at runtime through dedicated console. Once enabled you can limit 
-     the usage to a limited subset of user through role administration. Once enabled and granted you can finally implement 
-     an overriding flipping strategy.
-    </description>
+     
+     FF4J, stands for Feature Flipping for Java, helps you implementing the 'feature toggle' agile development practice.
+     Features (services/behaviour/treatments/screen parts) can be enabled and disabled at runtime but also limited to an authorized
+     sub-set of users (e.g : beta-testers for beta feature). Once the feature is enabled and granted you can implement your own strategy
+     to flip through custom FlippingStrategy.
+     
+     The library provides :
+     	- different ways to store the features : InMemory, inDatabase, remotely through HTTP
+     	- different ways to access features at runtime : WebConsole, JMX, REST Services
+     	- security to grant accesses with Spring Security
+     	- cache to limit overhead of accessing store (http or db)
+     	- both static (singleton bean) and prototype to allow Inversion of Control
+     	- native integration to Spring Framework
+     	
+     But also : 
+     	- Performs flipping through AOP instead of if/then/else everywhere in your code.
+     	 
+     </description>
  
 	<!-- ~ Properties ~ -->
 	<properties>
@@ -79,14 +94,14 @@
 	<!-- ~ Modules ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<modules>
-		<module>ff4j-core</module>
-		<module>ff4j-web</module>
-		<module>ff4j-store-jdbc</module>
-		<module>ff4j-store-remoting</module> <!-- since 1.0.1 -->
-		<module>ff4j-security-spring</module>
-		<module>ff4j-cache-ehcache</module>
-		<module>ff4j-aop</module>
-		<module>ff4j-jmx</module>
+		<!--<module>ff4j-core</module>-->
+		<!--<module>ff4j-web</module>-->
+		<!--<module>ff4j-store-jdbc</module>-->
+		<!--<module>ff4j-store-remoting</module> -->
+		<!--<module>ff4j-security-spring</module>-->
+		<!--<module>ff4j-cache-ehcache</module>-->
+		<!--<module>ff4j-aop</module>-->
+		<!--<module>ff4j-jmx</module>-->
 		<!-- trop gros --> 
 		<!--<module>ff4j-demo</module>-->
 	</modules>
@@ -480,9 +495,14 @@
   	</issueManagement>
   	
   	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  	<!-- ~ Deploy on Maven Central eventually ~ -->
+  	<!-- ~ Export Site in target folder       ~ -->
   	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  	<distributionManagement />
+  	<distributionManagement >
+    	<site>
+      		<id>website</id>
+      		<url>/Users/clunven/Developpement/workspace-ff4j/mvnsite</url>
+    	</site>
+  </distributionManagement>
 
 
 </project>

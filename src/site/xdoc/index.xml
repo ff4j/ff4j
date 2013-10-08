@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<document>
+    <properties>
+        <title>Feature Flags 4 J</title>
+        <author email="admin@ff4j.org">Feature Flags 4J</author>
+    </properties>
+
+    <body>
+        <section name="Try out Feature Flipping !!">
+          <subsection name="Introduction">
+            <p style="text-align:justify">
+            	FF4J, stands for <b>Feature Flipping for Java</b>, helps you implementing the 
+            	<a href="http://martinfowler.com/bliki/FeatureToggle.html">'feature toggle'</a> agile development practice.
+     			Features (services/behaviour/treatments/screen parts) can be enabled and disabled at runtime but also limited to an authorized
+     			sub-set of users (e.g : beta-testers for beta feature). Once the feature is enabled and granted you can implement your own strategy
+     			to flip through custom FlippingStrategy.
+     		</p>
+     	</subsection>
+      	<subsection name="Features">
+    		<p>
+    		  <ul>The library provides :
+		     	<li> different ways to store the features : InMemory, inDatabase, remotely through HTTP</li>
+		     	<li> different ways to access features at runtime : WebConsole, JMX, REST Services</li>
+		     	<li> security to grant accesses with Spring Security</li>
+		     	<li> cache to limit overhead of accessing store (http or db)</li>
+		     	<li> both static (singleton bean) and prototype to allow Inversion of Control</li>
+		     	<li> native integration to Spring Framework</li>
+		     </ul>
+		     	
+		     <ul>But also : 
+		     	<li> Performs flipping through AOP instead of if/then/else everywhere in your code.</li>
+		     </ul>   
+     
+     <a href=" http://ff4j-demo.octo-clu.cloudbees.net/" class="btn btn-primary btn-large">
+  		 <i class="icon-th-large icon-white">Watch DEMO</i>
+  	</a>
+
+  	<a href="https://github.com/clun/ff4j" class="btn btn-success btn-large">
+  		<i class="icon-hand-up icon-white">Source Code on Github </i>
+  	</a>
+
+  <br/></p><br/>
+  <p style="text-align:center">
+  	<img src="./images/screen1.png" />
+  </p>
+           </subsection>>
+        </section>
+    </body>
+</document>

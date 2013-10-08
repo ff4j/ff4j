@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Feature Flags 4J">
+  
+  <!-- Activate Twitter Bootstrap for Maven Site -->
+  <skin>
+    <groupId>org.apache.maven.skins</groupId>
+    <artifactId>maven-fluido-skin</artifactId>
+    <version>1.3.0</version>
+  </skin>
+
+  <!-- Configuration of fluido plugin -->
+   <custom>
+    <fluidoSkin>
+    
+      <!-- Nav Bar -->
+      <topBarEnabled>true</topBarEnabled>
+       <topBarIcon>
+        <name>FeatureFlags4J</name>
+        <alt>FeatureFlags4J</alt>
+         <src>/images/ff4j-logo.png</src>
+        <href>/index.html</href>
+      </topBarIcon>
+      <navBarStyle>navbar-inverse</navBarStyle>
+      <topBarContainerStyle>color:#880000;</topBarContainerStyle>
+      
+      <!-- Fork me on github -->
+      <gitHub>
+        <projectId>clun/ff4j</projectId>
+        <ribbonOrientation>right</ribbonOrientation>
+        <ribbonColor>red</ribbonColor>
+      </gitHub>
+      
+      <!--  Follow me on Twitter -->
+       <twitter>
+        <user>FeatFlip4Java</user>
+        <showUser>true</showUser>
+        <showFollowers>true</showFollowers>
+      </twitter>
+      
+      <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
+      
+      <googleSearch/>
+      
+    </fluidoSkin>
+   </custom>
+
+  <body>
+
+    <menu name="FeatureFlag4J" inherit="top" img="icon-home">
+      <item name="About"         	href="/index.html"          	/>
+      <item name="Getting Started" 	href="#" 					/>
+      <item name="Reference Guide" 	href="#" 					/>
+      <item name="JavaDoc" 			href="apidocs/index.html" 	/>
+      <item name="FAQ" 			    href="/faq.html" 	/>
+      
+   </menu>
+    
+    <menu name="Source Code">
+    	<item name="Browse (XREF)"		href="xref/index.html"  			/>
+    	<item name="Checkout" 			href="source-repository.html" 		/>
+    	<item name="GitHub"				href="https://github.com/clun/ff4j" />
+    	<item name="Issues"		 				href="issue-tracking.html" />
+    </menu>
+    
+    <menu name="Modules">
+    	<item name="ff4j-jmx" href="./ff4j-jmx/index.html" />
+    </menu>
+    
+    <menu name="Build">
+    	<item name="License"		 			href="license.html" 		/>
+        <item name="Continuous Integration" 	href="https://octo-clu.ci.cloudbees.com/" />
+    	<item name="Distribution Management" 	href="distribution-management.htm" />
+    	<item name="Dependency Info" 			href="dependency-info.html" />
+    	<item name="Dependency Management" 		href="dependency-management.html" />
+    	<item name="Quality Reports" 			href="project-reports.html" />
+    </menu>
+      
+  </body>
+</project>

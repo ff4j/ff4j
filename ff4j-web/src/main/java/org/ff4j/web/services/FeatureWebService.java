@@ -1,6 +1,7 @@
 package org.ff4j.web.services;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -25,9 +26,6 @@ public class FeatureWebService {
 
     /** Logger for the class. */
     static final Logger LOGGER = LoggerFactory.getLogger(FeatureWebService.class);
-
-    /** Objet serialise par JSON. */
-    private static final String TEXT_UTF8 = MediaType.TEXT_PLAIN + ";charset=UTF-8";
 
     /** Objet serialise par JSON. */
     private static final String JSON_UTF8 = MediaType.APPLICATION_JSON + ";charset=UTF-8";
@@ -96,7 +94,7 @@ public class FeatureWebService {
     @POST
     @Path("/delete/{id}")
     @Produces(JSON_UTF8)
-    public boolean delete(@PathParam("id") String featureId) {
+    public boolean delete(@FormParam("id") String featureId) {
         getStore().delete(featureId);
         return true;
     }
