@@ -3,12 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 
 	<properties>
-		<title>FAQ</title>
+		<title>Reference Guide</title>
 	</properties>
 
 	<body>
-		<section name="FAQ">
-			<p>Not yet written, come back later.</p>
+		<section name="Reference Guide">
+			<p>Not written yet, please come back later</p>
 		</section>
 	</body>
 	

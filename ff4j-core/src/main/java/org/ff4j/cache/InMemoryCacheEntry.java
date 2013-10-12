@@ -13,10 +13,10 @@ public final class InMemoryCacheEntry<T> implements Serializable {
     private static final long serialVersionUID = -1444331517339058103L;
 
     /** Insertion date, allow to compute time-to-live. */
-    private long insertedDate;
+    private final long insertedDate;
 
     /** Current entry to cache. */
-    private T entry;
+    private final T entry;
 
     /**
      * Parameterized contructor with target cached object.
@@ -39,16 +39,6 @@ public final class InMemoryCacheEntry<T> implements Serializable {
     }
 
     /**
-     * Setter accessor for attribute 'insertedDate'.
-     * 
-     * @param insertedDate
-     *            new value for 'insertedDate '
-     */
-    public void setInsertedDate(long insertedDate) {
-        this.insertedDate = insertedDate;
-    }
-
-    /**
      * Getter accessor for attribute 'entry'.
      * 
      * @return current value of 'entry'
@@ -56,15 +46,4 @@ public final class InMemoryCacheEntry<T> implements Serializable {
     public T getEntry() {
         return entry;
     }
-
-    /**
-     * Setter accessor for attribute 'entry'.
-     * 
-     * @param entry
-     *            new value for 'entry '
-     */
-    public void setEntry(T entry) {
-        this.entry = entry;
-    }
-
 }

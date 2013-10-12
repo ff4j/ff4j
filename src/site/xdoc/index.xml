@@ -1,5 +1,7 @@
-<?xml version="1.0"?>
-<document>
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
     <properties>
         <title>Feature Flags 4 J</title>
         <author email="admin@ff4j.org">Feature Flags 4J</author>
@@ -7,43 +9,34 @@
 
     <body>
         <section name="Try out Feature Flipping !!">
-          <subsection name="Introduction">
+        
+        <table>
+         <tr>
+          <td><img src="./images/screen1.png" alt="capture" width="300"/></td>
+          <td>
             <p style="text-align:justify">
             	FF4J, stands for <b>Feature Flipping for Java</b>, helps you implementing the 
             	<a href="http://martinfowler.com/bliki/FeatureToggle.html">'feature toggle'</a> agile development practice.
-     			Features (services/behaviour/treatments/screen parts) can be enabled and disabled at runtime but also limited to an authorized
-     			sub-set of users (e.g : beta-testers for beta feature). Once the feature is enabled and granted you can implement your own strategy
-     			to flip through custom FlippingStrategy.
+     			Features (services/behaviour/treatments/screen parts) can be enabled and disabled through configuration and <b>at runtime</b>. 
+     			You can open somes features for a limited sub-set of authorized users. Finally, you can implement your own strategy for flipping, including business rules.
      		</p>
-     	</subsection>
-      	<subsection name="Features">
-    		<p>
-    		  <ul>The library provides :
-		     	<li> different ways to store the features : InMemory, inDatabase, remotely through HTTP</li>
-		     	<li> different ways to access features at runtime : WebConsole, JMX, REST Services</li>
-		     	<li> security to grant accesses with Spring Security</li>
-		     	<li> cache to limit overhead of accessing store (http or db)</li>
-		     	<li> both static (singleton bean) and prototype to allow Inversion of Control</li>
-		     	<li> native integration to Spring Framework</li>
-		     </ul>
-		     	
-		     <ul>But also : 
-		     	<li> Performs flipping through AOP instead of if/then/else everywhere in your code.</li>
-		     </ul>   
-     
-     <a href=" http://ff4j-demo.octo-clu.cloudbees.net/" class="btn btn-primary btn-large">
-  		 <i class="icon-th-large icon-white">Watch DEMO</i>
-  	</a>
-
-  	<a href="https://github.com/clun/ff4j" class="btn btn-success btn-large">
-  		<i class="icon-hand-up icon-white">Source Code on Github </i>
-  	</a>
-
-  <br/></p><br/>
-  <p style="text-align:center">
-  	<img src="./images/screen1.png" />
-  </p>
-           </subsection>>
+     		<p style="text-align:center">
+     		<a href="http://ff4j-demo.octo-clu.cloudbees.net/" class="btn btn-primary btn-large">
+	  		 		<i class="icon-th-large icon-white">Watch DEMO</i>
+	  			</a>
+	  			&nbsp;&nbsp;&nbsp;
+	  			<a href="https://github.com/clun/ff4j" class="btn btn-success btn-large">
+	  				<i class="icon-hand-up icon-white">Source Code on Github </i>
+	  			</a>
+     		</p>
+     		</td>
+     		</tr></table>
+     	
+     	<subsection name="Features">
+    		<p style="text-align:center">
+    			<img src="./images/function.png" alt="capture"/>
+    		</p>
+           </subsection>
         </section>
     </body>
 </document>

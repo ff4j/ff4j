@@ -35,23 +35,10 @@
 	
 	<!--  Displayed in about page of site -->
     <description>
-     
      FF4J, stands for Feature Flipping for Java, helps you implementing the 'feature toggle' agile development practice.
      Features (services/behaviour/treatments/screen parts) can be enabled and disabled at runtime but also limited to an authorized
      sub-set of users (e.g : beta-testers for beta feature). Once the feature is enabled and granted you can implement your own strategy
      to flip through custom FlippingStrategy.
-     
-     The library provides :
-     	- different ways to store the features : InMemory, inDatabase, remotely through HTTP
-     	- different ways to access features at runtime : WebConsole, JMX, REST Services
-     	- security to grant accesses with Spring Security
-     	- cache to limit overhead of accessing store (http or db)
-     	- both static (singleton bean) and prototype to allow Inversion of Control
-     	- native integration to Spring Framework
-     	
-     But also : 
-     	- Performs flipping through AOP instead of if/then/else everywhere in your code.
-     	 
      </description>
  
 	<!-- ~ Properties ~ -->
@@ -87,26 +74,22 @@
 
 		<!-- build : scm -->
 		<github.login />
-
+		
 	</properties>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~ Modules ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<modules>
-		<!--<module>ff4j-core</module>-->
-		<!--<module>ff4j-web</module>-->
-		<!--<module>ff4j-store-jdbc</module>-->
-		<!--<module>ff4j-store-remoting</module> -->
-		<!--<module>ff4j-security-spring</module>-->
-		<!--<module>ff4j-cache-ehcache</module>-->
-		<!--<module>ff4j-aop</module>-->
-		<!--<module>ff4j-jmx</module>-->
-		<!-- trop gros --> 
-		<!--<module>ff4j-demo</module>-->
+		<!-- <module>ff4j-core</module>
+		<module>ff4j-web</module>
+		<module>ff4j-store-jdbc</module>
+		<module>ff4j-store-remoting</module>
+		<module>ff4j-security-spring</module>
+		<module>ff4j-cache-ehcache</module>
+		<module>ff4j-aop</module> -->
+		<module>ff4j-jmx</module>
 	</modules>
-
-	
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~ Dependencies ~ -->
@@ -289,7 +272,7 @@
 						<encoding>UTF-8</encoding>
 					</configuration>
 				</plugin>
-			
+				
 				<!-- Shutdown eclipse warning (works with intelliJ)-->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
@@ -315,6 +298,15 @@
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
+				
+				<plugin>
+        			<groupId>org.apache.maven.plugins</groupId>
+        			<artifactId>maven-site-plugin</artifactId>
+        			<version>3.3</version>
+        			<configuration>
+          				<templateFile>${basedir}/src/site/ff4j-site.vm</templateFile>
+        			</configuration>
+      			</plugin>
 
 			</plugins>
 		</pluginManagement>
@@ -322,7 +314,7 @@
 	</build>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~ Software Quality ~ -->
+	<!-- ~ Software Quality 		~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<reporting>
 		<plugins>
@@ -332,7 +324,7 @@
 				<artifactId>maven-changes-plugin</artifactId>
 				<version>2.8</version>
 			</plugin>
-
+		
 			<!-- test coverage -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -396,7 +388,27 @@
 				</configuration>
 				<version>2.4</version>
 			</plugin>
-
+		
+    		<!-- Changelog -->
+    		<plugin>
+        		<groupId>org.apache.maven.plugins</groupId>
+        		<artifactId>maven-changelog-plugin</artifactId>
+        		<version>2.2</version>
+		        <reportSets>
+		          <reportSet>
+		            <id>dual-report</id>
+		            <configuration>
+		              <type>range</type>
+		              <range>30</range>
+		            </configuration>
+		            <reports>
+		              <report>changelog</report>
+		              <report>file-activity</report>
+		            </reports>
+		          </reportSet>
+		        </reportSets>
+      		</plugin>
+	
 		</plugins>
 	</reporting>
 

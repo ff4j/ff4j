@@ -11,17 +11,6 @@
   <!-- Configuration of fluido plugin -->
    <custom>
     <fluidoSkin>
-    
-      <!-- Nav Bar -->
-      <topBarEnabled>true</topBarEnabled>
-       <topBarIcon>
-        <name>FeatureFlags4J</name>
-        <alt>FeatureFlags4J</alt>
-         <src>/images/ff4j-logo.png</src>
-        <href>/index.html</href>
-      </topBarIcon>
-      <navBarStyle>navbar-inverse</navBarStyle>
-      <topBarContainerStyle>color:#880000;</topBarContainerStyle>
       
       <!-- Fork me on github -->
       <gitHub>
@@ -33,8 +22,8 @@
       <!--  Follow me on Twitter -->
        <twitter>
         <user>FeatFlip4Java</user>
-        <showUser>true</showUser>
-        <showFollowers>true</showFollowers>
+        <showUser>false</showUser>
+        <showFollowers>false</showFollowers>
       </twitter>
       
       <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
@@ -46,34 +35,57 @@
 
   <body>
 
-    <menu name="FeatureFlag4J" inherit="top" img="icon-home">
+    <menu name="Main" inherit="top" img="icon-home">
       <item name="About"         	href="/index.html"          	/>
-      <item name="Getting Started" 	href="#" 					/>
-      <item name="Reference Guide" 	href="#" 					/>
-      <item name="JavaDoc" 			href="apidocs/index.html" 	/>
-      <item name="FAQ" 			    href="/faq.html" 	/>
-      
+      <item name="Getting Started" 	href="/getting-started.html"	/>
+      <item name="Reference Guide" 	href="/reference-guide.html" 	/>
+      <item name="JavaDoc" 			href="apidocs/index.html" 		/>
+      <item name="FAQ" 			    href="/faq.html" 				/>
    </menu>
     
-    <menu name="Source Code">
+    <menu name="Source Code" img="icon-book" inherit="top">
     	<item name="Browse (XREF)"		href="xref/index.html"  			/>
-    	<item name="Checkout" 			href="source-repository.html" 		/>
-    	<item name="GitHub"				href="https://github.com/clun/ff4j" />
-    	<item name="Issues"		 				href="issue-tracking.html" />
+    	<item name="SourceRepository" 	href="source-repository.html" 		/>
+      	<item name="GitHub" 			href="https://github.com/clun/ff4j"/>
+    	<item name="Issues"			    href="issue-tracking.html" />
     </menu>
     
-    <menu name="Modules">
-    	<item name="ff4j-jmx" href="./ff4j-jmx/index.html" />
+    <menu name="Modules" img="icon-align-justify" inherit="top" >
+    	<item name="List"			href="/modules.html"			/>
+    	<item name="ff4j-core" collapse="true" href="./ff4j-core/index.html" />
+    	<item name="ff4j-aop" collapse="true" href="./ff4j-aop/index.html" />
+    	<item name="ff4j-jmx" collapse="true" href="./ff4j-jmx/index.html" >
+    		<item name="JavaDoc"   			href="./ff4j-jmx/apidocs/index.html" />
+    		<item name="Tests Surefire"   	href="./ff4j-jmx/apidocs/index.html" />
+    		<item name="Tests Cobertura"    href="./ff4j-jmx/surefire-report.html" />
+    	</item>
+    	<item name="ff4j-store-jdbc" 		collapse="true" href="./ff4j-store-jdbc/index.html"   />
+    	<item name="ff4j-store-remoting" 	collapse="true" href="./ff4j-store-remoting/index.html" />
+    	<item name="ff4j-cache-ehcache" 	collapse="true" href="./ff4j-cache-ehcache/index.html" />
+    	<item name="ff4j-security-spring" 	collapse="true" href="./ff4j-security-spring/index.html" />
     </menu>
     
-    <menu name="Build">
+    <menu name="Build"  inherit="top" img="icon-cog" >
     	<item name="License"		 			href="license.html" 		/>
         <item name="Continuous Integration" 	href="https://octo-clu.ci.cloudbees.com/" />
-    	<item name="Distribution Management" 	href="distribution-management.htm" />
-    	<item name="Dependency Info" 			href="dependency-info.html" />
-    	<item name="Dependency Management" 		href="dependency-management.html" />
-    	<item name="Quality Reports" 			href="project-reports.html" />
+    	<item name="Distribution Management" 	href="distribution-management.htm" 		/>
+    	<item name="Dependency Info" 			href="dependency-info.html" 		/>
+    	<item name="Dependency Management" 		href="dependency-management.html" 	/>
+    	<item name="FileActivity"				href="file-activity.html" 			/>
     </menu>
-      
+    
+    <links>
+      <item name="Demo Live" 	 		href="http://ff4j-demo.octo-clu.cloudbees.net"/>
+      <item name="Reference Guide" 		href="/reference-guide.html"/>
+      <item name="Getting Started"		href="/getting-started.html"/>
+      <item name="Get Support"			href="https://groups.google.com/forum/?hl=fr#!forum/ff4j" />
+    </links>
+
   </body>
+  
+  <poweredBy>
+    <logo name="OCTO" 		href="http://www.octo.com" 		img="images/octo-logo.jpeg"/>
+    <logo name="CloudBees" 	href="http://www.cloudbees.com" img="images/devcloud-logo.png" />
+  </poweredBy>
+  
 </project>
