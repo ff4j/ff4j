@@ -3,7 +3,17 @@
 FF4J, stands as - Feature Flipping for Java -, implements the [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html) 
 agile development practice. It allows you to easily enable and disable features at runtime through dedicated console.
 
-[Ff4J.org](http://ff4j.org)
+![Alt ScreenShot](https://raw.github.com/clun/ff4j/master/src/site/resources/images/screen1.png)
+
+Official Website : [ff4J.org](http://ff4j.org)
+
+![Alt ScreenShot](https://raw.github.com/clun/ff4j/master/src/site/resources/images/ff4j-logo-gold.png)
+
+# Overview
+
+![Alt ScreenShot](https://raw.github.com/clun/ff4j/master/src/site/resources/images/function.png)
+
+# Getting Started
 
 1 - [First contact with the API](#first-contact)
 <br/>2 - [Initialize a FlipStore from ff4j.xml file](#building-filling)
@@ -487,8 +497,6 @@ public void testExpression() throws Exception {
 
 In this example we would like to limit the display a button "call me" to office hours.
 
-![Alt ScreenShot](https://raw.github.com/clun/ff4j/master/src/site/call-us.png)
-
 * First, implement your own `FlippingStrategy`. The `init` method is used to initialize component with configuration default values. (attribute `expression` in ff4j.xml)
 
 ```java
@@ -532,3 +540,8 @@ public void testExpression() throws Exception {
 ```
 
 _Please note that this unit test could failed depending on what time is it :-)_
+
+
+# Overview
+
+![Alt ScreenShot](https://raw.github.com/clun/ff4j/master/src/site/resources/images/poweredbyocto.png)
