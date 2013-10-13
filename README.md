@@ -1,5 +1,7 @@
 ### Introduction
 
+Official Website : [ff4j.org](http://ff4j.org)
+
 FF4J, stands as - Feature Flipping for Java -, implements the [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html) 
 agile development practice. It allows you to easily enable and disable features at runtime through dedicated console.
 
@@ -7,9 +9,7 @@ agile development practice. It allows you to easily enable and disable features 
   <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/screen1.png?raw=true" alt="functions"/>
 </p>
 
-Official Website : [ff4j.org](http://ff4j.org)
-
-Available on maven central
+Available on [maven central](http://central.maven.org/maven2/org/ff4j/)
 
 ```xml
 <dependency>
