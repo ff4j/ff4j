@@ -1,19 +1,21 @@
-# What is FF4J ?
+## What is FF4J ?
 
 FF4J, stands as - Feature Flipping for Java -, implements the [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html) 
 agile development practice. It allows you to easily enable and disable features at runtime through dedicated console.
 
-![Alt ScreenShot](https://raw.github.com/clun/ff4j/master/src/site/resources/images/screen1.png)
+<p align="center">
+  <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/screen1.png?raw=true" alt="functions"/>
+</p>
 
 Official Website : [ff4J.org](http://ff4j.org)
 
-![Alt ScreenShot](https://raw.github.com/clun/ff4j/master/src/site/resources/images/ff4j-logo-gold.png)
+### Overview
+<p align="center">
+  <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/function.png?raw=true" alt="functions"/>
+</p>
 
-# Overview
 
-![Alt ScreenShot](https://raw.github.com/clun/ff4j/master/src/site/resources/images/function.png)
-
-# Getting Started
+## Getting Started
 
 1 - [First contact with the API](#first-contact)
 <br/>2 - [Initialize a FlipStore from ff4j.xml file](#building-filling)
@@ -541,7 +543,4 @@ public void testExpression() throws Exception {
 
 _Please note that this unit test could failed depending on what time is it :-)_
 
-
-# Overview
-
-![Alt ScreenShot](https://raw.github.com/clun/ff4j/master/src/site/resources/images/poweredbyocto.png)
+![Alt ScreenShot](https://raw.github.com/clun/ff4j/master/src/site/resources/images/octo-logo.png)
