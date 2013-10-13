@@ -1,4 +1,4 @@
-## What is FF4J ?
+### Introduction
 
 FF4J, stands as - Feature Flipping for Java -, implements the [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html) 
 agile development practice. It allows you to easily enable and disable features at runtime through dedicated console.
@@ -7,13 +7,23 @@ agile development practice. It allows you to easily enable and disable features 
   <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/screen1.png?raw=true" alt="functions"/>
 </p>
 
-Official Website : [ff4J.org](http://ff4j.org)
+Official Website : [ff4j.org](http://ff4j.org)
 
-### Overview
+Available on maven central
+
+```xml
+<dependency>
+  <groupId>org.ff4j</groupId>
+  <artifactId>ff4j-core</artifactId>
+  <version>${currentVersion}</version>
+</dependency>
+```
+
+### Functions Overview
+
 <p align="center">
   <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/function.png?raw=true" alt="functions"/>
 </p>
-
 
 ## Getting Started
 
@@ -543,4 +553,4 @@ public void testExpression() throws Exception {
 
 _Please note that this unit test could failed depending on what time is it :-)_
 
-![Alt ScreenShot](https://raw.github.com/clun/ff4j/master/src/site/resources/images/octo-logo.png)
+![Alt ScreenShot](https://raw.github.com/clun/ff4j/master/src/site/resources/images/octo-logo.jpeg)
