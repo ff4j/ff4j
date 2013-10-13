@@ -81,13 +81,13 @@
 	<!-- ~ Modules ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<modules>
-		<!-- <module>ff4j-core</module>
+		<module>ff4j-core</module>
 		<module>ff4j-web</module>
 		<module>ff4j-store-jdbc</module>
 		<module>ff4j-store-remoting</module>
 		<module>ff4j-security-spring</module>
 		<module>ff4j-cache-ehcache</module>
-		<module>ff4j-aop</module> -->
+		<module>ff4j-aop</module>
 		<module>ff4j-jmx</module>
 	</modules>
 
@@ -302,7 +302,7 @@
 				<plugin>
         			<groupId>org.apache.maven.plugins</groupId>
         			<artifactId>maven-site-plugin</artifactId>
-        			<version>3.3</version>
+        			<version>3.0</version>
         			<configuration>
           				<templateFile>${basedir}/src/site/ff4j-site.vm</templateFile>
         			</configuration>

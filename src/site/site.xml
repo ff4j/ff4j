@@ -36,7 +36,7 @@
   <body>
 
     <menu name="Main" inherit="top" img="icon-home">
-      <item name="About"         	href="/index.html"          	/>
+      <item name="Home"         	href="/index.html"          	/>
       <item name="Getting Started" 	href="/getting-started.html"	/>
       <item name="Reference Guide" 	href="/reference-guide.html" 	/>
       <item name="JavaDoc" 			href="apidocs/index.html" 		/>
@@ -84,7 +84,6 @@
   </body>
   
   <poweredBy>
-    <logo name="OCTO" 		href="http://www.octo.com" 		img="images/octo-logo.jpeg"/>
     <logo name="CloudBees" 	href="http://www.cloudbees.com" img="images/devcloud-logo.png" />
   </poweredBy>
   

@@ -9,11 +9,7 @@
 
     <body>
         <section name="Try out Feature Flipping !!">
-        
-        <table>
-         <tr>
-          <td><img src="./images/screen1.png" alt="capture" width="300"/></td>
-          <td>
+          <subsection name="">
             <p style="text-align:justify">
             	FF4J, stands for <b>Feature Flipping for Java</b>, helps you implementing the 
             	<a href="http://martinfowler.com/bliki/FeatureToggle.html">'feature toggle'</a> agile development practice.
@@ -21,22 +17,18 @@
      			You can open somes features for a limited sub-set of authorized users. Finally, you can implement your own strategy for flipping, including business rules.
      		</p>
      		<p style="text-align:center">
-     		<a href="http://ff4j-demo.octo-clu.cloudbees.net/" class="btn btn-primary btn-large">
+     			<br/>
+     			<a href="http://ff4j-demo.octo-clu.cloudbees.net/" class="btn btn-primary btn-large">
 	  		 		<i class="icon-th-large icon-white">Watch DEMO</i>
 	  			</a>
-	  			&nbsp;&nbsp;&nbsp;
-	  			<a href="https://github.com/clun/ff4j" class="btn btn-success btn-large">
-	  				<i class="icon-hand-up icon-white">Source Code on Github </i>
-	  			</a>
+     			<br/><img src="./images/function.png" alt="capture"/>
      		</p>
-     		</td>
-     		</tr></table>
-     	
-     	<subsection name="Features">
-    		<p style="text-align:center">
-    			<img src="./images/function.png" alt="capture"/>
-    		</p>
-           </subsection>
+            <pre class="prettyprint linenums"><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+}]]></pre>
+
+     	</subsection>
         </section>
     </body>
 </document>

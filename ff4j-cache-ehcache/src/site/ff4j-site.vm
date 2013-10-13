@@ -454,8 +454,8 @@
 		#googleAnalytics( $decoration.googleAnalyticsAccountId )
 	</head>
 	<body class="composite">
-		<img class="logo-left"  src="$relativePath/images/ff4j-logo-gold.png" alt="Feature Flag 4 Java" />
-		<img class="logo-right" src="$relativePath/images/octo-logo.png" alt="Feature Flag 4 Java" 		/>
+		<img class="logo-left"  src="$relativePath/images/ff4j-logo.png" alt="Feature Flag 4 Java" />
+		<img class="logo-right" src="$relativePath/images/logo.jpg" alt="OCTO Technology" />
 		<div class="clear"></div>
 
 		<div class="navbar">
@@ -487,8 +487,8 @@
 
 		<div class="footer">
 			#set ( $currentYear = ${currentDate.year} + 1900 )
-				<p>Copyright &copy; ${project.inceptionYear}-${currentYear} - ff4j.org -  All Rights Reserved.</p>
-				<p>This framework has been written by C.Lunven, with precious advices of OCTO Technology coworkers</p>
+				<p>Copyright &copy; ${project.inceptionYear}-${currentYear} <a class="external" href="$project.organization.url">${project.organization.name}</a>. All Rights Reserved.</p>
+				<p>Ff4j has been written by C.Lunven, thanks to OCTO Technology for precious advices</p>
 				<p>Site powered by <a class="external" href="http://twitter.github.com/bootstrap/">Twitter Bootstrap</a>. Icons from <a class="external" href="http://glyphicons.com/">Glyphicons Free</a>.</p>
 			</div>
 		</div>
