@@ -1,4 +1,4 @@
-package org.ff4j.test;
+package org.ff4j.test.gettingstarted;
 
 import static org.junit.Assert.fail;
 

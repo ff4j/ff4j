@@ -2,14 +2,15 @@
 
 Official Website : [ff4j.org](http://ff4j.org)
 
-FF4J, stands as - Feature Flipping for Java -, implements the [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html) 
-agile development practice. It allows you to easily enable and disable features at runtime through dedicated console.
+FF4J, standing as Feature Flipping for Java, implements the [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html) 
+agile development practice. It allows you to  enable and disable features through configuration or at runtime with dedicated consoles and services.
 
 <p align="center">
   <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/screen1.png?raw=true" alt="functions"/>
+  <br/><i>ff4j administration console</i> 
 </p>
 
-Available on [maven central](http://central.maven.org/maven2/org/ff4j/)
+The library is available on maven central [here](http://central.maven.org/maven2/org/ff4j/). To use it, please declare the folowing dependency in your `pom.xml` file.
 
 ```xml
 <dependency>
@@ -37,46 +38,22 @@ Available on [maven central](http://central.maven.org/maven2/org/ff4j/)
 <br/>8 - [Flipping Strategy](#strategy)
 
 <a name="first-contact"/>
-### 1 - First contact with the API
+### 1 - Hello World !
 ***
-In this test, we would like to show how to start coding with the core API. `ff4j-core` only rely on `slf4j-api`, no extra dependency required.
-You can see the dependency tree [HERE](https://raw.github.com/clun/ff4j/master/src/site/ff4j-core-graph.png) (`mvn -P graph graph:project`). 
 
-* Please add this dependency to your `pom.xml` file.
+* Add this dependency to your `pom.xml` file.
+
+`ff4j-core` required `slf4j-api` as single dependency. [dependency tree](https://raw.github.com/clun/ff4j/master/src/site/ff4j-core-graph.png). You will have to add extra dependencies for extra features but for basic usage this single jar is enough.
 
 ```xml
 <dependency>
   <groupId>org.ff4j</groupId>
   <artifactId>ff4j-core</artifactId>
-  <version>...</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 
-* Then here is a sample test : 
-
-```java
-@Test
-public void myFirstTest() {
-   
-   // Default status disabled
-   FF4j.createFeature("someFeature");
-
-   // No FeatureNotFoundException but feature disable
-   Assert.assertFalse(FF4j.isFlipped("someFeature"));
-}
-```
-We create a `Feature` which default status is `disable`. The test is here successful. If the feature is not explicitly created, it would raised the exception `FeatureNotFoundException`. Note that you can force the autocreation of feature with the following statement in your code : 
-
-```java
-FF4j.autoCreateFeature(true);
-```
-
-<a name="building-filling"/>
-### 2 - Initialize a FlipStore from ff4j.xml file
-***
-Each time a feature is created it's register into a store (default is in-memory). We don't expect you to define your features programmatically each time (can be handful for testing purpose though). You would prefer load a configuration file.
-
-* Please create the following `ff4j.xml` file in your classpath :
+* Then create the following `ff4j.xml` file in your classpath :
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -84,18 +61,70 @@ Each time a feature is created it's register into a store (default is in-memory)
  <feature uid="sayHello" enable="true" description="guess what..." />
 </features>
 ```
+
+* Then here is a sample test : 
+
+```java
+@Test
+public void helloWorldTest() {
+
+  // Default : store = inMemory, load features from file
+  FF4j ff4j = new FF4j("ff4j.xml");
+  assertEquals(1, ff4j.getFeatures().size());
+  assertTrue(ff4j.existFeature("sayHello"));
+  assertTrue(ff4j.isFlipped("sayHello"));
+
+  // Test value at runtime
+  if (ff4j.isFlipped("sayHello")) {
+      System.out.println("Hello World !");
+  } else {
+     fail();
+  }
+}
+```
+
+Features are loaded from xml configuration file (default is ff4j.xml) and registered into store (default is in-memory). If a feature is not created, `isFlipped` will raise a `FeatureNotFoundException` except if the autoCreate flag is set as true in `Ff4j` class.
+
+```java
+@Test
+public void autoCreateFeatureEnableTest() {
+
+ // Default : store = inMemory, load features (5) from ff4j.xml file
+ FF4j ff4j = new FF4j("ff4j.xml");
+ ff4j.setAutocreate(true);
+
+ if (!ff4j.isFlipped("autoCreatedFeature")) {
+   System.out.println("autoCreatedFeature is created but not available");
+ } else {
+   fail();
+ }
+}
+```
+
+<a name="building-filling"/>
+### 2 - Working with features
+***
+
+Features can be created and registered at runtime, it could be useful for units testing.
+
+Remember : once Feature flipping is provided the service must be tested with AND without features enabled. 
+
 * You can then write :
 
 ```java
 @Test
-public void helloTest() {
-   Assert.assertTrue(isFlipped("first"));
-}
-```
-As nothing has been specified to `FF4j` the features are loaded from the (default) `ff4j.xml` file and stored into memory. Under the hood, what happened is the following statement :
+public void workingWithFeature() {
 
-```java
-new FF4j(new InMemoryFeatureStore("ff4j.xml"));
+   // Initialize with empty store
+   FF4j ff4j = new FF4j(new InMemoryFeatureStore());
+
+   // Dynamically register new features
+   ff4j.createFeature("f1").enableFeature("f1");
+
+   // Testing
+   assertTrue(ff4j.existFeature("f1"));
+   assertTrue(ff4j.isFlipped("f1"));
+}
 ```
 
 <a name="flipstore-spring"/>
