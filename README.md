@@ -89,7 +89,7 @@ Each time a feature is created it's register into a store (default is in-memory)
 ```java
 @Test
 public void helloTest() {
-   Assert.assertTrue(isFlipped("first"));
+   Assert.assertTrue(isFlipped("sayHello"));
 }
 ```
 As nothing has been specified to `FF4j` the features are loaded from the (default) `ff4j.xml` file and stored into memory. Under the hood, what happened is the following statement :
