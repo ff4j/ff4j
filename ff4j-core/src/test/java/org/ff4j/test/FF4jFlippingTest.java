@@ -35,13 +35,13 @@ public class FF4jFlippingTest {
         assertEquals(5, ff4j.getFeatures().size());
 
         // Dynamically create feature and add it to the store (tests purpose)
-        ff4j.createFeature("sayHello");
+        ff4j.create("sayHello");
 
         // Enable Feature
-        ff4j.enableFeature("sayHello");
+        ff4j.enable("sayHello");
 
         // Assertion
-        assertTrue(ff4j.existFeature("sayHello"));
+        assertTrue(ff4j.exist("sayHello"));
         assertEquals(6, ff4j.getFeatures().size());
         assertTrue(ff4j.isFlipped("sayHello"));
     }
@@ -52,13 +52,13 @@ public class FF4jFlippingTest {
         // Default : store = inMemory, load features from ff4j.xml file
         FF4j ff4j = new FF4j("ff4j.xml");
         ff4j.setAutocreate(true);
-        assertFalse(ff4j.existFeature("autoCreatedFeature"));
+        assertFalse(ff4j.exist("autoCreatedFeature"));
 
         // Auto creation by testing its value
         assertFalse(ff4j.isFlipped("autoCreatedFeature"));
 
         // Assertion
-        assertTrue(ff4j.existFeature("autoCreatedFeature"));
+        assertTrue(ff4j.exist("autoCreatedFeature"));
     }
 
     @Test
@@ -68,10 +68,10 @@ public class FF4jFlippingTest {
         FF4j ff4j = new FF4j();
 
         // Dynamically register new features
-        ff4j.createFeature("f1").enableFeature("f1");
+        ff4j.create("f1").enable("f1");
 
         // Assertions
-        assertTrue(ff4j.existFeature("f1"));
+        assertTrue(ff4j.exist("f1"));
         assertTrue(ff4j.isFlipped("f1"));
     }
 
@@ -87,16 +87,16 @@ public class FF4jFlippingTest {
     @Test
     public void testEnableFeature() {
         FF4j ff4j = new FF4j();
-        ff4j.autoCreateFeature(true);
-        ff4j.enableFeature("newffff");
-        Assert.assertTrue(ff4j.existFeature("newffff"));
+        ff4j.autoCreate(true);
+        ff4j.enable("newffff");
+        Assert.assertTrue(ff4j.exist("newffff"));
         Assert.assertTrue(ff4j.isFlipped("newffff"));
     }
 
     @Test(expected = FeatureNotFoundException.class)
     public void testEnableFeatureNotExist() {
         FF4j ff4j = new FF4j();
-        ff4j.enableFeature("newffff");
+        ff4j.enable("newffff");
     }
 
     // disabling...
@@ -104,16 +104,16 @@ public class FF4jFlippingTest {
     @Test
     public void testDisableFeature() {
         FF4j ff4j = new FF4j();
-        ff4j.autoCreateFeature(true);
-        ff4j.disableFeature("newffff");
-        Assert.assertTrue(ff4j.existFeature("newffff"));
+        ff4j.autoCreate(true);
+        ff4j.disable("newffff");
+        Assert.assertTrue(ff4j.exist("newffff"));
         Assert.assertFalse(ff4j.isFlipped("newffff"));
     }
 
     @Test(expected = FeatureNotFoundException.class)
     public void testDisableFeatureNotExist() {
         FF4j ff4j = new FF4j();
-        ff4j.disableFeature("newffff");
+        ff4j.disable("newffff");
     }
 
     @Test

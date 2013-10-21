@@ -39,7 +39,7 @@ public class GettingStartedCode {
     @Test
     public void testingFeatures() {
         FF4j ff4j = new FF4j();
-        ff4j.createFeature("f1", true);
+        ff4j.create("f1", true);
         System.out.println(ff4j);
 
         // Test UP
@@ -48,7 +48,7 @@ public class GettingStartedCode {
         }
 
         // Test DOWN
-        ff4j.disableFeature("f1");
+        ff4j.disable("f1");
 
         if (ff4j.isFlipped("f1")) {
             System.out.println("Hello the feature is enabled");
@@ -73,7 +73,7 @@ public class GettingStartedCode {
             System.out.println(fnfe.getMessage());
         }
 
-        ff4j.autoCreateFeature(true);
+        ff4j.autoCreate(true);
         // no more exception but returning false
         if (ff4j.isFlipped("do-not-exit")) {}
 
@@ -85,13 +85,13 @@ public class GettingStartedCode {
         // Default : store = inMemory, load features from ff4j.xml file
         FF4j ff4j = new FF4j("ff4j.xml");
         ff4j.setAutocreate(true);
-        assertFalse(ff4j.existFeature("autoCreatedFeature"));
+        assertFalse(ff4j.exist("autoCreatedFeature"));
 
         // Auto creation by testing its value
         assertFalse(ff4j.isFlipped("autoCreatedFeature"));
 
         // Assertion
-        assertTrue(ff4j.existFeature("autoCreatedFeature"));
+        assertTrue(ff4j.exist("autoCreatedFeature"));
     }
 
     @Test
@@ -101,10 +101,10 @@ public class GettingStartedCode {
         FF4j ff4j = new FF4j();
 
         // Dynamically register new features
-        ff4j.createFeature("f1").enableFeature("f1");
+        ff4j.create("f1").enable("f1");
 
         // Assertions
-        assertTrue(ff4j.existFeature("f1"));
+        assertTrue(ff4j.exist("f1"));
         assertTrue(ff4j.isFlipped("f1"));
     }
 

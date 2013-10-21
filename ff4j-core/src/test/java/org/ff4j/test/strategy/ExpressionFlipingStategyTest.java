@@ -41,10 +41,10 @@ public class ExpressionFlipingStategyTest extends TestCase {
         FF4j testedFf4j = new FF4j("ff4j-el.xml");
         Assert.assertTrue(testedFf4j.isFlipped("D"));
 
-        testedFf4j.enableFeature("C");
+        testedFf4j.enable("C");
         Assert.assertFalse(testedFf4j.isFlipped("D"));
 
-        testedFf4j.enableFeature("B");
+        testedFf4j.enable("B");
         Assert.assertTrue(testedFf4j.isFlipped("D"));
 
     }

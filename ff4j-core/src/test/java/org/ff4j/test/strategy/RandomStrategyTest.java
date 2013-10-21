@@ -47,7 +47,7 @@ public class RandomStrategyTest {
         randomF.setFlippingStrategy(new RandomFlipStrategy());
 
         // Initialize ff4j with the feature.
-        FF4j ff4j = new FF4j().createFeature(randomF);
+        FF4j ff4j = new FF4j().create(randomF);
 
         int nbOK = 0;
         int nbKO = 0;

@@ -51,7 +51,7 @@ public class JdbcStoreTest extends TestCase {
         jdbcStore.setDataSource(db);
         jdbcStore.getJdbcTemplate();
         testedStore = jdbcStore;
-        ff4j = new FF4j().autoCreateFeature(true);
+        ff4j = new FF4j().autoCreate(true);
         ff4j.setStore(testedStore);
     }
 
@@ -75,7 +75,7 @@ public class JdbcStoreTest extends TestCase {
     public void enableorDisable_NotFoundException() {
         try {
             ff4j.logFeatures();
-            ff4j.enableFeature("dummy");
+            ff4j.enable("dummy");
             fail();
         } catch (FeatureNotFoundException fue) {
             Assert.assertTrue(fue.getMessage().contains("dummy"));
@@ -84,13 +84,13 @@ public class JdbcStoreTest extends TestCase {
 
     @Test
     public void testEnableFeature() {
-        ff4j.enableFeature("first");
+        ff4j.enable("first");
         Assert.assertTrue(ff4j.isFlipped("first"));
     }
 
     @Test
     public void testDisableFeature() {
-        ff4j.disableFeature("first");
+        ff4j.disable("first");
         Assert.assertFalse(ff4j.isFlipped("first"));
     }
 

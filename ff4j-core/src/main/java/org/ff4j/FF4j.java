@@ -178,12 +178,12 @@ public class FF4j {
      * @param featureID
      *            unique feature identifier.
      */
-    public FF4j enableFeature(String featureID) {
+    public FF4j enable(String featureID) {
         try {
             getStore().enable(featureID);
         } catch (FeatureNotFoundException fnfe) {
             if (this.autocreate) {
-                return createFeature(new Feature(featureID, true));
+                return create(new Feature(featureID, true));
             }
             throw fnfe;
         }
@@ -196,7 +196,7 @@ public class FF4j {
      * @param featureID
      *            unique feature identifier.
      */
-    public FF4j createFeature(Feature fp) {
+    public FF4j create(Feature fp) {
         getStore().create(fp);
         return this;
     }
@@ -207,7 +207,7 @@ public class FF4j {
      * @param featureID
      *            unique feature identifier.
      */
-    public FF4j createFeature(String featureName, boolean enable, String description) {
+    public FF4j create(String featureName, boolean enable, String description) {
         getStore().create(new Feature(featureName, enable, description));
         return this;
     }
@@ -218,8 +218,8 @@ public class FF4j {
      * @param featureID
      *            unique feature identifier.
      */
-    public FF4j createFeature(String featureName, boolean enable) {
-        return createFeature(featureName, enable, "");
+    public FF4j create(String featureName, boolean enable) {
+        return create(featureName, enable, "");
     }
 
     /**
@@ -228,8 +228,8 @@ public class FF4j {
      * @param featureID
      *            unique feature identifier.
      */
-    public FF4j createFeature(String featureName) {
-        return createFeature(featureName, false, "");
+    public FF4j create(String featureName) {
+        return create(featureName, false, "");
     }
 
     /**
@@ -238,12 +238,12 @@ public class FF4j {
      * @param featureID
      *            unique feature identifier.
      */
-    public FF4j disableFeature(String featureID) {
+    public FF4j disable(String featureID) {
         try {
             getStore().disable(featureID);
         } catch (FeatureNotFoundException fnfe) {
             if (this.autocreate) {
-                return createFeature(new Feature(featureID, false));
+                return create(new Feature(featureID, false));
             }
             throw fnfe;
         }
@@ -257,7 +257,7 @@ public class FF4j {
      *            unique feature identifier.
      * @return flag to check existence of
      */
-    public boolean existFeature(String featureId) {
+    public boolean exist(String featureId) {
         return getStore().exist(featureId);
     }
 
@@ -312,7 +312,7 @@ public class FF4j {
      *            target value for autocreate flag
      * @return current instance
      */
-    public FF4j autoCreateFeature(boolean flag) {
+    public FF4j autoCreate(boolean flag) {
         setAutocreate(flag);
         return this;
     }

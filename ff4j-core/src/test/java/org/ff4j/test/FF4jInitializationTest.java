@@ -65,7 +65,7 @@ public class FF4jInitializationTest {
     public void testInitConstructor3() {
         FF4j f3 = new FF4j();
         f3.setAuthorizationsManager(new DefaultAuthorisationManager());
-        f3.autoCreateFeature(true);
+        f3.autoCreate(true);
 
         testingGeneratedFF4j(f3);
         Assert.assertNotNull(f3.getAuthorizationsManager());

@@ -99,7 +99,7 @@ public class FF4JMBeanTest {
     @Test
     @Ignore
     public void should_retrieve_changed_features_status() throws Exception {
-        ff4j.enableFeature("jmxDisabledFeature");
+        ff4j.enable("jmxDisabledFeature");
 
         ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
         Map<String, Boolean> featuresStatus = (Map<String, Boolean>) mbeanServerConnection.getAttribute(objectName,

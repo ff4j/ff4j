@@ -241,7 +241,7 @@ public class AdministrationConsoleServlet extends HttpServlet {
     private void opEnableFeature(HttpServletRequest req) {
         final String featureId = req.getParameter(FEATID);
         if (featureId != null && !featureId.isEmpty()) {
-            getFf4j().enableFeature(featureId);
+            getFf4j().enable(featureId);
         }
     }
 
@@ -254,7 +254,7 @@ public class AdministrationConsoleServlet extends HttpServlet {
     private void opDisableFeature(HttpServletRequest req) {
         final String featureId = req.getParameter(FEATID);
         if (featureId != null && !featureId.isEmpty()) {
-            getFf4j().disableFeature(featureId);
+            getFf4j().disable(featureId);
         }
     }
 

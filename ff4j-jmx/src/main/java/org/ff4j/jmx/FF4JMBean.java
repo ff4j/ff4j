@@ -71,7 +71,7 @@ public class FF4JMBean {
      */
     @ManagedOperation(description = "Enable feature")
     public void enableFeature(String featureID) {
-        getFf4j().enableFeature(featureID);
+        getFf4j().enable(featureID);
     }
 
     /**
@@ -82,7 +82,7 @@ public class FF4JMBean {
      */
     @ManagedOperation(description = "Disable feature")
     public void disableFeature(String featureID) {
-        getFf4j().disableFeature(featureID);
+        getFf4j().disable(featureID);
     }
 
     /**

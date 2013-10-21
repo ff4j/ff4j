@@ -16,18 +16,30 @@
      			Features (services/behaviour/treatments/screen parts) can be enabled and disabled through configuration and <b>at runtime</b>. 
      			You can open somes features for a limited sub-set of authorized users. Finally, you can implement your own strategy for flipping, including business rules.
      		</p>
+     		
+     		  <pre class="prettyprint linenums">
+<![CDATA[
+public class GettingStarted {
+
+    public static void main(String[] args) {
+
+        FF4j ff4j = new FF4j("ff4j.xml").enable("sayHello");
+
+        if (ff4j.isFlipped("sayHello")) {
+            System.out.println("Hello World !");
+        }
+    }
+
+}]]>
+</pre>
      		<p style="text-align:center">
      			<br/>
      			<a href="http://ff4j-demo.octo-clu.cloudbees.net/" class="btn btn-primary btn-large">
 	  		 		<i class="icon-th-large icon-white">Watch DEMO</i>
 	  			</a>
-     			<br/><img src="./images/function.png" alt="capture"/>
+     			<br/><br/><img src="./images/function.png" alt="capture"/>
      		</p>
-            <pre class="prettyprint linenums"><![CDATA[
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
-}]]></pre>
-
+          
      	</subsection>
         </section>
     </body>
