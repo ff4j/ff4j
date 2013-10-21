@@ -1,33 +1,52 @@
 package org.ff4j.test.strategy;
 
-import static org.ff4j.FF4j.*;
+/*
+ * #%L
+ * ff4j-core
+ * $Id:$
+ * $HeadURL:$
+ * %%
+ * Copyright (C) 2013 Ff4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import junit.framework.TestCase;
 
 import org.ff4j.FF4j;
 import org.junit.Assert;
 import org.junit.Test;
 
-
 /**
  * Unit Testing
- *
+ * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public class ExpressionFlipingStategyTest extends TestCase {
-	
-	@Test
-	public void testExpression() throws Exception {
-		
-		new FF4j("ff4j-el.xml");
-		Assert.assertTrue(sIsFlipped("D"));
-		
-		sEnableFeature("C");
-		Assert.assertFalse(sIsFlipped("D"));
-		
-		sEnableFeature("B");
-		Assert.assertTrue(sIsFlipped("D"));
-		
-	}
-		
+
+    @Test
+    public void testExpression() throws Exception {
+
+        FF4j testedFf4j = new FF4j("ff4j-el.xml");
+        Assert.assertTrue(testedFf4j.isFlipped("D"));
+
+        testedFf4j.enableFeature("C");
+        Assert.assertFalse(testedFf4j.isFlipped("D"));
+
+        testedFf4j.enableFeature("B");
+        Assert.assertTrue(testedFf4j.isFlipped("D"));
+
+    }
 
 }

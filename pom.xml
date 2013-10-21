@@ -21,7 +21,6 @@
       <connection>scm:git:git@github.com:clun/ff4j.git</connection>
       <developerConnection>scm:git:git@github.com:clun/ff4j.git</developerConnection>
       <url>git@github.com:clun/ff4j.git</url>
-      <!--<url>https://github.com/clun/ff4j</url>-->
     </scm>
 	
 	<!-- ~ License ~ -->
@@ -40,6 +39,11 @@
      sub-set of users (e.g : beta-testers for beta feature). Once the feature is enabled and granted you can implement your own strategy
      to flip through custom FlippingStrategy.
      </description>
+     
+     <organization>
+     	<name>Ff4J</name>
+     	<url>http://ff4j.org</url>
+     </organization>
  
 	<!-- ~ Properties ~ -->
 	<properties>
@@ -229,6 +233,37 @@
 	<!-- ~ BUILD ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<build>
+
+	<plugins>
+		<plugin>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>license-maven-plugin</artifactId>
+			<version>1.5</version>
+			<configuration>
+        	  	<verbose>false</verbose>
+          		<extraExtensions>
+					<myProprietaryExtension>java</myProprietaryExtension>
+				</extraExtensions>
+			</configuration>
+			<executions>
+				<execution>
+					<id>add-license</id>
+					<goals>
+						<goal>update-file-header</goal>
+					</goals>
+					<phase>process-sources</phase>
+					<configuration>
+						<licenseName>apache_v2</licenseName>
+						<roots>
+							<root>src/main/java</root>
+							<root>src/test</root>
+						</roots>
+					</configuration>
+				</execution>
+			</executions>
+		</plugin>
+	</plugins>
+
 		<pluginManagement>
 			<plugins>
 
@@ -288,6 +323,19 @@
 										<versionRange>[1.0.0,)</versionRange>
 										<goals>
 											<goal>enforce</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>license-maven-plugin</artifactId>
+										<versionRange>[1.0.0,)</versionRange>
+										<goals>
+											<goal>update-file-header</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>

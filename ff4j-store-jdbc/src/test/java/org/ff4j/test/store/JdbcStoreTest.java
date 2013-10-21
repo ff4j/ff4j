@@ -1,8 +1,15 @@
 package org.ff4j.test.store;
 
-import static org.ff4j.FF4j.sDisableFeature;
-import static org.ff4j.FF4j.sEnableFeature;
-import static org.ff4j.FF4j.sIsFlipped;
+/*
+ * #%L ff4j-store-jdbc %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. #L%
+ */
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -24,6 +31,8 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 public class JdbcStoreTest extends TestCase {
 
+    private FF4j ff4j;
+
     /** DataBase. */
     private EmbeddedDatabase db;
 
@@ -42,19 +51,20 @@ public class JdbcStoreTest extends TestCase {
         jdbcStore.setDataSource(db);
         jdbcStore.getJdbcTemplate();
         testedStore = jdbcStore;
-        FF4j.sInitStore(testedStore);
+        ff4j = new FF4j().autoCreateFeature(true);
+        ff4j.setStore(testedStore);
     }
 
     @Test
     public void testStoreHasBeenInitaliaze() throws Exception {
-        Assert.assertEquals(4, FF4j.getInstance().getStore().readAll().size());
-        Assert.assertTrue(sIsFlipped("first"));
+        Assert.assertEquals(4, ff4j.getStore().readAll().size());
+        Assert.assertTrue(ff4j.isFlipped("first"));
     }
 
     @Test
     public void flipWithInvalidName_NotFoundException() {
         try {
-            sIsFlipped("dummy");
+            ff4j.isFlipped("dummy");
             fail();
         } catch (FeatureNotFoundException fue) {
             Assert.assertTrue(fue.getMessage().contains("dummy"));
@@ -64,8 +74,8 @@ public class JdbcStoreTest extends TestCase {
     @Test
     public void enableorDisable_NotFoundException() {
         try {
-            FF4j.sLogFeatures();
-            sEnableFeature("dummy");
+            ff4j.logFeatures();
+            ff4j.enableFeature("dummy");
             fail();
         } catch (FeatureNotFoundException fue) {
             Assert.assertTrue(fue.getMessage().contains("dummy"));
@@ -74,14 +84,14 @@ public class JdbcStoreTest extends TestCase {
 
     @Test
     public void testEnableFeature() {
-        sEnableFeature("first");
-        Assert.assertTrue(sIsFlipped("first"));
+        ff4j.enableFeature("first");
+        Assert.assertTrue(ff4j.isFlipped("first"));
     }
 
     @Test
     public void testDisableFeature() {
-        sDisableFeature("first");
-        Assert.assertFalse(sIsFlipped("first"));
+        ff4j.disableFeature("first");
+        Assert.assertFalse(ff4j.isFlipped("first"));
     }
 
     @Test
@@ -177,7 +187,7 @@ public class JdbcStoreTest extends TestCase {
 
     @Test
     public void testLoad() {
-        FF4j.sLogFeatures();
+        ff4j.logFeatures();
     }
 
     /** {@inheritDoc} */

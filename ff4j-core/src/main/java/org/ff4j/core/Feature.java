@@ -1,5 +1,17 @@
 package org.ff4j.core;
 
+/*
+ * #%L ff4j-core $Id:$ $HeadURL:$ %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. #L%
+ */
+
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,7 +32,10 @@ import org.ff4j.strategy.FlippingStrategy;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class Feature {
+public class Feature implements Serializable {
+
+    /** serial of the class. */
+    private static final long serialVersionUID = -1345806526991179050L;
 
     /** Unique Feature Identifier */
     private String uid;
@@ -30,6 +45,9 @@ public class Feature {
 
     /** Short description of the feature, use it for information. */
     private String description;
+
+    /** Feature could be grouped to enable/disable the whole group. */
+    // private String group;
 
     /** if not empty and @see {@link AuthorizationsManager} provided, limit usage to this roles. */
     private Set<String> authorizations = new HashSet<String>();
@@ -118,6 +136,7 @@ public class Feature {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Feature '" + this.uid + "'");
         sb.append("is '" + (enable ? "enabled" : "disabled") + "'");
@@ -246,5 +265,20 @@ public class Feature {
     public void setFlippingStrategy(FlippingStrategy flippingStrategy) {
         this.flippingStrategy = flippingStrategy;
     }
+
+    /**
+     * Getter accessor for attribute 'group'.
+     * 
+     * @return current value of 'group'
+     * 
+     *         public String getGroup() { return group; }
+     * 
+     *         /** Setter accessor for attribute 'group'.
+     * 
+     * @param group
+     *            new value for 'group '
+     * 
+     *            public void setGroup(String group) { this.group = group; }
+     */
 
 }

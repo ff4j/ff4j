@@ -1,5 +1,27 @@
 package org.ff4j.store;
 
+/*
+ * #%L
+ * ff4j-core
+ * $Id:$
+ * $HeadURL:$
+ * %%
+ * Copyright (C) 2013 Ff4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashSet;
@@ -24,19 +46,11 @@ public class InMemoryFeatureStore implements FeatureStore {
     /** Logger for Advisor. */
     static final Logger LOG = LoggerFactory.getLogger(InMemoryFeatureStore.class);
 
-    static final String CONF_FILENAME = "ff4j.xml";
-
     /** InMemory Feature Map */
     private Map<String, Feature> featuresMap = new LinkedHashMap<String, Feature>();
 
     /** Default. */
-    public InMemoryFeatureStore() {
-        try {
-            loadConfFile(CONF_FILENAME);
-        } catch (IllegalArgumentException ioex) {
-            LOG.info("File '{}' has not been found, initializing store as empty store", CONF_FILENAME);
-        }
-    }
+    public InMemoryFeatureStore() {}
 
     /** Default. */
     public InMemoryFeatureStore(String fileName) {

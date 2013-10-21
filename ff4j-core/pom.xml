@@ -49,13 +49,18 @@
 
 	<build>
 		<plugins>
-
-				<plugin>
-        			<groupId>org.apache.maven.plugins</groupId>
-        			<artifactId>maven-site-plugin</artifactId>
-        			<version>3.0</version>
-      			</plugin>
-      		</plugins>
-      	</build>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<configuration>
+					<descriptionTemplate>${basedir}/../src/license/header.ftl</descriptionTemplate>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

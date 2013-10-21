@@ -1,5 +1,25 @@
 package org.ff4j.web;
 
+/*
+ * #%L
+ * AdministrationConsoleRenderer.java (ff4j-web) by Cedrick LUNVEN
+ * %%
+ * Copyright (C) 2013 Ff4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -262,9 +282,9 @@ public final class AdministrationConsoleRenderer {
         return strBuilder.toString();
     }
 
-    static String renderButtonEditFeature(HttpServletRequest req, String uid) {
+    static String renderButtonEditFeature(FF4j ff4j, HttpServletRequest req, String uid) {
         StringBuilder strBuilder = new StringBuilder("<a data-toggle=\"modal\" href=\"#modalEditFlip\"");
-        String desc = FF4j.getInstance().getStore().read(uid).getDescription();
+        String desc = ff4j.getStore().read(uid).getDescription();
         strBuilder.append("\" data-id=\"" + uid + "\" data-desc=\"" + desc
                 + "\" style=\"width:6px;\" class=\"open-EditFlipDialog btn\">");
         strBuilder.append("<i class=\"icon-pencil\" style=\"margin-left:-5px;\"></i>");
@@ -272,10 +292,10 @@ public final class AdministrationConsoleRenderer {
         return strBuilder.toString();
     }
 
-    static String renderButtonUserRole(HttpServletRequest req, Feature fp) {
+    static String renderButtonUserRole(FF4j ff4j, HttpServletRequest req, Feature fp) {
         Set<String> setOfRoles = new TreeSet<String>();
-        if (FF4j.getInstance().getAuthorizationsManager().getEveryOneRoles() != null) {
-            setOfRoles.addAll(FF4j.getInstance().getAuthorizationsManager().getEveryOneRoles());
+        if (ff4j.getAuthorizationsManager().getEveryOneRoles() != null) {
+            setOfRoles.addAll(ff4j.getAuthorizationsManager().getEveryOneRoles());
         }
         StringBuilder strBuilder = new StringBuilder("<div class=\"btn-group\">");
         strBuilder.append("<button class=\"btn\"><i class=\"icon-user\"></i></button>");

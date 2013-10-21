@@ -1,9 +1,24 @@
 package org.ff4j.test.store;
 
-import static org.ff4j.FF4j.sDisableFeature;
-import static org.ff4j.FF4j.sEnableFeature;
-import static org.ff4j.FF4j.sIsFlipped;
-import static org.ff4j.FF4j.sLogFeatures;
+/*
+ * #%L
+ * AbstractStoreTest.java (ff4j-core) by Cedrick LUNVEN
+ * %%
+ * Copyright (C) 2013 Ff4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -24,27 +39,30 @@ public abstract class AbstractStoreTest extends TestCase {
     // Tested Store
     protected FeatureStore testedStore;
 
+    /** Instance of ff4j using the tested store. */
+    protected FF4j ff4j = null;
+
     /** {@inheritDoc} */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         testedStore = initStore();
-        FF4j.sInitStore(testedStore);
-        FF4j.sAutoCreateFeature(false);
+        ff4j = new FF4j().autoCreateFeature(false);
+        ff4j.setStore(testedStore);
     }
 
     protected abstract FeatureStore initStore() throws Exception;
 
     @Test
-    public void testStoreHasBeenInitaliaze() throws Exception {
-        Assert.assertEquals(5, FF4j.getInstance().getStore().readAll().size());
-        Assert.assertTrue(sIsFlipped("first"));
+    public void testStoreHasBeenInitialized() throws Exception {
+        Assert.assertEquals(5, ff4j.getStore().readAll().size());
+        Assert.assertTrue(ff4j.isFlipped("first"));
     }
 
     @Test
     public void testFlipWithInvalidName_NotFoundException() {
         try {
-            sIsFlipped("dummyDum");
+            ff4j.isFlipped("dummyDum");
             fail("Dummy should not exist");
         } catch (FeatureNotFoundException fue) {
             Assert.assertTrue(fue.getMessage().contains("dummy"));
@@ -54,8 +72,8 @@ public abstract class AbstractStoreTest extends TestCase {
     @Test
     public void testEnableorDisable_NotFoundException() {
         try {
-            sLogFeatures();
-            sEnableFeature("dummy");
+            ff4j.logFeatures();
+            ff4j.enableFeature("dummy");
             fail();
         } catch (FeatureNotFoundException fue) {
             Assert.assertTrue(fue.getMessage().contains("dummy"));
@@ -64,14 +82,14 @@ public abstract class AbstractStoreTest extends TestCase {
 
     @Test
     public void testEnableFeature() {
-        sEnableFeature("first");
-        Assert.assertTrue(sIsFlipped("first"));
+        ff4j.enableFeature("first");
+        Assert.assertTrue(ff4j.isFlipped("first"));
     }
 
     @Test
     public void testDisableFeature() {
-        sDisableFeature("first");
-        Assert.assertFalse(sIsFlipped("first"));
+        ff4j.disableFeature("first");
+        Assert.assertFalse(ff4j.isFlipped("first"));
     }
 
     @Test
@@ -166,6 +184,6 @@ public abstract class AbstractStoreTest extends TestCase {
 
     @Test
     public void testLoad() {
-        FF4j.sLogFeatures();
+        ff4j.logFeatures();
     }
 }

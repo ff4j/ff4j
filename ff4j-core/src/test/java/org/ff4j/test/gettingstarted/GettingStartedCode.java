@@ -1,66 +1,111 @@
 package org.ff4j.test.gettingstarted;
 
-import static org.junit.Assert.assertEquals;
+/*
+ * #%L
+ * ff4j-core
+ * $Id:$
+ * $HeadURL:$
+ * %%
+ * Copyright (C) 2013 Ff4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import org.ff4j.FF4j;
-import org.ff4j.store.InMemoryFeatureStore;
+import org.ff4j.exception.FeatureNotFoundException;
 import org.junit.Test;
 
+/**
+ * Those code snipplete are used as samples and eventually propose in documentation
+ * 
+ * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ */
 public class GettingStartedCode {
 
     @Test
-    public void helloWorldTest() {
+    public void testingFeatures() {
+        FF4j ff4j = new FF4j();
+        ff4j.createFeature("f1", true);
+        System.out.println(ff4j);
 
-        // Default : store = inMemory, load features (5) from ff4j.xml file
-        FF4j ff4j = new FF4j("ff4j.xml");
-        assertEquals(5, ff4j.getFeatures().size());
-
-        // Dynamically create feature and add it to the store (tests purpose)
-        ff4j.createFeature("sayHello");
-        assertTrue(ff4j.existFeature("sayHello"));
-        assertEquals(6, ff4j.getFeatures().size());
-
-        // Enable Feature
-        ff4j.enableFeature("sayHello");
-        assertTrue(ff4j.isFlipped("sayHello"));
-
-        // Test Value at runtime
-        if (ff4j.isFlipped("sayHello")) {
-            System.out.println("Hello World !");
-        } else {
-            fail();
+        // Test UP
+        if (ff4j.isFlipped("f1")) {
+            System.out.println("Hello the feature is enabled");
         }
+
+        // Test DOWN
+        ff4j.disableFeature("f1");
+
+        if (ff4j.isFlipped("f1")) {
+            System.out.println("Hello the feature is enabled");
+        }
+
+    }
+
+    @Test
+    public void helloWorld() {
+
+        FF4j ff4j = new FF4j("ff4j.xml");
+
+        // Work with it
+        if (ff4j.isFlipped("AwesomeFeature")) {
+            System.out.println("Hello the feature is enabled");
+        }
+
+        // Its does not exist
+        try {
+            if (ff4j.isFlipped("do-not-exit")) {}
+        } catch (FeatureNotFoundException fnfe) {
+            System.out.println(fnfe.getMessage());
+        }
+
+        ff4j.autoCreateFeature(true);
+        // no more exception but returning false
+        if (ff4j.isFlipped("do-not-exit")) {}
+
     }
 
     @Test
     public void autoCreateFeatureEnableTest() {
 
-        // Default : store = inMemory, load features (5) from ff4j.xml file
+        // Default : store = inMemory, load features from ff4j.xml file
         FF4j ff4j = new FF4j("ff4j.xml");
         ff4j.setAutocreate(true);
+        assertFalse(ff4j.existFeature("autoCreatedFeature"));
 
-        if (!ff4j.isFlipped("autoCreatedFeature")) {
-            System.out.println("autoCreatedFeature is created but not available");
-        } else {
-            fail();
-        }
+        // Auto creation by testing its value
+        assertFalse(ff4j.isFlipped("autoCreatedFeature"));
+
+        // Assertion
+        assertTrue(ff4j.existFeature("autoCreatedFeature"));
     }
 
     @Test
     public void workingWithFeature() {
 
         // Initialize with empty store
-        FF4j ff4j = new FF4j(new InMemoryFeatureStore());
+        FF4j ff4j = new FF4j();
 
         // Dynamically register new features
         ff4j.createFeature("f1").enableFeature("f1");
 
-        // Testing
+        // Assertions
         assertTrue(ff4j.existFeature("f1"));
         assertTrue(ff4j.isFlipped("f1"));
-
     }
 
 }

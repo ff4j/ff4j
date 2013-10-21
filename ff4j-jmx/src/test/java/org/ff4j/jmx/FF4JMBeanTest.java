@@ -1,5 +1,16 @@
 package org.ff4j.jmx;
 
+/*
+ * #%L ff4j-jmx %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. #L%
+ */
+
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.MapAssert.entry;
 
@@ -17,11 +28,11 @@ import javax.management.remote.JMXConnectorServerFactory;
 import javax.management.remote.JMXServiceURL;
 
 import org.ff4j.FF4j;
-import org.ff4j.store.InMemoryFeatureStore;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -37,10 +48,12 @@ public class FF4JMBeanTest {
 
     private MBeanServerConnection mbeanServerConnection;
 
+    @Autowired
+    private FF4j ff4j;
+
     @Before
     public void setUp() throws Exception {
         openJmxConnection();
-        populateFF4JStore();
     }
 
     private void openJmxConnection() throws Exception {
@@ -55,11 +68,6 @@ public class FF4JMBeanTest {
         // Now make a connector client using the server's address
         jmxConnectionFactory = JMXConnectorFactory.connect(jmxAddress);
         mbeanServerConnection = jmxConnectionFactory.getMBeanServerConnection();
-    }
-
-    private void populateFF4JStore() {
-        // Initialization through static for test
-        FF4j.sInitStore(new InMemoryFeatureStore("ff4j.xml"));
     }
 
     @After
@@ -90,7 +98,7 @@ public class FF4JMBeanTest {
     @SuppressWarnings("unchecked")
     @Test
     public void should_retrieve_changed_features_status() throws Exception {
-        FF4j.sEnableFeature("jmxDisabledFeature");
+        ff4j.enableFeature("jmxDisabledFeature");
 
         ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
         Map<String, Boolean> featuresStatus = (Map<String, Boolean>) mbeanServerConnection.getAttribute(objectName,
@@ -107,7 +115,7 @@ public class FF4JMBeanTest {
         mbeanServerConnection.invoke(objectName, "enableFeature", new Object[] {"jmxDisabledFeature"},
                 new String[] {"java.lang.String"});
 
-        assertThat(FF4j.sGetFeature("jmxDisabledFeature").isEnable()).isTrue();
+        assertThat(ff4j.getFeature("jmxDisabledFeature").isEnable()).isTrue();
     }
 
     @Test
@@ -116,7 +124,7 @@ public class FF4JMBeanTest {
         mbeanServerConnection.invoke(objectName, "disableFeature", new Object[] {"jmxEnabledFeature"},
                 new String[] {"java.lang.String"});
 
-        assertThat(FF4j.sGetFeature("jmxEnabledFeature").isEnable()).isFalse();
+        assertThat(ff4j.getFeature("jmxEnabledFeature").isEnable()).isFalse();
     }
 
     @SuppressWarnings("unchecked")
@@ -127,17 +135,17 @@ public class FF4JMBeanTest {
                 new Object[] {"jmxFeatureWithAuth"}, new String[] {"java.lang.String"});
 
         assertThat(featureAuthRoles).containsOnly("ROLE_USER", "ROLE_ADMIN");
+
+        should_add_auth_role_to_feature();
+        should_remove_auth_role_from_feature();
     }
 
-    @Test
     public void should_add_auth_role_to_feature() throws Exception {
         ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
         mbeanServerConnection.invoke(objectName, "grantRoleOnFeature", new Object[] {"NEW_ROLE","jmxEnabledFeature"},
                 new String[] {"java.lang.String","java.lang.String"});
     }
 
-    @SuppressWarnings("unchecked")
-    @Test
     public void should_remove_auth_role_from_feature() throws Exception {
         ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
         mbeanServerConnection.invoke(objectName, "removeAuthRoleFromFeature", new Object[] {"ROLE_USER","jmxFeatureWithAuth"},

@@ -44,7 +44,6 @@
 			<artifactId>spring-security-config</artifactId>
 		</dependency>
 		
-		
 		<!-- test -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -67,7 +66,19 @@
 			<scope>test</scope>
 		</dependency>
 		
-		
 	</dependencies>
+	
+	<build>
+		<plugins>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<configuration>
+					<descriptionTemplate>${basedir}/../src/license/header.ftl</descriptionTemplate>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>
