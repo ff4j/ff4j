@@ -16,7 +16,7 @@ The library is available on maven central [here](http://central.maven.org/maven2
 <dependency>
   <groupId>org.ff4j</groupId>
   <artifactId>ff4j-core</artifactId>
-  <version>${currentVersion}</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 
@@ -83,13 +83,13 @@ public void helloWorldTest() {
 }
 ```
 
-Features are loaded from xml configuration file (default is ff4j.xml) and registered into store (default is in-memory). If a feature is not created, `isFlipped` will raise a `FeatureNotFoundException` except if the autoCreate flag is set as true in `Ff4j` class.
+Features are loaded from xml configuration file (ff4j.xml) and registered into store (default is in-memory). If a feature is not created, `isFlipped` will raise a `FeatureNotFoundException` except if the autoCreate flag is set as true in `Ff4j` class.
 
 ```java
 @Test
 public void autoCreateFeatureEnableTest() {
 
- // Default : store = inMemory, load features (5) from ff4j.xml file
+ // Default : store = inMemory, load features from ff4j.xml file
  FF4j ff4j = new FF4j("ff4j.xml");
  ff4j.setAutocreate(true);
 
