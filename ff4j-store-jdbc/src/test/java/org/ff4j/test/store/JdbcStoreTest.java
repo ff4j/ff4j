@@ -74,7 +74,6 @@ public class JdbcStoreTest extends TestCase {
     @Test
     public void enableorDisable_NotFoundException() {
         try {
-            ff4j.logFeatures();
             ff4j.enable("dummy");
             fail();
         } catch (FeatureNotFoundException fue) {
@@ -183,11 +182,6 @@ public class JdbcStoreTest extends TestCase {
         Feature fpBis = new Feature("first", false, "desc2", rights2);
         testedStore.update(fpBis);
         Assert.assertEquals(2, testedStore.read("first").getAuthorizations().size());
-    }
-
-    @Test
-    public void testLoad() {
-        ff4j.logFeatures();
     }
 
     /** {@inheritDoc} */
