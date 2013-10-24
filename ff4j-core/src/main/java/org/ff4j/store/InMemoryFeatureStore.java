@@ -1,25 +1,14 @@
 package org.ff4j.store;
 
 /*
- * #%L
- * ff4j-core
- * $Id:$
- * $HeadURL:$
- * %%
- * Copyright (C) 2013 Ff4J
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * #%L ff4j-core $Id:$ $HeadURL:$ %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License. You may obtain a copy of the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. #L%
  */
 
 import java.io.InputStream;
@@ -33,8 +22,6 @@ import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureLoader;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Storing states of feature inmemory with initial values. Could be used mostly for testing purpose.
@@ -42,9 +29,6 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public class InMemoryFeatureStore implements FeatureStore {
-
-    /** Logger for Advisor. */
-    static final Logger LOG = LoggerFactory.getLogger(InMemoryFeatureStore.class);
 
     /** InMemory Feature Map */
     private Map<String, Feature> featuresMap = new LinkedHashMap<String, Feature>();
@@ -85,7 +69,6 @@ public class InMemoryFeatureStore implements FeatureStore {
      *            xml filename
      */
     private void loadConfFile(String conf) {
-        LOG.info("Attempt to load default features file '{}'", conf);
         InputStream xmlIN = getClass().getClassLoader().getResourceAsStream(conf);
         this.featuresMap = FeatureLoader.loadFeatures(xmlIN);
     }
@@ -94,7 +77,6 @@ public class InMemoryFeatureStore implements FeatureStore {
     @Override
     public void create(Feature fp) {
         if (exist(fp.getUid())) {
-            LOG.error("Feature '" + fp.getUid() + "' already exist");
             throw new FeatureAlreadyExistException(fp.getUid());
         }
         featuresMap.put(fp.getUid(), fp);
@@ -121,17 +103,15 @@ public class InMemoryFeatureStore implements FeatureStore {
     @Override
     public void delete(String fpId) {
         if (!exist(fpId)) {
-            LOG.error("Feature '" + fpId + "' cannot be deleted as does not exist");
+            // Feature cannot be deleted as does not exist
             throw new FeatureNotFoundException(fpId);
         }
         featuresMap.remove(fpId);
-        LOG.info("Feature '" + fpId + "' deleted");
     }
 
     /** {@inheritDoc} */
     @Override
     public void grantRoleOnFeature(String flipId, String roleName) {
-        LOG.info("Adding role '" + roleName + "' to Feature '" + flipId + "'");
         if (!exist(flipId)) {
             throw new FeatureNotFoundException(flipId);
         }

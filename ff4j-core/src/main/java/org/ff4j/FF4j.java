@@ -1,29 +1,19 @@
 package org.ff4j;
 
 /*
- * #%L
- * FF4j.java (ff4j-core) by Cedrick LUNVEN
- * %%
- * Copyright (C) 2013 Ff4J
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * #%L FF4j.java (ff4j-core) by Cedrick LUNVEN %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. #L%
  */
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.ff4j.core.Feature;
@@ -33,8 +23,6 @@ import org.ff4j.security.AuthorizationsManager;
 import org.ff4j.store.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.FlippingStrategy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Main component of the framework, it allows to interact with features. It provides both static and direct access.
@@ -67,9 +55,6 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public class FF4j {
-
-    /** Logger static. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(FF4j.class);
 
     /** Storage to persist feature within {@link FeatureStore}. */
     private FeatureStore store = null;
@@ -284,18 +269,6 @@ public class FF4j {
     }
 
     /**
-     * Log flippingPoint status (debugging purposes).
-     */
-    public FF4j logFeatures() {
-        Map<String, Feature> mapOfFeatures = getStore().readAll();
-        LOGGER.info("Listing current '{}' features states", mapOfFeatures);
-        for (Entry<String, Feature> feat : mapOfFeatures.entrySet()) {
-            LOGGER.info("-> " + feat.getValue().toString());
-        }
-        return this;
-    }
-
-    /**
      * Export Feature through FF4J.
      * 
      * @return
@@ -340,7 +313,6 @@ public class FF4j {
      */
     public void setStore(FeatureStore fbs) {
         this.store = fbs;
-        LOGGER.info("Store has been initialized with : {}", fbs.toString());
     }
 
     /**

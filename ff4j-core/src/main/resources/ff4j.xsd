@@ -20,6 +20,7 @@
 						<xsd:attribute name="uid" 		  type="xsd:string"  use="required" />
 						<xsd:attribute name="description" type="xsd:string"  use="optional" />
 						<xsd:attribute name="strategy"	  type="xsd:string"  use="optional" />
+						<xsd:attribute name="expression"  type="xsd:string"  use="optional" />
 						<xsd:attribute name="enable"	  type="xsd:boolean" use="required" />
 					</xsd:complexType>
 				</xsd:element>

@@ -75,13 +75,6 @@ public class FF4jFlippingTest {
         assertTrue(ff4j.isFlipped("f1"));
     }
 
-    // log
-
-    @Test
-    public void testLogFeatures() {
-        new FF4j().logFeatures();
-    }
-
     // enabling...
 
     @Test

@@ -10,35 +10,59 @@
     <body>
         <section name="Try out Feature Flipping !!">
           <subsection name="">
-            <p style="text-align:justify">
-            	FF4J, stands for <b>Feature Flipping for Java</b>, helps you implementing the 
+            <p>
+            	ff4J (stands for <i>Feature Flipping for Java</i>) helps you implementing the 
             	<a href="http://martinfowler.com/bliki/FeatureToggle.html">'feature toggle'</a> agile development practice.
-     			Features (services/behaviour/treatments/screen parts) can be enabled and disabled through configuration and <b>at runtime</b>. 
-     			You can open somes features for a limited sub-set of authorized users. Finally, you can implement your own strategy for flipping, including business rules.
+     		</p>
+     		<p>Features can be enabled and disabled with configuration and <b>at runtime</b> through dedicated consoles.</p>
+     		
+     		<table style="background:white;border:0px;">
+     			<tr style="background:white;border:0px;"><td style="background:white;border:0px;">
+     			<h4>1. Import Dependency</h4>
+     			  <pre class="prettyprint linenums"><![CDATA[
+<dependency>
+ <groupId>org.ff4j</groupId>
+ <artifactId>ff4j-core</artifactId>
+ <version>${project.version}</version>
+</dependency>    			  
+]]></pre>
+     			<h4>2. Define Features</h4>
+     			  <pre class="prettyprint linenums"><![CDATA[
+<?xml version="1.0" encoding="UTF-8" ?>
+<features>
+ <feature uid="hello" enable="true" />
+ <feature uid="restric" enable="true" >
+  <auth role="ADMIN" />
+ </feature>
+</features>     			  
+]]></pre>
+<h4>3. Use it</h4>
+     			  <pre class="prettyprint linenums"><![CDATA[
+// Initialisation
+FF4j ff4j = new FF4j("ff4j.xml");
+
+if (ff4j.isFlipped("sayHello")) {
+   System.out.println("Hello World !");
+}		  
+]]></pre>
+     			</td><td style="background:white;border:0px;">
+     			<p style="text-align:center">
+     			<br/><br/><img src="./images/stack1.png" alt="stack"/>
      		</p>
      		
-     		  <pre class="prettyprint linenums">
-<![CDATA[
-public class GettingStarted {
-
-    public static void main(String[] args) {
-
-        FF4j ff4j = new FF4j("ff4j.xml").enable("sayHello");
-
-        if (ff4j.isFlipped("sayHello")) {
-            System.out.println("Hello World !");
-        }
-    }
-
-}]]>
-</pre>
-     		<p style="text-align:center">
-     			<br/>
-     			<a href="http://ff4j-demo.octo-clu.cloudbees.net/" class="btn btn-primary btn-large">
-	  		 		<i class="icon-th-large icon-white">Watch DEMO</i>
+     		</td></tr></table>
+     		
+     			<p><i>Now you can check <a href="./reference-guide.html" >reference guide</a>, to externalize features into database or use AOP. Features can be administrate through WebConsole or JMX.</i></p>
+     			
+     			<p style="text-align:center">
+     			
+     			<br/><a href="http://ff4j-demo.octo-clu.cloudbees.net/" class="btn btn-inverse">
+	  		 		<i class="icon-th-large icon-white"></i>LIVE DEMO APPLICATION
 	  			</a>
-     			<br/><br/><img src="./images/function.png" alt="capture"/>
-     		</p>
+	  			
+     			<br/><br/><a href="http://ff4j-demo.octo-clu.cloudbees.net/"><img src="./images/screen1.png" alt="stack"/></a>
+     			
+	  		</p>
           
      	</subsection>
         </section>

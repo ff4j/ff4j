@@ -1,25 +1,14 @@
 package org.ff4j.strategy.el;
 
 /*
- * #%L
- * ff4j-core
- * $Id:$
- * $HeadURL:$
- * %%
- * Copyright (C) 2013 Ff4J
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * #%L ff4j-core $Id:$ $HeadURL:$ %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License. You may obtain a copy of the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. #L%
  */
 
 import java.util.ArrayList;
@@ -30,8 +19,6 @@ import java.util.Map;
 import org.ff4j.core.Feature;
 import org.ff4j.store.FeatureStore;
 import org.ff4j.strategy.FlippingStrategy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Allow to parse target expression.
@@ -39,9 +26,6 @@ import org.slf4j.LoggerFactory;
  * @author clunven
  */
 public class ExpressionFlipStrategy implements FlippingStrategy {
-
-    /** Logger for Advisor. */
-    static final Logger LOG = LoggerFactory.getLogger(ExpressionFlipStrategy.class);
 
     /** Cached init value. */
     private static Map<String, String> mapOfValue = new HashMap<String, String>();
@@ -58,13 +42,13 @@ public class ExpressionFlipStrategy implements FlippingStrategy {
     @Override
     public boolean activate(String featureName, FeatureStore currentStore, Object... executionContext) {
         if (executionContext == null || executionContext.length == 0) {
-            LOG.warn("Wait, you define an expression strategy but do not set EXPRESSION");
+            // Wait, you define an expression strategy but do not set EXPRESSION
             if (mapOfValue.containsKey(featureName)) {
                 String expression = mapOfValue.get(featureName);
                 if (!cachedExpression.containsKey(expression)) {
                     cachedExpression.put(expression, ExpressionParser.parseExpression(expression));
                 } else {
-                    LOG.debug("Getting syntax tree from cache" + cachedExpression.get(expression));
+                    // Getting syntax tree from cache : cachedExpression.get(expression);
                 }
                 return cachedExpression.get(expression).evalue(getFeaturesStatus(currentStore));
             }
@@ -74,7 +58,7 @@ public class ExpressionFlipStrategy implements FlippingStrategy {
             if (!cachedExpression.containsKey(expression)) {
                 cachedExpression.put(expression, ExpressionParser.parseExpression(expression));
             } else {
-                LOG.debug("Getting syntax tree from cache" + cachedExpression.get(expression));
+                // Getting syntax tree from cache" + cachedExpression.get(expression);
             }
             return cachedExpression.get(expression).evalue(getFeaturesStatus(currentStore));
         }

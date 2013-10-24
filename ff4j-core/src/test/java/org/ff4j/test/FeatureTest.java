@@ -1,25 +1,14 @@
 package org.ff4j.test;
 
 /*
- * #%L
- * ff4j-core
- * $Id:$
- * $HeadURL:$
- * %%
- * Copyright (C) 2013 Ff4J
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * #%L ff4j-core $Id:$ $HeadURL:$ %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License. You may obtain a copy of the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. #L%
  */
 
 import java.util.Arrays;
@@ -71,17 +60,29 @@ public class FeatureTest {
 
     @Test
     public void testBuildFromScratchFeature() {
-        Feature empty = new Feature("abc", false, null);
-        List<String> auths = Arrays.asList(new String[] {"something"});
-        empty.setUid("OK");
-        empty.toggle();
+        Feature empty = new Feature("abc");
+        empty.setUid("abc");
+
+        // Flipping strategy
         empty.setFlippingStrategy(new RandomFlipStrategy());
+        Assert.assertNotNull(empty.getFlippingStrategy());
+
+        // Authorization filling
+        List<String> auths = Arrays.asList(new String[] {"something"});
         empty.setAuthorizations(new HashSet<String>(auths));
+        Assert.assertNotNull(empty.getAuthorizations());
+
+        // Description setter
+        empty.setDescription("OK");
+        Assert.assertNotNull(empty.getDescription());
+
+        // Toggle to change value
         empty.setEnable(true);
-        empty.setDescription("ok");
-        empty.toString();
+        empty.toggle();
+        Assert.assertFalse(empty.isEnable());
+
+        // To String with a whole object
         Assert.assertTrue(empty.toString().contains("OK"));
-        Assert.assertTrue(empty.isEnable());
     }
 
 }

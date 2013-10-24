@@ -1,31 +1,21 @@
 package org.ff4j.cache;
 
 /*
- * #%L
- * FeatureStoreCacheProxy.java (ff4j-core) by Cedrick LUNVEN
- * %%
- * Copyright (C) 2013 Ff4J
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * #%L FeatureStoreCacheProxy.java (ff4j-core) by Cedrick LUNVEN %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the
+ * License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. #L%
  */
 
 import java.util.Map;
 
 import org.ff4j.core.Feature;
 import org.ff4j.store.FeatureStore;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Access to {@link FeatureStore} could generate some overhead and decrease performances. This is the reason why cache is provided
@@ -37,9 +27,6 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public class FeatureStoreCacheProxy implements FeatureStore {
-
-    /** Logger for the class. */
-    static final Logger LOG = LoggerFactory.getLogger(FeatureStoreCacheProxy.class);
 
     /** Target feature store to be proxified to cache features. */
     private FeatureStore target;
@@ -107,7 +94,6 @@ public class FeatureStoreCacheProxy implements FeatureStore {
         Feature fp = getCacheManager().get(featureUid);
         // not in cache but may has been created from now
         if (null == fp) {
-            LOG.debug("Reading {} from target store to populate cache", featureUid);
             fp = getTarget().read(featureUid);
             if (fp != null) {
                 getCacheManager().put(fp);

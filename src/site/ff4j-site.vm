@@ -454,14 +454,11 @@
 		#googleAnalytics( $decoration.googleAnalyticsAccountId )
 	</head>
 	<body class="composite">
-		<img class="logo-left"  src="$relativePath/images/ff4j-logo-gold.png" alt="Feature Flag 4 Java" />
-		<img class="logo-right" src="$relativePath/images/octo-logo.png" alt="Feature Flag 4 Java" 		/>
-		<div class="clear"></div>
 
 		<div class="navbar">
 			<div class="navbar-inner">
 				<div class="container-fluid">
-					<a class="brand" href="$project.url">$project.name &trade;</a>
+					<a class="brand" href="$project.url" style="color:#880000" >$project.name &trade;</a>
 					#links( $decoration.body.links )
 				</div>
 			</div>

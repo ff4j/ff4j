@@ -1,10 +1,8 @@
-package org.ff4j.test.security;
+package org.ff4j.test.strategy;
 
 /*
  * #%L
- * ff4j-core
- * $Id:$
- * $HeadURL:$
+ * TestAlwaysTrueFlippingStrategy.java (ff4j-core) by Cedrick LUNVEN
  * %%
  * Copyright (C) 2013 Ff4J
  * %%
@@ -22,28 +20,17 @@ package org.ff4j.test.security;
  * #L%
  */
 
-import java.util.HashSet;
-import java.util.Set;
+import org.ff4j.store.FeatureStore;
+import org.ff4j.strategy.FlippingStrategy;
 
-import org.ff4j.security.AuthorizationsManager;
+public class TestAlwaysTrueFlippingStrategy implements FlippingStrategy {
 
-/**
- * Dummy {@link AuthorizationsManager} returning empty list for security tests.
- * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
- */
-public class DefaultAuthorisationManager implements AuthorizationsManager {
-
-    /** {@inheritDoc} */
     @Override
-    public Set<String> getAuthenticatedUserRoles() {
-        return new HashSet<String>();
+    public boolean activate(String featureName, FeatureStore store, Object... executionContext) {
+        return true;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public Set<String> getEveryOneRoles() {
-        return new HashSet<String>();
-    }
+    public void init(String featureName, String initValue) {}
 
 }

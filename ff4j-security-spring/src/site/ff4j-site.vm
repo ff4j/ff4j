@@ -432,12 +432,12 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=${outputEncoding}" />
 		<title>$title - $project.name</title>
-		<link rel="stylesheet" href="$relativePath/css/bootstrap.min.css" type="text/css" />
-		<link rel="stylesheet" href="$relativePath/css/site.css" type="text/css" />
-		<script type="text/javascript" src="$relativePath/js/jquery.min.js"></script>
-		<script type="text/javascript" src="$relativePath/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="$relativePath/js/prettify.min.js"></script>
-		<script type="text/javascript" src="$relativePath/js/site.js"></script>
+		<link rel="stylesheet" href="$relativePath/../css/bootstrap.min.css" type="text/css" />
+		<link rel="stylesheet" href="$relativePath/../css/site.css" type="text/css" />
+		<script type="text/javascript" src="$relativePath/../js/jquery.min.js"></script>
+		<script type="text/javascript" src="$relativePath/../js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="$relativePath/../js/prettify.min.js"></script>
+		<script type="text/javascript" src="$relativePath/../js/site.js"></script>
 #foreach( $author in $authors )
 			<meta name="author" content="$author" />
 #end
@@ -454,10 +454,6 @@
 		#googleAnalytics( $decoration.googleAnalyticsAccountId )
 	</head>
 	<body class="composite">
-		<img class="logo-left"  src="$relativePath/images/ff4j-logo.png" alt="Feature Flag 4 Java" />
-		<img class="logo-right" src="$relativePath/images/logo.jpg" alt="OCTO Technology" />
-		<div class="clear"></div>
-
 		<div class="navbar">
 			<div class="navbar-inner">
 				<div class="container-fluid">

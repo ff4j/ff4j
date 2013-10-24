@@ -1,31 +1,21 @@
 package org.ff4j.cache;
 
 /*
- * #%L
- * FeatureCacheProviderInMemory.java (ff4j-core) by Cedrick LUNVEN
- * %%
- * Copyright (C) 2013 Ff4J
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * #%L FeatureCacheProviderInMemory.java (ff4j-core) by Cedrick LUNVEN %% Copyright (C) 2013 Ff4J %% Licensed under the Apache
+ * License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. #L%
  */
 
 import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.ff4j.core.Feature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Proposition of inmemory cache implementation.
@@ -46,9 +36,6 @@ public class FeatureCacheProviderInMemory implements FeatureCacheManager {
     /** cache name if several caches within memory. */
     public static final String DEFAULT_CACHENAME = "ff4j-cache";
 
-    /** Logger for the class. */
-    static final Logger LOG = LoggerFactory.getLogger(FeatureCacheProviderInMemory.class);
-
     /** Cached Feature Map */
     private final Map<String, InMemoryCacheEntry<Feature>> cache = new WeakHashMap<String, InMemoryCacheEntry<Feature>>();
 
@@ -63,7 +50,6 @@ public class FeatureCacheProviderInMemory implements FeatureCacheManager {
     @Override
     public void clear() {
         cache.clear();
-        LOG.debug("InMemoryCache has been cleared");
     }
 
     /** {@inheritDoc} */
@@ -71,7 +57,6 @@ public class FeatureCacheProviderInMemory implements FeatureCacheManager {
     public void evict(String featureId) {
         if (cache.containsKey(featureId)) {
             cache.remove(featureId);
-            LOG.debug("evict feature {} from cache", featureId);
         }
     }
 
@@ -85,7 +70,6 @@ public class FeatureCacheProviderInMemory implements FeatureCacheManager {
             throw new IllegalArgumentException("ff4j-core: Cannot insert feature with null identifier into cache");
         }
         cache.put(feat.getUid(), new InMemoryCacheEntry<Feature>(feat));
-        LOG.debug("Adding {} to cache", feat.getUid());
     }
 
     /** {@inheritDoc} */
@@ -96,7 +80,6 @@ public class FeatureCacheProviderInMemory implements FeatureCacheManager {
             // a feature is stored in cache with this identifier
             if ((System.currentTimeMillis() - ice.getInsertedDate()) >= (TO_MILLIS * ttl)) {
                 // it has reach its time-to-live
-                LOG.debug("{} has reached its maximum ttl, evict from cache", featureId);
                 evict(featureId);
             } else {
                 // return cached value

@@ -22,13 +22,15 @@
       <!--  Follow me on Twitter -->
        <twitter>
         <user>FeatFlip4Java</user>
-        <showUser>false</showUser>
-        <showFollowers>false</showFollowers>
+        <showUser>true</showUser>
+        <showFollowers>true</showFollowers>
       </twitter>
       
       <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
-      
-      <googleSearch/>
+   
+      <googleSearch>
+      	<sitesearch />
+      </googleSearch>
       
     </fluidoSkin>
    </custom>
@@ -39,7 +41,7 @@
       <item name="Home"         	href="/index.html"          	/>
       <item name="Getting Started" 	href="/getting-started.html"	/>
       <item name="Reference Guide" 	href="/reference-guide.html" 	/>
-      <item name="JavaDoc" 			href="apidocs/index.html" 		/>
+      <item name="JavaDoc" 			href="/apidocs/index.html" 		/>
       <item name="FAQ" 			    href="/faq.html" 				/>
    </menu>
     
@@ -51,22 +53,18 @@
     </menu>
     
     <menu name="Modules" img="icon-align-justify" inherit="top" >
-    	<item name="List"			href="/modules.html"			/>
-    	<item name="ff4j-core" collapse="true" href="./ff4j-core/index.html" />
-    	<item name="ff4j-aop" collapse="true" href="./ff4j-aop/index.html" />
-    	<item name="ff4j-jmx" collapse="true" href="./ff4j-jmx/index.html" >
-    		<item name="JavaDoc"   			href="./ff4j-jmx/apidocs/index.html" />
-    		<item name="Tests Surefire"   	href="./ff4j-jmx/apidocs/index.html" />
-    		<item name="Tests Cobertura"    href="./ff4j-jmx/surefire-report.html" />
-    	</item>
-    	<item name="ff4j-store-jdbc" 		collapse="true" href="./ff4j-store-jdbc/index.html"   />
-    	<item name="ff4j-store-remoting" 	collapse="true" href="./ff4j-store-remoting/index.html" />
-    	<item name="ff4j-cache-ehcache" 	collapse="true" href="./ff4j-cache-ehcache/index.html" />
-    	<item name="ff4j-security-spring" 	collapse="true" href="./ff4j-security-spring/index.html" />
+    	<item name="ff4j-core" 				img="./images/right-arrow.png" href="./ff4j-core/index.html" />
+    	<item name="ff4j-aop" 				img="./images/right-arrow.png" href="./ff4j-aop/index.html" />
+    	<item name="ff4j-jmx" 				img="./images/right-arrow.png" href="./ff4j-jmx/index.html" />
+    	<item name="ff4j-store-jdbc" 		img="./images/right-arrow.png" href="./ff4j-store-jdbc/index.html"   />
+    	<item name="ff4j-store-remoting" 	img="./images/right-arrow.png" href="./ff4j-store-remoting/index.html" />
+    	<item name="ff4j-cache-ehcache" 	img="./images/right-arrow.png" href="./ff4j-cache-ehcache/index.html" />
+    	<item name="ff4j-security-spring" 	img="./images/right-arrow.png" href="./ff4j-security-spring/index.html" />
     </menu>
     
     <menu name="Build"  inherit="top" img="icon-cog" >
     	<item name="License"		 			href="license.html" 		/>
+    	<item name="Team"		 				href="team-list.html" 		/>
         <item name="Continuous Integration" 	href="https://octo-clu.ci.cloudbees.com/" />
     	<item name="Distribution Management" 	href="distribution-management.htm" 		/>
     	<item name="Dependency Info" 			href="dependency-info.html" 		/>

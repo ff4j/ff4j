@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
   #%L
-  ff4j-core
-  $Id:$
-  $HeadURL:$
+  ff4j.xml (ff4j-core) by Cedrick LUNVEN
   %%
   Copyright (C) 2013 Ff4J
   %%
@@ -20,6 +18,7 @@
   limitations under the License.
   #L%
   -->
+
 
 <!DOCTYPE configuration>
 <features>
