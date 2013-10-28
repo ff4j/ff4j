@@ -23,7 +23,7 @@ import javax.lang.model.type.NullType;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.ff4j.FF4j;
-import org.ff4j.strategy.FlippingStrategy;
+import org.ff4j.core.FlippingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.Advised;

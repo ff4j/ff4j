@@ -16,9 +16,10 @@ import java.util.LinkedHashMap;
 import junit.framework.Assert;
 
 import org.ff4j.core.Feature;
-import org.ff4j.store.FeatureStore;
+import org.ff4j.core.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.RandomFlipStrategy;
+import org.ff4j.test.AbstractStoreTest;
 import org.junit.Test;
 
 /**
@@ -36,7 +37,8 @@ public class InMemoryStoreTest extends AbstractStoreTest {
 
     @Test
     public void testUnitFeatureInitialization() {
-        InMemoryFeatureStore imfs = new InMemoryFeatureStore(new Feature("default", true, "desc", null, new RandomFlipStrategy()));
+        InMemoryFeatureStore imfs = new InMemoryFeatureStore();
+        imfs.create(new Feature("default", true, "desc", null, new RandomFlipStrategy()));
         Assert.assertEquals(1, imfs.readAll().size());
     }
 

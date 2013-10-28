@@ -19,9 +19,7 @@ import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import org.ff4j.FF4j;
-import org.ff4j.core.Feature;
 import org.ff4j.exception.FeatureNotFoundException;
-import org.ff4j.store.FeatureStore;
 
 /**
  * Taglib to filter display based on {@link Feature} status within {@link FeatureStore}.

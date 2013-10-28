@@ -18,12 +18,12 @@
 	</parent>
 	
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~      PROPERTIES          ~ -->
+	<!-- ~        PROPERTIES        ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<properties>
-		<version.ehcache>2.6.6</version.ehcache>
+		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
 	</properties>
-
+	
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~      DEPENDENCIES        ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->

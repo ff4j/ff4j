@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.ff4j.core.Feature;
-import org.ff4j.store.FeatureStore;
-import org.ff4j.strategy.FlippingStrategy;
+import org.ff4j.core.FeatureStore;
+import org.ff4j.core.FlippingStrategy;
 
 /**
  * Allow to parse target expression.

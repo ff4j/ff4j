@@ -35,13 +35,13 @@
 	
 	<bean id="ff4j" class="org.ff4j.FF4j" p:store-ref="dbStore" />
 	
-	<bean id="dbStore" class="org.ff4j.store.DataBaseFeatureStore" p:dataSource-ref="ff.jdbc.datasource" />
+	<bean id="dbStore" class="org.ff4j.store.JdbcFeatureStoreSpring" p:dataSource-ref="ff.jdbc.datasource" />
 	
 	<!-- enable the configuration of transactional behavior based on annotations -->
  	<tx:annotation-driven transaction-manager="txManager"/>
   
 	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
- 	 <property name="dataSource" ref="ff.jdbc.datasource"/>
+ 	 	<property name="dataSource" ref="ff.jdbc.datasource"/>
 	</bean>
 
 	<jdbc:embedded-database id="ff.jdbc.datasource" type="HSQL">

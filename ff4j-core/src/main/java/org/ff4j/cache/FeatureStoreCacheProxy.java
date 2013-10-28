@@ -15,7 +15,7 @@ package org.ff4j.cache;
 import java.util.Map;
 
 import org.ff4j.core.Feature;
-import org.ff4j.store.FeatureStore;
+import org.ff4j.core.FeatureStore;
 
 /**
  * Access to {@link FeatureStore} could generate some overhead and decrease performances. This is the reason why cache is provided
@@ -74,7 +74,7 @@ public class FeatureStoreCacheProxy implements FeatureStore {
     @Override
     public boolean exist(String featureId) {
         // not in cache but maybe created from now
-        if (null == getCacheManager().get(featureId)) {
+        if (getCacheManager().get(featureId) == null) {
             return getTarget().exist(featureId);
         }
         return true;

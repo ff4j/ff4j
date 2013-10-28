@@ -11,20 +11,32 @@ package org.ff4j.test.cache;
  * governing permissions and limitations under the License. #L%
  */
 
-import org.ff4j.cache.FeatureCacheProviderInMemory;
+import junit.framework.Assert;
+
 import org.ff4j.cache.FeatureStoreCacheProxy;
-import org.ff4j.store.FeatureStore;
+import org.ff4j.cache.InMemoryCacheManager;
+import org.ff4j.core.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
-import org.ff4j.test.store.AbstractStoreTest;
+import org.ff4j.test.AbstractStoreTest;
+import org.junit.Test;
 
 public class InMemoryCacheTest extends AbstractStoreTest {
 
     /** {@inheritDoc} */
     @Override
     public FeatureStore initStore() throws Exception {
-        return new FeatureStoreCacheProxy(new InMemoryFeatureStore("ff4j.xml"), new FeatureCacheProviderInMemory());
+        return new FeatureStoreCacheProxy(new InMemoryFeatureStore("ff4j.xml"), new InMemoryCacheManager());
     }
 
-    public void testPutInCache() {}
+    @Test
+    public void testExistBis() {
+        FeatureStoreCacheProxy fscp = new FeatureStoreCacheProxy();
+        fscp.setCacheManager(new InMemoryCacheManager());
+        fscp.setTarget(new InMemoryFeatureStore("ff4j.xml"));
+        Assert.assertFalse(fscp.exist("toto"));
+        Assert.assertFalse(fscp.exist("toto"));
+        Assert.assertTrue(fscp.exist("first"));
+        Assert.assertTrue(fscp.exist("first"));
+    }
 
 }

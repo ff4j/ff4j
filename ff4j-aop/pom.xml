@@ -9,7 +9,7 @@
 	<name>ff4j-aop</name>
 	
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~   PARENT                 ~ -->
+	<!-- ~         PARENT           ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<parent>
 		<groupId>org.ff4j</groupId>
@@ -17,6 +17,16 @@
 		<version>1.0.1-SNAPSHOT</version>
 	</parent>
 
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~ OVERRIDING PROPERTIES    ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<properties>
+	 	<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
+	</properties>
+	
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~   DEPENDENCIES           ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<dependencies>
 	
 		<!--  core -->

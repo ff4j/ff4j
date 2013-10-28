@@ -12,7 +12,6 @@ package org.ff4j.store;
  */
 
 import java.io.InputStream;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -20,6 +19,7 @@ import java.util.Set;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureLoader;
+import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 
@@ -44,22 +44,6 @@ public class InMemoryFeatureStore implements FeatureStore {
     /** Default. */
     public InMemoryFeatureStore(Map<String, Feature> maps) {
         this.featuresMap = maps;
-    }
-
-    /** Default. */
-    public InMemoryFeatureStore(Collection<Feature> collec) {
-        if (collec != null && !collec.isEmpty()) {
-            for (Feature feature : collec) {
-                this.featuresMap.put(feature.getUid(), feature);
-            }
-        }
-    }
-
-    /** Default. */
-    public InMemoryFeatureStore(Feature singleFeature) {
-        if (singleFeature != null) {
-            this.featuresMap.put(singleFeature.getUid(), singleFeature);
-        }
     }
 
     /**

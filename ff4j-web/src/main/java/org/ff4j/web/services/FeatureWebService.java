@@ -22,7 +22,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.ff4j.core.Feature;
-import org.ff4j.store.FeatureStore;
+import org.ff4j.core.FeatureStore;
 
 /**
  * This store will invoke a {@link RemoteHttpFeatureStore} to perform operations upon features. Call are done though http so

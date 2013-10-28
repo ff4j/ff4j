@@ -1,23 +1,14 @@
 package org.ff4j.store;
 
 /*
- * #%L
- * ff4j-store-jdbc
- * %%
- * Copyright (C) 2013 Ff4J
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * #%L ff4j-store-jdbc %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. #L%
  */
 
 import java.sql.ResultSet;
@@ -31,6 +22,7 @@ import java.util.Set;
 import javax.sql.DataSource;
 
 import org.ff4j.core.Feature;
+import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.springframework.beans.factory.annotation.Required;
@@ -44,40 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class JdbcFeatureStore implements FeatureStore {
-
-    /** sql query expression */
-    private static final String SQLQUERY_ALLFEATURES = "SELECT UID,ENABLE,DESCRIPTION FROM FF4J_FEATURES";
-
-    /** sql query expression */
-    private static final String SQLQUERY_GET_FEATURE_BY_ID = "SELECT UID,ENABLE,DESCRIPTION FROM FF4J_FEATURES WHERE UID = ?";
-
-    /** sql query expression */
-    private static final String SQL_EXIST = "SELECT COUNT(UID) FROM FF4J_FEATURES WHERE UID = ?";
-
-    /** sql query expression */
-    private static final String SQL_DISABLE = "UPDATE FF4J_FEATURES SET ENABLE = 0 WHERE UID = ?";
-
-    /** sql query expression */
-    private static final String SQL_ENABLE = "UPDATE FF4J_FEATURES SET ENABLE = 1 WHERE UID = ?";
-
-    /** sql query expression */
-    private static final String SQL_CREATE = "INSERT INTO FF4J_FEATURES(UID, ENABLE, DESCRIPTION) VALUES(?, ?, ?)";
-
-    /** sql query expression */
-    private static final String SQL_DELETE = "DELETE FROM FF4J_FEATURES WHERE UID = ?";
-
-    /** sql query expression */
-    private static final String SQL_UPDATE = "UPDATE FF4J_FEATURES SET DESCRIPTION = ? WHERE UID = ?";
-
-    /** sql query expression */
-    private static final String SQL_ADD_ROLE = "INSERT INTO FF4J_ROLES(FEAT_UID, ROLE_NAME) VALUES (?,?)";
-
-    /** sql query expression */
-    private static final String SQL_DELETE_ROLE = "DELETE FROM FF4J_ROLES WHERE FEAT_UID = ? AND ROLE_NAME = ?";
-
-    /** sql query expression */
-    private static final String SQL_GET_FPOINT_USRROLE = "SELECT ROLE_NAME FROM FF4J_ROLES WHERE FEAT_UID = ?";
+public class JdbcFeatureStoreSpring implements JdbcFeatureStoreConstants, FeatureStore {
 
     /** Row Mapper for FlipPoint. */
     private static final FlippingPointRowMapper MAPPER = new FlippingPointRowMapper();
@@ -103,12 +62,18 @@ public class JdbcFeatureStore implements FeatureStore {
     /** {@inheritDoc} */
     @Override
     public void enable(String featId) {
+        if (!exist(featId)) {
+            throw new FeatureNotFoundException(featId);
+        }
         getJdbcTemplate().update(SQL_ENABLE, featId);
     }
 
     /** {@inheritDoc} */
     @Override
     public void disable(String featId) {
+        if (!exist(featId)) {
+            throw new FeatureNotFoundException(featId);
+        }
         getJdbcTemplate().update(SQL_DISABLE, featId);
     }
 
@@ -126,7 +91,7 @@ public class JdbcFeatureStore implements FeatureStore {
             throw new FeatureNotFoundException(featId);
         }
         Feature fp = dbFlips.get(0);
-        List<String> auths = getJdbcTemplate().query(SQL_GET_FPOINT_USRROLE, new SingleColumnRowMapper<String>(), featId);
+        List<String> auths = getJdbcTemplate().query(SQL_GET_ROLES, new SingleColumnRowMapper<String>(), featId);
         fp.getAuthorizations().addAll(auths);
         return dbFlips.get(0);
     }

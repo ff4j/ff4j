@@ -2,7 +2,7 @@ package org.ff4j.cache;
 
 /*
  * #%L
- * FeatureCacheManager.java (ff4j-core) by Cedrick LUNVEN
+ * ff4j-core
  * %%
  * Copyright (C) 2013 Ff4J
  * %%

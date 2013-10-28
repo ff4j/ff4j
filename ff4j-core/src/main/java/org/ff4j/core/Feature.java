@@ -16,8 +16,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.ff4j.strategy.FlippingStrategy;
-
 /**
  * Represents a feature flag identified by an unique identifier.
  * 
@@ -47,7 +45,7 @@ public class Feature implements Serializable {
     private String description;
 
     /** Feature could be grouped to enable/disable the whole group. */
-    // private String group;
+    /** private String group */
 
     /** if not empty and @see {@link AuthorizationsManager} provided, limit usage to this roles. */
     private Set<String> authorizations = new HashSet<String>();
@@ -265,20 +263,5 @@ public class Feature implements Serializable {
     public void setFlippingStrategy(FlippingStrategy flippingStrategy) {
         this.flippingStrategy = flippingStrategy;
     }
-
-    /**
-     * Getter accessor for attribute 'group'.
-     * 
-     * @return current value of 'group'
-     * 
-     *         public String getGroup() { return group; }
-     * 
-     *         /** Setter accessor for attribute 'group'.
-     * 
-     * @param group
-     *            new value for 'group '
-     * 
-     *            public void setGroup(String group) { this.group = group; }
-     */
 
 }

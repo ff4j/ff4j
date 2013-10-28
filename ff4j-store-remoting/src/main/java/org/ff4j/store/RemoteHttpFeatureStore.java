@@ -23,7 +23,7 @@ package org.ff4j.store;
 import java.util.Map;
 
 import org.ff4j.core.Feature;
-import org.ff4j.store.FeatureStore;
+import org.ff4j.core.FeatureStore;
 
 /**
  * Implementation of {@link FeatureStore} to access features through HTTP.

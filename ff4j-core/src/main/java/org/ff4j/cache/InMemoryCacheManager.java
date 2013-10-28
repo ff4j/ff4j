@@ -25,7 +25,7 @@ import org.ff4j.core.Feature;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureCacheProviderInMemory implements FeatureCacheManager {
+public class InMemoryCacheManager implements FeatureCacheManager {
 
     /** Default TTL is one hour. */
     public static final long DEFAULT_TTL = 3600L;

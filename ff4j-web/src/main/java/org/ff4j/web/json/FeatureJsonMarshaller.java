@@ -1,29 +1,21 @@
 package org.ff4j.web.json;
 
 /*
- * #%L
- * FeatureJsonMarshaller.java (ff4j-web) by Cedrick LUNVEN
- * %%
- * Copyright (C) 2013 Ff4J
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * #%L FeatureJsonMarshaller.java (ff4j-web) by Cedrick LUNVEN %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the
+ * License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. #L%
  */
 
 import java.util.Set;
 
 import org.ff4j.core.Feature;
-import org.ff4j.strategy.FlippingStrategy;
+import org.ff4j.core.FlippingStrategy;
 
 /**
  * Utility class to produce JSON.
@@ -64,7 +56,14 @@ public final class FeatureJsonMarshaller {
         return jsonOutput.toString();
     }
 
-    private static final String renderFlippingStrategy(FlippingStrategy strat) {
+    /**
+     * Render {@link FlippingStrategy} as a Json string.
+     * 
+     * @param strat
+     *            flipping strategy
+     * @return json string
+     */
+    private static String renderFlippingStrategy(FlippingStrategy strat) {
         StringBuilder jsonOutput = new StringBuilder(",\"flippingStrategy\":");
         if (strat == null) {
             jsonOutput.append(NULL_JSON);
@@ -72,11 +71,18 @@ public final class FeatureJsonMarshaller {
             jsonOutput.append("\"");
             jsonOutput.append(strat.getClass().getCanonicalName());
             jsonOutput.append("\"");
-        };
+        }
         return jsonOutput.toString();
     }
 
-    private static final String renderAuthorizations(Set<String> auths) {
+    /**
+     * Render authorizations Set as a Json string.
+     * 
+     * @param strat
+     *            authorizations set
+     * @return json string
+     */
+    private static String renderAuthorizations(Set<String> auths) {
         StringBuilder jsonOutput = new StringBuilder(",\"authorizations\":");
         if (auths == null) {
             jsonOutput.append(NULL_JSON);
@@ -110,7 +116,7 @@ public final class FeatureJsonMarshaller {
      *            attribute value
      * @return json expression for this attribute
      */
-    private static final String renderAttributeString(String name, String value) {
+    private static String renderAttributeString(String name, String value) {
         StringBuilder jsonOutput = new StringBuilder("\"");
         jsonOutput.append(name);
         jsonOutput.append("\":");
@@ -133,7 +139,7 @@ public final class FeatureJsonMarshaller {
      *            attribute value
      * @return json expression for this attribute
      */
-    private static final String renderAttributeBoolean(String name, boolean value) {
+    private static String renderAttributeBoolean(String name, boolean value) {
         StringBuilder jsonOutput = new StringBuilder("\"");
         jsonOutput.append(name);
         jsonOutput.append("\":");

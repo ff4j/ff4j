@@ -20,8 +20,8 @@ package org.ff4j.test.strategy;
  * #L%
  */
 
-import org.ff4j.store.FeatureStore;
-import org.ff4j.strategy.FlippingStrategy;
+import org.ff4j.core.FeatureStore;
+import org.ff4j.core.FlippingStrategy;
 
 public class TestAlwaysTrueFlippingStrategy implements FlippingStrategy {
 

@@ -16,7 +16,17 @@
 		<artifactId>ff4j-parent</artifactId>
 		<version>1.0.1-SNAPSHOT</version>
 	</parent>
-
+	
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~        PROPERTIES        ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<properties>
+		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
+	</properties>
+	
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~      DEPENDENCIES        ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<dependencies>
 	
 		<!--  core -->
@@ -68,17 +78,4 @@
 		
 	</dependencies>
 	
-	<build>
-		<plugins>
-
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>license-maven-plugin</artifactId>
-				<configuration>
-					<descriptionTemplate>${basedir}/../src/license/header.ftl</descriptionTemplate>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
 </project>

@@ -1,9 +1,8 @@
-package org.ff4j.test.store;
+package org.ff4j.test;
 
 /*
- * #%L AbstractStoreTest.java (ff4j-core) by Cedrick LUNVEN %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License,
- * Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the
- * License at
+ * #%L ff4j-test %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
  * 
  * http://www.apache.org/licenses/LICENSE-2.0
  * 
@@ -21,48 +20,67 @@ import junit.framework.TestCase;
 
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
+import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
-import org.ff4j.store.FeatureStore;
+import org.ff4j.test.AssertFf4j;
 import org.junit.Test;
 
+/**
+ * For different.
+ * 
+ * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ */
 public abstract class AbstractStoreTest extends TestCase {
 
-    // Tested Store
+    /** Tested Store. */
     protected FeatureStore testedStore;
 
-    /** Instance of ff4j using the tested store. */
+    /** Initialize */
     protected FF4j ff4j = null;
+
+    /** Test Values */
+    protected AssertFf4j assertFf4j;
 
     /** {@inheritDoc} */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        testedStore = initStore();
-        ff4j = new FF4j().autoCreate(false);
-        ff4j.setStore(testedStore);
+        if (ff4j == null) {
+            ff4j = new FF4j();
+            ff4j.setStore(initStore());
+            testedStore = ff4j.getStore();
+            assertFf4j = new AssertFf4j(ff4j);
+        }
     }
 
+    /**
+     * Any store test will declare its store through this callback.
+     * 
+     * @return working feature store
+     * @throws Exception
+     *             error during building feature store
+     */
     protected abstract FeatureStore initStore() throws Exception;
 
     @Test
     public void testStoreHasBeenInitialized() throws Exception {
-        Assert.assertEquals(5, ff4j.getStore().readAll().size());
-        Assert.assertTrue(ff4j.isFlipped("first"));
+        assertFf4j.assertFeatureNumber(5);
+        assertFf4j.assertFlipped("first");
     }
 
     @Test
     public void testFlipWithInvalidName_NotFoundException() {
         try {
-            ff4j.isFlipped("dummyDum");
-            fail("Dummy should not exist");
+            ff4j.isFlipped("this_featureName_does_not_exist");
+            fail("this_featureName_does_not_exist should not exist");
         } catch (FeatureNotFoundException fue) {
-            Assert.assertTrue(fue.getMessage().contains("dummy"));
+            Assert.assertTrue(fue.getMessage().contains("this_featureName_does_not_exist"));
         }
     }
 
     @Test
-    public void testEnableorDisable_NotFoundException() {
+    public void testEnable_NotFoundException() {
         try {
             ff4j.enable("dummy");
             fail();
@@ -72,30 +90,42 @@ public abstract class AbstractStoreTest extends TestCase {
     }
 
     @Test
+    public void testDisable_NotFoundException() {
+        try {
+            ff4j.disable("dummy");
+            fail();
+        } catch (FeatureNotFoundException fue) {
+            Assert.assertTrue(fue.getMessage().contains("dummy"));
+        }
+    }
+
+    @Test
     public void testEnableFeature() {
         ff4j.enable("first");
-        Assert.assertTrue(ff4j.isFlipped("first"));
+        assertFf4j.assertFlipped("first");
     }
 
     @Test
     public void testDisableFeature() {
         ff4j.disable("first");
-        Assert.assertFalse(ff4j.isFlipped("first"));
+        assertFf4j.assertNotFlipped("first");
     }
 
     @Test
-    public void testAddFlipPoint() throws Exception {
+    public void testAddFeature() throws Exception {
         Set<String> rights = new HashSet<String>(Arrays.asList(new String[] {"ROLE_USER"}));
         Feature fp = new Feature("new", true, "description", rights);
         testedStore.create(fp);
-        Assert.assertEquals(6, testedStore.readAll().size());
-        Assert.assertNotNull(testedStore.read("new"));
+        assertFf4j.assertFeatureNumber(6);
+        assertFf4j.assertExist("new");
     }
 
     @Test
-    public void testAddFlipPoint_AlreadyExist_AlreadyExisException() throws Exception {
-        Feature fp = new Feature("new", true, "description");
-        testedStore.create(fp);
+    public void testAddFeature_AlreadyExis() throws Exception {
+        if (!testedStore.exist("new")) {
+            Feature fp = new Feature("new", true, "description");
+            testedStore.create(fp);
+        }
 
         Set<String> rights = new HashSet<String>(Arrays.asList(new String[] {"ROLE_USER"}));
         Feature fp2 = new Feature("new", true, "description", rights);
@@ -107,62 +137,66 @@ public abstract class AbstractStoreTest extends TestCase {
         }
 
         // Overriding, no error, no new creation
-        Assert.assertEquals(6, testedStore.readAll().size());
-        Assert.assertNotNull(testedStore.read("new"));
+        assertFf4j.assertFeatureNumber(6);
+        assertFf4j.assertExist("new");
     }
 
     @Test
-    public void testDeleteFlipPoint() throws Exception {
+    public void testDeleteFeature() throws Exception {
         Set<String> rights = new HashSet<String>(Arrays.asList(new String[] {"ROLE_USER"}));
         Feature fp2 = new Feature("new", true, "description", rights);
-        testedStore.create(fp2);
-        Assert.assertEquals(6, testedStore.readAll().size());
+        if (!testedStore.exist("new")) {
+            testedStore.create(fp2);
+            assertFf4j.assertFeatureNumber(6);
+        }
         testedStore.delete(fp2.getUid());
-        Assert.assertEquals(5, testedStore.readAll().size());
+        assertFf4j.assertFeatureNumber(5);
     }
 
     @Test
-    public void testDeteleFlipPoint_DoesnotExistReturnError() throws Exception {
+    public void testDeteleFeature_DoesnotExistReturnError() throws Exception {
         try {
             testedStore.delete("does-not-exist");
             fail();
         } catch (FeatureNotFoundException fnfe) {
-            // ok : @Test(expected = FlipPointNotFoundException.class) doesn't work ???
+            // @Test(expected = FlipPointNotFoundException.class) doesn't work everytime...
         }
     }
 
     @Test
-    public void testAddRoleToFlipPointThatDoesNotExistReturnException() throws Exception {
+    public void testAddRoleToFeatureThatDoesNotExistReturnException() throws Exception {
         testedStore.grantRoleOnFeature("first", "role-does-not-exit");
+        assertFf4j.assertHasRole("first", "role-does-not-exit");
     }
 
     @Test
-    public void testDeleteRole_ToFlipPoint() throws Exception {
+    public void testDeleteRole_ToFeature() throws Exception {
         testedStore.removeRoleFromFeature("first", "ROLE_USER");
-        Assert.assertEquals(0, testedStore.read("first").getAuthorizations().size());
+        assertFf4j.assertDoesntHaveRole("first", "ROLE_USER");
     }
 
     @Test
-    public void testUpdateFlip_CoreData() throws Exception {
+    public void testUpdateFeature_CoreData() throws Exception {
         Feature fpBis = new Feature("first", false, "desc2");
         testedStore.update(fpBis);
-        Assert.assertFalse(testedStore.read("first").isEnable());
+        assertFf4j.assertNotFlipped("first");
         Assert.assertEquals("desc2", testedStore.read("first").getDescription());
     }
 
     @Test
-    public void testUpdateFlip_MoreAutorisation() throws Exception {
+    public void testUpdateFeature_MoreAutorisation() throws Exception {
         Set<String> rights2 = new HashSet<String>(Arrays.asList(new String[] {"ROLE_USER","X"}));
         Feature fpBis = new Feature("first", false, "desc2", rights2);
         testedStore.update(fpBis);
-        Assert.assertEquals(2, testedStore.read("first").getAuthorizations().size());
+        assertFf4j.assertHasRole("first", "ROLE_USER");
+        assertFf4j.assertHasRole("first", "X");
     }
 
     @Test
     public void testUpdateFlip_LessAutorisation() {
         Feature fpBis = new Feature("first", false, null);
         testedStore.update(fpBis);
-        Assert.assertEquals(0, testedStore.read("first").getAuthorizations().size());
+        assertFf4j.assertDoesntHaveRole("first", "x");
     }
 
     @Test
@@ -170,6 +204,7 @@ public abstract class AbstractStoreTest extends TestCase {
         Set<String> rights2 = new HashSet<String>(Arrays.asList(new String[] {"ROLE_USER","ROLE_ADMIN"}));
         Feature fpBis = new Feature("first", false, "desc2", rights2);
         testedStore.update(fpBis);
-        Assert.assertEquals(2, testedStore.read("first").getAuthorizations().size());
+        assertFf4j.assertHasRole("first", "ROLE_USER");
+        assertFf4j.assertHasRole("first", "ROLE_ADMIN");
     }
 }

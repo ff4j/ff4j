@@ -24,8 +24,8 @@ package org.ff4j.test.strategy;
 
 import java.util.Calendar;
 
-import org.ff4j.store.FeatureStore;
-import org.ff4j.strategy.FlippingStrategy;
+import org.ff4j.core.FeatureStore;
+import org.ff4j.core.FlippingStrategy;
 
 public class OfficeHoursFlippingStrategy implements FlippingStrategy {
 

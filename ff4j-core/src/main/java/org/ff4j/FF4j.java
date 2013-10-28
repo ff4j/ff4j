@@ -18,11 +18,11 @@ import java.util.Set;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureLoader;
+import org.ff4j.core.FeatureStore;
+import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.security.AuthorizationsManager;
-import org.ff4j.store.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
-import org.ff4j.strategy.FlippingStrategy;
 
 /**
  * Main component of the framework, it allows to interact with features. It provides both static and direct access.

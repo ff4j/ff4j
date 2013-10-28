@@ -20,7 +20,7 @@ package org.ff4j.cache;
  * #L%
  */
 
-import org.ff4j.store.FeatureStore;
+import org.ff4j.core.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
 
 public class EhCacheCacheProviderTest extends AbstractStoreTest {

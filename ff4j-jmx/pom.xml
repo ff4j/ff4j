@@ -20,7 +20,17 @@
 		<artifactId>ff4j-parent</artifactId>
 		<version>1.0.1-SNAPSHOT</version>
 	</parent>
-
+	
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~        PROPERTIES        ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<properties>
+	 	<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
+	</properties>
+	
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~      DEPENDENCIES        ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<dependencies>
 	
 		<!--  core -->

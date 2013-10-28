@@ -14,10 +14,17 @@ package org.ff4j.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+import java.util.HashSet;
+
 import junit.framework.Assert;
 
 import org.ff4j.FF4j;
+import org.ff4j.core.Feature;
 import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.test.security.TestAuthorizationManager;
+import org.ff4j.test.strategy.TestAlwaysTrueFlippingStrategy;
 import org.junit.Test;
 
 /**
@@ -25,7 +32,7 @@ import org.junit.Test;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FF4jFlippingTest {
+public class FF4jTest {
 
     @Test
     public void helloWorldTest() {
@@ -123,19 +130,24 @@ public class FF4jFlippingTest {
 
     @Test
     public void testFlipped() {
-        // FF4j ff4j = new FF4j();
-
-        /*
-         * Static Access FF4j.sLogFeatures(); FF4j.isFlipped("first"); f.setAuthorizationsManager(new
-         * DefaultAuthorisationManager()); FF4j.isFlipped("first", new RandomFlipStrategy(), "test");
-         * FF4j.getFeature("first").setFlippingStrategy(new RandomFlipStrategy()); FF4j.isFlipped("first", new
-         * RandomFlipStrategy(), "test");
-         * 
-         * FF4j.getFeature("first").setEnable(false); FF4j.isFlipped("first"); FF4j.isFlipped("first", new RandomFlipStrategy(),
-         * "test"); FF4j.getFeature("first").setFlippingStrategy(new RandomFlipStrategy()); FF4j.isFlipped("first", new
-         * RandomFlipStrategy(), "test");
-         */
-
+        FF4j ff4j = new FF4j().create(new Feature("coco", true, "", Arrays.asList(new String[] {"ROLEA"})));
+        Assert.assertTrue(ff4j.isFlipped("coco"));
+        ff4j.setAuthorizationsManager(new TestAuthorizationManager());
+        Assert.assertTrue(ff4j.isFlipped("coco"));
+        Assert.assertTrue(ff4j.isFlipped("coco", "OK"));
+        Assert.assertTrue(ff4j.isFlipped("coco", new TestAlwaysTrueFlippingStrategy()));
     }
+
+    // FF4j ff4j = new FF4j();
+
+    /*
+     * Static Access FF4j.sLogFeatures(); FF4j.isFlipped("first"); f.setAuthorizationsManager(new DefaultAuthorisationManager());
+     * FF4j.isFlipped("first", new RandomFlipStrategy(), "test"); FF4j.getFeature("first").setFlippingStrategy(new
+     * RandomFlipStrategy()); FF4j.isFlipped("first", new RandomFlipStrategy(), "test");
+     * 
+     * FF4j.getFeature("first").setEnable(false); FF4j.isFlipped("first"); FF4j.isFlipped("first", new RandomFlipStrategy(),
+     * "test"); FF4j.getFeature("first").setFlippingStrategy(new RandomFlipStrategy()); FF4j.isFlipped("first", new
+     * RandomFlipStrategy(), "test");
+     */
 
 }
