@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.ff4j.core.Feature;
-import org.ff4j.strategy.RandomFlipStrategy;
+import org.ff4j.strategy.PonderationFlipStrategy;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -46,7 +46,7 @@ public class FeatureTest {
 
     @Test
     public void testRolesEmpty() {
-        Feature f2 = new Feature("ok2", true, null, new HashSet<String>());
+        Feature f2 = new Feature("ok2", true, null, null, new HashSet<String>());
         Assert.assertNotNull(f2.toString(), "f should be serialized even without roles");
         Assert.assertTrue(f2.isEnable());
     }
@@ -54,7 +54,7 @@ public class FeatureTest {
     @Test
     public void testFullToStringImpl() {
         List<String> auths = Arrays.asList(new String[] {"something"});
-        Feature f = new Feature("ok", true, "description", auths, new RandomFlipStrategy());
+        Feature f = new Feature("ok", true, "grp1", "description", auths, new PonderationFlipStrategy());
         Assert.assertTrue(f.toString().contains("ok"));
     }
 
@@ -64,7 +64,7 @@ public class FeatureTest {
         empty.setUid("abc");
 
         // Flipping strategy
-        empty.setFlippingStrategy(new RandomFlipStrategy());
+        empty.setFlippingStrategy(new PonderationFlipStrategy());
         Assert.assertNotNull(empty.getFlippingStrategy());
 
         // Authorization filling
@@ -80,6 +80,10 @@ public class FeatureTest {
         empty.setEnable(true);
         empty.toggle();
         Assert.assertFalse(empty.isEnable());
+        
+        // GROUP
+        empty.setGroup("sampleGroup");
+        Assert.assertFalse(empty.getGroup() == null);
 
         // To String with a whole object
         Assert.assertTrue(empty.toString().contains("OK"));

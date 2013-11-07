@@ -23,7 +23,7 @@
 <dependency>
  <groupId>org.ff4j</groupId>
  <artifactId>ff4j-core</artifactId>
- <version>${project.version}</version>
+ <version>]]>${project.version}<![CDATA[</version>
 </dependency>    			  
 ]]></pre>
      			<h4>2. Define Features</h4>

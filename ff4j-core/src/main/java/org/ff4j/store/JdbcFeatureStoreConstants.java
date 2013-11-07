@@ -19,10 +19,10 @@ package org.ff4j.store;
 public interface JdbcFeatureStoreConstants {
 
     /** sql query expression */
-    String SQLQUERY_ALLFEATURES = "SELECT UID,ENABLE,DESCRIPTION FROM FF4J_FEATURES";
+    String SQLQUERY_ALLFEATURES = "SELECT UID,ENABLE,DESCRIPTION,STRATEGY,EXPRESSION,GROUPNAME FROM FF4J_FEATURES";
 
     /** sql query expression */
-    String SQLQUERY_GET_FEATURE_BY_ID = "SELECT UID,ENABLE,DESCRIPTION FROM FF4J_FEATURES WHERE UID = ?";
+    String SQLQUERY_GET_FEATURE_BY_ID = "SELECT UID,ENABLE,DESCRIPTION,STRATEGY,EXPRESSION,GROUPNAME FROM FF4J_FEATURES WHERE UID = ?";
 
     /** sql query expression */
     String SQL_EXIST = "SELECT COUNT(UID) FROM FF4J_FEATURES WHERE UID = ?";
@@ -34,13 +34,13 @@ public interface JdbcFeatureStoreConstants {
     String SQL_ENABLE = "UPDATE FF4J_FEATURES SET ENABLE = 1 WHERE UID = ?";
 
     /** sql query expression */
-    String SQL_CREATE = "INSERT INTO FF4J_FEATURES(UID, ENABLE, DESCRIPTION) VALUES(?, ?, ?)";
+    String SQL_CREATE = "INSERT INTO FF4J_FEATURES(UID, ENABLE, DESCRIPTION, STRATEGY,EXPRESSION, GROUPNAME) VALUES(?, ?, ?, ?, ?, ?)";
 
     /** sql query expression */
     String SQL_DELETE = "DELETE FROM FF4J_FEATURES WHERE UID = ?";
 
     /** sql query expression */
-    String SQL_UPDATE = "UPDATE FF4J_FEATURES SET DESCRIPTION = ? WHERE UID = ?";
+    String SQL_UPDATE = "UPDATE FF4J_FEATURES SET ENABLE=?,DESCRIPTION=?,STRATEGY=?,EXPRESSION=?,GROUPNAME=? WHERE UID = ?";
 
     /** sql query expression */
     String SQL_ADD_ROLE = "INSERT INTO FF4J_ROLES(FEAT_UID, ROLE_NAME) VALUES (?,?)";
@@ -53,5 +53,29 @@ public interface JdbcFeatureStoreConstants {
 
     /** sql query expression */
     String SQL_GET_ALLROLES = "SELECT FEAT_UID,ROLE_NAME FROM FF4J_ROLES";
+
+    /** sql column name from table FF4J_FEATURES. */
+    String COL_FEAT_UID = "UID";
+
+    /** sql column name from table FF4J_FEATURES. */
+    String COL_FEAT_ENABLE = "ENABLE";
+
+    /** sql column name from table FF4J_FEATURES. */
+    String COL_FEAT_DESCRIPTION = "DESCRIPTION";
+
+    /** sql column name from table FF4J_FEATURES. */
+    String COL_FEAT_GROUPNAME = "GROUPNAME";
+
+    /** sql column name from table FF4J_FEATURES. */
+    String COL_FEAT_STRATEGY = "STRATEGY";
+
+    /** sql column name from table FF4J_FEATURES. */
+    String COL_FEAT_EXPRESSION = "EXPRESSION";
+
+    /** sql column name from table FF4J_ROLES. */
+    String COL_ROLE_FEATID = "FEAT_UID";
+
+    /** sql column name from table FF4J_ROLES. */
+    String COL_ROLE_ROLENAME = "ROLE_NAME";
 
 }

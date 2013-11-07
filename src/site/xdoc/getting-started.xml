@@ -8,7 +8,21 @@
 
 	<body>
 		<section name="Introduction">
-			<p>TOTO</p>
+			 <subsection name="Table of Content">
+            <p>
+            <br/> A. Running an application in 5 minutes
+            <br/> Archetype a new project
+            <br/> Add dependency
+            <br/> Define your features through XML
+            <br/> Work with with features
+            <br/> Test your component
+            
+            <br/> B. Create a web application step by step
+            
+            
+            
+            </p>
+            </subsection>
 		</section>
 	</body>
 	

@@ -260,6 +260,7 @@ public final class ExpressionParser {
             }
             if (currentNode != null) {
                 currentNode.getSubNodes().add(subNodeAND);
+                return currentNode;
             } else {
                 return subNodeAND;
             }

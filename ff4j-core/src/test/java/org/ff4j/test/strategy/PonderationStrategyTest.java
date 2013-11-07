@@ -1,0 +1,87 @@
+package org.ff4j.test.strategy;
+
+/*
+ * #%L ff4j-core $Id:$ $HeadURL:$ %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. #L%
+ */
+
+import junit.framework.Assert;
+
+import org.ff4j.FF4j;
+import org.ff4j.core.Feature;
+import org.ff4j.strategy.PonderationFlipStrategy;
+import org.ff4j.test.AbstractFf4jTest;
+import org.junit.Test;
+
+/**
+ * Unit Testing
+ * 
+ * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ */
+public class PonderationStrategyTest extends AbstractFf4jTest {
+
+    /** {@inheritDoc} */
+    @Override
+    public FF4j initFF4j() {
+        return new FF4j("ff4j-ponderationStrategy-ok.xml");
+    }
+
+    @Test
+    public void testNoExpressionIsDefault() {
+        Feature f = ff4j.getFeature("pond_Null");
+        Assert.assertEquals("0.5", f.getFlippingStrategy().getInitParams());
+    }
+
+    @Test
+    public void testExpressionTo0AlwaysFalse() {
+        Feature f = ff4j.getFeature("pond_0");
+        Assert.assertEquals("0.0", f.getFlippingStrategy().getInitParams());
+        for (int i = 0; i < 10; i++) {
+            assertFf4j.assertNotFlipped(f.getUid());
+        }
+    }
+
+    @Test
+    public void testExpressionTo1AlwaysTrue() {
+        Feature f = ff4j.getFeature("pond_1");
+        Assert.assertEquals("1.0", f.getFlippingStrategy().getInitParams());
+        for (int i = 0; i < 10; i++) {
+            assertFf4j.assertFlipped(f.getUid());
+        }
+    }
+
+    @Test
+    public void testExpressionCustom() {
+        Feature f = ff4j.getFeature("pond_6");
+        Assert.assertEquals("0.6", f.getFlippingStrategy().getInitParams());
+        int nbOK = 0;
+        int nbKO = 0;
+        for (int i = 0; i < 1000; i++) {
+            if (ff4j.isFlipped(f.getUid())) {
+                nbOK++;
+            } else {
+                nbKO++;
+            }
+        }
+        Assert.assertTrue("both result occured", nbOK > 0 && nbKO > 0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testKOParameter() {
+        new FF4j("ff4j-ponderationStrategy-ko.xml");
+    }
+
+    @Test
+    public void testInitializationThroughIOc() {
+        PonderationFlipStrategy pfs = new PonderationFlipStrategy();
+        pfs.setThreshold(0.5);
+        Assert.assertEquals(0.5, pfs.getThreshold());
+    }
+
+}

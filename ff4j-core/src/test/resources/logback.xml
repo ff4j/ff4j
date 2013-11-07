@@ -2,8 +2,6 @@
 <!--
   #%L
   ff4j-core
-  $Id:$
-  $HeadURL:$
   %%
   Copyright (C) 2013 Ff4J
   %%
@@ -20,33 +18,20 @@
   limitations under the License.
   #L%
   -->
-
 <!DOCTYPE configuration>
-<features>
+<configuration >
 
-	<feature uid="first" enable="true" description="description" >
-		<auth role="ROLE_USER" />
-	</feature>
-	
-	<feature uid="second" enable="false" description="description" >
-		<auth role="ROLE_USER" />
-	</feature>
-	
-	<feature uid="third" enable="false" description="description" >
-		<auth role="X" />
-		<auth role="Y" />
-	</feature>
-	
-	
-	<feature uid="forth" enable="true" description="description" 
-			strategy="org.ff4j.strategy.el.ExpressionFlipStrategy" 
-			expression="third | second" group="GRP1">
-		<auth role="X" />
-		<auth role="Y" />
-	</feature>
-	
-	<feature uid="AwesomeFeature" enable="true" description="some desc" />
-	
-	
-</features>
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+   <withJansi>true</withJansi>
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} %-5level %class{0} - %msg%n</pattern>
+    </encoder>
+  </appender>
 
+  <logger name="org.springframework" level="WARN" />
+
+  <root level="debug">
+    <appender-ref ref="STDOUT" />
+  </root>
+
+</configuration>

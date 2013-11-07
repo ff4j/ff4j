@@ -1,14 +1,23 @@
 package org.ff4j.core;
 
 /*
- * #%L ff4j-core $Id:$ $HeadURL:$ %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * #%L
+ * ff4j-core
+ * %%
+ * Copyright (C) 2013 Ff4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  * 
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
- * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License. #L%
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
  */
 
 import java.io.Serializable;
@@ -45,7 +54,7 @@ public class Feature implements Serializable {
     private String description;
 
     /** Feature could be grouped to enable/disable the whole group. */
-    /** private String group */
+    private String group;
 
     /** if not empty and @see {@link AuthorizationsManager} provided, limit usage to this roles. */
     private Set<String> authorizations = new HashSet<String>();
@@ -95,6 +104,23 @@ public class Feature implements Serializable {
     }
 
     /**
+     * Simplest Constructor (without security concerns)
+     * 
+     * @param uid
+     *            unique feature name (required)
+     * @param pactive
+     *            initial feature state
+     * @param pDescription
+     *            description of feature.
+     */
+    public Feature(final String uid, final boolean penable, final String pdescription, final String group) {
+        this(uid, penable, pdescription);
+        if (group != null && !"".equals(group)) {
+            this.group = group;
+        }
+    }
+
+    /**
      * Constructor with limited access roles definitions
      * 
      * @param uid
@@ -106,8 +132,9 @@ public class Feature implements Serializable {
      * @param auths
      *            limited roles to use the feature even if enabled
      */
-    public Feature(final String uid, final boolean penable, final String pdescription, final Collection<String> auths) {
-        this(uid, penable, pdescription);
+    public Feature(final String uid, final boolean penable, final String pdescription, final String group,
+            final Collection<String> auths) {
+        this(uid, penable, pdescription, group);
         if (auths != null && !auths.isEmpty()) {
             this.authorizations = new HashSet<String>(auths);
         }
@@ -125,9 +152,9 @@ public class Feature implements Serializable {
      * @param auths
      *            limited roles to use the feature even if enabled
      */
-    public Feature(final String uid, final boolean penable, final String pdescription, final Collection<String> auths,
-            final FlippingStrategy strat) {
-        this(uid, penable, pdescription, auths);
+    public Feature(final String uid, final boolean penable, final String pdescription, final String group,
+            final Collection<String> auths, final FlippingStrategy strat) {
+        this(uid, penable, pdescription, group, auths);
         if (strat != null) {
             this.flippingStrategy = strat;
         }
@@ -262,6 +289,25 @@ public class Feature implements Serializable {
      */
     public void setFlippingStrategy(FlippingStrategy flippingStrategy) {
         this.flippingStrategy = flippingStrategy;
+    }
+
+    /**
+     * Getter accessor for attribute 'group'.
+     * 
+     * @return current value of 'group'
+     */
+    public String getGroup() {
+        return group;
+    }
+
+    /**
+     * Setter accessor for attribute 'group'.
+     * 
+     * @param group
+     *            new value for 'group '
+     */
+    public void setGroup(String group) {
+        this.group = group;
     }
 
 }

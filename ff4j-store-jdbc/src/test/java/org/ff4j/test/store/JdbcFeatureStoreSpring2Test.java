@@ -21,7 +21,7 @@ public class JdbcFeatureStoreSpring2Test extends AbstractStoreTest {
     private static FeatureStore store = null;
 
     @Override
-    protected FeatureStore initStore() throws Exception {
+    protected FeatureStore initStore() {
         if (store == null) {
             System.out.println("OK");
             store = new ClassPathXmlApplicationContext("classpath:*applicationContext-jdbc-test.xml").getBean(FF4j.class)

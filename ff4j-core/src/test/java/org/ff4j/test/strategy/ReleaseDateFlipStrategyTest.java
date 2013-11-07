@@ -1,4 +1,8 @@
-package org.ff4j.strategy.el;
+package org.ff4j.test.strategy;
+
+import org.ff4j.FF4j;
+import org.ff4j.strategy.ReleaseDateFlipStrategy;
+import org.ff4j.test.AbstractFf4jTest;
 
 /*
  * #%L
@@ -21,40 +25,16 @@ package org.ff4j.strategy.el;
  */
 
 /**
- * Enumeration to list operator handles by engine {@link ExpressionParser}.
+ * Testing class for {@link ReleaseDateFlipStrategy} class.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public enum ExpressionOperator {
+public class ReleaseDateFlipStrategyTest extends AbstractFf4jTest {
 
-    /** operator OR */
-    OR('|'),
-
-    /** operator AND */
-    AND('&'),
-
-    /** operator NOT */
-    NOT('!');
-
-    /** charactere representing operator */
-    private char car;
-
-    /**
-     * Initialiez Operator with its character.
-     * 
-     * @param pcar
-     *            representative character for operator
-     */
-    private ExpressionOperator(char pcar) {
-        this.car = pcar;
+    /** {@inheritDoc} */
+    @Override
+    public FF4j initFF4j() {
+        return new FF4j("ff4j-ponderationStrategy-ok.xml");
     }
 
-    /**
-     * Getter access to attribute 'car', representative character.
-     * 
-     * @return attribute 'car'
-     */
-    public char getChar() {
-        return car;
-    }
 }

@@ -25,11 +25,11 @@ package org.ff4j.test.store;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureLoader;
@@ -41,50 +41,49 @@ import org.junit.Test;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class ConfigurationLoaderTest extends TestCase {
+public class FeatureLoaderTest {
 
     @Test
+    public void testConstructor() throws Exception {
+        Constructor<FeatureLoader> ce = FeatureLoader.class.getDeclaredConstructor();
+        ce.setAccessible(true);
+        ce.newInstance();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
     public void testSaxException() {
-        try {
-            InputStream in = new ByteArrayInputStream("<TOTO>Invalid</TOTO2>".getBytes());
-            FeatureLoader.loadFeatures(in);
-            fail();
-        } catch (Exception ioex) {}
+        InputStream in = new ByteArrayInputStream("<TOTO>Invalid</TOTO2>".getBytes());
+        FeatureLoader.loadFeatures(in);
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testNullFile() {
-        try {
-            FeatureLoader.loadFeatures(null);
-            fail();
-        } catch (Exception ioex) {}
+        FeatureLoader.loadFeatures(null);
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testLoaderLoadInvalidXML() {
-        try {
-            InputStream in = getClass().getClassLoader().getResourceAsStream("ff4j-bad1.xml");
-            FeatureLoader.loadFeatures(in);
-            fail();
-        } catch (Exception ioex) {}
+        InputStream in = getClass().getClassLoader().getResourceAsStream("ff4j-bad1.xml");
+        FeatureLoader.loadFeatures(in);
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
+    public void testLoaderLoadInvalidStream() throws IOException {
+        InputStream in = getClass().getClassLoader().getResourceAsStream("ff4j-empty.xml");
+        in.close();
+        FeatureLoader.loadFeatures(in);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
     public void testLoaderInvalid2() {
-        try {
-            InputStream in = getClass().getClassLoader().getResourceAsStream("ff4j-bad2.xml");
-            FeatureLoader.loadFeatures(in);
-            fail();
-        } catch (Exception ioex) {}
+        InputStream in = getClass().getClassLoader().getResourceAsStream("ff4j-bad2.xml");
+        FeatureLoader.loadFeatures(in);
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testLoader4() {
-        try {
-            InputStream in = getClass().getClassLoader().getResourceAsStream("ff4j-bad3.xml");
-            FeatureLoader.loadFeatures(in);
-            fail();
-        } catch (Exception ioex) {}
+        InputStream in = getClass().getClassLoader().getResourceAsStream("ff4j-bad3.xml");
+        FeatureLoader.loadFeatures(in);
     }
 
     @Test
@@ -115,5 +114,14 @@ public class ConfigurationLoaderTest extends TestCase {
         FeatureLoader.exportFeatures(new LinkedHashMap<String, Feature>());
         FeatureLoader.exportFeatures(null);
     }
+
+    /*
+     * @SuppressWarnings({"unchecked","static-access"})
+     * 
+     * @Test(expected = IllegalArgumentException.class) public void testThroughParserConfigurationException() throws Exception {
+     * Class<FeatureLoader> loader = spy(FeatureLoader.class);
+     * when(loader.newInstance().getDocumentBuilder()).thenThrow(ParserConfigurationException.class);
+     * loader.newInstance().exportFeatures(new LinkedHashMap<String, Feature>()); }
+     */
 
 }

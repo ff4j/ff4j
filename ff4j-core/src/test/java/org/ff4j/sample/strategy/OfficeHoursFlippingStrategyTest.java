@@ -1,8 +1,10 @@
-package org.ff4j.test.security;
+package org.ff4j.sample.strategy;
 
 /*
  * #%L
- * TestAuthorizationManager.java (ff4j-core) by Cedrick LUNVEN
+ * ff4j-core
+ * $Id:$
+ * $HeadURL:$
  * %%
  * Copyright (C) 2013 Ff4J
  * %%
@@ -20,22 +22,17 @@ package org.ff4j.test.security;
  * #L%
  */
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import org.ff4j.FF4j;
+import org.junit.Test;
 
-import org.ff4j.security.AuthorizationsManager;
-
-public class TestAuthorizationManager implements AuthorizationsManager {
-
-    @Override
-    public Set<String> getAuthenticatedUserRoles() {
-        return new HashSet<String>(Arrays.asList(new String[] {"ROLEA"}));
-    }
-
-    @Override
-    public Set<String> getEveryOneRoles() {
-        return new HashSet<String>(Arrays.asList(new String[] {"ROLEA","ROLEB"}));
-    }
-
+public class OfficeHoursFlippingStrategyTest  {
+	
+	@Test
+	public void testExpression() throws Exception {
+		
+		new FF4j("ff4j-office.xml");
+		//Assert.assertTrue(FF4j.isFlipped("displayCallMeButton"));
+		
+	}
+		
 }

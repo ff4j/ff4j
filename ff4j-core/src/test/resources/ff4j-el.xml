@@ -32,7 +32,7 @@
 	
 	<feature uid="D" enable="true" 
 		strategy="org.ff4j.strategy.el.ExpressionFlipStrategy"
-		expression="A &amp; B | !C" />
+		expression="A &amp; B | !C | B" />
 
 </features>
 

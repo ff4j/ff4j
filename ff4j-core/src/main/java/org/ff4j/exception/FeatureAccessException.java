@@ -1,10 +1,8 @@
-package org.ff4j.test.strategy;
+package org.ff4j.exception;
 
 /*
  * #%L
  * ff4j-core
- * $Id:$
- * $HeadURL:$
  * %%
  * Copyright (C) 2013 Ff4J
  * %%
@@ -22,31 +20,37 @@ package org.ff4j.test.strategy;
  * #L%
  */
 
-import junit.framework.TestCase;
-
-import org.ff4j.FF4j;
-import org.junit.Assert;
-import org.junit.Test;
-
 /**
- * Unit Testing
+ * Store could be parameterized to through exception when Feature not found.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class ExpressionFlipingStategyTest extends TestCase {
+public class FeatureAccessException extends RuntimeException {
 
-    @Test
-    public void testExpression() throws Exception {
+    /** serial number. */
+    private static final long serialVersionUID = 5153793944219676093L;
 
-        FF4j testedFf4j = new FF4j("ff4j-el.xml");
-        Assert.assertTrue(testedFf4j.isFlipped("D"));
+    /**
+     * Parameterized constructor.
+     * 
+     * @param msg
+     *            Exception message
+     **/
+    public FeatureAccessException(String msg) {
+        super(msg);
+    }
 
-        testedFf4j.enable("C");
-        Assert.assertFalse(testedFf4j.isFlipped("D"));
-
-        testedFf4j.enable("B");
-        Assert.assertTrue(testedFf4j.isFlipped("D"));
-
+    /**
+     * Parameterized constructor.
+     * 
+     * @param msg
+     *            Exception message
+     * @param parent
+     *            parent exception
+     * 
+     **/
+    public FeatureAccessException(String msg, Throwable parent) {
+        super(msg, parent);
     }
 
 }

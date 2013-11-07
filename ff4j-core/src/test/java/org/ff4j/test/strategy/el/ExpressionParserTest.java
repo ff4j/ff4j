@@ -1,4 +1,4 @@
-package org.ff4j.test.strategy;
+package org.ff4j.test.strategy.el;
 
 /*
  * #%L
@@ -22,6 +22,8 @@ package org.ff4j.test.strategy;
  * #L%
  */
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,7 +40,7 @@ import org.junit.Test;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class SyntaxtAnalyzerTest extends TestCase {
+public class ExpressionParserTest extends TestCase {
 
     /**
      * Check Expression Parsing.
@@ -49,8 +51,19 @@ public class SyntaxtAnalyzerTest extends TestCase {
      */
     private void assertNode(String expression, Map<String, Boolean> state, boolean expected) {
         ExpressionNode n = ExpressionParser.parseExpression(expression);
-        System.out.println(n.toString());
         Assert.assertEquals(expected, n.evalue(state));
+    }
+
+    /**
+     * Check Expression parsing
+     * 
+     * @param expected
+     *            expected output toString()
+     * @param input
+     *            expression
+     */
+    private void assertOutPut(String expected, String input) {
+        Assert.assertEquals(expected, ExpressionParser.parseExpression(input).toString());
     }
 
     @Test
@@ -58,7 +71,6 @@ public class SyntaxtAnalyzerTest extends TestCase {
         ExpressionNode en = new ExpressionNode("sheet");
         en.setOperator(ExpressionOperator.NOT);
         en.setValue("sheet");
-
     }
 
     @Test
@@ -89,7 +101,6 @@ public class SyntaxtAnalyzerTest extends TestCase {
         state.put("B", false);
         assertNode("A|B", state, false);
         state.put("B", true);
-        System.out.println(state);
         assertNode("A|B", state, true);
     }
 
@@ -100,42 +111,67 @@ public class SyntaxtAnalyzerTest extends TestCase {
         state.put("B", false);
         assertNode("A&B", state, false);
         state.put("B", true);
-        System.out.println(state);
         assertNode("A&B", state, true);
     }
 
     @Test
     public void testOperateurPriority1() {
-        ExpressionNode node4 = ExpressionParser.parseExpression("A|B&C");
-        System.out.println(node4.toString());
+        assertOutPut("A OR (B AND C)", "A|B&C");
     }
 
     @Test
     public void testOperateurPriorite2() {
-        ExpressionNode node5 = ExpressionParser.parseExpression("A|B&C|D");
-        System.out.println(node5.toString());
+        assertOutPut("A OR (B AND C) OR D", "A|B&C|D");
     }
 
     @Test
     public void testExpresionNot() {
-        ExpressionNode node6 = ExpressionParser.parseExpression("!A|B&!C|D");
-        System.out.println(node6.toString());
+        assertOutPut("(!A) OR (B AND (!C)) OR D", " !A | B&!C | D");
     }
 
     @Test
     public void testExpresionsWithParenthesis() {
-        System.out.println(ExpressionParser.parseExpression("(A|B) & (C|D)"));
-        // Introducing NOT and a 3 operand
-        System.out.println(ExpressionParser.parseExpression("(A|B) & (C|D|!E)"));
-        // Introducing single expression and NOT
-        System.out.println(ExpressionParser.parseExpression("(A|B) & !C"));
-        // Introducing 'not' before parenthesis
-        System.out.println(ExpressionParser.parseExpression("(A|B) & !(C|D)"));
-        // Embedded parenthesis
-        System.out.println(ExpressionParser.parseExpression("(A|B) & ( (E&F|G) | (H&I) )"));
-        // Playing to the core
-        System.out.println(ExpressionParser
-                .parseExpression("( (sampleA|sampleB) & (C|D|!B) & !(A|D) ) | ( (A&B&C)|(C&D)|((A|B)&D) )"));
+        assertOutPut("(A OR B) AND (C OR D)", "(A|B) & (C|D)");
+    }
+
+    @Test
+    public void testParenthesis3TermsWithNot() {
+        assertOutPut("(A OR B) AND (C OR D OR (!E))", "(A|B) & (C|D|!E)");
+    }
+
+    @Test
+    public void testParenthesisSingleNot() {
+        assertOutPut("(!C) AND (A OR B)", "(A|B) & !C");
+    }
+
+    @Test
+    public void testNotBeforeParenthesis() {
+        assertOutPut("(A OR B) AND (!(C OR D))", "(A|B) & !(C|D)");
+    }
+
+    @Test
+    public void testEmbeddedParenthesis() {
+        assertOutPut("(A OR B) AND (((E AND F) OR G) OR (H AND I))", "(A|B) & ( (E&F|G) | (H&I) )");
+    }
+
+    @Test
+    public void testDeepTree() {
+        ExpressionNode n = ExpressionParser
+                .parseExpression("( (sampleA|sampleB) & (C|D|!B) & !(A|D) ) | ( (A&B&C)|(C&D)|((A|B)&D) )");
+        Assert.assertEquals(2, n.getSubNodes().size());
+        Assert.assertEquals(ExpressionOperator.OR, n.getOperator());
+
+    }
+
+    @Test
+    public void testConstructor() {
+        try {
+            Constructor<ExpressionParser> ce = ExpressionParser.class.getDeclaredConstructor();
+            ce.setAccessible(true);
+            ce.newInstance();
+        } catch (Exception e) {
+            fail();
+        }
     }
 
 }

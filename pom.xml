@@ -1,29 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-   
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~     COORDINATES          ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.ff4j</groupId>
 	<artifactId>ff4j-parent</artifactId>
 	<version>1.0.1-SNAPSHOT</version>
+	
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~     MAIN INFO            ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<name>Feature Flipping 4 Java</name>
 	<packaging>pom</packaging>
 	<url>http://ff4j.org</url>
 	<inceptionYear>2013</inceptionYear>
-    
-    <!-- Deployment on Central Maven -->
-    <parent>
-     <groupId>org.sonatype.oss</groupId>
-     <artifactId>oss-parent</artifactId>
-     <version>7</version>
-    </parent>
-    
+	<description>
+     FF4J, stands for Feature Flipping for Java, helps you implementing the 'feature toggle' agile development practice.
+     Features (services/behaviour/treatments/screen parts) can be enabled and disabled at runtime but also limited to an authorized
+     sub-set of users (e.g : beta-testers for beta feature). Once the feature is enabled and granted you can implement your own strategy
+     to flip through custom FlippingStrategy.
+     </description>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~         PARENT           ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~      GIT (GITHUB)        ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<scm>
-      <connection>scm:git:git@github.com:clun/ff4j.git</connection>
-      <developerConnection>scm:git:git@github.com:clun/ff4j.git</developerConnection>
-      <url>git@github.com:clun/ff4j.git</url>
-    </scm>
-	
-	<!-- ~ License ~ -->
+		<connection>scm:git:git@github.com:clun/ff4j.git</connection>
+		<developerConnection>scm:git:git@github.com:clun/ff4j.git</developerConnection>
+		<url>git@github.com:clun/ff4j.git</url>
+	</scm>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~   LICENSE (APACHE2)      ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<licenses>
 		<license>
 			<name>Apache 2</name>
@@ -32,45 +53,38 @@
 		</license>
 	</licenses>
 	
-	<!--  Displayed in about page of site -->
-    <description>
-     FF4J, stands for Feature Flipping for Java, helps you implementing the 'feature toggle' agile development practice.
-     Features (services/behaviour/treatments/screen parts) can be enabled and disabled at runtime but also limited to an authorized
-     sub-set of users (e.g : beta-testers for beta feature). Once the feature is enabled and granted you can implement your own strategy
-     to flip through custom FlippingStrategy.
-     </description>
-     
-     <organization>
-     	<name>Ff4J</name>
-     	<url>http://ff4j.org</url>
-     </organization>
- 
-	<!-- ~ Properties ~ -->
-	<properties>
-	    
-	    <!-- core -->
-	    <maven.compiler.source>1.6</maven.compiler.source>
-		<maven.compiler.target>1.6</maven.compiler.target>
-		<encoding>UTF-8</encoding>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~       ORGANIZATION       ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<organization>
+		<name>Ff4J</name>
+		<url>http://ff4j.org</url>
+	</organization>
 
-		<!-- log -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~        PROPERTIES        ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<properties>
+
+		<!-- BUILD -->
+		<github.login />
+		<encoding>UTF-8</encoding>
+		<maven.compiler.source>1.6</maven.compiler.source>
+		<maven.compiler.target>1.6</maven.compiler.target>
+		<license.licenseName>apache_v2</license.licenseName>
+		<license.licenseResolver>${project.baseUri}/src/license</license.licenseResolver>
+		
+		<!-- VERSIONS LIBS -->
 		<version.slf4j>1.7.5</version.slf4j>
 		<version.logback>1.0.13</version.logback>
-
-		<!-- tests -->
 		<version.junit>4.8.2</version.junit>
 		<version.hdldb>2.2.4</version.hdldb>
-
-		<!-- spring -->
 		<version.spring>3.1.1.RELEASE</version.spring>
 		<version.spring.jmx>2.0.8</version.spring.jmx>
 		<spring.security.version>3.0.8.RELEASE</spring.security.version>
 		<version.aopalliance>1.0</version.aopalliance>
-
 		<version.commons-lang>2.4</version.commons-lang>
 		<version.commons-dbcp>1.2.2</version.commons-dbcp>
-
-		<!-- web -->
 		<version.commons-io>2.4</version.commons-io>
 		<version.commons-fileupload>1.3</version.commons-fileupload>
 		<version.servlet-api>2.5</version.servlet-api>
@@ -79,21 +93,14 @@
 		<version.jstl>1.1.1</version.jstl>
 		<version.taglib>1.1.1</version.taglib>
 		<version.jsr311>1.1.1</version.jsr311>
-		
-		<!-- cache -->
 		<version.ehcache>2.6.6</version.ehcache>
-
-		<!-- build : scm -->
-		<github.login />
-		
-		<license.licenseName>apache_v2</license.licenseName>
-    	<license.licenseResolver>${project.baseUri}/src/license</license.licenseResolver>
-		
+		<version.jacoco>0.6.3.201306030806</version.jacoco>
+	
 	</properties>
 
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~ Modules ~ -->
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~     CHILD MODULES        ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<modules>
 		<module>ff4j-aop</module>
 		<module>ff4j-core</module>
@@ -105,9 +112,9 @@
 		<module>ff4j-store-remoting</module>
 	</modules>
 
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~ Dependencies ~ -->
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~     DEPENDENCIES         ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<dependencyManagement>
 		<dependencies>
 
@@ -267,64 +274,123 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<build>
 
-	<plugins>
-		<plugin>
-			<groupId>org.codehaus.mojo</groupId>
-			<artifactId>license-maven-plugin</artifactId>
-			<version>1.5</version>
-			<configuration>
-        	  	<verbose>false</verbose>
-          		<extraExtensions>
-					<myProprietaryExtension>java</myProprietaryExtension>
-				</extraExtensions>
-			</configuration>
-			<executions>
-				<execution>
-					<id>add-license</id>
-					<goals>
-						<goal>update-file-header</goal>
-					</goals>
-					<phase>process-sources</phase>
-					<configuration>
-						<licenseName>apache_v2</licenseName>
-						<roots>
-							<root>src/main/java</root>
-							<root>src/test</root>
-						</roots>
-					</configuration>
-				</execution>
-			</executions>
-		</plugin>
+		<plugins>
 		
-		<plugin>
-        <groupId>com.atlassian.maven.plugins</groupId>
-        <artifactId>maven-clover2-plugin</artifactId>
-        <version>3.2.0</version>
-        <configuration>
-          <targetPercentage>50%</targetPercentage>
-        </configuration>
-         <executions>
-          <execution>
-            <phase>pre-site</phase>
-            <goals>
-              <goal>instrument</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      
-	</plugins>
-	
-	<extensions>
-      <!-- Enabling the use of FTP -->
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-         <artifactId>wagon-ftp</artifactId>
-         <version>1.0-beta-6</version>
-      </extension>
-    </extensions>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>1.5</version>
+				<configuration>
+					<verbose>false</verbose>
+					<extraExtensions>
+						<myProprietaryExtension>java</myProprietaryExtension>
+					</extraExtensions>
+				</configuration>
+				<executions>
+					<execution>
+						<id>add-license</id>
+						<goals>
+							<goal>update-file-header</goal>
+						</goals>
+						<phase>process-sources</phase>
+						<configuration>
+							<licenseName>apache_v2</licenseName>
+							<roots>
+								<root>src/main/java</root>
+								<root>src/test</root>
+							</roots>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>com.atlassian.maven.plugins</groupId>
+				<artifactId>maven-clover2-plugin</artifactId>
+				<version>3.2.0</version>
+				<configuration>
+					<targetPercentage>50%</targetPercentage>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>pre-site</phase>
+						<goals>
+							<goal>instrument</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+				<executions>
+					<execution>
+						<id>unit-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<skip>${maven.test.skip}</skip>
+							<argLine>${argLine}</argLine>
+							<excludes>
+								<exclude>**/*IntegrationTest.java</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+					<execution>
+						<id>integration-test</id>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<skip>${skipITs}</skip>
+							<argLine>${argLine}</argLine>
+							<includes>
+								<include>**/*IntegrationTest.java</include>
+							</includes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${version.jacoco}</version>
+				<configuration>
+					<skip>${maven.test.skip}</skip>
+					<destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile>
+					<dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile>
+					<output>file</output>
+					<append>true</append>
+				</configuration>
+				<executions>
+					<execution>
+						<id>jacoco-initialize</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>jacoco-site</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+		
 
 		<pluginManagement>
+		
 			<plugins>
 
 				<!-- setup JDK6 -->
@@ -367,8 +433,8 @@
 						<encoding>UTF-8</encoding>
 					</configuration>
 				</plugin>
-				
-				<!-- Shutdown eclipse warning (works with intelliJ)-->
+
+				<!-- Shutdown eclipse warning (works with intelliJ) -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -402,27 +468,41 @@
 										<ignore />
 									</action>
 								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.jacoco</groupId>
+										<artifactId>jacoco-maven-plugin</artifactId>
+										<versionRange>[0.6.0,)</versionRange>
+										<goals>
+											<goal>prepare-agent</goal>
+											<goal>report</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
-				
+
 				<plugin>
-        			<groupId>org.apache.maven.plugins</groupId>
-        			<artifactId>maven-site-plugin</artifactId>
-        			<version>3.0</version>
-        			<configuration>
-          				<templateFile>${basedir}/src/site/ff4j-site.vm</templateFile>
-        			</configuration>
-      			</plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>3.0</version>
+					<configuration>
+						<templateFile>${basedir}/src/site/ff4j-site.vm</templateFile>
+					</configuration>
+				</plugin>
 
 			</plugins>
 		</pluginManagement>
-		
+
 	</build>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~ Software Quality 		~ -->
+	<!-- ~ Software Quality ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<reporting>
 		<plugins>
@@ -432,21 +512,12 @@
 				<artifactId>maven-changes-plugin</artifactId>
 				<version>2.8</version>
 			</plugin>
-		
-			<!-- test coverage (deprecated by clover2)
+
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<configuration>
-					<instrumentation>
-						<excludes>
-							<exclude>**/model/*.class</exclude>
-						</excludes>
-					</instrumentation>
-				</configuration>
-				<version>2.5.2</version>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${version.jacoco}</version>
 			</plugin>
-			-->
 
 			<!-- testings -->
 			<plugin>
@@ -497,39 +568,39 @@
 				</configuration>
 				<version>2.4</version>
 			</plugin>
-		
-    		<!-- Changelog -->
-    		<plugin>
-        		<groupId>org.apache.maven.plugins</groupId>
-        		<artifactId>maven-changelog-plugin</artifactId>
-        		<version>2.2</version>
-		        <reportSets>
-		          <reportSet>
-		            <id>dual-report</id>
-		            <configuration>
-		              <type>range</type>
-		              <range>30</range>
-		            </configuration>
-		            <reports>
-		              <report>changelog</report>
-		              <report>file-activity</report>
-		            </reports>
-		          </reportSet>
-		        </reportSets>
-      		</plugin>
-      		
-      		<!--  Clover -->
-      		<plugin>
-        		<groupId>com.atlassian.maven.plugins</groupId>
-        		<artifactId>maven-clover2-plugin</artifactId>
-        		<version>3.2.0</version>
-        		<configuration>
-          			<generateHtml>true</generateHtml>
-         			<generatePdf>false</generatePdf>
-          			<generateXml>false</generateXml>
-        		</configuration>
-        	</plugin>
-    	
+
+			<!-- Changelog -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changelog-plugin</artifactId>
+				<version>2.2</version>
+				<reportSets>
+					<reportSet>
+						<id>dual-report</id>
+						<configuration>
+							<type>range</type>
+							<range>30</range>
+						</configuration>
+						<reports>
+							<report>changelog</report>
+							<report>file-activity</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+
+			<!-- Clover -->
+			<plugin>
+				<groupId>com.atlassian.maven.plugins</groupId>
+				<artifactId>maven-clover2-plugin</artifactId>
+				<version>3.2.0</version>
+				<configuration>
+					<generateHtml>true</generateHtml>
+					<generatePdf>false</generatePdf>
+					<generateXml>false</generateXml>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</reporting>
 
@@ -561,47 +632,47 @@
 				</plugins>
 			</build>
 		</profile>
-		
+
 		<!-- When release:perfom artifacts are signed -->
 		<profile>
-	      <id>release-sign-artifacts</id>
-		  <activation>
-		    <property>
-              <name>performRelease</name>
-              <value>true</value>
-            </property>
-          </activation>
-         <build>
-      	  <plugins>
-      	   <plugin>
-      	     <groupId>org.apache.maven.plugins</groupId>
-             <artifactId>maven-gpg-plugin</artifactId>
-             <version>1.1</version>
-             <executions>
-               <execution>
-                 <id>sign-artifacts</id>
-                 <phase>verify</phase>
-                 <goals>
-                   <goal>sign</goal>
-                 </goals>
-               </execution>
-             </executions>
-           </plugin>
-          </plugins>
-         </build>
-       </profile>
+			<id>release-sign-artifacts</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.1</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 
 	</profiles>
-	
+
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  	<!-- ~ Project Stuff         ~ -->
-  	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~ Project Stuff         ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<developers>
 		<developer>
 			<id>clunven</id>
 			<name>Cedrick LUNVEN</name>
 			<email>clu@octo.com</email>
-			 <url>https://github.com/clun</url>
+			<url>https://github.com/clun</url>
 			<organization>OCTO Technology</organization>
 			<organizationUrl>http://www.octo.com</organizationUrl>
 			<roles>
@@ -609,32 +680,22 @@
 				<role>developer</role>
 			</roles>
 			<timezone>-6</timezone>
-			<properties>				
+			<properties>
 				<picUrl>https://en.gravatar.com/userimage/51914944/4da178b06ad331be75ae495215d238c8.png</picUrl>
 			</properties>
 		</developer>
 	</developers>
-  
-  	<!-- Builds on jenkins continuous integration -->
-  	<ciManagement>
-    	<system>Jenkins@Cloudbees</system>
-    	<url>https://octo-clu.ci.cloudbees.com/</url>
-  	</ciManagement>
-  
-  	<!-- Jira issue management -->
-  	<issueManagement>
-    	<system>IssueTracking@Github</system>
-    	<url><![CDATA[https://github.com/clun/ff4j/issues?sort=created&direction=desc&state=open]]></url>
-  	</issueManagement>
-  	
-  	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  	<!-- ~ Export Site in target folder       ~ -->
-  	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  	<distributionManagement >
-    	<site>
-      		<id>website</id>
-      		<url>/Users/clunven/Developpement/workspace-ff4j/mvnsite</url>
-    	</site>
-  </distributionManagement>
-  
+
+	<!-- Builds on jenkins continuous integration -->
+	<ciManagement>
+		<system>Jenkins@Cloudbees</system>
+		<url>https://octo-clu.ci.cloudbees.com/</url>
+	</ciManagement>
+
+	<!-- Jira issue management -->
+	<issueManagement>
+		<system>IssueTracking@Github</system>
+		<url><![CDATA[https://github.com/clun/ff4j/issues?sort=created&direction=desc&state=open]]></url>
+	</issueManagement>
+
 </project>

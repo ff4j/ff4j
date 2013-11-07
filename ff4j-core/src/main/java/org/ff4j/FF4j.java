@@ -1,14 +1,23 @@
 package org.ff4j;
 
 /*
- * #%L FF4j.java (ff4j-core) by Cedrick LUNVEN %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * #%L
+ * ff4j-core
+ * %%
+ * Copyright (C) 2013 Ff4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  * 
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
- * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License. #L%
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
  */
 
 import java.io.IOException;
@@ -121,9 +130,8 @@ public class FF4j {
     public boolean isFlipped(String featureID, FlippingStrategy strats, Object... executionContext) {
         Feature fp = getFeature(featureID);
         boolean flipped = fp.isEnable() && isAllowed(fp);
-        // If custom strategy has been defined, load
-        if (flipped && strats != null) {
-            flipped = strats.activate(featureID, getStore(), executionContext);
+        if (strats != null) {
+            flipped = flipped && strats.activate(featureID, getStore(), executionContext);
         }
         return flipped;
     }
@@ -293,7 +301,7 @@ public class FF4j {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return String.format("FF4j [backingStore=%s, authorizationsManager=%s]", store, authorizationsManager);
+        return String.format("FF4j [featureStore=%s, authorizationsManager=%s]", store, authorizationsManager);
     }
 
     /**

@@ -1,8 +1,8 @@
-package org.ff4j.test.strategy;
+package org.ff4j.test;
 
 /*
  * #%L
- * TestAlwaysTrueFlippingStrategy.java (ff4j-core) by Cedrick LUNVEN
+ * ff4j-core
  * %%
  * Copyright (C) 2013 Ff4J
  * %%
@@ -20,17 +20,6 @@ package org.ff4j.test.strategy;
  * #L%
  */
 
-import org.ff4j.core.FeatureStore;
-import org.ff4j.core.FlippingStrategy;
-
-public class TestAlwaysTrueFlippingStrategy implements FlippingStrategy {
-
-    @Override
-    public boolean activate(String featureName, FeatureStore store, Object... executionContext) {
-        return true;
-    }
-
-    @Override
-    public void init(String featureName, String initValue) {}
+public class RunWithFF4j {
 
 }

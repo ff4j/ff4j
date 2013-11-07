@@ -2,8 +2,6 @@
 <!--
   #%L
   ff4j-core
-  $Id:$
-  $HeadURL:$
   %%
   Copyright (C) 2013 Ff4J
   %%
@@ -24,28 +22,25 @@
 <!DOCTYPE configuration>
 <features>
 
-	<feature uid="first" enable="true" description="description" >
-		<auth role="ROLE_USER" />
-	</feature>
+	<!-- No Expression -->
+	<feature uid="pond_Null" enable="true" description="some desc" 
+			strategy="org.ff4j.strategy.PonderationFlipStrategy" />
+
+	<!-- Ponderation to 0 -->
+	<feature uid="pond_0" enable="true" description="some desc" 
+			strategy="org.ff4j.strategy.PonderationFlipStrategy" 
+			expression="0" />
+			
+			
+	<!-- Ponderation to 1 -->
+	<feature uid="pond_1" enable="true" description="some desc" 
+			strategy="org.ff4j.strategy.PonderationFlipStrategy" 
+			expression="1" />
 	
-	<feature uid="second" enable="false" description="description" >
-		<auth role="ROLE_USER" />
-	</feature>
-	
-	<feature uid="third" enable="false" description="description" >
-		<auth role="X" />
-		<auth role="Y" />
-	</feature>
-	
-	
-	<feature uid="forth" enable="true" description="description" 
-			strategy="org.ff4j.strategy.el.ExpressionFlipStrategy" 
-			expression="third | second" group="GRP1">
-		<auth role="X" />
-		<auth role="Y" />
-	</feature>
-	
-	<feature uid="AwesomeFeature" enable="true" description="some desc" />
+	<!-- Ponderation to 0 -->
+	<feature uid="pond_6" enable="true" description="some desc" 
+			strategy="org.ff4j.strategy.PonderationFlipStrategy" 
+			expression="0.6" />
 	
 	
 </features>

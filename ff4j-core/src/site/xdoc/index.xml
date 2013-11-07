@@ -23,13 +23,13 @@
 					</tr>
 					<tr class="b">
 						<td>
-							<a href="cobertura/index.html">Cobertura Test Coverage</a>
+							<a href="clover/index.html">Clover2 Coverage</a>
 						</td>
-						<td>Cobertura Test Coverage Report.</td>
+						<td>Clover Test Coverage Report.</td>
 					</tr>
 					<tr class="a">
 						<td>
-							<a href="surefire-report.html">Surefire Report</a>
+							<a href="jacoco/index.html">Jacoco Report</a>
 						</td>
 						<td>Report on the test results of the project.</td>
 					</tr>

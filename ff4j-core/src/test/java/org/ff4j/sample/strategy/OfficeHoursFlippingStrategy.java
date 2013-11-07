@@ -1,10 +1,8 @@
-package org.ff4j.test.strategy;
+package org.ff4j.sample.strategy;
 
 /*
  * #%L
  * ff4j-core
- * $Id:$
- * $HeadURL:$
  * %%
  * Copyright (C) 2013 Ff4J
  * %%
@@ -45,5 +43,11 @@ public class OfficeHoursFlippingStrategy implements FlippingStrategy {
     public boolean activate(String featureName, FeatureStore cuurentStore, Object... executionContext) {
         int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         return (currentHour >= start && currentHour < end);
+    }
+
+    @Override
+    public String getInitParams() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

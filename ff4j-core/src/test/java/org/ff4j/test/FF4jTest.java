@@ -1,30 +1,37 @@
 package org.ff4j.test;
 
 /*
- * #%L ff4j-core $Id:$ $HeadURL:$ %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * #%L
+ * ff4j-core
+ * %%
+ * Copyright (C) 2013 Ff4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  * 
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
- * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License. #L%
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
  */
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashSet;
 
 import junit.framework.Assert;
 
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.exception.FeatureNotFoundException;
-import org.ff4j.test.security.TestAuthorizationManager;
-import org.ff4j.test.strategy.TestAlwaysTrueFlippingStrategy;
 import org.junit.Test;
 
 /**
@@ -32,13 +39,16 @@ import org.junit.Test;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FF4jTest {
+public class FF4jTest extends AbstractFf4jTest {
+
+    @Override
+    public FF4j initFF4j() {
+        return new FF4j("ff4j.xml");
+    }
 
     @Test
     public void helloWorldTest() {
-
         // Default : store = inMemory, load features (5) from ff4j.xml file
-        FF4j ff4j = new FF4j("ff4j.xml");
         assertEquals(5, ff4j.getFeatures().size());
 
         // Dynamically create feature and add it to the store (tests purpose)
@@ -95,7 +105,6 @@ public class FF4jTest {
 
     @Test(expected = FeatureNotFoundException.class)
     public void testEnableFeatureNotExist() {
-        FF4j ff4j = new FF4j();
         ff4j.enable("newffff");
     }
 
@@ -130,24 +139,27 @@ public class FF4jTest {
 
     @Test
     public void testFlipped() {
-        FF4j ff4j = new FF4j().create(new Feature("coco", true, "", Arrays.asList(new String[] {"ROLEA"})));
+        FF4j ff4j = new FF4j().autoCreate(true).create(
+                new Feature("coco", true, "grp2", "", Arrays.asList(new String[] {"ROLEA"})));
         Assert.assertTrue(ff4j.isFlipped("coco"));
-        ff4j.setAuthorizationsManager(new TestAuthorizationManager());
+        ff4j.setAuthorizationsManager(mockAuthManager);
         Assert.assertTrue(ff4j.isFlipped("coco"));
         Assert.assertTrue(ff4j.isFlipped("coco", "OK"));
-        Assert.assertTrue(ff4j.isFlipped("coco", new TestAlwaysTrueFlippingStrategy()));
+        Assert.assertTrue(ff4j.isFlipped("coco", mockFlipStrategy));
+        Assert.assertTrue(ff4j.isFlipped("coco", null, (Object[]) null));
+        Assert.assertFalse(ff4j.isFlipped("cocorico", mockFlipStrategy));
+    }
+    
+    @Test
+    public void testToString() {
+        Assert.assertTrue(ff4j.toString().startsWith("FF4j"));
     }
 
-    // FF4j ff4j = new FF4j();
+    @Test
+    public void testExportFeatures() throws IOException {
+        Assert.assertNotNull(ff4j.exportFeatures());
+    }
 
-    /*
-     * Static Access FF4j.sLogFeatures(); FF4j.isFlipped("first"); f.setAuthorizationsManager(new DefaultAuthorisationManager());
-     * FF4j.isFlipped("first", new RandomFlipStrategy(), "test"); FF4j.getFeature("first").setFlippingStrategy(new
-     * RandomFlipStrategy()); FF4j.isFlipped("first", new RandomFlipStrategy(), "test");
-     * 
-     * FF4j.getFeature("first").setEnable(false); FF4j.isFlipped("first"); FF4j.isFlipped("first", new RandomFlipStrategy(),
-     * "test"); FF4j.getFeature("first").setFlippingStrategy(new RandomFlipStrategy()); FF4j.isFlipped("first", new
-     * RandomFlipStrategy(), "test");
-     */
+
 
 }

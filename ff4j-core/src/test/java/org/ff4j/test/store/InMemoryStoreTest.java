@@ -18,7 +18,7 @@ import junit.framework.Assert;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
-import org.ff4j.strategy.RandomFlipStrategy;
+import org.ff4j.strategy.PonderationFlipStrategy;
 import org.ff4j.test.AbstractStoreTest;
 import org.junit.Test;
 
@@ -31,14 +31,16 @@ public class InMemoryStoreTest extends AbstractStoreTest {
 
     /** {@inheritDoc} */
     @Override
-    public FeatureStore initStore() throws Exception {
-        return new InMemoryFeatureStore("ff4j.xml");
+    public FeatureStore initStore() {
+        InMemoryFeatureStore imfs = new InMemoryFeatureStore();
+        imfs.setLocation("ff4j-override.xml");
+        return imfs;
     }
 
     @Test
     public void testUnitFeatureInitialization() {
         InMemoryFeatureStore imfs = new InMemoryFeatureStore();
-        imfs.create(new Feature("default", true, "desc", null, new RandomFlipStrategy()));
+        imfs.create(new Feature("default", true, "grp1", "desc", null, new PonderationFlipStrategy()));
         Assert.assertEquals(1, imfs.readAll().size());
     }
 
@@ -47,17 +49,14 @@ public class InMemoryStoreTest extends AbstractStoreTest {
         LinkedHashMap<String, Feature> map1 = new LinkedHashMap<String, Feature>();
         map1.put("new", new Feature("new", true, "description"));
         map1.put("old", new Feature("old", true, "description"));
-        new InMemoryFeatureStore(map1);
+        InMemoryFeatureStore imfs = new InMemoryFeatureStore(map1);
+        Assert.assertEquals(2, imfs.readAll().size());
+        Assert.assertTrue(imfs.toString().contains("old"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testUnitFeatureInitialization3() {
-        try {
-            new InMemoryFeatureStore("invalid.xml");
-            fail();
-        } catch (IllegalArgumentException iae) {
-
-        }
+        new InMemoryFeatureStore("invalid.xml");
     }
 
 }

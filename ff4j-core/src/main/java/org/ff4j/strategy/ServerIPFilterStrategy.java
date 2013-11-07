@@ -1,10 +1,8 @@
-package org.ff4j.test.strategy;
+package org.ff4j.strategy;
 
 /*
  * #%L
  * ff4j-core
- * $Id:$
- * $HeadURL:$
  * %%
  * Copyright (C) 2013 Ff4J
  * %%
@@ -22,17 +20,12 @@ package org.ff4j.test.strategy;
  * #L%
  */
 
-import org.ff4j.FF4j;
-import org.junit.Test;
+/**
+ * This strategy will check hostName and flipped only if it's contained in expected list.
+ * 
+ * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ */
+public class ServerIPFilterStrategy {
 
-public class OfficeHoursFlippingStrategyTest  {
-	
-	@Test
-	public void testExpression() throws Exception {
-		
-		new FF4j("ff4j-office.xml");
-		//Assert.assertTrue(FF4j.isFlipped("displayCallMeButton"));
-		
-	}
-		
+    // TODO implementation of server
 }

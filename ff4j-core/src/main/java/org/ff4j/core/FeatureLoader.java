@@ -1,14 +1,23 @@
 package org.ff4j.core;
 
 /*
- * #%L ff4j-core $Id:$ $HeadURL:$ %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * #%L
+ * ff4j-core
+ * %%
+ * Copyright (C) 2013 Ff4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  * 
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
- * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License. #L%
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
  */
 
 import java.io.ByteArrayInputStream;
@@ -20,6 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -49,7 +59,7 @@ import org.xml.sax.SAXException;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public final class FeatureLoader {
+public class FeatureLoader {
 
     /** XML Tags and attribute. */
     public static final String TAG_FEATURES = "features";
@@ -76,6 +86,8 @@ public final class FeatureLoader {
 
     public static final String ATT_EXPRESSION = "expression";
 
+    public static final String ATT_GROUP = "group";
+
     /** XML Generation constants. */
     private static final String ENCODING = "UTF-8";
 
@@ -94,6 +106,9 @@ public final class FeatureLoader {
     /** XML Generation constants. */
     private static final String END_FEATURES = "</features>";
 
+    /** Document Builder use to parse XML. */
+    private static DocumentBuilder builder = null;
+
     /**
      * As utility class, hide constructor.
      */
@@ -111,22 +126,36 @@ public final class FeatureLoader {
     public static Map<String, Feature> loadFeatures(InputStream in) {
         LinkedHashMap<String, Feature> xmlFeatures = new LinkedHashMap<String, Feature>();
         try {
-            Document featuresTag = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(in);
-            if (featuresTag.hasChildNodes()) {
-                NodeList listOfFeature = featuresTag.getElementsByTagName(TAG_FEATURE);
-                for (int i = 0; i < listOfFeature.getLength(); i++) {
-                    Feature f = parseFeature((Element) listOfFeature.item(i));
-                    xmlFeatures.put(f.getUid(), f);
-                }
+            Document featuresTag = getDocumentBuilder().parse(in);
+            NodeList listOfFeature = featuresTag.getElementsByTagName(TAG_FEATURE);
+            for (int i = 0; i < listOfFeature.getLength(); i++) {
+                Feature f = parseFeature((Element) listOfFeature.item(i));
+                xmlFeatures.put(f.getUid(), f);
             }
             return xmlFeatures;
         } catch (IOException e) {
             throw new IllegalArgumentException("Cannot parse XML data, please check file access ", e);
-        } catch (ParserConfigurationException e1) {
-            throw new IllegalArgumentException("Cannot parse XML data, please check source file ", e1);
         } catch (SAXException e2) {
             throw new IllegalArgumentException("Cannot parse XML, invalid format ", e2);
         }
+    }
+
+    /**
+     * Build {@link DocumentBuilder} to parse XML.
+     * 
+     * @return current document builder.
+     * @throws ParserConfigurationException
+     *             error during initialization
+     */
+    public static DocumentBuilder getDocumentBuilder() {
+        if (builder == null) {
+            try {
+                builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            } catch (ParserConfigurationException e1) {
+                throw new IllegalArgumentException("Error during initialization of parser ", e1);
+            }
+        }
+        return builder;
     }
 
     /**
@@ -185,7 +214,10 @@ public final class FeatureLoader {
         // Parse authorization
         List<String> authorizations = parseListAuthorizations(featXmlTag);
 
-        return new Feature(uid, enable, desc, authorizations, flipStrategy);
+        // Group
+        String group = parseGroup(nnm);
+
+        return new Feature(uid, enable, desc, group, authorizations, flipStrategy);
     }
 
     /**
@@ -201,6 +233,21 @@ public final class FeatureLoader {
             desc = nnm.getNamedItem(ATT_DESC).getNodeValue();
         }
         return desc;
+    }
+
+    /**
+     * Parser target group.
+     * 
+     * @param nnm
+     *            current working tag
+     * @return description of the feature
+     */
+    private static String parseGroup(NamedNodeMap nnm) {
+        String group = null;
+        if (nnm.getNamedItem(ATT_GROUP) != null) {
+            group = nnm.getNamedItem(ATT_GROUP).getNodeValue();
+        }
+        return group;
     }
 
     /**
@@ -238,10 +285,11 @@ public final class FeatureLoader {
             try {
                 String clazzName = nnm.getNamedItem(ATT_STRATEGY).getNodeValue();
                 flipStrategy = (FlippingStrategy) Class.forName(clazzName).newInstance();
+                String expr = null;
                 if (nnm.getNamedItem(ATT_EXPRESSION) != null) {
-                    String expr = nnm.getNamedItem(ATT_EXPRESSION).getNodeValue();
-                    flipStrategy.init(uid, expr);
+                    expr = nnm.getNamedItem(ATT_EXPRESSION).getNodeValue();
                 }
+                flipStrategy.init(uid, expr);
             } catch (Exception e) {
                 throw new IllegalArgumentException("Invalid attribute 'strategy' on feature " + uid, e);
             }

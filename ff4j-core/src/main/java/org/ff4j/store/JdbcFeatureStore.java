@@ -1,8 +1,8 @@
 package org.ff4j.store;
 
 /*
- * #%L ff4j-store-jdbc %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of the License at
+ * #%L ff4j-core %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
  * 
  * http://www.apache.org/licenses/LICENSE-2.0
  * 
@@ -24,6 +24,8 @@ import javax.sql.DataSource;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.core.FlippingStrategy;
+import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 
@@ -37,9 +39,7 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
     /** Access to storage. */
     private DataSource dataSource;
 
-    /**
-     * Default Constructor.
-     */
+    /** Default Constructor. */
     public JdbcFeatureStore() {}
 
     /**
@@ -83,9 +83,10 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
             }
             return false;
         } catch (SQLException sqlEX) {
-            throw new RuntimeException("Cannot check feature existence, error related to database", sqlEX);
+            throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
         } finally {
-            releaseConnection(rs, ps);
+            closeResultSet(rs);
+            closeStatement(ps);
         }
     }
 
@@ -100,7 +101,7 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
             rs = ps.executeQuery();
             Feature f = null;
             if (rs.next()) {
-                f = new Feature(rs.getString("UID"), rs.getInt("ENABLE") > 0, rs.getString("DESCRIPTION"));
+                f = mapRow2Feature(rs);
             } else {
                 throw new FeatureNotFoundException(featId);
             }
@@ -112,13 +113,47 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
             while (rs.next()) {
                 f.getAuthorizations().add(rs.getString("ROLE_NAME"));
             }
-
             return f;
         } catch (SQLException sqlEX) {
-            throw new RuntimeException("Cannot check feature existence, error related to database", sqlEX);
+            throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
         } finally {
-            releaseConnection(rs, ps);
+            closeResultSet(rs);
+            closeStatement(ps);
         }
+    }
+
+    /**
+     * Map feature result to bean.
+     * 
+     * @param rs
+     *            current resultSet
+     * @return current Feature without roles
+     * @throws SQLException
+     *             error accured when parsing resultSet
+     */
+    private Feature mapRow2Feature(ResultSet rs) throws SQLException {
+        // Feature
+        Feature f = null;
+        boolean enabled = rs.getInt(COL_FEAT_ENABLE) > 0;
+        String featUid = rs.getString(COL_FEAT_UID);
+        f = new Feature(featUid, enabled, rs.getString(COL_FEAT_DESCRIPTION), rs.getString(COL_FEAT_GROUPNAME));
+        // Strategy
+        String strategy = rs.getString(COL_FEAT_STRATEGY);
+        if (strategy != null && !"".equals(strategy)) {
+            try {
+                FlippingStrategy flipStrategy = (FlippingStrategy) Class.forName(strategy).newInstance();
+                String expr = rs.getString(COL_FEAT_EXPRESSION);
+                flipStrategy.init(featUid, expr);
+                f.setFlippingStrategy(flipStrategy);
+            } catch (InstantiationException ie) {
+                throw new FeatureAccessException("Cannot instanciate Strategy, no default contructor available", ie);
+            } catch (IllegalAccessException iae) {
+                throw new FeatureAccessException("Cannot instanciate Strategy, no visible constructor", iae);
+            } catch (ClassNotFoundException e) {
+                throw new FeatureAccessException("Cannot instanciate Strategy, classNotFound", e);
+            }
+        }
+        return f;
     }
 
     /** {@inheritDoc} */
@@ -137,9 +172,20 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
 
             // Create feature
             ps = sqlConn.prepareStatement(SQL_CREATE);
-            ps.setString(1, fp.getUid());
-            ps.setInt(2, fp.isEnable() ? 1 : 0);
-            ps.setString(3, fp.getDescription());
+            int idx = 1;
+            ps.setString(idx++, fp.getUid());
+            ps.setInt(idx++, fp.isEnable() ? 1 : 0);
+            ps.setString(idx++, fp.getDescription());
+
+            String strategyColumn = null;
+            String expressionColumn = null;
+            if (fp.getFlippingStrategy() != null) {
+                strategyColumn = fp.getFlippingStrategy().getClass().getCanonicalName();
+                expressionColumn = fp.getFlippingStrategy().getInitParams();
+            }
+            ps.setString(idx++, strategyColumn);
+            ps.setString(idx++, expressionColumn);
+            ps.setString(idx++, fp.getGroup());
             ps.executeUpdate();
 
             // Create roles
@@ -156,14 +202,10 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
             sqlConn.commit();
 
         } catch (SQLException sqlEX) {
-            try {
-                if (!sqlConn.isClosed()) {
-                    sqlConn.rollback();
-                }
-            } catch (SQLException e) {}
-            throw new IllegalArgumentException("Cannot update features database, SQL ERROR", sqlEX);
+            rollback(sqlConn);
+            throw new FeatureAccessException("Cannot update features database, SQL ERROR", sqlEX);
         } finally {
-            releaseConnection(null, ps);
+            closeStatement(ps);
         }
     }
 
@@ -201,14 +243,20 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
             sqlConn.commit();
 
         } catch (SQLException sqlEX) {
-            try {
-                if (!sqlConn.isClosed()) {
-                    sqlConn.rollback();
-                }
-            } catch (SQLException e) {}
-            throw new IllegalArgumentException("Cannot update features database, SQL ERROR", sqlEX);
+            rollback(sqlConn);
+            throw new FeatureAccessException("Cannot update features database, SQL ERROR", sqlEX);
         } finally {
-            releaseConnection(null, ps);
+            closeStatement(ps);
+        }
+    }
+
+    private void rollback(Connection sqlConn) {
+        try {
+            if (!sqlConn.isClosed()) {
+                sqlConn.rollback();
+            }
+        } catch (SQLException e) {
+            throw new FeatureAccessException("Cannot rollback database, SQL ERROR", e);
         }
     }
 
@@ -231,26 +279,32 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
     }
 
     /**
-     * Properly close working SQL Object.
+     * Close resultset.
      * 
      * @param rs
-     *            result set if provided
-     * @param ps
-     *            prepared statement if provided
+     *            target resultset
      */
-    private void releaseConnection(ResultSet rs, PreparedStatement ps) {
-        // Close resulset
+    private void closeResultSet(ResultSet rs) {
         try {
             if (rs != null) {
                 rs.close();
             }
-        } catch (SQLException e) {}
-        // Close connection
+        } catch (SQLException e) {
+            throw new FeatureAccessException("An error occur when closing resultset", e);
+        }
+    }
+
+    private void closeStatement(PreparedStatement ps) {
         try {
-            if (ps != null && ps.getConnection() != null) {
-                ps.getConnection().close();
+            if (ps != null) {
+                if (ps.getConnection() != null) {
+                    ps.getConnection().close();
+                }
+                ps.close();
             }
-        } catch (SQLException e) {}
+        } catch (SQLException e) {
+            throw new FeatureAccessException("An error occur when closing statement", e);
+        }
     }
 
     /**
@@ -264,7 +318,7 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
      * @throws SQLException
      *             sql error when working with statement
      */
-    private PreparedStatement buildStatement(String query, String... params) throws SQLException {
+    public PreparedStatement buildStatement(String query, String... params) throws SQLException {
         Connection sqlConn = getDataSource().getConnection();
         PreparedStatement ps = sqlConn.prepareStatement(query);
         if (params != null && params.length > 0) {
@@ -289,9 +343,9 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
             ps = buildStatement(query, params);
             ps.executeUpdate();
         } catch (SQLException sqlEX) {
-            throw new IllegalArgumentException("Cannot update features database, SQL ERROR", sqlEX);
+            throw new FeatureAccessException("Cannot update features database, SQL ERROR", sqlEX);
         } finally {
-            releaseConnection(null, ps);
+            closeStatement(ps);
         }
     }
 
@@ -299,7 +353,6 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
     @Override
     public Map<String, Feature> readAll() {
         LinkedHashMap<String, Feature> mapFP = new LinkedHashMap<String, Feature>();
-
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -307,22 +360,24 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
             ps = buildStatement(SQLQUERY_ALLFEATURES);
             rs = ps.executeQuery();
             while (rs.next()) {
-                Feature f = new Feature(rs.getString("UID"), rs.getInt("ENABLE") > 0, rs.getString("DESCRIPTION"));
+                Feature f = mapRow2Feature(rs);
                 mapFP.put(f.getUid(), f);
             }
 
             // Returns Roles
             rs = ps.getConnection().prepareStatement(SQL_GET_ALLROLES).executeQuery();
             while (rs.next()) {
-                String uid = rs.getString("FEAT_UID");
-                mapFP.get(uid).getAuthorizations().add(rs.getString("ROLE_NAME"));
+                String uid = rs.getString(COL_ROLE_FEATID);
+                // mapFP.get(uid).getAuthorizations() cannot be null thanks to FOREIGN KEY
+                mapFP.get(uid).getAuthorizations().add(rs.getString(COL_ROLE_ROLENAME));
             }
             return mapFP;
 
         } catch (SQLException sqlEX) {
-            throw new RuntimeException("Cannot check feature existence, error related to database", sqlEX);
+            throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
         } finally {
-            releaseConnection(rs, ps);
+            closeResultSet(rs);
+            closeStatement(ps);
         }
     }
 
@@ -330,9 +385,18 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
     @Override
     public void update(Feature fp) {
         Feature fpExist = read(fp.getUid());
-
         // Update core Flip POINT
-        update(SQL_UPDATE, fp.getDescription(), fp.getUid());
+        String enable = "0";
+        if (fp.isEnable()) {
+            enable = "1";
+        }
+        String fStrategy = null;
+        String fExpression = null;
+        if (fp.getFlippingStrategy() != null) {
+            fStrategy = fp.getFlippingStrategy().getClass().getCanonicalName();
+            fExpression = fp.getFlippingStrategy().getInitParams();
+        }
+        update(SQL_UPDATE, enable, fp.getDescription(), fStrategy, fExpression, fp.getGroup(), fp.getUid());
 
         // To be deleted : not in second but in first
         Set<String> toBeDeleted = new HashSet<String>();
@@ -348,15 +412,6 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
         toBeAdded.removeAll(fpExist.getAuthorizations());
         for (String addee : toBeAdded) {
             grantRoleOnFeature(fpExist.getUid(), addee);
-        }
-
-        // enable/disable
-        if (fp.isEnable() != fpExist.isEnable()) {
-            if (fp.isEnable()) {
-                enable(fp.getUid());
-            } else {
-                disable(fp.getUid());
-            }
         }
     }
 

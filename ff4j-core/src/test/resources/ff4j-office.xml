@@ -25,7 +25,7 @@
 <features>
 	
 	<feature uid="displayCallMeButton" enable="true" 
-		strategy="org.ff4j.test.strategy.OfficeHoursFlippingStrategy"
+		strategy="org.ff4j.sample.strategy.OfficeHoursFlippingStrategy"
 		expression="9-18" />
 
 </features>

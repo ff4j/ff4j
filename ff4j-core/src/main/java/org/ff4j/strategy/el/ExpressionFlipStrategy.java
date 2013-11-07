@@ -1,8 +1,8 @@
 package org.ff4j.strategy.el;
 
 /*
- * #%L ff4j-core $Id:$ $HeadURL:$ %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * #%L ff4j-core %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
  * 
  * http://www.apache.org/licenses/LICENSE-2.0
  * 
@@ -33,10 +33,26 @@ public class ExpressionFlipStrategy implements FlippingStrategy {
     /** Cached syntax trees. */
     private static Map<String, ExpressionNode> cachedExpression = new HashMap<String, ExpressionNode>();
 
+    /** Storing initial value. */
+    private String init = null;
+
     /**
      * Default constructor using introspection.
      */
     public ExpressionFlipStrategy() {}
+
+    /** {@inheritDoc} */
+    @Override
+    public void init(String featureName, String initValue) {
+        mapOfValue.put(featureName, initValue);
+        this.init = initValue;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getInitParams() {
+        return init;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -47,26 +63,23 @@ public class ExpressionFlipStrategy implements FlippingStrategy {
                 String expression = mapOfValue.get(featureName);
                 if (!cachedExpression.containsKey(expression)) {
                     cachedExpression.put(expression, ExpressionParser.parseExpression(expression));
-                } else {
-                    // Getting syntax tree from cache : cachedExpression.get(expression);
                 }
                 return cachedExpression.get(expression).evalue(getFeaturesStatus(currentStore));
             }
             return true;
         } else {
             String expression = (String) executionContext[0];
-            if (!cachedExpression.containsKey(expression)) {
-                cachedExpression.put(expression, ExpressionParser.parseExpression(expression));
-            } else {
-                // Getting syntax tree from cache" + cachedExpression.get(expression);
-            }
+            cachedExpression.put(expression, ExpressionParser.parseExpression(expression));
             return cachedExpression.get(expression).evalue(getFeaturesStatus(currentStore));
         }
     }
 
     /**
+     * Return status of all the features to calculate.
      * 
-     * @return
+     * @param currentStore
+     *            current store for features
+     * @return current statuses for stores
      */
     private Map<String, Boolean> getFeaturesStatus(FeatureStore currentStore) {
         Map<String, Boolean> bools = new HashMap<String, Boolean>();
@@ -76,12 +89,6 @@ public class ExpressionFlipStrategy implements FlippingStrategy {
             bools.put(fp.getUid(), fp.isEnable());
         }
         return bools;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void init(String featureName, String initValue) {
-        mapOfValue.put(featureName, initValue);
     }
 
 }
