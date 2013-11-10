@@ -38,7 +38,7 @@
 	</feature>
 	
 	<feature uid="forth" enable="true" description="description" 
-			strategy="org.ff4j.strategy.el.ExpressionFlipStrategy" >
+			strategy="org.ff4j.strategy.el.ExpressionFlipStrategy" group="GRP1" >
 		<auth role="X" />
 		<auth role="Y" />
 	</feature>

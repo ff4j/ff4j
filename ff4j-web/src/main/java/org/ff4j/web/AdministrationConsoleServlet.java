@@ -169,7 +169,7 @@ public class AdministrationConsoleServlet extends HttpServlet {
             for (FileItem item : items) {
                 if (item.isFormField()) {
                     if (OPERATION.equalsIgnoreCase(item.getFieldName())) {
-                        String operation = item.getString();
+                        // String operation = item.getString();
                         // Proceed here action accessing through POST
                     }
                 } else if (FLIPFILE.equalsIgnoreCase(item.getFieldName())) {

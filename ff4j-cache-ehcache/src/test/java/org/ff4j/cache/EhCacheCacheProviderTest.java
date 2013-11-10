@@ -22,12 +22,13 @@ package org.ff4j.cache;
 
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
+import org.ff4j.test.AbstractStoreTest;
 
 public class EhCacheCacheProviderTest extends AbstractStoreTest {
 
     /** {@inheritDoc} */
     @Override
-    public FeatureStore initStore() throws Exception {
+    public FeatureStore initStore() {
         return new FeatureStoreCacheProxy(new InMemoryFeatureStore("ff4j.xml"), new FeatureCacheProviderEhCache());
     }
 

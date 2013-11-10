@@ -36,7 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class JdbcFeatureStoreSpring implements JdbcFeatureStoreConstants, FeatureStore {
+public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, FeatureStore {
 
     /** Row Mapper for FlipPoint. */
     private static final FlippingPointRowMapper MAPPER = new FlippingPointRowMapper();
@@ -55,7 +55,9 @@ public class JdbcFeatureStoreSpring implements JdbcFeatureStoreConstants, Featur
 
         @Override
         public Feature mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new Feature(rs.getString("UID"), rs.getInt("ENABLE") > 0, rs.getString("DESCRIPTION"));
+            Feature f = new Feature(rs.getString("UID"), rs.getInt("ENABLE") > 0, rs.getString("DESCRIPTION"));
+            f.setGroup(rs.getString(COL_FEAT_GROUPNAME));
+            return f;
         }
     }
 
@@ -104,7 +106,14 @@ public class JdbcFeatureStoreSpring implements JdbcFeatureStoreConstants, Featur
             throw new FeatureAlreadyExistException(fp.getUid());
         }
         // Transaction wraps the method, could pipe several sql queries
-        getJdbcTemplate().update(SQL_CREATE, fp.getUid(), fp.isEnable() ? 1 : 0, fp.getDescription());
+        String strategyColumn = null;
+        String expressionColumn = null;
+        if (fp.getFlippingStrategy() != null) {
+            strategyColumn = fp.getFlippingStrategy().getClass().getCanonicalName();
+            expressionColumn = fp.getFlippingStrategy().getInitParams();
+        }
+        getJdbcTemplate().update(SQL_CREATE, fp.getUid(), fp.isEnable() ? 1 : 0, fp.getDescription(), strategyColumn,
+                expressionColumn, fp.getGroup());
         if (fp.getAuthorizations() != null) {
             for (String role : fp.getAuthorizations()) {
                 getJdbcTemplate().update(SQL_ADD_ROLE, fp.getUid(), role);
@@ -166,7 +175,17 @@ public class JdbcFeatureStoreSpring implements JdbcFeatureStoreConstants, Featur
         Feature fpExist = read(fp.getUid());
 
         // Update core Flip POINT
-        getJdbcTemplate().update(SQL_UPDATE, fp.getDescription(), fp.getUid());
+        String fStrategy = null;
+        String fExpression = null;
+        if (fp.getFlippingStrategy() != null) {
+            fStrategy = fp.getFlippingStrategy().getClass().getCanonicalName();
+            fExpression = fp.getFlippingStrategy().getInitParams();
+        }
+        String enable = "0";
+        if (fp.isEnable()) {
+            enable = "1";
+        }
+        getJdbcTemplate().update(SQL_UPDATE, enable, fp.getDescription(), fStrategy, fExpression, fp.getGroup(), fp.getUid());
 
         // To be deleted : not in second but in first
         Set<String> toBeDeleted = new HashSet<String>();

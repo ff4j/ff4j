@@ -35,7 +35,7 @@ import org.ff4j.core.FlippingStrategy;
 public class ReleaseDateFlipStrategy implements FlippingStrategy {
 
     /** Pattern to create a release Date. */
-    private static final SimpleDateFormat SDF = new SimpleDateFormat("YYYY-MM-DD-HH:mm");
+    public static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-DD-HH:mm");
 
     /** Release Date. */
     private Date releaseDate = null;

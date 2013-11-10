@@ -235,13 +235,14 @@ public abstract class AbstractStoreTest {
     @Test
     public void testDeleteFeature() throws Exception {
         Set<String> rights = new HashSet<String>(Arrays.asList(new String[] {ROLE_USER}));
-        Feature fp2 = new Feature(FEATURE_NEW, true, TESTING_GROUP, "description4", rights);
+        Feature fp2 = new Feature("TO_BE_DELETED", true, TESTING_GROUP, "description4", rights);
+        int current = testedStore.readAll().size();
         // Create Once
         testedStore.create(fp2);
-        assertFf4j.assertFeatureNumber(EXPECTED_FEATURES_NUMBERS + 1);
+        assertFf4j.assertFeatureNumber(current + 1);
 
         testedStore.delete(fp2.getUid());
-        assertFf4j.assertFeatureNumber(EXPECTED_FEATURES_NUMBERS);
+        assertFf4j.assertFeatureNumber(current);
     }
 
     /**

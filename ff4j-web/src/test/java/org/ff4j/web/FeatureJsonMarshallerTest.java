@@ -86,7 +86,7 @@ public class FeatureJsonMarshallerTest {
         Set<String> newSet = new HashSet<String>();
         newSet.add("role1");
         newSet.add("role2");
-        Feature f4 = new Feature("f4", true, "desc", newSet);
+        Feature f4 = new Feature("f4", true, null, "desc", newSet);
         assertMarshalling(FeatureJsonMarshaller.marshallFeature(f4), f4);
     }
 

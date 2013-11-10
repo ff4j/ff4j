@@ -48,6 +48,8 @@ public final class FeatureJsonMarshaller {
         jsonOutput.append(renderAttributeBoolean("enable", feature.isEnable()));
         jsonOutput.append(",");
         jsonOutput.append(renderAttributeString("description", feature.getDescription()));
+        jsonOutput.append(",");
+        jsonOutput.append(renderAttributeString("group", feature.getGroup()));
         // Authorizations
         jsonOutput.append(renderAuthorizations(feature.getAuthorizations()));
         // Flipping strategy

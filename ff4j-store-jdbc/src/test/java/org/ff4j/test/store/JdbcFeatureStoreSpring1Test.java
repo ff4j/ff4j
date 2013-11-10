@@ -12,8 +12,10 @@ package org.ff4j.test.store;
  */
 
 import org.ff4j.core.FeatureStore;
-import org.ff4j.store.JdbcFeatureStoreSpring;
+import org.ff4j.store.FeatureStoreSpringJDBC;
 import org.ff4j.test.AbstractStoreTest;
+import org.junit.After;
+import org.junit.Before;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -35,7 +37,7 @@ public class JdbcFeatureStoreSpring1Test extends AbstractStoreTest {
         db = builder.setType(EmbeddedDatabaseType.HSQL).addScript("classpath:schema-ddl.sql").addScript("classpath:ff-store.sql")
                 .build();
 
-        JdbcFeatureStoreSpring jdbcStore = new JdbcFeatureStoreSpring();
+        FeatureStoreSpringJDBC jdbcStore = new FeatureStoreSpringJDBC();
         jdbcStore.setDataSource(db);
         jdbcStore.getJdbcTemplate();
         return jdbcStore;
@@ -43,16 +45,16 @@ public class JdbcFeatureStoreSpring1Test extends AbstractStoreTest {
 
     /** {@inheritDoc} */
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         db = builder.setType(EmbeddedDatabaseType.HSQL).addScript("classpath:schema-ddl.sql").addScript("classpath:ff-store.sql")
                 .build();
     }
 
     /** {@inheritDoc} */
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    @After
+    public void tearDown() throws Exception {
         db.shutdown();
     }
 

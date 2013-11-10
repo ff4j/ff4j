@@ -135,6 +135,8 @@ public class FeatureLoader {
             return xmlFeatures;
         } catch (IOException e) {
             throw new IllegalArgumentException("Cannot parse XML data, please check file access ", e);
+        } catch (ParserConfigurationException e1) {
+            throw new IllegalArgumentException("Error during initialization of parser ", e1);
         } catch (SAXException e2) {
             throw new IllegalArgumentException("Cannot parse XML, invalid format ", e2);
         }
@@ -147,13 +149,9 @@ public class FeatureLoader {
      * @throws ParserConfigurationException
      *             error during initialization
      */
-    public static DocumentBuilder getDocumentBuilder() {
+    public static DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {
         if (builder == null) {
-            try {
-                builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            } catch (ParserConfigurationException e1) {
-                throw new IllegalArgumentException("Error during initialization of parser ", e1);
-            }
+            builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         }
         return builder;
     }
