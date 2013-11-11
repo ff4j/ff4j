@@ -18,7 +18,8 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
-import org.ff4j.FF4j;
+import org.ff4j.core.Feature;
+import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureNotFoundException;
 
 /**
@@ -40,20 +41,17 @@ public class FlipTag extends BodyTagSupport {
     /** serial number. */
     private static final long serialVersionUID = -4924423673988080781L;
 
-    /** Logger for Advisor. */
-    // static final Logger LOGGER = LoggerFactory.getLogger(FlipTag.class);
-
     /** Injected by JSP itSelf. */
     private String featureid = "";
 
-    private static FF4j ff4j;
+    public FlipTag() {}
 
     /** {@inheritDoc} */
     @Override
     public int doAfterBody() throws JspException {
         try {
             // Checking Feature value
-            if (getFf4j().isFlipped(getFeatureid())) {
+            if (FF4jWebContextHolder.getFf4j().isFlipped(getFeatureid())) {
                 BodyContent bodycontent = getBodyContent();
                 String body = bodycontent.getString();
                 JspWriter out = bodycontent.getEnclosingWriter();
@@ -86,25 +84,6 @@ public class FlipTag extends BodyTagSupport {
      */
     public void setFeatureid(String featureid) {
         this.featureid = featureid;
-    }
-
-    /**
-     * Getter accessor for attribute 'ff4j'.
-     * 
-     * @return current value of 'ff4j'
-     */
-    public static FF4j getFf4j() {
-        return ff4j;
-    }
-
-    /**
-     * Setter accessor for attribute 'ff4j'.
-     * 
-     * @param ff4j
-     *            new value for 'ff4j '
-     */
-    public static void setFf4j(FF4j ff4j) {
-        FlipTag.ff4j = ff4j;
     }
 
 }

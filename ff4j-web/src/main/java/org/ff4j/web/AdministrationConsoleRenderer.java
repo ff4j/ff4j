@@ -71,6 +71,9 @@ public final class AdministrationConsoleRenderer {
     /** HTTP Parameter. */
     static final String FLIPFILE = "flipFile";
 
+    /** Parametre. */
+    static final String START_LINK = "<a href=\"";
+
     /** Cache for page blocks. */
     private static String modalImportFeatures = null;
 
@@ -82,13 +85,6 @@ public final class AdministrationConsoleRenderer {
 
     /** Cache for page blocks. */
     private static String htmlNavBar = null;
-
-    private static final String START_LINK = "<a href=\"";
-
-    /**
-     * Hide constructor as utility class.
-     */
-    private AdministrationConsoleRenderer() {}
 
     /** Cache for page blocks. */
     static final String HEADER = ""

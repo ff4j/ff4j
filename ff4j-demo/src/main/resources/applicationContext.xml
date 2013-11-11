@@ -7,6 +7,8 @@
 		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.3.xsd 
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd" >
 
+
+	<!-- SPRING SECURITY -->
 	<http auto-config="true">
 		<intercept-url pattern="/*.htm" 		access="ROLE_USER" />
 		<intercept-url pattern="/ff4j-console*" access="ROLE_USER" />
@@ -21,15 +23,25 @@
 		</authentication-provider>
 	</authentication-manager>
 	
-	<beans:bean id="ff4j.store" class="org.ff4j.store.InMemoryFeatureStore" />
+	<!-- Feature Store -->
+	<beans:bean id="ff4j.store" class="org.ff4j.store.InMemoryFeatureStore" >
+		<beans:property name="location" value="ff4j.xml" />
+	</beans:bean>
 	
-	<!-- FF4J -->
-	<beans:bean class="org.ff4j.FF4j" >
+	<!-- ff4j Main Class -->
+	<beans:bean id="ff4j" class="org.ff4j.FF4j" >
 		<beans:property name="store" ref="ff4j.store" />
 		<beans:property name="authorizationsManager" >
 			<beans:bean class="org.ff4j.security.SpringSecurityAuthorisationManager" />
 		</beans:property>
 	</beans:bean>
+	
+	<!-- Inject Spring Bean into TAG (could use webApplicationContext if SPring  -->
+	<beans:bean id="ctxHolder" class="org.ff4j.web.FF4jWebContextHolder">
+		<beans:property name="ff4j" ref="ff4j" />
+	</beans:bean>
+	
+	<!-- JMX -->
 	
 	<!-- this bean must not be lazily initialized if the exporting is to happen -->
 	<beans:bean id="exporter" class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
