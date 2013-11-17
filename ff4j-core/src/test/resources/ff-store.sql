@@ -35,7 +35,7 @@ INSERT INTO FF4J_ROLES(FEAT_UID, ROLE_NAME)  VALUES('third', 'Y');
 
 -- Forth
 INSERT INTO FF4J_FEATURES(UID, ENABLE, DESCRIPTION, STRATEGY, EXPRESSION, GROUPNAME) 
-VALUES('forth',  1, 'ForthJDBC', 'org.ff4j.strategy.el.ExpressionFlipStrategy', 'third | second', 'GRP1');
+VALUES('forth',  1, 'ForthJDBC', 'org.ff4j.strategy.el.ExpressionFlipStrategy', 'expression=third|second', 'GRP1');
 INSERT INTO FF4J_ROLES(FEAT_UID, ROLE_NAME)  VALUES('forth', 'X');
 INSERT INTO FF4J_ROLES(FEAT_UID, ROLE_NAME)  VALUES('forth', 'Y');
 

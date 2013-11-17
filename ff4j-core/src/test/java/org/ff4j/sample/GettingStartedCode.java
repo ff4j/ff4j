@@ -33,27 +33,24 @@ import org.junit.Test;
  */
 public class GettingStartedCode {
 
+    private FF4j ff4j;
+
     @Test
-    public void testingFeatures() {
-        FF4j ff4j = new FF4j();
-        ff4j.create("f1", true);
+    public void helloWorld() {
 
-        // Test UP
-        if (ff4j.isFlipped("f1")) {
-            // Hello the feature is enabled
-        }
+        ff4j = new FF4j("ff4j.xml").autoCreate(true);
 
-        // Test DOWN
-        ff4j.disable("f1");
-
-        if (ff4j.isFlipped("f1")) {
-            // Hello the feature is enabled
+        if (ff4j.isFlipped("sayHello")) {
+            // Enhanced Behavior
+            System.out.println("Hellow World !");
+        } else {
+            // Previous Behavior
         }
 
     }
 
     @Test
-    public void helloWorld() {
+    public void helloWorld2() {
 
         FF4j ff4j = new FF4j("ff4j.xml");
 

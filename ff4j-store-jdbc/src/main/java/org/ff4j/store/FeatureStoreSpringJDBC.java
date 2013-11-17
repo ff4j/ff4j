@@ -25,6 +25,7 @@ import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.utils.ParameterUtils;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
@@ -110,7 +111,7 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
         String expressionColumn = null;
         if (fp.getFlippingStrategy() != null) {
             strategyColumn = fp.getFlippingStrategy().getClass().getCanonicalName();
-            expressionColumn = fp.getFlippingStrategy().getInitParams();
+            expressionColumn = ParameterUtils.fromMap(fp.getFlippingStrategy().getInitParams());
         }
         getJdbcTemplate().update(SQL_CREATE, fp.getUid(), fp.isEnable() ? 1 : 0, fp.getDescription(), strategyColumn,
                 expressionColumn, fp.getGroup());
@@ -179,7 +180,7 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
         String fExpression = null;
         if (fp.getFlippingStrategy() != null) {
             fStrategy = fp.getFlippingStrategy().getClass().getCanonicalName();
-            fExpression = fp.getFlippingStrategy().getInitParams();
+            fExpression = ParameterUtils.fromMap(fp.getFlippingStrategy().getInitParams());
         }
         String enable = "0";
         if (fp.isEnable()) {

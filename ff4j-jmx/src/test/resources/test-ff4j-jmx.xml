@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
   #%L
-  ff4j-core
-  $Id:$
-  $HeadURL:$
+  ff4j-jmx
   %%
   Copyright (C) 2013 Ff4J
   %%
@@ -24,15 +22,15 @@
 <!DOCTYPE configuration>
 <features>
 
-	<feature uid="A" enable="true" />
-	
-	<feature uid="B" enable="false" />
-	
-	<feature uid="C" enable="false" />
-	
-	<feature uid="D" enable="true" 
-		strategy="org.ff4j.strategy.el.ExpressionFlipStrategy"
-		expression="A &amp; B | !C | B" />
+	<feature uid="jmxEnabledFeature" enable="true" description="some desc" />
 
+	<feature uid="jmxDisabledFeature" enable="false" description="some desc" />
+
+	<feature uid="jmxFeatureWithAuth" enable="false" description="some desc" >
+		<security>
+			<role name="ROLE_USER" />
+			<role name="ROLE_ADMIN" />
+		</security>
+	</feature>
+	
 </features>
-

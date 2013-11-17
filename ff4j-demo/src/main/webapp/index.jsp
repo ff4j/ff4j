@@ -47,8 +47,13 @@ body {
         <i>(Please note credentials : <span style="color:#880000"><b>admin/admin</b></span></i></p>
         <p style="text-align:center">
         <a href="<%=request.getContextPath()%>/ff4j-console" class="btn btn-success btn-large" >
-			<i class="icon-th-large icon-white"></i>&nbsp;Access FF4J Console
+			<i class="icon-th-large icon-white"></i>&nbsp;Access Web Console
 		</a>
+		&nbsp;&nbsp;
+		<a href="<%=request.getContextPath()%>/webservices.jsp" class="btn btn-info btn-large" >
+			<i class="icon-th-large icon-white"></i>&nbsp;Access WebServices
+		</a>
+		
 		
 		</p><br/>
       </div>

@@ -50,7 +50,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
-import org.ff4j.core.FeatureLoader;
+import org.ff4j.core.FeatureXmlParser;
 
 /**
  * Unique Servlet to manage FlipPoints and security
@@ -134,7 +134,7 @@ public class AdministrationConsoleServlet extends HttpServlet {
      *             error when building response
      */
     private void buildResponseForExportFeature(HttpServletResponse res) throws IOException {
-        InputStream in = FeatureLoader.exportFeatures(getFf4j().getStore().readAll());
+        InputStream in = new FeatureXmlParser().exportFeatures(getFf4j().getStore().readAll());
         ServletOutputStream sos = null;
         try {
             sos = res.getOutputStream();
@@ -320,7 +320,7 @@ public class AdministrationConsoleServlet extends HttpServlet {
      *             Error raised if the configuration cannot be read
      */
     private void opImportFile(InputStream in) throws IOException {
-        Map<String, Feature> mapsOfFeat = FeatureLoader.loadFeatures(in);
+        Map<String, Feature> mapsOfFeat = new FeatureXmlParser().parseConfigurationFile(in);
         for (Entry<String, Feature> feature : mapsOfFeat.entrySet()) {
             if (getFf4j().getStore().exist(feature.getKey())) {
                 getFf4j().getStore().update(feature.getValue());
@@ -350,7 +350,17 @@ public class AdministrationConsoleServlet extends HttpServlet {
         for (Feature fp : mapOfFlipPoints.values()) {
             strB.append("<tr>");
             strB.append("<td style=\"width:150px;font-weight:bold\">" + fp.getUid() + "</td>");
-            strB.append("<td style=\"width:300px;\">" + fp.getDescription() + "</td>");
+            if (fp.getGroup() != null) {
+                strB.append("<td style=\"width:100px;\">" + fp.getGroup() + "</td>");
+            } else {
+                strB.append("<td style=\"width:100px;\"></td>");
+            }
+
+            if (fp.getDescription() != null) {
+                strB.append("<td style=\"width:200px;\">" + fp.getDescription() + "</td>");
+            } else {
+                strB.append("<td style=\"width:200px;\"></td>");
+            }
             strB.append("<td>");
             Map<String, String> mapP = new LinkedHashMap<String, String>();
             mapP.put("uid", fp.getUid());

@@ -28,12 +28,13 @@
            http://www.springframework.org/schema/context/spring-context-3.0.xsd">
                
    	<bean id="ff4j" class="org.ff4j.FF4j" >
-   		<property name="store"				   ref="ff4j.featureStore" 			/>
-		<property name="authorizationsManager" ref="ff4j.springSecuAuthManager"	/>
+   		<property name="store">
+   			<bean class="org.ff4j.store.InMemoryFeatureStore" />
+   		</property>
+		<property name="authorizationsManager">
+			<bean class="org.ff4j.security.SpringSecurityAuthorisationManager"	/>
+		</property>
 	</bean>
 	
-	<bean id="ff4j.springSecuAuthManager" class="org.ff4j.security.SpringSecurityAuthorisationManager" />
-	
-    <bean id="ff4j.featureStore" class="org.ff4j.store.InMemoryFeatureStore" />
-     
+	 
 </beans>

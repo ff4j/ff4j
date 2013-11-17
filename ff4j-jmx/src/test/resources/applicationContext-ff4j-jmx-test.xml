@@ -46,7 +46,7 @@
 	</bean>
 	
 	<bean id="ff4j" class="org.ff4j.FF4j" >
-		<constructor-arg index="0" value="ff4j.xml" />
+		<constructor-arg index="0" value="test-ff4j-jmx.xml" />
 		<property name="autocreate" value="false" 	/>
 	</bean>
 	

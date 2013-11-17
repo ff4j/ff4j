@@ -21,21 +21,31 @@ package org.ff4j.sample.strategy;
  */
 
 import java.util.Calendar;
+import java.util.Map;
 
 import org.ff4j.core.FeatureStore;
-import org.ff4j.core.FlippingStrategy;
+import org.ff4j.core.FlipStrategy;
+import org.ff4j.strategy.AbstractFlipStrategy;
 
-public class OfficeHoursFlippingStrategy implements FlippingStrategy {
+/**
+ * Sample custom {@link FlipStrategy} for testing purposes.
+ * 
+ * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ */
+public class OfficeHoursFlippingStrategy extends AbstractFlipStrategy {
 
+    /** Start Hour. */
     private int start;
+
+    /** Hend Hour. */
     private int end;
 
     /** {@inheritDoc} */
     @Override
-    public void init(String featureName, String initValue) {
-        String[] inits = initValue.split("-");
-        start = new Integer(inits[0]);
-        end = new Integer(inits[1]);
+    public void init(String featureName, Map<String, String> initValue) {
+        super.init(featureName, initValue);
+        start = new Integer(initValue.get("startDate"));
+        end = new Integer(initValue.get("endDate"));
     }
 
     /** {@inheritDoc} */
@@ -45,9 +55,4 @@ public class OfficeHoursFlippingStrategy implements FlippingStrategy {
         return (currentHour >= start && currentHour < end);
     }
 
-    @Override
-    public String getInitParams() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }

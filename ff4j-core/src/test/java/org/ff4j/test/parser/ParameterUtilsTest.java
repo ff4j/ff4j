@@ -1,8 +1,8 @@
-package org.ff4j.cache;
+package org.ff4j.test.parser;
 
 /*
  * #%L
- * ff4j-cache-ehcache
+ * ff4j-core
  * %%
  * Copyright (C) 2013 Ff4J
  * %%
@@ -20,16 +20,18 @@ package org.ff4j.cache;
  * #L%
  */
 
-import org.ff4j.core.FeatureStore;
-import org.ff4j.store.InMemoryFeatureStore;
-import org.ff4j.test.AbstractStoreTest;
+import java.lang.reflect.Constructor;
 
-public class EhCacheCacheProviderTest extends AbstractStoreTest {
+import org.ff4j.utils.ParameterUtils;
+import org.junit.Test;
 
-    /** {@inheritDoc} */
-    @Override
-    public FeatureStore initStore() {
-        return new FeatureStoreCacheProxy(new InMemoryFeatureStore("test-ehcacheProvider.xml"), new FeatureCacheProviderEhCache());
+public class ParameterUtilsTest {
+
+    @Test
+    public void testConstructorParameterUtils() throws Exception {
+        Constructor<ParameterUtils> ce = ParameterUtils.class.getDeclaredConstructor();
+        ce.setAccessible(true);
+        ce.newInstance();
     }
 
 }

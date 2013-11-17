@@ -33,7 +33,7 @@ import junit.framework.Assert;
 
 import org.ff4j.FF4j;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.core.FlippingStrategy;
+import org.ff4j.core.FlipStrategy;
 import org.ff4j.security.AuthorizationsManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +49,7 @@ public abstract class AbstractFf4jTest {
     protected static AuthorizationsManager mockAuthManager = null;
 
     /** Mock Flip Strategy. */
-    protected static FlippingStrategy mockFlipStrategy = null;
+    protected static FlipStrategy mockFlipStrategy = null;
 
     /** FF4J Instance for testings. */
     protected FF4j ff4j = null;
@@ -66,7 +66,7 @@ public abstract class AbstractFf4jTest {
         when(mockAuthManager.getEveryOneRoles()).thenReturn(new HashSet<String>(Arrays.asList(new String[] {"ROLEA","ROLEB"})));
 
         // Create MOCK
-        mockFlipStrategy = mock(FlippingStrategy.class);
+        mockFlipStrategy = mock(FlipStrategy.class);
         when(mockFlipStrategy.activate(any(String.class), any(FeatureStore.class), anyVararg())).thenReturn(true);
         when(mockFlipStrategy.getInitParams()).thenReturn(null);
 

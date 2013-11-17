@@ -29,19 +29,21 @@ public class PonderationStrategyTest extends AbstractFf4jTest {
     /** {@inheritDoc} */
     @Override
     public FF4j initFF4j() {
-        return new FF4j("ff4j-ponderationStrategy-ok.xml");
+        return new FF4j("test-ponderationStrategy-ok.xml");
     }
 
     @Test
     public void testNoExpressionIsDefault() {
         Feature f = ff4j.getFeature("pond_Null");
-        Assert.assertEquals("0.5", f.getFlippingStrategy().getInitParams());
+        Assert.assertEquals(0.5, ((PonderationFlipStrategy) f.getFlippingStrategy()).getThreshold());
+        Assert.assertEquals(0, f.getFlippingStrategy().getInitParams().size());
     }
 
     @Test
     public void testExpressionTo0AlwaysFalse() {
         Feature f = ff4j.getFeature("pond_0");
-        Assert.assertEquals("0.0", f.getFlippingStrategy().getInitParams());
+        Assert.assertEquals(0.0, ((PonderationFlipStrategy) f.getFlippingStrategy()).getThreshold());
+        Assert.assertEquals(1, f.getFlippingStrategy().getInitParams().size());
         for (int i = 0; i < 10; i++) {
             assertFf4j.assertNotFlipped(f.getUid());
         }
@@ -50,7 +52,10 @@ public class PonderationStrategyTest extends AbstractFf4jTest {
     @Test
     public void testExpressionTo1AlwaysTrue() {
         Feature f = ff4j.getFeature("pond_1");
-        Assert.assertEquals("1.0", f.getFlippingStrategy().getInitParams());
+        Assert.assertEquals(1.0, ((PonderationFlipStrategy) f.getFlippingStrategy()).getThreshold());
+        Assert.assertEquals(1, f.getFlippingStrategy().getInitParams().size());
+        Assert.assertEquals("1", f.getFlippingStrategy().getInitParams().get("weight"));
+
         for (int i = 0; i < 10; i++) {
             assertFf4j.assertFlipped(f.getUid());
         }
@@ -59,7 +64,7 @@ public class PonderationStrategyTest extends AbstractFf4jTest {
     @Test
     public void testExpressionCustom() {
         Feature f = ff4j.getFeature("pond_6");
-        Assert.assertEquals("0.6", f.getFlippingStrategy().getInitParams());
+        Assert.assertEquals(0.6, ((PonderationFlipStrategy) f.getFlippingStrategy()).getThreshold());
         int nbOK = 0;
         int nbKO = 0;
         for (int i = 0; i < 1000; i++) {
@@ -74,7 +79,7 @@ public class PonderationStrategyTest extends AbstractFf4jTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testKOParameter() {
-        new FF4j("ff4j-ponderationStrategy-ko.xml");
+        new FF4j("test-ponderationStrategy-ko.xml");
     }
 
     @Test

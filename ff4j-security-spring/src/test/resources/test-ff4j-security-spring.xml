@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
   #%L
-  ff4j-core
-  $Id:$
-  $HeadURL:$
+  ff4j.xml (ff4j-security-spring) by Cedrick LUNVEN
   %%
   Copyright (C) 2013 Ff4J
   %%
@@ -23,5 +21,19 @@
 
 <!DOCTYPE configuration>
 <features>
+
+	<feature uid="first" enable="true" description="description" >
+		<security>
+			<role name="ROLE_USER" />
+		</security>
+	</feature>
+	
+	<feature uid="third" enable="true" >
+		<security>
+			<role name="X" />
+			<role name="Y" />
+		</security>
+	</feature>
+	
 </features>
 

@@ -60,7 +60,7 @@ public class Feature implements Serializable {
     private Set<String> authorizations = new HashSet<String>();
 
     /** Custom behaviour to define if feature if enable or not e.g. A/B Testing capabilities. */
-    private FlippingStrategy flippingStrategy;
+    private FlipStrategy flippingStrategy;
 
     /**
      * Simplest constructor initializing feature to disable.
@@ -153,7 +153,7 @@ public class Feature implements Serializable {
      *            limited roles to use the feature even if enabled
      */
     public Feature(final String uid, final boolean penable, final String pdescription, final String group,
-            final Collection<String> auths, final FlippingStrategy strat) {
+            final Collection<String> auths, final FlipStrategy strat) {
         this(uid, penable, pdescription, group, auths);
         if (strat != null) {
             this.flippingStrategy = strat;
@@ -163,14 +163,20 @@ public class Feature implements Serializable {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("Feature '" + this.uid + "'");
-        sb.append("is '" + (enable ? "enabled" : "disabled") + "'");
+        StringBuilder sb = new StringBuilder("Feature<" + this.uid + ">:");
+        sb.append(" <" + (enable ? "enabled" : "disabled") + ">");
         if (authorizations != null && !authorizations.isEmpty()) {
-            sb.append(" roles:");
+            sb.append(" roles");
             sb.append(authorizations.toString());
         }
         if (description != null && !description.isEmpty()) {
-            sb.append(", desc:" + description);
+            sb.append(" desc<" + description + ">");
+        }
+        if (group != null && !group.isEmpty()) {
+            sb.append(" group<" + group + ">");
+        }
+        if (flippingStrategy != null) {
+            sb.append(" strategy<" + flippingStrategy.toString() + ">");
         }
         return sb.toString();
     }
@@ -277,7 +283,7 @@ public class Feature implements Serializable {
      * 
      * @return current value of 'flippingStrategy'
      */
-    public FlippingStrategy getFlippingStrategy() {
+    public FlipStrategy getFlippingStrategy() {
         return flippingStrategy;
     }
 
@@ -287,7 +293,7 @@ public class Feature implements Serializable {
      * @param flippingStrategy
      *            new value for 'flippingStrategy '
      */
-    public void setFlippingStrategy(FlippingStrategy flippingStrategy) {
+    public void setFlippingStrategy(FlipStrategy flippingStrategy) {
         this.flippingStrategy = flippingStrategy;
     }
 

@@ -23,7 +23,7 @@ import javax.lang.model.type.NullType;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.ff4j.FF4j;
-import org.ff4j.core.FlippingStrategy;
+import org.ff4j.core.FlipStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.Advised;
@@ -50,7 +50,7 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
     private final Set<String> targetInterfacesNames = new HashSet<String>();
 
     /** Strategies should be instanciate only once, keep references */
-    private final Map<String, FlippingStrategy> strategySingletons = new HashMap<String, FlippingStrategy>();
+    private final Map<String, FlipStrategy> strategySingletons = new HashMap<String, FlipStrategy>();
 
     /** Spring Application Context. */
     private ApplicationContext appCtx;
@@ -155,7 +155,7 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
             String strategyClassName = ff.strategy().getCanonicalName();
             if (!strategySingletons.containsKey(strategyClassName)) {
                 try {
-                    strategySingletons.put(strategyClassName, (FlippingStrategy) ff.strategy().newInstance());
+                    strategySingletons.put(strategyClassName, (FlipStrategy) ff.strategy().newInstance());
                 } catch (InstantiationException e) {
                     throw new IllegalArgumentException("ff4j-aop: Cannot instanciate alterbean " + strategyClassName
                             + " please check default constructor existence & visibility", e);
@@ -164,7 +164,7 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
                             + " please check constructor visibility", e);
                 }
             }
-            FlippingStrategy targetStrategy = strategySingletons.get(strategyClassName);
+            FlipStrategy targetStrategy = strategySingletons.get(strategyClassName);
 
             if (!"".equals(ff.expression())) {
                 // an expression has been provided

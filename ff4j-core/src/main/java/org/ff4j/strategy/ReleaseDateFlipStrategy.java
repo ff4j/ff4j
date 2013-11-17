@@ -23,37 +23,36 @@ package org.ff4j.strategy;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 import org.ff4j.core.FeatureStore;
-import org.ff4j.core.FlippingStrategy;
 
 /**
  * The feature will be flipped after release date is reached.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class ReleaseDateFlipStrategy implements FlippingStrategy {
+public class ReleaseDateFlipStrategy extends AbstractFlipStrategy {
 
     /** Pattern to create a release Date. */
     public static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-DD-HH:mm");
 
+    /** Constant for release Date. */
+    private static final String PARAMNAME_RELEASEDATE = "releaseDate";
+
     /** Release Date. */
-    private Date releaseDate = null;
+    private Date releaseDate = new Date();
 
     /** {@inheritDoc} */
     @Override
-    public void init(String featureName, String initParam) {
+    public void init(String featureName, Map<String, String> initParam) {
+        super.init(featureName, initParam);
+        assertRequiredParameter(PARAMNAME_RELEASEDATE);
         try {
-            this.releaseDate = SDF.parse(initParam);
+            this.releaseDate = SDF.parse(initParam.get(PARAMNAME_RELEASEDATE));
         } catch (ParseException e) {
             throw new IllegalArgumentException("Cannot parse release date, invalid format correct is 'YYYY-MM-DD-HH:mm'", e);
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getInitParams() {
-        return SDF.format(this.releaseDate);
     }
 
     /** {@inheritDoc} */
@@ -63,6 +62,25 @@ public class ReleaseDateFlipStrategy implements FlippingStrategy {
         // No use of featureStore
         // No use of executionContext
         return new Date().after(releaseDate);
+    }
+
+    /**
+     * Getter accessor for attribute 'releaseDate'.
+     * 
+     * @return current value of 'releaseDate'
+     */
+    public Date getReleaseDate() {
+        return releaseDate;
+    }
+
+    /**
+     * Setter accessor for attribute 'releaseDate'.
+     * 
+     * @param releaseDate
+     *            new value for 'releaseDate '
+     */
+    public void setReleaseDate(Date releaseDate) {
+        this.releaseDate = releaseDate;
     }
 
 }

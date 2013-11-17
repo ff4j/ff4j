@@ -20,18 +20,22 @@ package org.ff4j.strategy;
  * #L%
  */
 
+import java.util.Map;
+
 import org.ff4j.core.FeatureStore;
-import org.ff4j.core.FlippingStrategy;
 
 /**
  * This strategy will flip feature as soon as the release date is reached.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class PonderationFlipStrategy implements FlippingStrategy {
+public class PonderationFlipStrategy extends AbstractFlipStrategy {
 
     /** Return equiprobability as 50%. */
     private static final double HALF = 0.5;
+
+    /** Threshold. */
+    private static final String PARAM_THRESHOLD = "weight";
 
     /** Change threshold. */
     private double threshold = HALF;
@@ -40,15 +44,6 @@ public class PonderationFlipStrategy implements FlippingStrategy {
      * Default Constructor.
      */
     public PonderationFlipStrategy() {}
-
-    /**
-     * Check that the threshold is a value proportion (0 < P < 1).
-     */
-    private void checkThreshold() {
-        if (threshold < 0 || threshold > 1) {
-            throw new IllegalArgumentException("The ponderation value is a percentage and should be set between 0 and 1");
-        }
-    }
 
     /**
      * Parameterized constructor.
@@ -63,11 +58,12 @@ public class PonderationFlipStrategy implements FlippingStrategy {
 
     /** {@inheritDoc} */
     @Override
-    public void init(String featureName, String initValue) {
-        if (initValue != null) {
-            this.threshold = Double.valueOf(initValue).doubleValue();
-            checkThreshold();
+    public void init(String featureName, Map<String, String> initParams) {
+        super.init(featureName, initParams);
+        if (initParams != null && initParams.containsKey(PARAM_THRESHOLD)) {
+            this.threshold = Double.valueOf(initParams.get(PARAM_THRESHOLD)).doubleValue();
         }
+        checkThreshold();
     }
 
     /** {@inheritDoc} */
@@ -76,10 +72,13 @@ public class PonderationFlipStrategy implements FlippingStrategy {
         return Math.random() <= threshold;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public String getInitParams() {
-        return String.valueOf(threshold);
+    /**
+     * Check that the threshold is a value proportion (0 < P < 1).
+     */
+    private void checkThreshold() {
+        if (threshold < 0 || threshold > 1) {
+            throw new IllegalArgumentException("The ponderation value is a percentage and should be set between 0 and 1");
+        }
     }
 
     /**

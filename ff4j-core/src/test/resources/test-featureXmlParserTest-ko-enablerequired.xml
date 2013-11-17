@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
   #%L
-  ff4j-jmx
+  ff4j-core
   %%
   Copyright (C) 2013 Ff4J
   %%
@@ -21,14 +21,5 @@
 
 <!DOCTYPE configuration>
 <features>
-
-	<feature uid="jmxEnabledFeature" enable="true" description="some desc" />
-
-	<feature uid="jmxDisabledFeature" enable="false" description="some desc" />
-
-	<feature uid="jmxFeatureWithAuth" enable="false" description="some desc" >
-		<auth role="ROLE_USER" />
-		<auth role="ROLE_ADMIN" />
-	</feature>
-	
+	<feature uid="sample" description="description" />
 </features>

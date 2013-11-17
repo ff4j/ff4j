@@ -18,23 +18,23 @@ import java.util.Map;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.core.FlippingStrategy;
+import org.ff4j.strategy.AbstractFlipStrategy;
 
 /**
  * Allow to parse target expression.
  * 
  * @author clunven
  */
-public class ExpressionFlipStrategy implements FlippingStrategy {
+public class ExpressionFlipStrategy extends AbstractFlipStrategy {
+
+    /** Expected parameter. */
+    private static String PARAM_EXPRESSION = "expression";
 
     /** Cached init value. */
     private static Map<String, String> mapOfValue = new HashMap<String, String>();
 
     /** Cached syntax trees. */
     private static Map<String, ExpressionNode> cachedExpression = new HashMap<String, ExpressionNode>();
-
-    /** Storing initial value. */
-    private String init = null;
 
     /**
      * Default constructor using introspection.
@@ -43,16 +43,12 @@ public class ExpressionFlipStrategy implements FlippingStrategy {
 
     /** {@inheritDoc} */
     @Override
-    public void init(String featureName, String initValue) {
-        mapOfValue.put(featureName, initValue);
-        this.init = initValue;
+    public void init(String featureName, Map<String, String> initValue) {
+        super.init(featureName, initValue);
+        assertRequiredParameter(PARAM_EXPRESSION);
+        mapOfValue.put(featureName, initValue.get(PARAM_EXPRESSION));
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public String getInitParams() {
-        return init;
-    }
 
     /** {@inheritDoc} */
     @Override

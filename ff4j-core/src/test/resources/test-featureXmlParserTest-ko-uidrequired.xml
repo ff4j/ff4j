@@ -2,8 +2,6 @@
 <!--
   #%L
   ff4j-core
-  $Id:$
-  $HeadURL:$
   %%
   Copyright (C) 2013 Ff4J
   %%
@@ -23,8 +21,5 @@
 
 <!DOCTYPE configuration>
 <features>
-
-	<feature uid="abc"  description="some desc" />
-	
+	<feature enable="true" description="description" />
 </features>
-

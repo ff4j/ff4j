@@ -15,7 +15,7 @@ package org.ff4j.web.json;
 import java.util.Set;
 
 import org.ff4j.core.Feature;
-import org.ff4j.core.FlippingStrategy;
+import org.ff4j.core.FlipStrategy;
 
 /**
  * Utility class to produce JSON.
@@ -59,13 +59,13 @@ public final class FeatureJsonMarshaller {
     }
 
     /**
-     * Render {@link FlippingStrategy} as a Json string.
+     * Render {@link FlipStrategy} as a Json string.
      * 
      * @param strat
      *            flipping strategy
      * @return json string
      */
-    private static String renderFlippingStrategy(FlippingStrategy strat) {
+    private static String renderFlippingStrategy(FlipStrategy strat) {
         StringBuilder jsonOutput = new StringBuilder(",\"flippingStrategy\":");
         if (strat == null) {
             jsonOutput.append(NULL_JSON);

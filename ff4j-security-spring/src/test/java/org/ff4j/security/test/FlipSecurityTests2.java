@@ -63,7 +63,7 @@ public class FlipSecurityTests2 {
         SecurityContextHolder.setContext(context);
         // <--
 
-        ff4j = new FF4j("ff4j.xml");
+        ff4j = new FF4j("test-ff4j-security-spring.xml");
         ff4j.setAuthorizationsManager(new SpringSecurityAuthorisationManager());
     }
 

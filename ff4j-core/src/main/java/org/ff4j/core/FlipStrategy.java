@@ -1,5 +1,7 @@
 package org.ff4j.core;
 
+import java.util.Map;
+
 /*
  * #%L
  * ff4j-core
@@ -25,7 +27,7 @@ package org.ff4j.core;
  * 
  * @author clunven
  */
-public interface FlippingStrategy {
+public interface FlipStrategy {
 
     /**
      * Allow to parameterized Flipping Strategy
@@ -35,14 +37,14 @@ public interface FlippingStrategy {
      * @param initValue
      *            initial Value
      */
-    void init(String featureName, String initParam);
+    void init(String featureName, Map<String, String> initParam);
 
     /**
      * Initial Parameters required to insert this new flipping.
      * 
      * @return initial parameters for this strategy
      */
-    String getInitParams();
+    Map<String, String> getInitParams();
 
     /**
      * Tell if flip should be realized.

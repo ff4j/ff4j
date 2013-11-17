@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.ff4j.FF4j;
 import org.ff4j.security.SpringSecurityAuthorisationManager;
-import org.ff4j.store.InMemoryFeatureStore;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -67,7 +66,7 @@ public class FlipSecurityTests {
         SecurityContextHolder.setContext(context);
         // <--
 
-        ff4j = new FF4j("ff4j.xml");
+        ff4j = new FF4j("test-ff4j-security-spring.xml");
         ff4j.setAuthorizationsManager(new SpringSecurityAuthorisationManager());
     }
 

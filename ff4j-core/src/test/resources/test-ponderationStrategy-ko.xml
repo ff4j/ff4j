@@ -23,25 +23,31 @@
 <features>
 
 	<!-- No Expression -->
-	<feature uid="pond_Null" enable="true" description="some desc" 
-			strategy="org.ff4j.strategy.PonderationFlipStrategy" />
+	<feature uid="pond_Null" enable="true" description="some desc">
+		<flipstrategy class="org.ff4j.strategy.PonderationFlipStrategy" />
+	</feature>
 
 	<!-- Ponderation to 0 -->
-	<feature uid="pond_0" enable="true" description="some desc" 
-			strategy="org.ff4j.strategy.PonderationFlipStrategy" 
-			expression="0" />
+	<feature uid="pond_0"  enable="true" description="some desc">
+		<flipstrategy class="org.ff4j.strategy.PonderationFlipStrategy" >
+			<param name="weight" value="0" />
+		</flipstrategy>
+	</feature>
 			
 			
 	<!-- Ponderation to 1 -->
-	<feature uid="pond_1" enable="true" description="some desc" 
-			strategy="org.ff4j.strategy.PonderationFlipStrategy" 
-			expression="1" />
+	<feature uid="pond_1" enable="true" description="some desc" >
+		<flipstrategy class="org.ff4j.strategy.PonderationFlipStrategy" >
+			<param name="weight" value="1" />
+		</flipstrategy>
+	</feature>
 	
-	<!-- Ponderation to 0 -->
-	<feature uid="pond_6" enable="true" description="some desc" 
-			strategy="org.ff4j.strategy.PonderationFlipStrategy" 
-			expression="0.6" />
+	<feature uid="pond_6"  enable="true" description="some desc"> 
+		<flipstrategy class="org.ff4j.strategy.PonderationFlipStrategy" >
+			<param name="weight" value="2" />
+		</flipstrategy>
+	</feature>
 	
-	
+		
 </features>
 

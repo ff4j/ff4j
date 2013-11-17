@@ -41,23 +41,21 @@ public class ReleaseDateFlipStrategyTest extends AbstractFf4jTest {
     /** {@inheritDoc} */
     @Override
     public FF4j initFF4j() {
-        return new FF4j("ff4j-releaseDateStrategyTest-ok.xml");
+        return new FF4j("test-releaseDateStrategyTest-ok.xml");
     }
 
     @Test
     public void testPastDayOK() throws ParseException {
         Feature f = ff4j.getFeature("past1");
         ReleaseDateFlipStrategy rds = (ReleaseDateFlipStrategy) f.getFlippingStrategy();
-        Date d = ReleaseDateFlipStrategy.SDF.parse(rds.getInitParams());
-        Assert.assertTrue(d.before(new Date()));
+        Assert.assertTrue(new Date().after(rds.getReleaseDate()));
     }
 
     @Test
     public void testFutureOK() throws ParseException {
         Feature f = ff4j.getFeature("future1");
         ReleaseDateFlipStrategy rds = (ReleaseDateFlipStrategy) f.getFlippingStrategy();
-        Date d = ReleaseDateFlipStrategy.SDF.parse(rds.getInitParams());
-        Assert.assertTrue(d.after(new Date()));
+        Assert.assertTrue(new Date().before(rds.getReleaseDate()));
     }
 
 }

@@ -33,7 +33,7 @@ public class InMemoryStoreTest extends AbstractStoreTest {
     @Override
     public FeatureStore initStore() {
         InMemoryFeatureStore imfs = new InMemoryFeatureStore();
-        imfs.setLocation("ff4j-override.xml");
+        imfs.setLocation("test-InMemoryStoreTest-ok.xml");
         return imfs;
     }
 

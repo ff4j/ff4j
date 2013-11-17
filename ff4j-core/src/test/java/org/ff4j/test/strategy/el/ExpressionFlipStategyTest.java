@@ -11,8 +11,6 @@ package org.ff4j.test.strategy.el;
  * governing permissions and limitations under the License. #L%
  */
 
-import junit.framework.TestCase;
-
 import org.ff4j.FF4j;
 import org.ff4j.strategy.el.ExpressionFlipStrategy;
 import org.junit.Assert;
@@ -23,10 +21,10 @@ import org.junit.Test;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class ExpressionFlipingStategyTest extends TestCase {
+public class ExpressionFlipStategyTest {
 
     /** current instance of FF4j */
-    private final FF4j ff4j = new FF4j("ff4j-el.xml");
+    private final FF4j ff4j = new FF4j("test-expressionFlipStategy-ok.xml");
 
     @Test
     public void testExpression() throws Exception {

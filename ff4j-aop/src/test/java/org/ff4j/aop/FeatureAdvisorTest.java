@@ -35,7 +35,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:applicationContext-ff4j-aop-test.xml")
-public class FeatureFlipperTest {
+public class FeatureAdvisorTest {
 
     @Autowired
     private FF4j ff4j;
@@ -66,6 +66,7 @@ public class FeatureFlipperTest {
 
     @Test
     public void testAnnotatedFlipping_with_alterBean() {
+        ff4j.disable("language-french");
         Assert.assertTrue(greeting.sayHello("CLU").startsWith("Hello"));
 
         ff4j.enable("language-french");

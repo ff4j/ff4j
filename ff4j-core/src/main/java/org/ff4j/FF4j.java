@@ -26,9 +26,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.ff4j.core.Feature;
-import org.ff4j.core.FeatureLoader;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.core.FlippingStrategy;
+import org.ff4j.core.FeatureXmlParser;
+import org.ff4j.core.FlipStrategy;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.security.AuthorizationsManager;
 import org.ff4j.store.InMemoryFeatureStore;
@@ -127,7 +127,7 @@ public class FF4j {
      *            current execution context
      * @return
      */
-    public boolean isFlipped(String featureID, FlippingStrategy strats, Object... executionContext) {
+    public boolean isFlipped(String featureID, FlipStrategy strats, Object... executionContext) {
         Feature fp = getFeature(featureID);
         boolean flipped = fp.isEnable() && isAllowed(fp);
         if (strats != null) {
@@ -283,7 +283,7 @@ public class FF4j {
      * @throws IOException
      */
     public InputStream exportFeatures() throws IOException {
-        return FeatureLoader.exportFeatures(getStore().readAll());
+        return new FeatureXmlParser().exportFeatures(getStore().readAll());
     }
 
     /**

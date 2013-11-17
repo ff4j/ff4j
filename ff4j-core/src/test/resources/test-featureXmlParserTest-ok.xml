@@ -27,14 +27,14 @@
 	
 	<feature-group name="group2">
 		<feature uid="f1" enable="true" description="abc" />
-		<feature uid="f2" enable="true" description="def" />
+		<feature uid="f2" enable="false" description="def" />
 		<feature uid="f3" enable="true" description="ghj" />
 	</feature-group>
 
 	<feature-group name="group3">
 		<feature uid="f0" enable="true" description="description">
 			<flipstrategy class="org.ff4j.strategy.el.ExpressionFlipStrategy">
-				<param name="expression"><![CDATA[A 1 B]]></param>
+				<param name="expression"><![CDATA[A | B]]></param>
 			</flipstrategy>
 			<security>
 				<role name="X" />
@@ -49,10 +49,16 @@
 		</flipstrategy>
 	</feature>
 	
+	<feature uid="f6" enable="true" description="description">
+		<flipstrategy class="org.ff4j.strategy.ReleaseDateFlipStrategy">
+			<param name="releaseDate">2013-07-14-14:00</param>
+		</flipstrategy>
+	</feature>
+	
 	<feature uid="f5" enable="true" >
 		<security>
-				<role name="X" />
-				<role name="Y" />
+			<role name="X" />
+			<role name="Y" />
 		</security>
 	</feature>
 

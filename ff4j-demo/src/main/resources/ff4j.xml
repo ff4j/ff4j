@@ -2,7 +2,7 @@
 <!DOCTYPE configuration>
 <features>
 			
-	<feature uid="mercure-desc" description="Display introduction text for Mercury" enable="true" >
+	<feature uid="mercure-desc" description="Display introduction text for Mercury" enable="true" group="GRP1">
 		<auth role="ROLE_USER" />
 	</feature>
 	<feature uid="mercure-link" description="Display wikipedia button for Planet Mercury" enable="true" >

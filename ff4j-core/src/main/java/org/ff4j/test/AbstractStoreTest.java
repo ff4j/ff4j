@@ -131,7 +131,6 @@ public abstract class AbstractStoreTest {
         Assert.assertTrue(f.getAuthorizations() != null && !f.getAuthorizations().isEmpty());
         assertFf4j.assertHasRole(FEATURE_FORTH, "X");
         assertFf4j.assertInGroup(FEATURE_FORTH, TESTING_GROUP);
-
     }
 
     /**

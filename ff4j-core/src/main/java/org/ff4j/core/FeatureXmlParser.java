@@ -24,10 +24,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -60,7 +61,7 @@ public class FeatureXmlParser {
     public static final String FLIPSTRATEGY_ATTCLASS = "class";
     public static final String FLIPSTRATEGY_PARAMTAG = "param";
     public static final String FLIPSTRATEGY_PARAMNAME = "name";
-    public static final String FLIPSTRATEGY_PARAMVALUE = "name";
+    public static final String FLIPSTRATEGY_PARAMVALUE = "value";
 
     public static final String SECURITY_TAG = "security";
     public static final String SECURITY_ROLE_TAG = "role";
@@ -68,18 +69,6 @@ public class FeatureXmlParser {
 
     public static final String CDATA_START = "<![CDATA[";
     public static final String CDATA_END = "]]>";
-
-    public static final String TAG_AUTH = "auth";
-
-
-    /** XML Tags and attribute. */
-    public static final String ATT_ROLE = "role";
-
-    public static final String ATT_STRATEGY = "strategy";
-
-    public static final String ATT_EXPRESSION = "expression";
-
-    public static final String ATT_GROUP = "group";
 
     /** XML Generation constants. */
     private static final String ENCODING = "UTF-8";
@@ -111,15 +100,32 @@ public class FeatureXmlParser {
      * @throws IOException
      *             exception raised when reading inputstream
      */
-    public Map<String, Feature> loadFeatures(InputStream in) {
+    public Map<String, Feature> parseConfigurationFile(InputStream in) {
         LinkedHashMap<String, Feature> xmlFeatures = new LinkedHashMap<String, Feature>();
         try {
-            Document featuresTag = getDocumentBuilder().parse(in);
+            // Load XML as a Document
+            Document ff4jDocument = getDocumentBuilder().parse(in);
 
-            NodeList listOfFeature = featuresTag.getElementsByTagName(FEATURE_TAG);
-            for (int i = 0; i < listOfFeature.getLength(); i++) {
-                Feature f = parseFeature((Element) listOfFeature.item(i));
-                xmlFeatures.put(f.getUid(), f);
+            // Features Tag
+            NodeList rootList = ff4jDocument.getElementsByTagName(FEATURES_TAG);
+            if (rootList.getLength() != 1) {
+                throw new IllegalArgumentException("Root Tag is 'features' and must be unique, please check");
+            }
+            Element featuresTag = (Element) rootList.item(0);
+
+            NodeList firstLevelNodes = featuresTag.getChildNodes();
+            for (int i = 0; i < firstLevelNodes.getLength(); i++) {
+                if (firstLevelNodes.item(i) instanceof Element) {
+                    Element currentCore = (Element) firstLevelNodes.item(i);
+                    if (FEATURE_TAG.equals(currentCore.getNodeName())) {
+                        Feature singleFeature = parseFeatureTag(currentCore);
+                        xmlFeatures.put(singleFeature.getUid(), singleFeature);
+                    } else if (FEATUREGROUP_TAG.equals(currentCore.getNodeName())) {
+                        xmlFeatures.putAll(parseFeatureGroupTag(currentCore));
+                    } else {
+                        throw new IllegalArgumentException("Invalid XML Format, Features sub nodes are [feature,feature-group]");
+                    }
+                }
             }
             return xmlFeatures;
         } catch (IOException e) {
@@ -132,13 +138,164 @@ public class FeatureXmlParser {
     }
 
     /**
+     * Parse TAG &lt;feature-group&gt;.
+     * 
+     * @param featGroupTag
+     *            feature group tag
+     * @return map of features
+     */
+    private Map<String, Feature> parseFeatureGroupTag(Element featGroupTag) {
+        NamedNodeMap nnm = featGroupTag.getAttributes();
+        String groupName = null;
+        if (nnm.getNamedItem(FEATUREGROUP_ATTNAME) == null) {
+            throw new IllegalArgumentException("Error syntax in configuration featuregroup : must have 'name' attribute");
+        }
+        groupName = nnm.getNamedItem(FEATUREGROUP_ATTNAME).getNodeValue();
+
+        Map<String, Feature> groupFeatures = new HashMap<String, Feature>();
+        NodeList listOfFeat = featGroupTag.getElementsByTagName(FEATURE_TAG);
+        for (int k = 0; k < listOfFeat.getLength(); k++) {
+            Feature f = parseFeatureTag((Element) listOfFeat.item(k));
+            // Insert feature into group
+            f.setGroup(groupName);
+            groupFeatures.put(f.getUid(), f);
+        }
+        return groupFeatures;
+    }
+
+    /**
+     * Build a Feature from XML TAG.
+     * 
+     * @param featXmlTag
+     *            xml tag to nuild feature
+     * @return current feature
+     */
+    private Feature parseFeatureTag(Element featXmlTag) {
+        NamedNodeMap nnm = featXmlTag.getAttributes();
+        // Identifier
+        String uid = null;
+        if (nnm.getNamedItem(FEATURE_ATT_UID) == null) {
+            throw new IllegalArgumentException("Error syntax in configuration file : " + "'uid' is required for each feature");
+        }
+        uid = nnm.getNamedItem(FEATURE_ATT_UID).getNodeValue();
+        // Enable
+        if (nnm.getNamedItem(FEATURE_ATT_ENABLE) == null) {
+            throw new IllegalArgumentException("Error syntax in configuration file : "
+                    + "'enable' is required for each feature (check " + uid + ")");
+        }
+        boolean enable = Boolean.valueOf(nnm.getNamedItem(FEATURE_ATT_ENABLE).getNodeValue());
+
+        // Create Feature with description
+        Feature f = new Feature(uid, enable, parseDescription(nnm));
+        
+        // Strategy
+        NodeList flipStrategies = featXmlTag.getElementsByTagName(FLIPSTRATEGY_TAG);
+        if (flipStrategies.getLength() > 0) {
+            f.setFlippingStrategy(parseFlipStrategy((Element) flipStrategies.item(0), f.getUid()));
+        }
+        
+        // Security
+        NodeList securities = featXmlTag.getElementsByTagName(SECURITY_TAG);
+        if (securities.getLength() > 0) {
+            f.setAuthorizations(parseListAuthorizations((Element) securities.item(0)));
+        }
+
+        return f;
+    }
+
+    /**
+     * Parsing strategy TAG.
+     * 
+     * @param nnm
+     *            current parend node
+     * @param uid
+     *            current feature uid
+     * @return flipstrategy related to current feature.
+     */
+    private FlipStrategy parseFlipStrategy(Element flipStrategyTag, String uid) {
+        NamedNodeMap nnm = flipStrategyTag.getAttributes();
+        FlipStrategy flipStrategy = null;
+        if (nnm.getNamedItem(FLIPSTRATEGY_ATTCLASS) == null) {
+            throw new IllegalArgumentException("Error syntax in configuration file : '" + FLIPSTRATEGY_ATTCLASS
+                    + "' is required for each flipstrategy (feature=" + uid + ")");
+        }
+
+        try {
+            // Attribute CLASS
+            String clazzName = nnm.getNamedItem(FLIPSTRATEGY_ATTCLASS).getNodeValue();
+            flipStrategy = (FlipStrategy) Class.forName(clazzName).newInstance();
+
+            // LIST OF PARAMS
+            Map<String, String> parameters = new LinkedHashMap<String, String>();
+            NodeList initparamsNodes = flipStrategyTag.getElementsByTagName(FLIPSTRATEGY_PARAMTAG);
+            for (int k = 0; k < initparamsNodes.getLength(); k++) {
+                Element param = (Element) initparamsNodes.item(k);
+                NamedNodeMap nnmap = param.getAttributes();
+                // Check for required attribute name
+                String currentParamName = null;
+                if (nnmap.getNamedItem(FLIPSTRATEGY_PARAMNAME) == null) {
+                    throw new IllegalArgumentException("Error syntax in configuration file : "
+                            + "'name' is required for each param in flipstrategy(check " + uid + ")");
+                }
+                currentParamName = nnmap.getNamedItem(FLIPSTRATEGY_PARAMNAME).getNodeValue();
+                // Check for value attribute
+                if (nnmap.getNamedItem(FLIPSTRATEGY_PARAMVALUE) != null) {
+                    parameters.put(currentParamName, nnmap.getNamedItem(FLIPSTRATEGY_PARAMVALUE).getNodeValue());
+                } else if (param.getFirstChild() != null) {
+                    parameters.put(currentParamName, param.getFirstChild().getNodeValue());
+                } else {
+                    throw new IllegalArgumentException("Parameter '" + currentParamName + "' in feature '" + uid
+                            + "' has no value, please check XML");
+                }
+            }
+
+            flipStrategy.init(uid, parameters);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("An error occurs during flipstrategy parsing TAG" + uid, e);
+        }
+        return flipStrategy;
+    }
+
+    /**
+     * Parser target description.
+     * 
+     * @param nnm
+     *            current working tag
+     * @return description of the feature
+     */
+    private String parseDescription(NamedNodeMap nnm) {
+        String desc = null;
+        if (nnm.getNamedItem(FEATURE_ATT_DESC) != null) {
+            desc = nnm.getNamedItem(FEATURE_ATT_DESC).getNodeValue();
+        }
+        return desc;
+    }
+
+    /**
+     * Parsing autorization tag.
+     * 
+     * @param featXmlTag
+     *            current TAG
+     * @return list of authorizations.
+     */
+    private Set<String> parseListAuthorizations(Element securityTag) {
+        Set<String> authorizations = new HashSet<String>();
+        NodeList lisOfAuth = securityTag.getElementsByTagName(SECURITY_ROLE_TAG);
+        for (int k = 0; k < lisOfAuth.getLength(); k++) {
+            Element role = (Element) lisOfAuth.item(k);
+          authorizations.add(role.getAttributes().getNamedItem(SECURITY_ROLE_ATTNAME).getNodeValue());
+        }
+        return authorizations;
+    }
+
+    /**
      * Build {@link DocumentBuilder} to parse XML.
      * 
      * @return current document builder.
      * @throws ParserConfigurationException
      *             error during initialization
      */
-    public static DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {
+    public DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {
         if (builder == null) {
             builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         }
@@ -154,7 +311,7 @@ public class FeatureXmlParser {
      * @throws IOException
      *             error occurs when generating output
      */
-    public static InputStream exportFeatures(Map<String, Feature> mapOfFeatures) throws IOException {
+    public InputStream exportFeatures(Map<String, Feature> mapOfFeatures) throws IOException {
         StringBuilder strBuilder = new StringBuilder(XML_HEADER);
         if (mapOfFeatures != null && !mapOfFeatures.isEmpty()) {
             for (Feature feat : mapOfFeatures.values()) {
@@ -171,122 +328,5 @@ public class FeatureXmlParser {
         return new ByteArrayInputStream(strBuilder.toString().getBytes(ENCODING));
     }
 
-    /**
-     * Build a Feature from XML TAG.
-     * 
-     * @param featXmlTag
-     *            xml tag to nuild feature
-     * @return current feature
-     */
-    private Feature parseFeature(Element featXmlTag) {
-        NamedNodeMap nnm = featXmlTag.getAttributes();
-        // Identifier
-        String uid = null;
-        if (nnm.getNamedItem(FEATURE_ATT_UID) == null) {
-            throw new IllegalArgumentException("Error syntax in configuration file : " + "'uid' is required for each feature");
-        }
-        uid = nnm.getNamedItem(FEATURE_ATT_UID).getNodeValue();
-        // Enable
-        if (nnm.getNamedItem(FEATURE_ATT_ENABLE) == null) {
-            throw new IllegalArgumentException("Error syntax in configuration file : "
-                    + "'enable' is required for each feature (check " + uid + ")");
-        }
-        boolean enable = Boolean.valueOf(nnm.getNamedItem(FEATURE_ATT_ENABLE).getNodeValue());
-        // Description
-        String desc = null;
-        if (nnm.getNamedItem(FEATURE_ATT_DESC) != null) {
-            desc = nnm.getNamedItem(FEATURE_ATT_DESC).getNodeValue();
-        }
-
-        return null;
-    }
-
-    private FlippingStrategy parserFlipStrategy(Element flipStrategyTag) {
-        NamedNodeMap nnm = flipStrategyTag.getAttributes();
-        String clazz = null;
-        if (nnm.getNamedItem(FLIPSTRATEGY_ATTCLASS) == null) {
-            throw new IllegalArgumentException("Error syntax in configuration file : '" + FLIPSTRATEGY_ATTCLASS
-                    + "' is required for each feature");
-        }
-        clazz = nnm.getNamedItem(FEATURE_ATT_UID).getNodeValue();
-        return null;
-    }
-
-    /**
-     * Parser target description.
-     * 
-     * @param nnm
-     *            current working tag
-     * @return description of the feature
-     */
-    private static String parserDescription(NamedNodeMap nnm) {
-        String desc = null;
-        if (nnm.getNamedItem(FEATURE_ATT_DESC) != null) {
-            desc = nnm.getNamedItem(FEATURE_ATT_DESC).getNodeValue();
-        }
-        return desc;
-    }
-
-    /**
-     * Parser target group.
-     * 
-     * @param nnm
-     *            current working tag
-     * @return description of the feature
-     */
-    private static String parseGroup(NamedNodeMap nnm) {
-        String group = null;
-        if (nnm.getNamedItem(ATT_GROUP) != null) {
-            group = nnm.getNamedItem(ATT_GROUP).getNodeValue();
-        }
-        return group;
-    }
-
-    /**
-     * Parsing autorization tag.
-     * 
-     * @param featXmlTag
-     *            current TAG
-     * @return list of authorizations.
-     */
-    private static List<String> parseListAuthorizations(Element featXmlTag) {
-        List<String> authorizations = null;
-        if (featXmlTag.hasChildNodes()) {
-            NodeList lisOfAuth = featXmlTag.getElementsByTagName(TAG_AUTH);
-            authorizations = new ArrayList<String>();
-            for (int idxAuth = 0; idxAuth < lisOfAuth.getLength(); idxAuth++) {
-                Element auth = (Element) lisOfAuth.item(idxAuth);
-                authorizations.add(auth.getAttributes().getNamedItem(ATT_ROLE).getNodeValue());
-            }
-        }
-        return authorizations;
-    }
-
-    /**
-     * Parsing strategy TAG.
-     * 
-     * @param nnm
-     *            current parend node
-     * @param uid
-     *            current feature uid
-     * @return flipstrategy related to current feature.
-     */
-    private static FlippingStrategy parseFlipStrategy(NamedNodeMap nnm, String uid) {
-        FlippingStrategy flipStrategy = null;
-        if (nnm.getNamedItem(ATT_STRATEGY) != null) {
-            try {
-                String clazzName = nnm.getNamedItem(ATT_STRATEGY).getNodeValue();
-                flipStrategy = (FlippingStrategy) Class.forName(clazzName).newInstance();
-                String expr = null;
-                if (nnm.getNamedItem(ATT_EXPRESSION) != null) {
-                    expr = nnm.getNamedItem(ATT_EXPRESSION).getNodeValue();
-                }
-                flipStrategy.init(uid, expr);
-            } catch (Exception e) {
-                throw new IllegalArgumentException("Invalid attribute 'strategy' on feature " + uid, e);
-            }
-        }
-        return flipStrategy;
-    }
 
 }

@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.ff4j</groupId>
 		<artifactId>ff4j-parent</artifactId>
-		<version>1.0.1-SNAPSHOT</version>
+		<version>1.1.0-SNAPSHOT</version>
 	</parent>
 	
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -35,9 +35,11 @@
 			<groupId>org.ff4j</groupId>
 			<version>${project.version}</version>
 		</dependency>
-		
-		<!-- spring-jersey-client -->
-		<!--http client -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.1.1</version>
+		</dependency>
 		
 		
 		<!-- tests -->

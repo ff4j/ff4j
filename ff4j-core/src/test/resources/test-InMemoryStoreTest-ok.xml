@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
   #%L
-  ff4j.xml (ff4j-security-spring) by Cedrick LUNVEN
+  ff4j-core
   %%
   Copyright (C) 2013 Ff4J
   %%
@@ -22,14 +22,38 @@
 <!DOCTYPE configuration>
 <features>
 
+	<feature uid="AwesomeFeature" enable="true" description="some desc" />
+
 	<feature uid="first" enable="true" description="description" >
-		<auth role="ROLE_USER" />
+		<security>
+			<role name="ROLE_USER" />
+		</security>
 	</feature>
 	
-	<feature uid="third" enable="true" >
-		<auth role="X" />
-		<auth role="Y" />
+	<feature uid="second" enable="false" description="description" >
+		<security>
+			<role name="ROLE_USER" />
+		</security>
 	</feature>
+	
+	<feature uid="third" enable="false" >
+		<security>
+			<role name="X" />
+			<role name="Y" />
+		</security>
+	</feature>
+	
+	<feature-group name="GRP1">
+		<feature uid="forth" enable="true" description="description" >
+			<flipstrategy class="org.ff4j.strategy.el.ExpressionFlipStrategy">
+				<param name="expression" value="third | second" />
+			</flipstrategy>
+			<security>
+				<role name="X" />
+				<role name="Y" />
+			</security>
+		</feature>
+	</feature-group>
 	
 </features>
 

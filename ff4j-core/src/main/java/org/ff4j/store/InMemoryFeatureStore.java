@@ -18,8 +18,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.ff4j.core.Feature;
-import org.ff4j.core.FeatureLoader;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.core.FeatureXmlParser;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 
@@ -54,7 +54,7 @@ public class InMemoryFeatureStore implements FeatureStore {
      */
     private void loadConfFile(String conf) {
         InputStream xmlIN = getClass().getClassLoader().getResourceAsStream(conf);
-        this.featuresMap = FeatureLoader.loadFeatures(xmlIN);
+        this.featuresMap = new FeatureXmlParser().parseConfigurationFile(xmlIN);
     }
 
     /** {@inheritDoc} */

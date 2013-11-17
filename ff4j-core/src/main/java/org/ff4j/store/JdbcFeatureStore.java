@@ -24,10 +24,11 @@ import javax.sql.DataSource;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.core.FlippingStrategy;
+import org.ff4j.core.FlipStrategy;
 import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.utils.ParameterUtils;
 
 /**
  * Implementation of {@link FeatureStore} to work with RDBMS through JDBC.
@@ -141,9 +142,8 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
         String strategy = rs.getString(COL_FEAT_STRATEGY);
         if (strategy != null && !"".equals(strategy)) {
             try {
-                FlippingStrategy flipStrategy = (FlippingStrategy) Class.forName(strategy).newInstance();
-                String expr = rs.getString(COL_FEAT_EXPRESSION);
-                flipStrategy.init(featUid, expr);
+                FlipStrategy flipStrategy = (FlipStrategy) Class.forName(strategy).newInstance();
+                flipStrategy.init(featUid, ParameterUtils.toMap(rs.getString(COL_FEAT_EXPRESSION)));
                 f.setFlippingStrategy(flipStrategy);
             } catch (InstantiationException ie) {
                 throw new FeatureAccessException("Cannot instanciate Strategy, no default contructor available", ie);
@@ -181,7 +181,7 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
             String expressionColumn = null;
             if (fp.getFlippingStrategy() != null) {
                 strategyColumn = fp.getFlippingStrategy().getClass().getCanonicalName();
-                expressionColumn = fp.getFlippingStrategy().getInitParams();
+                expressionColumn = ParameterUtils.fromMap(fp.getFlippingStrategy().getInitParams());
             }
             ps.setString(idx++, strategyColumn);
             ps.setString(idx++, expressionColumn);
@@ -394,7 +394,7 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
         String fExpression = null;
         if (fp.getFlippingStrategy() != null) {
             fStrategy = fp.getFlippingStrategy().getClass().getCanonicalName();
-            fExpression = fp.getFlippingStrategy().getInitParams();
+            fExpression = ParameterUtils.fromMap(fp.getFlippingStrategy().getInitParams());
         }
         update(SQL_UPDATE, enable, fp.getDescription(), fStrategy, fExpression, fp.getGroup(), fp.getUid());
 
