@@ -20,9 +20,7 @@ package org.ff4j.store;
  * #L%
  */
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Map;
 
 import org.apache.http.HttpResponse;
@@ -33,6 +31,7 @@ import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.utils.FeatureJsonMarshaller;
 
 /**
  * Implementation of {@link FeatureStore} to access features through HTTP.
@@ -135,14 +134,13 @@ public class RemoteHttpFeatureStore implements FeatureStore {
     /** {@inheritDoc} */
     @Override
     public Feature read(String featureUid) {
-        String feat = this.makeGetCall(PATH_READ, featureUid);
-        return null;
+        return FeatureJsonMarshaller.unMarshallFeature(this.makeGetCall(PATH_READ, featureUid));
     }
 
     /** {@inheritDoc} */
     @Override
     public Map<String, Feature> readAll() {
-        return null;
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     /** {@inheritDoc} */
