@@ -12,10 +12,7 @@ package org.ff4j.web.services;
  * governing permissions and limitations under the License. #L%
  */
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -85,40 +82,6 @@ public class FeatureWebService {
     public Feature[] readAll() {
         return getStore().readAll().values().toArray(new Feature[0]);
     }
-
-    /** {@inheritDoc} */
-    @POST
-    @Path("/create")
-    @Consumes(JSON_UTF8)
-    @Produces(JSON_UTF8)
-    public boolean create(Feature fp) {
-        getStore().create(fp);
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @POST
-    @Path("/delete/{id}")
-    @Produces(JSON_UTF8)
-    public boolean delete(@FormParam("id") String featureId) {
-        getStore().delete(featureId);
-        return true;
-    }
-
-    /**
-     * {@inheritDoc} *
-     * 
-     * @Override
-     * @GET
-     * @Path("/grantrole/feature/{id /role/${role}") public void grantRoleOnFeature(String flipId, String roleName) {
-     *                               getStore().grantRoleOnFeature(flipId, roleName); }
-     * 
-     *                               /** {@inheritDoc} *
-     * @Override
-     * @GET
-     * @Path("/deleterole/feature/{id /role/${role}") public void removeRoleFromFeature(@PathParam("id") String flipId,
-     * @PathParam("role") String roleName) { getStore().removeRoleFromFeature(flipId, roleName); }
-     */
 
     /**
      * Getter accessor for attribute 'ff4j'.

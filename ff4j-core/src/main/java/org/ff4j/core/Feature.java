@@ -25,6 +25,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.ff4j.utils.FeatureJsonMarshaller;
+
 /**
  * Represents a feature flag identified by an unique identifier.
  * 
@@ -69,7 +71,7 @@ public class Feature implements Serializable {
      *            unique feature name (required)
      */
     public Feature(final String uid) {
-        this(uid, false, "");
+        this(uid, false, null);
     }
 
     /**
@@ -81,7 +83,7 @@ public class Feature implements Serializable {
      *            initial feature state
      */
     public Feature(final String uid, final boolean penable) {
-        this(uid, penable, "");
+        this(uid, penable, null);
     }
 
     /**
@@ -163,22 +165,7 @@ public class Feature implements Serializable {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("Feature<" + this.uid + ">:");
-        sb.append(" <" + (enable ? "enabled" : "disabled") + ">");
-        if (authorizations != null && !authorizations.isEmpty()) {
-            sb.append(" roles");
-            sb.append(authorizations.toString());
-        }
-        if (description != null && !description.isEmpty()) {
-            sb.append(" desc<" + description + ">");
-        }
-        if (group != null && !group.isEmpty()) {
-            sb.append(" group<" + group + ">");
-        }
-        if (flippingStrategy != null) {
-            sb.append(" strategy<" + flippingStrategy.toString() + ">");
-        }
-        return sb.toString();
+        return FeatureJsonMarshaller.marshallFeature(this);
     }
 
     /**

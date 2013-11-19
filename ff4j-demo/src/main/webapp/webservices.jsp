@@ -54,13 +54,28 @@ body {
         	<tbody>
         <tr>
         	<td>Enable Feature 'earth-desc'</td>
-        	<td> <a href="<%=request.getContextPath()%>/ws/ff4j/enable/earth-desc">.../ws/ff4j/enable/earth-desc</a></td>
-        	<td>GET</td>
+        	<td>&#36;&#123;context&#125;/ws/ff4j/<b>enable</b>/&#36;&#123;featureName&#125;</td>
+        	<td><a class="btn btn-inverse" href="<%=request.getContextPath()%>/ws/ff4j/enable/earth-desc">GET</a></td>
 		</tr>
 		<tr>
         	<td>Disable Feature 'earth-desc'</td>
-        	<td> <a href="<%=request.getContextPath()%>/ws/ff4j/enable/earth-desc">.../ws/ff4j/disable/earth-desc</a></td>
-        	<td>GET</td>
+        	<td>&#36;&#123;context&#125;/ws/ff4j/<b>disable</b>/&#36;&#123;featureName&#125;</td>
+        	<td><a class="btn btn-inverse" href="<%=request.getContextPath()%>/ws/ff4j/disable/earth-desc">GET</a></td>
+		</tr>
+		<tr>
+        	<td>Test Existence Feature 'dummy'</td>
+        	<td>&#36;&#123;context&#125;/ws/ff4j/<b>exist</b>/&#36;&#123;featureName&#125;</td>
+        	<td><a class="btn btn-inverse" href="<%=request.getContextPath()%>/ws/ff4j/exist/dummy">GET</a></td>
+		</tr>
+		<tr>
+        	<td>Read Feature 'dummy'</td>
+        	<td>&#36;&#123;context&#125;/ws/ff4j/<b>read</b>/&#36;&#123;featureName&#125;</td>
+        	<td> <a class="btn btn-inverse" href="<%=request.getContextPath()%>/ws/ff4j/read/earth-desc"> GET</a></td>
+		</tr>
+		<tr>
+        	<td>List Features</td>
+        	<td>&#36;&#123;context&#125;/ws/ff4j/<b>list</b></td>
+        	<td> <a class="btn btn-inverse" href="<%=request.getContextPath()%>/ws/ff4j/list"> GET</a></td>
 		</tr>
 		
 		

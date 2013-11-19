@@ -20,10 +20,19 @@ package org.ff4j.store;
  * #L%
  */
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Map;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.exception.FeatureAccessException;
+import org.ff4j.exception.FeatureNotFoundException;
 
 /**
  * Implementation of {@link FeatureStore} to access features through HTTP.
@@ -32,66 +41,157 @@ import org.ff4j.core.FeatureStore;
  */
 public class RemoteHttpFeatureStore implements FeatureStore {
 
-    @Override
-    public void enable(String featureID) {
-        // TODO Auto-generated method stub
+    /** enable. */
+    private static final String PATH_ENABLE = "/enable";
 
+    /** disable. */
+    private static final String PATH_DISABLE = "/disable";
+
+    /** check if feature is exist. */
+    private static final String PATH_EXIST = "/exist";
+
+    /** read feature. */
+    private static final String PATH_READ = "/read";
+
+    /** Application json. */
+    private static final String JSON = "application/json";
+
+    /** target URL. */
+    private String url;
+
+    /** current http client. */
+    private final DefaultHttpClient httpClient = new DefaultHttpClient();
+
+    /**
+     * Default constructor to allow IoC.
+     */
+    public RemoteHttpFeatureStore() {}
+
+    /**
+     * Parameteried Constructor to initialize attributes.
+     * 
+     * @param lUrl
+     *            url to initialize url.
+     */
+    public RemoteHttpFeatureStore(String lUrl) {
+        this.url = lUrl;
     }
 
-    @Override
-    public void disable(String fId) {
-        // TODO Auto-generated method stub
+    /**
+     * Invole GET webServices to feature.
+     * 
+     * @param path
+     *            target path
+     * @param featureId
+     *            current feature id
+     * @return JSON output response
+     */
+    private String makeGetCall(String path, String featureId) {
+        try {
+            // Create request
+            HttpGet getRequest = new HttpGet(url + path + "/" + featureId);
+            getRequest.addHeader("accept", JSON);
+            HttpResponse response = httpClient.execute(getRequest);
 
+            java.util.Scanner s = new java.util.Scanner(response.getEntity().getContent()).useDelimiter("\\A");
+            String output = s.hasNext() ? s.next() : "";
+            httpClient.getConnectionManager().shutdown();
+
+            // Handle Error
+            if (response.getStatusLine().getStatusCode() == 404) {
+                throw new FeatureNotFoundException(output);
+            }
+            if (response.getStatusLine().getStatusCode() != 200) {
+                throw new FeatureAccessException("ErrorHTTP(" + response.getStatusLine().getStatusCode() + ") - " + output);
+            }
+
+            return output;
+
+        } catch (ClientProtocolException cpe) {
+            throw new FeatureAccessException("Cannot access remote HTTP Feature Store", cpe);
+        } catch (IOException ioe) {
+            throw new FeatureAccessException("Cannot read response from  HTTP Feature Store", ioe);
+        }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void enable(String featureId) {
+        this.makeGetCall(PATH_ENABLE, featureId);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void disable(String featureId) {
+        this.makeGetCall(PATH_DISABLE, featureId);
+    }
+
+    /** {@inheritDoc} */
     @Override
     public boolean exist(String featId) {
-        // TODO Auto-generated method stub
-        return false;
+        return Boolean.valueOf(this.makeGetCall(PATH_EXIST, featId));
     }
 
-    @Override
-    public void create(Feature fp) {
-        // TODO Auto-generated method stub
-
-    }
-
+    /** {@inheritDoc} */
     @Override
     public Feature read(String featureUid) {
-        // TODO Auto-generated method stub
+        String feat = this.makeGetCall(PATH_READ, featureUid);
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Map<String, Feature> readAll() {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void create(Feature fp) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    /** {@inheritDoc} */
     @Override
     public void delete(String fpId) {
-        // TODO Auto-generated method stub
-
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
+    /** {@inheritDoc} */
     @Override
     public void update(Feature fp) {
-        // TODO Auto-generated method stub
-
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
+    /** {@inheritDoc} */
     @Override
     public void grantRoleOnFeature(String flipId, String roleName) {
-        // TODO Auto-generated method stub
-
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
+    /** {@inheritDoc} */
     @Override
     public void removeRoleFromFeature(String flipId, String roleName) {
-        // TODO Auto-generated method stub
-
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    // TODO Implementation HTTP of Feature Store
+    /**
+     * Getter accessor for attribute 'url'.
+     * 
+     * @return current value of 'url'
+     */
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     * Setter accessor for attribute 'url'.
+     * 
+     * @param url
+     *            new value for 'url '
+     */
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
 }

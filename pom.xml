@@ -704,5 +704,15 @@
 		<system>IssueTracking@Github</system>
 		<url><![CDATA[https://github.com/clun/ff4j/issues?sort=created&direction=desc&state=open]]></url>
 	</issueManagement>
+	
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~ Site deployment          ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<distributionManagement>
+	 <site>
+      <id>website</id>
+      <url>file:///Users/clunven/Developpement/workspace-ff4j/mvnsite</url>
+     </site>
+    </distributionManagement>
 
 </project>

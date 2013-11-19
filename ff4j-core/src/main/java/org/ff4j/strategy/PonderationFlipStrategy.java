@@ -35,10 +35,10 @@ public class PonderationFlipStrategy extends AbstractFlipStrategy {
     private static final double HALF = 0.5;
 
     /** Threshold. */
-    private static final String PARAM_THRESHOLD = "weight";
+    private static final String PARAM_WEIGHT = "weight";
 
     /** Change threshold. */
-    private double threshold = HALF;
+    private double weight = HALF;
 
     /**
      * Default Constructor.
@@ -52,53 +52,43 @@ public class PonderationFlipStrategy extends AbstractFlipStrategy {
      *            threshold
      */
     public PonderationFlipStrategy(double threshold) {
-        this.threshold = threshold;
-        checkThreshold();
+        this.weight = threshold;
+        checkWeight();
     }
 
     /** {@inheritDoc} */
     @Override
     public void init(String featureName, Map<String, String> initParams) {
         super.init(featureName, initParams);
-        if (initParams != null && initParams.containsKey(PARAM_THRESHOLD)) {
-            this.threshold = Double.valueOf(initParams.get(PARAM_THRESHOLD)).doubleValue();
+        if (initParams != null && initParams.containsKey(PARAM_WEIGHT)) {
+            this.weight = Double.valueOf(initParams.get(PARAM_WEIGHT)).doubleValue();
         }
-        checkThreshold();
+        checkWeight();
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean activate(String featureName, FeatureStore currentStore, Object... executionContext) {
-        return Math.random() <= threshold;
+        return Math.random() <= weight;
     }
 
     /**
      * Check that the threshold is a value proportion (0 < P < 1).
      */
-    private void checkThreshold() {
-        if (threshold < 0 || threshold > 1) {
+    private void checkWeight() {
+        if (weight < 0 || weight > 1) {
             throw new IllegalArgumentException("The ponderation value is a percentage and should be set between 0 and 1");
         }
     }
 
     /**
-     * Getter accessor for attribute 'threshold'.
+     * Setter accessor for attribute 'weight'.
      * 
-     * @return current value of 'threshold'
+     * @param weight
+     *            new value for 'weight '
      */
-    public double getThreshold() {
-        return threshold;
-    }
-
-    /**
-     * Setter accessor for attribute 'threshold'.
-     * 
-     * @param threshold
-     *            new value for 'threshold '
-     */
-    public void setThreshold(double threshold) {
-        this.threshold = threshold;
-        checkThreshold();
+    public void setWeight(double weight) {
+        this.weight = weight;
     }
 
 }

@@ -36,6 +36,9 @@ public abstract class AbstractFlipStrategy implements FlipStrategy {
     /** Initial parameters. */
     private Map<String, String> initParams = new HashMap<String, String>();
 
+    /** ClassType. */
+    private final String classType = getClass().getCanonicalName();
+
     /** {@inheritDoc} */
     @Override
     public void init(String featureName, Map<String, String> initParam) {
@@ -64,7 +67,16 @@ public abstract class AbstractFlipStrategy implements FlipStrategy {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + "," + ParameterUtils.fromMap(getInitParams());
+        return this.getClassType() + "," + ParameterUtils.fromMap(getInitParams());
+    }
+
+    /**
+     * Getter accessor for attribute 'classType'.
+     * 
+     * @return current value of 'classType'
+     */
+    public String getClassType() {
+        return classType;
     }
 
 }

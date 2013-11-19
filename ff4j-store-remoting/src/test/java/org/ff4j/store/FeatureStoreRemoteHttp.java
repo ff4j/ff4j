@@ -20,118 +20,29 @@ package org.ff4j.store;
  * #L%
  */
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Map;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.ff4j.core.Feature;
-import org.ff4j.core.FeatureStore;
+import org.junit.Test;
 
 /**
  * Works with features through HTTP.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreRemoteHttp implements FeatureStore {
+public class FeatureStoreRemoteHttp {
 
-    /** Target URL. */
-    private final String targetURL = "FILL the TARGET URL PROPERTY in HTTP FeatureStore";
+    private final RemoteHttpFeatureStore rhfr = new RemoteHttpFeatureStore("http://localhost:8080/ff4j-demo/ws/ff4j");
 
-    private void makeHttpCall() {
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet getRequest = new HttpGet("http://localhost:8080/RESTfulExample/json/product/get");
-            getRequest.addHeader("accept", "application/json");
-
-            HttpResponse response = httpClient.execute(getRequest);
-
-            if (response.getStatusLine().getStatusCode() != 200) {
-                throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
-            }
-
-            BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
-
-            String output;
-            System.out.println("Output from Server .... \n");
-            while ((output = br.readLine()) != null) {
-                System.out.println(output);
-            }
-
-            httpClient.getConnectionManager().shutdown();
-
-        } catch (ClientProtocolException e) {
-
-            e.printStackTrace();
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
-        }
-
+    @Test
+    public void testEnableFeature() {
+        rhfr.enable("earth-desc");
     }
 
-    @Override
-    public void enable(String featureID) {
-
+    @Test
+    public void testDisableFeature() {
+        rhfr.disable("earth-desc");
     }
 
-    @Override
-    public void disable(String fId) {
-        // TODO Auto-generated method stub
-
+    @Test
+    public void testReadFeature() {
+        rhfr.read("earth-desc");
     }
-
-    @Override
-    public boolean exist(String featId) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public void create(Feature fp) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public Feature read(String featureUid) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Map<String, Feature> readAll() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void delete(String fpId) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void update(Feature fp) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void grantRoleOnFeature(String flipId, String roleName) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void removeRoleFromFeature(String flipId, String roleName) {
-        // TODO Auto-generated method stub
-
-    }
-
 }

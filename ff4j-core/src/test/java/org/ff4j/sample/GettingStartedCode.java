@@ -40,11 +40,13 @@ public class GettingStartedCode {
 
         ff4j = new FF4j("ff4j.xml").autoCreate(true);
 
+        // ff4j initialization.....
+
         if (ff4j.isFlipped("sayHello")) {
-            // Enhanced Behavior
-            System.out.println("Hellow World !");
+            // Enhanced Behaviour
+            System.out.println("Hello World !");
         } else {
-            // Previous Behavior
+            // Previous Behaviour
         }
 
     }
