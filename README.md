@@ -1,6 +1,7 @@
 ### Introduction
 
 Official Website : [ff4j.org](http://ff4j.org)
+Latest Version   : 1.1.0
 
 FF4J, standing as Feature Flipping for Java, implements the [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html) 
 agile development practice. It allows you to  enable and disable features through configuration or at runtime with dedicated consoles and services.
@@ -23,27 +24,31 @@ The library is available on maven central [here](http://central.maven.org/maven2
 ### Functions Overview
 
 <p align="center">
-  <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/function.png?raw=true" alt="functions"/>
+  <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/stack1.png?raw=true" alt="functions"/>
 </p>
 
-## Getting Started
+## Reference Guide
 
-1 - [First contact with the API](#first-contact)
-<br/>2 - [Initialize a FlipStore from ff4j.xml file](#building-filling)
-<br/>3 - [Integration with Spring Framework](#flipstore-spring)
-<br/>4 - [Define a JDBC FlipStore](#flipstore-jdbc)
-<br/>5 - [Flipping with AOP](#flipstore-aop)
-<br/>6 - [Implement Authorization Management](#security)
-<br/>7 - [Web Capabilities](#web)
-<br/>8 - [Flipping Strategy](#strategy)
+01 - [Getting Started](#first-contact)
+<br/>02 - [Integration with Spring Framework](#spring)
+<br/>03 - [Flipping through AOP](#flipstore-aop)
+<br/>04 - [Externalize your feature in a JDBC Store](#store-jdbc)
+<br/>05 - [Externalize your feature in a HTTP Store](#store-http)
+<br/>06 - [Implements Authorizations Policies](#security)
+<br/>07 - [Administration Console](#web)
+<br/>08 - [TagLib Library](#web)
+<br/>09 - [Publish Web Services as HTTP Store](#web)
+<br/>10 - [Flipping Strategy](#strategy)
+<br/>11 - [Caching](#strategy)
+<br/>12 - [JMX Management](#strategy)
 
 <a name="first-contact"/>
-### 1 - Hello World !
+### 1 - Getting started !
 ***
 
-* Add this dependency to your `pom.xml` file.
+In this part we help you to create a working example. 
 
-`ff4j-core` required `slf4j-api` as single dependency. [dependency tree](https://raw.github.com/clun/ff4j/master/src/site/ff4j-core-graph.png). You will have to add extra dependencies for extra features but for basic usage this single jar is enough.
+* Declare this dependency into your `pom.xml` file.
 
 ```xml
 <dependency>
@@ -53,16 +58,17 @@ The library is available on maven central [here](http://central.maven.org/maven2
 </dependency>
 ```
 
-* Then create the following `ff4j.xml` file in your classpath :
+* Create the following `ff4j.xml` file in your classpath :
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <features>
- <feature uid="sayHello" enable="true" description="guess what..." />
+ <feature uid="sayHello"   enable="true" description="my first feature" />
+ <feature uid="sayGoodBye" enable="false" />
 </features>
 ```
 
-* Then here is a sample test : 
+* Write the following JUNIT test : 
 
 ```java
 @Test
@@ -76,6 +82,7 @@ public void helloWorldTest() {
 
   // Test value at runtime
   if (ff4j.isFlipped("sayHello")) {
+  	  // Feature ok !
       System.out.println("Hello World !");
   } else {
      fail();
@@ -83,40 +90,33 @@ public void helloWorldTest() {
 }
 ```
 
-Features are loaded from xml configuration file (ff4j.xml) and registered into store (default is in-memory). If a feature is not created, `isFlipped` will raise a `FeatureNotFoundException` except if the autoCreate flag is set as true in `Ff4j` class.
+Features are loaded from xml configuration file (ff4j.xml) and registered into store (default is in-memory). If a feature does not exist, the method `isFlipped(...)` will raise a `FeatureNotFoundException`. You can set the `autoCreate` flag as true in `Ff4j` class to override this default behaviour : it won't failed anymore but return false.
 
 ```java
 @Test
 public void autoCreateFeatureEnableTest() {
 
  // Default : store = inMemory, load features from ff4j.xml file
- FF4j ff4j = new FF4j("ff4j.xml");
- ff4j.setAutocreate(true);
+ FF4j ff4j = new FF4j("ff4j.xml").setAutocreate(true);
 
  if (!ff4j.isFlipped("autoCreatedFeature")) {
-   System.out.println("autoCreatedFeature is created but not available");
+   System.out.println("Not available but code won't failed");
  } else {
    fail();
  }
 }
 ```
 
-<a name="building-filling"/>
-### 2 - Working with features
-***
+Features can also be created programmatically for testing purposes for instance you can do it in the following way 
 
-Features can be created and registered at runtime, it could be useful for units testing.
-
-Remember : once Feature flipping is provided the service must be tested with AND without features enabled. 
-
-* You can then write :
+Remember : Once starting Feature flippingthe service must be tested WITH and WITHOUT features enabled. 
 
 ```java
 @Test
 public void workingWithFeature() {
 
    // Initialize with empty store
-   FF4j ff4j = new FF4j(new InMemoryFeatureStore());
+   FF4j ff4j = new FF4j();
 
    // Dynamically register new features
    ff4j.createFeature("f1").enableFeature("f1");
@@ -126,21 +126,15 @@ public void workingWithFeature() {
    assertTrue(ff4j.isFlipped("f1"));
 }
 ```
+Note : Use autocompletion to check all available operations on ff4j class. 
 
-<a name="flipstore-spring"/>
+<a name="spring"/>
 ### 3 - Integration with Spring Framework
 ***
-From the start we work with static methods which is no natural for us Spring users. Don't worry everything work perfectly with Spring. (`ff4j-core` itself doesn't rely on Spring).
 
-<p/>Here is the default declaration of bean `ff4j` in Spring application context file.
+`ff4j-core` DOES NOT HAVE ANY DEPENDENCY in order to be used on any context (only extra modules have). It works perfectly with springframework by declaring the `org.ff4j.FF4j` as a bean.
 
-```xml
-<bean id="ff4j" class="org.ff4j.FF4j" />
-```
-
-Not very interesting with default values, let's try to load features from the non-standar configuration file let's say `other-feature.xml`. 
-
-<p/>The beans declaration becomes: 
+<p/>Here a declaration of bean `ff4j` in Spring applicationContext file loading feature into memory from XML file.
 
 ```xml
 <bean id="ff4j" class="org.ff4j.FF4j" >
@@ -148,11 +142,11 @@ Not very interesting with default values, let's try to load features from the no
 </bean>
 
 <bean id="ff4j.store.inmemory" class="org.ff4j.store.InMemoryFeatureStore" >
-  <property name="locations" value="other-feature.xml" />
+  <property name="locations" value="ff4j.xml" />
 </bean>
 ```
 
-The Test Case here : 
+Here is the same test as before using spring (add spring-test, spring-context as dependencies) 
 
 ```java
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -160,8 +154,13 @@ The Test Case here :
 public class CoreTestSpring {
   @Test
   public void testWithSpring() {
-     Assert.assertTrue(FF4j.isFlipped("first"));
-   }
+     // Test value at runtime
+  if (ff4j.isFlipped("sayHello")) {
+  	  // Feature ok !
+      System.out.println("Hello World !");
+  } else {
+     fail();
+  }
 }
 ```
 
