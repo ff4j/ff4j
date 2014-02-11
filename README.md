@@ -21,24 +21,23 @@ agile development practice. It allows you to  enable and disable features throug
 
 ### Developement Guide
 
-##### PART I - CORE
-1.1 - [Getting Started](#first-contact)
+<p/><b>PART I - CORE</b>
+<br/>1.1 - [Getting Started](#first-contact)
 <br/>1.2 - [Integration with Spring Framework](#spring)
 <br/>1.3 - [Feature Flipping through AOP](#aop)
 <br/>1.4 - [Filter features by profile](#security)
 <br/>1.5 - [Flipping Strategy or custom behavior](#strategy)
 <br/>1.6 - [More about Unit Testing](#test)
 <br/>1.7 - [Feature Stores](#test)
-##### PART II - WEB CAPABILITIES
-2.1 - [Administration Console](#web)
+<p/><b>PART II - WEB CAPABILITIES</b>
+<br/>2.1 - [Administration Console](#web)
 <br/>2.1 - [TagLib Library](#taglib)
 <br/>2.3 - [Services REST](#store-http)
-#### PART III - FEATURES STORE
-3.1 - [Externalize your feature in a JDBC Store](#store-jdbc)
+<p/><b>PART III - FEATURES STORE</b>
+<br/>3.1 - [Externalize your feature in a JDBC Store](#store-jdbc)
 <br/>3.2 - [Externalize your feature in a HTTP Store](#store-http)
-
-#### PART IV - ADVANCED
-4.1 - [Caching](#cachin)
+<p/><b>PART IV - ADVANCED</b>
+<br/>4.1 - [Caching](#cachin)
 <br/>4.2 - [JMX Management](#jmx)
 
 <a name="first-contact"/>
