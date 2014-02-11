@@ -7,56 +7,46 @@ FF4J, standing as Feature Flipping for Java, implements the [Feature Toggle](htt
 agile development practice. It allows you to  enable and disable features through configuration at runtime with dedicated consoles and services.
 
 <p align="center">
-  <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/screen1.png?raw=true" alt="functions"/>
+  <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/screen1.png?raw=true" alt="console"/>
   <br/><i>ff4j web administration console</i> 
 </p>
 
-The library is available on maven central [here](http://central.maven.org/maven2/org/ff4j/). To use it, please declare the following dependency in your `pom.xml` file.
-
-```xml
-<dependency>
-  <groupId>org.ff4j</groupId>
-  <artifactId>ff4j-core</artifactId>
-  <version>1.1.0</version>
-</dependency>
-```
+The library is available on maven central [here](http://central.maven.org/maven2/org/ff4j/). 
 
 <p align="center">
   <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/stack1.png?raw=true" alt="functions"/>
-  <br/>Capabilities of the framework
+  <br/><i>Capabilities of the framework</i>
 </p>
 
 ### Developement Guide
 
 #### PART I - CORE
-<br/>1.1 - [Getting Started](#first-contact)
+1.1 - [Getting Started](#first-contact)
 <br/>1.2 - [Integration with Spring Framework](#spring)
 <br/>1.3 - [Feature Flipping through AOP](#aop)
 <br/>1.4 - [Filter features by profile](#security)
 <br/>1.5 - [Flipping Strategy or custom behavior](#strategy)
 <br/>1.6 - [More about Unit Testing](#test)
 <br/>1.7 - [Feature Stores](#test)
-
 #### PART II - WEB CAPABILITIES
-<br/>2.1 - [Administration Console](#web)
+2.1 - [Administration Console](#web)
 <br/>2.1 - [TagLib Library](#taglib)
 <br/>2.3 - [Services REST](#store-http)
-
 #### PART III - FEATURES STORE
-<br/>3.1 - [Externalize your feature in a JDBC Store](#store-jdbc)
+3.1 - [Externalize your feature in a JDBC Store](#store-jdbc)
 <br/>3.2 - [Externalize your feature in a HTTP Store](#store-http)
 
 #### PART IV - ADVANCED
-<br/>11 - [Caching](#cachin)
-<br/>12 - [JMX Management](#jmx)
+4.1 - [Caching](#cachin)
+<br/>4.2 - [JMX Management](#jmx)
 
 <a name="first-contact"/>
 ### 1 - Getting started
 ***
 
-In this part we guide you to create a working example. 
+In this part we guide you to create a working example from scratch
 
-* Create a empty maven project (here a webapp)
+* Create a empty maven project
 
 ```xml
 mvn archetype:create -Dpackaging=jar -Dversion=1.0 -DartifactId=ff4j-simple -DgroupId=org.ff4j.sample
@@ -81,8 +71,6 @@ mvn archetype:create -Dpackaging=jar -Dversion=1.0 -DartifactId=ff4j-simple -Dgr
  <feature uid="sayGoodBye" enable="false" />
 </features>
 ```
-
-It defines 2 features with their identifier.
 
 * Write the following Junit test : (you may have to update junit version in your pom file with at least 4.4)
 
