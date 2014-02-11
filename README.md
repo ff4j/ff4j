@@ -1,17 +1,17 @@
-### Introduction
+## Introduction
 
 Official Website : [ff4j.org](http://ff4j.org)
 Latest Version   : 1.1.0
 
 FF4J, standing as Feature Flipping for Java, implements the [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html) 
-agile development practice. It allows you to  enable and disable features through configuration or at runtime with dedicated consoles and services.
+agile development practice. It allows you to  enable and disable features through configuration at runtime with dedicated consoles and services.
 
 <p align="center">
   <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/screen1.png?raw=true" alt="functions"/>
-  <br/><i>ff4j administration console</i> 
+  <br/><i>ff4j web administration console</i> 
 </p>
 
-The library is available on maven central [here](http://central.maven.org/maven2/org/ff4j/). To use it, please declare the folowing dependency in your `pom.xml` file.
+The library is available on maven central [here](http://central.maven.org/maven2/org/ff4j/). To use it, please declare the following dependency in your `pom.xml` file.
 
 ```xml
 <dependency>
@@ -21,32 +21,46 @@ The library is available on maven central [here](http://central.maven.org/maven2
 </dependency>
 ```
 
-### Functions Overview
-
 <p align="center">
   <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/stack1.png?raw=true" alt="functions"/>
+  <br/>Capabilities of the framework
 </p>
 
-## Reference Guide
+### Developement Guide
 
-01 - [Getting Started](#first-contact)
-<br/>02 - [Integration with Spring Framework](#spring)
-<br/>03 - [Flipping through AOP](#flipstore-aop)
-<br/>04 - [Externalize your feature in a JDBC Store](#store-jdbc)
-<br/>05 - [Externalize your feature in a HTTP Store](#store-http)
-<br/>06 - [Implements Authorizations Policies](#security)
-<br/>07 - [Administration Console](#web)
-<br/>08 - [TagLib Library](#web)
-<br/>09 - [Publish Web Services as HTTP Store](#web)
-<br/>10 - [Flipping Strategy](#strategy)
-<br/>11 - [Caching](#strategy)
-<br/>12 - [JMX Management](#strategy)
+#### PART I - CORE
+<br/>1.1 - [Getting Started](#first-contact)
+<br/>1.2 - [Integration with Spring Framework](#spring)
+<br/>1.3 - [Feature Flipping through AOP](#aop)
+<br/>1.4 - [Filter features by profile](#security)
+<br/>1.5 - [Flipping Strategy or custom behavior](#strategy)
+<br/>1.6 - [More about Unit Testing](#test)
+<br/>1.7 - [Feature Stores](#test)
+
+#### PART II - WEB CAPABILITIES
+<br/>2.1 - [Administration Console](#web)
+<br/>2.1 - [TagLib Library](#taglib)
+<br/>2.3 - [Services REST](#store-http)
+
+#### PART III - FEATURES STORE
+<br/>3.1 - [Externalize your feature in a JDBC Store](#store-jdbc)
+<br/>3.2 - [Externalize your feature in a HTTP Store](#store-http)
+
+#### PART IV - ADVANCED
+<br/>11 - [Caching](#cachin)
+<br/>12 - [JMX Management](#jmx)
 
 <a name="first-contact"/>
-### 1 - Getting started !
+### 1 - Getting started
 ***
 
-In this part we help you to create a working example. 
+In this part we guide you to create a working example. 
+
+* Create a empty maven project (here a webapp)
+
+```xml
+mvn archetype:create -Dpackaging=jar -Dversion=1.0 -DartifactId=ff4j-simple -DgroupId=org.ff4j.sample
+```
 
 * Declare this dependency into your `pom.xml` file.
 
@@ -58,7 +72,7 @@ In this part we help you to create a working example.
 </dependency>
 ```
 
-* Create the following `ff4j.xml` file in your classpath :
+* Create the following `ff4j.xml` file in 'src/test/resources' folder (create it does not exist)
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -68,73 +82,110 @@ In this part we help you to create a working example.
 </features>
 ```
 
-* Write the following JUNIT test : 
+It defines 2 features with their identifier.
+
+* Write the following Junit test : (you may have to update junit version in your pom file with at least 4.4)
 
 ```java
-@Test
-public void helloWorldTest() {
+package org.ff4j.sample;
 
-  // Default : store = inMemory, load features from file
-  FF4j ff4j = new FF4j("ff4j.xml");
-  assertEquals(1, ff4j.getFeatures().size());
-  assertTrue(ff4j.existFeature("sayHello"));
-  assertTrue(ff4j.isFlipped("sayHello"));
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-  // Test value at runtime
-  if (ff4j.isFlipped("sayHello")) {
-  	  // Feature ok !
-      System.out.println("Hello World !");
-  } else {
-     fail();
-  }
+import org.ff4j.FF4j;
+import org.junit.Test;
+
+public class HelloWorldTest {
+
+    @Test
+    public void myFirstFF4JTest() {
+
+        FF4j ff4j = new FF4j("ff4j.xml");
+        assertEquals(2, ff4j.getFeatures().size());
+        assertTrue(ff4j.exist("sayHello"));
+        assertTrue(ff4j.isFlipped("sayHello"));
+
+        // Test value at runtime
+        if (ff4j.isFlipped("sayHello")) {
+            // Feature ok !
+            System.out.println("Hello World !");
+        } else {
+            fail();
+        }
+    }
 }
+
 ```
 
-Features are loaded from xml configuration file (ff4j.xml) and registered into store (default is in-memory). If a feature does not exist, the method `isFlipped(...)` will raise a `FeatureNotFoundException`. You can set the `autoCreate` flag as true in `Ff4j` class to override this default behaviour : it won't failed anymore but return false.
+Features are loaded from xml configuration file (ff4j.xml) and registered in a store (default is in-memory).
+
+If a feature does not exist, the method `isFlipped(..)` will raise a `FeatureNotFoundException` but you can change this behaviour by setting the `autoCreate` flag as true. If feature is not found the method will return false.
+
+* Update your unit test with this second method illustrating `autoCreate`
 
 ```java
-@Test
-public void autoCreateFeatureEnableTest() {
+    @Test
+    public void autoCreateFeatureEnableTest() {
 
- // Default : store = inMemory, load features from ff4j.xml file
- FF4j ff4j = new FF4j("ff4j.xml").setAutocreate(true);
+        // Default : store = inMemory, load features from ff4j.xml file
+        FF4j ff4j = new FF4j("ff4j.xml").autoCreate(true);
 
- if (!ff4j.isFlipped("autoCreatedFeature")) {
-   System.out.println("Not available but code won't failed");
- } else {
-   fail();
- }
-}
+        if (!ff4j.isFlipped("autoCreatedFeature")) {
+            System.out.println("Not available but code won't failed");
+        } else {
+            fail();
+        }
+    }
 ```
 
-Features can also be created programmatically for testing purposes for instance you can do it in the following way 
+Features can be created programmatically (for testing purposes for instance).
 
-Remember : Once starting Feature flippingthe service must be tested WITH and WITHOUT features enabled. 
+* Update your unit test with this third method illustrating dynamic creation of features
+
+Remember : Once implementing a Feature flipping pattern, services must be tested WITH and WITHOUT features enabled 
 
 ```java
-@Test
-public void workingWithFeature() {
+    @Test
+    public void createFeatureDynamically() {
 
-   // Initialize with empty store
-   FF4j ff4j = new FF4j();
+        // Initialize with empty store
+        FF4j ff4j = new FF4j();
 
-   // Dynamically register new features
-   ff4j.createFeature("f1").enableFeature("f1");
+        // Dynamically register new features
+        ff4j.create("f1").enable("f1");
 
-   // Testing
-   assertTrue(ff4j.existFeature("f1"));
-   assertTrue(ff4j.isFlipped("f1"));
-}
+        // Testing
+        assertTrue(ff4j.exist("f1"));
+        assertTrue(ff4j.isFlipped("f1"));
+    }
 ```
-Note : Use autocompletion to check all available operations on ff4j class. 
+Note : You can use a fluent api and chain operations to work with features
 
 <a name="spring"/>
-### 3 - Integration with Spring Framework
+### 2 - Integration with Spring Framework
 ***
 
-`ff4j-core` DOES NOT HAVE ANY DEPENDENCY in order to be used on any context (only extra modules have). It works perfectly with springframework by declaring the `org.ff4j.FF4j` as a bean.
+<p/> `Ff4j` can be injected as any service. The classes are not annotated (ff4-core does not have ANY dependency) and won't be load with a `<context:package-scan...>` you should declare it in your Spring context files.
 
-<p/>Here a declaration of bean `ff4j` in Spring applicationContext file loading feature into memory from XML file.
+* Add Spring dependency to your project
+
+```xml
+<dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <version>3.2.7.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>3.2.7.RELEASE</version>
+    </dependency>
+```
+
+
+* Add the following `applicationContext.xml` file to your `src/test/resources`
+
 
 ```xml
 <bean id="ff4j" class="org.ff4j.FF4j" >
@@ -146,12 +197,16 @@ Note : Use autocompletion to check all available operations on ff4j class.
 </bean>
 ```
 
-Here is the same test as before using spring (add spring-test, spring-context as dependencies) 
+Here is the same test as before using spring (add spring-test, spring-context as dependencies) of your project :
 
 ```java
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"classpath:*applicationContext-core-test.xml"})
 public class CoreTestSpring {
+
+  @Autowired
+  private Ff4j ff4j;
+
   @Test
   public void testWithSpring() {
      // Test value at runtime
@@ -164,12 +219,95 @@ public class CoreTestSpring {
 }
 ```
 
-<a name="flipstore-jdbc"/>
-### 4 - Define a JDBC FlipStore
-***
-When working with `InMemoryFeatureStore`, features are loaded from XML files at initialization. Then, the features can be updated at runtime (create/remove/delete) but <b>when the application restarts all changes are lost.</b>
+<a name="aop"/>
+### 3 - Flipping with AOP
 
-<p/>With real life applications you would expect to keep the feature statuses saved when the application restarts (so do I). To do so, we provide another implementations of `FeatureStore` like `DataBaseFeatureStore` to store Features into database.
+From the beginning of this guide, we use intrusive tests statements within source code to perform flipping.
+
+```java
+if (FF4j.isFlipped("feat")) {
+  // new code
+} else {
+  // legacy
+}
+```
+
+<p/>This approach is agile but it's quite intrusive into source code, a good alternative is to rely on [Dependency Injection](http://en.wikipedia.org/wiki/Dependency_Injection)  to inject the correct implementation of the target service at runtime. FF4j provide the `@Flip` annotation to perform flipping on whole methods through AOP.
+
+<p/>At runtime, the target service is proxified by the FF4j Autoproxy.
+
+* Please add the dependency `ff4j-aop` to your project. You can see the dependency tree of this component [HERE](https://raw.github.com/clun/ff4j/master/src/site/ff4j-aop-graph.png)
+
+```xml
+<dependency>
+  <groupId>org.ff4j</groupId>
+  <artifactId>ff4j-aop</artifactId>
+  <version>...</version>
+</dependency>
+```
+
+* We define an interface with 2 sample implementations :
+
+```java
+public interface GreetingService {
+
+   @Flip(name="language-french", alterBean="greeting.french")
+   String sayHello(String name);
+
+}
+
+@Component("greeting.english")
+public class GreetingServiceEnglishImpl implements GreetingService {
+    public String sayHello(String name) {
+      return "Hello " + name;
+    }
+}
+
+@Component("greeting.french")
+public class GreetingServiceFrenchImpl implements GreetingService {
+  public String sayHello(String name) {
+    return "Bonjour " + name;
+  }
+}
+```
+
+* To enable the Autoproxy, please ensure that `org.ff4j.aop` is in your spring scanned packages :
+
+```xml
+<context:component-scan base-package="org.ff4j.aop"/>
+```
+
+* And finally the dedicated test
+```java
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("classpath:applicationContext-ff4j-aop-test.xml")
+public class FeatureFlipperTest {
+
+  @Autowired
+  @Qualifier("greeting.english")
+  private GreetingService greeting;
+
+  @Test
+  public void testAnnotatedFlipping() {
+    FF4j.createFeature(new Feature("language-french", false));
+    Assert.assertTrue(greeting.sayHello("CLU").startsWith("Hello"));
+    FF4j.enableFeature("language-french");
+    Assert.assertTrue(greeting.sayHello("CLU").startsWith("Bonjour"));
+  }
+}
+```
+
+In the previous test class, I injected the default implementation `@Qualifier("greeting.english")`. If the feature is not enabled, it's the `GreetingServiceEnglishImpl` class that will be executed. If I enable the feature `language-french` _(defined in the annotation)_, the alter-bean `language-french` will be fetch and executed.
+
+_Note : the bean <b>id</b> are required and must be specified with the `@Qualifier` annotation. They are several implementation of the same interface in your classpath and the `@Autowired` annotation is not sufficient_
+
+
+<a name="flipstore-jdbc"/>
+### 4 - Externalize your feature in a JDBC Store
+***
+When working with `InMemoryFeatureStore`, features are loaded from XML files. The features can be updated at runtime (create/remove/delete) but <b>when the application restarts all changes are lost.</b>
+
+<p/>With real life applications you would expect to keep the states of your feature when the application restarts. To do so, we provide another implementations of `FeatureStore` like `DataBaseFeatureStore` to store Features into database.
 
 * Please add the dependency jdbc to your project. You can see the dependency tree of this component [HERE](https://raw.github.com/clun/ff4j/master/src/site/ff4j-jdbc-graph.png) (`mvn -P graph graph:project`).
 
@@ -230,87 +368,7 @@ InputStream data = FF4j.exportFeatures();
 ```
 _Note : you would probably prefer to export features through the provided web console_
 
-<a name="flipstore-aop"/>
-### 5 - Flipping with AOP
 
-From the beginning of this tutorial, we use intrusive tests statements within source code to perform flipping.
-
-```java
-if (FF4j.isFlipped("feat")) {
-  // new code
-} else {
-  // legacy
-}
-```
-
-<p/>This approach is agile but it's quite intrusive into source code, a good alternative is to rely on [Dependency Injection](http://en.wikipedia.org/wiki/Dependency_Injection)  to inject the correct implementation of the target service at runtime. FF4j provide the `@Flip` annotation to perform flipping on whole methods.
-
-<p/>At runtime, the target service is proxified by the FF4j Autoproxy.
-
-* Please add the dependency `ff4j-aop` to your project. You can see the dependency tree of this component [HERE](https://raw.github.com/clun/ff4j/master/src/site/ff4j-aop-graph.png)
-
-```xml
-<dependency>
-  <groupId>org.ff4j</groupId>
-  <artifactId>ff4j-aop</artifactId>
-  <version>...</version>
-</dependency>
-```
-
-* We define an interface with 2 sample implementations :
-
-```java
-public interface GreetingService {
-
-   @Flip(name="language-french", alterBean="greeting.french")
-   String sayHello(String name);
-
-}
-
-@Component("greeting.english")
-public class GreetingServiceEnglishImpl implements GreetingService {
-    public String sayHello(String name) {
-      return "Hello " + name;
-    }
-}
-
-@Component("greeting.french")
-public class GreetingServiceFrenchImpl implements GreetingService {
-	public String sayHello(String name) {
-		return "Bonjour " + name;
-	}
-}
-```
-
-* To enable the Autoproxy, please ensure that `org.ff4j.aop` is in your spring scanned packages :
-
-```xml
-<context:component-scan base-package="org.ff4j.aop"/>
-```
-
-* And finally the dedicated test
-```java
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:applicationContext-ff4j-aop-test.xml")
-public class FeatureFlipperTest {
-
-	@Autowired
-	@Qualifier("greeting.english")
-	private GreetingService greeting;
-
-	@Test
-	public void testAnnotatedFlipping() {
-		FF4j.createFeature(new Feature("language-french", false));
-		Assert.assertTrue(greeting.sayHello("CLU").startsWith("Hello"));
-		FF4j.enableFeature("language-french");
-		Assert.assertTrue(greeting.sayHello("CLU").startsWith("Bonjour"));
-	}
-}
-```
-
-In the previous test class, I injected the default implementation `@Qualifier("greeting.english")`. If the feature is not enabled, it's the `GreetingServiceEnglishImpl` class that will be executed. If I enable the feature `language-french` _(defined in the annotation)_, the alter-bean `language-french` will be fetch and executed.
-
-_Note : the bean <b>id</b> are required and must be specified with the `@Qualifier` annotation. They are several implementation of the same interface in your classpath and the `@Autowired` annotation is not sufficient_
 
 <a name="security"/>
 ### 6 - Implement Authorization Management
@@ -437,7 +495,7 @@ As you can see because `user1` does not have role `X` nor `Y` it cannot access t
 <a name="web"/>
 ### 7 - Web Capabilities
 ***
-#### Administration Servlet
+#Administr### ation Servlet
 As you have notice we can manage features through API but to update the features at runtime we need a GUI. The `AdministrationConsoleServlet` servlet has been provided as a GUI.
 
 _Please note that this servlet is embedded in a `JAR` (no css, no img, no js^). It's a single class which generates HTML code, there is no dependency to web framework whatsoever, simple `HTTPServlet`_
