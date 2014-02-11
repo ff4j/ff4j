@@ -152,11 +152,10 @@ Note : You can use a fluent api and chain operations to work with features
 
 <a name="spring"/>
 ### 2 - Integration with Spring Framework
-***
 
-<p/> `Ff4j` can be injected as any service. The classes are not annotated (ff4-core does not have ANY dependency) and won't be load with a `<context:package-scan...>` you should declare it in your Spring context files.
+<p/> The `ff4j` component can be (of course) defined as a Spring Bean.
 
-* Add Spring dependency to your project
+* Add Spring dependencies to your project
 
 ```xml
 <dependency>
@@ -171,41 +170,64 @@ Note : You can use a fluent api and chain operations to work with features
     </dependency>
 ```
 
-
 * Add the following `applicationContext.xml` file to your `src/test/resources`
 
-
 ```xml
-<bean id="ff4j" class="org.ff4j.FF4j" >
-  <property name="store" ref="ff4j.store.inmemory" />
-</bean>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+           
+  <bean id="ff4j" class="org.ff4j.FF4j" >
+    <property name="store" ref="ff4j.store.inmemory" />
+  </bean>
 
-<bean id="ff4j.store.inmemory" class="org.ff4j.store.InMemoryFeatureStore" >
-  <property name="locations" value="ff4j.xml" />
-</bean>
+  <bean id="ff4j.store.inmemory" class="org.ff4j.store.InMemoryFeatureStore" >
+    <property name="location" value="ff4j.xml" />
+  </bean>
+
+</beans>    
 ```
+
+The `store` is 
 
 Here is the same test as before using spring (add spring-test, spring-context as dependencies) of your project :
 
 ```java
+package org.ff4j.sample;
+
+import static org.junit.Assert.fail;
+
+import org.ff4j.FF4j;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath:*applicationContext-core-test.xml"})
-public class CoreTestSpring {
+@ContextConfiguration(locations = {"classpath:*applicationContext.xml"})
+public class CoreSpringTest {
 
-  @Autowired
-  private Ff4j ff4j;
+    @Autowired
+    private FF4j ff4j;
 
-  @Test
-  public void testWithSpring() {
-     // Test value at runtime
-  if (ff4j.isFlipped("sayHello")) {
-  	  // Feature ok !
-      System.out.println("Hello World !");
-  } else {
-     fail();
-  }
+    @Test
+    public void testWithSpring() {
+        // Test value at runtime
+        if (ff4j.isFlipped("sayHello")) {
+            // Feature ok !
+            System.out.println("Hello World !");
+        } else {
+            fail();
+        }
+    }
 }
 ```
+
 
 <a name="aop"/>
 ### 3 - Flipping with AOP
