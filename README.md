@@ -1,20 +1,20 @@
 ## Introduction
 
-⋅⋅* Official Website  : [ff4j.org](http://ff4j.org)
-⋅⋅* Latest Version    : **1.1.0**
-⋅⋅* Maven Central     : [here](http://central.maven.org/maven2/org/ff4j/). 
-
 FF4J, standing as Feature Flipping for Java, implements the [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html) 
 agile development practice. It allows you to  enable and disable features through configuration at runtime with dedicated consoles and services.
 
-<p align="center">
-  <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/screen1.png?raw=true" alt="console"/>
-  <br/><i>ff4j web administration console</i> 
-</p>
+* Official Website  : [ff4j.org](http://ff4j.org)
+* Latest Version    : **1.1.0**
+* Maven Central     : [here](http://central.maven.org/maven2/org/ff4j/).
 
 <p align="center">
   <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/stack1.png?raw=true" alt="functions"/>
   <br/><i>Capabilities of the framework</i>
+</p>
+
+<p align="center">
+  <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/screen1.png?raw=true" alt="console"/>
+  <br/><i>ff4j web administration console</i> 
 </p>
 
 ### Developement Guide
