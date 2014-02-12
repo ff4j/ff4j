@@ -23,6 +23,7 @@ agile development practice. It allows you to  enable and disable features throug
 <br/>1.1 - [Getting Started](#first-contact)
 <br/>1.2 - [Integration with Spring Framework](#spring)
 <br/>1.3 - [Feature Flipping through AOP](#aop)
+
 <br/>1.4 - [Filter features by profile](#security)
 <br/>1.5 - [Flipping Strategy or custom behavior](#strategy)
 <br/>1.6 - [More about Unit Testing](#test)
@@ -39,7 +40,7 @@ agile development practice. It allows you to  enable and disable features throug
 <br/>4.2 - [JMX Management](#jmx)
 
 <a name="first-contact"/>
-### 1 - Getting started
+### 1.1 - Getting started
 ***
 
 In this part we guide you to create a working example from scratch
@@ -149,7 +150,7 @@ Remember : Once implementing a Feature flipping pattern, services must be tested
 Note : You can use a fluent api and chain operations to work with features
 
 <a name="spring"/>
-### 2 - Integration with Spring Framework
+### 1.2 - Integration with Spring Framework
 
 <p/> The `ff4j` component can be (of course) defined as a Spring Bean.
 
@@ -157,15 +158,15 @@ Note : You can use a fluent api and chain operations to work with features
 
 ```xml
 <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
-      <version>3.2.7.RELEASE</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-      <version>3.2.7.RELEASE</version>
-    </dependency>
+  <groupId>org.springframework</groupId>
+  <artifactId>spring-test</artifactId>
+  <version>3.2.7.RELEASE</version>
+</dependency>
+<dependency>
+   <groupId>org.springframework</groupId>
+   <artifactId>spring-context</artifactId>
+   <version>3.2.7.RELEASE</version>
+</dependency>
 ```
 
 * Add the following `applicationContext.xml` file to your `src/test/resources`
@@ -173,11 +174,8 @@ Note : You can use a fluent api and chain operations to work with features
 ```xml
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
-           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-           http://www.springframework.org/schema/context
-           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
            
   <bean id="ff4j" class="org.ff4j.FF4j" >
     <property name="store" ref="ff4j.store.inmemory" />
@@ -190,9 +188,9 @@ Note : You can use a fluent api and chain operations to work with features
 </beans>    
 ```
 
-The `store` is 
+The features are registered within in-memory store.
 
-Here is the same test as before using spring (add spring-test, spring-context as dependencies) of your project :
+* Write the following spring-oriented test
 
 ```java
 package org.ff4j.sample;
@@ -226,11 +224,10 @@ public class CoreSpringTest {
 }
 ```
 
-
 <a name="aop"/>
-### 3 - Flipping with AOP
+### 1.3 - Feature Flipping through AOP
 
-From the beginning of this guide, we use intrusive tests statements within source code to perform flipping.
+From the beginning of this guide, we use intrusive tests statements within source code to perform flipping :
 
 ```java
 if (FF4j.isFlipped("feat")) {
@@ -240,21 +237,21 @@ if (FF4j.isFlipped("feat")) {
 }
 ```
 
-<p/>This approach is agile but it's quite intrusive into source code, a good alternative is to rely on [Dependency Injection](http://en.wikipedia.org/wiki/Dependency_Injection)  to inject the correct implementation of the target service at runtime. FF4j provide the `@Flip` annotation to perform flipping on whole methods through AOP.
+<p/>This approach is quite intrusive into source code. You can even nested different feature toggles at you may consider to clean often your code and remove obsolete features. A good alternative is to rely on [Dependency Injection](http://en.wikipedia.org/wiki/Dependency_Injection) : target implementation of the service is injected at runtime.
 
-<p/>At runtime, the target service is proxified by the FF4j Autoproxy.
+<p/>Ff4j provide the `@Flip` annotation to perform flipping on methods using AOP proxies. At runtime, the target service is proxified by the ff4j which choose an implementation instead of another using feature status (enable/disable).
 
-* Please add the dependency `ff4j-aop` to your project. You can see the dependency tree of this component [HERE](https://raw.github.com/clun/ff4j/master/src/site/ff4j-aop-graph.png)
+* Please add the dependency `ff4j-aop` [dependency tree](https://raw.github.com/clun/ff4j/master/src/site/doc/ff4j-aop-graph.png)
 
 ```xml
 <dependency>
   <groupId>org.ff4j</groupId>
   <artifactId>ff4j-aop</artifactId>
-  <version>...</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 
-* We define an interface with 2 sample implementations :
+* Define a sample interface :
 
 ```java
 public interface GreetingService {
@@ -263,14 +260,22 @@ public interface GreetingService {
    String sayHello(String name);
 
 }
+```
 
+* Define a first implementation : 
+
+```java
 @Component("greeting.english")
 public class GreetingServiceEnglishImpl implements GreetingService {
     public String sayHello(String name) {
       return "Hello " + name;
     }
 }
+```
 
+* Define a second implementation : 
+
+```java
 @Component("greeting.french")
 public class GreetingServiceFrenchImpl implements GreetingService {
   public String sayHello(String name) {
