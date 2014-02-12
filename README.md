@@ -23,8 +23,10 @@ agile development practice. It allows you to  enable and disable features throug
 <br/>1.1 - [Getting Started](#first-contact)
 <br/>1.2 - [Integration with Spring Framework](#spring)
 <br/>1.3 - [Feature Flipping through AOP](#aop)
+<br/>1.4 - [Security : Filter features per profile](#security)
 
-<br/>1.4 - [Filter features by profile](#security)
+
+
 <br/>1.5 - [Flipping Strategy or custom behavior](#strategy)
 <br/>1.6 - [More about Unit Testing](#test)
 <br/>1.7 - [Feature Stores](#test)
@@ -174,9 +176,12 @@ Note : You can use a fluent api and chain operations to work with features
 ```xml
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
-           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-           
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
   <bean id="ff4j" class="org.ff4j.FF4j" >
     <property name="store" ref="ff4j.store.inmemory" />
   </bean>
@@ -241,7 +246,7 @@ if (FF4j.isFlipped("feat")) {
 
 <p/>Ff4j provide the `@Flip` annotation to perform flipping on methods using AOP proxies. At runtime, the target service is proxified by the ff4j which choose an implementation instead of another using feature status (enable/disable).
 
-* Please add the dependency `ff4j-aop` [dependency tree](https://raw.github.com/clun/ff4j/master/src/site/doc/ff4j-aop-graph.png)
+* Please add the dependency `ff4j-aop` [watch dependency tree](https://raw.github.com/clun/ff4j/master/src/site/doc/ff4j-aop-graph.png)
 
 ```xml
 <dependency>
@@ -284,36 +289,78 @@ public class GreetingServiceFrenchImpl implements GreetingService {
 }
 ```
 
-* To enable the Autoproxy, please ensure that `org.ff4j.aop` is in your spring scanned packages :
+* To enable the Autoproxy, please ensure that `org.ff4j.aop` is in your spring scanned packages, The `applicationContext.xml` file in `src/test/resources` becomes : 
 
 ```xml
-<context:component-scan base-package="org.ff4j.aop"/>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+           
+   <context:component-scan base-package="org.ff4j.aop, org.ff4j.sample"/>
+   
+  <bean id="ff4j" class="org.ff4j.FF4j" >
+    <property name="store" ref="ff4j.store.inmemory" />
+  </bean>
+
+  <bean id="ff4j.store.inmemory" class="org.ff4j.store.InMemoryFeatureStore" >
+    <property name="location" value="ff4j.xml" />
+  </bean>
+
+</beans>
+```
+
+* Do not forget to add the new feature named `language-french` in `ff4j.xml`
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<features>
+ <feature uid="sayHello" enable="true" description="my first feature" />
+ <feature uid="sayGoodBye"      enable="false" />
+ <feature uid="language-french" enable="false" />
+</features>
 ```
 
 * And finally the dedicated test
+
 ```java
+import junit.framework.Assert;
+
+import org.ff4j.FF4j;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:applicationContext-ff4j-aop-test.xml")
-public class FeatureFlipperTest {
+@ContextConfiguration("classpath:*applicationContext.xml")
+public class FeatureFlippingThoughAopTest {
 
-  @Autowired
-  @Qualifier("greeting.english")
-  private GreetingService greeting;
+    @Autowired
+    private FF4j ff4j;
 
-  @Test
-  public void testAnnotatedFlipping() {
-    FF4j.createFeature(new Feature("language-french", false));
-    Assert.assertTrue(greeting.sayHello("CLU").startsWith("Hello"));
-    FF4j.enableFeature("language-french");
-    Assert.assertTrue(greeting.sayHello("CLU").startsWith("Bonjour"));
-  }
+    @Autowired
+    @Qualifier("greeting.english")
+    private GreetingService greeting;
+
+    @Test
+    public void testAOP() {
+        Assert.assertTrue(greeting.sayHello("CLU").startsWith("Hello"));
+        ff4j.enable("language-french");
+        Assert.assertTrue(greeting.sayHello("CLU").startsWith("Bonjour"));
+    }
+
 }
 ```
 
 In the previous test class, I injected the default implementation `@Qualifier("greeting.english")`. If the feature is not enabled, it's the `GreetingServiceEnglishImpl` class that will be executed. If I enable the feature `language-french` _(defined in the annotation)_, the alter-bean `language-french` will be fetch and executed.
 
 _Note : the bean <b>id</b> are required and must be specified with the `@Qualifier` annotation. They are several implementation of the same interface in your classpath and the `@Autowired` annotation is not sufficient_
-
 
 <a name="flipstore-jdbc"/>
 ### 4 - Externalize your feature in a JDBC Store
