@@ -1,5 +1,3 @@
-## Introduction
-
 FF4J, standing as Feature Flipping for Java, implements the [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html) 
 agile development practice. It allows you to  enable and disable features through configuration at runtime with dedicated consoles and services.
 
@@ -12,11 +10,6 @@ agile development practice. It allows you to  enable and disable features throug
   <br/><i>Capabilities of the framework</i>
 </p>
 
-<p align="center">
-  <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/screen1.png?raw=true" alt="console"/>
-  <br/><i>ff4j web administration console</i> 
-</p>
-
 ### Developement Guide
 
 <p/><b>PART I - CORE</b>
@@ -24,23 +17,31 @@ agile development practice. It allows you to  enable and disable features throug
 <br/>1.2 - [Integration with Spring Framework](#spring)
 <br/>1.3 - [Feature Flipping through AOP](#aop)
 
-<p/><b>PART II - [SECURITY] (#security)</b>
+<p/><b>PART II - SECURITY</b>
+<br/>2.1 - [Introducing security](#security)
+<br/>2.2 - [String security](#security-spring)
 
-<p/><b>PART III - [FLIPPING STRATEGY](#strategy)</b>
+<p/><b>PART III - FLIPPING STRATEGY</b>
+<br/>3.1 - [Introducing flipping strategy](#strategy)
+<br/>3.2 - [Expression FlippingStrategy](#strategy-el)
+<br/>3.2 - [Ponderated FlippingStrategy](#strategy-pond)
+<br/>3.3 - [ReleaseDate FlippingStrategy](#strategy-date)
 
 <p/><b>PART IV - FEATURE STORES</b>
-<br/>2.1 - [Introducing stores](#stores)
-<br/>2.2 - [Externalise features in a JDBC Store](#store-jdbc)
+<br/>4.1 - [Introducing stores](#stores)
+<br/>4.2 - [Externalise features in a JDBC Store](#store-jdbc)
 
 <p/><b>PART V - WEB CAPABILITIES</b>
-<br/>2.1 - [Administration Console](#web)
-<br/>2.1 - [TagLib Library](#taglib)
-<br/>2.3 - [Services REST](#store-http)
+<br/>5.1 - [Administration Console](#web)
+<br/>5.2 - [TagLib Library](#taglib)
+<br/>5.3 - [Services REST](#store-http)
 
 <p/><b>PART VI - CACHING</b>
 <br/>4.1 - [Caching](#caching)
 
 <p/><b>PART VII - [JMX Management](#jmx)</b>
+
+## PART I - CORE
 
 <a name="first-contact"/>
 ### 1.1 - Getting started
@@ -105,7 +106,6 @@ public class HelloWorldTest {
         }
     }
 }
-
 ```
 
 Features are loaded from xml configuration file (ff4j.xml) and registered in a store (default is in-memory).
@@ -115,18 +115,18 @@ If a feature does not exist, the method `isFlipped(..)` will raise a `FeatureNot
 * Update your unit test with this second method illustrating `autoCreate`
 
 ```java
-    @Test
-    public void autoCreateFeatureEnableTest() {
+  @Test
+  public void autoCreateFeatureEnableTest() {
 
-        // Default : store = inMemory, load features from ff4j.xml file
-        FF4j ff4j = new FF4j("ff4j.xml").autoCreate(true);
+    // Default : store = inMemory, load features from ff4j.xml file
+    FF4j ff4j = new FF4j("ff4j.xml").autoCreate(true);
 
-        if (!ff4j.isFlipped("autoCreatedFeature")) {
-            System.out.println("Not available but code won't failed");
-        } else {
-            fail();
-        }
+    if (!ff4j.isFlipped("autoCreatedFeature")) {
+      System.out.println("Not available but code won't failed");
+    } else {
+      fail();
     }
+  }
 ```
 
 Features can be created programmatically (for testing purposes for instance).
@@ -363,6 +363,36 @@ In the previous test class, I injected the default implementation `@Qualifier("g
 
 _Note : the bean <b>id</b> are required and must be specified with the `@Qualifier` annotation. They are several implementation of the same interface in your classpath and the `@Autowired` annotation is not sufficient_
 
+## PART II - SECURITY
+
+<a name="security"/>
+### 2.1 - Introducing security
+
+qqq
+
+<a name="security-spring"/>
+### 2.1 - String security
+
+qqqq
+
+## PART III - FLIPPING STRATEGY
+
+<a name="strategy"/>
+### 3.1 - Introducing flipping strategy
+
+<a name="strategy-el"/>
+### 3.2 - Expression flipping strategy
+
+<a name="strategy-pond"/>
+### 3.3 - Ponderated fllipping strategy
+
+<a name="strategy-date"/>
+### 3.4 - Release Date fllipping strategy
+
+
+
+
+
 <a name="flipstore-jdbc"/>
 ### 4 - Externalize your feature in a JDBC Store
 ***
@@ -560,6 +590,11 @@ As you can see because `user1` does not have role `X` nor `Y` it cannot access t
 As you have notice we can manage features through API but to update the features at runtime we need a GUI. The `AdministrationConsoleServlet` servlet has been provided as a GUI.
 
 _Please note that this servlet is embedded in a `JAR` (no css, no img, no js^). It's a single class which generates HTML code, there is no dependency to web framework whatsoever, simple `HTTPServlet`_
+
+<p align="center">
+  <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/screen1.png?raw=true" alt="console"/>
+  <br/><i>ff4j web administration console</i> 
+</p>
 
 * Please add the dependency `ff4j-web` to your project. You can see the dependency tree of this component [HERE](https://raw.github.com/clun/ff4j/master/src/site/ff4j-security-web-graph.png)
 
