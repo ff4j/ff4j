@@ -30,6 +30,7 @@ agile development practice. It allows you to  enable and disable features throug
 <p/><b>PART IV - FEATURE STORES</b>
 <br/>4.1 - [Introducing stores](#stores)
 <br/>4.2 - [Externalise features in a JDBC Store](#store-jdbc)
+<br/>4.3 - [Externalise features in a HTTP Store](#store-http)
 
 <p/><b>PART V - WEB CAPABILITIES</b>
 <br/>5.1 - [Administration Console](#web)
@@ -368,102 +369,11 @@ _Note : the bean <b>id</b> are required and must be specified with the `@Qualifi
 <a name="security"/>
 ### 2.1 - Introducing security
 
-qqq
+**in progress**
 
 <a name="security-spring"/>
 ### 2.1 - String security
 
-qqqq
-
-## PART III - FLIPPING STRATEGY
-
-<a name="strategy"/>
-### 3.1 - Introducing flipping strategy
-
-<a name="strategy-el"/>
-### 3.2 - Expression flipping strategy
-
-<a name="strategy-pond"/>
-### 3.3 - Ponderated fllipping strategy
-
-<a name="strategy-date"/>
-### 3.4 - Release Date fllipping strategy
-
-
-
-
-
-<a name="flipstore-jdbc"/>
-### 4 - Externalize your feature in a JDBC Store
-***
-When working with `InMemoryFeatureStore`, features are loaded from XML files. The features can be updated at runtime (create/remove/delete) but <b>when the application restarts all changes are lost.</b>
-
-<p/>With real life applications you would expect to keep the states of your feature when the application restarts. To do so, we provide another implementations of `FeatureStore` like `DataBaseFeatureStore` to store Features into database.
-
-* Please add the dependency jdbc to your project. You can see the dependency tree of this component [HERE](https://raw.github.com/clun/ff4j/master/src/site/ff4j-jdbc-graph.png) (`mvn -P graph graph:project`).
-
-```xml
-<dependency>
-  <groupId>org.ff4j</groupId>
-  <artifactId>ff4j-jdbc</artifactId>
-  <version>...</version>
-</dependency>
-```
-
-* ff4j provides you `schema-ddl.sql` to create expected tables within target database :
-```sql
-CREATE TABLE FF4J_FEATURES (
-  UID     		VARCHAR(50),
-  ENABLE  		INTEGER NOT NULL,
-  DESCRIPTION 	VARCHAR(255),
-  STRATEGY		VARCHAR(255),
-  PRIMARY KEY(UID)
-);
-
-CREATE TABLE FF4J_ROLES (
-  FEAT_UID   VARCHAR(50) REFERENCES FF4J_FEATURES(UID),
-  ROLE_NAME    VARCHAR(50),
-  PRIMARY KEY(FEAT_UID, ROLE_NAME)
-);
-```
-
-* For our test, I populate the database with the following file `ff-store.sql` :
-
-```sql
-INSERT INTO FF4J_FEATURES(UID, ENABLE, DESCRIPTION) VALUES('first',  1, 'FisrtJDBC');
-INSERT INTO FF4J_FEATURES(UID, ENABLE, DESCRIPTION) VALUES('second', 0, 'SecondJDBC');
-INSERT INTO FF4J_FEATURES(UID, ENABLE, DESCRIPTION) VALUES('third',  0, 'ThirdJDBC');
-INSERT INTO FF4J_FEATURES(UID, ENABLE, DESCRIPTION) VALUES('forth',  1, 'ForthJDBC');
-```
-
-* To run the test i will use the [Spring3 embedded dataBase] (http://static.springsource.org/spring/docs/3.0.0.M4/reference/html/ch12s08.html). The spring XML context file becomes :
-
-```xml
-<!-- [...] -->
-<bean id="ff4j" class="org.ff4j.FF4j" p:store-ref="dbStore" />
-	
-<bean id="dbStore" class="org.ff4j.store.DataBaseFeatureStore" p:dataSource-ref="ff.jdbc.datasource" />
-	
-<jdbc:embedded-database id="ff.jdbc.datasource" type="HSQL">
-  <jdbc:script location="classpath:schema-ddl.sql"/>
-  <jdbc:script location="classpath:ff-store.sql"  />
-</jdbc:embedded-database>	
-```
-
-From external stores such as JDBC Database, you can <b>export features as xml file</b>. 
-
-<p/>It could be very useful to realize deliveries from an environment to another. To realize such export please do 
-
-```java
-InputStream data = FF4j.exportFeatures();
-```
-_Note : you would probably prefer to export features through the provided web console_
-
-
-
-<a name="security"/>
-### 6 - Implement Authorization Management
-***
 Sometimes, you would expect to allow a feature for only a subset of users. The main use cases is to test in real conditions the last beta-feature .... but only with your beta-testers.
 
 <p/>Firstly you will have to choose your security provider. FF4j does not intend to create a security context but reuse an existing one and perform filter on roles. Roles are provided by implementations of the following interface :
@@ -502,7 +412,7 @@ Today (2013/07/12) the only available implementation is based on [SpringSecurity
  <feature uid="first" enable="true" description="description" >
   <auth role="ROLE_USER" />
  </feature>
-	
+  
  <feature uid="third" enable="true" >
   <auth role="X" />
   <auth role="Y" />
@@ -525,7 +435,7 @@ INSERT INTO FF4J_ROLES(FEAT_UID, ROLE_NAME)  VALUES('third', 'Y');
   <property name="store" ref="ff4j.featureStore" />
   <property name="authorizationsManager" ref="ff4j.springSecuAuthManager" />
 </bean>
-	
+  
 <bean id="ff4j.springSecuAuthManager" class="org.ff4j.security.SpringSecurityAuthorisationManager" />
 <bean id="ff4j.featureStore" class="org.ff4j.store.InMemoryFeatureStore" />
 ```
@@ -536,10 +446,10 @@ INSERT INTO FF4J_ROLES(FEAT_UID, ROLE_NAME)  VALUES('third', 'Y');
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"classpath:*applicationContext-ff4j-security.xml"})
 public class FlipSecurityTests {
-	
+  
  /** Security context. */
  private SecurityContext securityCtx;
-	
+  
  @Before
  public void setUp() throws Exception {
    securityCtx = SecurityContextHolder.getContext();
@@ -568,10 +478,10 @@ public class FlipSecurityTests {
 //[...]
  @Test
  public void testIsAuthenticatedAndAuthorized() {
-  // check authentication	
+  // check authentication 
   Authentication auth = SecurityContextHolder.getContext().getAuthentication();
   Assert.assertTrue(auth.isAuthenticated());
-		
+    
   // init through spring
   // new FF4j(new InMemoryFeatureStore(), new SpringSecurityAuthorisationManager());
   
@@ -582,6 +492,99 @@ public class FlipSecurityTests {
 }
 ```
 As you can see because `user1` does not have role `X` nor `Y` it cannot access to feature.
+
+
+## PART III - FLIPPING STRATEGY
+
+<a name="strategy"/>
+### 3.1 - Introducing flipping strategy
+
+**in progress**
+
+<a name="strategy-el"/>
+### 3.2 - Expression flipping strategy
+
+<a name="strategy-pond"/>
+### 3.3 - Ponderated fllipping strategy
+
+<a name="strategy-date"/>
+### 3.4 - Release Date fllipping strategy
+
+## PART IV - FEATURE STORES
+
+<a name="stores"/>
+### 4.1 - Introducing stores
+
+<a name="store-jdbc"/>
+### 4.2 - Externalise features in a JDBC Store
+
+When working with `InMemoryFeatureStore`, features are loaded from XML files. The features can be updated at runtime (create/remove/delete) but <b>when the application restarts all changes are lost.</b>
+
+<p/>With real life applications you would expect to keep the states of your feature when the application restarts. To do so, we provide another implementations of `FeatureStore` like `DataBaseFeatureStore` to store Features into database.
+
+* Please add the dependency jdbc to your project. You can see the dependency tree of this component [HERE](https://raw.github.com/clun/ff4j/master/src/site/ff4j-jdbc-graph.png) (`mvn -P graph graph:project`).
+
+```xml
+<dependency>
+  <groupId>org.ff4j</groupId>
+  <artifactId>ff4j-jdbc</artifactId>
+  <version>...</version>
+</dependency>
+```
+
+* ff4j provides you `schema-ddl.sql` to create expected tables within target database :
+```sql
+CREATE TABLE FF4J_FEATURES (
+  UID         VARCHAR(50),
+  ENABLE      INTEGER NOT NULL,
+  DESCRIPTION   VARCHAR(255),
+  STRATEGY    VARCHAR(255),
+  PRIMARY KEY(UID)
+);
+
+CREATE TABLE FF4J_ROLES (
+  FEAT_UID   VARCHAR(50) REFERENCES FF4J_FEATURES(UID),
+  ROLE_NAME    VARCHAR(50),
+  PRIMARY KEY(FEAT_UID, ROLE_NAME)
+);
+```
+
+* For our test, I populate the database with the following file `ff-store.sql` :
+
+```sql
+INSERT INTO FF4J_FEATURES(UID, ENABLE, DESCRIPTION) VALUES('first',  1, 'FisrtJDBC');
+INSERT INTO FF4J_FEATURES(UID, ENABLE, DESCRIPTION) VALUES('second', 0, 'SecondJDBC');
+INSERT INTO FF4J_FEATURES(UID, ENABLE, DESCRIPTION) VALUES('third',  0, 'ThirdJDBC');
+INSERT INTO FF4J_FEATURES(UID, ENABLE, DESCRIPTION) VALUES('forth',  1, 'ForthJDBC');
+```
+
+* To run the test i will use the [Spring3 embedded dataBase] (http://static.springsource.org/spring/docs/3.0.0.M4/reference/html/ch12s08.html). The spring XML context file becomes :
+
+```xml
+<!-- [...] -->
+<bean id="ff4j" class="org.ff4j.FF4j" p:store-ref="dbStore" />
+  
+<bean id="dbStore" class="org.ff4j.store.DataBaseFeatureStore" p:dataSource-ref="ff.jdbc.datasource" />
+  
+<jdbc:embedded-database id="ff.jdbc.datasource" type="HSQL">
+  <jdbc:script location="classpath:schema-ddl.sql"/>
+  <jdbc:script location="classpath:ff-store.sql"  />
+</jdbc:embedded-database> 
+```
+
+From external stores such as JDBC Database, you can <b>export features as xml file</b>. 
+
+<p/>It could be very useful to realize deliveries from an environment to another. To realize such export please do 
+
+```java
+InputStream data = FF4j.exportFeatures();
+```
+_Note : you would probably prefer to export features through the provided web console_
+
+<a name="store-http"/>
+### 4.3 - Externalise features in a HTTP Store
+
+
 
 <a name="web"/>
 ### 7 - Web Capabilities
