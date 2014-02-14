@@ -23,23 +23,24 @@ agile development practice. It allows you to  enable and disable features throug
 <br/>1.1 - [Getting Started](#first-contact)
 <br/>1.2 - [Integration with Spring Framework](#spring)
 <br/>1.3 - [Feature Flipping through AOP](#aop)
-<br/>1.4 - [Security : Filter features per profile](#security)
 
+<p/><b>PART II - [SECURITY] (#security)</b>
 
+<p/><b>PART III - [FLIPPING STRATEGY](#strategy)</b>
 
-<br/>1.5 - [Flipping Strategy or custom behavior](#strategy)
-<br/>1.6 - [More about Unit Testing](#test)
-<br/>1.7 - [Feature Stores](#test)
-<p/><b>PART II - WEB CAPABILITIES</b>
+<p/><b>PART IV - FEATURE STORES</b>
+<br/>2.1 - [Introducing stores](#stores)
+<br/>2.2 - [Externalise features in a JDBC Store](#store-jdbc)
+
+<p/><b>PART V - WEB CAPABILITIES</b>
 <br/>2.1 - [Administration Console](#web)
 <br/>2.1 - [TagLib Library](#taglib)
 <br/>2.3 - [Services REST](#store-http)
-<p/><b>PART III - FEATURES STORE</b>
-<br/>3.1 - [Externalize your feature in a JDBC Store](#store-jdbc)
-<br/>3.2 - [Externalize your feature in a HTTP Store](#store-http)
-<p/><b>PART IV - ADVANCED</b>
-<br/>4.1 - [Caching](#cachin)
-<br/>4.2 - [JMX Management](#jmx)
+
+<p/><b>PART VI - CACHING</b>
+<br/>4.1 - [Caching](#caching)
+
+<p/><b>PART VII - [JMX Management](#jmx)</b>
 
 <a name="first-contact"/>
 ### 1.1 - Getting started
