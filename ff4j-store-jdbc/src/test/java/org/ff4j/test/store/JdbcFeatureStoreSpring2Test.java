@@ -14,9 +14,17 @@ package org.ff4j.test.store;
 import org.ff4j.FF4j;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.test.AbstractStoreTest;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("classpath:*applicationContext-jdbc-test.xml")
 public class JdbcFeatureStoreSpring2Test extends AbstractStoreTest {
+
+    @Autowired
+    private FF4j ff4j;
 
     private static FeatureStore store = null;
 
@@ -24,8 +32,7 @@ public class JdbcFeatureStoreSpring2Test extends AbstractStoreTest {
     protected FeatureStore initStore() {
         if (store == null) {
             System.out.println("OK");
-            store = new ClassPathXmlApplicationContext("classpath:*applicationContext-jdbc-test.xml").getBean(FF4j.class)
-                    .getStore();
+            store = ff4j.getStore();
         }
         return store;
     }

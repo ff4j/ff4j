@@ -77,6 +77,7 @@
 		<version.slf4j>1.7.5</version.slf4j>
 		<version.logback>1.0.13</version.logback>
 		<version.junit>4.8.2</version.junit>
+        <version.cglib>3.1</version.cglib>
 		<version.hdldb>2.2.4</version.hdldb>
 		<version.spring>3.1.1.RELEASE</version.spring>
 		<version.spring.jmx>2.0.8</version.spring.jmx>
@@ -145,6 +146,11 @@
 				<artifactId>spring-tx</artifactId>
 				<version>${version.spring}</version>
 			</dependency>
+            <dependency>
+                <groupId>cglib</groupId>
+                <artifactId>cglib</artifactId>
+                <version>${version.cglib}</version>
+            </dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-web</artifactId>

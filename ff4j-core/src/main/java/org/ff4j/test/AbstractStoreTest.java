@@ -35,6 +35,7 @@ import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.strategy.PonderationFlipStrategy;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * For different store.
@@ -98,6 +99,7 @@ public abstract class AbstractStoreTest {
      *             error during test
      */
     @Test
+    @Transactional
     public void testStoreHasBeenInitialized() throws Exception {
         assertFf4j.assertFeatureNumber(EXPECTED_FEATURES_NUMBERS);
         assertFf4j.assertFlipped(FEATURE_FIRST);
@@ -110,6 +112,7 @@ public abstract class AbstractStoreTest {
      *             error during test
      */
     @Test
+    @Transactional
     public void testReadllFeatures() {
         assertFf4j.assertFeatureNumber(EXPECTED_FEATURES_NUMBERS);
         Map<String, Feature> features = testedStore.readAll();
@@ -124,6 +127,7 @@ public abstract class AbstractStoreTest {
      *             error during test
      */
     @Test
+    @Transactional
     public void testReadFullFeature() {
         Feature f = testedStore.read(FEATURE_FORTH);
         Assert.assertEquals(f.getUid(), FEATURE_FORTH);
@@ -140,6 +144,7 @@ public abstract class AbstractStoreTest {
      *             error during test
      */
     @Test(expected = FeatureNotFoundException.class)
+    @Transactional
     public void testFlipWithInvalidNameNotFoundException() {
         ff4j.isFlipped("this_featureName_does_not_exist");
     }
@@ -151,6 +156,7 @@ public abstract class AbstractStoreTest {
      *             error during test
      */
     @Test(expected = FeatureNotFoundException.class)
+    @Transactional
     public void testEnableNotFoundException() {
         ff4j.enable(FEATURE_DUMMY);
     }
@@ -162,6 +168,7 @@ public abstract class AbstractStoreTest {
      *             error during test
      */
     @Test(expected = FeatureNotFoundException.class)
+    @Transactional
     public void testDisableNotFoundException() {
         ff4j.disable(FEATURE_DUMMY);
     }
@@ -173,6 +180,7 @@ public abstract class AbstractStoreTest {
      *             error during test
      */
     @Test
+    @Transactional
     public void testEnableFeature() {
         ff4j.enable(FEATURE_FIRST);
         assertFf4j.assertFlipped(FEATURE_FIRST);
@@ -185,6 +193,7 @@ public abstract class AbstractStoreTest {
      *             error during test
      */
     @Test
+    @Transactional
     public void testDisableFeature() {
         ff4j.disable(FEATURE_FIRST);
         assertFf4j.assertNotFlipped(FEATURE_FIRST);
@@ -197,6 +206,7 @@ public abstract class AbstractStoreTest {
      *             error during test
      */
     @Test
+    @Transactional
     public void testAddFeature() throws Exception {
         Set<String> rights = new HashSet<String>(Arrays.asList(new String[] {ROLE_USER}));
         Feature fp = new Feature(FEATURE_NEW, true, "description", TESTING_GROUP, rights);
@@ -215,6 +225,7 @@ public abstract class AbstractStoreTest {
      *             error during test
      */
     @Test(expected = FeatureAlreadyExistException.class)
+    @Transactional
     public void testAddFeatureAlreadyExis() throws Exception {
         // Create Once
         Feature fp = new Feature(FEATURE_NEW, true, "description2");
@@ -232,6 +243,7 @@ public abstract class AbstractStoreTest {
      *             error during test
      */
     @Test
+    @Transactional
     public void testDeleteFeature() throws Exception {
         Set<String> rights = new HashSet<String>(Arrays.asList(new String[] {ROLE_USER}));
         Feature fp2 = new Feature("TO_BE_DELETED", true, TESTING_GROUP, "description4", rights);
@@ -251,6 +263,7 @@ public abstract class AbstractStoreTest {
      *             error during test
      */
     @Test(expected = FeatureNotFoundException.class)
+    @Transactional
     public void testDeteleFeatureDoesnotExistReturnError() throws Exception {
         testedStore.delete("does-not-exist");
     }
@@ -262,6 +275,7 @@ public abstract class AbstractStoreTest {
      *             error during test
      */
     @Test
+    @Transactional
     public void testGrantRoleToFeatureRoleDoesNotExist() throws Exception {
         testedStore.grantRoleOnFeature(FEATURE_FIRST, "role-does-not-exit1");
         assertFf4j.assertHasRole(FEATURE_FIRST, "role-does-not-exit1");
@@ -274,6 +288,7 @@ public abstract class AbstractStoreTest {
      *             error during test
      */
     @Test(expected = FeatureNotFoundException.class)
+    @Transactional
     public void testGrantRoleToFeatureFeatureDoesNotExist() throws Exception {
         testedStore.grantRoleOnFeature("blablabla", "role-does-not-exit");
     }
@@ -285,6 +300,7 @@ public abstract class AbstractStoreTest {
      *             error during test
      */
     @Test
+    @Transactional
     public void testDeleteRoleToFeature() throws Exception {
         testedStore.removeRoleFromFeature(FEATURE_FIRST, ROLE_USER);
         assertFf4j.assertDoesntHaveRole(FEATURE_FIRST, ROLE_USER);
@@ -297,6 +313,7 @@ public abstract class AbstractStoreTest {
      *             error during test
      */
     @Test(expected = FeatureNotFoundException.class)
+    @Transactional
     public void testDeleteRoleFeatureDoesNotExit() {
         testedStore.removeRoleFromFeature("blabla", ROLE_USER);
     }
@@ -308,6 +325,7 @@ public abstract class AbstractStoreTest {
      *             error during test
      */
     @Test
+    @Transactional
     public void testUpdateFeatureCoreData() throws Exception {
         Feature fpBis = new Feature(FEATURE_FIRST, false, "desca2");
         fpBis.setFlippingStrategy(new PonderationFlipStrategy(0.12));
@@ -323,6 +341,7 @@ public abstract class AbstractStoreTest {
      *             error during test
      */
     @Test
+    @Transactional
     public void testUpdateFeatureMoreAutorisation() throws Exception {
         Set<String> rights2 = new HashSet<String>(Arrays.asList(new String[] {ROLE_USER,"X"}));
         Feature fpBis = new Feature(FEATURE_FIRST, false, TESTING_GROUP, "desco2", rights2);
@@ -338,6 +357,7 @@ public abstract class AbstractStoreTest {
      *             error during test
      */
     @Test
+    @Transactional
     public void testUpdateFlipLessAutorisation() {
         Feature fpBis = new Feature(FEATURE_FIRST, false, null);
         testedStore.update(fpBis);
@@ -351,6 +371,7 @@ public abstract class AbstractStoreTest {
      *             error during test
      */
     @Test
+    @Transactional
     public void testUpdateFlipMoreAutorisationNotExistReturnError() {
         Set<String> rights2 = new HashSet<String>(Arrays.asList(new String[] {ROLE_USER,"ROLE_ADMIN"}));
         Feature fpBis = new Feature(FEATURE_FIRST, false, TESTING_GROUP, "desci2", rights2);
