@@ -7,19 +7,12 @@
 	</properties>
 
 	<body>
-		<section name="Introduction">
-			 <subsection name="Table of Content">
+		<section name="Getting Starteg">
+			 <subsection name="Home">
             <p>
-            <br/> A. Running an application in 5 minutes
-            <br/> Archetype a new project
-            <br/> Add dependency
-            <br/> Define your features through XML
-            <br/> Work with with features
-            <br/> Test your component
-            
-            <br/> B. Create a web application step by step
-            
-            
+            <br/> Currently the getting started guide is available only on <a href="https://github.com/clun/ff4j#first-contact"> github READ ME</a> 
+            <br/>
+            <br/> A more detailled documentation is under creation using docbook, come back soon.
             
             </p>
             </subsection>

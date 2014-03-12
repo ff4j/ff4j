@@ -40,9 +40,9 @@
     <menu name="Main" inherit="top" img="icon-home">
       <item name="Home"         	href="/index.html"          	/>
       <item name="Getting Started" 	href="/getting-started.html"	/>
-      <item name="Reference Guide" 	href="/reference-guide.html" 	/>
+      <!-- <item name="Reference Guide" 	href="/reference-guide.html" />-->
       <item name="JavaDoc" 			href="/apidocs/index.html" 		/>
-      <item name="FAQ" 			    href="/faq.html" 				/>
+      <!--<item name="FAQ" 			    href="/faq.html" 				/>-->
    </menu>
     
     <menu name="Source Code" img="icon-book" inherit="top">

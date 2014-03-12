@@ -372,7 +372,7 @@ _Note : the bean <b>id</b> are required and must be specified with the `@Qualifi
 **in progress**
 
 <a name="security-spring"/>
-### 2.1 - String security
+### 2.2 - String security
 
 Sometimes, you would expect to allow a feature for only a subset of users. The main use cases is to test in real conditions the last beta-feature .... but only with your beta-testers.
 

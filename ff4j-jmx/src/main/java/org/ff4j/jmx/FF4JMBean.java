@@ -30,6 +30,8 @@ import org.ff4j.core.Feature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedOperation;
+import org.springframework.jmx.export.annotation.ManagedOperationParameter;
+import org.springframework.jmx.export.annotation.ManagedOperationParameters;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Component;
 
@@ -51,7 +53,7 @@ public class FF4JMBean {
      * 
      * @return map of features.
      */
-    @ManagedAttribute(description = "Returns feature ids with state")
+    @ManagedAttribute(description = "Returns states of every features of the store")
     public Map<String, Boolean> getFeaturesStatus() {
         Map<String, Boolean> mapsOfBool = new HashMap<String, Boolean>();
         Map<String, Feature> mapsOfFeat = getFf4j().getFeatures();
@@ -70,8 +72,9 @@ public class FF4JMBean {
      *            target feature id
      */
     @ManagedOperation(description = "Enable feature from its identifier")
-    public void enableFeature(String featureID) {
-        getFf4j().enable(featureID);
+    @ManagedOperationParameters({@ManagedOperationParameter(name = "featureId", description = "Identifier of feature to enable")})
+    public void enableFeature(String featureId) {
+        getFf4j().enable(featureId);
     }
 
     /**
@@ -81,8 +84,9 @@ public class FF4JMBean {
      *            target feature id
      */
     @ManagedOperation(description = "Disable feature from its identifier")
-    public void disableFeature(String featureID) {
-        getFf4j().disable(featureID);
+    @ManagedOperationParameters({@ManagedOperationParameter(name = "featureId", description = "Identifier of feature to disable")})
+    public void disableFeature(String featureId) {
+        getFf4j().disable(featureId);
     }
 
     /**
@@ -92,8 +96,9 @@ public class FF4JMBean {
      *            target feature id
      */
     @ManagedOperation(description = "Returns feature authentication roles")
-    public Set<String> getFeatureAuthRoles(String featureID) {
-        return getFf4j().getFeature(featureID).getAuthorizations();
+    @ManagedOperationParameters({@ManagedOperationParameter(name = "featureId", description = "Identifier of feature to get Roles")})
+    public Set<String> getFeatureAuthRoles(String featureId) {
+        return getFf4j().getFeature(featureId).getAuthorizations();
     }
 
     /**
@@ -103,8 +108,10 @@ public class FF4JMBean {
      *            target feature id
      */
     @ManagedOperation(description = "Add an authentication role to feature")
-    public void grantRoleOnFeature(String authRole, String featureID) {
-        getFf4j().getStore().grantRoleOnFeature(featureID, authRole);
+    @ManagedOperationParameters({@ManagedOperationParameter(name = "authRole", description = "role to grant on feature"),
+            @ManagedOperationParameter(name = "featureId", description = "target feature id")})
+    public void grantRoleOnFeature(String authRole, String featureId) {
+        getFf4j().getStore().grantRoleOnFeature(featureId, authRole);
     }
 
     /**
@@ -114,8 +121,10 @@ public class FF4JMBean {
      *            target feature id
      */
     @ManagedOperation(description = "Remove an authentication role from feature")
-    public void removeAuthRoleFromFeature(String authRole, String featureID) {
-        getFf4j().getStore().removeRoleFromFeature(featureID, authRole);
+    @ManagedOperationParameters({@ManagedOperationParameter(name = "authRole", description = "role to remove on feature"),
+            @ManagedOperationParameter(name = "featureId", description = "target feature id")})
+    public void removeAuthRoleFromFeature(String authRole, String featureId) {
+        getFf4j().getStore().removeRoleFromFeature(featureId, authRole);
     }
 
     /**

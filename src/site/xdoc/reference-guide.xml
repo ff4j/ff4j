@@ -9,24 +9,10 @@
 	<body>
 		<section name="Reference Guide">
 			 <subsection name="Table of Content">
-			 <p>Not written yet, please come back later
-            <br/> 1 - Introduction
-            <br/> 1.1 - Definition of feature toggle
-            <br/> 1.2 - Basics and Concepts
-            <br/> 1.2.1 - Feature
-            <br/> 1.2.1 - FeatureStore
-            <br/> 1.2.2 - FF4j
-            
-            <br/> 2 - Running your first
-            <br/>2.1 - Dependencies
-            <br/>2.2 - 
-            
-            
-            <br/> 3 - Modules Overview
-            <br/>
-            
-            
-            </p>
+			 <p>The reference guide is currently under construction with docbook to provide you HTML single page and PDF.</p>
+			 
+			 <p>To get documentation and sample in the mean time please check github page : https://github.com/clun/ff4j#first-contact</p>
+			 
 		</subsection>
 		</section>
 	</body>

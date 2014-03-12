@@ -52,7 +52,7 @@ if (ff4j.isFlipped("sayHello")) {
      		
      		</td></tr></table>
      		
-     			<p><i>Now you can check <a href="./reference-guide.html" >reference guide</a>, to externalize features into database or use AOP. Features can be administrate through WebConsole or JMX.</i></p>
+     			<p><i>Now you can check <a href="https://github.com/clun/ff4j#4---define-a-jdbc-flipstore" >reference guide</a>, to externalize features into database or use AOP. Features can be administrate through WebConsole or JMX.</i></p>
      			
      			<p style="text-align:center">
      			

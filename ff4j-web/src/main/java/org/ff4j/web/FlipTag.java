@@ -51,6 +51,15 @@ public class FlipTag extends BodyTagSupport {
     public int doAfterBody() throws JspException {
         try {
             // Checking Feature value
+
+            // --> TODO CHANGER AVEC UN TAGSUPPORT
+            // String value = pageContext.getRequest().getParameter(this.name);
+            // if (value!=null)
+            //return EVAL_BODY_INCLUDE;
+
+            // Nouveau TAG AVEC UN PARENT POUR DEFINIR LE NOM DU FF4J ATTENDU
+            // http://adiguba.developpez.com/tutoriels/j2ee/jsp/taglib/
+
             if (FF4jWebContextHolder.getFf4j().isFlipped(getFeatureid())) {
                 BodyContent bodycontent = getBodyContent();
                 String body = bodycontent.getString();

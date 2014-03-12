@@ -186,4 +186,40 @@ public class FeatureStoreCacheProxy implements FeatureStore {
     public void setCacheManager(FeatureCacheManager cacheManager) {
         this.cacheManager = cacheManager;
     }
+
+    @Override
+    public void enableGroup(String groupName) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void disableGroup(String groupName) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void existGroup(String groupName) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public Map<String, Feature> readGroup(String groupName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void addToGroup(String featureId, String groupName) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void removeFromGroup(String featureId, String groupName) {
+        // TODO Auto-generated method stub
+
+    }
 }

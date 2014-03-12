@@ -5,12 +5,16 @@
 	elementFormDefault="qualified"
 	attributeFormDefault="unqualified">
 
-	<xsd:element name="features">
+<xsd:element name="features">
+		<xsd:complexType>
+			<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+			
+	<xsd:element name="feature-group">
 		<xsd:complexType>
 			<xsd:sequence minOccurs="0" maxOccurs="unbounded">
 				<xsd:element name="feature">
 					<xsd:complexType>
-						<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+						<xsd:sequence minOccurs="1" maxOccurs="unbounded">
 							<xsd:element name="auth">
 								<xsd:complexType>
 									<xsd:attribute name="role" use="required" />
@@ -18,15 +22,16 @@
 							</xsd:element>
 						</xsd:sequence>
 						<xsd:attribute name="uid" 		  type="xsd:string"  use="required" />
-						<xsd:attribute name="description" type="xsd:string"  use="optional" />
-						<xsd:attribute name="strategy"	  type="xsd:string"  use="optional" />
-						<xsd:attribute name="expression"  type="xsd:string"  use="optional" />
 						<xsd:attribute name="enable"	  type="xsd:boolean" use="required" />
+						<xsd:attribute name="description" type="xsd:string"  use="optional" />
 					</xsd:complexType>
 				</xsd:element>
 			</xsd:sequence>
 			<xsd:attribute name="id" type="xsd:string" use="optional" />
 		</xsd:complexType>
+	</xsd:element>
+	</xsd:sequence>
+	</xsd:complexType>
 	</xsd:element>
 
 </xsd:schema>

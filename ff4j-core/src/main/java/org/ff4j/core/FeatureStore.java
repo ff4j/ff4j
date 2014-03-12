@@ -105,4 +105,58 @@ public interface FeatureStore {
      */
     void removeRoleFromFeature(String flipId, String roleName);
 
+    /**
+     * Enable all features contained in the following group.
+     * 
+     * @param groupName
+     *            target group name
+     */
+    void enableGroup(String groupName);
+
+    /**
+     * Disable all features contained in the following group.
+     * 
+     * @param groupName
+     *            target group name
+     */
+    void disableGroup(String groupName);
+
+    /**
+     * Check if current group exist or not.
+     * 
+     * @param groupName
+     *            target group name
+     */
+    void existGroup(String groupName);
+
+    /**
+     * Read all features within target group.
+     * 
+     * @param groupName
+     *            target group name
+     * @return return all feature from group or groupnotfoundException if does not exist
+     */
+    Map<String, Feature> readGroup(String groupName);
+    
+    /**
+     * Add target {@link Feature} to target group.
+     * 
+     * @param featureId
+     *            target feature identifier
+     * @param groupName
+     *            target groupName
+     */
+    void addToGroup(String featureId, String groupName);
+    
+    /**
+     * Remove target {@link Feature} from group.
+     * 
+     * @param featureId
+     *            target feature identifier
+     * @param groupName
+     *            target groupName
+     */
+    void removeFromGroup(String featureId, String groupName);
+    
+
 }
