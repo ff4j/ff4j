@@ -21,7 +21,7 @@ package org.ff4j.audit;
  */
 
 /**
- * Operations done
+ * Different types of events.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
@@ -33,26 +33,22 @@ public enum EventType {
     /** delete new feature in the repoitory. */
     DELETE,
 
+    /** enable feature. */
     ENABLE,
 
+    /** disable feature. */
     DISABLE,
 
-    UPDATE,
-
-    GRANT_ROLE,
-
-    REMOVE_ROLE,
-
-    ADD_TO_GROUP,
-
-    REMOVE_FROM_GROUP,
-
+    /** enable group. */
     ENABLE_GROUP,
 
+    /** disable group. */
     DISABLE_GROUP,
 
+    /** flipped. */
     HIT_FLIPPED,
 
-    HIT_NOT_FLIPPED;
+    /** not flipped. */
+    HIT_NOT_FLIPPED
 
 }

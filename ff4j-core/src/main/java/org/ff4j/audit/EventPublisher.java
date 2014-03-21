@@ -34,16 +34,15 @@ public class EventPublisher {
     private static final int DEFAULT_POOL_SIZE = 3;
 
     /** Executor for item writer. */
-    private ExecutorService executor = null;
+    private ExecutorService executor = Executors.newFixedThreadPool(DEFAULT_POOL_SIZE);
 
     /** Repository to save events. */
-    private EventRepository repository = new EventRepositoryVM();
+    private EventRepository repository = new InMemoryEventRepository();
 
     /**
      * Default constructor.
      */
     public EventPublisher() {
-        this(DEFAULT_POOL_SIZE);
     }
 
     /**
@@ -55,9 +54,61 @@ public class EventPublisher {
         executor = Executors.newFixedThreadPool(threadCount);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Size of thread pool.
+     * 
+     * @param threadCount
+     */
+    public EventPublisher(EventRepository er) {
+        repository = er;
+    }
+
+    /**
+     * Size of thread pool.
+     * 
+     * @param threadCount
+     */
+    public EventPublisher(int threadCount, EventRepository er) {
+        executor = Executors.newFixedThreadPool(threadCount);
+        repository = er;
+    }
+
+    /**
+     * Publish event to repository
+     * 
+     * @param e
+     *            event.
+     */
     public void publish(Event e) {
         executor.submit(new EventWorker(e, repository));
+    }
+
+    /**
+     * Publish event to repository.
+     * 
+     * @param featureName
+     *            target feature name
+     * @param type
+     *            event type
+     */
+    public void publish(String featureName, EventType type) {
+        publish(new Event(featureName, type));
+    }
+
+    /**
+     * Paramterized constructor.
+     * 
+     * @param featureName
+     *            target feature name
+     * @param type
+     *            target event type
+     */
+    public void publish(String featureName, boolean flipped) {
+        Event evt = new Event(featureName, EventType.HIT_FLIPPED);
+        if (!flipped) {
+            evt.setType(EventType.HIT_NOT_FLIPPED);
+        }
+        publish(evt);
     }
 
     /**

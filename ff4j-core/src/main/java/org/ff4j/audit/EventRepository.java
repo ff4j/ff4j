@@ -21,12 +21,62 @@ package org.ff4j.audit;
  */
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import org.ff4j.audit.graph.Curve;
+
+/**
+ * Persistence store for {@link Event} messages.
+ * 
+ * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ */
 public interface EventRepository {
 
+    /**
+     * Save event into store synchronously.
+     * 
+     * @param e
+     *            target event to store
+     * @return if saving is OK
+     */
     boolean saveEvent(Event e);
 
+    /**
+     * Get list of events.
+     * 
+     * @return list of event
+     */
     List<Event> getAllEvents();
-    // getEventsPerFeatures(StartDate);
+
+    /**
+     * Search Event Repository and Extract a curve.
+     * 
+     * @param featureNameList
+     *            target feature name list
+     * @param interval
+     *            interval for 2 points (in millis)
+     * @param startTime
+     *            start timestamp for search
+     * @param endTime
+     *            end timestamp for search
+     * @return
+     */
+    Map<String, Curve> getHitCurves(Set<String> featureNameList, long interval, long startTime, long endTime);
+
+    /**
+     * Search event of hit to dedicated featureName.
+     * 
+     * @param featureName
+     *            target featureName
+     * @param interval
+     *            interval between 2 measures
+     * @param startTime
+     *            starttime for measure
+     * @param endTime
+     *            endtime for measure
+     * @return curve for dedicated feature
+     */
+    Curve getHitCurve(String featureName, long interval, long startTime, long endTime);
 
 }

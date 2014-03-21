@@ -25,6 +25,10 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Set;
 
+import org.ff4j.audit.EventPublisher;
+import org.ff4j.audit.EventRepository;
+import org.ff4j.audit.EventType;
+import org.ff4j.audit.InMemoryEventRepository;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FeatureXmlParser;
@@ -66,11 +70,17 @@ import org.ff4j.store.InMemoryFeatureStore;
 public class FF4j {
 
     /** Storage to persist feature within {@link FeatureStore}. */
-    private FeatureStore store = null;
+    private FeatureStore store = new InMemoryFeatureStore();
 
     /** Security policy to limit access through ACL with {@link AuthorizationsManager}. */
     private AuthorizationsManager authorizationsManager = null;
 
+    /** Repository for audit event. */
+    private EventRepository eventRepository = new InMemoryEventRepository();
+
+    /** Event Publisher. */
+    private EventPublisher eventPublisher = null;
+    
     /** Do not through {@link FeatureNotFoundException} exception and but feature is required. */
     private boolean autocreate = false;
 
@@ -78,21 +88,13 @@ public class FF4j {
      * Default constructor to allows instanciation through IoC. The created store is an empty {@link InMemoryFeatureStore}.
      */
     public FF4j() {
-        this(new InMemoryFeatureStore());
     }
 
     /**
      * Constructor initializing ff4j with an InMemoryStore
      */
     public FF4j(String xmlFile) {
-        this(new InMemoryFeatureStore(xmlFile));
-    }
-
-    /**
-     * Allow creation through IOc even of static access.
-     */
-    private FF4j(FeatureStore fs) {
-        this.store = fs;
+        this.store = new InMemoryFeatureStore(xmlFile);
     }
 
     /**
@@ -107,14 +109,20 @@ public class FF4j {
     public boolean isFlipped(String featureID, Object... executionContext) {
         Feature fp = getFeature(featureID);
         boolean flipped = fp.isEnable();
+
         // If authorization manager provided, apply security filter
         if (flipped && getAuthorizationsManager() != null) {
             flipped = flipped && isAllowed(fp);
         }
+
         // If custom strategy has been defined, delegate flipping to
         if (flipped && fp.getFlippingStrategy() != null) {
             flipped = flipped && fp.getFlippingStrategy().activate(featureID, getStore(), executionContext);
         }
+
+        // Any modification done is logged into audit system
+        getEventPublisher().publish(featureID, flipped);
+
         return flipped;
     }
 
@@ -133,6 +141,10 @@ public class FF4j {
         if (strats != null) {
             flipped = flipped && strats.activate(featureID, getStore(), executionContext);
         }
+
+        // Any modification done is logged into audit system
+        getEventPublisher().publish(featureID, flipped);
+
         return flipped;
     }
 
@@ -180,6 +192,33 @@ public class FF4j {
             }
             throw fnfe;
         }
+        getEventPublisher().publish(featureID, EventType.ENABLE);
+        return this;
+    }
+
+    /**
+     * Enable group.
+     * 
+     * @param groupName
+     *            target groupeName
+     * @return current instance
+     */
+    public FF4j enableGroup(String groupName) {
+        getStore().enableGroup(groupName);
+        getEventPublisher().publish(groupName, EventType.ENABLE_GROUP);
+        return this;
+    }
+
+    /**
+     * Disable group.
+     * 
+     * @param groupName
+     *            target groupeName
+     * @return current instance
+     */
+    public FF4j disableGroup(String groupName) {
+        getStore().enableGroup(groupName);
+        getEventPublisher().publish(groupName, EventType.DISABLE_GROUP);
         return this;
     }
 
@@ -191,6 +230,7 @@ public class FF4j {
      */
     public FF4j create(Feature fp) {
         getStore().create(fp);
+        getEventPublisher().publish(fp.getUid(), EventType.CREATE);
         return this;
     }
 
@@ -201,8 +241,7 @@ public class FF4j {
      *            unique feature identifier.
      */
     public FF4j create(String featureName, boolean enable, String description) {
-        getStore().create(new Feature(featureName, enable, description));
-        return this;
+        return create(new Feature(featureName, enable, description));
     }
 
     /**
@@ -240,6 +279,7 @@ public class FF4j {
             }
             throw fnfe;
         }
+        getEventPublisher().publish(featureID, EventType.DISABLE);
         return this;
     }
 
@@ -298,11 +338,27 @@ public class FF4j {
         return this;
     }
 
+    /**
+     * Delete feature name.
+     * 
+     * @param fpId
+     *            target feature
+     */
+    public FF4j delete(String fpId) {
+        getStore().delete(fpId);
+        getEventPublisher().publish(fpId, EventType.DELETE);
+        return this;
+    }
+
     /** {@inheritDoc} */
     @Override
     public String toString() {
         return String.format("FF4j [featureStore=%s, authorizationsManager=%s]", store, authorizationsManager);
     }
+
+    // -------------------------------------------------------------------------
+    // ------------------- GETTERS & SETTERS -----------------------------------
+    // -------------------------------------------------------------------------
 
     /**
      * Access store as static way (single store).
@@ -350,6 +406,47 @@ public class FF4j {
      */
     public void setAuthorizationsManager(AuthorizationsManager authorizationsManager) {
         this.authorizationsManager = authorizationsManager;
+    }
+
+    /**
+     * Getter accessor for attribute 'eventRepository'.
+     * 
+     * @return current value of 'eventRepository'
+     */
+    public EventRepository getEventRepository() {
+        return eventRepository;
+    }
+
+    /**
+     * Setter accessor for attribute 'eventRepository'.
+     * 
+     * @param eventRepository
+     *            new value for 'eventRepository '
+     */
+    public void setEventRepository(EventRepository eventRepository) {
+        this.eventRepository = eventRepository;
+    }
+
+    /**
+     * Getter accessor for attribute 'eventPublisher'.
+     * 
+     * @return current value of 'eventPublisher'
+     */
+    public EventPublisher getEventPublisher() {
+        if (eventPublisher == null) {
+            eventPublisher = new EventPublisher(eventRepository);
+        }
+        return eventPublisher;
+    }
+
+    /**
+     * Setter accessor for attribute 'eventPublisher'.
+     * 
+     * @param eventPublisher
+     *            new value for 'eventPublisher '
+     */
+    public void setEventPublisher(EventPublisher eventPublisher) {
+        this.eventPublisher = eventPublisher;
     }
 
 }

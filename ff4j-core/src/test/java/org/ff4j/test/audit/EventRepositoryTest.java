@@ -24,15 +24,22 @@ import junit.framework.Assert;
 
 import org.ff4j.audit.Event;
 import org.ff4j.audit.EventPublisher;
-import org.ff4j.audit.EventRepositoryVM;
 import org.ff4j.audit.EventType;
+import org.ff4j.audit.InMemoryEventRepository;
+import org.ff4j.audit.graph.Curve;
+import org.ff4j.audit.graph.Point;
 import org.junit.Test;
 
+/**
+ * Test for publisher and InMemory Event repository.
+ * 
+ * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ */
 public class EventRepositoryTest {
 
     @Test
     public void testAudit() throws InterruptedException {
-        int nb = 1000;
+        int nb = 10000;
         EventPublisher pub = new EventPublisher();
         for (int i = 0; i < nb; i++) {
             pub.publish(new Event("aer", EventType.HIT_FLIPPED));
@@ -46,12 +53,35 @@ public class EventRepositoryTest {
         int nb = 1000;
         int limit = 25;
         EventPublisher pub = new EventPublisher();
-        pub.setRepository(new EventRepositoryVM(limit));
+        pub.setRepository(new InMemoryEventRepository(limit));
         for (int i = 0; i < nb; i++) {
             pub.publish(new Event("aer", EventType.HIT_FLIPPED));
             Thread.sleep(2);
         }
         Assert.assertEquals(limit, pub.getRepository().getAllEvents().size());
+    }
+
+    @Test
+    public void testCurve() throws InterruptedException {
+        // Events to generate
+        int nbEvent = 100;
+
+        EventPublisher pub = new EventPublisher();
+        for (int i = 0; i < nbEvent; i++) {
+            pub.publish(new Event("aer", EventType.HIT_FLIPPED));
+            Thread.sleep(2);
+        }
+
+        Assert.assertEquals(nbEvent, pub.getRepository().getAllEvents().size());
+
+        long now = System.currentTimeMillis();
+        Curve c = pub.getRepository().getHitCurve("aer", 10, now - 3 * nbEvent, now);
+        System.out.println(c);
+        for (Point p : c.getListOfPoint()) {
+            System.out.print('x' + (int) p.getX() + "=" + (int) p.getY() + ",");
+            if (p.getX() % 100 == 0)
+                System.out.println("");
+        }
 
     }
 }
