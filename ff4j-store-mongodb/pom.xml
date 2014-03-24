@@ -4,9 +4,9 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~     COORDINATES          ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<artifactId>ff4j-store-mongo</artifactId>
+	<artifactId>ff4j-store-mongodb</artifactId>
 	<packaging>jar</packaging>
-	<name>ff4j-store-mongo</name>
+	<name>ff4j-store-mongodb</name>
 	
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~   PARENT                 ~ -->

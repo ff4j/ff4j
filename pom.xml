@@ -112,7 +112,7 @@
 		<module>ff4j-cache-redis</module>
 		<module>ff4j-security-spring</module>
 		<module>ff4j-store-jdbc</module>
-		<module>ff4j-store-mongo</module>
+		<module>ff4j-store-mongodb</module>
 		<module>ff4j-store-remoting</module>
 	</modules>
 
