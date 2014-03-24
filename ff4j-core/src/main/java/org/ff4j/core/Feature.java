@@ -29,16 +29,16 @@ import org.ff4j.utils.FeatureJsonMarshaller;
 
 /**
  * Represents a feature flag identified by an unique identifier.
- * 
+ *
  * <p>
  * Features Flags or Features Toggle have been introduced by Martin Fowler for continuous delivery perspective. It consists of
  * enable/disable some functionalities at runtime.
- * 
+ *
  * <p>
  * <b>SecurityManagement :</b> Even a feature is enabled, you can limit its usage to a group of users (for instance BETA Tester)
  * before wide over all your users.
  * </p>
- * 
+ *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public class Feature implements Serializable {
@@ -58,7 +58,7 @@ public class Feature implements Serializable {
     /** Feature could be grouped to enable/disable the whole group. */
     private String group;
 
-    /** if not empty and @see {@link AuthorizationsManager} provided, limit usage to this roles. */
+    /** if not empty and @see {@link org.ff4j.security.AuthorizationsManager} provided, limit usage to this roles. */
     private Set<String> authorizations = new HashSet<String>();
 
     /** Custom behaviour to define if feature if enable or not e.g. A/B Testing capabilities. */
@@ -66,7 +66,7 @@ public class Feature implements Serializable {
 
     /**
      * Simplest constructor initializing feature to disable.
-     * 
+     *
      * @param uid
      *            unique feature name (required)
      */
@@ -76,10 +76,10 @@ public class Feature implements Serializable {
 
     /**
      * Simple constructor initializing feature with status enable/disable.
-     * 
+     *
      * @param uid
      *            unique feature name (required)
-     * @param pactive
+     * @param penable
      *            initial feature state
      */
     public Feature(final String uid, final boolean penable) {
@@ -88,12 +88,12 @@ public class Feature implements Serializable {
 
     /**
      * Simplest Constructor (without security concerns)
-     * 
+     *
      * @param uid
      *            unique feature name (required)
-     * @param pactive
+     * @param penable
      *            initial feature state
-     * @param pDescription
+     * @param pdescription
      *            description of feature.
      */
     public Feature(final String uid, final boolean penable, final String pdescription) {
@@ -107,12 +107,12 @@ public class Feature implements Serializable {
 
     /**
      * Simplest Constructor (without security concerns)
-     * 
+     *
      * @param uid
      *            unique feature name (required)
-     * @param pactive
+     * @param penable
      *            initial feature state
-     * @param pDescription
+     * @param pdescription
      *            description of feature.
      */
     public Feature(final String uid, final boolean penable, final String pdescription, final String group) {
@@ -124,12 +124,12 @@ public class Feature implements Serializable {
 
     /**
      * Constructor with limited access roles definitions
-     * 
+     *
      * @param uid
      *            unique feature name (required)
-     * @param pactive
+     * @param penable
      *            initial feature state
-     * @param pDescription
+     * @param pdescription
      *            description of feature.
      * @param auths
      *            limited roles to use the feature even if enabled
@@ -144,12 +144,12 @@ public class Feature implements Serializable {
 
     /**
      * Constructor with limited access roles definitions
-     * 
+     *
      * @param uid
      *            unique feature name (required)
-     * @param pactive
+     * @param penable
      *            initial feature state
-     * @param pDescription
+     * @param pdescription
      *            description of feature.
      * @param auths
      *            limited roles to use the feature even if enabled
@@ -191,7 +191,7 @@ public class Feature implements Serializable {
 
     /**
      * Getter accessor for attribute 'uid'.
-     * 
+     *
      * @return current value of 'uid'
      */
     public String getUid() {
@@ -200,7 +200,7 @@ public class Feature implements Serializable {
 
     /**
      * Setter accessor for attribute 'uid'.
-     * 
+     *
      * @param uid
      *            new value for 'uid '
      */
@@ -210,7 +210,7 @@ public class Feature implements Serializable {
 
     /**
      * Getter accessor for attribute 'enable'.
-     * 
+     *
      * @return current value of 'enable'
      */
     public boolean isEnable() {
@@ -219,7 +219,7 @@ public class Feature implements Serializable {
 
     /**
      * Setter accessor for attribute 'enable'.
-     * 
+     *
      * @param enable
      *            new value for 'enable '
      */
@@ -229,7 +229,7 @@ public class Feature implements Serializable {
 
     /**
      * Getter accessor for attribute 'description'.
-     * 
+     *
      * @return current value of 'description'
      */
     public String getDescription() {
@@ -238,7 +238,7 @@ public class Feature implements Serializable {
 
     /**
      * Setter accessor for attribute 'description'.
-     * 
+     *
      * @param description
      *            new value for 'description '
      */
@@ -248,7 +248,7 @@ public class Feature implements Serializable {
 
     /**
      * Getter accessor for attribute 'authorizations'.
-     * 
+     *
      * @return current value of 'authorizations'
      */
     public Set<String> getAuthorizations() {
@@ -257,7 +257,7 @@ public class Feature implements Serializable {
 
     /**
      * Setter accessor for attribute 'authorizations'.
-     * 
+     *
      * @param authorizations
      *            new value for 'authorizations '
      */
@@ -267,7 +267,7 @@ public class Feature implements Serializable {
 
     /**
      * Getter accessor for attribute 'flippingStrategy'.
-     * 
+     *
      * @return current value of 'flippingStrategy'
      */
     public FlipStrategy getFlippingStrategy() {
@@ -276,7 +276,7 @@ public class Feature implements Serializable {
 
     /**
      * Setter accessor for attribute 'flippingStrategy'.
-     * 
+     *
      * @param flippingStrategy
      *            new value for 'flippingStrategy '
      */
@@ -286,7 +286,7 @@ public class Feature implements Serializable {
 
     /**
      * Getter accessor for attribute 'group'.
-     * 
+     *
      * @return current value of 'group'
      */
     public String getGroup() {
@@ -295,7 +295,7 @@ public class Feature implements Serializable {
 
     /**
      * Setter accessor for attribute 'group'.
-     * 
+     *
      * @param group
      *            new value for 'group '
      */
