@@ -212,7 +212,7 @@ public final class FeatureJsonMarshaller {
     /**
      * Render authorizations Set as a Json string.
      * 
-     * @param strat
+     * @param auths
      *            authorizations set
      * @return json string
      */
