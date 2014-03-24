@@ -77,8 +77,9 @@
 		<version.slf4j>1.7.5</version.slf4j>
 		<version.logback>1.0.13</version.logback>
 		<version.junit>4.8.2</version.junit>
-        <version.cglib>3.1</version.cglib>
+		<version.cglib>3.1</version.cglib>
 		<version.hdldb>2.2.4</version.hdldb>
+		<version.fongo>1.4.0</version.fongo>
 		<version.spring>3.1.1.RELEASE</version.spring>
 		<version.spring.jmx>2.0.8</version.spring.jmx>
 		<spring.security.version>3.0.8.RELEASE</spring.security.version>
@@ -111,6 +112,7 @@
 		<module>ff4j-cache-redis</module>
 		<module>ff4j-security-spring</module>
 		<module>ff4j-store-jdbc</module>
+		<module>ff4j-store-mongo</module>
 		<module>ff4j-store-remoting</module>
 	</modules>
 
@@ -236,6 +238,18 @@
 				<groupId>org.hsqldb</groupId>
 				<artifactId>hsqldb</artifactId>
 				<version>${version.hdldb}</version>
+				<scope>test</scope>
+			</dependency>
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongo-java-driver</artifactId>
+                <version>2.11.4</version>
+                <scope>test</scope>
+            </dependency>
+			<dependency>
+				<groupId>com.github.fakemongo</groupId>
+				<artifactId>fongo</artifactId>
+				<version>${version.fongo}</version>
 				<scope>test</scope>
 			</dependency>
 
