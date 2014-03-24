@@ -146,11 +146,11 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
                 flipStrategy.init(featUid, ParameterUtils.toMap(rs.getString(COL_FEAT_EXPRESSION)));
                 f.setFlippingStrategy(flipStrategy);
             } catch (InstantiationException ie) {
-                throw new FeatureAccessException("Cannot instanciate Strategy, no default contructor available", ie);
+                throw new FeatureAccessException("Cannot instantiate Strategy, no default constructor available", ie);
             } catch (IllegalAccessException iae) {
-                throw new FeatureAccessException("Cannot instanciate Strategy, no visible constructor", iae);
+                throw new FeatureAccessException("Cannot instantiate Strategy, no visible constructor", iae);
             } catch (ClassNotFoundException e) {
-                throw new FeatureAccessException("Cannot instanciate Strategy, classNotFound", e);
+                throw new FeatureAccessException("Cannot instantiate Strategy, classNotFound", e);
             }
         }
         return f;

@@ -97,7 +97,7 @@
 			<artifactId>jackson-mapper-asl</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 	</dependencies>
 
 	<properties>
