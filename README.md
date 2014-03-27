@@ -4,6 +4,7 @@ agile development practice. It allows you to  enable and disable features throug
 * Official Website  : [ff4j.org](http://ff4j.org)
 * Latest Version    : **1.1.0**
 * Maven Central     : [here](http://central.maven.org/maven2/org/ff4j/).
+* Build Status      : [![Build Status](https://travis-ci.org/clun/ff4j.svg?branch=master)](https://travis-ci.org/clun/ff4j)
 
 <p align="center">
   <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/stack1.png?raw=true" alt="functions"/>
