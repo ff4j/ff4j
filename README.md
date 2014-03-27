@@ -31,6 +31,7 @@ agile development practice. It allows you to  enable and disable features throug
 <br/>4.1 - [Introducing stores](#stores)
 <br/>4.2 - [Externalise features in a JDBC Store](#store-jdbc)
 <br/>4.3 - [Externalise features in a HTTP Store](#store-http)
+<br/>4.4 - [Externalise features in a MONGODB Store](#store-mongo)
 
 <p/><b>PART V - WEB CAPABILITIES</b>
 <br/>5.1 - [Administration Console](#web)
@@ -584,6 +585,9 @@ _Note : you would probably prefer to export features through the provided web co
 <a name="store-http"/>
 ### 4.3 - Externalise features in a HTTP Store
 
+<a name="store-mongo"/>
+### 4.4 - Externalise features in a MONGODB Store
+
 
 
 <a name="web"/>
@@ -639,8 +643,6 @@ _Please note that this servlet is embedded in a `JAR`. It's a single class which
 [Working sample HERE] (https://github.com/clun/ff4j-extra/tree/master/ff4j-samples/ff4j-simpleweb/)
 
 * You're finished and should be able to visualize the console within `http://<host>:<port>/<webappcontext>/ff4j-console` : 
-
-![Alt ScreenShot](https://raw.github.com/clun/ff4j/master/src/site/screen1.png)
 
 #### TagLib library
 
