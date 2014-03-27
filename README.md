@@ -592,7 +592,7 @@ _Note : you would probably prefer to export features through the provided web co
 #Administr### ation Servlet
 As you have notice we can manage features through API but to update the features at runtime we need a GUI. The `AdministrationConsoleServlet` servlet has been provided as a GUI.
 
-_Please note that this servlet is embedded in a `JAR` (no css, no img, no js^). It's a single class which generates HTML code, there is no dependency to web framework whatsoever, simple `HTTPServlet`_
+_Please note that this servlet is embedded in a `JAR`. It's a single class which generates HTML code, there is no dependency to web framework whatsoever, simple `HTTPServlet`. BUT, to have a decent look'and feel you must add bootstrap files in your project (architetype is undercreation) 
 
 <p align="center">
   <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/screen1.png?raw=true" alt="console"/>
@@ -611,6 +611,8 @@ _Please note that this servlet is embedded in a `JAR` (no css, no img, no js^). 
 
 * Then, in your web.xml file, please declare the servlet in the following way :
 
+
+
 ```xml
 <!-- ff4j servlet -->
 <servlet>
@@ -622,6 +624,19 @@ _Please note that this servlet is embedded in a `JAR` (no css, no img, no js^). 
   <url-pattern>/ff4j-console</url-pattern>
 </servlet-mapping>
 ```
+
+* Then, update your `applicationContext.xml` file to add the `FF4jWebContextHolder`
+
+```xml
+<!-- Make the Ff4j available for TagLibs and administration console -->
+<bean class="org.ff4j.web.FF4jWebContextHolder">
+ <property name="ff4j" ref="ff4j" />
+</bean>
+```
+
+* Add Javascript, CSS and IMG files as the following
+
+[Working sample HERE] (https://github.com/clun/ff4j-extra/tree/master/ff4j-samples/ff4j-simpleweb/)
 
 * You're finished and should be able to visualize the console within `http://<host>:<port>/<webappcontext>/ff4j-console` : 
 
