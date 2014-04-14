@@ -50,21 +50,25 @@ public class FeatureCacheProviderEhCache implements FeatureCacheManager {
      */
     public FeatureCacheProviderEhCache() {}
 
+    /** {@inheritDoc} */
     @Override
     public void clear() {
         getCache().flush();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void evict(String featureId) {
         getCache().remove(featureId);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void put(Feature feat) {
         getCache().put(new Element(feat.getUid(), feat));
     }
 
+    /** {@inheritDoc} */
     @Override
     public Feature get(String featureId) {
         Element e = getCache().get(featureId);
@@ -74,6 +78,7 @@ public class FeatureCacheProviderEhCache implements FeatureCacheManager {
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Object getNativeCache() {
         return getCache();

@@ -25,6 +25,11 @@ import org.ff4j.utils.FeatureJsonMarshaller;
 
 import redis.clients.jedis.Jedis;
 
+/**
+ * Implementation of ditributed cache to limit overhead, with REDIS (JEDIS).
+ * 
+ * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ */
 public class FeatureCacheProviderRedis implements FeatureCacheManager {
 
     /** default host. */
@@ -33,6 +38,8 @@ public class FeatureCacheProviderRedis implements FeatureCacheManager {
     /** default port. */
     public static final int DEFAULT_REDIS_PORT = 6379;
 
+    public static final int DEFAULT_TTL = 900000000;
+
     /** redis host. */
     private final String redisHost = DEFAULT_REDIS_HOST;
 
@@ -40,12 +47,27 @@ public class FeatureCacheProviderRedis implements FeatureCacheManager {
     private final int redisport = DEFAULT_REDIS_PORT;
 
     /** time to live. */
-    private final int timeToLive = Integer.MAX_VALUE;
+    private final int timeToLive = DEFAULT_TTL;
 
     /** Java Redis CLIENT. */
     private final Jedis jedis;
 
+    /**
+     * Default Constructor.
+     */
     public FeatureCacheProviderRedis() {
+        jedis = new Jedis(redisHost, redisport);
+    }
+
+    /**
+     * Contact remote redis server.
+     * 
+     * @param host
+     *            target redis host
+     * @param port
+     *            target redis port
+     */
+    public FeatureCacheProviderRedis(String host, int port) {
         jedis = new Jedis(redisHost, redisport);
     }
 
@@ -71,7 +93,11 @@ public class FeatureCacheProviderRedis implements FeatureCacheManager {
     /** {@inheritDoc} */
     @Override
     public Feature get(String featureId) {
-        return FeatureJsonMarshaller.unMarshallFeature(jedis.get(featureId));
+        String value = jedis.get(featureId);
+        if (value != null) {
+            return FeatureJsonMarshaller.unMarshallFeature(value);
+        }
+        return null;
     }
 
     /** {@inheritDoc} */

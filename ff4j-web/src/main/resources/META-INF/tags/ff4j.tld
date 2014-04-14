@@ -15,7 +15,7 @@
 	<tag>
 	 <description>Check feature existence and status</description>
 	 <name>enable</name>
-	 <tag-class>org.ff4j.web.FlipTag</tag-class>
+	 <tag-class>org.ff4j.web.taglib.FeatureTagEnable</tag-class>
 	 <body-content>JSP</body-content> 
   	 <attribute>
   	 	<description>feature unique identifier</description>

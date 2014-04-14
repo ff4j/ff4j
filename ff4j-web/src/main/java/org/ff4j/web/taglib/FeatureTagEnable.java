@@ -1,4 +1,4 @@
-package org.ff4j.web;
+package org.ff4j.web.taglib;
 
 /*
  * #%L FlipTag.java (ff4j-web) by Cedrick LUNVEN %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the
@@ -21,6 +21,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.web.FF4jWebContextHolder;
 
 /**
  * Taglib to filter display based on {@link Feature} status within {@link FeatureStore}.
@@ -36,7 +37,7 @@ import org.ff4j.exception.FeatureNotFoundException;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FlipTag extends BodyTagSupport {
+public class FeatureTagEnable extends BodyTagSupport {
 
     /** serial number. */
     private static final long serialVersionUID = -4924423673988080781L;
@@ -44,7 +45,7 @@ public class FlipTag extends BodyTagSupport {
     /** Injected by JSP itSelf. */
     private String featureid = "";
 
-    public FlipTag() {}
+    public FeatureTagEnable() {}
 
     /** {@inheritDoc} */
     @Override

@@ -39,7 +39,7 @@ public class EventRepositoryTest {
 
     @Test
     public void testAudit() throws InterruptedException {
-        int nb = 10000;
+        int nb = 500;
         EventPublisher pub = new EventPublisher();
         for (int i = 0; i < nb; i++) {
             pub.publish(new Event("aer", EventType.HIT_FLIPPED));
@@ -50,7 +50,7 @@ public class EventRepositoryTest {
 
     @Test
     public void testAuditWithLimit() throws InterruptedException {
-        int nb = 1000;
+        int nb = 500;
         int limit = 25;
         EventPublisher pub = new EventPublisher();
         pub.setRepository(new InMemoryEventRepository(limit));

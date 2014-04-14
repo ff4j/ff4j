@@ -1,15 +1,16 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~     COORDINATES          ~ -->
+	<!-- ~ COORDINATES ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<artifactId>ff4j-cache-redis</artifactId>
 	<packaging>jar</packaging>
 	<name>ff4j-cache-redis</name>
-	
+
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~         PARENT           ~ -->
+	<!-- ~ PARENT ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<parent>
 		<groupId>org.ff4j</groupId>
@@ -18,30 +19,31 @@
 	</parent>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~        PROPERTIES        ~ -->
+	<!-- ~ PROPERTIES ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<properties>
 		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
+		<redis-forked>true</redis-forked>
 	</properties>
-	
+
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~      DEPENDENCIES        ~ -->
+	<!-- ~ DEPENDENCIES ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<dependencies>
-	
+
 		<!-- logger -->
 		<dependency>
 			<groupId>org.ff4j</groupId>
 			<artifactId>ff4j-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
-		<!--  cache provider -->
-		 <dependency>
-          <groupId>redis.clients</groupId>
-          <artifactId>jedis</artifactId>
-          <version>${version.jedis}</version>
-      	</dependency>
+
+		<!-- cache provider -->
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>${version.jedis}</version>
+		</dependency>
 
 		<!-- tests -->
 		<dependency>
@@ -59,7 +61,58 @@
 			<artifactId>logback-classic</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>ru.trylogic.maven.plugins</groupId>
+				<artifactId>redis-maven-plugin</artifactId>
+				<version>${version.maven.plugin.redis}</version>
+				<configuration>
+					<forked>${redis-forked}</forked>
+				</configuration>
+				<executions>
+					<execution>
+						<id>start-redis</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>stop-redis</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>shutdown</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>${version.maven.plugin.failsafe}</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.surefire</groupId>
+						<artifactId>surefire-junit47</artifactId>
+						<version>${version.maven.plugin.failsafe}</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
 
 </project>

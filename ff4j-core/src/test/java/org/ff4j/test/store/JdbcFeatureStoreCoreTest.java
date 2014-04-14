@@ -11,22 +11,11 @@ package org.ff4j.test.store;
  * governing permissions and limitations under the License. #L%
  */
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyVararg;
-import static org.mockito.Mockito.when;
-
-import java.sql.SQLException;
-
-import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.store.JdbcFeatureStore;
 import org.ff4j.test.AbstractStoreTest;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.mockito.Mockito;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -36,8 +25,10 @@ public class JdbcFeatureStoreCoreTest extends AbstractStoreTest {
     /** DataBase. */
     private EmbeddedDatabase db;
 
+    /** Builder. */
     private EmbeddedDatabaseBuilder builder = null;
 
+    /** {@inheritDoc} */
     @Override
     protected FeatureStore initStore() {
         builder = new EmbeddedDatabaseBuilder();
@@ -47,15 +38,6 @@ public class JdbcFeatureStoreCoreTest extends AbstractStoreTest {
         JdbcFeatureStore jdbcStore = new JdbcFeatureStore();
         jdbcStore.setDataSource(db);
         return jdbcStore;
-    }
-
-    @Ignore
-    @SuppressWarnings("unchecked")
-    @Test(expected = FeatureAccessException.class)
-    public void testErrorOnUpdate() throws SQLException {
-        JdbcFeatureStore spy = (JdbcFeatureStore) Mockito.spy(testedStore);
-        when(spy.buildStatement(any(String.class), (String[]) anyVararg())).thenThrow(SQLException.class);
-        spy.update(new Feature("abc", false, "desca2"));
     }
 
     /** {@inheritDoc} */

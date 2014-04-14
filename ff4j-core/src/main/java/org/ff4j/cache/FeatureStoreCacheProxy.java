@@ -63,7 +63,7 @@ public class FeatureStoreCacheProxy implements FeatureStore {
     /** {@inheritDoc} */
     @Override
     public void enable(String featureId) {
-        // Cache Operations : As modification, flush cache for this
+        // Modification => flush cache
         getCacheManager().evict(featureId);
         // Reach target
         getTarget().enable(featureId);
@@ -81,7 +81,7 @@ public class FeatureStoreCacheProxy implements FeatureStore {
     /** {@inheritDoc} */
     @Override
     public boolean exist(String featureId) {
-        // not in cache but maybe created from now
+        // not in cache but maybe created from last access
         if (getCacheManager().get(featureId) == null) {
             return getTarget().exist(featureId);
         }
@@ -131,16 +131,63 @@ public class FeatureStoreCacheProxy implements FeatureStore {
         getTarget().update(fp);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void grantRoleOnFeature(String featureId, String roleName) {
         getCacheManager().evict(featureId);
         getTarget().grantRoleOnFeature(featureId, roleName);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void removeRoleFromFeature(String featureId, String roleName) {
         getCacheManager().evict(featureId);
         getTarget().removeRoleFromFeature(featureId, roleName);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void enableGroup(String groupName) {
+        // Cannot know wich feature to work with (exceptional event) : flush cache
+        getCacheManager().clear();
+        getTarget().enableGroup(groupName);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void disableGroup(String groupName) {
+        // Cannot know wich feature to work with (exceptional event) : flush cache
+        getCacheManager().clear();
+        getTarget().disableGroup(groupName);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean existGroup(String groupName) {
+        // Cache cannot help you
+        return getTarget().existGroup(groupName);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, Feature> readGroup(String groupName) {
+        // Cache cannot help you
+        return getTarget().readGroup(groupName);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void addToGroup(String featureId, String groupName) {
+        getCacheManager().evict(featureId);
+        getTarget().addToGroup(featureId, groupName);
+
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeFromGroup(String featureId, String groupName) {
+        getCacheManager().evict(featureId);
+        getTarget().removeFromGroup(featureId, groupName);
     }
 
     /**
@@ -185,41 +232,5 @@ public class FeatureStoreCacheProxy implements FeatureStore {
      */
     public void setCacheManager(FeatureCacheManager cacheManager) {
         this.cacheManager = cacheManager;
-    }
-
-    @Override
-    public void enableGroup(String groupName) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void disableGroup(String groupName) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void existGroup(String groupName) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public Map<String, Feature> readGroup(String groupName) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void addToGroup(String featureId, String groupName) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void removeFromGroup(String featureId, String groupName) {
-        // TODO Auto-generated method stub
-
     }
 }

@@ -1,5 +1,11 @@
 package org.ff4j.test;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /*
  * #%L
  * ff4j-core
@@ -20,6 +26,12 @@ package org.ff4j.test;
  * #L%
  */
 
-public class RunWithFF4j {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Inherited
+public @interface RunWithFF4j {
+
+    /** XML FileName to load features. */
+    String value();
 
 }

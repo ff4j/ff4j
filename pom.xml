@@ -97,6 +97,11 @@
 		<version.ehcache>2.6.6</version.ehcache>
 		<version.jacoco>0.6.3.201306030806</version.jacoco>
 		<version.jedis>2.2.1</version.jedis>
+		
+		<!-- VERSIONS PLUGINS -->
+		<version.maven.plugin.failsafe>2.17</version.maven.plugin.failsafe>
+		<version.maven.plugin.redis>1.2.3</version.maven.plugin.redis>
+		<version.maven.plugin.surefire>2.7.2</version.maven.plugin.surefire>
 	
 	</properties>
 
@@ -346,6 +351,7 @@
 
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${version.maven.plugin.surefire}</version>
 				<configuration>
 					<skip>true</skip>
 				</configuration>
@@ -360,7 +366,7 @@
 							<skip>${maven.test.skip}</skip>
 							<argLine>${argLine}</argLine>
 							<excludes>
-								<exclude>**/*IntegrationTest.java</exclude>
+								<exclude>**/*IT.java</exclude>
 							</excludes>
 						</configuration>
 					</execution>
@@ -374,9 +380,11 @@
 							<skip>${skipITs}</skip>
 							<argLine>${argLine}</argLine>
 							<includes>
-								<include>**/*IntegrationTest.java</include>
+								<include>**/*IT.java</include>
 							</includes>
 						</configuration>
+					</execution>
+					<execution>
 					</execution>
 				</executions>
 			</plugin>

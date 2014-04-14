@@ -33,18 +33,18 @@ public class FeatureStoreMongoDBCore1Test extends AbstractStoreTest {
     @Override
     protected FeatureStore initStore() {
         FeatureStoreMongoDB storeMongoDB = new FeatureStoreMongoDB(fongoRule.getDb().getCollection("ff4j"));
-
         storeMongoDB.create(new Feature("AwesomeFeature", true, "some desc"));
         // First
-        storeMongoDB.create(new Feature("first", true, "description", null, Arrays.asList("ROLE_USER")));
+        storeMongoDB.create(new Feature("first", true, "description", null, Arrays.asList("USER")));
         // Second
-        storeMongoDB.create(new Feature("second", false, "description", null, Arrays.asList("ROLE_USER")));
+        storeMongoDB.create(new Feature("second", false, "description", "GRP0", Arrays.asList("USER")));
         // Third
-        storeMongoDB.create(new Feature("third", false, "ThirdJDBC", null, Arrays.asList("X", "Y")));
+        storeMongoDB.create(new Feature("third", false, "ThirdJDBC", "GRP1", Arrays.asList("ADMINISTRATOR", "BETA-TESTER")));
         // Forth ?? Fourth ?
         FlipStrategy strategy = new org.ff4j.strategy.el.ExpressionFlipStrategy();
         strategy.init("forth", ParameterUtils.toMap("expression=third|second"));
-        storeMongoDB.create(new Feature("forth", false, "ForthJDBC", "GRP1", Arrays.asList("X", "Y"), strategy));
+        storeMongoDB.create(new Feature("forth", true, "ForthJDBC", "GRP1", Arrays.asList("ADMINISTRATOR", "BETA-TESTER"),
+                strategy));
 
         return storeMongoDB;
     }

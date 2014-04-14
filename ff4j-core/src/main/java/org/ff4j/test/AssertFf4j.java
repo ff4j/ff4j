@@ -128,7 +128,22 @@ public class AssertFf4j {
      */
     public void assertHasRole(String featureName, String roleName) {
         assertExist(featureName);
-        Assert.assertTrue(ff4j.getFeature(featureName).getAuthorizations().contains(roleName));
+        Assert.assertTrue("'" + featureName + "' has no roles", !ff4j.getFeature(featureName).getAuthorizations().isEmpty());
+        Assert.assertTrue("'" + featureName + "' has not role '" + roleName + "'", ff4j.getFeature(featureName)
+                .getAuthorizations().contains(roleName));
+    }
+
+    /**
+     * Check that feature exists and does not have expected role.
+     * 
+     * @param featureName
+     *            target feature Name
+     * @param roleName
+     *            target role name
+     */
+    public void assertHasNotRole(String featureName, String roleName) {
+        assertExist(featureName);
+        Assert.assertFalse(ff4j.getFeature(featureName).getAuthorizations().contains(roleName));
     }
 
     /**
@@ -146,16 +161,35 @@ public class AssertFf4j {
     }
 
     /**
-     * Check that feature exists and do not have expected role.
+     * Chack that feature is enabled in current store.
      * 
      * @param featureName
-     *            target feature Name
-     * @param roleName
-     *            target role name
+     *            target featureName
      */
-    public void assertDoesntHaveRole(String featureName, String roleName) {
-        assertExist(featureName);
-        Assert.assertFalse(ff4j.getFeature(featureName).getAuthorizations().contains(roleName));
+    public void assertEnable(String featureName) {
+        Assert.assertTrue(ff4j.getStore().read(featureName).isEnable());
+    }
+
+    /**
+     * Chack that feature is disabled in current store.
+     * 
+     * @param featureName
+     *            target featureName
+     */
+    public void assertDisable(String featureName) {
+        Assert.assertFalse(ff4j.getStore().read(featureName).isEnable());
+    }
+
+    /**
+     * Check Group Size
+     * 
+     * @param expected
+     *            expected value for size
+     * @param groupName
+     *            target groupName
+     */
+    public void assertGroupSize(int expected, String groupName) {
+        Assert.assertEquals(expected, ff4j.getStore().readGroup(groupName).size());
     }
 
 }

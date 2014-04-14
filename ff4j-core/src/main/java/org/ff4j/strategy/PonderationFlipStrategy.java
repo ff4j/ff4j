@@ -54,6 +54,7 @@ public class PonderationFlipStrategy extends AbstractFlipStrategy {
     public PonderationFlipStrategy(double threshold) {
         this.weight = threshold;
         checkWeight();
+        getInitParams().put(PARAM_WEIGHT, String.valueOf(threshold));
     }
 
     /** {@inheritDoc} */

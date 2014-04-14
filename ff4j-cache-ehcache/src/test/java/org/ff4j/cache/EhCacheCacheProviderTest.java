@@ -20,26 +20,36 @@ package org.ff4j.cache;
  * #L%
  */
 
-import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Cache;
+
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.test.AbstractStoreTest;
 import org.junit.After;
 
+/**
+ * Class to test the EHCache {@link FeatureCacheProviderEhCache}.
+ * 
+ * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ */
 public class EhCacheCacheProviderTest extends AbstractStoreTest {
 
-    /**
-     * {@inheritDoc}
-     */
+    /** Cache Manager. */
+    private final FeatureCacheManager cache = new FeatureCacheProviderEhCache();
+
+    /** {@inheritDoc} */
     @Override
     public FeatureStore initStore() {
-        return new FeatureStoreCacheProxy(new InMemoryFeatureStore("test-ehcacheProvider.xml"), new FeatureCacheProviderEhCache());
+        FeatureStore store = new InMemoryFeatureStore("test-ehcacheProvider.xml");
+        return new FeatureStoreCacheProxy(store, cache);
     }
 
+    /**
+     * Clear all elements
+     */
     @After
     public void tearDown() {
-        CacheManager cacheManager = CacheManager.create();
-        cacheManager.removalAll();
+        ((Cache) cache.getNativeCache()).removeAll();
     }
 
 }

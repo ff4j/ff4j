@@ -11,8 +11,6 @@ package org.ff4j.store;
  * governing permissions and limitations under the License. #L%
  */
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,11 +23,11 @@ import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.utils.ParameterUtils;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -40,27 +38,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, FeatureStore {
 
     /** Row Mapper for FlipPoint. */
-    private static final FlippingPointRowMapper MAPPER = new FlippingPointRowMapper();
+    private static final FeatureRowMapper MAPPER = new FeatureRowMapper();
 
     /** SQL DataSource. */
     private DataSource dataSource;
 
     /** Access to storage. */
     private JdbcTemplate jdbcTemplate;
-
-    /**
-     * Mapper from Database to FlippingPoint.
-     */
-    static class FlippingPointRowMapper implements ParameterizedRowMapper<Feature> {
-        public FlippingPointRowMapper() {};
-
-        @Override
-        public Feature mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Feature f = new Feature(rs.getString("UID"), rs.getInt("ENABLE") > 0, rs.getString("DESCRIPTION"));
-            f.setGroup(rs.getString(COL_FEAT_GROUPNAME));
-            return f;
-        }
-    }
 
     /** {@inheritDoc} */
     @Override
@@ -96,7 +80,7 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
         Feature fp = dbFlips.get(0);
         List<String> auths = getJdbcTemplate().query(SQL_GET_ROLES, new SingleColumnRowMapper<String>(), featId);
         fp.getAuthorizations().addAll(auths);
-        return dbFlips.get(0);
+        return fp;
     }
 
     /** {@inheritDoc} */
@@ -156,6 +140,73 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
             throw new FeatureNotFoundException(fpId);
         }
         getJdbcTemplate().update(SQL_DELETE_ROLE, fpId, roleName);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    @Transactional
+    public void enableGroup(String groupName) {
+        if (!existGroup(groupName)) {
+            throw new GroupNotFoundException(groupName);
+        }
+        getJdbcTemplate().update(SQL_ENABLE_GROUP, groupName);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    @Transactional
+    public void disableGroup(String groupName) {
+        if (!existGroup(groupName)) {
+            throw new GroupNotFoundException(groupName);
+        }
+        getJdbcTemplate().update(SQL_DISABLE_GROUP, groupName);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean existGroup(String groupName) {
+        return getJdbcTemplate().queryForInt(SQL_EXIST_GROUP, groupName) > 0;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, Feature> readGroup(String groupName) {
+        if (!existGroup(groupName)) {
+            throw new GroupNotFoundException(groupName);
+        }
+        LinkedHashMap<String, Feature> mapFP = new LinkedHashMap<String, Feature>();
+        List<Feature> lFp = getJdbcTemplate().query(SQLQUERY_GET_FEATURE_GROUP, MAPPER, groupName);
+        for (Feature flipPoint : lFp) {
+            mapFP.put(flipPoint.getUid(), flipPoint);
+        }
+        return mapFP;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    @Transactional
+    public void addToGroup(String featureId, String groupName) {
+        if (!exist(featureId)) {
+            throw new FeatureNotFoundException(featureId);
+        }
+        getJdbcTemplate().update(SQL_ADD_TO_GROUP, groupName, featureId);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    @Transactional
+    public void removeFromGroup(String featureId, String groupName) {
+        if (!exist(featureId)) {
+            throw new FeatureNotFoundException(featureId);
+        }
+        if (!existGroup(groupName)) {
+            throw new GroupNotFoundException(groupName);
+        }
+        Feature feat = read(featureId);
+        if (feat.getGroup() != null && !feat.getGroup().equals(groupName)) {
+            throw new IllegalArgumentException("'" + featureId + "' is not in group '" + groupName + "'");
+        }
+        getJdbcTemplate().update(SQL_ADD_TO_GROUP, "", featureId);
     }
 
     /** {@inheritDoc} */
@@ -244,40 +295,6 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
         return jdbcTemplate;
     }
 
-    @Override
-    public void enableGroup(String groupName) {
-        // TODO Auto-generated method stub
 
-    }
-
-    @Override
-    public void disableGroup(String groupName) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void existGroup(String groupName) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public Map<String, Feature> readGroup(String groupName) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void addToGroup(String featureId, String groupName) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void removeFromGroup(String featureId, String groupName) {
-        // TODO Auto-generated method stub
-
-    }
 
 }

@@ -205,9 +205,8 @@ public class RemoteHttpFeatureStore implements FeatureStore {
     }
 
     @Override
-    public void existGroup(String groupName) {
-        // TODO Auto-generated method stub
-
+    public boolean existGroup(String groupName) {
+        return false;
     }
 
     @Override

@@ -11,174 +11,93 @@ package org.ff4j.store;
  * governing permissions and limitations under the License. #L%
  */
 
-import com.mongodb.BasicDBList;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import org.ff4j.core.Feature;
+import org.ff4j.core.FeatureStore;
+import org.ff4j.exception.FeatureAlreadyExistException;
+import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.exception.GroupNotFoundException;
+import org.ff4j.store.mongodb.FeatureDBObjectBuilder;
+import org.ff4j.store.mongodb.FeatureDBObjectMapper;
+import org.ff4j.store.mongodb.FeatureStoreMongoConstants;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
-import org.bson.types.BasicBSONList;
-import org.ff4j.core.Feature;
-import org.ff4j.core.FeatureStore;
-import org.ff4j.core.FlipStrategy;
-import org.ff4j.exception.FeatureAccessException;
-import org.ff4j.exception.FeatureAlreadyExistException;
-import org.ff4j.exception.FeatureNotFoundException;
-import org.ff4j.utils.ParameterUtils;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Implementation of {@link FeatureStore} to work with MongoDB.
- *
- *
- * Nota : _id == uuid
+ * 
+ * @author William Delanoue (@twillouer) </a>
+ * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreMongoDB implements JdbcFeatureStoreConstants, FeatureStore {
+public class FeatureStoreMongoDB implements FeatureStore, FeatureStoreMongoConstants {
 
-    private enum Field {
-        UUID("_id"), //
-        ENABLE("enable"), //
-        DESCRIPTION("description"), //
-        STRATEGY("strategy"), //
-        EXPRESSION("expression"), //
-        GROUPNAME("groupname"), //
-        ROLES("roles");
+    /** Map from DBObject to Feature. */
+    private static final FeatureDBObjectMapper MAPPER = new FeatureDBObjectMapper();
 
-        private final String column;
-
-        private Field(String column) { this.column = column; }
-
-        @Override
-        public String toString() { return column; };
-    }
-
-    // Mutable object.
-    private static class Builder {
-        private final BasicDBObjectBuilder build = new BasicDBObjectBuilder();
-
-        public static Builder create(Field field, Object value) { return new Builder().add(field, value); }
-
-        public static Builder createUUID(String value) { return new Builder().add(Field.UUID, value); }
-
-        public Builder add(Field field, Object value) {
-            build.add(field.column, value);
-            return this;
-        }
-
-        public DBObject get() { return build.get(); }
-    }
-
-    /** Row Mapper for FlipPoint. */
-    private static final FlippingPointRowMapper MAPPER = new FlippingPointRowMapper();
+    /** Build fields. */
+    private static final FeatureDBObjectBuilder BUILDER = new FeatureDBObjectBuilder();
 
     /** MongoDB collection. */
     private final DBCollection collection;
 
     /**
-     * Mapper from Database to FlippingPoint.
-     */
-    private static class FlippingPointRowMapper {
-        public FlippingPointRowMapper() {};
-
-        public Feature mapRow(DBObject dbObject) {
-            String featUid = (String) dbObject.get(Field.UUID.toString());
-            return new Feature(featUid,
-                    (Boolean) dbObject.get(Field.ENABLE.toString()),
-                    (String) dbObject.get(Field.DESCRIPTION.toString()),
-                    (String) dbObject.get(Field.GROUPNAME.toString()),
-                    mapAuthorization(dbObject),
-                    mapStrategy(featUid, dbObject));
-        }
-
-        private Collection<String> mapAuthorization(DBObject dbObject) {
-            List<String> authorisation = new ArrayList<String>();
-            if (dbObject.containsField(Field.ROLES.toString())) {
-                for (Object role : (BasicBSONList) dbObject.get(Field.ROLES.toString())) {
-                    authorisation.add(role.toString());
-                }
-            }
-            return authorisation;
-        }
-
-        private FlipStrategy mapStrategy(String featUid, DBObject dbObject) {
-            String strategy = (String) dbObject.get(Field.STRATEGY.toString());
-            if (strategy != null && !"".equals(strategy)) {
-                try {
-                    FlipStrategy flipStrategy = (FlipStrategy) Class.forName(strategy).newInstance();
-                    flipStrategy.init(featUid, ParameterUtils.toMap((String) dbObject.get(Field.EXPRESSION.toString())));
-                    return flipStrategy;
-                } catch (InstantiationException ie) {
-                    throw new FeatureAccessException("Cannot instantiate Strategy, no default constructor available", ie);
-                } catch (IllegalAccessException iae) {
-                    throw new FeatureAccessException("Cannot instantiate Strategy, no visible constructor", iae);
-                } catch (ClassNotFoundException e) {
-                    throw new FeatureAccessException("Cannot instantiate Strategy, classNotFound", e);
-                }
-            }
-            return (FlipStrategy) dbObject.get(Field.STRATEGY.toString());
-        }
-
-        public DBObject toDBObject(Feature feature) {
-            String strategyColumn = null;
-            String expressionColumn = null;
-            if (feature.getFlippingStrategy() != null) {
-                strategyColumn = feature.getFlippingStrategy().getClass().getCanonicalName();
-                expressionColumn = ParameterUtils.fromMap(feature.getFlippingStrategy().getInitParams());
-            }
-            BasicDBList authorizations = new BasicDBList();
-            authorizations.addAll(feature.getAuthorizations());
-            return Builder.createUUID(feature.getUid()).add(Field.ENABLE, feature.isEnable())
-                    .add(Field.DESCRIPTION, feature.getDescription())
-                    .add(Field.GROUPNAME, feature.getGroup())
-                    .add(Field.STRATEGY, strategyColumn)
-                    .add(Field.EXPRESSION, expressionColumn)
-                    .add(Field.ROLES, authorizations)
-                    .get();
-        }
-    }
-
-    /**
+     * Parameterized constructor with collection.
+     * 
      * @param collection
      *            the collection to set
      */
-    public FeatureStoreMongoDB(DBCollection collection) { this.collection = collection; }
+    public FeatureStoreMongoDB(DBCollection collection) {
+        this.collection = collection;
+    }
 
     /** {@inheritDoc} */
     @Override
     public void enable(String featId) {
-        if (!exist(featId)) {
-            throw new FeatureNotFoundException(featId);
-        }
-        collection.update(Builder.create(Field.UUID, featId).get(), BasicDBObjectBuilder.start("$set", Builder.create(Field.ENABLE, true).get()).get() );
+        this.updateStatus(featId, true);
     }
 
     /** {@inheritDoc} */
     @Override
     public void disable(String featId) {
+        this.updateStatus(featId, false);
+    }
+
+    /**
+     * Update status of feature.
+     * 
+     * @param featId
+     *            feature id
+     * @param enable
+     *            enabler
+     */
+    private void updateStatus(String featId, boolean enable) {
         if (!exist(featId)) {
             throw new FeatureNotFoundException(featId);
         }
-        collection.update(Builder.create(Field.UUID, featId).get(), BasicDBObjectBuilder.start("$set", Builder.create(Field.ENABLE, false).get()).get() );
+        DBObject target = BUILDER.getFeatUid(featId);
+        Object enabledd = BUILDER.getEnable(enable);
+        collection.update(target, BasicDBObjectBuilder.start(MONGO_SET, enabledd).get());
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean exist(String featId) {
-        return 1 == collection.count(Builder.create(Field.UUID, featId).get());
+        return 1 == collection.count(BUILDER.getFeatUid(featId));
     }
 
     /** {@inheritDoc} */
     @Override
     public Feature read(String featId) {
-        DBObject object = collection.findOne(Builder.createUUID(featId).get());
+        DBObject object = collection.findOne(BUILDER.getFeatUid(featId));
         if (object==null) {
             throw new FeatureNotFoundException(featId);
         }
-        return MAPPER.mapRow(object);
+        return MAPPER.mapFeature(object);
     }
 
     /** {@inheritDoc} */
@@ -196,8 +115,7 @@ public class FeatureStoreMongoDB implements JdbcFeatureStoreConstants, FeatureSt
         if (!exist(fpId)) {
             throw new FeatureNotFoundException(fpId);
         }
-        Feature fp = read(fpId);
-        collection.remove(Builder.createUUID(fp.getUid()).get());
+        collection.remove(BUILDER.getFeatUid(fpId));
     }
 
     /** {@inheritDoc} */
@@ -206,7 +124,7 @@ public class FeatureStoreMongoDB implements JdbcFeatureStoreConstants, FeatureSt
         if (!exist(fpId)) {
             throw new FeatureNotFoundException(fpId);
         }
-        collection.update(Builder.createUUID(fpId).get(), new BasicDBObject("$addToSet", Builder.create(Field.ROLES, roleName).get()));
+        collection.update(BUILDER.getFeatUid(fpId), new BasicDBObject("$addToSet", BUILDER.getRoles(roleName)));
     }
 
     /** {@inheritDoc} */
@@ -215,7 +133,7 @@ public class FeatureStoreMongoDB implements JdbcFeatureStoreConstants, FeatureSt
         if (!exist(fpId)) {
             throw new FeatureNotFoundException(fpId);
         }
-        collection.update(Builder.createUUID(fpId).get(), new BasicDBObject("$pull", Builder.create(Field.ROLES, roleName).get()));
+        collection.update(BUILDER.getFeatUid(fpId), new BasicDBObject("$pull", BUILDER.getRoles(roleName)));
     }
 
     /** {@inheritDoc} */
@@ -223,7 +141,7 @@ public class FeatureStoreMongoDB implements JdbcFeatureStoreConstants, FeatureSt
     public Map<String, Feature> readAll() {
         LinkedHashMap<String, Feature> mapFP = new LinkedHashMap<String, Feature>();
         for(DBObject dbObject : collection.find()) {
-            Feature feature = MAPPER.mapRow(dbObject);
+            Feature feature = MAPPER.mapFeature(dbObject);
             mapFP.put(feature.getUid(), feature);
         }
         return mapFP;
@@ -247,44 +165,77 @@ public class FeatureStoreMongoDB implements JdbcFeatureStoreConstants, FeatureSt
 
     /** {@inheritDoc} */
     @Override
-    public String toString() {
-        return "FeatureStoreMongoDB [collection=" + collection.getFullName() + "]";
+    public boolean existGroup(String groupName) {
+        return collection.count(BUILDER.getGroupName(groupName)) > 0;
     }
 
-    @Override
-    public void enableGroup(String groupName) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void disableGroup(String groupName) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void existGroup(String groupName) {
-        // TODO Auto-generated method stub
-
-    }
-
+    /** {@inheritDoc} */
     @Override
     public Map<String, Feature> readGroup(String groupName) {
-        // TODO Auto-generated method stub
-        return null;
+        if (!existGroup(groupName)) {
+            throw new GroupNotFoundException(groupName);
+        }
+        LinkedHashMap<String, Feature> mapFP = new LinkedHashMap<String, Feature>();
+        for (DBObject dbObject : collection.find(BUILDER.getGroupName(groupName))) {
+            Feature feature = MAPPER.mapFeature(dbObject);
+            mapFP.put(feature.getUid(), feature);
+        }
+        return mapFP;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void enableGroup(String groupName) {
+        if (!existGroup(groupName)) {
+            throw new GroupNotFoundException(groupName);
+        }
+        for (DBObject dbObject : collection.find(BUILDER.getGroupName(groupName))) {
+            Object enabledd = BUILDER.getEnable(true);
+            collection.update(dbObject, BasicDBObjectBuilder.start(MONGO_SET, enabledd).get());
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void disableGroup(String groupName) {
+        if (!existGroup(groupName)) {
+            throw new GroupNotFoundException(groupName);
+        }
+        for (DBObject dbObject : collection.find(BUILDER.getGroupName(groupName))) {
+            Object enabledd = BUILDER.getEnable(false);
+            collection.update(dbObject, BasicDBObjectBuilder.start(MONGO_SET, enabledd).get());
+        }
+    }
+
+    /** {@inheritDoc} */
     @Override
     public void addToGroup(String featureId, String groupName) {
-        // TODO Auto-generated method stub
-
+        if (!exist(featureId)) {
+            throw new FeatureNotFoundException(featureId);
+        }
+        DBObject target = BUILDER.getFeatUid(featureId);
+        DBObject nGroupName = BUILDER.getGroupName(groupName);
+        collection.update(target, BasicDBObjectBuilder.start(MONGO_SET, nGroupName).get());
     }
 
+    /** {@inheritDoc} */
     @Override
     public void removeFromGroup(String featureId, String groupName) {
-        // TODO Auto-generated method stub
+        if (!exist(featureId)) {
+            throw new FeatureNotFoundException(featureId);
+        }
+        if (!existGroup(groupName)) {
+            throw new GroupNotFoundException(groupName);
+        }
+        DBObject target = BUILDER.getFeatUid(featureId);
+        DBObject nGroupName = BUILDER.getGroupName("");
+        collection.update(target, BasicDBObjectBuilder.start(MONGO_SET, nGroupName).get());
+    }
 
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return "FeatureStoreMongoDB [collection=" + collection.getFullName() + "]";
     }
 
 }

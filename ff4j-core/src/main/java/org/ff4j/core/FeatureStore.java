@@ -127,7 +127,7 @@ public interface FeatureStore {
      * @param groupName
      *            target group name
      */
-    void existGroup(String groupName);
+    boolean existGroup(String groupName);
 
     /**
      * Read all features within target group.

@@ -21,9 +21,10 @@ package org.ff4j.web;
  */
 
 import org.ff4j.FF4j;
+import org.ff4j.web.taglib.FeatureTagEnable;
 
 /**
- * This class hold a FF4J instance to be access to Web objects as {@link FlipTag} or {@link AdministrationConsoleServlet}.
+ * This class hold a FF4J instance to be access to Web objects as {@link FeatureTagEnable} or {@link AdministrationConsoleServlet}.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */

@@ -21,19 +21,17 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:*applicationContext-jdbc-test.xml")
-public class JdbcFeatureStoreSpring2Test extends AbstractStoreTest {
+public class SpringJdbcXMLDataSourceStoreTest extends AbstractStoreTest {
 
     @Autowired
     private FF4j ff4j;
 
-    private static FeatureStore store = null;
+    @Autowired
+    private FeatureStore store;
 
+    /** {@inheritDoc} */
     @Override
     protected FeatureStore initStore() {
-        if (store == null) {
-            System.out.println("OK");
-            store = ff4j.getStore();
-        }
         return store;
     }
 }

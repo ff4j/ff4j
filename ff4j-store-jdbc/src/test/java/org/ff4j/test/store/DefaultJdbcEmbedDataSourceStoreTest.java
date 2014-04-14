@@ -20,19 +20,20 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
-public class JdbcFeatureStoreCore1Test extends AbstractStoreTest {
+public class DefaultJdbcEmbedDataSourceStoreTest extends AbstractStoreTest {
 
     /** DataBase. */
     private EmbeddedDatabase db;
 
+    /** DataBase Builder. */
     private EmbeddedDatabaseBuilder builder = null;
 
+    /** {@inheritDoc} */
     @Override
     protected FeatureStore initStore() {
         builder = new EmbeddedDatabaseBuilder();
         db = builder.setType(EmbeddedDatabaseType.HSQL).addScript("classpath:schema-ddl.sql").addScript("classpath:ff-store.sql")
                 .build();
-
         JdbcFeatureStore jdbcStore = new JdbcFeatureStore();
         jdbcStore.setDataSource(db);
         return jdbcStore;

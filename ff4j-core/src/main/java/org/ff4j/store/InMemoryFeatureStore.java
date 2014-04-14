@@ -12,9 +12,11 @@ package org.ff4j.store;
  */
 
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.ff4j.core.Feature;
@@ -22,6 +24,7 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FeatureXmlParser;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.exception.GroupNotFoundException;
 
 /**
  * Storing states of feature inmemory with initial values. Could be used mostly for testing purpose.
@@ -30,20 +33,36 @@ import org.ff4j.exception.FeatureNotFoundException;
  */
 public class InMemoryFeatureStore implements FeatureStore {
 
+    /** XML File where features are load. */
+    private String fileName = null;
+
     /** InMemory Feature Map */
     private Map<String, Feature> featuresMap = new LinkedHashMap<String, Feature>();
 
-    /** Default. */
+    /** Group structure for features. */
+    private Map<String, Set<String>> featureGroups = new HashMap<String, Set<String>>();
+
+    /** Default constructor. */
     public InMemoryFeatureStore() {}
 
-    /** Default. */
+    /**
+     * Constructor with configuration fileName.
+     * 
+     * @param fileName
+     *            fileName present in classPath or on fileSystem.
+     */
     public InMemoryFeatureStore(String fileName) {
         loadConfFile(fileName);
     }
 
-    /** Default. */
+    /**
+     * Constructor with full set of feature.
+     * 
+     * @param maps
+     */
     public InMemoryFeatureStore(Map<String, Feature> maps) {
         this.featuresMap = maps;
+        buildGroupsFromFeatures();
     }
 
     /**
@@ -54,7 +73,36 @@ public class InMemoryFeatureStore implements FeatureStore {
      */
     private void loadConfFile(String conf) {
         InputStream xmlIN = getClass().getClassLoader().getResourceAsStream(conf);
+        this.fileName = conf;
         this.featuresMap = new FeatureXmlParser().parseConfigurationFile(xmlIN);
+        buildGroupsFromFeatures();
+    }
+
+    /**
+     * Group is an attribute of the feature and the group structure is rebuild from it.
+     */
+    private void buildGroupsFromFeatures() {
+        // Reinit if required
+        featureGroups = new HashMap<String, Set<String>>();
+        for (Entry<String, Feature> item : featuresMap.entrySet()) {
+            String currentGroup = item.getValue().getGroup();
+            if (!featureGroups.containsKey(currentGroup)) {
+                // Create Group of not exist
+                featureGroups.put(currentGroup, new HashSet<String>());
+            }
+            featureGroups.get(currentGroup).add(item.getKey());
+        }
+    }
+
+    /**
+     * Unique update point to force group construction.
+     * 
+     * @param fp
+     *            Target feature to update
+     */
+    private void updateFeature(Feature fp) {
+        featuresMap.put(fp.getUid(), fp);
+        buildGroupsFromFeatures();
     }
 
     /** {@inheritDoc} */
@@ -63,14 +111,13 @@ public class InMemoryFeatureStore implements FeatureStore {
         if (exist(fp.getUid())) {
             throw new FeatureAlreadyExistException(fp.getUid());
         }
-        featuresMap.put(fp.getUid(), fp);
+        updateFeature(fp);
     }
 
     /** {@inheritDoc} */
     @Override
     public void update(Feature fp) {
         Feature fpExist = read(fp.getUid());
-
         // Checking new roles
         Set<String> toBeAdded = new HashSet<String>();
         toBeAdded.addAll(fp.getAuthorizations());
@@ -79,18 +126,17 @@ public class InMemoryFeatureStore implements FeatureStore {
             // Will fail if invalid userrole
             grantRoleOnFeature(fpExist.getUid(), addee);
         }
-
-        featuresMap.put(fp.getUid(), fp);
+        updateFeature(fp);
     }
 
     /** {@inheritDoc} */
     @Override
     public void delete(String fpId) {
         if (!exist(fpId)) {
-            // Feature cannot be deleted as does not exist
             throw new FeatureNotFoundException(fpId);
         }
         featuresMap.remove(fpId);
+        buildGroupsFromFeatures();
     }
 
     /** {@inheritDoc} */
@@ -138,10 +184,80 @@ public class InMemoryFeatureStore implements FeatureStore {
     /** {@inheritDoc} */
     @Override
     public Feature read(String featureUid) {
-        if (!featuresMap.containsKey(featureUid)) {
+        if (!exist(featureUid)) {
             throw new FeatureNotFoundException(featureUid);
         }
         return featuresMap.get(featureUid);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean existGroup(String groupName) {
+        return featureGroups.containsKey(groupName);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void enableGroup(String groupName) {
+        if (!existGroup(groupName)) {
+            throw new GroupNotFoundException(groupName);
+        }
+        for (String feat : featureGroups.get(groupName)) {
+            this.enable(feat);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void disableGroup(String groupName) {
+        if (!existGroup(groupName)) {
+            throw new GroupNotFoundException(groupName);
+        }
+        for (String feat : featureGroups.get(groupName)) {
+            this.disable(feat);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, Feature> readGroup(String groupName) {
+        if (!existGroup(groupName)) {
+            throw new GroupNotFoundException(groupName);
+        }
+        // Retrieve feature per feature (in-memory, no overhead)
+        Map<String, Feature> features = new HashMap<String, Feature>();
+        for (String feat : featureGroups.get(groupName)) {
+            features.put(feat, this.read(feat));
+        }
+        return features;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void addToGroup(String featureId, String groupName) {
+        if (!exist(featureId)) {
+            throw new FeatureNotFoundException(featureId);
+        }
+        Feature feat = read(featureId);
+        feat.setGroup(groupName);
+        update(feat);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeFromGroup(String featureId, String groupName) {
+        if (!exist(featureId)) {
+            throw new FeatureNotFoundException(featureId);
+        }
+        if (!existGroup(groupName)) {
+            throw new GroupNotFoundException(groupName);
+        }
+        Feature feat = read(featureId);
+        if (feat.getGroup() != null && !feat.getGroup().equals(groupName)) {
+            throw new IllegalArgumentException("'" + featureId + "' is not in group '" + groupName + "'");
+        }
+        feat.setGroup("");
+        update(feat);
     }
 
     /** {@inheritDoc} */
@@ -166,40 +282,13 @@ public class InMemoryFeatureStore implements FeatureStore {
         loadConfFile(locations);
     }
 
-    @Override
-    public void enableGroup(String groupName) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void disableGroup(String groupName) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void existGroup(String groupName) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public Map<String, Feature> readGroup(String groupName) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void addToGroup(String featureId, String groupName) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void removeFromGroup(String featureId, String groupName) {
-        // TODO Auto-generated method stub
-
+    /**
+     * Getter accessor for attribute 'fileName'.
+     * 
+     * @return current value of 'fileName'
+     */
+    public String getFileName() {
+        return fileName;
     }
 
 }

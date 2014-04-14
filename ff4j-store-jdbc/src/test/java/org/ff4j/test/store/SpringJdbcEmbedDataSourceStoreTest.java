@@ -24,19 +24,20 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class JdbcFeatureStoreSpring1Test extends AbstractStoreTest {
+public class SpringJdbcEmbedDataSourceStoreTest extends AbstractStoreTest {
 
     /** DataBase. */
     private EmbeddedDatabase db;
 
+    /** Database builder. */
     private EmbeddedDatabaseBuilder builder = null;
 
+    /** {@inheritDoc} */
     @Override
     protected FeatureStore initStore() {
         builder = new EmbeddedDatabaseBuilder();
         db = builder.setType(EmbeddedDatabaseType.HSQL).addScript("classpath:schema-ddl.sql").addScript("classpath:ff-store.sql")
                 .build();
-
         FeatureStoreSpringJDBC jdbcStore = new FeatureStoreSpringJDBC();
         jdbcStore.setDataSource(db);
         jdbcStore.getJdbcTemplate();

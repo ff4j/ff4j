@@ -28,6 +28,7 @@ import org.ff4j.core.FlipStrategy;
 import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.utils.ParameterUtils;
 
 /**
@@ -250,6 +251,12 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
         }
     }
 
+    /**
+     * Utility method to perform rollback in correct way.
+     * 
+     * @param sqlConn
+     *            current sql connection
+     */
     private void rollback(Connection sqlConn) {
         try {
             if (!sqlConn.isClosed()) {
@@ -278,34 +285,7 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
         update(SQL_DELETE_ROLE, fpId, roleName);
     }
 
-    /**
-     * Close resultset.
-     * 
-     * @param rs
-     *            target resultset
-     */
-    private void closeResultSet(ResultSet rs) {
-        try {
-            if (rs != null) {
-                rs.close();
-            }
-        } catch (SQLException e) {
-            throw new FeatureAccessException("An error occur when closing resultset", e);
-        }
-    }
 
-    private void closeStatement(PreparedStatement ps) {
-        try {
-            if (ps != null) {
-                if (ps.getConnection() != null) {
-                    ps.getConnection().close();
-                }
-                ps.close();
-            }
-        } catch (SQLException e) {
-            throw new FeatureAccessException("An error occur when closing statement", e);
-        }
-    }
 
     /**
      * Build {@link PreparedStatement} from parameters
@@ -329,25 +309,7 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
         return ps;
     }
 
-    /**
-     * Utility method to perform UPDATE and DELETE operations.
-     * 
-     * @param query
-     *            target query
-     * @param params
-     *            sql query params
-     */
-    private void update(String query, String... params) {
-        PreparedStatement ps = null;
-        try {
-            ps = buildStatement(query, params);
-            ps.executeUpdate();
-        } catch (SQLException sqlEX) {
-            throw new FeatureAccessException("Cannot update features database, SQL ERROR", sqlEX);
-        } finally {
-            closeStatement(ps);
-        }
-    }
+
 
     /** {@inheritDoc} */
     @Override
@@ -368,7 +330,6 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
             rs = ps.getConnection().prepareStatement(SQL_GET_ALLROLES).executeQuery();
             while (rs.next()) {
                 String uid = rs.getString(COL_ROLE_FEATID);
-                // mapFP.get(uid).getAuthorizations() cannot be null thanks to FOREIGN KEY
                 mapFP.get(uid).getAuthorizations().add(rs.getString(COL_ROLE_ROLENAME));
             }
             return mapFP;
@@ -385,7 +346,6 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
     @Override
     public void update(Feature fp) {
         Feature fpExist = read(fp.getUid());
-        // Update core Flip POINT
         String enable = "0";
         if (fp.isEnable()) {
             enable = "1";
@@ -415,6 +375,160 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
         }
     }
 
+    @Override
+    public boolean existGroup(String groupName) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = buildStatement(SQL_EXIST_GROUP, groupName);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return (rs.getInt(1) > 0);
+            }
+            return false;
+        } catch (SQLException sqlEX) {
+            throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
+        } finally {
+            closeResultSet(rs);
+            closeStatement(ps);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void enableGroup(String groupName) {
+        if (!existGroup(groupName)) {
+            throw new GroupNotFoundException(groupName);
+        }
+        update(SQL_ENABLE_GROUP, groupName);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void disableGroup(String groupName) {
+        if (!existGroup(groupName)) {
+            throw new GroupNotFoundException(groupName);
+        }
+        update(SQL_DISABLE_GROUP, groupName);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, Feature> readGroup(String groupName) {
+        if (!existGroup(groupName)) {
+            throw new GroupNotFoundException(groupName);
+        }
+        LinkedHashMap<String, Feature> mapFP = new LinkedHashMap<String, Feature>();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            // Returns features
+            ps = buildStatement(SQLQUERY_GET_FEATURE_GROUP, groupName);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Feature f = mapRow2Feature(rs);
+                mapFP.put(f.getUid(), f);
+            }
+
+            // Returns Roles
+            rs = ps.getConnection().prepareStatement(SQL_GET_ALLROLES).executeQuery();
+            while (rs.next()) {
+                String uid = rs.getString(COL_ROLE_FEATID);
+                // only feature in the group must be processed
+                if (mapFP.containsKey(uid)) {
+                    mapFP.get(uid).getAuthorizations().add(rs.getString(COL_ROLE_ROLENAME));
+                }
+            }
+            return mapFP;
+
+        } catch (SQLException sqlEX) {
+            throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
+        } finally {
+            closeResultSet(rs);
+            closeStatement(ps);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void addToGroup(String featureId, String groupName) {
+        if (!exist(featureId)) {
+            throw new FeatureNotFoundException(featureId);
+        }
+        update(SQL_ADD_TO_GROUP, groupName, featureId);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeFromGroup(String featureId, String groupName) {
+        if (!exist(featureId)) {
+            throw new FeatureNotFoundException(featureId);
+        }
+        if (!existGroup(groupName)) {
+            throw new GroupNotFoundException(groupName);
+        }
+        Feature feat = read(featureId);
+        if (feat.getGroup() != null && !feat.getGroup().equals(groupName)) {
+            throw new IllegalArgumentException("'" + featureId + "' is not in group '" + groupName + "'");
+        }
+        update(SQL_ADD_TO_GROUP, "", featureId);
+    }
+
+    /**
+     * Utility method to perform UPDATE and DELETE operations.
+     * 
+     * @param query
+     *            target query
+     * @param params
+     *            sql query params
+     */
+    private void update(String query, String... params) {
+        PreparedStatement ps = null;
+        try {
+            ps = buildStatement(query, params);
+            ps.executeUpdate();
+        } catch (SQLException sqlEX) {
+            throw new FeatureAccessException("Cannot update features database, SQL ERROR", sqlEX);
+        } finally {
+            closeStatement(ps);
+        }
+    }
+
+    /**
+     * Close resultset.
+     * 
+     * @param rs
+     *            target resultset
+     */
+    private void closeResultSet(ResultSet rs) {
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+        } catch (SQLException e) {
+            throw new FeatureAccessException("An error occur when closing resultset", e);
+        }
+    }
+
+    /**
+     * Utility method to close statement properly.
+     * 
+     * @param ps
+     * 
+     */
+    private void closeStatement(PreparedStatement ps) {
+        try {
+            if (ps != null) {
+                if (ps.getConnection() != null) {
+                    ps.getConnection().close();
+                }
+                ps.close();
+            }
+        } catch (SQLException e) {
+            throw new FeatureAccessException("An error occur when closing statement", e);
+        }
+    }
+
     /**
      * Getter accessor for attribute 'dataSource'.
      * 
@@ -432,42 +546,6 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
      */
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
-    }
-
-    @Override
-    public void enableGroup(String groupName) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void disableGroup(String groupName) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void existGroup(String groupName) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public Map<String, Feature> readGroup(String groupName) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void addToGroup(String featureId, String groupName) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void removeFromGroup(String featureId, String groupName) {
-        // TODO Auto-generated method stub
-
     }
 
 }
