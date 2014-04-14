@@ -18,31 +18,32 @@ agile development practice. It allows you to  enable and disable features throug
 <br/>1.2 - [Integration with Spring Framework](#spring)
 <br/>1.3 - [Feature Flipping through AOP](#aop)
 
-<p/><b>PART II - SECURITY</b>
-<br/>2.1 - [Introducing security](#security)
-<br/>2.2 - [String security](#security-spring)
+<p/><b>PART II - FEATURE STORES</b>
+<br/>2.1 - [Introducing stores](#stores)
+<br/>2.2 - [Externalise features in a JDBC Store](#store-jdbc)
+<br/>2.3 - [Externalise features in a HTTP Store](#store-http)
+<br/>2.4 - [Externalise features in a MONGODB Store](#store-mongo)
 
-<p/><b>PART III - FLIPPING STRATEGY</b>
-<br/>3.1 - [Introducing flipping strategy](#strategy)
-<br/>3.2 - [Expression FlippingStrategy](#strategy-el)
-<br/>3.2 - [Ponderated FlippingStrategy](#strategy-pond)
-<br/>3.3 - [ReleaseDate FlippingStrategy](#strategy-date)
+<p/><b>PART III - WEB CAPABILITIES</b>
+<br/>3.1 - [Administration Console](#web)
+<br/>3.2 - [TagLib Library](#taglib)
+<br/>3.3 - [Services REST](#store-http)
 
-<p/><b>PART IV - FEATURE STORES</b>
-<br/>4.1 - [Introducing stores](#stores)
-<br/>4.2 - [Externalise features in a JDBC Store](#store-jdbc)
-<br/>4.3 - [Externalise features in a HTTP Store](#store-http)
-<br/>4.4 - [Externalise features in a MONGODB Store](#store-mongo)
+<p/><b>PART IV - SECURITY</b>
+<br/>4.1 - [Introducing security](#security)
+<br/>4.2 - [String security](#security-spring)
 
-<p/><b>PART V - WEB CAPABILITIES</b>
-<br/>5.1 - [Administration Console](#web)
-<br/>5.2 - [TagLib Library](#taglib)
-<br/>5.3 - [Services REST](#store-http)
+<p/><b>PART V - FLIPPING STRATEGY</b>
+<br/>5.1 - [Introducing flipping strategy](#strategy)
+<br/>5.2 - [Expression FlippingStrategy](#strategy-el)
+<br/>5.2 - [Ponderated FlippingStrategy](#strategy-pond)
+<br/>5.3 - [ReleaseDate FlippingStrategy](#strategy-date)
 
 <p/><b>PART VI - CACHING</b>
-<br/>4.1 - [Caching](#caching)
+<br/>6.1 - [Caching](#caching)
 
-<p/><b>PART VII - [JMX Management](#jmx)</b>
+<p/><b>PART VII - [JMX Management]</b>
+<br/>7.1 - [Jmx](#jmx)
 
 ## PART I - CORE
 
