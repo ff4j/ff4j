@@ -54,8 +54,8 @@ public class FeatureStoreWithRedisCacheTestIT extends AbstractStoreTest {
     @Transactional
     @Override
     public void testStoreHasBeenInitialized() throws Exception {
-        assertFf4j.assertFeatureNumber(EXPECTED_FEATURES_NUMBERS);
-        assertFf4j.assertEnable("first");
+        assertFf4j.assertThatStoreHasSize(EXPECTED_FEATURES_NUMBERS);
+        assertFf4j.assertThatFeatureIsEnabled("first");
     }
 
     /**

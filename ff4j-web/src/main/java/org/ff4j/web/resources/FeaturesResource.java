@@ -1,4 +1,4 @@
-package org.ff4j.web.api;
+package org.ff4j.web.resources;
 
 /*
  * #%L
@@ -20,18 +20,19 @@ package org.ff4j.web.api;
  * #L%
  */
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.utils.FeatureJsonMarshaller;
 
 /**
  * This store will invoke a {@link RemoteHttpFeatureStore} to perform operations upon features. Call are done though http so
@@ -39,42 +40,41 @@ import org.ff4j.core.FeatureStore;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-@Path("/ff4j/v1/store")
-public class FeatureStoreWebApi {
+public class FeaturesResource {
+
+    @Context
+    private UriInfo uriInfo;
+
+    @Context
+    private Request request;
 
     /** Access to Features through store. */
     private FeatureStore store = null;
 
-    /** {@inheritDoc} */
-    @PUT
-    @Path("/features/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response upsert(final Feature feature) {
-        if (!getStore().exist(feature.getUid())) {
-            getStore().create(feature);
-            // No header location as PUT and not POST
-            return Response.status(Response.Status.CREATED).build();
-        } else {
-            getStore().update(feature);
-            return Response.status(Response.Status.NO_CONTENT).build();
-        }
-    }
+    /**
+     * Defaut constructor.
+     */
+    public FeaturesResource() {}
 
     /**
-     * Delete target feature if exist.
+     * Constructor by Parent resource
      * 
-     * @param featId
+     * @param uriInfo
+     *            current uriInfo
+     * @param request
+     *            current request
+     * @param store
+     *            current store
      */
-    @DELETE
-    @Path("/features/{id}")
-    public Response delete(@PathParam("id") String featId) {
-        if (!getStore().exist(featId)) {
-            // No header location as PUT and not POST
-            return Response.status(Response.Status.NOT_FOUND).build();
-        } else {
-            getStore().delete(featId);
-            return Response.status(Response.Status.NO_CONTENT).build();
-        }
+    public FeaturesResource(UriInfo uriInfo, Request request, FeatureStore store) {
+        this.uriInfo = uriInfo;
+        this.request = request;
+        this.store = store;
+    }
+    
+    @Path("{uid: .+}")
+    public FeatureResource getFeature(@PathParam("uid") String uid) {
+        return new FeatureResource(uriInfo, request, uid, store);
     }
 
     /**
@@ -85,16 +85,11 @@ public class FeatureStoreWebApi {
      * @return feature is exist
      */
     @GET
-    @Path("/features/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response read(@PathParam("id") String featId) {
-        if (!getStore().exist(featId)) {
-            // No header location as PUT and not POST
-            return Response.status(Response.Status.NOT_FOUND).build();
-        } else {
-            Feature f = getStore().read(featId);
-            return Response.ok(f).build();
-        }
+    public Response readAll() {
+        Feature[] storeContent = getStore().readAll().values().toArray(new Feature[0]);
+        String storeAsJson = FeatureJsonMarshaller.marshallFeatureArray(storeContent);
+        return Response.ok(storeAsJson).build();
     }
 
     /**

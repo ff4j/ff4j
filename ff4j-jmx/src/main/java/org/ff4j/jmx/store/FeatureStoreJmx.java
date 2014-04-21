@@ -1,10 +1,10 @@
-package org.ff4j.web.services.exception;
+package org.ff4j.jmx.store;
 
 /*
  * #%L
- * ff4j-web
+ * ff4j-jmx
  * %%
- * Copyright (C) 2013 Ff4J
+ * Copyright (C) 2013 - 2014 Ff4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,20 +20,8 @@ package org.ff4j.web.services.exception;
  * #L%
  */
 
-import javax.ws.rs.core.Response.Status;
+public class FeatureStoreJmx {
 
-import org.ff4j.exception.FeatureNotFoundException;
+    // Todo publish a store as Jmx MBEAN to operate remotely
 
-/**
- * Returning 404 HTTPCode if target feature has not been found.
- * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
- */
-public class FeatureNotFoundExceptionMapper extends AbstractExceptionMapper<FeatureNotFoundException> {
-
-    /** {@inheritdoc} */
-    @Override
-    public Status getStatus() {
-        return Status.NOT_FOUND;
-    }
 }

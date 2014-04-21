@@ -65,6 +65,8 @@ public class AdministrationConsoleServlet extends HttpServlet {
     /** Buffer size. */
     private static final int BUFFER_SIZE = 4096;
 
+    private final FF4j ff4j = null;
+
     /** {@inheritDoc} */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -393,7 +395,10 @@ public class AdministrationConsoleServlet extends HttpServlet {
      * @return current value of 'ff4j'
      */
     public FF4j getFf4j() {
-        return FF4jWebContextHolder.getFf4j();
+        if (ff4j == null) {
+            // ff4j = WebApplicationContextUtils.getWebApplicationContext(getServletContext()).getBean(FF4j.class);
+        }
+        return ff4j;
     }
 
 }

@@ -73,6 +73,9 @@ public class InMemoryFeatureStore implements FeatureStore {
      */
     private void loadConfFile(String conf) {
         InputStream xmlIN = getClass().getClassLoader().getResourceAsStream(conf);
+        if (xmlIN == null) {
+            throw new IllegalArgumentException("Cannot load file " + conf + " from classpath");
+        }
         this.fileName = conf;
         this.featuresMap = new FeatureXmlParser().parseConfigurationFile(xmlIN);
         buildGroupsFromFeatures();

@@ -1,10 +1,10 @@
-package org.ff4j.store;
+package org.ff4j.web.store;
 
 /*
  * #%L
- * RemoteHttpFeatureStore.java (ff4j-store-remoting) by Cedrick LUNVEN
+ * ff4j-web
  * %%
- * Copyright (C) 2013 Ff4J
+ * Copyright (C) 2013 - 2014 Ff4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,11 @@ package org.ff4j.store;
 import java.io.IOException;
 import java.util.Map;
 
+import javax.ws.rs.Path;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.ff4j.core.Feature;
@@ -32,25 +35,17 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.utils.FeatureJsonMarshaller;
+import org.ff4j.web.resources.FeaturesResource;
 
 /**
- * Implementation of {@link FeatureStore} to access features through HTTP.
+ * Implementation of store using {@link HttpClient} connection.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class RemoteHttpFeatureStore implements FeatureStore {
+public class FeatureStoreHttpClient implements FeatureStore {
 
-    /** enable. */
-    private static final String PATH_ENABLE = "/enable";
-
-    /** disable. */
-    private static final String PATH_DISABLE = "/disable";
-
-    /** check if feature is exist. */
-    private static final String PATH_EXIST = "/exist";
-
-    /** read feature. */
-    private static final String PATH_READ = "/read";
+    /** Relative resource. */
+    private static final String STORE_PATH = FeaturesResource.class.getAnnotation(Path.class).value();
 
     /** Application json. */
     private static final String JSON = "application/json";
@@ -64,7 +59,7 @@ public class RemoteHttpFeatureStore implements FeatureStore {
     /**
      * Default constructor to allow IoC.
      */
-    public RemoteHttpFeatureStore() {}
+    public FeatureStoreHttpClient() {}
 
     /**
      * Parameteried Constructor to initialize attributes.
@@ -72,69 +67,35 @@ public class RemoteHttpFeatureStore implements FeatureStore {
      * @param lUrl
      *            url to initialize url.
      */
-    public RemoteHttpFeatureStore(String lUrl) {
+    public FeatureStoreHttpClient(String lUrl) {
         this.url = lUrl;
-    }
-
-    /**
-     * Invole GET webServices to feature.
-     * 
-     * @param path
-     *            target path
-     * @param featureId
-     *            current feature id
-     * @return JSON output response
-     */
-    private String makeGetCall(String path, String featureId) {
-        try {
-            // Create request
-            HttpGet getRequest = new HttpGet(url + path + "/" + featureId);
-            getRequest.addHeader("accept", JSON);
-            HttpResponse response = httpClient.execute(getRequest);
-
-            java.util.Scanner s = new java.util.Scanner(response.getEntity().getContent()).useDelimiter("\\A");
-            String output = s.hasNext() ? s.next() : "";
-            httpClient.getConnectionManager().shutdown();
-
-            // Handle Error
-            if (response.getStatusLine().getStatusCode() == 404) {
-                throw new FeatureNotFoundException(output);
-            }
-            if (response.getStatusLine().getStatusCode() != 200) {
-                throw new FeatureAccessException("ErrorHTTP(" + response.getStatusLine().getStatusCode() + ") - " + output);
-            }
-
-            return output;
-
-        } catch (ClientProtocolException cpe) {
-            throw new FeatureAccessException("Cannot access remote HTTP Feature Store", cpe);
-        } catch (IOException ioe) {
-            throw new FeatureAccessException("Cannot read response from  HTTP Feature Store", ioe);
-        }
     }
 
     /** {@inheritDoc} */
     @Override
     public void enable(String featureId) {
-        this.makeGetCall(PATH_ENABLE, featureId);
+        // PUT with only updated feature
+
+
+        // this.makeGetCall(PATH_ENABLE, featureId);
     }
 
     /** {@inheritDoc} */
     @Override
     public void disable(String featureId) {
-        this.makeGetCall(PATH_DISABLE, featureId);
+        // this.makeGetCall(PATH_DISABLE, featureId);
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean exist(String featId) {
-        return Boolean.valueOf(this.makeGetCall(PATH_EXIST, featId));
+        return true;// Boolean.valueOf(this.makeGetCall(PATH_EXIST, featId));
     }
 
     /** {@inheritDoc} */
     @Override
     public Feature read(String featureUid) {
-        return FeatureJsonMarshaller.unMarshallFeature(this.makeGetCall(PATH_READ, featureUid));
+        return new Feature("aaa"); // FeatureJsonMarshaller.unMarshallFeature(this.makeGetCall(PATH_READ, featureUid));
     }
 
     /** {@inheritDoc} */
@@ -225,6 +186,43 @@ public class RemoteHttpFeatureStore implements FeatureStore {
     public void removeFromGroup(String featureId, String groupName) {
         // TODO Auto-generated method stub
 
+    }
+
+    /**
+     * Invole GET webServices to feature.
+     * 
+     * @param path
+     *            target path
+     * @param featureId
+     *            current feature id
+     * @return JSON output response
+     */
+    private String makeGetCall(String path, String featureId) {
+        try {
+            // Create request
+            HttpGet getRequest = new HttpGet(url + path + "/" + featureId);
+            getRequest.addHeader("accept", JSON);
+            HttpResponse response = httpClient.execute(getRequest);
+
+            java.util.Scanner s = new java.util.Scanner(response.getEntity().getContent()).useDelimiter("\\A");
+            String output = s.hasNext() ? s.next() : "";
+            httpClient.getConnectionManager().shutdown();
+
+            // Handle Error
+            if (response.getStatusLine().getStatusCode() == 404) {
+                throw new FeatureNotFoundException(output);
+            }
+            if (response.getStatusLine().getStatusCode() != 200) {
+                throw new FeatureAccessException("ErrorHTTP(" + response.getStatusLine().getStatusCode() + ") - " + output);
+            }
+
+            return output;
+
+        } catch (ClientProtocolException cpe) {
+            throw new FeatureAccessException("Cannot access remote HTTP Feature Store", cpe);
+        } catch (IOException ioe) {
+            throw new FeatureAccessException("Cannot read response from  HTTP Feature Store", ioe);
+        }
     }
 
 }

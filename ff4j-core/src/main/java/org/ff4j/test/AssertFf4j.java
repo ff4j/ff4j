@@ -49,9 +49,11 @@ public class AssertFf4j {
      * 
      * @param featureName
      *            targte featurename
+     * @return current object
      */
-    public final void assertExist(String featureName) {
-        Assert.assertTrue(ff4j.exist(featureName));
+    public final AssertFf4j assertThatFeatureExist(String featureName) {
+        Assert.assertTrue("Feature '" + featureName + "' is mandatory", ff4j.exist(featureName));
+        return this;
     }
 
     /**
@@ -59,9 +61,11 @@ public class AssertFf4j {
      * 
      * @param featureName
      *            targte featurename
+     * @return current object
      */
-    public final void assertNotExist(String featureName) {
-        Assert.assertFalse(ff4j.exist(featureName));
+    public final AssertFf4j assertThatFeatureDoesNotExist(String featureName) {
+        Assert.assertFalse("Feature '" + featureName + "' must not exist", ff4j.exist(featureName));
+        return this;
     }
 
     /**
@@ -69,10 +73,12 @@ public class AssertFf4j {
      * 
      * @param featureName
      *            target featureName
+     * @return current object
      */
-    public final void assertFlipped(String featureName) {
-        assertExist(featureName);
+    public final AssertFf4j assertThatFeatureFlipped(String featureName) {
+        assertThatFeatureExist(featureName);
         Assert.assertTrue("'" + featureName + "' is not flipped where it should", ff4j.isFlipped(featureName));
+        return this;
     }
 
     /**
@@ -80,10 +86,12 @@ public class AssertFf4j {
      * 
      * @param featureName
      *            target featureName
+     * @return current object
      */
-    public final void assertNotFlipped(String featureName) {
-        assertExist(featureName);
+    public final AssertFf4j assertThatFeatureNotFlipped(String featureName) {
+        assertThatFeatureExist(featureName);
         Assert.assertFalse("'" + featureName + "' is flipped where it shouldn't", ff4j.isFlipped(featureName));
+        return this;
     }
 
     /**
@@ -91,10 +99,12 @@ public class AssertFf4j {
      * 
      * @param featureName
      *            target featureName
+     * @return current object
      */
-    public void assertAllowed(String featureName) {
-        assertExist(featureName);
+    public AssertFf4j assertThatCurrentUserIsAllowedOnFeature(String featureName) {
+        assertThatFeatureExist(featureName);
         Assert.assertTrue(ff4j.isAllowed(ff4j.getFeature(featureName)));
+        return this;
     }
 
     /**
@@ -102,10 +112,12 @@ public class AssertFf4j {
      * 
      * @param featureName
      *            target featureName
+     * @return current object
      */
-    public void assertNotAllowed(String featureName) {
-        assertExist(featureName);
+    public AssertFf4j assertThatCurrentUserIsNotAllowedOnFeature(String featureName) {
+        assertThatFeatureExist(featureName);
         Assert.assertFalse(ff4j.isAllowed(ff4j.getFeature(featureName)));
+        return this;
     }
 
     /**
@@ -113,9 +125,11 @@ public class AssertFf4j {
      * 
      * @param featureName
      *            target featureName
+     * @return current object
      */
-    public void assertFeatureNumber(int expectedNumber) {
+    public AssertFf4j assertThatStoreHasSize(int expectedNumber) {
         Assert.assertEquals(expectedNumber, ff4j.getStore().readAll().size());
+        return this;
     }
 
     /**
@@ -125,12 +139,14 @@ public class AssertFf4j {
      *            target feature Name
      * @param roleName
      *            target role name
+     * @return current object
      */
-    public void assertHasRole(String featureName, String roleName) {
-        assertExist(featureName);
+    public AssertFf4j assertThatFeatureHasRole(String featureName, String roleName) {
+        assertThatFeatureExist(featureName);
         Assert.assertTrue("'" + featureName + "' has no roles", !ff4j.getFeature(featureName).getAuthorizations().isEmpty());
         Assert.assertTrue("'" + featureName + "' has not role '" + roleName + "'", ff4j.getFeature(featureName)
                 .getAuthorizations().contains(roleName));
+        return this;
     }
 
     /**
@@ -140,10 +156,12 @@ public class AssertFf4j {
      *            target feature Name
      * @param roleName
      *            target role name
+     * @return current object
      */
-    public void assertHasNotRole(String featureName, String roleName) {
-        assertExist(featureName);
+    public AssertFf4j assertThatFeatureHasNotRole(String featureName, String roleName) {
+        assertThatFeatureExist(featureName);
         Assert.assertFalse(ff4j.getFeature(featureName).getAuthorizations().contains(roleName));
+        return this;
     }
 
     /**
@@ -153,11 +171,29 @@ public class AssertFf4j {
      *            target feature Name
      * @param roleName
      *            target role name
+     * @return current object
      */
-    public void assertInGroup(String featureName, String groupName) {
-        assertExist(featureName);
+    public AssertFf4j assertThatFeatureIsInGroup(String featureName, String groupName) {
+        assertThatFeatureExist(featureName);
         String group = ff4j.getFeature(featureName).getGroup();
         Assert.assertTrue(group != null && groupName.equals(group));
+        return this;
+    }
+
+    /**
+     * Check that feature is in expected group.
+     * 
+     * @param featureName
+     *            target feature Name
+     * @param roleName
+     *            target role name
+     * @return current object
+     */
+    public AssertFf4j assertThatFeatureNotInGroup(String featureName, String groupName) {
+        assertThatFeatureExist(featureName);
+        String group = ff4j.getFeature(featureName).getGroup();
+        Assert.assertTrue(group == null || !groupName.equals(group));
+        return this;
     }
 
     /**
@@ -165,9 +201,12 @@ public class AssertFf4j {
      * 
      * @param featureName
      *            target featureName
+     * @return current object
      */
-    public void assertEnable(String featureName) {
+    public AssertFf4j assertThatFeatureIsEnabled(String featureName) {
+        assertThatFeatureExist(featureName);
         Assert.assertTrue(ff4j.getStore().read(featureName).isEnable());
+        return this;
     }
 
     /**
@@ -175,9 +214,12 @@ public class AssertFf4j {
      * 
      * @param featureName
      *            target featureName
+     * @return current object
      */
-    public void assertDisable(String featureName) {
+    public AssertFf4j assertThatFeatureIsDisabled(String featureName) {
+        assertThatFeatureExist(featureName);
         Assert.assertFalse(ff4j.getStore().read(featureName).isEnable());
+        return this;
     }
 
     /**
@@ -187,9 +229,26 @@ public class AssertFf4j {
      *            expected value for size
      * @param groupName
      *            target groupName
+     * @return current object
      */
-    public void assertGroupSize(int expected, String groupName) {
+    public AssertFf4j assertThatGroupExist(String groupName) {
+        Assert.assertTrue("Group '" + groupName + " ' does no exist", ff4j.getStore().existGroup(groupName));
+        return this;
+    }
+
+    /**
+     * Check Group Size
+     * 
+     * @param expected
+     *            expected value for size
+     * @param groupName
+     *            target groupName
+     * @return current object
+     */
+    public AssertFf4j assertThatGroupHasSize(int expected, String groupName) {
+        assertThatGroupExist(groupName);
         Assert.assertEquals(expected, ff4j.getStore().readGroup(groupName).size());
+        return this;
     }
 
 }

@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.ff4j.utils.FeatureJsonMarshaller;
 
@@ -59,7 +60,7 @@ public class Feature implements Serializable {
     private String group;
 
     /** if not empty and @see {@link org.ff4j.security.AuthorizationsManager} provided, limit usage to this roles. */
-    private Set<String> authorizations = new HashSet<String>();
+    private Set<String> authorizations = new TreeSet<String>();
 
     /** Custom behaviour to define if feature if enable or not e.g. A/B Testing capabilities. */
     private FlipStrategy flippingStrategy;

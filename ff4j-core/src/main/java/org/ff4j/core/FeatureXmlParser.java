@@ -25,10 +25,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -38,7 +38,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * Allow to parse XML files to load {@link Feature}.
@@ -279,7 +281,7 @@ public class FeatureXmlParser {
      * @return list of authorizations.
      */
     private Set<String> parseListAuthorizations(Element securityTag) {
-        Set<String> authorizations = new HashSet<String>();
+        Set<String> authorizations = new TreeSet<String>();
         NodeList lisOfAuth = securityTag.getElementsByTagName(SECURITY_ROLE_TAG);
         for (int k = 0; k < lisOfAuth.getLength(); k++) {
             Element role = (Element) lisOfAuth.item(k);
@@ -298,6 +300,23 @@ public class FeatureXmlParser {
     public DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {
         if (builder == null) {
             builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            builder.setErrorHandler(new ErrorHandler() {
+                /** {@inheritDoc} */
+                @Override
+                public void warning(SAXParseException e) throws SAXException {}
+
+                /** {@inheritDoc} */
+                @Override
+                public void fatalError(SAXParseException e) throws SAXException {
+                    throw e;
+                }
+
+                /** {@inheritDoc} */
+                @Override
+                public void error(SAXParseException e) throws SAXException {
+                    throw e;
+                }
+            });
         }
         return builder;
     }

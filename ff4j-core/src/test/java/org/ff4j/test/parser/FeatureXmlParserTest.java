@@ -39,7 +39,6 @@ import org.junit.Test;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public class FeatureXmlParserTest {
-
     @Test
     public void testLoaderXMLFile() {
         InputStream in = getClass().getClassLoader().getResourceAsStream("test-featureXmlParserTest-ok.xml");

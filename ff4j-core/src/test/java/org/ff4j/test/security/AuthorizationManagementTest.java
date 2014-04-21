@@ -48,21 +48,21 @@ public class AuthorizationManagementTest extends AbstractFf4jTest {
     public void testAllowed() throws IOException {
         Feature ok = new Feature("ok", true, "Full1", "GRP1", Arrays.asList(new String[] {"ROLEA"}));
         ff4j.create(ok);
-        assertFf4j.assertAllowed(ok.getUid());
+        assertFf4j.assertThatCurrentUserIsAllowedOnFeature(ok.getUid());
     }
 
     @Test
     public void testNotAllowed() {
         Feature ko = new Feature("ko", true, "Full2", "GRP2", Arrays.asList(new String[] {"ROLEC"}));
         ff4j.create(ko);
-        assertFf4j.assertNotAllowed(ko.getUid());
+        assertFf4j.assertThatCurrentUserIsNotAllowedOnFeature(ko.getUid());
     }
 
     @Test
     public void testAllowedNoManager() throws IOException {
         ff4j.create("new", true);
         ff4j.setAuthorizationsManager(null);
-        assertFf4j.assertAllowed("new");
+        assertFf4j.assertThatCurrentUserIsAllowedOnFeature("new");
     }
 
 }

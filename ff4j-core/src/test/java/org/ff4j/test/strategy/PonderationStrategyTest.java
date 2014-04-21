@@ -45,7 +45,7 @@ public class PonderationStrategyTest extends AbstractFf4jTest {
                 Double.valueOf(((PonderationFlipStrategy) f.getFlippingStrategy()).getInitParams().get("weight")));
         Assert.assertEquals(1, f.getFlippingStrategy().getInitParams().size());
         for (int i = 0; i < 10; i++) {
-            assertFf4j.assertNotFlipped(f.getUid());
+            assertFf4j.assertThatFeatureNotFlipped(f.getUid());
         }
     }
 
@@ -58,7 +58,7 @@ public class PonderationStrategyTest extends AbstractFf4jTest {
         Assert.assertEquals("1", f.getFlippingStrategy().getInitParams().get("weight"));
 
         for (int i = 0; i < 10; i++) {
-            assertFf4j.assertFlipped(f.getUid());
+            assertFf4j.assertThatFeatureFlipped(f.getUid());
         }
     }
 

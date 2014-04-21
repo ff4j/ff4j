@@ -1,10 +1,10 @@
-package org.ff4j.web.services.exception;
+package org.ff4j.web.api;
 
 /*
  * #%L
  * ff4j-web
  * %%
- * Copyright (C) 2013 Ff4J
+ * Copyright (C) 2013 - 2014 Ff4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,22 +20,11 @@ package org.ff4j.web.services.exception;
  * #L%
  */
 
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.ext.Provider;
-
-import org.ff4j.exception.FeatureAlreadyExistException;
-
 /**
- * HTTP Error conflict for already existing bean.
+ * TODO : Service to test feature as flipped
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-@Provider
-public class FeatureAlreadyExistExceptionMapper extends AbstractExceptionMapper<FeatureAlreadyExistException> {
+public class FF4jWebApi {
 
-    /** {@inheritdoc} */
-    @Override
-    public Status getStatus() {
-        return Status.CONFLICT;
-    }
 }

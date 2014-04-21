@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~     COORDINATES          ~ -->
+	<!-- ~     COORDONATES          ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.ff4j</groupId>
@@ -65,24 +65,30 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<properties>
 
-		<!-- BUILD -->
+		<!-- Compiling -->
 		<github.login />
 		<encoding>UTF-8</encoding>
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
+		
+		<!-- License -->
 		<license.licenseName>apache_v2</license.licenseName>
 		<license.licenseResolver>${project.baseUri}/src/license</license.licenseResolver>
 		
-		<!-- VERSIONS LIBS -->
+		<!-- Version -->
 		<version.slf4j>1.7.5</version.slf4j>
 		<version.logback>1.0.13</version.logback>
 		<version.junit>4.8.2</version.junit>
 		<version.cglib>3.1</version.cglib>
 		<version.hdldb>2.2.4</version.hdldb>
+		<version.mockito>1.9.5</version.mockito>
+		<version.powermock>1.5.1</version.powermock>
 		<version.fongo>1.4.0</version.fongo>
+		<version.mongo.javadriver>2.11.4</version.mongo.javadriver>
+		
 		<version.spring>3.1.1.RELEASE</version.spring>
 		<version.spring.jmx>2.0.8</version.spring.jmx>
-		<spring.security.version>3.0.8.RELEASE</spring.security.version>
+		<version.spring.security>3.0.8.RELEASE</version.spring.security>
 		<version.aopalliance>1.0</version.aopalliance>
 		<version.commons-lang>2.4</version.commons-lang>
 		<version.commons-dbcp>1.2.2</version.commons-dbcp>
@@ -97,6 +103,9 @@
 		<version.ehcache>2.6.6</version.ehcache>
 		<version.jacoco>0.6.3.201306030806</version.jacoco>
 		<version.jedis>2.2.1</version.jedis>
+		<version.jersey>1.11</version.jersey>
+		<version.httpclient>4.1.1</version.httpclient>
+		
 		
 		<!-- VERSIONS PLUGINS -->
 		<version.maven.plugin.failsafe>2.17</version.maven.plugin.failsafe>
@@ -118,7 +127,6 @@
 		<module>ff4j-security-spring</module>
 		<module>ff4j-store-jdbc</module>
 		<module>ff4j-store-mongodb</module>
-		<module>ff4j-store-remoting</module>
 	</modules>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -183,17 +191,17 @@
 			<dependency>
 				<groupId>org.springframework.security</groupId>
 				<artifactId>spring-security-core</artifactId>
-				<version>${spring.security.version}</version>
+				<version>${version.spring.security}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.security</groupId>
 				<artifactId>spring-security-web</artifactId>
-				<version>${spring.security.version}</version>
+				<version>${version.spring.security}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.security</groupId>
 				<artifactId>spring-security-config</artifactId>
-				<version>${spring.security.version}</version>
+				<version>${version.spring.security}</version>
 			</dependency>
 
 			<!-- commons -->
@@ -243,33 +251,43 @@
 				<groupId>org.hsqldb</groupId>
 				<artifactId>hsqldb</artifactId>
 				<version>${version.hdldb}</version>
-				<scope>test</scope>
 			</dependency>
             <dependency>
                 <groupId>org.mongodb</groupId>
                 <artifactId>mongo-java-driver</artifactId>
-                <version>2.11.4</version>
-                <scope>test</scope>
+                <version>${version.mongo.javadriver}</version>
             </dependency>
 			<dependency>
 				<groupId>com.github.fakemongo</groupId>
 				<artifactId>fongo</artifactId>
 				<version>${version.fongo}</version>
-				<scope>test</scope>
 			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-all</artifactId>
+				<version>${version.mockito}</version>
+			</dependency>
+			<dependency>
+             	<groupId>org.powermock</groupId>
+             	<artifactId>powermock-module-junit4</artifactId>
+             	<version>${version.powermock}</version>
+        	</dependency>
+        	<dependency>
+            	 <groupId>org.powermock</groupId>
+             	<artifactId>powermock-api-mockito</artifactId>
+             	<version>${version.powermock}</version>
+        	</dependency> 
 
 			<!-- web -->
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
 				<version>${version.servlet-api}</version>
-				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>javax.servlet.jsp</groupId>
 				<artifactId>jsp-api</artifactId>
 				<version>${version.jsp-api}</version>
-				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.codehaus.jackson</groupId>
@@ -291,7 +309,34 @@
 				<artifactId>standard</artifactId>
 				<version>${version.taglib}</version>
 			</dependency>
-
+			
+			<!-- Webservices -->
+			<dependency>
+				<groupId>com.sun.jersey</groupId>
+				<artifactId>jersey-json</artifactId>
+				<version>${version.jersey}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.jersey.contribs</groupId>
+				<artifactId>jersey-spring</artifactId>
+				<version>${version.jersey}</version>
+			</dependency>
+			<dependency>
+      			<groupId>com.sun.jersey.jersey-test-framework</groupId>
+      			<artifactId>jersey-test-framework-inmemory</artifactId>
+      			<version>${version.jersey}</version>
+    		</dependency>
+    		<dependency>
+      			<groupId>com.sun.jersey.jersey-test-framework</groupId>
+      			<artifactId>jersey-test-framework-grizzly2</artifactId>
+     			<version>${version.jersey}</version>
+    		</dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>${version.httpclient}</version>
+			</dependency>
+			
 		</dependencies>
 	</dependencyManagement>
 

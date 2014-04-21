@@ -1,10 +1,10 @@
-package org.ff4j.web.services.exception;
+package org.ff4j.web;
 
 /*
  * #%L
  * ff4j-web
  * %%
- * Copyright (C) 2013 Ff4J
+ * Copyright (C) 2013 - 2014 Ff4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,21 +20,21 @@ package org.ff4j.web.services.exception;
  * #L%
  */
 
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.ext.Provider;
+import org.ff4j.core.FeatureStore;
+import org.ff4j.store.InMemoryFeatureStore;
+import org.ff4j.test.AbstractStoreTest;
 
 /**
- * Once Runtime Error occur, return 500 with only the error message
+ * Test that sotre informations are correct.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-@Provider
-public final class RuntimeExceptionMapper extends AbstractExceptionMapper<RuntimeException> {
+public class FeatureStoreValuesTest extends AbstractStoreTest {
 
-    /** {@inheritdoc} */
+    /** {@inheritDoc} */
     @Override
-    public Status getStatus() {
-        return Status.INTERNAL_SERVER_ERROR;
+    protected FeatureStore initStore() {
+        return new InMemoryFeatureStore("test-WebApi-ff4j.xml");
     }
 
 }

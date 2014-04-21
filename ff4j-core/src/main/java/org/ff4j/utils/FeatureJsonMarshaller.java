@@ -13,11 +13,11 @@ package org.ff4j.utils;
  */
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlipStrategy;
@@ -93,8 +93,55 @@ public final class FeatureJsonMarshaller {
         targetFeature.setFlippingStrategy(parseFlipStrategy(targetFeature.getUid(), fs[1]));
         // Authorizations
         targetFeature.setAuthorizations(parseAuthorizations(auths[1]));
-        
         return targetFeature;
+    }
+
+    /**
+     * Marshall Feature to JSON.
+     * 
+     * @param feature
+     *            target feature
+     * @return jsn output
+     */
+    public static String marshallFeatureArray(Feature[] featureArrays) {
+        StringBuilder sb = new StringBuilder("[");
+        boolean first = true;
+        if (featureArrays != null && featureArrays.length > 0) {
+            for (Feature feature : featureArrays) {
+                if (!first) {
+                    sb.append(",");
+                }
+                sb.append(marshallFeature(feature));
+                first = false;
+            }
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
+    /**
+     * Marshall Feature to JSON.
+     * 
+     * @param feature
+     *            target feature array
+     * @return json output
+     */
+    public static Feature[] unMarshallFeatureArray(String fsa) {
+        if (!fsa.startsWith("[") || !fsa.endsWith("]")) {
+            throw new IllegalArgumentException("Invalid input '" + fsa + "' should be [...]");
+        }
+        String[] features = fsa.substring(1, fsa.length() - 1).split("\\{\"uid\":");
+
+        Feature[] result = new Feature[features.length - 1];
+        for(int idx = 1 ;idx < features.length;idx++) {
+            String featX = features[idx];
+            // if not last of list, remove comma separator
+            if (featX.endsWith(",")) {
+                featX = featX.substring(0, featX.length() - 1);
+            }
+            result[idx - 1] = unMarshallFeature("{\"uid\":" + featX);
+        }
+        return result;
     }
 
     /**
@@ -170,7 +217,7 @@ public final class FeatureJsonMarshaller {
      * @return set of authorizations
      */
     private static Set<String> parseAuthorizations(String expr) {
-        Set<String> auths = new HashSet<String>();
+        Set<String> auths = new TreeSet<String>();
         String exprTmp = expr.substring(1, expr.length() - 1).replaceAll("\"", "");
         if (!"".equals(exprTmp)) {
             auths.addAll(Arrays.asList(exprTmp.split(",")));

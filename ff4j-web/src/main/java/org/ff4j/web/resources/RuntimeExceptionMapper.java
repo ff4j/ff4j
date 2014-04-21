@@ -1,4 +1,4 @@
-package org.ff4j.web.services.exception;
+package org.ff4j.web.resources;
 
 /*
  * #%L ff4j-web %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
@@ -14,6 +14,12 @@ package org.ff4j.web.services.exception;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
+
+import org.ff4j.exception.FeatureAccessException;
+import org.ff4j.exception.FeatureAlreadyExistException;
+import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.exception.GroupNotFoundException;
 
 /**
  * Encapsulation of exception during {@link FeatureWebService} accesses.
@@ -23,15 +29,17 @@ import javax.ws.rs.ext.ExceptionMapper;
  * @param <T>
  *            target exception to trap
  */
-public abstract class AbstractExceptionMapper<T extends Throwable> implements ExceptionMapper<T> {
+@Provider
+public class RuntimeExceptionMapper implements ExceptionMapper<RuntimeException> {
 
     /** Target exception message as String. */
     private static final String CONTENT_TYPE = "text/plain";
 
     /** {@inheritdoc} */
     @Override
-    public Response toResponse(T rex) {
-        return Response.status(getStatus()).entity(rex.getMessage()).type(CONTENT_TYPE).build();
+    public Response toResponse(RuntimeException rex) {
+        rex.printStackTrace();
+        return Response.status(getStatus(rex)).entity(rex.getMessage()).type(CONTENT_TYPE).build();
     }
 
     /**
@@ -39,6 +47,17 @@ public abstract class AbstractExceptionMapper<T extends Throwable> implements Ex
      * 
      * @return http error code
      */
-    protected abstract Status getStatus();
+    public Status getStatus(RuntimeException rex) {
+        if ((rex instanceof FeatureNotFoundException) || (rex instanceof GroupNotFoundException)) {
+            return Status.NOT_FOUND;
+        }
+        if (rex instanceof FeatureAlreadyExistException) {
+            return Status.CONFLICT;
+        }
+        if (rex instanceof FeatureAccessException) {
+            return Status.SERVICE_UNAVAILABLE;
+        }
+        return Status.INTERNAL_SERVER_ERROR;
+    }
 
 }

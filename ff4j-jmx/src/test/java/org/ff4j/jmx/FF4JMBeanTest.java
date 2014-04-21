@@ -11,9 +11,6 @@ package org.ff4j.jmx;
  * governing permissions and limitations under the License. #L%
  */
 
-import static org.fest.assertions.Assertions.assertThat;
-import static org.fest.assertions.MapAssert.entry;
-
 import java.lang.management.ManagementFactory;
 import java.util.Map;
 import java.util.Set;
@@ -28,9 +25,10 @@ import javax.management.remote.JMXConnectorServerFactory;
 import javax.management.remote.JMXServiceURL;
 
 import org.ff4j.FF4j;
+import org.ff4j.test.AssertFf4j;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,14 +45,17 @@ public class FF4JMBeanTest {
 
     private JMXConnector jmxConnectionFactory = null;
 
-    private MBeanServerConnection mbeanServerConnection;
+    private MBeanServerConnection mbServConn;
 
     @Autowired
     private FF4j ff4j;
 
+    private AssertFf4j assertFF4J = null;
+
     @Before
     public void setUp() throws Exception {
         openJmxConnection();
+        assertFF4J = new AssertFf4j(ff4j);
     }
 
     private void openJmxConnection() throws Exception {
@@ -68,7 +69,7 @@ public class FF4JMBeanTest {
 
         // Now make a connector client using the server's address
         jmxConnectionFactory = JMXConnectorFactory.connect(jmxAddress);
-        mbeanServerConnection = jmxConnectionFactory.getMBeanServerConnection();
+        mbServConn = jmxConnectionFactory.getMBeanServerConnection();
     }
 
     @After
@@ -83,59 +84,59 @@ public class FF4JMBeanTest {
         jmxConnectionServer.stop();
     }
 
-    @SuppressWarnings("unchecked")
     @Test
-    @Ignore
     public void should_retrieve_features_status() throws Exception {
         ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
-        Map<String, Boolean> featuresStatus = (Map<String, Boolean>) mbeanServerConnection.getAttribute(objectName,
-                "FeaturesStatus");
-
-        assertThat(featuresStatus).includes(entry("jmxEnabledFeature", true), entry("jmxDisabledFeature", false),
-                entry("jmxFeatureWithAuth", false));
+        @SuppressWarnings("unchecked")
+        Map<String, Boolean> fs = (Map<String, Boolean>) mbServConn.getAttribute(objectName, "FeaturesStatus");
+        Assert.assertTrue(fs.containsKey("jmxEnabledFeature"));
+        Assert.assertTrue(fs.get("jmxEnabledFeature"));
+        Assert.assertTrue(fs.containsKey("jmxDisabledFeature"));
+        Assert.assertFalse(fs.get("jmxDisabledFeature"));
+        Assert.assertTrue(fs.containsKey("jmxFeatureWithAuth"));
+        Assert.assertFalse(fs.get("jmxFeatureWithAuth"));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
-    @Ignore
     public void should_retrieve_changed_features_status() throws Exception {
         ff4j.enable("jmxDisabledFeature");
-
         ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
-        Map<String, Boolean> featuresStatus = (Map<String, Boolean>) mbeanServerConnection.getAttribute(objectName,
-                "FeaturesStatus");
-
-        assertThat(featuresStatus)//
-                .includes(entry("jmxEnabledFeature", true), entry("jmxDisabledFeature", true), entry("jmxFeatureWithAuth", false))//
-                .hasSize(3);
+        @SuppressWarnings("unchecked")
+        Map<String, Boolean> fs = (Map<String, Boolean>) mbServConn.getAttribute(objectName, "FeaturesStatus");
+        Assert.assertTrue(fs.containsKey("jmxEnabledFeature"));
+        Assert.assertTrue(fs.get("jmxEnabledFeature"));
+        Assert.assertTrue(fs.containsKey("jmxDisabledFeature"));
+        Assert.assertTrue(fs.get("jmxDisabledFeature"));
+        Assert.assertTrue(fs.containsKey("jmxFeatureWithAuth"));
+        Assert.assertFalse(fs.get("jmxFeatureWithAuth"));
+        Assert.assertEquals(3, fs.size());
     }
 
     @Test
     public void should_enable_feature() throws Exception {
         ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
-        mbeanServerConnection.invoke(objectName, "enableFeature", new Object[] {"jmxDisabledFeature"},
+        mbServConn.invoke(objectName, "enableFeature", new Object[] {"jmxDisabledFeature"},
                 new String[] {"java.lang.String"});
-
-        assertThat(ff4j.getFeature("jmxDisabledFeature").isEnable()).isTrue();
+        assertFF4J.assertThatFeatureIsEnabled("jmxDisabledFeature");
     }
 
     @Test
     public void should_disable_feature() throws Exception {
         ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
-        mbeanServerConnection.invoke(objectName, "disableFeature", new Object[] {"jmxEnabledFeature"},
+        mbServConn.invoke(objectName, "disableFeature", new Object[] {"jmxEnabledFeature"},
                 new String[] {"java.lang.String"});
-
-        assertThat(ff4j.getFeature("jmxEnabledFeature").isEnable()).isFalse();
+        assertFF4J.assertThatFeatureIsDisabled("jmxEnabledFeature");
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void should_get_feature_auth_roles() throws Exception {
         ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
-        Set<String> featureAuthRoles = (Set<String>) mbeanServerConnection.invoke(objectName, "getFeatureAuthRoles",
+        @SuppressWarnings("unchecked")
+        Set<String> featureAuthRoles = (Set<String>) mbServConn.invoke(objectName, "getFeatureAuthRoles",
                 new Object[] {"jmxFeatureWithAuth"}, new String[] {"java.lang.String"});
 
-        assertThat(featureAuthRoles).containsOnly("ROLE_USER", "ROLE_ADMIN");
+        Assert.assertTrue(featureAuthRoles.contains("ROLE_USER"));
+        Assert.assertTrue(featureAuthRoles.contains("ROLE_ADMIN"));
 
         should_add_auth_role_to_feature();
         should_remove_auth_role_from_feature();
@@ -143,13 +144,13 @@ public class FF4JMBeanTest {
 
     public void should_add_auth_role_to_feature() throws Exception {
         ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
-        mbeanServerConnection.invoke(objectName, "grantRoleOnFeature", new Object[] {"NEW_ROLE","jmxEnabledFeature"},
+        mbServConn.invoke(objectName, "grantRoleOnFeature", new Object[] {"NEW_ROLE","jmxEnabledFeature"},
                 new String[] {"java.lang.String","java.lang.String"});
     }
 
     public void should_remove_auth_role_from_feature() throws Exception {
         ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
-        mbeanServerConnection.invoke(objectName, "removeAuthRoleFromFeature", new Object[] {"ROLE_USER","jmxFeatureWithAuth"},
+        mbServConn.invoke(objectName, "removeAuthRoleFromFeature", new Object[] {"ROLE_USER","jmxFeatureWithAuth"},
                 new String[] {"java.lang.String","java.lang.String"});
     }
 }

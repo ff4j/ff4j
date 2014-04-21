@@ -74,8 +74,8 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
     @Transactional
     public void testStoreHasBeenInitialized() throws Exception {
         // Given Initialization, Then
-        assertFf4j.assertFeatureNumber(EXPECTED_FEATURES_NUMBERS);
-        assertFf4j.assertFlipped(F1);
+        assertFf4j.assertThatStoreHasSize(EXPECTED_FEATURES_NUMBERS);
+        assertFf4j.assertThatFeatureFlipped(F1);
     }
 
     /**
@@ -88,8 +88,8 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
     @Transactional
     public void testReadllFeatures() {
         // Given
-        assertFf4j.assertExist(F1);
-        assertFf4j.assertExist(F4);
+        assertFf4j.assertThatFeatureExist(F1);
+        assertFf4j.assertThatFeatureExist(F4);
         // When
         Map<String, Feature> features = testedStore.readAll();
         // Then
@@ -107,15 +107,15 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
     @Transactional
     public void testReadFullFeature() {
         // Given
-        assertFf4j.assertExist(F4);
+        assertFf4j.assertThatFeatureExist(F4);
         // When
         Feature f = testedStore.read(F4);
         // Then
         Assert.assertEquals(f.getUid(), F4);
         Assert.assertTrue(f.getDescription() != null && !"".equals(f.getDescription()));
         Assert.assertTrue(f.getAuthorizations() != null && !f.getAuthorizations().isEmpty());
-        assertFf4j.assertHasRole(F4, ROLE_ADMIN);
-        assertFf4j.assertInGroup(F4, G1);
+        assertFf4j.assertThatFeatureHasRole(F4, ROLE_ADMIN);
+        assertFf4j.assertThatFeatureIsInGroup(F4, G1);
     }
 
     /**
@@ -166,7 +166,7 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         // When
         ff4j.enable(F1);
         // Then
-        assertFf4j.assertFlipped(F1);
+        assertFf4j.assertThatFeatureFlipped(F1);
     }
 
     /**
@@ -181,7 +181,7 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         // When
         ff4j.disable(F1);
         // Then
-        assertFf4j.assertNotFlipped(F1);
+        assertFf4j.assertThatFeatureNotFlipped(F1);
     }
 
     /**
@@ -194,18 +194,18 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
     @Transactional
     public void testAddFeature() throws Exception {
         // Given
-        assertFf4j.assertNotExist(FEATURE_NEW);
+        assertFf4j.assertThatFeatureDoesNotExist(FEATURE_NEW);
         // When
         Set<String> rights = new HashSet<String>(Arrays.asList(new String[] {ROLE_USER}));
         Feature fp = new Feature(FEATURE_NEW, true, "description", G1, rights);
         testedStore.create(fp);
         // Then
-        assertFf4j.assertFeatureNumber(EXPECTED_FEATURES_NUMBERS + 1);
-        assertFf4j.assertExist(FEATURE_NEW);
-        assertFf4j.assertInGroup(FEATURE_NEW, G1);
+        assertFf4j.assertThatStoreHasSize(EXPECTED_FEATURES_NUMBERS + 1);
+        assertFf4j.assertThatFeatureExist(FEATURE_NEW);
+        assertFf4j.assertThatFeatureIsInGroup(FEATURE_NEW, G1);
         // End, return to initial state
         testedStore.delete(FEATURE_NEW);
-        assertFf4j.assertNotExist(FEATURE_NEW);
+        assertFf4j.assertThatFeatureDoesNotExist(FEATURE_NEW);
     }
 
     /**
@@ -237,17 +237,17 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
     @Transactional
     public void testDeleteFeature() throws Exception {
         // Given
-        assertFf4j.assertExist(F1);
+        assertFf4j.assertThatFeatureExist(F1);
         Feature tmpf1 = testedStore.read(F1);
         int initialNumber = testedStore.readAll().size();
         // When
         testedStore.delete(F1);
         // Then
-        assertFf4j.assertFeatureNumber(initialNumber - 1);
-        assertFf4j.assertNotExist(F1);
+        assertFf4j.assertThatStoreHasSize(initialNumber - 1);
+        assertFf4j.assertThatFeatureDoesNotExist(F1);
         // End, Reinit initial state
         testedStore.create(tmpf1);
-        assertFf4j.assertExist(F1);
+        assertFf4j.assertThatFeatureExist(F1);
     }
 
     /**
@@ -276,7 +276,7 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         // When
         testedStore.grantRoleOnFeature(F1, ROLE_NEW);
         // Then
-        assertFf4j.assertHasRole(F1, ROLE_NEW);
+        assertFf4j.assertThatFeatureHasRole(F1, ROLE_NEW);
     }
 
     /**
@@ -305,7 +305,7 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         // When
         testedStore.removeRoleFromFeature(F1, ROLE_USER);
         // Then
-        assertFf4j.assertHasNotRole(F1, ROLE_USER);
+        assertFf4j.assertThatFeatureHasNotRole(F1, ROLE_USER);
     }
 
     /**
@@ -335,7 +335,7 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         String newDescription = "new-description";
         FlipStrategy newStrategy = new PonderationFlipStrategy(0.12);
         // Given
-        assertFf4j.assertExist(F1);
+        assertFf4j.assertThatFeatureExist(F1);
         Assert.assertFalse(newDescription.equals(testedStore.read(F1).getDescription()));
         // When
         Feature fpBis = testedStore.read(F1);
@@ -360,15 +360,15 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         // Parameters
         Set<String> rights2 = new HashSet<String>(Arrays.asList(new String[] {ROLE_USER,ROLE_ADMIN}));
         // Given
-        assertFf4j.assertExist(F1);
-        assertFf4j.assertHasNotRole(F1, ROLE_ADMIN);
+        assertFf4j.assertThatFeatureExist(F1);
+        assertFf4j.assertThatFeatureHasNotRole(F1, ROLE_ADMIN);
         // When
         Feature fpBis = testedStore.read(F1);
         fpBis.setAuthorizations(rights2);
         testedStore.update(fpBis);
         // Then
-        assertFf4j.assertHasRole(F1, ROLE_USER);
-        assertFf4j.assertHasRole(F1, ROLE_ADMIN);
+        assertFf4j.assertThatFeatureHasRole(F1, ROLE_USER);
+        assertFf4j.assertThatFeatureHasRole(F1, ROLE_ADMIN);
     }
 
     /**
@@ -382,7 +382,7 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
     public void testUpdateFlipLessAutorisation() {
         Feature fpBis = new Feature(F1, false, null);
         testedStore.update(fpBis);
-        assertFf4j.assertHasNotRole(F1, ROLE_ADMIN);
+        assertFf4j.assertThatFeatureHasNotRole(F1, ROLE_ADMIN);
     }
 
     /**
@@ -397,8 +397,8 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         Set<String> rights2 = new HashSet<String>(Arrays.asList(new String[] {ROLE_USER,ROLE_NEW}));
         Feature fpBis = new Feature(F1, false, G1, "desci2", rights2);
         testedStore.update(fpBis);
-        assertFf4j.assertHasRole(F1, ROLE_USER);
-        assertFf4j.assertHasRole(F1, ROLE_NEW);
+        assertFf4j.assertThatFeatureHasRole(F1, ROLE_USER);
+        assertFf4j.assertThatFeatureHasRole(F1, ROLE_NEW);
     }
 
     /**
@@ -418,11 +418,11 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
     @Transactional
     public void testEnableGroup() {
         // Given
-        assertFf4j.assertDisable(F2);
+        assertFf4j.assertThatFeatureIsDisabled(F2);
         // When
         testedStore.enableGroup(G0);
         // Then
-        assertFf4j.assertEnable(F2);
+        assertFf4j.assertThatFeatureIsEnabled(F2);
         // Reinit
         testedStore.disable(F2);
     }
@@ -443,14 +443,14 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
     @Transactional
     public void testDisableGroup() {
         // Given
-        assertFf4j.assertEnable(F4);
+        assertFf4j.assertThatFeatureIsEnabled(F4);
         // When
         testedStore.disableGroup(G1);
         // Then
-        assertFf4j.assertDisable(F4);
+        assertFf4j.assertThatFeatureIsDisabled(F4);
         // Cancel modifications
         testedStore.enable(F4);
-        assertFf4j.assertEnable(F4);
+        assertFf4j.assertThatFeatureIsEnabled(F4);
     }
 
     /**
@@ -490,14 +490,14 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
     @Transactional
     public void testAddToGroup() {
         // Given
-        assertFf4j.assertGroupSize(1, G0);
+        assertFf4j.assertThatGroupHasSize(1, G0);
         // When
         testedStore.addToGroup(F1, G0);
         // Then
-        assertFf4j.assertGroupSize(2, G0);
+        assertFf4j.assertThatGroupHasSize(2, G0);
         // End, Return to initial state
         testedStore.removeFromGroup(F1, G0);
-        assertFf4j.assertGroupSize(1, G0);
+        assertFf4j.assertThatGroupHasSize(1, G0);
     }
 
     /**
@@ -516,14 +516,14 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
     @Transactional
     public void testRemoveFromGroup() {
         // Given
-        assertFf4j.assertGroupSize(2, G1);
+        assertFf4j.assertThatGroupHasSize(2, G1);
         // When
         testedStore.removeFromGroup(F3, G1);
         // Then
-        assertFf4j.assertGroupSize(1, G1);
+        assertFf4j.assertThatGroupHasSize(1, G1);
         // End, Return to initial state
         testedStore.addToGroup(F3, G1);
-        assertFf4j.assertGroupSize(2, G1);
+        assertFf4j.assertThatGroupHasSize(2, G1);
     }
 
     /**
@@ -533,7 +533,7 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
     @Transactional
     public void testRemoveLastFeatureOfGroupDeleteGroup() {
         // Given
-        assertFf4j.assertGroupSize(1, G0);
+        assertFf4j.assertThatGroupHasSize(1, G0);
         // When
         testedStore.removeFromGroup(F2, G0);
         // Then

@@ -21,20 +21,15 @@ package org.ff4j.test.utils;
  */
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 import junit.framework.Assert;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
-import org.ff4j.strategy.PonderationFlipStrategy;
+import org.ff4j.test.TestConstantsFF4j;
 import org.ff4j.utils.FeatureJsonMarshaller;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -42,12 +37,149 @@ import org.junit.Test;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureJsonMarshallerTest {
+public class FeatureJsonMarshallerTest implements TestConstantsFF4j {
+
+    /** Jackson Mapper. */
+    protected ObjectMapper mapper = new ObjectMapper();
+    
+    /** Sample in MempryStore. */
+    private final FF4j ff4j = new FF4j("ff4j.xml");
+
+    /** current feature. */
+    private Feature f1 = null;
+
+    /** current feature. */
+    private Feature f2 = null;
+
+    /** current feature. */
+    private Feature f3 = null;
+
+    /** current feature. */
+    private Feature f4 = null;
 
     /**
-     * Jackson Mapper
+     * Initi features before starting.
      */
-    protected ObjectMapper mapper = new ObjectMapper();
+    @Before
+    public void init() {
+        f1 = ff4j.getFeature(F1);
+        f2 = ff4j.getFeature(F2);
+        f3 = ff4j.getFeature(F3);
+        f4 = ff4j.getFeature(F4);
+    }
+
+    /**
+     * Feature still serializable
+     */
+    @Test
+    public void testFeatureIsSerializable() {
+        Assert.assertTrue(mapper.canSerialize(Feature.class));
+    }
+
+    /**
+     * TDD.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testMarshaller() throws Exception {
+        assertMarshalling(f1);
+        assertUnMarshalling(f1);
+        assertMarshalling(f2);
+        assertUnMarshalling(f2);
+        assertMarshalling(f3);
+        assertUnMarshalling(f3);
+        assertMarshalling(f4);
+        assertUnMarshalling(f4);
+    }
+
+    /**
+     * TDD, marshall a array of features as array
+     */
+    @Test
+    public void testMarshallArrayFeature() throws Exception {
+        // Given, create simple Array
+        Feature[] fa = new Feature[] {f1,f2,f3,f4};
+        // When
+        String expected = marshallWithJackson(fa);
+        String value = FeatureJsonMarshaller.marshallFeatureArray(fa);
+        // Then
+        Assert.assertEquals(expected, value);
+    }
+
+    /**
+     * TDD, marshall a array of features as array
+     */
+    @Test
+    public void testMarshallArrayEmpty() throws Exception {
+        // Given, create simple Array
+        Feature[] fa = new Feature[0];
+        // When
+        String expected = marshallWithJackson(fa);
+        String value = FeatureJsonMarshaller.marshallFeatureArray(fa);
+        // Then
+        Assert.assertEquals(expected, value);
+    }
+
+    /**
+     * TDD, unmarshall an empty table.
+     **/
+    @Test
+    public void testUnMarshallArray() {
+        // Given
+        Feature[] start = new Feature[] {f1,f2,f3,f4};
+        // When
+        String expected = FeatureJsonMarshaller.marshallFeatureArray(start);
+        Feature[] end = FeatureJsonMarshaller.unMarshallFeatureArray(expected);
+        String actual = FeatureJsonMarshaller.marshallFeatureArray(end);
+        // Then
+        Assert.assertEquals(expected, actual);
+    }
+
+    /**
+     * TDD, unmarshall an empty table.
+     **/
+    @Test
+    public void testUnMarshallArrayEmpty() {
+        // Given
+        Feature[] start = new Feature[0];
+        // When
+        String expected = FeatureJsonMarshaller.marshallFeatureArray(start);
+        Feature[] end = FeatureJsonMarshaller.unMarshallFeatureArray(expected);
+        String actual = FeatureJsonMarshaller.marshallFeatureArray(end);
+        // Then
+        Assert.assertEquals(expected, actual);
+    }
+
+    /**
+     * Check cutom (fast) serialization against Jackson.
+     * 
+     * @param f
+     *            current feature
+     * @return feature serialized as JSON
+     * @throws Exception
+     *             error occured
+     */
+    private String marshallWithJackson(Feature f) throws Exception {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        mapper.writeValue(baos, f);
+        return new StringBuilder().append(baos).toString();
+    }
+
+    /**
+     * Check cutom (fast) serialization against Jackson.
+     * 
+     * @param f
+     *            current feature
+     * @return feature serialized as JSON
+     * @throws Exception
+     *             error occured
+     */
+    private String marshallWithJackson(Feature[] f) throws Exception {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        mapper.writeValue(baos, f);
+        return new StringBuilder().append(baos).toString();
+    }
 
     /**
      * Check serialized string against json serializer.
@@ -57,51 +189,20 @@ public class FeatureJsonMarshallerTest {
      * @param feat
      *            feature
      **/
-    private void assertMarshalling(Feature feat) throws JsonGenerationException, JsonMappingException, IOException {
-        Assert.assertTrue(mapper.canSerialize(Feature.class));
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        mapper.writeValue(baos, feat);
-        String expected = new StringBuilder().append(baos).toString();
-
+    private void assertMarshalling(Feature feat) throws Exception {
         String serialized = feat.toString();
-        Assert.assertEquals(expected, serialized);
-
-        Feature nFeature = FeatureJsonMarshaller.unMarshallFeature(serialized);
-        Assert.assertEquals(expected, nFeature.toString());
+        Assert.assertEquals(marshallWithJackson(feat), serialized);
     }
 
-    @Test
-    public void testMarshall1() throws IOException {
-        assertMarshalling(new Feature("f1"));
-    }
-
-    @Test
-    public void testMarshall2() throws IOException {
-        assertMarshalling(new Feature("f2", true));
-    }
-
-    @Test
-    public void testMarshall3() throws IOException {
-        assertMarshalling(new Feature("f3", true, "desc"));
-    }
-
-    @Test
-    public void testMarshall4() throws IOException {
-        Set<String> newSet = new HashSet<String>();
-        newSet.add("role1");
-        newSet.add("role2");
-        Feature f4 = new Feature("f4", true, "descript", "groupee", newSet);
-
-        // Initializing PonderationFlipStrategy
-        Map<String, String> initParam = new HashMap<String, String>();
-        initParam.put("weight", "0.6");
-        initParam.put("weight2", "0.6");
-        PonderationFlipStrategy pf = new PonderationFlipStrategy(0.6);
-        pf.init("f4", initParam);
-        f4.setFlippingStrategy(pf);
-        // <----
-        assertMarshalling(f4);
+    /**
+     * Unmarshalling of features.
+     * 
+     * @param f
+     *            target feature
+     */
+    private void assertUnMarshalling(Feature f) {
+        Feature tmp = FeatureJsonMarshaller.unMarshallFeature(f.toString());
+        Assert.assertEquals(f.toString(), tmp.toString());
     }
 
 }

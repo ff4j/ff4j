@@ -63,19 +63,19 @@ public class FeatureStoreCacheProxy implements FeatureStore {
     /** {@inheritDoc} */
     @Override
     public void enable(String featureId) {
-        // Modification => flush cache
-        getCacheManager().evict(featureId);
         // Reach target
         getTarget().enable(featureId);
+        // Modification => flush cache
+        getCacheManager().evict(featureId);
     }
 
     /** {@inheritDoc} */
     @Override
     public void disable(String featureId) {
-        // Cache Operations : As modification, flush cache for this
-        getCacheManager().evict(featureId);
         // Reach target
         getTarget().disable(featureId);
+        // Cache Operations : As modification, flush cache for this
+        getCacheManager().evict(featureId);
     }
 
     /** {@inheritDoc} */
@@ -91,9 +91,9 @@ public class FeatureStoreCacheProxy implements FeatureStore {
     /** {@inheritDoc} */
     @Override
     public void create(Feature fp) {
-        getCacheManager().evict(fp.getUid());
         getTarget().create(fp);
         getCacheManager().put(fp);
+        getCacheManager().evict(fp.getUid());
     }
 
     /** {@inheritDoc} */
@@ -118,47 +118,47 @@ public class FeatureStoreCacheProxy implements FeatureStore {
     /** {@inheritDoc} */
     @Override
     public void delete(String featureId) {
-        // even is not present, evict won't failed
-        getCacheManager().evict(featureId);
         // Access target store
         getTarget().delete(featureId);
+        // even is not present, evict won't failed
+        getCacheManager().evict(featureId);
     }
 
     /** {@inheritDoc} */
     @Override
     public void update(Feature fp) {
-        getCacheManager().evict(fp.getUid());
         getTarget().update(fp);
+        getCacheManager().evict(fp.getUid());
     }
 
     /** {@inheritDoc} */
     @Override
     public void grantRoleOnFeature(String featureId, String roleName) {
-        getCacheManager().evict(featureId);
         getTarget().grantRoleOnFeature(featureId, roleName);
+        getCacheManager().evict(featureId);
     }
 
     /** {@inheritDoc} */
     @Override
     public void removeRoleFromFeature(String featureId, String roleName) {
-        getCacheManager().evict(featureId);
         getTarget().removeRoleFromFeature(featureId, roleName);
+        getCacheManager().evict(featureId);
     }
 
     /** {@inheritDoc} */
     @Override
     public void enableGroup(String groupName) {
+        getTarget().enableGroup(groupName);
         // Cannot know wich feature to work with (exceptional event) : flush cache
         getCacheManager().clear();
-        getTarget().enableGroup(groupName);
     }
 
     /** {@inheritDoc} */
     @Override
     public void disableGroup(String groupName) {
+        getTarget().disableGroup(groupName);
         // Cannot know wich feature to work with (exceptional event) : flush cache
         getCacheManager().clear();
-        getTarget().disableGroup(groupName);
     }
 
     /** {@inheritDoc} */
@@ -178,16 +178,15 @@ public class FeatureStoreCacheProxy implements FeatureStore {
     /** {@inheritDoc} */
     @Override
     public void addToGroup(String featureId, String groupName) {
-        getCacheManager().evict(featureId);
         getTarget().addToGroup(featureId, groupName);
-
+        getCacheManager().evict(featureId);
     }
 
     /** {@inheritDoc} */
     @Override
     public void removeFromGroup(String featureId, String groupName) {
-        getCacheManager().evict(featureId);
         getTarget().removeFromGroup(featureId, groupName);
+        getCacheManager().evict(featureId);
     }
 
     /**

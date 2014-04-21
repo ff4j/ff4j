@@ -26,8 +26,6 @@ import org.ff4j.audit.Event;
 import org.ff4j.audit.EventPublisher;
 import org.ff4j.audit.EventType;
 import org.ff4j.audit.InMemoryEventRepository;
-import org.ff4j.audit.graph.Curve;
-import org.ff4j.audit.graph.Point;
 import org.junit.Test;
 
 /**
@@ -71,17 +69,8 @@ public class EventRepositoryTest {
             pub.publish(new Event("aer", EventType.HIT_FLIPPED));
             Thread.sleep(2);
         }
-
         Assert.assertEquals(nbEvent, pub.getRepository().getAllEvents().size());
-
         long now = System.currentTimeMillis();
-        Curve c = pub.getRepository().getHitCurve("aer", 10, now - 3 * nbEvent, now);
-        System.out.println(c);
-        for (Point p : c.getListOfPoint()) {
-            System.out.print('x' + (int) p.getX() + "=" + (int) p.getY() + ",");
-            if (p.getX() % 100 == 0)
-                System.out.println("");
-        }
-
+        pub.getRepository().getHitCurve("aer", 10, now - 3 * nbEvent, now);
     }
 }
