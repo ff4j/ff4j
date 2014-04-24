@@ -13,14 +13,13 @@ package org.ff4j.test.store;
 
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.JdbcFeatureStore;
-import org.ff4j.test.AbstractStoreTest;
 import org.junit.After;
 import org.junit.Before;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
-public class DefaultJdbcEmbedDataSourceStoreTest extends AbstractStoreTest {
+public class DefaultJdbcEmbedDataSourceStoreTest extends AbstractStoreJUnitTest {
 
     /** DataBase. */
     private EmbeddedDatabase db;

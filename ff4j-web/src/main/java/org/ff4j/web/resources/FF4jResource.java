@@ -40,15 +40,17 @@ import org.ff4j.FF4j;
 @Produces(MediaType.APPLICATION_JSON)
 public class FF4jResource {
 
+    /** Access to Features through store. */
+    @Context
+    private FF4j ff4j = null;
+
+    /** rest url. */
     @Context
     private UriInfo uriInfo;
 
+    /** current request. */
     @Context
     private Request request;
-
-    /** Access to Features through store. */
-    @Context
-    private final FF4j ff4j = null;
 
     @Path("features")
     public FeaturesResource getStoreResource() {
@@ -67,6 +69,25 @@ public class FF4jResource {
     public Response getStatus() {
         String jsonResponse = "{\"ff4j-stats\" : true }";
         return Response.ok(jsonResponse).build();
+    }
+
+    /**
+     * Getter accessor for attribute 'ff4j'.
+     * 
+     * @return current value of 'ff4j'
+     */
+    public FF4j getFf4j() {
+        return ff4j;
+    }
+
+    /**
+     * Setter accessor for attribute 'ff4j'.
+     * 
+     * @param ff4j
+     *            new value for 'ff4j '
+     */
+    public void setFf4j(FF4j ff4j) {
+        this.ff4j = ff4j;
     }
 
 }

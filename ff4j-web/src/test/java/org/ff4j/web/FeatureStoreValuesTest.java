@@ -22,14 +22,14 @@ package org.ff4j.web;
 
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
-import org.ff4j.test.AbstractStoreTest;
+import org.ff4j.test.store.AbstractStoreJUnitTest;
 
 /**
  * Test that sotre informations are correct.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreValuesTest extends AbstractStoreTest {
+public class FeatureStoreValuesTest extends AbstractStoreJUnitTest {
 
     /** {@inheritDoc} */
     @Override

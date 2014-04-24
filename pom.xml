@@ -120,6 +120,7 @@
 	<modules>
 		<module>ff4j-aop</module>
 		<module>ff4j-core</module>
+		<module>ff4j-test</module>
 		<module>ff4j-jmx</module>
 		<module>ff4j-web</module>
 		<module>ff4j-cache-ehcache</module>
@@ -311,6 +312,11 @@
 			</dependency>
 			
 			<!-- Webservices -->
+			<dependency>
+				<groupId>com.sun.jersey</groupId>
+				<artifactId>jersey-client</artifactId>
+				<version>${version.jersey}</version>
+			</dependency>
 			<dependency>
 				<groupId>com.sun.jersey</groupId>
 				<artifactId>jersey-json</artifactId>
@@ -511,6 +517,13 @@
 						<encoding>UTF-8</encoding>
 					</configuration>
 				</plugin>
+				
+				 <!-- Sonar -->
+				 <plugin>
+          			<groupId>org.codehaus.mojo</groupId>
+          			<artifactId>sonar-maven-plugin</artifactId>
+          			<version>2.2</version>
+        		</plugin>
 
 				<!-- Shutdown eclipse warning (works with intelliJ) -->
 				<plugin>

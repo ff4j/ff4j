@@ -1,4 +1,4 @@
-package org.ff4j.web;
+package org.ff4j.web.it;
 
 /*
  * #%L
@@ -69,75 +69,6 @@ public class FeatureStoreWebResourceTest implements TestConstantsFF4j {
         f4 = ff4j.getFeature(F4);
     }
 
-    /**
-     * TDD, read the feature as a webresource => String JSON
-     */
-    @Test
-    public void testRead() {
-        // Given
-        assertFF4J.assertThatFeatureExist(F4);
-       // When
-        // Response res = api.read(F4);
-        Response res = null;
-        // Then, HTTPResponse
-        Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), res.getStatus());
-        Assert.assertNotNull(res.getEntity());
-        Assert.assertTrue("Invalid response " + res.getEntity(), res.getEntity() instanceof String);
-        // Then, Entity Object
-        Feature f = FeatureJsonMarshaller.unMarshallFeature(String.valueOf(res.getEntity()));
-        Assert.assertEquals(f4.toString(), f.toString());
-    }
-
-    /**
-     * TDD.
-     */
-    @Test
-    public void testReadIdInvalid() {
-        // Given
-        // When
-        // Response res = api.read("");
-        Response res = null;
-
-        // Then HTTP Response
-        Assert.assertEquals("Expected status is 400", Status.BAD_REQUEST.getStatusCode(), res.getStatus());
-        // Then, Entity (erro message)
-        Assert.assertNotNull(res.getEntity());
-        Assert.assertTrue(String.valueOf(res.getEntity()).contains("not null nor empty"));
-    }
-
-    /**
-     * TDD.
-     */
-    @Test
-    public void testReadNotFound() {
-        // Given
-        assertFF4J.assertThatFeatureDoesNotExist(FEATURE_NEW);
-        // When
-        // Response res = api.read(FEATURE_NEW);
-        Response res = null;
-
-        // Then, HTTP Response
-        Assert.assertEquals("Expected status is 404", Status.NOT_FOUND.getStatusCode(), res.getStatus());
-        // Then, Entity (erro message)
-        Assert.assertNotNull(res.getEntity());
-        String errorMessage = (String) res.getEntity();
-        Assert.assertTrue("Invalid error message : " + errorMessage, ((String) res.getEntity()).contains("not exist"));
-    }
-
-    /**
-     * TDD.
-     */
-    @Test
-    public void upsertIfNotExistCreateIt() {
-        // Given
-        assertFF4J.assertThatFeatureDoesNotExist(FEATURE_NEW);
-        // When
-        // Response res = api.upsert(new Feature(FEATURE_NEW));
-        Response res = null;
-        // Then
-        assertFF4J.assertThatFeatureExist(FEATURE_NEW);
-        Assert.assertEquals(Status.CREATED.getStatusCode(), res.getStatus());
-    }
 
     /**
      * TDD, update by adding in the authorization

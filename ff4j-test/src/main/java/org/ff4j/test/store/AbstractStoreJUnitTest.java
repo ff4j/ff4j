@@ -1,4 +1,4 @@
-package org.ff4j.test;
+package org.ff4j.test.store;
 
 /*
  * #%L ff4j-core %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not use
@@ -26,16 +26,17 @@ import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.strategy.PonderationFlipStrategy;
+import org.ff4j.test.AssertFf4j;
+import org.ff4j.test.TestConstantsFF4j;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * For different store.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public abstract class AbstractStoreTest implements TestConstantsFF4j {
+public abstract class AbstractStoreJUnitTest implements TestConstantsFF4j {
 
     /** Initialize */
     protected FF4j ff4j = null;
@@ -71,7 +72,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      *             error during test
      */
     @Test
-    @Transactional
     public void testStoreHasBeenInitialized() throws Exception {
         // Given Initialization, Then
         assertFf4j.assertThatStoreHasSize(EXPECTED_FEATURES_NUMBERS);
@@ -85,7 +85,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      *             error during test
      */
     @Test
-    @Transactional
     public void testReadllFeatures() {
         // Given
         assertFf4j.assertThatFeatureExist(F1);
@@ -104,7 +103,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      *             error during test
      */
     @Test
-    @Transactional
     public void testReadFullFeature() {
         // Given
         assertFf4j.assertThatFeatureExist(F4);
@@ -125,7 +123,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      *             error during test
      */
     @Test(expected = FeatureNotFoundException.class)
-    @Transactional
     public void testFlipFeatureDoesNotExist() {
         ff4j.isFlipped(F_DOESNOTEXIST);
     }
@@ -137,7 +134,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      *             error during test
      */
     @Test(expected = FeatureNotFoundException.class)
-    @Transactional
     public void testEnableFeatureDoesNotExist() {
         ff4j.enable(F_DOESNOTEXIST);
     }
@@ -149,7 +145,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      *             error during test
      */
     @Test(expected = FeatureNotFoundException.class)
-    @Transactional
     public void testDisableFeatureDoesNotExist() {
         ff4j.disable(F_DOESNOTEXIST);
     }
@@ -161,7 +156,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      *             error during test
      */
     @Test
-    @Transactional
     public void testEnableFeature() {
         // When
         ff4j.enable(F1);
@@ -176,7 +170,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      *             error during test
      */
     @Test
-    @Transactional
     public void testDisableFeature() {
         // When
         ff4j.disable(F1);
@@ -191,7 +184,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      *             error during test
      */
     @Test
-    @Transactional
     public void testAddFeature() throws Exception {
         // Given
         assertFf4j.assertThatFeatureDoesNotExist(FEATURE_NEW);
@@ -215,7 +207,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      *             error during test
      */
     @Test(expected = FeatureAlreadyExistException.class)
-    @Transactional
     public void testAddFeatureAlreadyExis() throws Exception {
         // Given
         Feature fp = new Feature(FEATURE_NEW, true, "description2");
@@ -234,7 +225,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      *             error during test
      */
     @Test
-    @Transactional
     public void testDeleteFeature() throws Exception {
         // Given
         assertFf4j.assertThatFeatureExist(F1);
@@ -257,7 +247,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      *             error during test
      */
     @Test(expected = FeatureNotFoundException.class)
-    @Transactional
     public void testDeteleFeatureDoesnotExist() throws Exception {
         // When
         testedStore.delete(F_DOESNOTEXIST);
@@ -271,7 +260,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      *             error during test
      */
     @Test
-    @Transactional
     public void testGrantRoleToFeatureRoleDoesNotExist() throws Exception {
         // When
         testedStore.grantRoleOnFeature(F1, ROLE_NEW);
@@ -286,7 +274,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      *             error during test
      */
     @Test(expected = FeatureNotFoundException.class)
-    @Transactional
     public void testGrantRoleToFeatureFeatureDoesNotExist() throws Exception {
         // When
         testedStore.grantRoleOnFeature(F_DOESNOTEXIST, ROLE_USER);
@@ -300,7 +287,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      *             error during test
      */
     @Test
-    @Transactional
     public void testDeleteRoleToFeature() throws Exception {
         // When
         testedStore.removeRoleFromFeature(F1, ROLE_USER);
@@ -315,7 +301,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      *             error during test
      */
     @Test(expected = FeatureNotFoundException.class)
-    @Transactional
     public void testDeleteRoleFeatureDoesNotExit() {
         // When
         testedStore.removeRoleFromFeature(F_DOESNOTEXIST, ROLE_USER);
@@ -329,7 +314,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      *             error during test
      */
     @Test
-    @Transactional
     public void testUpdateFeatureCoreData() throws Exception {
         // Parameters
         String newDescription = "new-description";
@@ -355,7 +339,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      *             error during test
      */
     @Test
-    @Transactional
     public void testUpdateFeatureMoreAutorisation() throws Exception {
         // Parameters
         Set<String> rights2 = new HashSet<String>(Arrays.asList(new String[] {ROLE_USER,ROLE_ADMIN}));
@@ -378,7 +361,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      *             error during test
      */
     @Test
-    @Transactional
     public void testUpdateFlipLessAutorisation() {
         Feature fpBis = new Feature(F1, false, null);
         testedStore.update(fpBis);
@@ -392,7 +374,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      *             error during test
      */
     @Test
-    @Transactional
     public void testUpdateFlipMoreAutorisationNotExist() {
         Set<String> rights2 = new HashSet<String>(Arrays.asList(new String[] {ROLE_USER,ROLE_NEW}));
         Feature fpBis = new Feature(F1, false, G1, "desci2", rights2);
@@ -405,7 +386,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      * TDD.
      */
     @Test
-    @Transactional
     public void testExistGroup() {
         Assert.assertTrue(testedStore.existGroup(G1));
         Assert.assertFalse(testedStore.existGroup(G_DOESNOTEXIST));
@@ -415,7 +395,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      * TDD.
      */
     @Test
-    @Transactional
     public void testEnableGroup() {
         // Given
         assertFf4j.assertThatFeatureIsDisabled(F2);
@@ -431,7 +410,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      * TDD.
      */
     @Test(expected = GroupNotFoundException.class)
-    @Transactional
     public void testEnableGroupDoesNotExist() {
         testedStore.enableGroup(G_DOESNOTEXIST);
     }
@@ -440,7 +418,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      * TDD.
      */
     @Test
-    @Transactional
     public void testDisableGroup() {
         // Given
         assertFf4j.assertThatFeatureIsEnabled(F4);
@@ -457,7 +434,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      * TDD.
      */
     @Test(expected = GroupNotFoundException.class)
-    @Transactional
     public void testDisableGroupDoesNotExist() {
         testedStore.disableGroup(G_DOESNOTEXIST);
     }
@@ -466,7 +442,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      * TDD.
      */
     @Test
-    @Transactional
     public void testReadGroup() {
         Map<String, Feature> group = testedStore.readGroup(G1);
         Assert.assertEquals(2, group.size());
@@ -478,7 +453,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      * TDD.
      */
     @Test(expected = GroupNotFoundException.class)
-    @Transactional
     public void testReadGroupDoesnotExist() {
         testedStore.readGroup(G_DOESNOTEXIST);
     }
@@ -487,7 +461,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      * TDD.
      */
     @Test
-    @Transactional
     public void testAddToGroup() {
         // Given
         assertFf4j.assertThatGroupHasSize(1, G0);
@@ -504,7 +477,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      * TDD.
      */
     @Test(expected = FeatureNotFoundException.class)
-    @Transactional
     public void testAddToGroupFeatureDoeNotExist() {
         testedStore.addToGroup(F_DOESNOTEXIST, G0);
     }
@@ -513,7 +485,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      * TDD.
      */
     @Test
-    @Transactional
     public void testRemoveFromGroup() {
         // Given
         assertFf4j.assertThatGroupHasSize(2, G1);
@@ -530,7 +501,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      * TDD.
      */
     @Test(expected = GroupNotFoundException.class)
-    @Transactional
     public void testRemoveLastFeatureOfGroupDeleteGroup() {
         // Given
         assertFf4j.assertThatGroupHasSize(1, G0);
@@ -544,7 +514,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      * TDD.
      */
     @Test(expected = FeatureNotFoundException.class)
-    @Transactional
     public void testRemoveFromGroupFeatureDoeNotExist() {
         testedStore.removeFromGroup(F_DOESNOTEXIST, G0);
     }
@@ -553,7 +522,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      * TDD.
      */
     @Test(expected = GroupNotFoundException.class)
-    @Transactional
     public void testRemoveFromGroupDoesNotExist() {
         testedStore.removeFromGroup(F1, G_DOESNOTEXIST);
     }
@@ -562,10 +530,8 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      * TDD.
      */
     @Test
-    @Transactional
     public void testRemoveFromGroupIfNotInGroup() {
-
-        testedStore.removeFromGroup(F1, G0);
+        testedStore.removeFromGroup(F1, G1);
     }
 
 }

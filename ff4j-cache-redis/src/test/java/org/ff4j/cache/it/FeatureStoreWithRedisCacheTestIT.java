@@ -25,16 +25,15 @@ import org.ff4j.cache.FeatureCacheProviderRedis;
 import org.ff4j.cache.FeatureStoreCacheProxy;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
-import org.ff4j.test.AbstractStoreTest;
+import org.ff4j.test.store.AbstractStoreJUnitTest;
 import org.junit.Test;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Class to test the REDIS {@link FeatureCacheProviderEhCache}.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreWithRedisCacheTestIT extends AbstractStoreTest {
+public class FeatureStoreWithRedisCacheTestIT extends AbstractStoreJUnitTest {
 
     /** Initial feature number. */
     private static final int EXPECTED_FEATURES_NUMBERS = 5;
@@ -51,7 +50,6 @@ public class FeatureStoreWithRedisCacheTestIT extends AbstractStoreTest {
 
     /** {@inheritDoc} */
     @Test
-    @Transactional
     @Override
     public void testStoreHasBeenInitialized() throws Exception {
         assertFf4j.assertThatStoreHasSize(EXPECTED_FEATURES_NUMBERS);

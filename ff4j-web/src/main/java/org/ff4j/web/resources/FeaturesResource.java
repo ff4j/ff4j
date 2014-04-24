@@ -72,7 +72,7 @@ public class FeaturesResource {
         this.store = store;
     }
     
-    @Path("{uid: .+}")
+    @Path("{uid}")
     public FeatureResource getFeature(@PathParam("uid") String uid) {
         return new FeatureResource(uriInfo, request, uid, store);
     }

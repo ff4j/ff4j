@@ -24,7 +24,7 @@ import net.sf.ehcache.Cache;
 
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
-import org.ff4j.test.AbstractStoreTest;
+import org.ff4j.test.store.AbstractStoreJUnitTest;
 import org.junit.After;
 
 /**
@@ -32,7 +32,7 @@ import org.junit.After;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class EhCacheCacheProviderTest extends AbstractStoreTest {
+public class EhCacheCacheProviderTest extends AbstractStoreJUnitTest {
 
     /** Cache Manager. */
     private final FeatureCacheManager cache = new FeatureCacheProviderEhCache();
