@@ -60,7 +60,7 @@ import org.ff4j.store.InMemoryFeatureStore;
  * <li>Most of methods return the instance to perform fluent api :
  * 
  * <code>
- * FF4J.doSomething().doSomething(). and so on.
+ * instance.doSomething().doSomething(). and so on.
  * </code>
  * 
  * </ul>
@@ -83,6 +83,9 @@ public class FF4j {
     
     /** Do not through {@link FeatureNotFoundException} exception and but feature is required. */
     private boolean autocreate = false;
+
+    /** Intialisation. */
+    private final long startTime = System.currentTimeMillis();
 
     /**
      * Default constructor to allows instanciation through IoC. The created store is an empty {@link InMemoryFeatureStore}.
@@ -170,8 +173,9 @@ public class FF4j {
     }
 
     /**
+     * Read Features from store.
      * 
-     * @return
+     * @return get store features
      */
     public Map<String, Feature> getFeatures() {
         return getStore().readAll();
@@ -353,7 +357,31 @@ public class FF4j {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return String.format("FF4j [featureStore=%s, authorizationsManager=%s]", store, authorizationsManager);
+        StringBuilder sb = new StringBuilder("{");
+        // Render Uptime as String "X day(s) X hours(s) X minute(s) X seconds"
+        long uptime = System.currentTimeMillis() - startTime;
+        long daynumber = new Double(Math.floor(uptime / (1000 * 3600 * 24))).longValue();
+        uptime = uptime - (daynumber * 1000 * 3600 * 24);
+        long hourNumber = new Double(Math.floor(uptime / (1000 * 3600))).longValue();
+        uptime = uptime - (hourNumber * 1000 * 3600);
+        long minutenumber = new Double(Math.floor(uptime / (1000 * 60))).longValue();
+        uptime = uptime - (minutenumber * 1000 * 60);
+        long secondnumber = new Double(Math.floor(uptime / 1000)).longValue();
+        sb.append("\"uptime\":\"");
+        sb.append(daynumber + " day(s) ");
+        sb.append(hourNumber + " hours(s) ");
+        sb.append(minutenumber + " minute(s) ");
+        sb.append(secondnumber + " seconds\"");
+        // <---
+        sb.append(", \"autocreate\":" + isAutocreate());
+        sb.append(", \"featuresStore\":");
+        sb.append(getStore() == null ? "null" : getStore().toString());
+        sb.append(", \"eventRepository\":");
+        sb.append(getEventRepository() == null ? "null" : getEventRepository().toString());
+        sb.append(", \"authorizationsManager\":");
+        sb.append(getAuthorizationsManager() == null ? "null" : getAuthorizationsManager().toString());
+        sb.append("}");
+        return sb.toString();
     }
 
     // -------------------------------------------------------------------------
@@ -447,6 +475,15 @@ public class FF4j {
      */
     public void setEventPublisher(EventPublisher eventPublisher) {
         this.eventPublisher = eventPublisher;
+    }
+
+    /**
+     * Getter accessor for attribute 'autocreate'.
+     *
+     * @return current value of 'autocreate'
+     */
+    public boolean isAutocreate() {
+        return autocreate;
     }
 
 }

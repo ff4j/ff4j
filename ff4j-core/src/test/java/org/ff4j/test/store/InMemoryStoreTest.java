@@ -50,7 +50,7 @@ public class InMemoryStoreTest extends AbstractStoreTest {
         map1.put("old", new Feature("old", true, "description"));
         InMemoryFeatureStore imfs = new InMemoryFeatureStore(map1);
         Assert.assertEquals(2, imfs.readAll().size());
-        Assert.assertTrue(imfs.toString().contains("old"));
+        Assert.assertNotNull(imfs.read("old"));
     }
 
     @Test(expected = IllegalArgumentException.class)

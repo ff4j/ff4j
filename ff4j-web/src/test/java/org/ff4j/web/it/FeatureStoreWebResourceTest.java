@@ -29,7 +29,6 @@ import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.test.AssertFf4j;
 import org.ff4j.test.TestsFf4jConstants;
-import org.ff4j.utils.FeatureJsonMarshaller;
 import org.ff4j.web.resources.FeaturesResource;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -60,16 +59,11 @@ public class FeatureStoreWebResourceTest implements TestsFf4jConstants {
     /** Assert for this ff4j instance. */
     private AssertFf4j assertFF4J;
 
-    /** Testing feature. */
-    private Feature f4;
-
     /** {@inheritDoc} */
     @Before
     public void setUp() throws Exception {
         assertFF4J = new AssertFf4j(ff4j);
-        f4 = ff4j.getFeature(F4);
     }
-
 
     /**
      * TDD, update by adding in the authorization
@@ -148,24 +142,6 @@ public class FeatureStoreWebResourceTest implements TestsFf4jConstants {
         // api.upsert(f1);
         // Then
         assertFF4J.assertThatFeatureIsDisabled(F1);
-    }
-
-    /**
-     * TDD, read all feature as Array from REST Resource
-     */
-    @Test
-    public void testReadAll() {
-        // Given
-        assertFF4J.assertThatStoreHasSize(5);
-        // When
-        Response res = api.readAll();
-        // Then, HTTPResponse
-        Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), res.getStatus());
-        Assert.assertNotNull(res.getEntity());
-        Assert.assertTrue("Invalid response " + res.getEntity(), res.getEntity() instanceof String);
-        // Then, Entity Object
-        Feature[] fArray = FeatureJsonMarshaller.unMarshallFeatureArray(String.valueOf(res.getEntity()));
-        Assert.assertEquals(5, fArray.length);
     }
 
     /**

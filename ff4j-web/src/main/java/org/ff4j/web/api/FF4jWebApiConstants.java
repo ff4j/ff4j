@@ -53,4 +53,13 @@ public interface FF4jWebApiConstants {
 
     /** Custom operation on resource. */
     String OPERATION_REMOVEGROUP = "removeGroup";
+
+    /** relative path. */
+    String RESOURCE_FEATURES = "features";
+
+    /** relative path. */
+    String RESOURCE_GROUPS = "groups";
+
+    /** relative path. */
+    String RESOURCE_MONITORING = "monitoring";
 }

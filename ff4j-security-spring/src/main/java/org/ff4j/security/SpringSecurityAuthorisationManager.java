@@ -29,6 +29,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
  */
 public class SpringSecurityAuthorisationManager implements AuthorizationsManager {
 
+    /** {@inheritDoc} */
     @Override
     public Set<String> getAuthenticatedUserRoles() {
         Set<String> listOfRoles = new LinkedHashSet<String>();
@@ -46,6 +47,16 @@ public class SpringSecurityAuthorisationManager implements AuthorizationsManager
     @Override
     public Set<String> getEveryOneRoles() {
         return getAuthenticatedUserRoles();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("{");
+        sb.append("\"type\":\"" + this.getClass().getCanonicalName() + "\"");
+        sb.append("\"authentication\":\"" + SecurityContextHolder.getContext().getAuthentication().toString() + "\"");
+        sb.append("}");
+        return sb.toString();
     }
 
 }

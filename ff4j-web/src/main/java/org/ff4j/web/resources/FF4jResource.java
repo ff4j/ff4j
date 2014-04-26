@@ -30,6 +30,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.ff4j.FF4j;
+import org.ff4j.web.api.FF4jWebApiConstants;
 
 /**
  * This is the parent class for FF4J the REST API.
@@ -38,7 +39,7 @@ import org.ff4j.FF4j;
  */
 @Path("/ff4j")
 @Produces(MediaType.APPLICATION_JSON)
-public class FF4jResource {
+public class FF4jResource implements FF4jWebApiConstants {
 
     /** Access to Features through store. */
     @Context
@@ -57,7 +58,7 @@ public class FF4jResource {
      *
      * @return features resource
      */
-    @Path("features")
+    @Path(RESOURCE_FEATURES)
     public FeaturesResource getFeaturesResource() {
         return new FeaturesResource(uriInfo, request, ff4j.getStore());
     }
@@ -67,7 +68,7 @@ public class FF4jResource {
      * 
      * @return groups resource
      */
-    @Path("groups")
+    @Path(RESOURCE_GROUPS)
     public GroupsResource getGroupsResource() {
         return new GroupsResource(uriInfo, request, ff4j.getStore());
     }
@@ -77,7 +78,7 @@ public class FF4jResource {
      * 
      * @return monitoring resource
      */
-    @Path("monitoring")
+    @Path(RESOURCE_MONITORING)
     public MonitoringResource getMonitoringResource() {
         return new MonitoringResource(uriInfo, request);
     }
@@ -87,8 +88,7 @@ public class FF4jResource {
      */
     @GET
     public Response getStatus() {
-        String jsonResponse = "{\"ff4j-stats\" : true }";
-        return Response.ok(jsonResponse).build();
+        return Response.ok(ff4j.toString()).build();
     }
 
     /**

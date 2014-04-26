@@ -3,39 +3,19 @@ package org.ff4j.web.it;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.ext.Provider;
 
 import junit.framework.Assert;
 
-import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
-import org.ff4j.test.AssertFf4j;
-import org.ff4j.test.TestsFf4jConstants;
 import org.ff4j.utils.FeatureJsonMarshaller;
-import org.ff4j.web.resources.FF4jResource;
-import org.ff4j.web.resources.FeatureResource;
-import org.ff4j.web.resources.FeaturesResource;
-import org.ff4j.web.resources.GroupResource;
-import org.ff4j.web.resources.GroupsResource;
-import org.ff4j.web.resources.RuntimeExceptionMapper;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.core.ClassNamesResourceConfig;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.api.core.ResourceConfig;
-import com.sun.jersey.spi.container.servlet.WebComponent;
-import com.sun.jersey.spi.inject.SingletonTypeInjectableProvider;
-import com.sun.jersey.test.framework.JerseyTest;
-import com.sun.jersey.test.framework.WebAppDescriptor;
-import com.sun.jersey.test.framework.spi.container.TestContainerFactory;
-import com.sun.jersey.test.framework.spi.container.grizzly2.web.GrizzlyWebTestContainerFactory;
 
 /*
  * #%L
@@ -62,56 +42,7 @@ import com.sun.jersey.test.framework.spi.container.grizzly2.web.GrizzlyWebTestCo
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreWebResourceTestIT extends JerseyTest implements TestsFf4jConstants {
-    
-    /** Relative resource. */
-    private static final String APIPATH = FF4jResource.class.getAnnotation(Path.class).value();
-
-    private static final FF4j ff4j = new FF4j("test-WebApi-ff4j.xml");
-
-    /** Assert for this ff4j instance. */
-    private AssertFf4j assertFF4J;
-
-    /** {@inheritDoc} */
-    @Override
-    @Before
-    public void setUp() throws Exception {
-        assertFF4J = new AssertFf4j(ff4j);
-    }
-
-    /**
-     * Provider.
-     * 
-     * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
-     */
-    @Provider
-    public static class FF4jProvider extends SingletonTypeInjectableProvider<Context, FF4j> {
-        public FF4jProvider() {
-            super(FF4j.class, ff4j);
-        }
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public WebAppDescriptor configure() {
-        StringBuilder jerseyContext = new StringBuilder();
-        jerseyContext.append(FF4jProvider.class.getName() + ";");
-        jerseyContext.append(FF4jResource.class.getName() + ";");
-        jerseyContext.append(FeaturesResource.class.getName() + ";");
-        jerseyContext.append(FeatureResource.class.getName() + ";");
-        jerseyContext.append(GroupsResource.class.getName() + ";");
-        jerseyContext.append(GroupResource.class.getName() + ";");
-        jerseyContext.append(RuntimeExceptionMapper.class.getName());
-        return new WebAppDescriptor.Builder()
-                .initParam(WebComponent.RESOURCE_CONFIG_CLASS, ClassNamesResourceConfig.class.getName())
-                .initParam(ClassNamesResourceConfig.PROPERTY_CLASSNAMES, jerseyContext.toString()).build();
-    }
- 
-    /** {@inheritDoc} */
-    @Override
-    public TestContainerFactory getTestContainerFactory() {
-        return new GrizzlyWebTestContainerFactory();
-    }
+public class FeatureStoreWebResourceTestIT extends AbstractWebResourceTestIT {
     
     /**
      * TDD, read the feature as a webresource => String JSON

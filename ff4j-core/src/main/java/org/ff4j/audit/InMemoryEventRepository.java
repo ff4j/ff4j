@@ -111,4 +111,14 @@ public class InMemoryEventRepository implements EventRepository {
         singleElementSet.add(featureName);
         return getHitCurves(singleElementSet, interval, startTime, endTime).get(featureName);
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("{");
+        sb.append("\"type\":\"" + this.getClass().getCanonicalName() + "\"");
+        sb.append(",\"numberOfEvents\":" + events.size());
+        sb.append("}");
+        return sb.toString();
+    }
 }

@@ -281,7 +281,13 @@ public class InMemoryFeatureStore implements FeatureStore {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return "InMemoryFeatureStore [featuresMap=" + featuresMap + "]";
+        StringBuilder sb = new StringBuilder("{");
+        sb.append("\"type\":\"" + this.getClass().getCanonicalName() + "\"");
+        sb.append(",\"xmlInputFile\":\"" + this.getFileName() + "\"");
+        sb.append(",\"numberOfFeatures\":" + readAll().size());
+        sb.append(",\"numberOfGroups\":" + readAllGroups().size());
+        sb.append("}");
+        return sb.toString();
     }
 
     /**

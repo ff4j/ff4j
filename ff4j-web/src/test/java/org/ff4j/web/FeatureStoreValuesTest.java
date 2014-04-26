@@ -21,7 +21,6 @@ package org.ff4j.web;
  */
 
 import org.ff4j.core.FeatureStore;
-import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.test.store.AbstractStoreJUnitTest;
 
 /**
@@ -34,7 +33,7 @@ public class FeatureStoreValuesTest extends AbstractStoreJUnitTest {
     /** {@inheritDoc} */
     @Override
     protected FeatureStore initStore() {
-        return new InMemoryFeatureStore("test-WebApi-ff4j.xml");
+        return defaultStore;
     }
 
 }

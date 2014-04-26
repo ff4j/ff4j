@@ -32,6 +32,7 @@ import junit.framework.Assert;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.store.InMemoryFeatureStore;
 import org.junit.Test;
 
 /**
@@ -152,7 +153,7 @@ public class FF4jTest extends AbstractFf4jTest {
     
     @Test
     public void testToString() {
-        Assert.assertTrue(ff4j.toString().startsWith("FF4j"));
+        Assert.assertTrue(ff4j.toString().contains(InMemoryFeatureStore.class.getCanonicalName()));
     }
 
     @Test
