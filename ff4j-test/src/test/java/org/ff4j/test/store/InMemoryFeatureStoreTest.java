@@ -11,14 +11,8 @@ package org.ff4j.test.store;
  * governing permissions and limitations under the License. #L%
  */
 
-import java.util.LinkedHashMap;
-
-import junit.framework.Assert;
-
-import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
-import org.ff4j.strategy.PonderationFlipStrategy;
 import org.junit.Test;
 
 /**
@@ -31,30 +25,16 @@ public class InMemoryFeatureStoreTest extends AbstractStoreJUnitTest {
     /** {@inheritDoc} */
     @Override
     public FeatureStore initStore() {
-        InMemoryFeatureStore imfs = new InMemoryFeatureStore();
-        imfs.setLocation("test-ff4j-features.xml");
-        return imfs;
+        return defaultStore;
     }
 
-    @Test
-    public void testUnitFeatureInitialization() {
-        InMemoryFeatureStore imfs = new InMemoryFeatureStore();
-        imfs.create(new Feature("default", true, "grp1", "desc", null, new PonderationFlipStrategy()));
-        Assert.assertEquals(1, imfs.readAll().size());
-    }
-
-    @Test
-    public void testUnitFeatureInitialization2() {
-        LinkedHashMap<String, Feature> map1 = new LinkedHashMap<String, Feature>();
-        map1.put("new", new Feature("new", true, "description"));
-        map1.put("old", new Feature("old", true, "description"));
-        InMemoryFeatureStore imfs = new InMemoryFeatureStore(map1);
-        Assert.assertEquals(2, imfs.readAll().size());
-        Assert.assertTrue(imfs.toString().contains("old"));
-    }
-
+    /**
+     * TDD.
+     */
     @Test(expected = IllegalArgumentException.class)
     public void testUnitFeatureInitialization3() {
+        // Given
+        // 'invalid.xml' file does not exist.
         new InMemoryFeatureStore("invalid.xml");
     }
 

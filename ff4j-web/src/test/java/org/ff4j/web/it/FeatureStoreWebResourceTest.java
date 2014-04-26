@@ -28,7 +28,7 @@ import junit.framework.Assert;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.test.AssertFf4j;
-import org.ff4j.test.TestConstantsFF4j;
+import org.ff4j.test.TestsFf4jConstants;
 import org.ff4j.utils.FeatureJsonMarshaller;
 import org.ff4j.web.resources.FeaturesResource;
 import org.junit.Before;
@@ -47,7 +47,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:test-WebApi-context.xml")
 @Ignore
-public class FeatureStoreWebResourceTest implements TestConstantsFF4j {
+@Deprecated
+public class FeatureStoreWebResourceTest implements TestsFf4jConstants {
 
     @Autowired
     private FeaturesResource api;

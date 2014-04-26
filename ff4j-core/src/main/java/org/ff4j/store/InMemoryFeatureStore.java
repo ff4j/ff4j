@@ -237,6 +237,15 @@ public class InMemoryFeatureStore implements FeatureStore {
 
     /** {@inheritDoc} */
     @Override
+    public Set<String> readAllGroups() {
+        Set<String> groups = new HashSet<String>();
+        groups.addAll(featureGroups.keySet());
+        groups.remove(null);
+        return groups;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public void addToGroup(String featureId, String groupName) {
         if (!exist(featureId)) {
             throw new FeatureNotFoundException(featureId);
@@ -293,5 +302,6 @@ public class InMemoryFeatureStore implements FeatureStore {
     public String getFileName() {
         return fileName;
     }
+
 
 }

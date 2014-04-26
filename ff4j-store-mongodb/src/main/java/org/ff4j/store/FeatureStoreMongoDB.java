@@ -11,8 +11,10 @@ package org.ff4j.store;
  * governing permissions and limitations under the License. #L%
  */
 
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
@@ -167,6 +169,18 @@ public class FeatureStoreMongoDB implements FeatureStore, FeatureStoreMongoConst
     @Override
     public boolean existGroup(String groupName) {
         return collection.count(BUILDER.getGroupName(groupName)) > 0;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> readAllGroups() {
+        Set<String> setOfGroups = new HashSet<String>();
+        for (DBObject dbObject : collection.find()) {
+            setOfGroups.add((String) dbObject.get(GROUPNAME));
+        }
+        setOfGroups.remove(null);
+        setOfGroups.remove("");
+        return setOfGroups;
     }
 
     /** {@inheritDoc} */

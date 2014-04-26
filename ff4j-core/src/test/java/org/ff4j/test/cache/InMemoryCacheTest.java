@@ -27,7 +27,7 @@ import org.ff4j.cache.InMemoryCacheManager;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
-import org.ff4j.test.AbstractStoreTest;
+import org.ff4j.test.store.AbstractStoreTest;
 import org.junit.Test;
 
 /**

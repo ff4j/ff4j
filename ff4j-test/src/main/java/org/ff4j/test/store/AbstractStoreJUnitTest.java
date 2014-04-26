@@ -25,9 +25,10 @@ import org.ff4j.core.FlipStrategy;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
+import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.PonderationFlipStrategy;
 import org.ff4j.test.AssertFf4j;
-import org.ff4j.test.TestConstantsFF4j;
+import org.ff4j.test.TestsFf4jConstants;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,7 +37,7 @@ import org.junit.Test;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public abstract class AbstractStoreJUnitTest implements TestConstantsFF4j {
+public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
 
     /** Initialize */
     protected FF4j ff4j = null;
@@ -46,6 +47,9 @@ public abstract class AbstractStoreJUnitTest implements TestConstantsFF4j {
 
     /** Test Values */
     protected AssertFf4j assertFf4j;
+
+    /** Default InMemoryStore for test purposes. */
+    protected FeatureStore defaultStore = new InMemoryFeatureStore(TEST_FEATURES_FILE);
 
     /** {@inheritDoc} */
     @Before
@@ -64,43 +68,40 @@ public abstract class AbstractStoreJUnitTest implements TestConstantsFF4j {
      *             error during building feature store
      */
     protected abstract FeatureStore initStore();
-
+    
     /**
-     * Test that the store has been initialized.
-     * 
-     * @throws Exception
-     *             error during test
+     * TDD.
      */
     @Test
-    public void testStoreHasBeenInitialized() throws Exception {
-        // Given Initialization, Then
+    public void testStoreHasBeenInitialized() {
+        // Given
         assertFf4j.assertThatStoreHasSize(EXPECTED_FEATURES_NUMBERS);
         assertFf4j.assertThatFeatureFlipped(F1);
     }
 
     /**
-     * Test that features have been correctle stored.
-     * 
-     * @throws Exception
-     *             error during test
+     * TDD.
      */
     @Test
-    public void testReadllFeatures() {
+    public void testReadAllFeatures() {
         // Given
-        assertFf4j.assertThatFeatureExist(F1);
         assertFf4j.assertThatFeatureExist(F4);
+        assertFf4j.assertThatStoreHasSize(EXPECTED_FEATURES_NUMBERS);
         // When
         Map<String, Feature> features = testedStore.readAll();
         // Then
-        Assert.assertTrue(features.containsKey(F1));
-        Assert.assertTrue(features.containsKey(F4));
+        Assert.assertEquals(EXPECTED_FEATURES_NUMBERS, features.size());
+        // Then testing whole structure
+        Feature f = features.get(F4);
+        Assert.assertEquals(F4 + " does not exist", f.getUid(), F4);
+        Assert.assertTrue("no description", f.getDescription() != null && !"".equals(f.getDescription()));
+        Assert.assertTrue("no authorizations", f.getAuthorizations() != null && !f.getAuthorizations().isEmpty());
+        assertFf4j.assertThatFeatureHasRole(F4, ROLE_ADMIN);
+        assertFf4j.assertThatFeatureIsInGroup(F4, G1);
     }
 
     /**
-     * Test that features have been correctle stored.
-     * 
-     * @throws Exception
-     *             error during test
+     * TDD.
      */
     @Test
     public void testReadFullFeature() {
@@ -117,71 +118,69 @@ public abstract class AbstractStoreJUnitTest implements TestConstantsFF4j {
     }
 
     /**
-     * Test that working with unknown feature throw exception.
-     * 
-     * @throws Exception
-     *             error during test
+     * TDD.
      */
     @Test(expected = FeatureNotFoundException.class)
     public void testFlipFeatureDoesNotExist() {
+        // Given
+        assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
+        // When
         ff4j.isFlipped(F_DOESNOTEXIST);
+        // Then, expected error
     }
 
     /**
-     * Test that enable unknown feature throw exception.
-     * 
-     * @throws Exception
-     *             error during test
+     * TDD.
      */
     @Test(expected = FeatureNotFoundException.class)
     public void testEnableFeatureDoesNotExist() {
+        // Given
+        assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
+        // When
         ff4j.enable(F_DOESNOTEXIST);
+        // Then, expected error...
     }
 
     /**
-     * Test that disable unknown feature throw exception.
-     * 
-     * @throws Exception
-     *             error during test
+     * TDD.
      */
     @Test(expected = FeatureNotFoundException.class)
     public void testDisableFeatureDoesNotExist() {
+        // Given
+        assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
+        // When
         ff4j.disable(F_DOESNOTEXIST);
+        // Then, expected error...
     }
 
     /**
-     * Test that enable is OK.
-     * 
-     * @throws Exception
-     *             error during test
+     * TDD.
      */
     @Test
     public void testEnableFeature() {
+        // Given
+        assertFf4j.assertThatFeatureExist(F1);
         // When
         ff4j.enable(F1);
         // Then
-        assertFf4j.assertThatFeatureFlipped(F1);
+        assertFf4j.assertThatFeatureIsEnabled(F1);
     }
 
     /**
-     * Test that disable is OK.
-     * 
-     * @throws Exception
-     *             error during test
+     * TDD.
      */
     @Test
     public void testDisableFeature() {
+        // Given
+        assertFf4j.assertThatFeatureExist(F1);
         // When
         ff4j.disable(F1);
         // Then
-        assertFf4j.assertThatFeatureNotFlipped(F1);
+        assertFf4j.assertThatFeatureIsDisabled(F1);
     }
 
     /**
-     * Test that addFeature is OK.
-     * 
-     * @throws Exception
-     *             error during test
+     * TDD.
      */
     @Test
     public void testAddFeature() throws Exception {
@@ -201,17 +200,18 @@ public abstract class AbstractStoreJUnitTest implements TestConstantsFF4j {
     }
 
     /**
-     * Test that creating feature already exist through exception.
-     * 
-     * @throws Exception
-     *             error during test
+     * TDD.
      */
     @Test(expected = FeatureAlreadyExistException.class)
     public void testAddFeatureAlreadyExis() throws Exception {
         // Given
+        assertFf4j.assertThatFeatureDoesNotExist(FEATURE_NEW);
+        // When (first creation)
         Feature fp = new Feature(FEATURE_NEW, true, "description2");
         testedStore.create(fp);
-        // When
+        // Then (first creation)
+        assertFf4j.assertThatFeatureExist(FEATURE_NEW);
+        // When (second creation)
         Set<String> rights = new HashSet<String>(Arrays.asList(new String[] {ROLE_USER}));
         Feature fp2 = new Feature(FEATURE_NEW, true, G1, "description3", rights);
         testedStore.create(fp2);
@@ -219,10 +219,7 @@ public abstract class AbstractStoreJUnitTest implements TestConstantsFF4j {
     }
 
     /**
-     * Test that disable is OK.
-     * 
-     * @throws Exception
-     *             error during test
+     * TDD.
      */
     @Test
     public void testDeleteFeature() throws Exception {
@@ -241,26 +238,25 @@ public abstract class AbstractStoreJUnitTest implements TestConstantsFF4j {
     }
 
     /**
-     * Test that disable unknown feature through exception .
-     * 
-     * @throws Exception
-     *             error during test
+     * TDD.
      */
     @Test(expected = FeatureNotFoundException.class)
     public void testDeteleFeatureDoesnotExist() throws Exception {
+        // Given
+        assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
         // When
         testedStore.delete(F_DOESNOTEXIST);
         // Then , expected error
     }
 
     /**
-     * Test that grant on unknwow role is OK.
-     * 
-     * @throws Exception
-     *             error during test
+     * TDD.
      */
     @Test
     public void testGrantRoleToFeatureRoleDoesNotExist() throws Exception {
+        // Given
+        assertFf4j.assertThatFeatureExist(F1);
+        assertFf4j.assertThatFeatureHasNotRole(F1, ROLE_NEW);
         // When
         testedStore.grantRoleOnFeature(F1, ROLE_NEW);
         // Then
@@ -268,26 +264,25 @@ public abstract class AbstractStoreJUnitTest implements TestConstantsFF4j {
     }
 
     /**
-     * Test that grant on unknwow feature through exception.
-     * 
-     * @throws Exception
-     *             error during test
+     * TDD.
      */
     @Test(expected = FeatureNotFoundException.class)
     public void testGrantRoleToFeatureFeatureDoesNotExist() throws Exception {
+        // Given
+        assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
         // When
         testedStore.grantRoleOnFeature(F_DOESNOTEXIST, ROLE_USER);
         // Then, expected failure
     }
 
     /**
-     * Test that remove role on feature is OK.
-     * 
-     * @throws Exception
-     *             error during test
+     * TDD.
      */
     @Test
     public void testDeleteRoleToFeature() throws Exception {
+        // Given
+        assertFf4j.assertThatFeatureExist(F1);
+        assertFf4j.assertThatFeatureHasRole(F1, ROLE_USER);
         // When
         testedStore.removeRoleFromFeature(F1, ROLE_USER);
         // Then
@@ -295,26 +290,22 @@ public abstract class AbstractStoreJUnitTest implements TestConstantsFF4j {
     }
 
     /**
-     * Test that remove role on unknow feature through exception.
-     * 
-     * @throws Exception
-     *             error during test
+     * TDD.
      */
     @Test(expected = FeatureNotFoundException.class)
     public void testDeleteRoleFeatureDoesNotExit() {
+        // Given
+        assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
         // When
         testedStore.removeRoleFromFeature(F_DOESNOTEXIST, ROLE_USER);
         // Then, expected to fail
     }
 
     /**
-     * Test update feature, core DATA
-     * 
-     * @throws Exception
-     *             error during test
+     * TDD.
      */
     @Test
-    public void testUpdateFeatureCoreData() throws Exception {
+    public void testUpdateFeatureCoreData() {
         // Parameters
         String newDescription = "new-description";
         FlipStrategy newStrategy = new PonderationFlipStrategy(0.12);
@@ -333,13 +324,10 @@ public abstract class AbstractStoreJUnitTest implements TestConstantsFF4j {
     }
 
     /**
-     * Test update feature, more authorizations.
-     * 
-     * @throws Exception
-     *             error during test
+     * TDD.
      */
     @Test
-    public void testUpdateFeatureMoreAutorisation() throws Exception {
+    public void testUpdateFeatureMoreAutorisation() {
         // Parameters
         Set<String> rights2 = new HashSet<String>(Arrays.asList(new String[] {ROLE_USER,ROLE_ADMIN}));
         // Given
@@ -355,29 +343,31 @@ public abstract class AbstractStoreJUnitTest implements TestConstantsFF4j {
     }
 
     /**
-     * Test update feature, less authorizations.
-     * 
-     * @throws Exception
-     *             error during test
+     * TDD.
      */
     @Test
     public void testUpdateFlipLessAutorisation() {
-        Feature fpBis = new Feature(F1, false, null);
-        testedStore.update(fpBis);
-        assertFf4j.assertThatFeatureHasNotRole(F1, ROLE_ADMIN);
+        // Given
+        assertFf4j.assertThatFeatureExist(F1);
+        assertFf4j.assertThatFeatureHasRole(F1, ROLE_USER);
+        // When
+        testedStore.update(new Feature(F1, false, null));
+        // Then
+        assertFf4j.assertThatFeatureHasNotRole(F1, ROLE_USER);
     }
 
     /**
-     * Test update feature, more authorizations, not feature
-     * 
-     * @throws Exception
-     *             error during test
+     * TDD.
      */
     @Test
     public void testUpdateFlipMoreAutorisationNotExist() {
+        // Given
+        assertFf4j.assertThatFeatureHasNotRole(F1, ROLE_NEW);
         Set<String> rights2 = new HashSet<String>(Arrays.asList(new String[] {ROLE_USER,ROLE_NEW}));
         Feature fpBis = new Feature(F1, false, G1, "desci2", rights2);
+        // When
         testedStore.update(fpBis);
+        // Then
         assertFf4j.assertThatFeatureHasRole(F1, ROLE_USER);
         assertFf4j.assertThatFeatureHasRole(F1, ROLE_NEW);
     }
@@ -387,6 +377,10 @@ public abstract class AbstractStoreJUnitTest implements TestConstantsFF4j {
      */
     @Test
     public void testExistGroup() {
+        // Given
+        assertFf4j.assertThatGroupExist(G1);
+        assertFf4j.assertThatGroupDoesNotExist(G_DOESNOTEXIST);
+        // Then
         Assert.assertTrue(testedStore.existGroup(G1));
         Assert.assertFalse(testedStore.existGroup(G_DOESNOTEXIST));
     }
@@ -398,6 +392,7 @@ public abstract class AbstractStoreJUnitTest implements TestConstantsFF4j {
     public void testEnableGroup() {
         // Given
         assertFf4j.assertThatFeatureIsDisabled(F2);
+        assertFf4j.assertThatFeatureIsInGroup(F2, G0);
         // When
         testedStore.enableGroup(G0);
         // Then
@@ -411,7 +406,11 @@ public abstract class AbstractStoreJUnitTest implements TestConstantsFF4j {
      */
     @Test(expected = GroupNotFoundException.class)
     public void testEnableGroupDoesNotExist() {
+        // Given
+        assertFf4j.assertThatGroupDoesNotExist(G_DOESNOTEXIST);
+        // When
         testedStore.enableGroup(G_DOESNOTEXIST);
+        // Then, expected error
     }
 
     /**
@@ -421,11 +420,12 @@ public abstract class AbstractStoreJUnitTest implements TestConstantsFF4j {
     public void testDisableGroup() {
         // Given
         assertFf4j.assertThatFeatureIsEnabled(F4);
+        assertFf4j.assertThatFeatureIsInGroup(F4, G1);
         // When
         testedStore.disableGroup(G1);
         // Then
         assertFf4j.assertThatFeatureIsDisabled(F4);
-        // Cancel modifications
+        // Rollback modifications
         testedStore.enable(F4);
         assertFf4j.assertThatFeatureIsEnabled(F4);
     }
@@ -435,7 +435,11 @@ public abstract class AbstractStoreJUnitTest implements TestConstantsFF4j {
      */
     @Test(expected = GroupNotFoundException.class)
     public void testDisableGroupDoesNotExist() {
+        // Given
+        assertFf4j.assertThatGroupDoesNotExist(G_DOESNOTEXIST);
+        // When
         testedStore.disableGroup(G_DOESNOTEXIST);
+        // Then, expected error
     }
 
     /**
@@ -443,7 +447,15 @@ public abstract class AbstractStoreJUnitTest implements TestConstantsFF4j {
      */
     @Test
     public void testReadGroup() {
+        // Given
+        assertFf4j.assertThatGroupExist(G1);
+        assertFf4j.assertThatFeatureExist(F3);
+        assertFf4j.assertThatFeatureExist(F4);
+        assertFf4j.assertThatFeatureIsInGroup(F3, G1);
+        assertFf4j.assertThatFeatureIsInGroup(F4, G1);
+        // When
         Map<String, Feature> group = testedStore.readGroup(G1);
+        // Then
         Assert.assertEquals(2, group.size());
         Assert.assertTrue(group.containsKey(F3));
         Assert.assertTrue(group.containsKey(F4));
@@ -454,7 +466,11 @@ public abstract class AbstractStoreJUnitTest implements TestConstantsFF4j {
      */
     @Test(expected = GroupNotFoundException.class)
     public void testReadGroupDoesnotExist() {
+        // Given
+        assertFf4j.assertThatGroupDoesNotExist(G_DOESNOTEXIST);
+        // When
         testedStore.readGroup(G_DOESNOTEXIST);
+        // Then, expect error
     }
 
     /**
@@ -478,7 +494,11 @@ public abstract class AbstractStoreJUnitTest implements TestConstantsFF4j {
      */
     @Test(expected = FeatureNotFoundException.class)
     public void testAddToGroupFeatureDoeNotExist() {
+        // Given
+        assertFf4j.assertThatGroupDoesNotExist(G_DOESNOTEXIST);
+        // When
         testedStore.addToGroup(F_DOESNOTEXIST, G0);
+        // Then, expected error
     }
 
     /**
@@ -503,10 +523,13 @@ public abstract class AbstractStoreJUnitTest implements TestConstantsFF4j {
     @Test(expected = GroupNotFoundException.class)
     public void testRemoveLastFeatureOfGroupDeleteGroup() {
         // Given
+        assertFf4j.assertThatGroupExist(G0);
         assertFf4j.assertThatGroupHasSize(1, G0);
         // When
         testedStore.removeFromGroup(F2, G0);
         // Then
+        assertFf4j.assertThatGroupDoesNotExist(G0);
+        // Expected error
         testedStore.readGroup(G0);
     }
 
@@ -515,7 +538,12 @@ public abstract class AbstractStoreJUnitTest implements TestConstantsFF4j {
      */
     @Test(expected = FeatureNotFoundException.class)
     public void testRemoveFromGroupFeatureDoeNotExist() {
-        testedStore.removeFromGroup(F_DOESNOTEXIST, G0);
+        // Given
+        assertFf4j.assertThatGroupExist(G1);
+        assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
+        // When
+        testedStore.removeFromGroup(F_DOESNOTEXIST, G1);
+        // Then, expected error
     }
 
     /**
@@ -523,7 +551,12 @@ public abstract class AbstractStoreJUnitTest implements TestConstantsFF4j {
      */
     @Test(expected = GroupNotFoundException.class)
     public void testRemoveFromGroupDoesNotExist() {
+        // Given
+        assertFf4j.assertThatFeatureExist(F1);
+        assertFf4j.assertThatGroupDoesNotExist(G_DOESNOTEXIST);
+        // When
         testedStore.removeFromGroup(F1, G_DOESNOTEXIST);
+        // Then, expected error
     }
 
     /**
@@ -531,7 +564,29 @@ public abstract class AbstractStoreJUnitTest implements TestConstantsFF4j {
      */
     @Test
     public void testRemoveFromGroupIfNotInGroup() {
+        // Given
+        assertFf4j.assertThatFeatureExist(F1);
+        assertFf4j.assertThatGroupExist(G1);
+        // When
         testedStore.removeFromGroup(F1, G1);
+        // Then : nothing special
+    }
+
+    /**
+     * TDD.
+     */
+    @Test
+    public void testReadAllGroup() {
+        // Given
+        assertFf4j.assertThatStoreHasNumberOfGroups(2);
+        assertFf4j.assertThatGroupExist(G0);
+        assertFf4j.assertThatGroupExist(G1);
+        // When
+        Set<String> groups = testedStore.readAllGroups();
+        // Then
+        Assert.assertEquals(2, groups.size());
+        Assert.assertTrue(groups.contains(G0));
+        Assert.assertTrue(groups.contains(G1));
     }
 
 }

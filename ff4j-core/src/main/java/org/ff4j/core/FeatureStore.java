@@ -21,6 +21,7 @@ package org.ff4j.core;
  */
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents a Backing store for {@link Feature}
@@ -158,5 +159,11 @@ public interface FeatureStore {
      */
     void removeFromGroup(String featureId, String groupName);
     
+    /**
+     * Return a set of existing groups.
+     * 
+     * @return set of group in the store
+     */
+    Set<String> readAllGroups();
 
 }

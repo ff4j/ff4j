@@ -21,6 +21,7 @@ package org.ff4j.cache;
  */
 
 import java.util.Map;
+import java.util.Set;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
@@ -113,6 +114,13 @@ public class FeatureStoreCacheProxy implements FeatureStore {
     public Map<String, Feature> readAll() {
         // Cannot be sure of whole cache - do not test any feature one-by-one : accessing FeatureStore
         return getTarget().readAll();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> readAllGroups() {
+        // Cannot be sure of whole cache - do not test any feature one-by-one : accessing FeatureStore
+        return getTarget().readAllGroups();
     }
 
     /** {@inheritDoc} */
@@ -232,4 +240,5 @@ public class FeatureStoreCacheProxy implements FeatureStore {
     public void setCacheManager(FeatureCacheManager cacheManager) {
         this.cacheManager = cacheManager;
     }
+
 }

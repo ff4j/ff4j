@@ -19,7 +19,6 @@ import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.PonderationFlipStrategy;
-import org.ff4j.test.AbstractStoreTest;
 import org.junit.Test;
 
 /**

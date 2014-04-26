@@ -23,6 +23,7 @@ package org.ff4j.web.store;
 import static org.ff4j.utils.FeatureJsonMarshaller.unMarshallFeature;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
@@ -160,6 +161,12 @@ public class FeatureStoreHttp implements FeatureStore {
     public void removeFromGroup(String featureId, String groupName) {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public Set<String> readAllGroups() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

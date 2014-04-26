@@ -1,4 +1,4 @@
-package org.ff4j.store;
+package org.ff4j.store.rowmapper;
 
 /*
  * #%L
@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.ff4j.store.JdbcFeatureStoreConstants;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 
 /**
@@ -48,6 +49,15 @@ public class RoleRowMapper implements ParameterizedRowMapper<Integer>, JdbcFeatu
         }
         roles.get(featId).add(rs.getString(COL_ROLE_ROLENAME));
         return rowNum;
+    }
+
+    /**
+     * Getter accessor for attribute 'roles'.
+     *
+     * @return current value of 'roles'
+     */
+    public Map<String, Set<String>> getRoles() {
+        return roles;
     }
 
 }

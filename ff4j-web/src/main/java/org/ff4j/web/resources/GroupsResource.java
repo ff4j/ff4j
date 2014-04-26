@@ -20,6 +20,8 @@ package org.ff4j.web.resources;
  * #L%
  */
 
+import java.util.Set;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -30,18 +32,15 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.utils.FeatureJsonMarshaller;
 import org.ff4j.web.api.FF4jWebApiConstants;
 
 /**
- * This store will invoke a {@link RemoteHttpFeatureStore} to perform operations upon features. Call are done though http so
- * please consider to use some cache to limit
- * 
+ * Web Resource to work on groups.
+ *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeaturesResource implements FF4jWebApiConstants {
+public class GroupsResource implements FF4jWebApiConstants {
 
     @Context
     private UriInfo uriInfo;
@@ -55,7 +54,7 @@ public class FeaturesResource implements FF4jWebApiConstants {
     /**
      * Defaut constructor.
      */
-    public FeaturesResource() {}
+    public GroupsResource() {}
 
     /**
      * Constructor by Parent resource
@@ -67,22 +66,10 @@ public class FeaturesResource implements FF4jWebApiConstants {
      * @param store
      *            current store
      */
-    public FeaturesResource(UriInfo uriInfo, Request request, FeatureStore store) {
+    public GroupsResource(UriInfo uriInfo, Request request, FeatureStore store) {
         this.uriInfo = uriInfo;
         this.request = request;
         this.store = store;
-    }
-    
-    /**
-     * Access {@link FeatureResource} from path pattern
-     * 
-     * @param uid
-     *            target identifier
-     * @return resource for feature
-     */
-    @Path("{uid}")
-    public FeatureResource getFeature(@PathParam("uid") String uid) {
-        return new FeatureResource(uriInfo, request, uid, store);
     }
 
     /**
@@ -95,28 +82,39 @@ public class FeaturesResource implements FF4jWebApiConstants {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response readAll() {
-        Feature[] storeContent = getStore().readAll().values().toArray(new Feature[0]);
-        String storeAsJson = FeatureJsonMarshaller.marshallFeatureArray(storeContent);
-        return Response.ok(storeAsJson).build();
+        Set<String> setOfGroup = getStore().readAllGroups();
+        StringBuilder sb = new StringBuilder("{ groups:");
+        boolean first = true;
+        for (String group : setOfGroup) {
+            if (!first) {
+                sb.append(",");
+            }
+            first = false;
+            sb.append("{\"" + group + "\":\"" + uriInfo.getAbsolutePath() + group + "\"}");
+        }
+        sb.append("}");
+        return Response.ok(sb.toString()).build();
     }
-    
 
     /**
-     * Getter accessor for attribute 'ff4j'.
+     * Access {@link FeatureResource} from path pattern
      * 
-     * @return current value of 'ff4j'
+     * @param uid
+     *            target identifier
+     * @return resource for feature
+     */
+    @Path("{groupName}")
+    public GroupResource getGroup(@PathParam("groupName") String groupName) {
+        return new GroupResource(uriInfo, request, store, groupName);
+    }
+
+    /**
+     * Getter accessor for attribute 'store'.
+     *
+     * @return current value of 'store'
      */
     public FeatureStore getStore() {
         return store;
     }
 
-    /**
-     * Setter accessor for attribute 'store'.
-     * 
-     * @param store
-     *            new value for 'store '
-     */
-    public void setStore(FeatureStore store) {
-        this.store = store;
-    }
 }

@@ -20,8 +20,6 @@ package org.ff4j.web.resources;
  * #L%
  */
 
-import java.util.Map;
-
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -29,6 +27,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -37,13 +36,14 @@ import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.utils.FeatureJsonMarshaller;
+import org.ff4j.web.api.FF4jWebApiConstants;
 
 /**
  * Represent a feature as WebResource.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureResource {
+public class FeatureResource implements FF4jWebApiConstants {
 
     /**
      * current uri of the resource
@@ -101,54 +101,6 @@ public class FeatureResource {
         }
     }
 
-    @POST
-    @Path("enable")
-    public Response operationEnable() {
-        if (!getStore().exist(id)) {
-            return Response.status(Response.Status.NOT_FOUND).entity(new FeatureNotFoundException(id).getMessage()).build();
-        }
-        getStore().enable(id);
-        return Response.noContent().build();
-    }
-
-    @POST
-    @Path("disable")
-    public Response operationDisable() {
-        if (!getStore().exist(id)) {
-            return Response.status(Response.Status.NOT_FOUND).entity(new FeatureNotFoundException(id).getMessage()).build();
-        }
-        getStore().disable(id);
-        return Response.noContent().build();
-    }
-
-    /*
-     * @Override public void grantRoleOnFeature(String flipId, String roleName) { // TODO Auto-generated method stub
-     * 
-     * }
-     * 
-     * @Override public void removeRoleFromFeature(String flipId, String roleName) { // TODO Auto-generated method stub
-     * 
-     * }
-     * 
-     * @Override public void enableGroup(String groupName) { // TODO Auto-generated method stub
-     * 
-     * }
-     * 
-     * @Override public void disableGroup(String groupName) { // TODO Auto-generated method stub
-     * 
-     * }
-     * 
-     * @Override public boolean existGroup(String groupName) { // TODO Auto-generated method stub return false; }
-     * 
-     * @Override public Map<String, Feature> readGroup(String groupName) { // TODO Auto-generated method stub return null; }
-     * 
-     * @Override public void addToGroup(String featureId, String groupName) { }
-     * 
-     * @Override public void removeFromGroup(String featureId, String groupName) { // TODO Auto-generated method stub
-     * 
-     * }
-     */
-
     /**
      * Create the feature if not exist or update it
      * 
@@ -163,9 +115,8 @@ public class FeatureResource {
         Feature feat = FeatureJsonMarshaller.unMarshallFeature(new String(data));
         if (!getStore().exist(feat.getUid())) {
             getStore().create(feat);
-            // No header location as PUT and not POST
-            // header location
-            return Response.status(Response.Status.CREATED).build();
+            String location = String.format("%s/%s", uriInfo.getAbsolutePath().toString(), id);
+            return Response.status(Response.Status.CREATED).header(LOCATION, location).entity(id).build();
         }
         getStore().update(feat);
         return Response.status(Response.Status.NO_CONTENT).build();
@@ -191,6 +142,118 @@ public class FeatureResource {
     }
 
     /**
+     * Convenient method to update partially the feature: Here enabling
+     * 
+     * @return http response.
+     */
+    @POST
+    @Path(OPERATION_ENABLE)
+    public Response operationEnable() {
+        if (!getStore().exist(id)) {
+            return Response.status(Response.Status.NOT_FOUND).entity(new FeatureNotFoundException(id).getMessage()).build();
+        }
+        getStore().enable(id);
+        return Response.noContent().build();
+    }
+
+    /**
+     * Convenient method to update partially the feature: Here disabling
+     * 
+     * @return http response.
+     */
+    @POST
+    @Path(OPERATION_DISABLE)
+    public Response operationDisable() {
+        if (!getStore().exist(id)) {
+            return Response.status(Response.Status.NOT_FOUND).entity(new FeatureNotFoundException(id).getMessage()).build();
+        }
+        getStore().disable(id);
+        return Response.noContent().build();
+    }
+
+    /**
+     * Convenient method to update partially the feature: Here grant a role
+     * 
+     * @return http response.
+     */
+    @POST
+    @Path(OPERATION_GRANTROLE)
+    public Response operationGrantRole(MultivaluedMap<String, String> formParams) {
+        if (!getStore().exist(id)) {
+            return Response.status(Response.Status.NOT_FOUND).entity(new FeatureNotFoundException(id).getMessage()).build();
+        }
+        if (!formParams.containsKey(POST_PARAMNAME_ROLENAME)) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(POST_PARAMNAME_ROLENAME + " is a required POST parameter")
+                    .build();
+        }
+        String roleName = formParams.getFirst(POST_PARAMNAME_ROLENAME);
+        getStore().grantRoleOnFeature(id, roleName);
+        return Response.noContent().build();
+    }
+
+    /**
+     * Convenient method to update partially the feature: Here removing a role
+     * 
+     * @return http response.
+     */
+    @POST
+    @Path(OPERATION_REMOVEROLE)
+    public Response operationRemoveRole(MultivaluedMap<String, String> formParams) {
+        if (!getStore().exist(id)) {
+            return Response.status(Response.Status.NOT_FOUND).entity(new FeatureNotFoundException(id).getMessage()).build();
+        }
+        if (!formParams.containsKey(POST_PARAMNAME_ROLENAME)) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(POST_PARAMNAME_ROLENAME + " is a required POST parameter")
+                    .build();
+        }
+        String roleName = formParams.getFirst(POST_PARAMNAME_ROLENAME);
+        getStore().removeRoleFromFeature(id, roleName);
+        return Response.noContent().build();
+    }
+    
+    /**
+     * Convenient method to update partially the feature: Adding to a group
+     * 
+     * @return http response.
+     */
+    @POST
+    @Path(OPERATION_ADDGROUP)
+    public Response operationAddGroup(MultivaluedMap<String, String> formParams) {
+        if (!getStore().exist(id)) {
+            return Response.status(Response.Status.NOT_FOUND).entity(new FeatureNotFoundException(id).getMessage()).build();
+        }
+        if (!formParams.containsKey(POST_PARAMNAME_GROUPNAME)) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(POST_PARAMNAME_GROUPNAME + " is a required POST parameter")
+                    .build();
+        }
+        String groupName = formParams.getFirst(POST_PARAMNAME_GROUPNAME);
+        getStore().addToGroup(id, groupName);
+        return Response.noContent().build();
+    }
+    
+    /**
+     * Convenient method to update partially the feature: Removing from a group
+     * 
+     * @return http response.
+     */
+    @POST
+    @Path(OPERATION_REMOVEGROUP)
+    public Response operationRemoveGroup(MultivaluedMap<String, String> formParams) {
+        if (!getStore().exist(id)) {
+            return Response.status(Response.Status.NOT_FOUND).entity(new FeatureNotFoundException(id).getMessage()).build();
+        }
+        if (!formParams.containsKey(POST_PARAMNAME_GROUPNAME)) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(POST_PARAMNAME_GROUPNAME + " is a required POST parameter")
+                    .build();
+        }
+        String groupName = formParams.getFirst(POST_PARAMNAME_GROUPNAME);
+        getStore().removeFromGroup(id, groupName);
+        return Response.noContent().build();
+    }
+
+    /**
      * Getter accessor for attribute 'store'.
      * 
      * @return current value of 'store'
@@ -198,8 +261,5 @@ public class FeatureResource {
     public FeatureStore getStore() {
         return store;
     }
-
-
-
 
 }

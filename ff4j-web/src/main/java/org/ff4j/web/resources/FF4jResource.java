@@ -52,11 +52,31 @@ public class FF4jResource {
     @Context
     private Request request;
 
+    /**
+     * Access features part of the API.
+     *
+     * @return features resource
+     */
     @Path("features")
-    public FeaturesResource getStoreResource() {
+    public FeaturesResource getFeaturesResource() {
         return new FeaturesResource(uriInfo, request, ff4j.getStore());
     }
     
+    /**
+     * Access groups part of the API.
+     * 
+     * @return groups resource
+     */
+    @Path("groups")
+    public GroupsResource getGroupsResource() {
+        return new GroupsResource(uriInfo, request, ff4j.getStore());
+    }
+
+    /**
+     * Access monitoring part of the API.
+     * 
+     * @return monitoring resource
+     */
     @Path("monitoring")
     public MonitoringResource getMonitoringResource() {
         return new MonitoringResource(uriInfo, request);

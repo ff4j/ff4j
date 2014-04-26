@@ -1,4 +1,4 @@
-package org.ff4j.test;
+package org.ff4j.test.store;
 
 /*
  * #%L ff4j-core %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not use
@@ -26,6 +26,8 @@ import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.strategy.PonderationFlipStrategy;
+import org.ff4j.test.AssertFf4j;
+import org.ff4j.test.TestConstantsFF4j;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -531,6 +533,22 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
     public void testRemoveFromGroupIfNotInGroup() {
 
         testedStore.removeFromGroup(F1, G0);
+    }
+
+    /**
+     * TDD.
+     */
+    @Test
+    public void testReadAllGroup() {
+        // Given
+        assertFf4j.assertThatGroupExist(G0);
+        assertFf4j.assertThatGroupExist(G1);
+        // When
+        Set<String> groups = testedStore.readAllGroups();
+        // Then
+        Assert.assertEquals(2, groups.size());
+        Assert.assertTrue(groups.contains(G0));
+        Assert.assertTrue(groups.contains(G1));
     }
 
 }

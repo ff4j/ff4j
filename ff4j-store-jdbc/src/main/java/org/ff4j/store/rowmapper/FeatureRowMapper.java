@@ -1,4 +1,4 @@
-package org.ff4j.store;
+package org.ff4j.store.rowmapper;
 
 /*
  * #%L
@@ -26,6 +26,7 @@ import java.sql.SQLException;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlipStrategy;
 import org.ff4j.exception.FeatureAccessException;
+import org.ff4j.store.JdbcFeatureStoreConstants;
 import org.ff4j.utils.ParameterUtils;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 

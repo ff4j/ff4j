@@ -25,7 +25,7 @@ package org.ff4j.test;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public interface TestConstantsFF4j {
+public interface TestsFf4jConstants {
 
     /** Initial feature number. */
     int EXPECTED_FEATURES_NUMBERS = 5;
@@ -58,7 +58,7 @@ public interface TestConstantsFF4j {
     String FEATURE_NEW = "new";
 
     /** Feature Name. */
-    String ROLE_USER = "ROLE_USER";
+    String ROLE_USER = "USER";
 
     /** Feature Name. */
     String ROLE_ADMIN = "ADMINISTRATOR";
@@ -68,5 +68,8 @@ public interface TestConstantsFF4j {
 
     /** Feature Name. */
     String ROLE_NEW = "ROLE_NEW";
+
+    /** Test file. */
+    String TEST_FEATURES_FILE = "test-ff4j-features.xml";
 
 }

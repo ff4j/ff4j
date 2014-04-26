@@ -13,11 +13,13 @@ import junit.framework.Assert;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.test.AssertFf4j;
-import org.ff4j.test.TestConstantsFF4j;
+import org.ff4j.test.TestsFf4jConstants;
 import org.ff4j.utils.FeatureJsonMarshaller;
 import org.ff4j.web.resources.FF4jResource;
 import org.ff4j.web.resources.FeatureResource;
 import org.ff4j.web.resources.FeaturesResource;
+import org.ff4j.web.resources.GroupResource;
+import org.ff4j.web.resources.GroupsResource;
 import org.ff4j.web.resources.RuntimeExceptionMapper;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -60,7 +62,7 @@ import com.sun.jersey.test.framework.spi.container.grizzly2.web.GrizzlyWebTestCo
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreWebResourceTestIT extends JerseyTest implements TestConstantsFF4j {
+public class FeatureStoreWebResourceTestIT extends JerseyTest implements TestsFf4jConstants {
     
     /** Relative resource. */
     private static final String APIPATH = FF4jResource.class.getAnnotation(Path.class).value();
@@ -92,13 +94,17 @@ public class FeatureStoreWebResourceTestIT extends JerseyTest implements TestCon
     /** {@inheritDoc} */
     @Override
     public WebAppDescriptor configure() {
+        StringBuilder jerseyContext = new StringBuilder();
+        jerseyContext.append(FF4jProvider.class.getName() + ";");
+        jerseyContext.append(FF4jResource.class.getName() + ";");
+        jerseyContext.append(FeaturesResource.class.getName() + ";");
+        jerseyContext.append(FeatureResource.class.getName() + ";");
+        jerseyContext.append(GroupsResource.class.getName() + ";");
+        jerseyContext.append(GroupResource.class.getName() + ";");
+        jerseyContext.append(RuntimeExceptionMapper.class.getName());
         return new WebAppDescriptor.Builder()
                 .initParam(WebComponent.RESOURCE_CONFIG_CLASS, ClassNamesResourceConfig.class.getName())
-                .initParam(ClassNamesResourceConfig.PROPERTY_CLASSNAMES, 
-                        FF4jResource.class.getName() + ";" + FeaturesResource.class.getName() + ";"
-                                + FeatureResource.class.getName() + ";"
- + FF4jProvider.class.getName() + ";"
-                              + RuntimeExceptionMapper.class.getName()).build();
+                .initParam(ClassNamesResourceConfig.PROPERTY_CLASSNAMES, jerseyContext.toString()).build();
     }
  
     /** {@inheritDoc} */

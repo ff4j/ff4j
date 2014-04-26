@@ -24,6 +24,8 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
+import org.ff4j.store.rowmapper.FeatureRowMapper;
+import org.ff4j.store.rowmapper.RoleRowMapper;
 import org.ff4j.utils.ParameterUtils;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -202,10 +204,12 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
         if (!existGroup(groupName)) {
             throw new GroupNotFoundException(groupName);
         }
-        Feature feat = read(featureId);
-        if (feat.getGroup() != null && !feat.getGroup().equals(groupName)) {
-            throw new IllegalArgumentException("'" + featureId + "' is not in group '" + groupName + "'");
-        }
+        // ---> Feature not in Group : should not raise error
+        // Feature feat = read(featureId);
+        // if (feat.getGroup() != null && !feat.getGroup().equals(groupName)) {
+        // throw new IllegalArgumentException("'" + featureId + "' is not in group '" + groupName + "'");
+        // }
+        // <----
         getJdbcTemplate().update(SQL_ADD_TO_GROUP, "", featureId);
     }
 
@@ -217,7 +221,26 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
         for (Feature flipPoint : lFp) {
             mapFP.put(flipPoint.getUid(), flipPoint);
         }
+        // Populating Roles
+        RoleRowMapper rrm = new RoleRowMapper();
+        getJdbcTemplate().query(SQL_GET_ALLROLES, rrm);
+        Map<String, Set<String>> roles = rrm.getRoles();
+        for (String featId : roles.keySet()) {
+            if (mapFP.containsKey(featId)) {
+                mapFP.get(featId).getAuthorizations().addAll(roles.get(featId));
+            }
+        }
         return mapFP;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> readAllGroups() {
+        Set<String> setOfGroup = new HashSet<String>();
+        setOfGroup.addAll(getJdbcTemplate().query(SQLQUERY_ALLGROUPS, new SingleColumnRowMapper<String>()));
+        setOfGroup.remove(null);
+        setOfGroup.remove("");
+        return setOfGroup;
     }
 
     /** {@inheritDoc} */
@@ -294,6 +317,7 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
         }
         return jdbcTemplate;
     }
+
 
 
 

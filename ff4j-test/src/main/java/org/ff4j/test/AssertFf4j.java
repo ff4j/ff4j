@@ -133,6 +133,18 @@ public class AssertFf4j {
     }
 
     /**
+     * Check Number of features
+     * 
+     * @param featureName
+     *            target featureName
+     * @return current object
+     */
+    public AssertFf4j assertThatStoreHasNumberOfGroups(int expectedNumber) {
+        Assert.assertEquals(expectedNumber, ff4j.getStore().readAllGroups().size());
+        return this;
+    }
+
+    /**
      * Check that feature exists and have expected role.
      * 
      * @param featureName
@@ -233,6 +245,20 @@ public class AssertFf4j {
      */
     public AssertFf4j assertThatGroupExist(String groupName) {
         Assert.assertTrue("Group '" + groupName + " ' does no exist", ff4j.getStore().existGroup(groupName));
+        return this;
+    }
+
+    /**
+     * Check that group does not exist
+     * 
+     * @param expected
+     *            expected value for size
+     * @param groupName
+     *            target groupName
+     * @return current object
+     */
+    public AssertFf4j assertThatGroupDoesNotExist(String groupName) {
+        Assert.assertFalse("Group '" + groupName + " ' does no exist", ff4j.getStore().existGroup(groupName));
         return this;
     }
 

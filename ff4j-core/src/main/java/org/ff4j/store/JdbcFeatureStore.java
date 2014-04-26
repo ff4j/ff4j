@@ -344,6 +344,31 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
 
     /** {@inheritDoc} */
     @Override
+    public Set<String> readAllGroups() {
+        Set<String> setOFGroup = new HashSet<String>();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            // Returns features
+            ps = buildStatement(SQLQUERY_ALLGROUPS);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                String groupName = rs.getString(COL_FEAT_GROUPNAME);
+                if (groupName != null && !"".equals(groupName)) {
+                    setOFGroup.add(groupName);
+                }
+            }
+            return setOFGroup;
+        } catch (SQLException sqlEX) {
+            throw new FeatureAccessException("Cannot list groups, error related to database", sqlEX);
+        } finally {
+            closeResultSet(rs);
+            closeStatement(ps);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public void update(Feature fp) {
         Feature fpExist = read(fp.getUid());
         String enable = "0";

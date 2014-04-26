@@ -24,7 +24,6 @@ import org.ff4j.cache.FeatureCacheManager;
 import org.ff4j.cache.FeatureCacheProviderRedis;
 import org.ff4j.cache.FeatureStoreCacheProxy;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.test.store.AbstractStoreJUnitTest;
 import org.junit.Test;
 
@@ -44,16 +43,15 @@ public class FeatureStoreWithRedisCacheTestIT extends AbstractStoreJUnitTest {
     /** {@inheritDoc} */
     @Override
     protected FeatureStore initStore() {
-        FeatureStore store = new InMemoryFeatureStore("test-redis-ff4j.xml");
-        return new FeatureStoreCacheProxy(store, cache);
+        return new FeatureStoreCacheProxy(defaultStore, cache);
     }
 
     /** {@inheritDoc} */
     @Test
     @Override
-    public void testStoreHasBeenInitialized() throws Exception {
+    public void testStoreHasBeenInitialized() {
         assertFf4j.assertThatStoreHasSize(EXPECTED_FEATURES_NUMBERS);
-        assertFf4j.assertThatFeatureIsEnabled("first");
+        assertFf4j.assertThatFeatureIsEnabled(F1);
     }
 
     /**
