@@ -103,6 +103,28 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
     /**
      * TDD.
      */
+    @Test(expected = IllegalArgumentException.class)
+    public void testReadNull() {
+        // Given
+        // When
+        testedStore.read(null);
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testReadEmpty() {
+        // Given
+        // When
+        testedStore.read("");
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
     @Test
     public void testReadFullFeature() {
         // Given
@@ -117,16 +139,27 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
         assertFf4j.assertThatFeatureIsInGroup(F4, G1);
     }
 
+
     /**
      * TDD.
      */
-    @Test(expected = FeatureNotFoundException.class)
-    public void testFlipFeatureDoesNotExist() {
+    @Test(expected = IllegalArgumentException.class)
+    public void testEnableNull() {
         // Given
-        assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
         // When
-        ff4j.isFlipped(F_DOESNOTEXIST);
-        // Then, expected error
+        testedStore.enable(null);
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testEnableEmpty() {
+        // Given
+        // When
+        testedStore.enable("");
+        // Then, expected error...
     }
 
     /**
@@ -137,7 +170,29 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
         // Given
         assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
         // When
-        ff4j.enable(F_DOESNOTEXIST);
+        testedStore.enable(F_DOESNOTEXIST);
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testDisableNull() {
+        // Given
+        // When
+        testedStore.disable(null);
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testDisableEmpty() {
+        // Given
+        // When
+        testedStore.disable("");
         // Then, expected error...
     }
 
@@ -149,7 +204,7 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
         // Given
         assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
         // When
-        ff4j.disable(F_DOESNOTEXIST);
+        testedStore.disable(F_DOESNOTEXIST);
         // Then, expected error...
     }
 
@@ -161,7 +216,7 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
         // Given
         assertFf4j.assertThatFeatureExist(F1);
         // When
-        ff4j.enable(F1);
+        testedStore.enable(F1);
         // Then
         assertFf4j.assertThatFeatureIsEnabled(F1);
     }
@@ -174,9 +229,20 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
         // Given
         assertFf4j.assertThatFeatureExist(F1);
         // When
-        ff4j.disable(F1);
+        testedStore.disable(F1);
         // Then
         assertFf4j.assertThatFeatureIsDisabled(F1);
+    }
+
+    /**
+     * TDD.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateNull() throws Exception {
+        // Given
+        // When
+        testedStore.create(null);
+        // Then, expected error...
     }
 
     /**
@@ -221,6 +287,17 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
     /**
      * TDD.
      */
+    @Test(expected = IllegalArgumentException.class)
+    public void testDeleteNull() throws Exception {
+        // Given
+        // When
+        testedStore.delete(null);
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
     @Test
     public void testDeleteFeature() throws Exception {
         // Given
@@ -252,6 +329,50 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
     /**
      * TDD.
      */
+    @Test(expected = IllegalArgumentException.class)
+    public void testGrantRoleNullFeature() throws Exception {
+        // Given
+        // When
+        testedStore.grantRoleOnFeature(null, ROLE_ADMIN);
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testGrantRoleEmptyFeature() throws Exception {
+        // Given
+        // When
+        testedStore.grantRoleOnFeature("", ROLE_ADMIN);
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testGrantRoleNullRole() throws Exception {
+        // Given
+        // When
+        testedStore.grantRoleOnFeature(F1, null);
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testGrantRoleEmptyRole() throws Exception {
+        // Given
+        // When
+        testedStore.grantRoleOnFeature(F1, "");
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
     @Test
     public void testGrantRoleToFeatureRoleDoesNotExist() throws Exception {
         // Given
@@ -278,6 +399,50 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
     /**
      * TDD.
      */
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveRoleNullFeature() throws Exception {
+        // Given
+        // When
+        testedStore.removeRoleFromFeature(null, ROLE_ADMIN);
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveRoleEmptyFeature() throws Exception {
+        // Given
+        // When
+        testedStore.removeRoleFromFeature("", ROLE_ADMIN);
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveRoleNullRole() throws Exception {
+        // Given
+        // When
+        testedStore.removeRoleFromFeature(F1, null);
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveRoleEmptyRole() throws Exception {
+        // Given
+        // When
+        testedStore.removeRoleFromFeature(F1, "");
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
     @Test
     public void testDeleteRoleToFeature() throws Exception {
         // Given
@@ -287,6 +452,17 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
         testedStore.removeRoleFromFeature(F1, ROLE_USER);
         // Then
         assertFf4j.assertThatFeatureHasNotRole(F1, ROLE_USER);
+    }
+
+    /**
+     * TDD.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testUpdateNull() throws Exception {
+        // Given
+        // When
+        testedStore.update(null);
+        // Then, expected error...
     }
 
     /**
@@ -375,6 +551,28 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
     /**
      * TDD.
      */
+    @Test(expected = IllegalArgumentException.class)
+    public void testExistGroupNull() throws Exception {
+        // Given
+        // When
+        testedStore.existGroup(null);
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testExistGroupEmpty() throws Exception {
+        // Given
+        // When
+        testedStore.existGroup("");
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
     @Test
     public void testExistGroup() {
         // Given
@@ -383,6 +581,28 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
         // Then
         Assert.assertTrue(testedStore.existGroup(G1));
         Assert.assertFalse(testedStore.existGroup(G_DOESNOTEXIST));
+    }
+
+    /**
+     * TDD.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testEnableGroupNull() throws Exception {
+        // Given
+        // When
+        testedStore.enableGroup(null);
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testEnableGroupEmpty() throws Exception {
+        // Given
+        // When
+        testedStore.enableGroup("");
+        // Then, expected error...
     }
 
     /**
@@ -416,6 +636,28 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
     /**
      * TDD.
      */
+    @Test(expected = IllegalArgumentException.class)
+    public void testDisableGroupNull() throws Exception {
+        // Given
+        // When
+        testedStore.disableGroup(null);
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testDisableGroupEmpty() throws Exception {
+        // Given
+        // When
+        testedStore.disableGroup("");
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
     @Test
     public void testDisableGroup() {
         // Given
@@ -440,6 +682,28 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
         // When
         testedStore.disableGroup(G_DOESNOTEXIST);
         // Then, expected error
+    }
+
+    /**
+     * TDD.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testReadGroupNull() throws Exception {
+        // Given
+        // When
+        testedStore.readGroup(null);
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testReadGroupEmpty() throws Exception {
+        // Given
+        // When
+        testedStore.readGroup("");
+        // Then, expected error...
     }
 
     /**
@@ -476,6 +740,50 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
     /**
      * TDD.
      */
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddToGroupFeatureNull() throws Exception {
+        // Given
+        // When
+        testedStore.addToGroup(null, G0);
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddToGroupFeatureEmpty() throws Exception {
+        // Given
+        // When
+        testedStore.addToGroup("", G0);
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddToGroupNull() throws Exception {
+        // Given
+        // When
+        testedStore.addToGroup(F1, null);
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddToGroupEmpty() throws Exception {
+        // Given
+        // When
+        testedStore.addToGroup(F1, "");
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
     @Test
     public void testAddToGroup() {
         // Given
@@ -499,6 +807,50 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
         // When
         testedStore.addToGroup(F_DOESNOTEXIST, G0);
         // Then, expected error
+    }
+
+    /**
+     * TDD.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveToGroupFeatureNull() throws Exception {
+        // Given
+        // When
+        testedStore.removeFromGroup(null, G0);
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveToGroupFeatureEmpty() throws Exception {
+        // Given
+        // When
+        testedStore.removeFromGroup("", G0);
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveToGroupNull() throws Exception {
+        // Given
+        // When
+        testedStore.removeFromGroup(F1, null);
+        // Then, expected error...
+    }
+
+    /**
+     * TDD.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveToGroupEmpty() throws Exception {
+        // Given
+        // When
+        testedStore.removeFromGroup(F1, "");
+        // Then, expected error...
     }
 
     /**
@@ -577,6 +929,8 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
      */
     @Test
     public void testReadAllGroup() {
+        // Reinit
+        testedStore.addToGroup(F2, G0);
         // Given
         assertFf4j.assertThatStoreHasNumberOfGroups(2);
         assertFf4j.assertThatGroupExist(G0);

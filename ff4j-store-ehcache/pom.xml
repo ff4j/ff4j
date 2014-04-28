@@ -4,9 +4,9 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~     COORDINATES          ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<artifactId>ff4j-test</artifactId>
+	<artifactId>ff4j-store-ehcache</artifactId>
 	<packaging>jar</packaging>
-	<name>ff4j-test</name>
+	<name>ff4j-store-ehcache</name>
 	
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~         PARENT           ~ -->
@@ -18,51 +18,54 @@
 	</parent>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~        PROPERTIES        ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<properties>
+		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
+	</properties>
+	
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~      DEPENDENCIES        ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<dependencies>
 	
-		<!--  core -->
+		<!-- logger -->
 		<dependency>
-			<artifactId>ff4j-core</artifactId>
 			<groupId>org.ff4j</groupId>
+			<artifactId>ff4j-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-	
-		<!-- Support for tests -->
+		
+		<!--  cache provider -->
+		<dependency>
+    		<groupId>net.sf.ehcache</groupId>
+    		<artifactId>ehcache-core</artifactId>
+    		<version>${version.ehcache}</version>
+		</dependency>
+
+		<!-- tests -->
+		<dependency>
+			<artifactId>ff4j-test</artifactId>
+			<groupId>org.ff4j</groupId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.hsqldb</groupId>
-			<artifactId>hsqldb</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-jdbc</artifactId>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
 			<scope>test</scope>
 		</dependency>
 		
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<scope>test</scope>
-		</dependency>
-
 	</dependencies>
 
-	<properties>
-	 	<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-	</properties>
-	
 </project>

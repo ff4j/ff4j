@@ -61,5 +61,8 @@ public interface FF4jWebApiConstants {
     String RESOURCE_GROUPS = "groups";
 
     /** relative path. */
+    String RESOURCE_STORE = "store";
+
+    /** relative path. */
     String RESOURCE_MONITORING = "monitoring";
 }

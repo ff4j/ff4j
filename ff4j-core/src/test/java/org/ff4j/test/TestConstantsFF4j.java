@@ -58,7 +58,7 @@ public interface TestConstantsFF4j {
     String FEATURE_NEW = "new";
 
     /** Feature Name. */
-    String ROLE_USER = "ROLE_USER";
+    String ROLE_USER = "USER";
 
     /** Feature Name. */
     String ROLE_ADMIN = "ADMINISTRATOR";

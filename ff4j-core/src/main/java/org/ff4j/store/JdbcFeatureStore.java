@@ -56,29 +56,38 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
 
     /** {@inheritDoc} */
     @Override
-    public void enable(String featId) {
-        if (!exist(featId)) {
-            throw new FeatureNotFoundException(featId);
+    public void enable(String uid) {
+        if (uid == null || uid.isEmpty()) {
+            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
         }
-        update(SQL_ENABLE, featId);
+        if (!exist(uid)) {
+            throw new FeatureNotFoundException(uid);
+        }
+        update(SQL_ENABLE, uid);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void disable(String featId) {
-        if (!exist(featId)) {
-            throw new FeatureNotFoundException(featId);
+    public void disable(String uid) {
+        if (uid == null || uid.isEmpty()) {
+            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
         }
-        update(SQL_DISABLE, featId);
+        if (!exist(uid)) {
+            throw new FeatureNotFoundException(uid);
+        }
+        update(SQL_DISABLE, uid);
     }
 
     /** {@inheritDoc} */
     @Override
-    public boolean exist(String featId) {
+    public boolean exist(String uid) {
+        if (uid == null || uid.isEmpty()) {
+            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
+        }
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = buildStatement(SQL_EXIST, featId);
+            ps = buildStatement(SQL_EXIST, uid);
             rs = ps.executeQuery();
             if (rs.next()) {
                 return 1 == rs.getInt(1);
@@ -94,23 +103,26 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
 
     /** {@inheritDoc} */
     @Override
-    public Feature read(String featId) {
+    public Feature read(String uid) {
+        if (uid == null || uid.isEmpty()) {
+            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
+        }
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             // Returns features
-            ps = buildStatement(SQLQUERY_GET_FEATURE_BY_ID, featId);
+            ps = buildStatement(SQLQUERY_GET_FEATURE_BY_ID, uid);
             rs = ps.executeQuery();
             Feature f = null;
             if (rs.next()) {
                 f = mapRow2Feature(rs);
             } else {
-                throw new FeatureNotFoundException(featId);
+                throw new FeatureNotFoundException(uid);
             }
 
             // 2nd request
             ps = ps.getConnection().prepareStatement(SQL_GET_ROLES);
-            ps.setString(1, featId);
+            ps.setString(1, uid);
             rs = ps.executeQuery();
             while (rs.next()) {
                 f.getAuthorizations().add(rs.getString("ROLE_NAME"));
@@ -160,6 +172,9 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
     /** {@inheritDoc} */
     @Override
     public void create(Feature fp) {
+        if (fp == null) {
+            throw new IllegalArgumentException("Feature cannot be null nor empty");
+        }
         if (exist(fp.getUid())) {
             throw new FeatureAlreadyExistException(fp.getUid());
         }
@@ -212,14 +227,17 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
 
     /** {@inheritDoc} */
     @Override
-    public void delete(String fpId) {
-        if (!exist(fpId)) {
-            throw new FeatureNotFoundException(fpId);
+    public void delete(String uid) {
+        if (uid == null || uid.isEmpty()) {
+            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
+        }
+        if (!exist(uid)) {
+            throw new FeatureNotFoundException(uid);
         }
         Connection sqlConn = null;
         PreparedStatement ps = null;
         try {
-            Feature fp = read(fpId);
+            Feature fp = read(uid);
 
             // Create connection
             sqlConn = getDataSource().getConnection();
@@ -269,23 +287,33 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
 
     /** {@inheritDoc} */
     @Override
-    public void grantRoleOnFeature(String fpId, String roleName) {
-        if (!exist(fpId)) {
-            throw new FeatureNotFoundException(fpId);
+    public void grantRoleOnFeature(String uid, String roleName) {
+        if (uid == null || uid.isEmpty()) {
+            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
         }
-        update(SQL_ADD_ROLE, fpId, roleName);
+        if (roleName == null || roleName.isEmpty()) {
+            throw new IllegalArgumentException("roleName cannot be null nor empty");
+        }
+        if (!exist(uid)) {
+            throw new FeatureNotFoundException(uid);
+        }
+        update(SQL_ADD_ROLE, uid, roleName);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void removeRoleFromFeature(String fpId, String roleName) {
-        if (!exist(fpId)) {
-            throw new FeatureNotFoundException(fpId);
+    public void removeRoleFromFeature(String uid, String roleName) {
+        if (uid == null || uid.isEmpty()) {
+            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
         }
-        update(SQL_DELETE_ROLE, fpId, roleName);
+        if (roleName == null || roleName.isEmpty()) {
+            throw new IllegalArgumentException("roleName cannot be null nor empty");
+        }
+        if (!exist(uid)) {
+            throw new FeatureNotFoundException(uid);
+        }
+        update(SQL_DELETE_ROLE, uid, roleName);
     }
-
-
 
     /**
      * Build {@link PreparedStatement} from parameters
@@ -308,8 +336,6 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
         }
         return ps;
     }
-
-
 
     /** {@inheritDoc} */
     @Override
@@ -370,6 +396,9 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
     /** {@inheritDoc} */
     @Override
     public void update(Feature fp) {
+        if (fp == null) {
+            throw new IllegalArgumentException("Feature cannot be null nor empty");
+        }
         Feature fpExist = read(fp.getUid());
         String enable = "0";
         if (fp.isEnable()) {
@@ -402,6 +431,9 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
 
     @Override
     public boolean existGroup(String groupName) {
+        if (groupName == null || groupName.isEmpty()) {
+            throw new IllegalArgumentException("Groupname cannot be null nor empty");
+        }
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -422,6 +454,9 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
     /** {@inheritDoc} */
     @Override
     public void enableGroup(String groupName) {
+        if (groupName == null || groupName.isEmpty()) {
+            throw new IllegalArgumentException("Groupname cannot be null nor empty");
+        }
         if (!existGroup(groupName)) {
             throw new GroupNotFoundException(groupName);
         }
@@ -431,6 +466,9 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
     /** {@inheritDoc} */
     @Override
     public void disableGroup(String groupName) {
+        if (groupName == null || groupName.isEmpty()) {
+            throw new IllegalArgumentException("Groupname cannot be null nor empty");
+        }
         if (!existGroup(groupName)) {
             throw new GroupNotFoundException(groupName);
         }
@@ -440,6 +478,9 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
     /** {@inheritDoc} */
     @Override
     public Map<String, Feature> readGroup(String groupName) {
+        if (groupName == null || groupName.isEmpty()) {
+            throw new IllegalArgumentException("Groupname cannot be null nor empty");
+        }
         if (!existGroup(groupName)) {
             throw new GroupNotFoundException(groupName);
         }
@@ -476,27 +517,72 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
 
     /** {@inheritDoc} */
     @Override
-    public void addToGroup(String featureId, String groupName) {
-        if (!exist(featureId)) {
-            throw new FeatureNotFoundException(featureId);
+    public void addToGroup(String uid, String groupName) {
+        if (uid == null || uid.isEmpty()) {
+            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
         }
-        update(SQL_ADD_TO_GROUP, groupName, featureId);
+        if (groupName == null || groupName.isEmpty()) {
+            throw new IllegalArgumentException("Groupname cannot be null nor empty");
+        }
+        if (!exist(uid)) {
+            throw new FeatureNotFoundException(uid);
+        }
+        update(SQL_ADD_TO_GROUP, groupName, uid);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void removeFromGroup(String featureId, String groupName) {
-        if (!exist(featureId)) {
-            throw new FeatureNotFoundException(featureId);
+    public void removeFromGroup(String uid, String groupName) {
+        if (uid == null || uid.isEmpty()) {
+            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
+        }
+        if (groupName == null || groupName.isEmpty()) {
+            throw new IllegalArgumentException("Groupname cannot be null nor empty");
+        }
+        if (!exist(uid)) {
+            throw new FeatureNotFoundException(uid);
         }
         if (!existGroup(groupName)) {
             throw new GroupNotFoundException(groupName);
         }
-        Feature feat = read(featureId);
+        Feature feat = read(uid);
         if (feat.getGroup() != null && !feat.getGroup().equals(groupName)) {
-            throw new IllegalArgumentException("'" + featureId + "' is not in group '" + groupName + "'");
+            throw new IllegalArgumentException("'" + uid + "' is not in group '" + groupName + "'");
         }
-        update(SQL_ADD_TO_GROUP, "", featureId);
+        update(SQL_ADD_TO_GROUP, "", uid);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("{");
+        sb.append("\"type\":\"" + this.getClass().getCanonicalName() + "\"");
+        sb.append("\"datasource\":\"" + this.dataSource.getClass() + "\"");
+        Set<String> myFeatures = readAll().keySet();
+        sb.append(",\"numberOfFeatures\":" + myFeatures.size());
+        sb.append(",\"features\":[");
+        boolean first = true;
+        for (String myFeature : myFeatures) {
+            if (!first) {
+                sb.append(",");
+            }
+            first = false;
+            sb.append("\"" + myFeature + "\"");
+        }
+        Set<String> myGroups = readAllGroups();
+        sb.append("],\"numberOfGroups\":" + myGroups.size());
+        sb.append(",\"groups\":[");
+        first = true;
+        for (String myGroup : myGroups) {
+            if (!first) {
+                sb.append(",");
+            }
+            first = false;
+            sb.append("\"" + myGroup + "\"");
+        }
+        sb.append("]");
+        sb.append("}");
+        return sb.toString();
     }
 
     /**

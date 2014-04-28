@@ -20,11 +20,14 @@ package org.ff4j.web.resources;
  * #L%
  */
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -58,19 +61,9 @@ public class FF4jResource implements FF4jWebApiConstants {
      *
      * @return features resource
      */
-    @Path(RESOURCE_FEATURES)
-    public FeaturesResource getFeaturesResource() {
-        return new FeaturesResource(uriInfo, request, ff4j.getStore());
-    }
-    
-    /**
-     * Access groups part of the API.
-     * 
-     * @return groups resource
-     */
-    @Path(RESOURCE_GROUPS)
-    public GroupsResource getGroupsResource() {
-        return new GroupsResource(uriInfo, request, ff4j.getStore());
+    @Path(RESOURCE_STORE)
+    public FeatureStoreResource getFeaturesResource() {
+        return new FeatureStoreResource(uriInfo, request, ff4j.getStore());
     }
 
     /**
@@ -89,6 +82,26 @@ public class FF4jResource implements FF4jWebApiConstants {
     @GET
     public Response getStatus() {
         return Response.ok(ff4j.toString()).build();
+    }
+
+    /**
+     * 
+     * @param formParams
+     * @return
+     */
+    @POST
+    @Path(OPERATION_GRANTROLE)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response isFlipped(MultivaluedMap<String, String> formParams) {
+        // Expected FeatureUID
+        if (!formParams.containsKey(POST_PARAMNAME_ROLENAME)) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(POST_PARAMNAME_ROLENAME + " is a required POST parameter")
+                    .build();
+        }
+        // Expected Custom FlipStrategy (JSON)
+        // Other Parameters to be in isFlipped
+
+        return Response.noContent().build();
     }
 
     /**

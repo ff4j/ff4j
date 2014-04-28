@@ -52,6 +52,10 @@ public class InMemoryFeatureStore implements FeatureStore {
      *            fileName present in classPath or on fileSystem.
      */
     public InMemoryFeatureStore(String fileName) {
+        if (fileName == null || fileName.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "fileName is required, cannot be null nor empty : the file must exist in classpath");
+        }
         loadConfFile(fileName);
     }
 
@@ -104,6 +108,9 @@ public class InMemoryFeatureStore implements FeatureStore {
      *            Target feature to update
      */
     private void updateFeature(Feature fp) {
+        if (fp == null) {
+            throw new IllegalArgumentException("Feature cannot be null nor empty");
+        }
         featuresMap.put(fp.getUid(), fp);
         buildGroupsFromFeatures();
     }
@@ -111,6 +118,9 @@ public class InMemoryFeatureStore implements FeatureStore {
     /** {@inheritDoc} */
     @Override
     public void create(Feature fp) {
+        if (fp == null) {
+            throw new IllegalArgumentException("Feature cannot be null nor empty");
+        }
         if (exist(fp.getUid())) {
             throw new FeatureAlreadyExistException(fp.getUid());
         }
@@ -120,6 +130,9 @@ public class InMemoryFeatureStore implements FeatureStore {
     /** {@inheritDoc} */
     @Override
     public void update(Feature fp) {
+        if (fp == null) {
+            throw new IllegalArgumentException("Feature cannot be null nor empty");
+        }
         Feature fpExist = read(fp.getUid());
         // Checking new roles
         Set<String> toBeAdded = new HashSet<String>();
@@ -134,74 +147,107 @@ public class InMemoryFeatureStore implements FeatureStore {
 
     /** {@inheritDoc} */
     @Override
-    public void delete(String fpId) {
-        if (!exist(fpId)) {
-            throw new FeatureNotFoundException(fpId);
+    public void delete(String uid) {
+        if (uid == null || uid.isEmpty()) {
+            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
         }
-        featuresMap.remove(fpId);
+        if (!exist(uid)) {
+            throw new FeatureNotFoundException(uid);
+        }
+        featuresMap.remove(uid);
         buildGroupsFromFeatures();
     }
 
     /** {@inheritDoc} */
     @Override
-    public void grantRoleOnFeature(String flipId, String roleName) {
-        if (!exist(flipId)) {
-            throw new FeatureNotFoundException(flipId);
+    public void grantRoleOnFeature(String uid, String roleName) {
+        if (uid == null || uid.isEmpty()) {
+            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
         }
-        featuresMap.get(flipId).getAuthorizations().add(roleName);
+        if (roleName == null || roleName.isEmpty()) {
+            throw new IllegalArgumentException("roleName cannot be null nor empty");
+        }
+        if (!exist(uid)) {
+            throw new FeatureNotFoundException(uid);
+        }
+        featuresMap.get(uid).getAuthorizations().add(roleName);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void removeRoleFromFeature(String flipId, String roleName) {
-        if (!exist(flipId)) {
-            throw new FeatureNotFoundException(flipId);
+    public void removeRoleFromFeature(String uid, String roleName) {
+        if (uid == null || uid.isEmpty()) {
+            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
         }
-        featuresMap.get(flipId).getAuthorizations().remove(roleName);
+        if (roleName == null || roleName.isEmpty()) {
+            throw new IllegalArgumentException("roleName cannot be null nor empty");
+        }
+        if (!exist(uid)) {
+            throw new FeatureNotFoundException(uid);
+        }
+        featuresMap.get(uid).getAuthorizations().remove(roleName);
     }
 
     /** {@inheritDoc} */
     @Override
-    public boolean exist(String featId) {
-        return featuresMap.containsKey(featId);
+    public boolean exist(String uid) {
+        if (uid == null || uid.isEmpty()) {
+            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
+        }
+        return featuresMap.containsKey(uid);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void enable(String featID) {
-        if (!exist(featID)) {
-            throw new FeatureNotFoundException(featID);
+    public void enable(String uid) {
+        if (uid == null || uid.isEmpty()) {
+            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
         }
-        featuresMap.get(featID).enable();
+        if (!exist(uid)) {
+            throw new FeatureNotFoundException(uid);
+        }
+        featuresMap.get(uid).enable();
     }
 
     /** {@inheritDoc} */
     @Override
-    public void disable(String featID) {
-        if (!exist(featID)) {
-            throw new FeatureNotFoundException(featID);
+    public void disable(String uid) {
+        if (uid == null || uid.isEmpty()) {
+            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
         }
-        featuresMap.get(featID).disable();
+        if (!exist(uid)) {
+            throw new FeatureNotFoundException(uid);
+        }
+        featuresMap.get(uid).disable();
     }
 
     /** {@inheritDoc} */
     @Override
-    public Feature read(String featureUid) {
-        if (!exist(featureUid)) {
-            throw new FeatureNotFoundException(featureUid);
+    public Feature read(String uid) {
+        if (uid == null || uid.isEmpty()) {
+            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
         }
-        return featuresMap.get(featureUid);
+        if (!exist(uid)) {
+            throw new FeatureNotFoundException(uid);
+        }
+        return featuresMap.get(uid);
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean existGroup(String groupName) {
+        if (groupName == null || groupName.isEmpty()) {
+            throw new IllegalArgumentException("Groupname cannot be null nor empty");
+        }
         return featureGroups.containsKey(groupName);
     }
 
     /** {@inheritDoc} */
     @Override
     public void enableGroup(String groupName) {
+        if (groupName == null || groupName.isEmpty()) {
+            throw new IllegalArgumentException("Groupname cannot be null nor empty");
+        }
         if (!existGroup(groupName)) {
             throw new GroupNotFoundException(groupName);
         }
@@ -213,6 +259,9 @@ public class InMemoryFeatureStore implements FeatureStore {
     /** {@inheritDoc} */
     @Override
     public void disableGroup(String groupName) {
+        if (groupName == null || groupName.isEmpty()) {
+            throw new IllegalArgumentException("Groupname cannot be null nor empty");
+        }
         if (!existGroup(groupName)) {
             throw new GroupNotFoundException(groupName);
         }
@@ -224,6 +273,9 @@ public class InMemoryFeatureStore implements FeatureStore {
     /** {@inheritDoc} */
     @Override
     public Map<String, Feature> readGroup(String groupName) {
+        if (groupName == null || groupName.isEmpty()) {
+            throw new IllegalArgumentException("groupName cannot be null nor empty");
+        }
         if (!existGroup(groupName)) {
             throw new GroupNotFoundException(groupName);
         }
@@ -241,33 +293,48 @@ public class InMemoryFeatureStore implements FeatureStore {
         Set<String> groups = new HashSet<String>();
         groups.addAll(featureGroups.keySet());
         groups.remove(null);
+        groups.remove("");
         return groups;
     }
 
     /** {@inheritDoc} */
     @Override
-    public void addToGroup(String featureId, String groupName) {
-        if (!exist(featureId)) {
-            throw new FeatureNotFoundException(featureId);
+    public void addToGroup(String uid, String groupName) {
+        if (uid == null || uid.isEmpty()) {
+            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
         }
-        Feature feat = read(featureId);
+        if (groupName == null || groupName.isEmpty()) {
+            throw new IllegalArgumentException("Groupname cannot be null nor empty");
+        }
+        if (!exist(uid)) {
+            throw new FeatureNotFoundException(uid);
+        }
+        Feature feat = read(uid);
         feat.setGroup(groupName);
         update(feat);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void removeFromGroup(String featureId, String groupName) {
-        if (!exist(featureId)) {
-            throw new FeatureNotFoundException(featureId);
+    public void removeFromGroup(String uid, String groupName) {
+        if (uid == null || uid.isEmpty()) {
+            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
+        }
+        if (groupName == null || groupName.isEmpty()) {
+            throw new IllegalArgumentException("Groupname cannot be null nor empty");
+        }
+        if (!exist(uid)) {
+            throw new FeatureNotFoundException(uid);
         }
         if (!existGroup(groupName)) {
             throw new GroupNotFoundException(groupName);
         }
-        Feature feat = read(featureId);
-        if (feat.getGroup() != null && !feat.getGroup().equals(groupName)) {
-            throw new IllegalArgumentException("'" + featureId + "' is not in group '" + groupName + "'");
-        }
+        Feature feat = read(uid);
+        // --> Should not raise exception
+        // if (feat.getGroup() != null && !feat.getGroup().equals(groupName)) {
+        // throw new IllegalArgumentException("'" + uid + "' is not in group '" + groupName + "'");
+        // }
+        // <---
         feat.setGroup("");
         update(feat);
     }
@@ -284,8 +351,29 @@ public class InMemoryFeatureStore implements FeatureStore {
         StringBuilder sb = new StringBuilder("{");
         sb.append("\"type\":\"" + this.getClass().getCanonicalName() + "\"");
         sb.append(",\"xmlInputFile\":\"" + this.getFileName() + "\"");
-        sb.append(",\"numberOfFeatures\":" + readAll().size());
-        sb.append(",\"numberOfGroups\":" + readAllGroups().size());
+        Set<String> myFeatures = readAll().keySet();
+        sb.append(",\"numberOfFeatures\":" + myFeatures.size());
+        sb.append(",\"features\":[");
+        boolean first = true;
+        for (String myFeature : myFeatures) {
+            if (!first) {
+                sb.append(",");
+            }
+            first = false;
+            sb.append("\"" + myFeature + "\"");
+        }
+        Set<String> myGroups = readAllGroups();
+        sb.append("],\"numberOfGroups\":" + myGroups.size());
+        sb.append(",\"groups\":[");
+        first = true;
+        for (String myGroup : myGroups) {
+            if (!first) {
+                sb.append(",");
+            }
+            first = false;
+            sb.append("\"" + myGroup + "\"");
+        }
+        sb.append("]");
         sb.append("}");
         return sb.toString();
     }

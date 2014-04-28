@@ -20,6 +20,7 @@ package org.ff4j.web.resources;
  * #L%
  */
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -27,6 +28,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
@@ -45,15 +47,11 @@ import org.ff4j.web.api.FF4jWebApiConstants;
  */
 public class FeatureResource implements FF4jWebApiConstants {
 
-    /**
-     * current uri of the resource
-     */
+    /** current uri of the resource. */
     @Context
     private UriInfo uriInfo;
 
-    /**
-     * current http request
-     */
+    /** current http request. */
     @Context
     private Request request;
 
@@ -61,7 +59,7 @@ public class FeatureResource implements FF4jWebApiConstants {
     @Context
     private FeatureStore store;
 
-    /** Current Feature identifier */
+    /** Current Feature identifier. */
     private String id;
 
     /**
@@ -178,6 +176,7 @@ public class FeatureResource implements FF4jWebApiConstants {
      */
     @POST
     @Path(OPERATION_GRANTROLE)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response operationGrantRole(MultivaluedMap<String, String> formParams) {
         if (!getStore().exist(id)) {
             return Response.status(Response.Status.NOT_FOUND).entity(new FeatureNotFoundException(id).getMessage()).build();
@@ -198,6 +197,7 @@ public class FeatureResource implements FF4jWebApiConstants {
      */
     @POST
     @Path(OPERATION_REMOVEROLE)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response operationRemoveRole(MultivaluedMap<String, String> formParams) {
         if (!getStore().exist(id)) {
             return Response.status(Response.Status.NOT_FOUND).entity(new FeatureNotFoundException(id).getMessage()).build();
@@ -218,6 +218,7 @@ public class FeatureResource implements FF4jWebApiConstants {
      */
     @POST
     @Path(OPERATION_ADDGROUP)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response operationAddGroup(MultivaluedMap<String, String> formParams) {
         if (!getStore().exist(id)) {
             return Response.status(Response.Status.NOT_FOUND).entity(new FeatureNotFoundException(id).getMessage()).build();
@@ -239,6 +240,7 @@ public class FeatureResource implements FF4jWebApiConstants {
      */
     @POST
     @Path(OPERATION_REMOVEGROUP)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response operationRemoveGroup(MultivaluedMap<String, String> formParams) {
         if (!getStore().exist(id)) {
             return Response.status(Response.Status.NOT_FOUND).entity(new FeatureNotFoundException(id).getMessage()).build();

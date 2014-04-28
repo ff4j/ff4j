@@ -103,7 +103,7 @@
 		<version.ehcache>2.6.6</version.ehcache>
 		<version.jacoco>0.6.3.201306030806</version.jacoco>
 		<version.jedis>2.2.1</version.jedis>
-		<version.jersey>1.11</version.jersey>
+		<version.jersey>1.18.1</version.jersey>
 		<version.httpclient>4.1.1</version.httpclient>
 		
 		
@@ -123,10 +123,10 @@
 		<module>ff4j-test</module>
 		<module>ff4j-jmx</module>
 		<module>ff4j-web</module>
-		<module>ff4j-cache-ehcache</module>
-		<module>ff4j-cache-redis</module>
 		<module>ff4j-security-spring</module>
-		<module>ff4j-store-jdbc</module>
+		<module>ff4j-store-ehcache</module>
+		<module>ff4j-store-redis</module>
+		<module>ff4j-store-springjdbc</module>
 		<module>ff4j-store-mongodb</module>
 	</modules>
 
