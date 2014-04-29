@@ -49,7 +49,6 @@ public class ExpressionFlipStrategy extends AbstractFlipStrategy {
         mapOfValue.put(featureName, initValue.get(PARAM_EXPRESSION));
     }
 
-
     /** {@inheritDoc} */
     @Override
     public boolean activate(String featureName, FeatureStore currentStore, Object... executionContext) {

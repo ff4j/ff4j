@@ -20,15 +20,17 @@ package org.ff4j.web.resources.it;
  * #L%
  */
 
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response.Status;
 
 import junit.framework.Assert;
 
 import org.ff4j.store.InMemoryFeatureStore;
+import org.ff4j.utils.FeatureJsonMarshaller;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 /**
  * Test core web resources /ff4j
@@ -45,8 +47,7 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
         // Given
         Assert.assertTrue(ff4j.getStore() instanceof InMemoryFeatureStore);
         // When
-        WebResource wResff4j = resource().path(APIPATH);
-        ClientResponse resHttp = wResff4j.get(ClientResponse.class);
+        ClientResponse resHttp = resourceff4j().get(ClientResponse.class);
         String resEntity = resHttp.getEntity(String.class);
         // Then, HTTPResponse
         Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
@@ -54,4 +55,127 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
         // Then, Entity Object
         Assert.assertTrue(resEntity.contains(InMemoryFeatureStore.class.getCanonicalName()));
     }
+
+    /**
+     * TDD.
+     */
+    @Test
+    public void testPost_isNotFlipped() {
+        // Given
+        assertFF4J.assertThatFeatureExist(F4);
+        assertFF4J.assertThatFeatureNotFlipped(F4);
+        // When
+        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
+        formData.add(POST_PARAMNAME_FEATURE_UID, F4);
+        ClientResponse resHttp = resourceff4j().path(OPERATION_FLIP).post(ClientResponse.class, formData);
+        String resEntity = resHttp.getEntity(String.class);
+        // Then
+        Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
+        Assert.assertNotNull(resEntity);
+        Assert.assertFalse(Boolean.valueOf(resEntity));
+    }
+
+    /**
+     * TDD.
+     */
+    @Test
+    public void testPost_isFlipped() {
+        // Given
+        assertFF4J.assertThatFeatureExist(F2);
+        ff4j.getStore().enable(F2);
+        assertFF4J.assertThatFeatureExist(F4);
+        assertFF4J.assertThatFeatureFlipped(F4);
+        // When
+        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
+        formData.add(POST_PARAMNAME_FEATURE_UID, F4);
+        ClientResponse resHttp = resourceff4j().path(OPERATION_FLIP).post(ClientResponse.class, formData);
+        String resEntity = resHttp.getEntity(String.class);
+        // Then
+        Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
+        Assert.assertNotNull(resEntity);
+        Assert.assertTrue(Boolean.valueOf(resEntity));
+    }
+
+    /**
+     * TDD.
+     */
+    @Test
+    public void testPost_isFlippedNotFound() {
+        // Given
+        assertFF4J.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
+        // When
+        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
+        formData.add(POST_PARAMNAME_FEATURE_UID, F_DOESNOTEXIST);
+        ClientResponse resHttp = resourceff4j().path(OPERATION_FLIP).post(ClientResponse.class, formData);
+        String resEntity = resHttp.getEntity(String.class);
+        // Then
+        Assert.assertEquals("Expected status is 404", Status.NOT_FOUND.getStatusCode(), resHttp.getStatus());
+        Assert.assertNotNull(resEntity);
+        Assert.assertTrue("Invalid error message : " + resEntity, resEntity.contains("not exist"));
+    }
+
+    /**
+     * TDD.
+     */
+    @Test
+    public void testPost_isFlippedInvalidParameter() {
+        // Given
+        assertFF4J.assertThatFeatureExist(F4);
+        // When
+        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
+        formData.add(ROLE_NEW, F4);
+        ClientResponse resHttp = resourceff4j().path(OPERATION_FLIP).post(ClientResponse.class, formData);
+        String resEntity = resHttp.getEntity(String.class);
+        // Then
+        Assert.assertEquals("Expected status is 400", Status.BAD_REQUEST.getStatusCode(), resHttp.getStatus());
+        Assert.assertNotNull(resEntity);
+        Assert.assertTrue(resEntity.contains("POST parameter"));
+    }
+
+    /**
+     * TDD.
+     */
+    @Test
+    public void testPost_isFlippedWithParameters() {
+        // Given
+        ff4j.getStore().disable(F2);
+        assertFF4J.assertThatFeatureExist(F4);
+        assertFF4J.assertThatFeatureNotFlipped(F4);
+        // When
+        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
+        formData.add(POST_PARAMNAME_FEATURE_UID, F4);
+        formData.add(POST_PARAMNAME_CUSTOM_PREFIX + "1", "SECOND");
+        formData.add(POST_PARAMNAME_CUSTOM_PREFIX + "0", "FIRST");
+        formData.add(POST_PARAMNAME_CUSTOM_PREFIX + "2", "T1");
+        formData.add(POST_PARAMNAME_CUSTOM_PREFIX + "2", "T2");
+        ClientResponse resHttp = resourceff4j().path(OPERATION_FLIP).post(ClientResponse.class, formData);
+        String resEntity = resHttp.getEntity(String.class);
+        // Then
+        Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
+        Assert.assertNotNull(resEntity);
+        Assert.assertFalse(Boolean.valueOf(resEntity));
+    }
+
+    /**
+     * TDD.
+     */
+    @Test
+    public void testPost_isFlippedWithCustomStrategy() {
+        // Given
+        assertFF4J.assertThatFeatureExist(F4);
+        assertFF4J.assertThatFeatureNotFlipped(F4);
+        // When
+        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
+        formData.add(POST_PARAMNAME_FEATURE_UID, F4);
+        formData.add(POST_PARAMNAME_CUSTOM_PREFIX + "0", "first");
+        String  fs = FeatureJsonMarshaller.renderFlippingStrategy(ff4j.getStore().read(F4).getFlippingStrategy());
+        formData.add(POST_PARAMNAME_FLIPSTRATEGY, fs.replace(",\"flippingStrategy\":", ""));
+        ClientResponse resHttp = resourceff4j().path(OPERATION_FLIP).post(ClientResponse.class, formData);
+        String resEntity = resHttp.getEntity(String.class);
+        // Then
+        Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
+        Assert.assertNotNull(resEntity);
+        Assert.assertTrue(Boolean.valueOf(resEntity));
+    }
+
 }

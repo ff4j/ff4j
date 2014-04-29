@@ -185,7 +185,7 @@ public final class FeatureJsonMarshaller {
      *            flipstrategy as a string
      * @return flip strategy as an object
      */
-    private static FlipStrategy parseFlipStrategy(String featureName, String str) {
+    public static FlipStrategy parseFlipStrategy(String featureName, String str) {
         if ("null".equals(str)) {
             return null;
         }
@@ -232,7 +232,7 @@ public final class FeatureJsonMarshaller {
      *            flipping strategy
      * @return json string
      */
-    private static String renderFlippingStrategy(FlipStrategy strat) {
+    public static String renderFlippingStrategy(FlipStrategy strat) {
         StringBuilder jsonOutput = new StringBuilder(",\"flippingStrategy\":");
         if (strat == null) {
             jsonOutput.append(NULL_JSON);

@@ -31,16 +31,28 @@ public interface FF4jWebApiConstants {
     String LOCATION = "Location";
 
     /** expected post parameter from POST methods. */
+    String POST_PARAMNAME_FEATURE_UID = "uid";
+
+    /** expected post parameter from POST methods. */
+    String POST_PARAMNAME_FLIPSTRATEGY = "flipstrategy";
+
+    /** expected post parameter from POST methods. */
     String POST_PARAMNAME_ROLENAME = "rolename";
 
     /** expected post parameter from POST methods. */
     String POST_PARAMNAME_GROUPNAME = "groupName";
+
+    /** parameter. */
+    String POST_PARAMNAME_CUSTOM_PREFIX = "PARAM_";
 
     /** Custom operation on resource. */
     String OPERATION_ENABLE = "enable";
 
     /** Custom operation on resource. */
     String OPERATION_DISABLE = "disable";
+
+    /** Custom operation on resource. */
+    String OPERATION_FLIP = "flip";
 
     /** Custom operation on resource. */
     String OPERATION_GRANTROLE = "grantrole";
