@@ -379,26 +379,7 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-
-			<!-- CLOVER
-			<plugin>
-				<groupId>com.atlassian.maven.plugins</groupId>
-				<artifactId>maven-clover2-plugin</artifactId>
-				<version>3.2.0</version>
-				<configuration>
-					<targetPercentage>50%</targetPercentage>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>pre-site</phase>
-						<goals>
-							<goal>instrument</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		-->
+			</plugin>			
 
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -504,6 +485,20 @@
 						<testFailureIgnore>false</testFailureIgnore>
 						<argLine>-Xms128M -Xmx512M -enableassertions</argLine>
 						<forkMode>always</forkMode>
+					</configuration>
+				</plugin>
+				
+				<!-- Add Implementation version in Manisfest -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<configuration>
+						<archive>
+							<manifest>
+								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+								<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+							</manifest>
+						</archive>
 					</configuration>
 				</plugin>
 

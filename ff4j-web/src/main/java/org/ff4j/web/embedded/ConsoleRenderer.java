@@ -1,4 +1,4 @@
-package org.ff4j.web;
+package org.ff4j.web.embedded;
 
 /*
  * #%L AdministrationConsoleRenderer.java (ff4j-web) by Cedrick LUNVEN %% Copyright (C) 2013 Ff4J %% Licensed under the Apache
@@ -12,8 +12,10 @@ package org.ff4j.web;
  * governing permissions and limitations under the License. #L%
  */
 
+import java.io.InputStream;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -27,52 +29,7 @@ import org.ff4j.core.Feature;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public final class AdministrationConsoleRenderer {
-
-    /** User operation. */
-    static final String OP_EDIT_FEATURE = "editfp";
-
-    /** User operation: remove feature. */
-    static final String OP_RMV_FEATURE = "rmvfp";
-
-    /** User operation. */
-    static final String OP_ADD_FEATURE = "addfp";
-
-    /** User operation. */
-    static final String OP_ENABLE = "enable";
-
-    /** User operation. */
-    static final String OP_DISABLE = "disable";
-
-    /** User operation. */
-    static final String OP_ADD_ROLE = "addrole";
-
-    /** User operation. */
-    static final String OP_RMV_ROLE = "rmvrole";
-
-    /** User operation. */
-    static final String OP_IMPORT = "import";
-
-    /** User operation. */
-    static final String OP_EXPORT = "export";
-
-    /** HTTP Parameter. */
-    static final String FEATID = "uid";
-
-    /** HTTP Parameter. */
-    static final String ROLE = "role";
-
-    /** HTTP Parameter. */
-    static final String DESCRIPTION = "desc";
-
-    /** HTTP Parameter. */
-    static final String OPERATION = "op";
-
-    /** HTTP Parameter. */
-    static final String FLIPFILE = "flipFile";
-
-    /** Parametre. */
-    static final String START_LINK = "<a href=\"";
+public final class ConsoleRenderer implements ConsoleConstants {
 
     /** Cache for page blocks. */
     private static String modalImportFeatures = null;
@@ -84,62 +41,49 @@ public final class AdministrationConsoleRenderer {
     private static String htmlModalNewFeature = null;
 
     /** Cache for page blocks. */
-    private static String htmlNavBar = null;
+    private static String htmlHeader = null;
 
     /** Cache for page blocks. */
-    static final String HEADER = ""
-            + "<!DOCTYPE HTML \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n"
-            + "<html lang=\"en\">\n"
-            + "<head>\n"
-            + " <meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />"
-            + " <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
-            + " <title>Features Flags 4 Java</title>\n"
-            + " <link href=\"css/bootstrap.css\"    rel=\"stylesheet\">\n"
-            + " <link href=\"css/DT_bootstrap.css\" rel=\"stylesheet\">\n"
-            + " <script type=\"text/javascript\" charset=\"utf-8\" language=\"javascript\" src=\"js/jquery.js\"></script>\n"
-            + " <script type=\"text/javascript\" charset=\"utf-8\" language=\"javascript\" src=\"js/jquery.dataTables.js\"></script>\n"
-            + " <script type=\"text/javascript\" charset=\"utf-8\" language=\"javascript\" src=\"js/DT_bootstrap.js\"></script>\n"
-            + " <script src=\"js/bootstrap-transition.js\"></script>\n" + " <script src=\"js/bootstrap-alert.js\"></script>\n"
-            + " <script src=\"js/bootstrap-modal.js\"></script>\n" + " <script src=\"js/bootstrap-dropdown.js\"></script>\n"
-            + " <script src=\"js/bootstrap-scrollspy.js\"></script>\n" + " <script src=\"js/bootstrap-button.js\"></script>\n"
-            + "</head>\n" + "<body style=\"background-color:white\">";
+    private static String htmlTableHeader = null;
 
-    /** Cache for page blocks. */
-    static final String TABLE_HEADER = ""
-            + "<div class=\"container\" style=\"padding:10px\">"
-            + "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"table table-striped table-bordered table-condensed\" id=\"example\">"
-            + "<thead>"
-            + " <tr>"
-            + "<th>Feature</th>"
-            + "<th style=\"width:100px;text-align:center\">Group</th><th style=\"width:350px;text-align:center\">Description</th>"
-            + "<th style=\"width:80px;text-align:center\">Status</th>" + "<th style=\"width:20px;text-align:center\">E</th>"
-            + "<th style=\"width:20px;text-align:center\">D</th>" + "<th style=\"width:65px;text-align:center\">&nbsp;Roles</th>"
-            + "</tr>" + "</thead><tbody>";
+    /** Load CSS. */
+    private static String cssContent = null;
+
+    /** Load JS. */
+    private static String jsContent = null;
 
     /** Cache for page blocks. */
     static final String TABLE_FEATURES_FOOTER = "" + "</tbody></table></form></fieldset>";
 
+
     /**
-     * Create HTML outpu to render navigation bar.
+     * Rendering of part of the screen.
      * 
      * @param req
-     *            http servlet request
-     * @return html output
+     *            current http request
+     * @return current text part as string
      */
-    static String renderNavBar(HttpServletRequest req) {
-        if (htmlNavBar == null || htmlNavBar.isEmpty()) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("<div class=\"navbar navbar-inverse navbar-fixed-top\">\n");
-            sb.append("<div class=\"navbar-inner\">\n<div class=\"container\">\n");
-            sb.append("<span class=\"brand\">Administration FF4J</span>\n");
-            sb.append(START_LINK);
-            sb.append(req.getContextPath());
-            sb.append("\" class=\"btn btn-warning\" style=\"float:right\">");
-            sb.append("<i class=\"icon-home icon-white\"></i>&nbsp;Back to Home");
-            sb.append("</a></div></div></div></div>\n");
-            htmlNavBar = sb.toString();
+    static final String renderHeader(HttpServletRequest req) {
+        if (htmlHeader == null || htmlHeader.isEmpty()) {
+            String ctx = req.getContextPath() + req.getServletPath() + "";
+            htmlHeader = loadFileAsString(TEMPLATE_FILE);
+            htmlHeader = htmlHeader.replaceAll("\\{" + KEY_CTX + "\\}", ctx);
         }
-        return htmlNavBar;
+        return htmlHeader;
+    }
+
+    /**
+     * Rendering of part of the screen.
+     * 
+     * @param req
+     *            current http request
+     * @return current text part as string
+     */
+    static final String renderTableHeader(HttpServletRequest req) {
+        if (htmlTableHeader == null || htmlTableHeader.isEmpty()) {
+            htmlHeader = loadFileAsString(TEMPLATE_TABLE_HEADER);
+        }
+        return htmlTableHeader;
     }
 
     static String renderModalEditFlip(HttpServletRequest req) {
@@ -200,6 +144,7 @@ public final class AdministrationConsoleRenderer {
                     + "$(document).on(\"click\", \".open-AddFlipDialog\", function () {\n" + "$(\".modal-body #uid\").focus();\n"
                     + "});\n" + "</script>\n" + " <input type=\"hidden\" name=\"op\" value=\"" + OP_ADD_FEATURE + "\"  />"
                     + "</div>" + "</form>");
+            htmlModalNewFeature = sb.toString();
         }
         return htmlModalNewFeature;
     }
@@ -239,27 +184,9 @@ public final class AdministrationConsoleRenderer {
         sb.append("<p><div class=\"alert alert-" + type + "\" style=\"margin-top:25px;margin-left:15px\" >");
         sb.append("<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>");
         sb.append(message);
+        sb.append(ConsoleRenderer.class.getPackage().getImplementationVersion());
         sb.append("</div>");
         return sb.toString();
-    }
-
-    static String renderButtonsMainGroup(HttpServletRequest req) {
-        StringBuilder strBuilder = new StringBuilder("<ul class=\"nav\" style=\"margin-top:60px;margin-bottom-20px;\">");
-        strBuilder.append("<li style=\"float:right;margin-right:-10px;\">");
-        strBuilder.append("<a href=\"" + req.getContextPath());
-        strBuilder.append(req.getServletPath());
-        strBuilder.append("?op=" + OP_EXPORT + "\" class=\"btn\">");
-        strBuilder.append("<i class=\"icon-download\" style=\"margin-left:-5px;\"></i>&nbsp;Export ");
-        strBuilder.append("</a>");
-        strBuilder.append("</li><li style=\"float:right;margin-right:10px;\">"
-                + "<a data-toggle=\"modal\" href=\"#modalImportFlip\" class=\"open-ImportFlipDialog btn \" style=\"width:70px\">"
-                + "   <i class=\"icon-upload \"></i>&nbsp;Import" + "  </a>"
-                + "</li><li style=\"float:right;margin-right:10px;\">"
-                + "<a data-toggle=\"modal\" href=\"#modalAddFlip\" class=\"open-AddFlipDialog btn\"  style=\"width:100px\">"
-                + "   <i class=\"icon-plus\"></i>&nbsp;New Flipoint" + "  </a>"
-                + "</li></ul><p style=\"margin:10px;\"/>&nbsp;<br/>");
-
-        return strBuilder.toString();
     }
 
     static String renderButtonDeleteFeature(HttpServletRequest req, String uid) {
@@ -317,6 +244,17 @@ public final class AdministrationConsoleRenderer {
         return strBuilder.toString();
     }
 
+    /**
+     * Render a bootstrap button.
+     *
+     * @param req
+     * @param label
+     * @param color
+     * @param action
+     * @param pp
+     * @param icon
+     * @return
+     */
     static String renderElementButton(HttpServletRequest req, String label, String color, String action, Map<String, String> pp,
             String icon) {
         StringBuilder strBuilder = new StringBuilder("<a href=\"");
@@ -336,6 +274,58 @@ public final class AdministrationConsoleRenderer {
         }
         strBuilder.append(label);
         strBuilder.append("</a>");
+        return strBuilder.toString();
+    }
+
+    /**
+     * Load the CSS File As String.
+     *
+     * @return CSS File
+     */
+    static final String getCSS() {
+        if (null == cssContent) {
+            cssContent = loadFileAsString(CSS_FILE);
+        }
+        return cssContent;
+    }
+
+    /**
+     * Load the JS File As String.
+     *
+     * @return JS File
+     */
+    static final String getJS() {
+        if (null == jsContent) {
+            jsContent = loadFileAsString(JS_FILE);
+        }
+        return jsContent;
+    }
+
+    /**
+     * Utils method to load a file as String.
+     *
+     * @param fileName
+     *            target file Name.
+     * @return target file content as String
+     */
+    private static String loadFileAsString(String fileName) {
+        InputStream in = ConsoleRenderer.class.getClassLoader().getResourceAsStream(fileName);
+        if (in == null) {
+            throw new IllegalArgumentException("Cannot load file " + fileName + " from classpath");
+        }
+        Scanner currentScan = null;
+        StringBuilder strBuilder = new StringBuilder();
+        try {
+            currentScan = new Scanner(in, UTF8_ENCODING);
+            while (currentScan.hasNextLine()) {
+                strBuilder.append(currentScan.nextLine());
+                strBuilder.append(NEW_LINE);
+            }
+        } finally {
+            if (currentScan != null) {
+                currentScan.close();
+            }
+        }
         return strBuilder.toString();
     }
 

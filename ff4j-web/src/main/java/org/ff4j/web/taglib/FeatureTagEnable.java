@@ -19,6 +19,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.web.embedded.ConsoleConstants;
 
 /**
  * Taglib to filter display based on {@link Feature} status within {@link FeatureStore}.
@@ -34,13 +35,11 @@ import org.ff4j.core.FeatureStore;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureTagEnable extends TagSupport {
+public class FeatureTagEnable extends TagSupport implements ConsoleConstants {
 
     /** serial number. */
     private static final long serialVersionUID = -4924423673988080781L;
 
-    /** attribute name. */
-    public static final String FF4J_SESSIONATTRIBUTE_NAME = "FF4J";
 
     /** Error message constant. */
     private static final String ERROR_MSG_START = "<p><span style=\"color:red;font-weight:bold\">ERROR &lt;ff4j:*&gt; :";

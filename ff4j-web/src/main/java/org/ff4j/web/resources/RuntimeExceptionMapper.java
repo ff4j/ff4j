@@ -38,7 +38,6 @@ public class RuntimeExceptionMapper implements ExceptionMapper<RuntimeException>
     /** {@inheritdoc} */
     @Override
     public Response toResponse(RuntimeException rex) {
-        rex.printStackTrace();
         return Response.status(getStatus(rex)).entity(rex.getMessage()).type(CONTENT_TYPE).build();
     }
 

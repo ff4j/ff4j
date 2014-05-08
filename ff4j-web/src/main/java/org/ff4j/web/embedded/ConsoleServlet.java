@@ -1,4 +1,4 @@
-package org.ff4j.web;
+package org.ff4j.web.embedded;
 
 /*
  * #%L AdministrationConsoleServlet.java (ff4j-web) by Cedrick LUNVEN %% Copyright (C) 2013 Ff4J %% Licensed under the Apache
@@ -12,22 +12,9 @@ package org.ff4j.web;
  * governing permissions and limitations under the License. #L%
  */
 
-import static org.ff4j.web.AdministrationConsoleRenderer.DESCRIPTION;
-import static org.ff4j.web.AdministrationConsoleRenderer.FEATID;
-import static org.ff4j.web.AdministrationConsoleRenderer.FLIPFILE;
-import static org.ff4j.web.AdministrationConsoleRenderer.OPERATION;
-import static org.ff4j.web.AdministrationConsoleRenderer.OP_ADD_FEATURE;
-import static org.ff4j.web.AdministrationConsoleRenderer.OP_ADD_ROLE;
-import static org.ff4j.web.AdministrationConsoleRenderer.OP_DISABLE;
-import static org.ff4j.web.AdministrationConsoleRenderer.OP_EDIT_FEATURE;
-import static org.ff4j.web.AdministrationConsoleRenderer.OP_ENABLE;
-import static org.ff4j.web.AdministrationConsoleRenderer.OP_EXPORT;
-import static org.ff4j.web.AdministrationConsoleRenderer.OP_RMV_FEATURE;
-import static org.ff4j.web.AdministrationConsoleRenderer.OP_RMV_ROLE;
-import static org.ff4j.web.AdministrationConsoleRenderer.ROLE;
-import static org.ff4j.web.AdministrationConsoleRenderer.renderButtonDeleteFeature;
-import static org.ff4j.web.AdministrationConsoleRenderer.renderButtonEditFeature;
-import static org.ff4j.web.AdministrationConsoleRenderer.renderButtonUserRole;
+import static org.ff4j.web.embedded.ConsoleRenderer.renderButtonDeleteFeature;
+import static org.ff4j.web.embedded.ConsoleRenderer.renderButtonEditFeature;
+import static org.ff4j.web.embedded.ConsoleRenderer.renderButtonUserRole;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
@@ -57,7 +45,7 @@ import org.ff4j.core.FeatureXmlParser;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class AdministrationConsoleServlet extends HttpServlet {
+public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
 
     /** serial number. */
     private static final long serialVersionUID = -3982043895954284269L;
@@ -65,7 +53,44 @@ public class AdministrationConsoleServlet extends HttpServlet {
     /** Buffer size. */
     private static final int BUFFER_SIZE = 4096;
 
-    private final FF4j ff4j = null;
+    private static final String PROVIDER_PARAM_NAME = "ff4jProvider";
+
+    /** initializing ff4j provider. */
+    private ConsoleFF4JProvider ff4jProvider = null;
+    
+    /**
+     * Servlet initialization, init FF4J from "ff4jProvider" attribute Name.
+     *
+     * @param servletConfig
+     *            current {@link ServletConfig} context
+     * @throws ServletException
+     *             error during servlet initialization
+     */
+    @Override
+    public void init(ServletConfig servletConfig) throws ServletException {
+        String className = servletConfig.getInitParameter(PROVIDER_PARAM_NAME);
+        try {
+            Class<?> c = Class.forName(className);
+            Object o = c.newInstance();
+            ff4jProvider = (ConsoleFF4JProvider) o;
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException(
+                    "Cannot load ff4jProvider within 'EmbeddedConsoleServlet' check 'ff4jProvider' param value", e);
+        } catch (InstantiationException e) {
+            throw new IllegalArgumentException(
+                    "Cannot instancitate ff4jProvider within 'EmbeddedConsoleServlet' check 'ff4jProvider' param value", e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException(
+                    "Cannot instancitate ff4jProvider within 'EmbeddedConsoleServlet' check 'ff4jProvider' no public constructor ?",
+                    e);
+        } catch (ClassCastException ce) {
+            throw new IllegalArgumentException(
+                    "Invalid 'ff4jProvider' in 'EmbeddedConsoleServlet' not instance of 'EmbeddedConsoleFF4JProvider'", ce);
+        }
+        
+        // Put the FF4J in ApplicationScope (useful for tags)
+        servletConfig.getServletContext().setAttribute(FF4J_SESSIONATTRIBUTE_NAME, ff4jProvider.getFF4j());
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -103,14 +128,24 @@ public class AdministrationConsoleServlet extends HttpServlet {
                     opRemoveRoleFromFeature(req);
                     message = "Role <b>" + req.getParameter(ROLE) + "</b> has been successfully removed from flipPoint <b>"
                             + req.getParameter(FEATID) + " </b>";
+                } else if (OP_GETCSS.equalsIgnoreCase(operation)) {
+                    res.setContentType(CONTENT_TYPE_CSS);
+                    res.getWriter().println(ConsoleRenderer.getCSS());
+                    return;
+                } else if (OP_GETJS.equalsIgnoreCase(operation)) {
+                    res.setContentType(CONTENT_TYPE_JS);
+                    res.getWriter().println(ConsoleRenderer.getJS());
+                    return;
                 } else if (OP_EXPORT.equalsIgnoreCase(operation)) {
                     buildResponseForExportFeature(res);
                 }
             }
         } catch (Exception e) {
+            // Any Error is trapped and display in the console
             messagetype = "error";
             message = e.getMessage();
         }
+        // Default page rendering (table)
         renderPage(req, res, message, messagetype);
     }
 
@@ -205,16 +240,23 @@ public class AdministrationConsoleServlet extends HttpServlet {
      */
     private void renderPage(HttpServletRequest req, HttpServletResponse res, String message, String messagetype)
             throws IOException {
-        // Render PAGE
-        res.setContentType("text/html");
+        res.setContentType(CONTENT_TYPE_HTML);
         PrintWriter out = res.getWriter();
-        out.println(AdministrationConsoleRenderer.HEADER);
-        out.println(AdministrationConsoleRenderer.renderNavBar(req));
-        out.println("<div class=\"container\">");
-        out.print(renderSectionFeatures(req, message, messagetype));
-        out.println(AdministrationConsoleRenderer.renderModalEditFlip(req));
-        out.println(AdministrationConsoleRenderer.renderModalNewFlipPoint(req));
-        out.println(AdministrationConsoleRenderer.renderModalImportFlipPoints(req));
+
+        // Header of the page
+        out.println(ConsoleRenderer.renderHeader(req));
+
+        // Display Message box
+        if (message != null && !message.isEmpty()) {
+            out.println(ConsoleRenderer.renderMessageBox(message, messagetype));
+        }
+        // Group of button
+        out.println(renderSectionFeatures(req));
+
+        // Modals
+        out.println(ConsoleRenderer.renderModalEditFlip(req));
+        out.println(ConsoleRenderer.renderModalNewFlipPoint(req));
+        out.println(ConsoleRenderer.renderModalImportFlipPoints(req));
         out.println("</body>");
         out.println("</html>");
     }
@@ -339,16 +381,15 @@ public class AdministrationConsoleServlet extends HttpServlet {
      *            http request containing parameters
      * @return HTML text output
      */
-    private String renderSectionFeatures(HttpServletRequest req, String message, String type) {
+    private String renderSectionFeatures(HttpServletRequest req) {
+        StringBuilder strB = new StringBuilder();
+        // Information Message
+
+        strB.append(ConsoleRenderer.renderTableHeader(req));
         Map<String, Feature> mapOfFlipPoints = new LinkedHashMap<String, Feature>();
         if (getFf4j().getFeatures() != null && !getFf4j().getFeatures().isEmpty()) {
             mapOfFlipPoints.putAll(getFf4j().getFeatures());
         }
-        StringBuilder strB = new StringBuilder(AdministrationConsoleRenderer.renderButtonsMainGroup(req));
-        if (message != null && !message.isEmpty()) {
-            strB.append(AdministrationConsoleRenderer.renderMessageBox(message, type));
-        }
-        strB.append(AdministrationConsoleRenderer.TABLE_HEADER);
         for (Feature fp : mapOfFlipPoints.values()) {
             strB.append("<tr>");
             strB.append("<td style=\"width:150px;font-weight:bold\">" + fp.getUid() + "</td>");
@@ -367,9 +408,9 @@ public class AdministrationConsoleServlet extends HttpServlet {
             Map<String, String> mapP = new LinkedHashMap<String, String>();
             mapP.put("uid", fp.getUid());
             if (fp.isEnable()) {
-                strB.append(AdministrationConsoleRenderer.renderElementButton(req, "Enabled", "success", "disable", mapP, null));
+                strB.append(ConsoleRenderer.renderElementButton(req, "Enabled", "success", "disable", mapP, null));
             } else {
-                strB.append(AdministrationConsoleRenderer.renderElementButton(req, "Disabled", "danger", "enable", mapP, null));
+                strB.append(ConsoleRenderer.renderElementButton(req, "Disabled", "danger", "enable", mapP, null));
             }
             strB.append("</td>");
             strB.append("<td style=\"width:20px;\">" + renderButtonEditFeature(getFf4j(), req, fp.getUid()) + "</td>");
@@ -383,7 +424,7 @@ public class AdministrationConsoleServlet extends HttpServlet {
             strB.append("</td>");
             strB.append("</tr>");
         }
-        strB.append(MessageFormat.format(AdministrationConsoleRenderer.TABLE_FEATURES_FOOTER,
+        strB.append(MessageFormat.format(ConsoleRenderer.TABLE_FEATURES_FOOTER,
                 req.getContextPath() + req.getServletPath()));
 
         return strB.toString();
@@ -395,10 +436,7 @@ public class AdministrationConsoleServlet extends HttpServlet {
      * @return current value of 'ff4j'
      */
     public FF4j getFf4j() {
-        if (ff4j == null) {
-            // ff4j = WebApplicationContextUtils.getWebApplicationContext(getServletContext()).getBean(FF4j.class);
-        }
-        return ff4j;
+        return ff4jProvider.getFF4j();
     }
 
 }

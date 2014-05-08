@@ -27,6 +27,7 @@ import junit.framework.Assert;
 
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.utils.FeatureJsonMarshaller;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.ClientResponse;
@@ -43,6 +44,7 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
+    @Ignore
     public void testGet() {
         // Given
         Assert.assertTrue(ff4j.getStore() instanceof InMemoryFeatureStore);

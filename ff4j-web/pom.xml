@@ -26,7 +26,7 @@
 	</properties>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~ DEPENDENCIES             ~ -->
+	<!-- ~ DEPENDENCIES ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<dependencies>
 
@@ -36,7 +36,7 @@
 			<groupId>org.ff4j</groupId>
 			<version>${project.version}</version>
 		</dependency>
-		
+
 		<!-- web -->
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -74,7 +74,7 @@
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-client</artifactId>
 		</dependency>
-		
+
 		<!-- Tests -->
 		<dependency>
 			<artifactId>ff4j-test</artifactId>
@@ -102,7 +102,7 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<scope>test</scope>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
@@ -118,30 +118,19 @@
 			<artifactId>jackson-mapper-asl</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<!-- test-it -->
 		<dependency>
-      		<groupId>com.sun.jersey.jersey-test-framework</groupId>
-      		<artifactId>jersey-test-framework-inmemory</artifactId>
-      		<scope>test</scope>
-    	</dependency>
-    	<dependency>
-      		<groupId>com.sun.jersey.jersey-test-framework</groupId>
-      		<artifactId>jersey-test-framework-grizzly2</artifactId>
-      		<scope>test</scope>
-    	</dependency>
+			<groupId>com.sun.jersey.jersey-test-framework</groupId>
+			<artifactId>jersey-test-framework-inmemory</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey.jersey-test-framework</groupId>
+			<artifactId>jersey-test-framework-grizzly2</artifactId>
+			<scope>test</scope>
+		</dependency>
 
-
-    	<dependency>
-    		<groupId>org.springframework.boot</groupId>
-    		<artifactId>spring-boot-starter-aop</artifactId>
-    		<version>1.0.0.RELEASE</version>
-    	</dependency>
-    	<dependency>
-    		<groupId>org.springframework.boot</groupId>
-    		<artifactId>spring-boot-starter-remote-shell</artifactId>
-    		<version>1.0.0.RELEASE</version>
-    	</dependency>
-	</dependencies>	
+	</dependencies>
 
 </project>
