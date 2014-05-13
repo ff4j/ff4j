@@ -16,16 +16,16 @@ agile development practice. It allows you to  enable and disable features throug
   <br/><i>Capabilities of the framework</i>
 </p>
 
-### Developement Guide
+### Getting Started
 
 <p/><b>PART I - CORE</b>
-<br/>1.1 - [Getting Started](#first-contact)
+<br/>1.1 - [Hello World](#hello-world)
 <br/>1.2 - [Integration with Spring Framework](#spring)
 <br/>1.3 - [Feature Flipping through AOP](#aop)
 
 <p/><b>PART II - FEATURE STORES</b>
 <br/>2.1 - [Introducing stores](#stores)
-<br/>2.2 - [Externalise features in a JDBC Store](#store-jdbc)
+<br/>2.2 - [Store features in a RDBMS](#store-jdbc)
 <br/>2.3 - [Externalise features in a HTTP Store](#store-http)
 <br/>2.4 - [Externalise features in a MONGODB Store](#store-mongo)
 
@@ -52,8 +52,8 @@ agile development practice. It allows you to  enable and disable features throug
 
 ## PART I - CORE
 
-<a name="first-contact"/>
-### 1.1 - Getting started
+<a name="hello-world"/>
+### 1.1 - Hello world
 ***
 
 In this part we guide you to create a working example from scratch
@@ -128,7 +128,17 @@ If a feature does not exist, the method `isFlipped(..)` will raise a `FeatureNot
   public void autoCreateFeatureEnableTest() {
 
     // Default : store = inMemory, load features from ff4j.xml file
-    FF4j ff4j = new FF4j("ff4j.xml").autoCreate(true);
+    FF4j ff4j = new FF4j("ff4j.xml");
+    
+    try {
+    	ff4j.isFlipped("autoCreatedFeature");
+    	fail(); // error is Expected here
+    } catch(FeatureNotFoundException fnfe) {
+    	System.out.println("Standard behaviour");
+    }
+    
+    // Change default behavior
+    ff4j.autoCreate(true);
 
     if (!ff4j.isFlipped("autoCreatedFeature")) {
       System.out.println("Not available but code won't failed");
