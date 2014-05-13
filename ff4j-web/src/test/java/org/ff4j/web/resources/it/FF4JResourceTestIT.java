@@ -27,7 +27,6 @@ import junit.framework.Assert;
 
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.utils.FeatureJsonMarshaller;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.ClientResponse;
@@ -44,7 +43,6 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    @Ignore
     public void testGet() {
         // Given
         Assert.assertTrue(ff4j.getStore() instanceof InMemoryFeatureStore);
@@ -55,7 +53,7 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
         Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
         Assert.assertNotNull(resEntity);
         // Then, Entity Object
-        Assert.assertTrue(resEntity.contains(InMemoryFeatureStore.class.getCanonicalName()));
+        Assert.assertTrue(resEntity.contains("uptime"));
     }
 
     /**
@@ -164,8 +162,8 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
     @Test
     public void testPost_isFlippedWithCustomStrategy() {
         // Given
-        assertFF4J.assertThatFeatureExist(F4);
         assertFF4J.assertThatFeatureNotFlipped(F4);
+        assertFF4J.assertThatFeatureExist(F4);
         // When
         MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
         formData.add(POST_PARAMNAME_FEATURE_UID, F4);
