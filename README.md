@@ -1,5 +1,3 @@
-
-## Feature Flipping for Java
 <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/ff4j.png?raw=true" alt="functions"/>
 
 ## Feature Flipping for Java
@@ -7,9 +5,12 @@
 FF4J, standing as Feature Flipping for Java, implements the [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html) 
 agile development practice. It allows you to  enable and disable features through configuration at runtime with dedicated consoles and services.
 
-* Official Website  : [ff4j.org](http://ff4j.org)
+* [![Build Status](https://travis-ci.org/clun/ff4j.svg?branch=master)](https://travis-ci.org/clun/ff4j)
+
+
+* Official Website  : [<img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/ff4j.png?raw=true" alt="functions"/height="20px">](http://ff4j.org)
 * Maven Central     : [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.ff4j/ff4j-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.ff4j/ff4j-core/)
-* Build Status      : [![Build Status](https://travis-ci.org/clun/ff4j.svg?branch=master)](https://travis-ci.org/clun/ff4j)
+* License     : ![License Apache2](https://go-shields.herokuapp.com/license-apache2-blue.png)
 
 <p align="center">
   <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/stack1.png?raw=true" alt="functions"/>
