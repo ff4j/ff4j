@@ -24,11 +24,12 @@ import java.util.Calendar;
 import java.util.Map;
 
 import org.ff4j.core.FeatureStore;
-import org.ff4j.core.FlipStrategy;
+import org.ff4j.core.FlippingExecutionContext;
+import org.ff4j.core.FlippingStrategy;
 import org.ff4j.strategy.AbstractFlipStrategy;
 
 /**
- * Sample custom {@link FlipStrategy} for testing purposes.
+ * Sample custom {@link FlippingStrategy} for testing purposes.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
@@ -50,7 +51,7 @@ public class OfficeHoursFlippingStrategy extends AbstractFlipStrategy {
 
     /** {@inheritDoc} */
     @Override
-    public boolean activate(String featureName, FeatureStore cuurentStore, Object... executionContext) {
+    public boolean evaluate(String featureName, FeatureStore cuurentStore, FlippingExecutionContext executionContext) {
         int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         return (currentHour >= start && currentHour < end);
     }

@@ -32,7 +32,8 @@ import org.ff4j.audit.InMemoryEventRepository;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FeatureXmlParser;
-import org.ff4j.core.FlipStrategy;
+import org.ff4j.core.FlippingExecutionContext;
+import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.security.AuthorizationsManager;
 import org.ff4j.store.InMemoryFeatureStore;
@@ -109,7 +110,20 @@ public class FF4j {
      *            current execution context
      * @return current feature status
      */
-    public boolean isFlipped(String featureID, Object... executionContext) {
+    public boolean check(String featureID) {
+        return check(featureID, null);
+    }
+
+    /**
+     * Elegant way to ask for flipping.
+     * 
+     * @param featureID
+     *            feature unique identifier.
+     * @param executionContext
+     *            current execution context
+     * @return current feature status
+     */
+    public boolean check(String featureID, FlippingExecutionContext executionContext) {
         Feature fp = getFeature(featureID);
         boolean flipped = fp.isEnable();
 
@@ -120,7 +134,7 @@ public class FF4j {
 
         // If custom strategy has been defined, delegate flipping to
         if (flipped && fp.getFlippingStrategy() != null) {
-            flipped = flipped && fp.getFlippingStrategy().activate(featureID, getStore(), executionContext);
+            flipped = flipped && fp.getFlippingStrategy().evaluate(featureID, getStore(), executionContext);
         }
 
         // Any modification done is logged into audit system
@@ -138,11 +152,24 @@ public class FF4j {
      *            current execution context
      * @return
      */
-    public boolean isFlipped(String featureID, FlipStrategy strats, Object... executionContext) {
+    public boolean checkOveridingStrategy(String featureID, FlippingStrategy strats) {
+        return checkOveridingStrategy(featureID, strats, null);
+    }
+
+    /**
+     * Overriding strategy on feature.
+     * 
+     * @param featureID
+     *            feature unique identifier.
+     * @param executionContext
+     *            current execution context
+     * @return
+     */
+    public boolean checkOveridingStrategy(String featureID, FlippingStrategy strats, FlippingExecutionContext executionContext) {
         Feature fp = getFeature(featureID);
         boolean flipped = fp.isEnable() && isAllowed(fp);
         if (strats != null) {
-            flipped = flipped && strats.activate(featureID, getStore(), executionContext);
+            flipped = flipped && strats.evaluate(featureID, getStore(), executionContext);
         }
 
         // Any modification done is logged into audit system

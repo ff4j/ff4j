@@ -24,7 +24,7 @@ import javax.sql.DataSource;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.core.FlipStrategy;
+import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
@@ -155,7 +155,7 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
         String strategy = rs.getString(COL_FEAT_STRATEGY);
         if (strategy != null && !"".equals(strategy)) {
             try {
-                FlipStrategy flipStrategy = (FlipStrategy) Class.forName(strategy).newInstance();
+                FlippingStrategy flipStrategy = (FlippingStrategy) Class.forName(strategy).newInstance();
                 flipStrategy.init(featUid, ParameterUtils.toMap(rs.getString(COL_FEAT_EXPRESSION)));
                 f.setFlippingStrategy(flipStrategy);
             } catch (InstantiationException ie) {

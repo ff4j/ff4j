@@ -40,13 +40,6 @@ public @interface Flip {
     String name();
 
     /**
-     * If FlipStrategy has been provided
-     * 
-     * @return current lip strategy value
-     */
-    String expression() default "";
-
-    /**
      * Overriding Fliping Strategy.
      * 
      * @return target Flipping Strategy

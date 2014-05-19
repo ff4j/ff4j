@@ -63,7 +63,7 @@ public class Feature implements Serializable {
     private Set<String> authorizations = new TreeSet<String>();
 
     /** Custom behaviour to define if feature if enable or not e.g. A/B Testing capabilities. */
-    private FlipStrategy flippingStrategy;
+    private FlippingStrategy flippingStrategy;
 
     /**
      * Simplest constructor initializing feature to disable.
@@ -156,7 +156,7 @@ public class Feature implements Serializable {
      *            limited roles to use the feature even if enabled
      */
     public Feature(final String uid, final boolean penable, final String pdescription, final String group,
-            final Collection<String> auths, final FlipStrategy strat) {
+            final Collection<String> auths, final FlippingStrategy strat) {
         this(uid, penable, pdescription, group, auths);
         if (strat != null) {
             this.flippingStrategy = strat;
@@ -271,7 +271,7 @@ public class Feature implements Serializable {
      *
      * @return current value of 'flippingStrategy'
      */
-    public FlipStrategy getFlippingStrategy() {
+    public FlippingStrategy getFlippingStrategy() {
         return flippingStrategy;
     }
 
@@ -281,7 +281,7 @@ public class Feature implements Serializable {
      * @param flippingStrategy
      *            new value for 'flippingStrategy '
      */
-    public void setFlippingStrategy(FlipStrategy flippingStrategy) {
+    public void setFlippingStrategy(FlippingStrategy flippingStrategy) {
         this.flippingStrategy = flippingStrategy;
     }
 

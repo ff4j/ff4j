@@ -18,7 +18,7 @@ import junit.framework.Assert;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
-import org.ff4j.strategy.PonderationFlipStrategy;
+import org.ff4j.strategy.PonderationStrategy;
 import org.junit.Test;
 
 /**
@@ -39,7 +39,7 @@ public class InMemoryStoreTest extends AbstractStoreTest {
     @Test
     public void testUnitFeatureInitialization() {
         InMemoryFeatureStore imfs = new InMemoryFeatureStore();
-        imfs.create(new Feature("default", true, "grp1", "desc", null, new PonderationFlipStrategy()));
+        imfs.create(new Feature("default", true, "grp1", "desc", null, new PonderationStrategy()));
         Assert.assertEquals(1, imfs.readAll().size());
     }
 

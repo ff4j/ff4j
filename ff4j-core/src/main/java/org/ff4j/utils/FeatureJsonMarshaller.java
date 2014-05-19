@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.ff4j.core.Feature;
-import org.ff4j.core.FlipStrategy;
+import org.ff4j.core.FlippingStrategy;
 
 /**
  * Utility class to produce JSON.
@@ -185,17 +185,17 @@ public final class FeatureJsonMarshaller {
      *            flipstrategy as a string
      * @return flip strategy as an object
      */
-    public static FlipStrategy parseFlipStrategy(String featureName, String str) {
+    public static FlippingStrategy parseFlipStrategy(String featureName, String str) {
         if ("null".equals(str)) {
             return null;
         }
 
-        FlipStrategy strategy = null;
+        FlippingStrategy strategy = null;
         String expected = str.substring(1, str.length() - 1);
         String classType = expected.substring(expected.lastIndexOf(":") + 1).replaceAll("\"", "");
 
         try {
-            strategy = (FlipStrategy) Class.forName(classType).newInstance();
+            strategy = (FlippingStrategy) Class.forName(classType).newInstance();
         } catch (InstantiationException e) {
             throw new IllegalArgumentException(classType + " does not seems to have a DEFAULT constructor", e);
         } catch (IllegalAccessException e) {
@@ -226,13 +226,13 @@ public final class FeatureJsonMarshaller {
     }
 
     /**
-     * Render {@link FlipStrategy} as a Json string.
+     * Render {@link FlippingStrategy} as a Json string.
      * 
      * @param strat
      *            flipping strategy
      * @return json string
      */
-    public static String renderFlippingStrategy(FlipStrategy strat) {
+    public static String renderFlippingStrategy(FlippingStrategy strat) {
         StringBuilder jsonOutput = new StringBuilder(",\"flippingStrategy\":");
         if (strat == null) {
             jsonOutput.append(NULL_JSON);

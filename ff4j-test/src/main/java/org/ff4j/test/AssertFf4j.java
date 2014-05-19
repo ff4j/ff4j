@@ -77,7 +77,7 @@ public class AssertFf4j {
      */
     public final AssertFf4j assertThatFeatureFlipped(String featureName) {
         assertThatFeatureExist(featureName);
-        Assert.assertTrue("'" + featureName + "' is not flipped where it should", ff4j.isFlipped(featureName));
+        Assert.assertTrue("'" + featureName + "' is not flipped where it should", ff4j.check(featureName));
         return this;
     }
 
@@ -90,7 +90,7 @@ public class AssertFf4j {
      */
     public final AssertFf4j assertThatFeatureNotFlipped(String featureName) {
         assertThatFeatureExist(featureName);
-        Assert.assertFalse("'" + featureName + "' is flipped where it shouldn't", ff4j.isFlipped(featureName));
+        Assert.assertFalse("'" + featureName + "' is flipped where it shouldn't", ff4j.check(featureName));
         return this;
     }
 

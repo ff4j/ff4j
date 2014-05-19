@@ -81,7 +81,7 @@ public class FeatureTagEnable extends TagSupport implements ConsoleConstants {
             }
 
             // Everytihing is OK
-            if (ff4j.isFlipped(getFeatureid())) {
+            if (ff4j.check(getFeatureid())) {
                 return EVAL_BODY_INCLUDE;
             }
         } catch (IOException ioe) {

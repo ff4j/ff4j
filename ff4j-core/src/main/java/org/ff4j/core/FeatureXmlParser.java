@@ -214,9 +214,9 @@ public class FeatureXmlParser {
      *            current feature uid
      * @return flipstrategy related to current feature.
      */
-    private FlipStrategy parseFlipStrategy(Element flipStrategyTag, String uid) {
+    private FlippingStrategy parseFlipStrategy(Element flipStrategyTag, String uid) {
         NamedNodeMap nnm = flipStrategyTag.getAttributes();
-        FlipStrategy flipStrategy = null;
+        FlippingStrategy flipStrategy = null;
         if (nnm.getNamedItem(FLIPSTRATEGY_ATTCLASS) == null) {
             throw new IllegalArgumentException("Error syntax in configuration file : '" + FLIPSTRATEGY_ATTCLASS
                     + "' is required for each flipstrategy (feature=" + uid + ")");
@@ -225,7 +225,7 @@ public class FeatureXmlParser {
         try {
             // Attribute CLASS
             String clazzName = nnm.getNamedItem(FLIPSTRATEGY_ATTCLASS).getNodeValue();
-            flipStrategy = (FlipStrategy) Class.forName(clazzName).newInstance();
+            flipStrategy = (FlippingStrategy) Class.forName(clazzName).newInstance();
 
             // LIST OF PARAMS
             Map<String, String> parameters = new LinkedHashMap<String, String>();

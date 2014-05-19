@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.ff4j.core.Feature;
-import org.ff4j.strategy.PonderationFlipStrategy;
+import org.ff4j.strategy.PonderationStrategy;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -54,7 +54,7 @@ public class FeatureTest {
     @Test
     public void testFullToStringImpl() {
         List<String> auths = Arrays.asList(new String[] {"something"});
-        Feature f = new Feature("ok", true, "grp1", "description", auths, new PonderationFlipStrategy());
+        Feature f = new Feature("ok", true, "grp1", "description", auths, new PonderationStrategy());
         Assert.assertTrue(f.toString().contains("ok"));
     }
 
@@ -64,7 +64,7 @@ public class FeatureTest {
         empty.setUid("abc");
 
         // Flipping strategy
-        empty.setFlippingStrategy(new PonderationFlipStrategy());
+        empty.setFlippingStrategy(new PonderationStrategy());
         Assert.assertNotNull(empty.getFlippingStrategy());
 
         // Authorization filling

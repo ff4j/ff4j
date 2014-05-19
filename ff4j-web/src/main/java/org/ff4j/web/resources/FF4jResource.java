@@ -36,7 +36,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.ff4j.FF4j;
-import org.ff4j.core.FlipStrategy;
+import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.utils.FeatureJsonMarshaller;
 import org.ff4j.web.api.FF4jWebApiConstants;
@@ -127,10 +127,10 @@ public class FF4jResource implements FF4jWebApiConstants {
         // If specific strategy is defined
         boolean flipped = false;
         if (formParams.containsKey(POST_PARAMNAME_FLIPSTRATEGY)) {
-            FlipStrategy fs = FeatureJsonMarshaller.parseFlipStrategy(uid, formParams.getFirst(POST_PARAMNAME_FLIPSTRATEGY));
-            flipped = ff4j.isFlipped(uid, fs, executionContext.toArray(new Object[0]));
+            FlippingStrategy fs = FeatureJsonMarshaller.parseFlipStrategy(uid, formParams.getFirst(POST_PARAMNAME_FLIPSTRATEGY));
+            flipped = ff4j.checkOveridingStrategy(uid, fs);
         } else {
-            flipped = ff4j.isFlipped(uid, executionContext.toArray(new Object[0]));
+            flipped = ff4j.check(uid);
         }
         return Response.ok(String.valueOf(flipped)).build();
     }

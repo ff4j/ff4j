@@ -24,7 +24,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.ff4j.core.Feature;
-import org.ff4j.core.FlipStrategy;
+import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.store.JdbcFeatureStoreConstants;
 import org.ff4j.utils.ParameterUtils;
@@ -49,7 +49,7 @@ public class FeatureRowMapper implements ParameterizedRowMapper<Feature>, JdbcFe
         String strategy = rs.getString(COL_FEAT_STRATEGY);
         if (strategy != null && !"".equals(strategy)) {
             try {
-                FlipStrategy flipStrategy = (FlipStrategy) Class.forName(strategy).newInstance();
+                FlippingStrategy flipStrategy = (FlippingStrategy) Class.forName(strategy).newInstance();
                 flipStrategy.init(featUid, ParameterUtils.toMap(rs.getString(COL_FEAT_EXPRESSION)));
                 f.setFlippingStrategy(flipStrategy);
             } catch (InstantiationException ie) {

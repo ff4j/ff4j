@@ -42,7 +42,7 @@ public class GettingStartedCode {
 
         // ff4j initialization.....
 
-        if (ff4j.isFlipped("sayHello")) {
+        if (ff4j.check("sayHello")) {
             // Enhanced Behaviour
             System.out.println("Hello World !");
         } else {
@@ -57,20 +57,20 @@ public class GettingStartedCode {
         FF4j ff4j = new FF4j("ff4j.xml");
 
         // Work with it
-        if (ff4j.isFlipped("AwesomeFeature")) {
+        if (ff4j.check("AwesomeFeature")) {
             // System.out.println("Hello the feature is enabled");
         }
 
         // Its does not exist
         try {
-            if (ff4j.isFlipped("do-not-exit")) {}
+            if (ff4j.check("do-not-exit")) {}
         } catch (FeatureNotFoundException fnfe) {
             // System.out.println(fnfe.getMessage());
         }
 
         ff4j.autoCreate(true);
         // no more exception but returning false
-        if (ff4j.isFlipped("do-not-exit")) {}
+        if (ff4j.check("do-not-exit")) {}
 
     }
 

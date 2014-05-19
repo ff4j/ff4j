@@ -23,13 +23,14 @@ package org.ff4j.strategy;
 import java.util.Map;
 
 import org.ff4j.core.FeatureStore;
+import org.ff4j.core.FlippingExecutionContext;
 
 /**
  * This strategy will flip feature as soon as the release date is reached.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class PonderationFlipStrategy extends AbstractFlipStrategy {
+public class PonderationStrategy extends AbstractFlipStrategy {
 
     /** Return equiprobability as 50%. */
     private static final double HALF = 0.5;
@@ -43,7 +44,7 @@ public class PonderationFlipStrategy extends AbstractFlipStrategy {
     /**
      * Default Constructor.
      */
-    public PonderationFlipStrategy() {}
+    public PonderationStrategy() {}
 
     /**
      * Parameterized constructor.
@@ -51,7 +52,7 @@ public class PonderationFlipStrategy extends AbstractFlipStrategy {
      * @param threshold
      *            threshold
      */
-    public PonderationFlipStrategy(double threshold) {
+    public PonderationStrategy(double threshold) {
         this.weight = threshold;
         checkWeight();
         getInitParams().put(PARAM_WEIGHT, String.valueOf(threshold));
@@ -69,7 +70,7 @@ public class PonderationFlipStrategy extends AbstractFlipStrategy {
 
     /** {@inheritDoc} */
     @Override
-    public boolean activate(String featureName, FeatureStore currentStore, Object... executionContext) {
+    public boolean evaluate(String featureName, FeatureStore currentStore, FlippingExecutionContext executionContext) {
         return Math.random() <= weight;
     }
 

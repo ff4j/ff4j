@@ -12,6 +12,7 @@ package org.ff4j.test.strategy.el;
  */
 
 import org.ff4j.FF4j;
+import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.strategy.el.ExpressionFlipStrategy;
 import org.junit.Assert;
 import org.junit.Test;
@@ -31,31 +32,36 @@ public class ExpressionFlipStategyTest {
         Assert.assertNotNull(ff4j.getFeature("D"));
         Assert.assertNotNull(ff4j.getFeature("D").getFlippingStrategy());
         Assert.assertNotNull(ff4j.getFeature("D").getFlippingStrategy().getInitParams());
-        boolean dFlipped = ff4j.isFlipped("D");
+        boolean dFlipped = ff4j.check("D");
         Assert.assertTrue(dFlipped);
     }
     
     @Test
     public void testEnableC() {
         ff4j.enable("C");
-        boolean dFlipped = ff4j.isFlipped("D");
+        boolean dFlipped = ff4j.check("D");
         Assert.assertFalse(dFlipped);
     }
 
     @Test
     public void testEnableB() {
         ff4j.enable("B");
-        boolean dFlipped = ff4j.isFlipped("D");
+        boolean dFlipped = ff4j.check("D");
         Assert.assertTrue(dFlipped);
     }
 
     @Test
-    public void testExplicitActivate() {
+    public void testExplicitevaluate() {
         ExpressionFlipStrategy efs = new ExpressionFlipStrategy();
-        Assert.assertTrue(efs.activate("D", ff4j.getStore(), (Object[]) null));
-        Assert.assertTrue(efs.activate("TOTO", ff4j.getStore(), (Object[]) null));
-        Assert.assertTrue(efs.activate("D", ff4j.getStore(), "D"));
-        Assert.assertFalse(efs.activate("D", ff4j.getStore(), "TOTO"));
+        Assert.assertTrue(efs.evaluate("D", ff4j.getStore(), null));
+        Assert.assertTrue(efs.evaluate("TOTO", ff4j.getStore(), null));
+
+        FlippingExecutionContext fex = new FlippingExecutionContext();
+        fex.putString(ExpressionFlipStrategy.PARAM_EXPRESSION, "D");
+        Assert.assertTrue(efs.evaluate("D", ff4j.getStore(), fex));
+
+        fex.putString(ExpressionFlipStrategy.PARAM_EXPRESSION, "TOTO");
+        Assert.assertFalse(efs.evaluate("D", ff4j.getStore(), fex));
     }
 
 }

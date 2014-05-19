@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.strategy.AbstractFlipStrategy;
 
 /**
@@ -28,7 +29,7 @@ import org.ff4j.strategy.AbstractFlipStrategy;
 public class ExpressionFlipStrategy extends AbstractFlipStrategy {
 
     /** Expected parameter. */
-    private static String PARAM_EXPRESSION = "expression";
+    public static String PARAM_EXPRESSION = "expression";
 
     /** Cached init value. */
     private static Map<String, String> mapOfValue = new HashMap<String, String>();
@@ -51,8 +52,8 @@ public class ExpressionFlipStrategy extends AbstractFlipStrategy {
 
     /** {@inheritDoc} */
     @Override
-    public boolean activate(String featureName, FeatureStore currentStore, Object... executionContext) {
-        if (executionContext == null || executionContext.length == 0) {
+    public boolean evaluate(String featureName, FeatureStore currentStore, FlippingExecutionContext executionContext) {
+        if (executionContext == null || !executionContext.isKeyExist(PARAM_EXPRESSION)) {
             // Wait, you define an expression strategy but do not set EXPRESSION
             if (mapOfValue.containsKey(featureName)) {
                 String expression = mapOfValue.get(featureName);
@@ -63,7 +64,7 @@ public class ExpressionFlipStrategy extends AbstractFlipStrategy {
             }
             return true;
         } else {
-            String expression = (String) executionContext[0];
+            String expression = executionContext.getString(PARAM_EXPRESSION);
             cachedExpression.put(expression, ExpressionParser.parseExpression(expression));
             return cachedExpression.get(expression).evalue(getFeaturesStatus(currentStore));
         }

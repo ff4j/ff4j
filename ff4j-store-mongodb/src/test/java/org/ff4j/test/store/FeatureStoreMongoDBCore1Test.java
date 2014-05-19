@@ -11,16 +11,16 @@ package org.ff4j.test.store;
  * governing permissions and limitations under the License. #L%
  */
 
-import com.github.fakemongo.junit.FongoRule;
+import java.util.Arrays;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.core.FlipStrategy;
+import org.ff4j.core.FlippingStrategy;
 import org.ff4j.store.FeatureStoreMongoDB;
 import org.ff4j.utils.ParameterUtils;
 import org.junit.Rule;
 
-import java.util.Arrays;
+import com.github.fakemongo.junit.FongoRule;
 
 public class FeatureStoreMongoDBCore1Test extends AbstractStoreJUnitTest {
 
@@ -41,7 +41,7 @@ public class FeatureStoreMongoDBCore1Test extends AbstractStoreJUnitTest {
         // Third
         storeMongoDB.create(new Feature("third", false, "ThirdJDBC", "GRP1", Arrays.asList("ADMINISTRATOR", "BETA-TESTER")));
         // Forth ?? Fourth ?
-        FlipStrategy strategy = new org.ff4j.strategy.el.ExpressionFlipStrategy();
+        FlippingStrategy strategy = new org.ff4j.strategy.el.ExpressionFlipStrategy();
         strategy.init("forth", ParameterUtils.toMap("expression=third|second"));
         storeMongoDB.create(new Feature("forth", true, "ForthJDBC", "GRP1", Arrays.asList("ADMINISTRATOR", "BETA-TESTER"),
                 strategy));

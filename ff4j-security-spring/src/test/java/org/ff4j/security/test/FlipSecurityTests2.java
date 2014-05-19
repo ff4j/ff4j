@@ -78,10 +78,10 @@ public class FlipSecurityTests2 {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Assert.assertTrue(auth.isAuthenticated());
         // autorized because role ROLE_USER
-        Assert.assertTrue(ff4j.isFlipped("first"));
+        Assert.assertTrue(ff4j.check("first"));
 
         // not autorized because bad credential
-        Assert.assertFalse(ff4j.isFlipped("third"));
+        Assert.assertFalse(ff4j.check("third"));
 
     }
 

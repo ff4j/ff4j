@@ -27,7 +27,7 @@ import java.util.Map;
  * 
  * @author clunven
  */
-public interface FlipStrategy {
+public interface FlippingStrategy {
 
     /**
      * Allow to parameterized Flipping Strategy
@@ -55,6 +55,6 @@ public interface FlipStrategy {
      *            custom params to make decision
      * @return if flipping should be performed
      */
-    boolean activate(String featureName, FeatureStore store, Object... executionContext);
+    boolean evaluate(String featureName, FeatureStore store, FlippingExecutionContext executionContext);
 
 }

@@ -24,12 +24,12 @@
 
 	<!-- No Expression -->
 	<feature uid="pond_Null" enable="true" description="some desc">
-		<flipstrategy class="org.ff4j.strategy.PonderationFlipStrategy" />
+		<flipstrategy class="org.ff4j.strategy.PonderationStrategy" />
 	</feature>
 
 	<!-- Ponderation to 0 -->
 	<feature uid="pond_0"  enable="true" description="some desc">
-		<flipstrategy class="org.ff4j.strategy.PonderationFlipStrategy" >
+		<flipstrategy class="org.ff4j.strategy.PonderationStrategy" >
 			<param name="weight" value="0" />
 		</flipstrategy>
 	</feature>
@@ -37,13 +37,13 @@
 			
 	<!-- Ponderation to 1 -->
 	<feature uid="pond_1" enable="true" description="some desc" >
-		<flipstrategy class="org.ff4j.strategy.PonderationFlipStrategy" >
+		<flipstrategy class="org.ff4j.strategy.PonderationStrategy" >
 			<param name="weight" value="1" />
 		</flipstrategy>
 	</feature>
 	
 	<feature uid="pond_6"  enable="true" description="some desc"> 
-		<flipstrategy class="org.ff4j.strategy.PonderationFlipStrategy" >
+		<flipstrategy class="org.ff4j.strategy.PonderationStrategy" >
 			<param name="weight" value="2" />
 		</flipstrategy>
 	</feature>

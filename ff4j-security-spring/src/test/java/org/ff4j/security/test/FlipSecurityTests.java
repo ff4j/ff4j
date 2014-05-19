@@ -85,8 +85,8 @@ public class FlipSecurityTests {
         // init
 
         // not autorized because bad credential
-        Assert.assertFalse(ff4j.isFlipped("third"));
+        Assert.assertFalse(ff4j.check("third"));
         // autorized because role ROLE_USER
-        Assert.assertTrue(ff4j.isFlipped("first"));
+        Assert.assertTrue(ff4j.check("first"));
     }
 }

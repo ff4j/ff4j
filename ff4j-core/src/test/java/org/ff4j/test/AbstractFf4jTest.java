@@ -21,7 +21,6 @@ package org.ff4j.test;
  */
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -33,7 +32,8 @@ import junit.framework.Assert;
 
 import org.ff4j.FF4j;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.core.FlipStrategy;
+import org.ff4j.core.FlippingExecutionContext;
+import org.ff4j.core.FlippingStrategy;
 import org.ff4j.security.AuthorizationsManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +49,7 @@ public abstract class AbstractFf4jTest {
     protected static AuthorizationsManager mockAuthManager = null;
 
     /** Mock Flip Strategy. */
-    protected static FlipStrategy mockFlipStrategy = null;
+    protected static FlippingStrategy mockFlipStrategy = null;
 
     /** FF4J Instance for testings. */
     protected FF4j ff4j = null;
@@ -66,8 +66,9 @@ public abstract class AbstractFf4jTest {
         when(mockAuthManager.getEveryOneRoles()).thenReturn(new HashSet<String>(Arrays.asList(new String[] {"ROLEA","ROLEB"})));
 
         // Create MOCK
-        mockFlipStrategy = mock(FlipStrategy.class);
-        when(mockFlipStrategy.activate(any(String.class), any(FeatureStore.class), anyVararg())).thenReturn(true);
+        mockFlipStrategy = mock(FlippingStrategy.class);
+        when(mockFlipStrategy.evaluate(any(String.class), any(FeatureStore.class), any(FlippingExecutionContext.class)))
+                .thenReturn(true);
         when(mockFlipStrategy.getInitParams()).thenReturn(null);
 
         // Init of FF4J
@@ -85,7 +86,7 @@ public abstract class AbstractFf4jTest {
      */
     @Test
     public void testMock() throws IOException {
-        Assert.assertTrue(mockFlipStrategy.activate("", null));
+        Assert.assertTrue(mockFlipStrategy.evaluate("", null, null));
         Assert.assertEquals(mockAuthManager.getAuthenticatedUserRoles(),
                 new HashSet<String>(Arrays.asList(new String[] {"ROLEA"})));
     }

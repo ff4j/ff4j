@@ -23,15 +23,15 @@ package org.ff4j.strategy;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.ff4j.core.FlipStrategy;
+import org.ff4j.core.FlippingStrategy;
 import org.ff4j.utils.ParameterUtils;
 
 /**
- * Super class for {@link FlipStrategy} implementation with utilities.
+ * Super class for {@link FlippingStrategy} implementation with utilities.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public abstract class AbstractFlipStrategy implements FlipStrategy {
+public abstract class AbstractFlipStrategy implements FlippingStrategy {
 
     /** Initial parameters. */
     private Map<String, String> initParams = new HashMap<String, String>();

@@ -31,6 +31,7 @@ import junit.framework.Assert;
 
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
+import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.junit.Test;
@@ -61,7 +62,7 @@ public class FF4jTest extends AbstractFf4jTest {
         // Assertion
         assertTrue(ff4j.exist("sayHello"));
         assertEquals(6, ff4j.getFeatures().size());
-        assertTrue(ff4j.isFlipped("sayHello"));
+        assertTrue(ff4j.check("sayHello"));
     }
 
     @Test
@@ -73,7 +74,7 @@ public class FF4jTest extends AbstractFf4jTest {
         assertFalse(ff4j.exist("autoCreatedFeature"));
 
         // Auto creation by testing its value
-        assertFalse(ff4j.isFlipped("autoCreatedFeature"));
+        assertFalse(ff4j.check("autoCreatedFeature"));
 
         // Assertion
         assertTrue(ff4j.exist("autoCreatedFeature"));
@@ -90,7 +91,7 @@ public class FF4jTest extends AbstractFf4jTest {
 
         // Assertions
         assertTrue(ff4j.exist("f1"));
-        assertTrue(ff4j.isFlipped("f1"));
+        assertTrue(ff4j.check("f1"));
     }
 
     // enabling...
@@ -101,7 +102,7 @@ public class FF4jTest extends AbstractFf4jTest {
         ff4j.autoCreate(true);
         ff4j.enable("newffff");
         Assert.assertTrue(ff4j.exist("newffff"));
-        Assert.assertTrue(ff4j.isFlipped("newffff"));
+        Assert.assertTrue(ff4j.check("newffff"));
     }
 
     @Test(expected = FeatureNotFoundException.class)
@@ -117,7 +118,7 @@ public class FF4jTest extends AbstractFf4jTest {
         ff4j.autoCreate(true);
         ff4j.disable("newffff");
         Assert.assertTrue(ff4j.exist("newffff"));
-        Assert.assertFalse(ff4j.isFlipped("newffff"));
+        Assert.assertFalse(ff4j.check("newffff"));
     }
 
     @Test(expected = FeatureNotFoundException.class)
@@ -142,13 +143,15 @@ public class FF4jTest extends AbstractFf4jTest {
     public void testFlipped() {
         FF4j ff4j = new FF4j().autoCreate(true).create(
                 new Feature("coco", true, "grp2", "", Arrays.asList(new String[] {"ROLEA"})));
-        Assert.assertTrue(ff4j.isFlipped("coco"));
+        Assert.assertTrue(ff4j.check("coco"));
         ff4j.setAuthorizationsManager(mockAuthManager);
-        Assert.assertTrue(ff4j.isFlipped("coco"));
-        Assert.assertTrue(ff4j.isFlipped("coco", "OK"));
-        Assert.assertTrue(ff4j.isFlipped("coco", mockFlipStrategy));
-        Assert.assertTrue(ff4j.isFlipped("coco", null, (Object[]) null));
-        Assert.assertFalse(ff4j.isFlipped("cocorico", mockFlipStrategy));
+        Assert.assertTrue(ff4j.check("coco"));
+        FlippingExecutionContext ex = new FlippingExecutionContext();
+        ex.putString("OK", "OK");
+        Assert.assertTrue(ff4j.check("coco", ex));
+        Assert.assertTrue(ff4j.checkOveridingStrategy("coco", mockFlipStrategy));
+        Assert.assertTrue(ff4j.checkOveridingStrategy("coco", null, null));
+        Assert.assertFalse(ff4j.checkOveridingStrategy("cocorico", mockFlipStrategy));
     }
     
     @Test

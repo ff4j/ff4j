@@ -21,11 +21,11 @@ import junit.framework.Assert;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.core.FlipStrategy;
+import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
-import org.ff4j.strategy.PonderationFlipStrategy;
+import org.ff4j.strategy.PonderationStrategy;
 import org.ff4j.test.AssertFf4j;
 import org.ff4j.test.TestConstantsFF4j;
 import org.junit.Before;
@@ -480,7 +480,7 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
     public void testUpdateFeatureCoreData() {
         // Parameters
         String newDescription = "new-description";
-        FlipStrategy newStrategy = new PonderationFlipStrategy(0.12);
+        FlippingStrategy newStrategy = new PonderationStrategy(0.12);
         // Given
         assertFf4j.assertThatFeatureExist(F1);
         Assert.assertFalse(newDescription.equals(testedStore.read(F1).getDescription()));

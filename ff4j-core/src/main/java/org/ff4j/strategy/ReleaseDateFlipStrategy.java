@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.Map;
 
 import org.ff4j.core.FeatureStore;
+import org.ff4j.core.FlippingExecutionContext;
 
 /**
  * The feature will be flipped after release date is reached.
@@ -57,7 +58,7 @@ public class ReleaseDateFlipStrategy extends AbstractFlipStrategy {
 
     /** {@inheritDoc} */
     @Override
-    public boolean activate(String featureName, FeatureStore store, Object... executionContext) {
+    public boolean evaluate(String featureName, FeatureStore store, FlippingExecutionContext executionContext) {
         // No use of featureName
         // No use of featureStore
         // No use of executionContext

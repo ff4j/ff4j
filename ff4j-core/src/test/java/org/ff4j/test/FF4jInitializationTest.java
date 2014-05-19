@@ -43,7 +43,7 @@ public class FF4jInitializationTest {
     private void testingGeneratedFF4j(FF4j f) {
         Assert.assertNotNull(f.getStore());
         Assert.assertTrue(f.getStore() instanceof InMemoryFeatureStore);
-        Assert.assertFalse(f.isFlipped("new"));
+        Assert.assertFalse(f.check("new"));
     }
 
     @Test
