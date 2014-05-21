@@ -27,7 +27,6 @@ import junit.framework.Assert;
 
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.utils.FeatureJsonMarshaller;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.ClientResponse;
@@ -38,7 +37,6 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-@Ignore
 public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
 
     /**

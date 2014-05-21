@@ -14,6 +14,7 @@ package org.ff4j.test.strategy.el;
 import org.ff4j.FF4j;
 import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.strategy.el.ExpressionFlipStrategy;
+import org.ff4j.test.AssertFf4j;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -27,6 +28,9 @@ public class ExpressionFlipStategyTest {
     /** current instance of FF4j */
     private final FF4j ff4j = new FF4j("test-expressionFlipStategy-ok.xml");
 
+    /** Assertion. */
+    private final AssertFf4j assertFF4j = new AssertFf4j(ff4j);
+
     @Test
     public void testExpression() throws Exception {
         Assert.assertNotNull(ff4j.getFeature("D"));
@@ -39,20 +43,19 @@ public class ExpressionFlipStategyTest {
     @Test
     public void testEnableC() {
         ff4j.enable("C");
-        boolean dFlipped = ff4j.check("D");
-        Assert.assertFalse(dFlipped);
+        assertFF4j.assertThatFeatureNotFlipped("D");
     }
 
     @Test
     public void testEnableB() {
         ff4j.enable("B");
-        boolean dFlipped = ff4j.check("D");
-        Assert.assertTrue(dFlipped);
+        assertFF4j.assertThatFeatureFlipped("D");
     }
 
     @Test
     public void testExplicitevaluate() {
         ExpressionFlipStrategy efs = new ExpressionFlipStrategy();
+
         Assert.assertTrue(efs.evaluate("D", ff4j.getStore(), null));
         Assert.assertTrue(efs.evaluate("TOTO", ff4j.getStore(), null));
 

@@ -43,7 +43,7 @@ import org.junit.Test;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public abstract class AbstractFf4jTest {
+public abstract class AbstractFf4jTest implements TestConstantsFF4j {
 
     /** Mock Authorizaton Manager. */
     protected static AuthorizationsManager mockAuthManager = null;

@@ -36,7 +36,7 @@ import org.ff4j.core.FlippingExecutionContext;
 public class ClientFilterStrategy extends AbstractFlipStrategy {
 
     /** Threshold. */
-    private static final String PARAM_CLIENTLIST = "grantedClient";
+    private static final String PARAM_CLIENTLIST = "grantedClients";
 
     /** Parameter to be checked in context. */
     public static final String CLIENT_HOSTNAME = "clientHostName";
@@ -64,7 +64,9 @@ public class ClientFilterStrategy extends AbstractFlipStrategy {
     public ClientFilterStrategy(String clientList) {
         this.rawClientList = clientList;
         getInitParams().put(PARAM_CLIENTLIST, clientList);
-        setOfGrantedClient.addAll(Arrays.asList(rawClientList.split(SPLITTER)));
+        for (String client : rawClientList.split(SPLITTER)) {
+            setOfGrantedClient.add(client.trim());
+        }
     }
     
     /** {@inheritDoc} */
@@ -86,5 +88,15 @@ public class ClientFilterStrategy extends AbstractFlipStrategy {
         }
         return setOfGrantedClient.contains(executionContext.getString(CLIENT_HOSTNAME));
     }
+
+    /**
+     * Getter accessor for attribute 'setOfGrantedClient'.
+     *
+     * @return current value of 'setOfGrantedClient'
+     */
+    public Set<String> getGrantedClient() {
+        return setOfGrantedClient;
+    }
+
 
 }

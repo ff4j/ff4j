@@ -36,7 +36,7 @@ import org.ff4j.core.FlippingExecutionContext;
 public class ServerFilterStrategy extends AbstractFlipStrategy {
 
     /** Threshold. */
-    private static final String PARAM_SERVERLIST = "targetServer";
+    private static final String PARAM_SERVERLIST = "grantedServers";
 
     /** Parameter to be checked in context. */
     public static final String SERVER_HOSTNAME = "serverHostName";
@@ -64,7 +64,9 @@ public class ServerFilterStrategy extends AbstractFlipStrategy {
     public ServerFilterStrategy(String targetServers) {
         this.rawServerList = targetServers;
         getInitParams().put(PARAM_SERVERLIST, targetServers);
-        setOfTargetServer.addAll(Arrays.asList(rawServerList.split(SPLITTER)));
+        for (String server : rawServerList.split(SPLITTER)) {
+            setOfTargetServer.add(server.trim());
+        }
     }
 
     /** {@inheritDoc} */
@@ -85,6 +87,15 @@ public class ServerFilterStrategy extends AbstractFlipStrategy {
                     + SERVER_HOSTNAME + "' parameter in execution context");
         }
         return setOfTargetServer.contains(executionContext.getString(SERVER_HOSTNAME));
+    }
+
+    /**
+     * Getter accessor for attribute 'setOfTargetServer'.
+     *
+     * @return current value of 'setOfTargetServer'
+     */
+    public Set<String> getTargetServer() {
+        return setOfTargetServer;
     }
 
 }

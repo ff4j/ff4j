@@ -53,21 +53,29 @@ public class ExpressionFlipStrategy extends AbstractFlipStrategy {
     /** {@inheritDoc} */
     @Override
     public boolean evaluate(String featureName, FeatureStore currentStore, FlippingExecutionContext executionContext) {
-        if (executionContext == null || !executionContext.isKeyExist(PARAM_EXPRESSION)) {
-            // Wait, you define an expression strategy but do not set EXPRESSION
-            if (mapOfValue.containsKey(featureName)) {
-                String expression = mapOfValue.get(featureName);
-                if (!cachedExpression.containsKey(expression)) {
-                    cachedExpression.put(expression, ExpressionParser.parseExpression(expression));
-                }
-                return cachedExpression.get(expression).evalue(getFeaturesStatus(currentStore));
-            }
-            return true;
-        } else {
-            String expression = executionContext.getString(PARAM_EXPRESSION);
-            cachedExpression.put(expression, ExpressionParser.parseExpression(expression));
-            return cachedExpression.get(expression).evalue(getFeaturesStatus(currentStore));
+        // If execution context specified overriding initvalue
+        if ((null != executionContext) && executionContext.isKeyExist(PARAM_EXPRESSION)) {
+            return evaluateExpression(executionContext.getString(PARAM_EXPRESSION), currentStore);
+        } else if (mapOfValue.containsKey(featureName)) {
+            // Else, check initial value of featureName (if exist)
+            return evaluateExpression(mapOfValue.get(featureName), currentStore);
         }
+        // FeatureName does not exit, no condition required
+        return true;
+    }
+
+    /**
+     * Evaluate expression, put it in cache is required.
+     * 
+     * @param expression
+     *            target expression
+     * @return expression evaluation value
+     */
+    private boolean evaluateExpression(String expression, FeatureStore currentStore) {
+        if (!cachedExpression.containsKey(expression)) {
+            cachedExpression.put(expression, ExpressionParser.parseExpression(expression));
+        }
+        return cachedExpression.get(expression).evalue(getFeaturesStatus(currentStore));
     }
 
     /**
