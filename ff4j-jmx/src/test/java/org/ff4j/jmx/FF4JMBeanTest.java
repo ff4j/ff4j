@@ -132,7 +132,7 @@ public class FF4JMBeanTest {
     public void should_get_feature_auth_roles() throws Exception {
         ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
         @SuppressWarnings("unchecked")
-        Set<String> featureAuthRoles = (Set<String>) mbServConn.invoke(objectName, "getFeatureAuthRoles",
+        Set<String> featureAuthRoles = (Set<String>) mbServConn.invoke(objectName, "getPermissions",
                 new Object[] {"jmxFeatureWithAuth"}, new String[] {"java.lang.String"});
 
         Assert.assertTrue(featureAuthRoles.contains("ROLE_USER"));

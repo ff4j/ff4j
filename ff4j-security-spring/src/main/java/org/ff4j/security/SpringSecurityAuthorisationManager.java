@@ -31,7 +31,7 @@ public class SpringSecurityAuthorisationManager implements AuthorizationsManager
 
     /** {@inheritDoc} */
     @Override
-    public Set<String> getAuthenticatedUserRoles() {
+    public Set<String> getCurrentUserPermissions() {
         Set<String> listOfRoles = new LinkedHashSet<String>();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (!(auth instanceof AnonymousAuthenticationToken)) {
@@ -45,8 +45,8 @@ public class SpringSecurityAuthorisationManager implements AuthorizationsManager
 
     /** {@inheritDoc} */
     @Override
-    public Set<String> getEveryOneRoles() {
-        return getAuthenticatedUserRoles();
+    public Set<String> listAllPermissions() {
+        return getCurrentUserPermissions();
     }
 
     /** {@inheritDoc} */

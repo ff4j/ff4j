@@ -12,15 +12,9 @@ package org.ff4j.web.embedded;
  * governing permissions and limitations under the License. #L%
  */
 
-import static org.ff4j.web.embedded.ConsoleRenderer.renderButtonDeleteFeature;
-import static org.ff4j.web.embedded.ConsoleRenderer.renderButtonEditFeature;
-import static org.ff4j.web.embedded.ConsoleRenderer.renderButtonUserRole;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.text.MessageFormat;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -75,13 +69,16 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
             ff4jProvider = (ConsoleFF4JProvider) o;
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(
-                    "Cannot load ff4jProvider within 'EmbeddedConsoleServlet' check 'ff4jProvider' param value", e);
+"Cannot load  " + ff4jProvider
+                    + "  within 'EmbeddedConsoleServlet' check 'ff4jProvider' param value", e);
         } catch (InstantiationException e) {
             throw new IllegalArgumentException(
-                    "Cannot instancitate ff4jProvider within 'EmbeddedConsoleServlet' check 'ff4jProvider' param value", e);
+"Cannot instanciate  " + ff4jProvider
+                    + "  within 'EmbeddedConsoleServlet' check 'ff4jProvider' param value", e);
         } catch (IllegalAccessException e) {
             throw new IllegalArgumentException(
-                    "Cannot instancitate ff4jProvider within 'EmbeddedConsoleServlet' check 'ff4jProvider' no public constructor ?",
+"Cannot instanciate " + ff4jProvider
+                    + " within 'EmbeddedConsoleServlet' check 'ff4jProvider' no public constructor ?",
                     e);
         } catch (ClassCastException ce) {
             throw new IllegalArgumentException(
@@ -100,10 +97,26 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
         String messagetype = "info";
 
         // Routing on pagename
-        String operation = req.getParameter(OPERATION);
-
-        // Idependant of page to display (not same ops)
         try {
+
+            // Serve static resource file as CSS and Javascript
+            String resources = req.getParameter(RESOURCE);
+            if (resources != null && !resources.isEmpty()) {
+                //
+                if (RESOURCE_CSS_PARAM.equalsIgnoreCase(resources)) {
+                    res.setContentType(CONTENT_TYPE_CSS);
+                    res.getWriter().println(ConsoleRenderer.getCSS());
+                    return;
+                } else if (RESOURCE_JS_FILE.equalsIgnoreCase(resources)) {
+                    res.setContentType(CONTENT_TYPE_JS);
+                    res.getWriter().println(ConsoleRenderer.getJS());
+                    return;
+                }
+                
+            }
+
+            // Serve operation from GET
+            String operation = req.getParameter(OPERATION);
             if (operation != null && !operation.isEmpty()) {
                 if (OP_DISABLE.equalsIgnoreCase(operation)) {
                     opDisableFeature(req);
@@ -114,7 +127,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                 } else if (OP_EDIT_FEATURE.equalsIgnoreCase(operation)) {
                     opUpdateFeatureDescription(req);
                     message = buildMessage(req.getParameter(FEATID), "UPDATED");
-                } else if (OP_ADD_FEATURE.equalsIgnoreCase(operation)) {
+                } else if (OP_CREATE_FEATURE.equalsIgnoreCase(operation)) {
                     opAddNewFeature(req);
                     message = buildMessage(req.getParameter(FEATID), "ADDED");
                 } else if (OP_RMV_FEATURE.equalsIgnoreCase(operation)) {
@@ -128,23 +141,17 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                     opRemoveRoleFromFeature(req);
                     message = "Role <b>" + req.getParameter(ROLE) + "</b> has been successfully removed from flipPoint <b>"
                             + req.getParameter(FEATID) + " </b>";
-                } else if (OP_GETCSS.equalsIgnoreCase(operation)) {
-                    res.setContentType(CONTENT_TYPE_CSS);
-                    res.getWriter().println(ConsoleRenderer.getCSS());
-                    return;
-                } else if (OP_GETJS.equalsIgnoreCase(operation)) {
-                    res.setContentType(CONTENT_TYPE_JS);
-                    res.getWriter().println(ConsoleRenderer.getJS());
-                    return;
                 } else if (OP_EXPORT.equalsIgnoreCase(operation)) {
                     buildResponseForExportFeature(res);
                 }
             }
+
         } catch (Exception e) {
             // Any Error is trapped and display in the console
             messagetype = "error";
             message = e.getMessage();
         }
+
         // Default page rendering (table)
         renderPage(req, res, message, messagetype);
     }
@@ -244,21 +251,24 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
         PrintWriter out = res.getWriter();
 
         // Header of the page
-        out.println(ConsoleRenderer.renderHeader(req));
+        String htmlContent = ConsoleRenderer.getTemplate(req);
+
+        // Subsctitution FEATURE_ROWS
+        htmlContent = htmlContent.replaceAll("\\{" + KEY_ALERT_MESSAGE + "\\}", "");
+
+        // Subsctitution FEATURE_ROWS
+        htmlContent = htmlContent.replaceAll("\\{" + KEY_FEATURE_ROWS + "\\}", "");
+
+        // Substitution GROUP_LIST
+        htmlContent = htmlContent.replaceAll("\\{" + KEY_GROUP_LIST + "\\}", "");
+
+        out.println();
 
         // Display Message box
         if (message != null && !message.isEmpty()) {
             out.println(ConsoleRenderer.renderMessageBox(message, messagetype));
         }
-        // Group of button
-        out.println(renderSectionFeatures(req));
 
-        // Modals
-        out.println(ConsoleRenderer.renderModalEditFlip(req));
-        out.println(ConsoleRenderer.renderModalNewFlipPoint(req));
-        out.println(ConsoleRenderer.renderModalImportFlipPoints(req));
-        out.println("</body>");
-        out.println("</html>");
     }
 
     /**
@@ -372,62 +382,6 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                 getFf4j().getStore().create(feature.getValue());
             }
         }
-    }
-
-    /**
-     * Produce HTML output to display the feature table.
-     * 
-     * @param req
-     *            http request containing parameters
-     * @return HTML text output
-     */
-    private String renderSectionFeatures(HttpServletRequest req) {
-        StringBuilder strB = new StringBuilder();
-        // Information Message
-
-        strB.append(ConsoleRenderer.renderTableHeader(req));
-        Map<String, Feature> mapOfFlipPoints = new LinkedHashMap<String, Feature>();
-        if (getFf4j().getFeatures() != null && !getFf4j().getFeatures().isEmpty()) {
-            mapOfFlipPoints.putAll(getFf4j().getFeatures());
-        }
-        for (Feature fp : mapOfFlipPoints.values()) {
-            strB.append("<tr>");
-            strB.append("<td style=\"width:150px;font-weight:bold\">" + fp.getUid() + "</td>");
-            if (fp.getGroup() != null) {
-                strB.append("<td style=\"width:100px;\">" + fp.getGroup() + "</td>");
-            } else {
-                strB.append("<td style=\"width:100px;\"></td>");
-            }
-
-            if (fp.getDescription() != null) {
-                strB.append("<td style=\"width:200px;\">" + fp.getDescription() + "</td>");
-            } else {
-                strB.append("<td style=\"width:200px;\"></td>");
-            }
-            strB.append("<td>");
-            Map<String, String> mapP = new LinkedHashMap<String, String>();
-            mapP.put("uid", fp.getUid());
-            if (fp.isEnable()) {
-                strB.append(ConsoleRenderer.renderElementButton(req, "Enabled", "success", "disable", mapP, null));
-            } else {
-                strB.append(ConsoleRenderer.renderElementButton(req, "Disabled", "danger", "enable", mapP, null));
-            }
-            strB.append("</td>");
-            strB.append("<td style=\"width:20px;\">" + renderButtonEditFeature(getFf4j(), req, fp.getUid()) + "</td>");
-            strB.append("<td style=\"width:20px;\">" + renderButtonDeleteFeature(req, fp.getUid()) + "</td>");
-            strB.append("<td style=\"width:85px;\">");
-            if (getFf4j().getAuthorizationsManager() != null) {
-                strB.append(renderButtonUserRole(getFf4j(), req, fp));
-            } else {
-                strB.append("<center><span style=\"color:#AAAAAA\">N/A</span></center>");
-            }
-            strB.append("</td>");
-            strB.append("</tr>");
-        }
-        strB.append(MessageFormat.format(ConsoleRenderer.TABLE_FEATURES_FOOTER,
-                req.getContextPath() + req.getServletPath()));
-
-        return strB.toString();
     }
 
     /**

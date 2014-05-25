@@ -14,15 +14,14 @@ package org.ff4j.web.embedded;
 
 import java.io.InputStream;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
+import org.ff4j.core.FlippingStrategy;
 
 /**
  * Used to build GUI Interface for feature flip servlet. It contains gui component render and parmeters
@@ -32,19 +31,7 @@ import org.ff4j.core.Feature;
 public final class ConsoleRenderer implements ConsoleConstants {
 
     /** Cache for page blocks. */
-    private static String modalImportFeatures = null;
-
-    /** Cache for page blocks. */
-    private static String modalEditFeature = null;
-
-    /** Cache for page blocks. */
-    private static String htmlModalNewFeature = null;
-
-    /** Cache for page blocks. */
-    private static String htmlHeader = null;
-
-    /** Cache for page blocks. */
-    private static String htmlTableHeader = null;
+    private static String htmlTemplate = null;
 
     /** Load CSS. */
     private static String cssContent = null;
@@ -55,130 +42,105 @@ public final class ConsoleRenderer implements ConsoleConstants {
     /** Cache for page blocks. */
     static final String TABLE_FEATURES_FOOTER = "" + "</tbody></table></form></fieldset>";
 
+    /** fin de ligne. **/
+    static final String END_OF_LINE = "\r\n";
 
     /**
-     * Rendering of part of the screen.
+     * Load HTML template file and substitute by current URL context path
      * 
      * @param req
      *            current http request
      * @return current text part as string
      */
-    static final String renderHeader(HttpServletRequest req) {
-        if (htmlHeader == null || htmlHeader.isEmpty()) {
+    static final String getTemplate(HttpServletRequest req) {
+        if (htmlTemplate == null || htmlTemplate.isEmpty()) {
             String ctx = req.getContextPath() + req.getServletPath() + "";
-            htmlHeader = loadFileAsString(TEMPLATE_FILE);
-            htmlHeader = htmlHeader.replaceAll("\\{" + KEY_CTX + "\\}", ctx);
+            htmlTemplate = loadFileAsString(TEMPLATE_FILE).replaceAll("\\{" + KEY_SERVLET_CONTEXT + "\\}", ctx);
         }
-        return htmlHeader;
+        return htmlTemplate;
     }
 
     /**
-     * Rendering of part of the screen.
-     * 
-     * @param req
-     *            current http request
-     * @return current text part as string
-     */
-    static final String renderTableHeader(HttpServletRequest req) {
-        if (htmlTableHeader == null || htmlTableHeader.isEmpty()) {
-            htmlHeader = loadFileAsString(TEMPLATE_TABLE_HEADER);
-        }
-        return htmlTableHeader;
-    }
-
-    static String renderModalEditFlip(HttpServletRequest req) {
-        if (modalEditFeature == null || modalEditFeature.isEmpty()) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("<form class=\"form-horizontal\" action=\"" + req.getContextPath() + req.getServletPath()
-                    + "\" method=\"GET\" >" + "<div class=\"modal hide\" id=\"modalEditFlip\" ");
-            sb.append("     tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">");
-            sb.append("" + "<div class=\"modal-header\">" + "   <button class=\"close\" data-dismiss=\"modal\">x</button>"
-                    + "   <h3 id=\"myModalLabel\">Edit Feature</h3>" + "</div>");
-            sb.append("" + "<div class=\"modal-body\">" + " <div class=\"control-group\">"
-                    + "  <label class=\"control-label\" for=\"uid\">Flipoint Name</label>" + "  <div class=\"controls\">"
-                    + "   <input type=\"text\" name=\"uid\" id=\"" + FEATID
-                    + "\" style=\"width:250px;height:30px;\" readonly=\"readonly\" />" + "  </div>" + " </div>"
-                    + " <div class=\"control-group\">" + "  <label class=\"control-label\" for=\"desc\">Description</label>"
-                    + "  <div class=\"controls\">" + "    <input type=\"text\" name=\"desc\" id=\"" + DESCRIPTION
-                    + "\" style=\"width:250px;height:30px;\" />" + "  </div>" + " </div>" + "</div>");
-            sb.append(""
-                    + "<div class=\"modal-footer\">"
-                    + "<button class=\"btn btn\" data-dismiss=\"modal\"><i class=\"icon-remove\" ></i>&nbsp;Cancel</button>"
-                    + "<button class=\"btn btn-primary\" type=\"submit\"><i class=\"icon-ok icon-white\" ></i>&nbsp;Save changes</button>"
-                    + "</div>\n" + "<script type=\"text/javascript\" >\n"
-                    + "$(document).on(\"click\", \".open-EditFlipDialog\", function () {\n"
-                    + "var flipId = $(this).data('id');\n" + "var desc   = $(this).data('desc');\n"
-                    + "$(\".modal-body #uid\").val(flipId);\n" + "$(\".modal-body #desc\").val(desc);\n"
-                    + "$(\".modal-body #desc\").focus();\n" + "});\n" + "</script>\n"
-                    + " <input type=\"hidden\" name=\"op\" value=\"" + OP_EDIT_FEATURE + "\"  />" + "</div>" + "</form>");
-            modalEditFeature = sb.toString();
-        }
-        return modalEditFeature;
-    }
-
-    /**
-     * 
-     * @param req
+     * Produce the rows of the Feature Table.
+     *
+     * @param currentElement
      * @return
      */
-    static String renderModalNewFlipPoint(HttpServletRequest req) {
-        if (htmlModalNewFeature == null || htmlModalNewFeature.isEmpty()) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("<form class=\"form-horizontal\" action=\"" + req.getContextPath() + req.getServletPath()
-                    + "\" method=\"GET\" >" + "<div class=\"modal hide\" id=\"modalAddFlip\" ");
-            sb.append("     tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">");
-            sb.append("" + "<div class=\"modal-header\">" + "   <button class=\"close\" data-dismiss=\"modal\">x</button>"
-                    + "   <h3 id=\"myModalLabel\">Add Feature</h3>" + "</div>");
-            sb.append("" + "<div class=\"modal-body\">" + " <div class=\"control-group\">"
-                    + "  <label class=\"control-label\" for=\"uid\">Flipoint Name</label>" + "  <div class=\"controls\">"
-                    + "   <input type=\"text\" name=\"uid\" id=\"" + FEATID + "\" style=\"width:250px;height:30px;\" required/>"
-                    + "  </div>" + " </div>" + " <div class=\"control-group\">"
-                    + "  <label class=\"control-label\" for=\"desc\">Description</label>" + "  <div class=\"controls\">"
-                    + "    <input type=\"text\" name=\"desc\" id=\"" + DESCRIPTION + "\" style=\"width:250px;height:30px;\" />"
-                    + "  </div>" + " </div>" + "</div>");
-            sb.append(""
-                    + "<div class=\"modal-footer\" >"
-                    + "<button class=\"btn btn\" data-dismiss=\"modal\"><i class=\"icon-remove\" ></i>&nbsp;Cancel</button>"
-                    + "<button class=\"btn btn-primary\" type=\"submit\"><i class=\"icon-ok icon-white\" ></i>&nbsp;Add New </button>"
-                    + "</div>\n" + "<script type=\"text/javascript\" >\n"
-                    + "$(document).on(\"click\", \".open-AddFlipDialog\", function () {\n" + "$(\".modal-body #uid\").focus();\n"
-                    + "});\n" + "</script>\n" + " <input type=\"hidden\" name=\"op\" value=\"" + OP_ADD_FEATURE + "\"  />"
-                    + "</div>" + "</form>");
-            htmlModalNewFeature = sb.toString();
-        }
-        return htmlModalNewFeature;
-    }
+    static final String renderFeatureRows(FF4j ff4j, HttpServletRequest req) {
+        StringBuilder sb = new StringBuilder();
+        final Map < String, Feature> mapOfFeatures = ff4j.getFeatures();
+        for(String uid : mapOfFeatures.keySet()) {
+            Feature currentFeature = mapOfFeatures.get(uid);
+            sb.append("<tr>" + END_OF_LINE);
+            
+            // Column with uid and description as tooltip
+            sb.append("<td><a class=\"ff4j-tooltip\" tooltip=\"");
+            sb.append(currentFeature.getDescription());
+            sb.append("\">");
+            sb.append(currentFeature.getUid());
+            sb.append("</a>");
+            
+            // Colonne Group
+            sb.append("</td><td>&nbsp;");
+            if (currentFeature.getGroup() != null) {
+                sb.append(currentFeature.getGroup());
+            }
+            
+            // Colonne Permissions
+            sb.append("</td><td>&nbsp;");
+            Set < String > permissions = currentFeature.getPermissions();
+            if (null != permissions && !permissions.isEmpty()) {
+                boolean first = true;
+                for (String perm : permissions) {
+                    if (!first) {
+                        sb.append(",");
+                    }
+                    sb.append(perm);
+                    first = false;
+                }
+            }
+            
+            // Colonne Strategy
+            sb.append("</td><td>&nbsp;");
+            FlippingStrategy fs = currentFeature.getFlippingStrategy();
+            if (null != fs) {
+                sb.append(fs.getClass().getCanonicalName());
+                sb.append("<br/>&nbsp;" + fs.getInitParams());
+            }
+            
+            // Colonne 'Holy' Toggle
+            sb.append("</td><td style=\"width:8%;text-align:center\">");
+            sb.append("<label class=\"switch switch-green\">");
+            sb.append("<input id=\"tick-" + currentFeature.getUid() + "\" type=\"checkbox\" class=\"switch-input\"");
+            if (currentFeature.isEnable()) {
+                sb.append(" checked");
+            }
+            sb.append(">");
+            sb.append("<span class=\"switch-label\" data-on=\"On\" data-off=\"Off\"></span>");
+            sb.append("<span class=\"switch-handle\"></span>");
+            sb.append("</label>");
+            
+            // Colonne Button Edit
+            sb.append("</td><td style=\"width:5%;text-align:center\">");
+            sb.append("<a data-toggle=\"modal\" href=\"#modalEdit\" data-id=\"" + currentFeature.getUid() + "\" ");
+            sb.append("data-desc=\"" + currentFeature.getDescription()
+                    + "\" style=\"width:6px;\" class=\"open-EditFlipDialog btn\">");
+            sb.append("<i class=\"icon-pencil\" style=\"margin-left:-5px;\"></i></a>");
 
-    /**
-     * Produce HTML code of a modal which contain a form to upload file.
-     * 
-     * @param req
-     *            current HTTP request (getting relative servlet path)
-     * @return HTML code to render a import button
-     */
-    static String renderModalImportFlipPoints(HttpServletRequest req) {
-        if (modalImportFeatures == null || modalImportFeatures.isEmpty()) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("<div class=\"modal hide fade\" id=\"modalImportFlip\" ");
-            sb.append("     tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">");
-            sb.append("" + "<form action=\"" + req.getContextPath() + req.getServletPath()
-                    + "\" method=\"POST\" enctype=\"multipart/form-data\" >" + "<div class=\"modal-header\">"
-                    + "   <button class=\"close\" data-dismiss=\"modal\">x</button>"
-                    + "   <h3 id=\"myModalLabel\">Import Features from xml file</h3>" + "</div>");
-            sb.append("" + "<div class=\"modal-body\">"
-                    + "<p/>Please choose a <b>CSV</b>, <b>XML</b> or <b>PROPERTIES</b> FF4J configuration files : </p>"
-                    + "<input type=\"hidden\" name=\"op\" value=\"" + OP_IMPORT + "\"  />"
-                    + "<input type=\"file\" name=\"flipFile\"  />" + "</div>");
-            sb.append(""
-                    + "<div class=\"modal-footer\">"
-                    + "<button class=\"btn btn\" data-dismiss=\"modal\"><i class=\"icon-remove\" ></i>&nbsp;Cancel</button>"
-                    + "<button class=\"btn btn-primary\" type=\"submit\"><i class=\"icon-file icon-white\" ></i>&nbsp;Import </button>"
-                    + "</div>\n" + "</form></div>");
-            modalImportFeatures = sb.toString();
+            // Colonne Button Delete
+            sb.append("</td><td style=\"width:5%;text-align:center\">");
+            sb.append("<a href=\"");
+            sb.append(req.getContextPath());
+            sb.append(req.getServletPath());
+            sb.append("?op=" + OP_RMV_FEATURE + "&" + FEATID + "=" + uid);
+            sb.append("\" style=\"width:6px;\" class=\"btn\">");
+            sb.append("<i class=\"icon-trash\" style=\"margin-left:-5px;\"></i>");
+            sb.append("</a>");
+            sb.append("</td></tr>");
         }
-        return modalImportFeatures;
+        return null;
     }
-
+    
     static String renderMessageBox(String message, String type) {
         StringBuilder sb = new StringBuilder();
         sb.append("<p><div class=\"alert alert-" + type + "\" style=\"margin-top:25px;margin-left:15px\" >");
@@ -189,94 +151,6 @@ public final class ConsoleRenderer implements ConsoleConstants {
         return sb.toString();
     }
 
-    static String renderButtonDeleteFeature(HttpServletRequest req, String uid) {
-        StringBuilder strBuilder = new StringBuilder("<a href=\"");
-        strBuilder.append(req.getContextPath());
-        strBuilder.append(req.getServletPath());
-        strBuilder.append("?op=" + OP_RMV_FEATURE + "&" + FEATID + "=" + uid);
-        strBuilder.append("\" style=\"width:6px;\" class=\"btn\">");
-        strBuilder.append("<i class=\"icon-trash\" style=\"margin-left:-5px;\"></i>");
-        strBuilder.append("</a>");
-        return strBuilder.toString();
-    }
-
-    static String renderButtonEditFeature(FF4j ff4j, HttpServletRequest req, String uid) {
-        StringBuilder strBuilder = new StringBuilder("<a data-toggle=\"modal\" href=\"#modalEditFlip\"");
-        String desc = ff4j.getStore().read(uid).getDescription();
-        strBuilder.append("\" data-id=\"" + uid + "\" data-desc=\"" + desc
-                + "\" style=\"width:6px;\" class=\"open-EditFlipDialog btn\">");
-        strBuilder.append("<i class=\"icon-pencil\" style=\"margin-left:-5px;\"></i>");
-        strBuilder.append("</a>");
-        return strBuilder.toString();
-    }
-
-    static String renderButtonUserRole(FF4j ff4j, HttpServletRequest req, Feature fp) {
-        Set<String> setOfRoles = new TreeSet<String>();
-        if (ff4j.getAuthorizationsManager().getEveryOneRoles() != null) {
-            setOfRoles.addAll(ff4j.getAuthorizationsManager().getEveryOneRoles());
-        }
-        StringBuilder strBuilder = new StringBuilder("<div class=\"btn-group\">");
-        strBuilder.append("<button class=\"btn\"><i class=\"icon-user\"></i></button>");
-        strBuilder
-                .append("<button class=\"btn dropdown-toggle\" data-toggle=\"dropdown\"><span class=\"caret\"></span></button>");
-        strBuilder.append("<ul class=\"dropdown-menu\" role=\"menu\">");
-        for (String role : setOfRoles) {
-            StringBuilder link = new StringBuilder("<li><a href=\"");
-            link.append(req.getContextPath());
-            link.append(req.getServletPath());
-            if (fp.getAuthorizations().contains(role)) {
-                link.append("?op=" + OP_RMV_ROLE);
-                link.append("&" + FEATID + "=" + fp.getUid());
-                link.append("&" + ROLE + "=" + role);
-                link.append("\" style=\"color:#00AA00\">");
-            } else {
-                link.append("?op=" + OP_ADD_ROLE);
-                link.append("&" + FEATID + "=" + fp.getUid());
-                link.append("&" + ROLE + "=" + role);
-                link.append("\" style=\"color:#AAAAAA\">");
-            }
-            strBuilder.append(link.toString());
-            strBuilder.append(role);
-            strBuilder.append("</li>");
-        }
-        strBuilder.append(" </ul>");
-        strBuilder.append("</div>");
-        return strBuilder.toString();
-    }
-
-    /**
-     * Render a bootstrap button.
-     *
-     * @param req
-     * @param label
-     * @param color
-     * @param action
-     * @param pp
-     * @param icon
-     * @return
-     */
-    static String renderElementButton(HttpServletRequest req, String label, String color, String action, Map<String, String> pp,
-            String icon) {
-        StringBuilder strBuilder = new StringBuilder("<a href=\"");
-        strBuilder.append(req.getContextPath());
-        strBuilder.append(req.getServletPath());
-        strBuilder.append("?op=" + action);
-        if (pp != null && !pp.isEmpty()) {
-            for (Entry<String, String> param : pp.entrySet()) {
-                strBuilder.append("&" + param.getKey() + "=" + param.getValue());
-            }
-        }
-        if (icon != null && !icon.isEmpty()) {
-            strBuilder.append("\" style=\"width:70px\" class=\"btn btn-" + color + "\">");
-            strBuilder.append("<i class=\"icon-" + icon + "\"></i>&nbsp;&nbsp;");
-        } else {
-            strBuilder.append("\" style=\"width:60px\" class=\"btn btn-" + color + "\">");
-        }
-        strBuilder.append(label);
-        strBuilder.append("</a>");
-        return strBuilder.toString();
-    }
-
     /**
      * Load the CSS File As String.
      *
@@ -284,7 +158,7 @@ public final class ConsoleRenderer implements ConsoleConstants {
      */
     static final String getCSS() {
         if (null == cssContent) {
-            cssContent = loadFileAsString(CSS_FILE);
+            cssContent = loadFileAsString(RESOURCE_CSS_FILE);
         }
         return cssContent;
     }
@@ -296,7 +170,7 @@ public final class ConsoleRenderer implements ConsoleConstants {
      */
     static final String getJS() {
         if (null == jsContent) {
-            jsContent = loadFileAsString(JS_FILE);
+            jsContent = loadFileAsString(RESOURCE_JS_FILE);
         }
         return jsContent;
     }

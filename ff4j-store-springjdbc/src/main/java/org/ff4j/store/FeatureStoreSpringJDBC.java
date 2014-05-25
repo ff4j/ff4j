@@ -97,7 +97,7 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
         }
         Feature fp = dbFlips.get(0);
         List<String> auths = getJdbcTemplate().query(SQL_GET_ROLES, new SingleColumnRowMapper<String>(), uid);
-        fp.getAuthorizations().addAll(auths);
+        fp.getPermissions().addAll(auths);
         return fp;
     }
 
@@ -120,8 +120,8 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
         }
         getJdbcTemplate().update(SQL_CREATE, fp.getUid(), fp.isEnable() ? 1 : 0, fp.getDescription(), strategyColumn,
                 expressionColumn, fp.getGroup());
-        if (fp.getAuthorizations() != null) {
-            for (String role : fp.getAuthorizations()) {
+        if (fp.getPermissions() != null) {
+            for (String role : fp.getPermissions()) {
                 getJdbcTemplate().update(SQL_ADD_ROLE, fp.getUid(), role);
             }
         }
@@ -138,8 +138,8 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
             throw new FeatureNotFoundException(uid);
         }
         Feature fp = read(uid);
-        if (fp.getAuthorizations() != null) {
-            for (String role : fp.getAuthorizations()) {
+        if (fp.getPermissions() != null) {
+            for (String role : fp.getPermissions()) {
                 getJdbcTemplate().update(SQL_DELETE_ROLE, fp.getUid(), role);
             }
         }
@@ -285,7 +285,7 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
         Map<String, Set<String>> roles = rrm.getRoles();
         for (String featId : roles.keySet()) {
             if (mapFP.containsKey(featId)) {
-                mapFP.get(featId).getAuthorizations().addAll(roles.get(featId));
+                mapFP.get(featId).getPermissions().addAll(roles.get(featId));
             }
         }
         return mapFP;
@@ -325,16 +325,16 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
 
         // To be deleted : not in second but in first
         Set<String> toBeDeleted = new HashSet<String>();
-        toBeDeleted.addAll(fpExist.getAuthorizations());
-        toBeDeleted.removeAll(fp.getAuthorizations());
+        toBeDeleted.addAll(fpExist.getPermissions());
+        toBeDeleted.removeAll(fp.getPermissions());
         for (String roleToBeDelete : toBeDeleted) {
             removeRoleFromFeature(fpExist.getUid(), roleToBeDelete);
         }
 
         // To be created : in second but not in first
         Set<String> toBeAdded = new HashSet<String>();
-        toBeAdded.addAll(fp.getAuthorizations());
-        toBeAdded.removeAll(fpExist.getAuthorizations());
+        toBeAdded.addAll(fp.getPermissions());
+        toBeAdded.removeAll(fpExist.getPermissions());
         for (String addee : toBeAdded) {
             grantRoleOnFeature(fpExist.getUid(), addee);
         }

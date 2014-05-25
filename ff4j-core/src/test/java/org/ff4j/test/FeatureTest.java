@@ -69,8 +69,8 @@ public class FeatureTest {
 
         // Authorization filling
         List<String> auths = Arrays.asList(new String[] {"something"});
-        empty.setAuthorizations(new HashSet<String>(auths));
-        Assert.assertNotNull(empty.getAuthorizations());
+        empty.setPermissions(new HashSet<String>(auths));
+        Assert.assertNotNull(empty.getPermissions());
 
         // Description setter
         empty.setDescription("OK");

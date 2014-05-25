@@ -130,6 +130,7 @@ public class FeatureJsonMarshallerTest implements TestConstantsFF4j {
         Feature[] start = new Feature[] {f1,f2,f3,f4};
         // When
         String expected = FeatureJsonMarshaller.marshallFeatureArray(start);
+        System.out.println(expected);
         Feature[] end = FeatureJsonMarshaller.unMarshallFeatureArray(expected);
         String actual = FeatureJsonMarshaller.marshallFeatureArray(end);
         // Then

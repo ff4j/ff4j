@@ -27,15 +27,6 @@ package org.ff4j.web.embedded;
  */
 public interface ConsoleConstants {
 
-    /** attribute name. */
-    String FF4J_SESSIONATTRIBUTE_NAME = "FF4J";
-    
-    /** ClassPath file which contains appendee of css. */
-    String CSS_FILE = "ff4j-embedded.css";
-
-    /** ClassPath file which contains appendee of js. */
-    String JS_FILE = "ff4j-embedded.js";
-
     /** File encoding. */
     String UTF8_ENCODING = "UTF-8";
 
@@ -48,14 +39,36 @@ public interface ConsoleConstants {
     /** Content type for response. */
     String CONTENT_TYPE_JS = "text/plain";
 
+    /** attribute name. */
+    String FF4J_SESSIONATTRIBUTE_NAME = "FF4J";
+
+    /** static resource param name. */
+    String RESOURCE = "rsc";
+
+    /** static resource paramv alue. */
+    String RESOURCE_CSS_PARAM = "css";
+
+    /** static resource file. */
+    String RESOURCE_CSS_FILE = "ff4j-embedded.css";
+
+    /** static resource param value. */
+    String RESOURCE_JS_PARAM = "js";
+
+    /** static resource file. */
+    String RESOURCE_JS_FILE = "ff4j-embedded.js";
+
+
+    /** POST - Operation. */
+    String OPERATION = "op";
+
+    /** User operation. */
+    String OP_CREATE_FEATURE = "create";
+
     /** User operation. */
     String OP_EDIT_FEATURE = "editfp";
 
     /** User operation: remove feature. */
     String OP_RMV_FEATURE = "rmvfp";
-
-    /** User operation. */
-    String OP_ADD_FEATURE = "addfp";
 
     /** User operation. */
     String OP_ENABLE = "enable";
@@ -75,11 +88,17 @@ public interface ConsoleConstants {
     /** User operation. */
     String OP_EXPORT = "export";
 
-    /** User operation. */
-    String OP_GETCSS = "getCSS";
+    /** templating. */
+    String KEY_SERVLET_CONTEXT = "SERVLET_CTX";
 
-    /** User operation. */
-    String OP_GETJS = "getJS";
+    /** templating. */
+    String KEY_FEATURE_ROWS = "FEATURE_ROWS";
+
+    /** templating. */
+    String KEY_GROUP_LIST = "GROUP_LIST";
+
+    /** templating alert. */
+    String KEY_ALERT_MESSAGE = "ALERT";
 
     /** HTTP Parameter. */
     String FEATID = "uid";
@@ -91,13 +110,7 @@ public interface ConsoleConstants {
     String DESCRIPTION = "desc";
 
     /** HTTP Parameter. */
-    String OPERATION = "op";
-
-    /** HTTP Parameter. */
     String FLIPFILE = "flipFile";
-
-    /** Parametre. */
-    String START_LINK = "<a href=\"";
 
     /** NewLine. */
     String NEW_LINE = System.getProperty("line.separator");
@@ -105,9 +118,5 @@ public interface ConsoleConstants {
     /** Header. */
     String TEMPLATE_FILE = "ff4j-template.html";
 
-    /** Table Header. */
-    String TEMPLATE_TABLE_HEADER = "ff4j-template-table-header.html";
 
-    /** Context Key. */
-    String KEY_CTX = "CTX";
 }

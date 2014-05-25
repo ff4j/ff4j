@@ -190,8 +190,8 @@ public class FF4j {
         if (getAuthorizationsManager() == null) {
             return true;
         }
-        Set<String> userRoles = getAuthorizationsManager().getAuthenticatedUserRoles();
-        for (String expectedRole : featureName.getAuthorizations()) {
+        Set<String> userRoles = getAuthorizationsManager().getCurrentUserPermissions();
+        for (String expectedRole : featureName.getPermissions()) {
             if (userRoles.contains(expectedRole)) {
                 return true;
             }

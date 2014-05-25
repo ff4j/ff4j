@@ -20,9 +20,6 @@ package org.ff4j.web.resources;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -36,6 +33,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.ff4j.FF4j;
+import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.utils.FeatureJsonMarshaller;
@@ -99,7 +97,7 @@ public class FF4jResource implements FF4jWebApiConstants {
     @Path(OPERATION_FLIP)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response isFlipped(MultivaluedMap<String, String> formParams) {
+    public Response check(MultivaluedMap<String, String> formParams) {
         // Expected FeatureUID
         if (!formParams.containsKey(POST_PARAMNAME_FEATURE_UID)) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -111,24 +109,18 @@ public class FF4jResource implements FF4jWebApiConstants {
         if (!ff4j.getStore().exist(uid)) {
             return Response.status(Response.Status.NOT_FOUND).entity(new FeatureNotFoundException(uid).getMessage()).build();
         }
-        // Custom parameters (by convention should be named PARAM_0, PARAM_1... PARAM_N)
-        int offset = 0;
-        List <Object> executionContext = new ArrayList<Object>();
-        while (formParams.containsKey(POST_PARAMNAME_CUSTOM_PREFIX + offset)) {
-            List<String> v = formParams.get(POST_PARAMNAME_CUSTOM_PREFIX + offset);
-            if (v.size() == 1) {
-                executionContext.add(formParams.getFirst(POST_PARAMNAME_CUSTOM_PREFIX + offset));
-            } else {
-                executionContext.add(formParams.get(POST_PARAMNAME_CUSTOM_PREFIX + offset));
-            }
-            offset++;
-        }
 
         // If specific strategy is defined
         boolean flipped = false;
         if (formParams.containsKey(POST_PARAMNAME_FLIPSTRATEGY)) {
             FlippingStrategy fs = FeatureJsonMarshaller.parseFlipStrategy(uid, formParams.getFirst(POST_PARAMNAME_FLIPSTRATEGY));
-            flipped = ff4j.checkOveridingStrategy(uid, fs);
+            FlippingExecutionContext fec = new FlippingExecutionContext();
+            for (String key : formParams.keySet()) {
+                if (!POST_PARAMNAME_FLIPSTRATEGY.equals(key) && !POST_PARAMNAME_FEATURE_UID.equals(key)) {
+                    fec.putString(key, formParams.getFirst(key));
+                }
+            }
+            flipped = ff4j.checkOveridingStrategy(uid, fs, fec);
         } else {
             flipped = ff4j.check(uid);
         }

@@ -62,8 +62,8 @@ public abstract class AbstractFf4jTest implements TestConstantsFF4j {
     public void setUp() throws Exception {
         // Create MOCK
         mockAuthManager = mock(AuthorizationsManager.class);
-        when(mockAuthManager.getAuthenticatedUserRoles()).thenReturn(new HashSet<String>(Arrays.asList(new String[] {"ROLEA"})));
-        when(mockAuthManager.getEveryOneRoles()).thenReturn(new HashSet<String>(Arrays.asList(new String[] {"ROLEA","ROLEB"})));
+        when(mockAuthManager.getCurrentUserPermissions()).thenReturn(new HashSet<String>(Arrays.asList(new String[] {"ROLEA"})));
+        when(mockAuthManager.listAllPermissions()).thenReturn(new HashSet<String>(Arrays.asList(new String[] {"ROLEA","ROLEB"})));
 
         // Create MOCK
         mockFlipStrategy = mock(FlippingStrategy.class);
@@ -87,7 +87,7 @@ public abstract class AbstractFf4jTest implements TestConstantsFF4j {
     @Test
     public void testMock() throws IOException {
         Assert.assertTrue(mockFlipStrategy.evaluate("", null, null));
-        Assert.assertEquals(mockAuthManager.getAuthenticatedUserRoles(),
+        Assert.assertEquals(mockAuthManager.getCurrentUserPermissions(),
                 new HashSet<String>(Arrays.asList(new String[] {"ROLEA"})));
     }
 

@@ -136,8 +136,8 @@ public class InMemoryFeatureStore implements FeatureStore {
         Feature fpExist = read(fp.getUid());
         // Checking new roles
         Set<String> toBeAdded = new HashSet<String>();
-        toBeAdded.addAll(fp.getAuthorizations());
-        toBeAdded.removeAll(fpExist.getAuthorizations());
+        toBeAdded.addAll(fp.getPermissions());
+        toBeAdded.removeAll(fpExist.getPermissions());
         for (String addee : toBeAdded) {
             // Will fail if invalid userrole
             grantRoleOnFeature(fpExist.getUid(), addee);
@@ -170,7 +170,7 @@ public class InMemoryFeatureStore implements FeatureStore {
         if (!exist(uid)) {
             throw new FeatureNotFoundException(uid);
         }
-        featuresMap.get(uid).getAuthorizations().add(roleName);
+        featuresMap.get(uid).getPermissions().add(roleName);
     }
 
     /** {@inheritDoc} */
@@ -185,7 +185,7 @@ public class InMemoryFeatureStore implements FeatureStore {
         if (!exist(uid)) {
             throw new FeatureNotFoundException(uid);
         }
-        featuresMap.get(uid).getAuthorizations().remove(roleName);
+        featuresMap.get(uid).getPermissions().remove(roleName);
     }
 
     /** {@inheritDoc} */

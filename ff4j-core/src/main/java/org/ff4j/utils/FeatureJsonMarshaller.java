@@ -57,7 +57,7 @@ public final class FeatureJsonMarshaller {
         jsonOutput.append(",");
         jsonOutput.append(renderAttributeString("group", feature.getGroup()));
         // Authorizations
-        jsonOutput.append(renderAuthorizations(feature.getAuthorizations()));
+        jsonOutput.append(renderAuthorizations(feature.getPermissions()));
         // Flipping strategy
         jsonOutput.append(renderFlippingStrategy(feature.getFlippingStrategy()));
         jsonOutput.append("}");
@@ -77,7 +77,7 @@ public final class FeatureJsonMarshaller {
         // 2 - isolated flipstrategy
         String[] fs = expected.split(",\"flippingStrategy\":");
         // 3 - isolated authorization
-        String[] auths = fs[0].split(",\"authorizations\":");
+        String[] auths = fs[0].split(",\"permissions\":");
         // 4 - Parse
         expected = auths[0];
         Map<String, String> mapOfAttributes = parseJsonAttributes(expected.split(","));
@@ -92,7 +92,7 @@ public final class FeatureJsonMarshaller {
         // Strategy
         targetFeature.setFlippingStrategy(parseFlipStrategy(targetFeature.getUid(), fs[1]));
         // Authorizations
-        targetFeature.setAuthorizations(parseAuthorizations(auths[1]));
+        targetFeature.setPermissions(parseAuthorizations(auths[1]));
         return targetFeature;
     }
 
@@ -264,7 +264,7 @@ public final class FeatureJsonMarshaller {
      * @return json string
      */
     private static String renderAuthorizations(Set<String> auths) {
-        StringBuilder jsonOutput = new StringBuilder(",\"authorizations\":");
+        StringBuilder jsonOutput = new StringBuilder(",\"permissions\":");
         if (auths == null) {
             jsonOutput.append(NULL_JSON);
         } else {

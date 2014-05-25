@@ -155,9 +155,10 @@ public class AssertFf4j {
      */
     public AssertFf4j assertThatFeatureHasRole(String featureName, String roleName) {
         assertThatFeatureExist(featureName);
-        Assert.assertTrue("'" + featureName + "' has no roles", !ff4j.getFeature(featureName).getAuthorizations().isEmpty());
+        Assert.assertTrue("'" + featureName + "' has no roles", !ff4j.getFeature(featureName).getPermissions().isEmpty());
         Assert.assertTrue("'" + featureName + "' has not role '" + roleName + "'", ff4j.getFeature(featureName)
-                .getAuthorizations().contains(roleName));
+.getPermissions()
+                .contains(roleName));
         return this;
     }
 
@@ -172,7 +173,7 @@ public class AssertFf4j {
      */
     public AssertFf4j assertThatFeatureHasNotRole(String featureName, String roleName) {
         assertThatFeatureExist(featureName);
-        Assert.assertFalse(ff4j.getFeature(featureName).getAuthorizations().contains(roleName));
+        Assert.assertFalse(ff4j.getFeature(featureName).getPermissions().contains(roleName));
         return this;
     }
 

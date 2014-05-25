@@ -47,7 +47,7 @@ public class FeatureResource_putUpdateAuth1_TestIT extends AbstractWebResourceTe
         assertFF4J.assertThatFeatureHasNotRole(F1, ROLE_NEW);
         // When
         Feature fNew = ff4j.getFeature(F1);
-        fNew.getAuthorizations().add(ROLE_NEW);
+        fNew.getPermissions().add(ROLE_NEW);
         WebResource webResFeat = resourceFeatures().path(F1);
         ClientResponse res = webResFeat.put(ClientResponse.class, fNew.toString().getBytes());
         // Then HTTPResponse

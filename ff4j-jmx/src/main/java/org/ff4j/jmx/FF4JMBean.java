@@ -97,8 +97,8 @@ public class FF4JMBean {
      */
     @ManagedOperation(description = "Returns feature authentication roles")
     @ManagedOperationParameters({@ManagedOperationParameter(name = "featureId", description = "Identifier of feature to get Roles")})
-    public Set<String> getFeatureAuthRoles(String featureId) {
-        return getFf4j().getFeature(featureId).getAuthorizations();
+    public Set<String> getPermissions(String featureId) {
+        return getFf4j().getFeature(featureId).getPermissions();
     }
 
     /**

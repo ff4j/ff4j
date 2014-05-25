@@ -60,7 +60,7 @@ public class Feature implements Serializable {
     private String group;
 
     /** if not empty and @see {@link org.ff4j.security.AuthorizationsManager} provided, limit usage to this roles. */
-    private Set<String> authorizations = new TreeSet<String>();
+    private Set<String> permissions = new TreeSet<String>();
 
     /** Custom behaviour to define if feature if enable or not e.g. A/B Testing capabilities. */
     private FlippingStrategy flippingStrategy;
@@ -139,7 +139,7 @@ public class Feature implements Serializable {
             final Collection<String> auths) {
         this(uid, penable, pdescription, group);
         if (auths != null && !auths.isEmpty()) {
-            this.authorizations = new HashSet<String>(auths);
+            this.permissions = new HashSet<String>(auths);
         }
     }
 
@@ -248,25 +248,6 @@ public class Feature implements Serializable {
     }
 
     /**
-     * Getter accessor for attribute 'authorizations'.
-     *
-     * @return current value of 'authorizations'
-     */
-    public Set<String> getAuthorizations() {
-        return authorizations;
-    }
-
-    /**
-     * Setter accessor for attribute 'authorizations'.
-     *
-     * @param authorizations
-     *            new value for 'authorizations '
-     */
-    public void setAuthorizations(Set<String> authorizations) {
-        this.authorizations = authorizations;
-    }
-
-    /**
      * Getter accessor for attribute 'flippingStrategy'.
      *
      * @return current value of 'flippingStrategy'
@@ -302,6 +283,25 @@ public class Feature implements Serializable {
      */
     public void setGroup(String group) {
         this.group = group;
+    }
+
+    /**
+     * Getter accessor for attribute 'permissions'.
+     *
+     * @return current value of 'permissions'
+     */
+    public Set<String> getPermissions() {
+        return permissions;
+    }
+
+    /**
+     * Setter accessor for attribute 'permissions'.
+     * 
+     * @param permissions
+     *            new value for 'permissions '
+     */
+    public void setPermissions(Set<String> permissions) {
+        this.permissions = permissions;
     }
 
 }

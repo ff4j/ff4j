@@ -52,7 +52,7 @@ public final class FeatureDBObjectMapper implements FeatureStoreMongoConstants {
         Feature f = new Feature(featUid, status);
         f.setDescription((String) dbObject.get(DESCRIPTION));
         f.setGroup((String) dbObject.get(GROUPNAME));
-        f.setAuthorizations(mapAuthorization(dbObject));
+        f.setPermissions(mapAuthorization(dbObject));
         f.setFlippingStrategy(mapStrategy(featUid, dbObject));
         return f;
     }
@@ -77,7 +77,7 @@ public final class FeatureDBObjectMapper implements FeatureStoreMongoConstants {
                 addGroupName(feature.getGroup()).//
                 addStrategy(strategyColumn).//
                 addExpression(expressionColumn).//
-                addRoles(feature.getAuthorizations()).build();
+                addRoles(feature.getPermissions()).build();
     }
 
     /**

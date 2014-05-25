@@ -45,7 +45,7 @@ public class RedisCacheManagerTestIT implements TestsFf4jConstants {
         // Retrieve object
         Feature fcached = cache.get(F4);
         Assert.assertEquals(fcached.getUid(), fold.getUid());
-        Assert.assertEquals(fcached.getAuthorizations(), fold.getAuthorizations());
+        Assert.assertEquals(fcached.getPermissions(), fold.getPermissions());
 
     }
 }

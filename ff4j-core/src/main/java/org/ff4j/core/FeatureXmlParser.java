@@ -199,7 +199,7 @@ public class FeatureXmlParser {
         // Security
         NodeList securities = featXmlTag.getElementsByTagName(SECURITY_TAG);
         if (securities.getLength() > 0) {
-            f.setAuthorizations(parseListAuthorizations((Element) securities.item(0)));
+            f.setPermissions(parseListAuthorizations((Element) securities.item(0)));
         }
 
         return f;
@@ -335,8 +335,8 @@ public class FeatureXmlParser {
         if (mapOfFeatures != null && !mapOfFeatures.isEmpty()) {
             for (Feature feat : mapOfFeatures.values()) {
                 strBuilder.append(MessageFormat.format(XML_FEATURE, feat.getUid(), feat.getDescription(), feat.isEnable()));
-                if (feat.getAuthorizations() != null && !feat.getAuthorizations().isEmpty()) {
-                    for (String auth : feat.getAuthorizations()) {
+                if (feat.getPermissions() != null && !feat.getPermissions().isEmpty()) {
+                    for (String auth : feat.getPermissions()) {
                         strBuilder.append(MessageFormat.format(XML_AUTH, auth));
                     }
                 }

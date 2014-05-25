@@ -125,7 +125,7 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
             ps.setString(1, uid);
             rs = ps.executeQuery();
             while (rs.next()) {
-                f.getAuthorizations().add(rs.getString("ROLE_NAME"));
+                f.getPermissions().add(rs.getString("ROLE_NAME"));
             }
             return f;
         } catch (SQLException sqlEX) {
@@ -205,8 +205,8 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
             ps.executeUpdate();
 
             // Create roles
-            if (fp.getAuthorizations() != null) {
-                for (String role : fp.getAuthorizations()) {
+            if (fp.getPermissions() != null) {
+                for (String role : fp.getPermissions()) {
                     ps = sqlConn.prepareStatement(SQL_ADD_ROLE);
                     ps.setString(1, fp.getUid());
                     ps.setString(2, role);
@@ -244,8 +244,8 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
             sqlConn.setAutoCommit(false);
 
             // Delete Roles
-            if (fp.getAuthorizations() != null) {
-                for (String role : fp.getAuthorizations()) {
+            if (fp.getPermissions() != null) {
+                for (String role : fp.getPermissions()) {
                     ps = sqlConn.prepareStatement(SQL_DELETE_ROLE);
                     ps.setString(1, fp.getUid());
                     ps.setString(2, role);
@@ -356,7 +356,7 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
             rs = ps.getConnection().prepareStatement(SQL_GET_ALLROLES).executeQuery();
             while (rs.next()) {
                 String uid = rs.getString(COL_ROLE_FEATID);
-                mapFP.get(uid).getAuthorizations().add(rs.getString(COL_ROLE_ROLENAME));
+                mapFP.get(uid).getPermissions().add(rs.getString(COL_ROLE_ROLENAME));
             }
             return mapFP;
 
@@ -414,16 +414,16 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
 
         // To be deleted : not in second but in first
         Set<String> toBeDeleted = new HashSet<String>();
-        toBeDeleted.addAll(fpExist.getAuthorizations());
-        toBeDeleted.removeAll(fp.getAuthorizations());
+        toBeDeleted.addAll(fpExist.getPermissions());
+        toBeDeleted.removeAll(fp.getPermissions());
         for (String roleToBeDelete : toBeDeleted) {
             removeRoleFromFeature(fpExist.getUid(), roleToBeDelete);
         }
 
         // To be created : in second but not in first
         Set<String> toBeAdded = new HashSet<String>();
-        toBeAdded.addAll(fp.getAuthorizations());
-        toBeAdded.removeAll(fpExist.getAuthorizations());
+        toBeAdded.addAll(fp.getPermissions());
+        toBeAdded.removeAll(fpExist.getPermissions());
         for (String addee : toBeAdded) {
             grantRoleOnFeature(fpExist.getUid(), addee);
         }
@@ -502,7 +502,7 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
                 String uid = rs.getString(COL_ROLE_FEATID);
                 // only feature in the group must be processed
                 if (mapFP.containsKey(uid)) {
-                    mapFP.get(uid).getAuthorizations().add(rs.getString(COL_ROLE_ROLENAME));
+                    mapFP.get(uid).getPermissions().add(rs.getString(COL_ROLE_ROLENAME));
                 }
             }
             return mapFP;

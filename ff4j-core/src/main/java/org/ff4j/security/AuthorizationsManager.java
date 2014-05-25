@@ -28,7 +28,7 @@ public interface AuthorizationsManager {
      * 
      * @return
      */
-    Set<String> getAuthenticatedUserRoles();
+    Set<String> getCurrentUserPermissions();
 
     /**
      * Retrieves user roles from all users (if available, for spring security it's not available out-of-the-box and should be
@@ -36,6 +36,6 @@ public interface AuthorizationsManager {
      * 
      * @return list of all userroles availables
      */
-    Set<String> getEveryOneRoles();
+    Set<String> listAllPermissions();
 
 }

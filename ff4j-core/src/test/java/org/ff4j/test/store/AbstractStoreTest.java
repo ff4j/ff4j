@@ -91,7 +91,7 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         Feature f = features.get(F4);
         Assert.assertEquals(F4 + " does not exist", f.getUid(), F4);
         Assert.assertTrue("no description", f.getDescription() != null && !"".equals(f.getDescription()));
-        Assert.assertTrue("no authorizations", f.getAuthorizations() != null && !f.getAuthorizations().isEmpty());
+        Assert.assertTrue("no authorizations", f.getPermissions() != null && !f.getPermissions().isEmpty());
         assertFf4j.assertThatFeatureHasRole(F4, ROLE_ADMIN);
         assertFf4j.assertThatFeatureIsInGroup(F4, G1);
     }
@@ -130,7 +130,7 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         // Then
         Assert.assertEquals(f.getUid(), F4);
         Assert.assertTrue(f.getDescription() != null && !"".equals(f.getDescription()));
-        Assert.assertTrue(f.getAuthorizations() != null && !f.getAuthorizations().isEmpty());
+        Assert.assertTrue(f.getPermissions() != null && !f.getPermissions().isEmpty());
         assertFf4j.assertThatFeatureHasRole(F4, ROLE_ADMIN);
         assertFf4j.assertThatFeatureIsInGroup(F4, G1);
     }
@@ -507,7 +507,7 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         assertFf4j.assertThatFeatureHasNotRole(F1, ROLE_ADMIN);
         // When
         Feature fpBis = testedStore.read(F1);
-        fpBis.setAuthorizations(rights2);
+        fpBis.setPermissions(rights2);
         testedStore.update(fpBis);
         // Then
         assertFf4j.assertThatFeatureHasRole(F1, ROLE_USER);

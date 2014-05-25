@@ -47,8 +47,8 @@ public class FeatureXmlParserTest {
         Assert.assertEquals(7, features.size());
         Assert.assertTrue(features.containsKey("f0"));
         Assert.assertNotNull(features.get("f0").getDescription());
-        Assert.assertNotNull(features.get("f0").getAuthorizations());
-        Assert.assertEquals(2, features.get("f0").getAuthorizations().size());
+        Assert.assertNotNull(features.get("f0").getPermissions());
+        Assert.assertEquals(2, features.get("f0").getPermissions().size());
         Assert.assertNotNull(features.get("f0").getFlippingStrategy());
         Assert.assertEquals(1, features.get("f0").getFlippingStrategy().getInitParams().size());
         Assert.assertNotNull(features.get("f0").getGroup());
