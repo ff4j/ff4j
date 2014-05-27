@@ -74,7 +74,12 @@
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-client</artifactId>
 		</dependency>
-
+		<!-- logs -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+		</dependency>
+		
 		<!-- Tests -->
 		<dependency>
 			<artifactId>ff4j-test</artifactId>

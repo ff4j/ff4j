@@ -29,7 +29,6 @@ import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.el.ExpressionFlipStrategy;
 import org.ff4j.utils.FeatureJsonMarshaller;
 import org.junit.Test;
-import org.springframework.expression.Expression;
 
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.core.util.MultivaluedMapImpl;

@@ -52,10 +52,11 @@ public final class ConsoleRenderer implements ConsoleConstants {
      *            current http request
      * @return current text part as string
      */
-    static final String getTemplate(HttpServletRequest req) {
+    static final String renderTemplate(HttpServletRequest req) {
         if (htmlTemplate == null || htmlTemplate.isEmpty()) {
             String ctx = req.getContextPath() + req.getServletPath() + "";
-            htmlTemplate = loadFileAsString(TEMPLATE_FILE).replaceAll("\\{" + KEY_SERVLET_CONTEXT + "\\}", ctx);
+            htmlTemplate = loadFileAsString(TEMPLATE_FILE);
+            htmlTemplate = htmlTemplate.replaceAll("\\{" + KEY_SERVLET_CONTEXT + "\\}", ctx);
         }
         return htmlTemplate;
     }
@@ -138,18 +139,22 @@ public final class ConsoleRenderer implements ConsoleConstants {
             sb.append("</a>");
             sb.append("</td></tr>");
         }
-        return null;
+        return sb.toString();
     }
     
     static String renderMessageBox(String message, String type) {
         StringBuilder sb = new StringBuilder();
-        sb.append("<p><div class=\"alert alert-" + type + "\" style=\"margin-top:25px;margin-left:15px\" >");
-        sb.append("<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>");
-        sb.append(message);
-        sb.append(ConsoleRenderer.class.getPackage().getImplementationVersion());
-        sb.append("</div>");
+        // Display Message box
+        if (message != null && !message.isEmpty()) {
+            sb.append("<p><div class=\"alert alert-" + type + "\" style=\"margin-top:25px;margin-left:15px\" >");
+            sb.append("<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>");
+            sb.append(message);
+            sb.append(ConsoleRenderer.class.getPackage().getImplementationVersion());
+            sb.append("</div>");
+        }
         return sb.toString();
     }
+
 
     /**
      * Load the CSS File As String.

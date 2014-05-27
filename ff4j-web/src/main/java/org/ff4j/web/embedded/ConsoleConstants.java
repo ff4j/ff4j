@@ -89,7 +89,7 @@ public interface ConsoleConstants {
     String OP_EXPORT = "export";
 
     /** templating. */
-    String KEY_SERVLET_CONTEXT = "SERVLET_CTX";
+    String KEY_SERVLET_CONTEXT = "SERVLET_CONTEXT";
 
     /** templating. */
     String KEY_FEATURE_ROWS = "FEATURE_ROWS";

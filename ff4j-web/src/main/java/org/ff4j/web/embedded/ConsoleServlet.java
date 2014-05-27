@@ -33,6 +33,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureXmlParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Unique Servlet to manage FlipPoints and security
@@ -41,17 +43,24 @@ import org.ff4j.core.FeatureXmlParser;
  */
 public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
 
-    /** serial number. */
-    private static final long serialVersionUID = -3982043895954284269L;
-
     /** Buffer size. */
     private static final int BUFFER_SIZE = 4096;
 
+    /** serial number. */
+    private static final long serialVersionUID = -3982043895954284269L;
+
+    /** Parameter for this Servlet. */
     private static final String PROVIDER_PARAM_NAME = "ff4jProvider";
+
+    /** Logger for this class. */
+    public static Logger LOGGER = LoggerFactory.getLogger("FF4J");
 
     /** initializing ff4j provider. */
     private ConsoleFF4JProvider ff4jProvider = null;
     
+    /** instance of ff4j. */
+    private FF4j ff4j = null;
+
     /**
      * Servlet initialization, init FF4J from "ff4jProvider" attribute Name.
      *
@@ -62,31 +71,27 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
      */
     @Override
     public void init(ServletConfig servletConfig) throws ServletException {
+        LOGGER.debug("Initializing Embedded Servlet");
         String className = servletConfig.getInitParameter(PROVIDER_PARAM_NAME);
         try {
             Class<?> c = Class.forName(className);
             Object o = c.newInstance();
             ff4jProvider = (ConsoleFF4JProvider) o;
+            LOGGER.info("FF4J Provider has been successfully loaded with {}", className);
         } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException(
-"Cannot load  " + ff4jProvider
-                    + "  within 'EmbeddedConsoleServlet' check 'ff4jProvider' param value", e);
+            throw new IllegalArgumentException("Cannot load ff4jProvider as " + ff4jProvider, e);
         } catch (InstantiationException e) {
-            throw new IllegalArgumentException(
-"Cannot instanciate  " + ff4jProvider
-                    + "  within 'EmbeddedConsoleServlet' check 'ff4jProvider' param value", e);
+            throw new IllegalArgumentException("Cannot instanciate  " + ff4jProvider + " as ff4jProvider", e);
         } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(
-"Cannot instanciate " + ff4jProvider
-                    + " within 'EmbeddedConsoleServlet' check 'ff4jProvider' no public constructor ?",
-                    e);
+            throw new IllegalArgumentException("No public constructor for  " + ff4jProvider + " as ff4jProvider", e);
         } catch (ClassCastException ce) {
-            throw new IllegalArgumentException(
-                    "Invalid 'ff4jProvider' in 'EmbeddedConsoleServlet' not instance of 'EmbeddedConsoleFF4JProvider'", ce);
+            throw new IllegalArgumentException("ff4jProvider expected instance of " + ConsoleFF4JProvider.class, ce);
         }
         
         // Put the FF4J in ApplicationScope (useful for tags)
-        servletConfig.getServletContext().setAttribute(FF4J_SESSIONATTRIBUTE_NAME, ff4jProvider.getFF4j());
+        ff4j = ff4jProvider.getFF4j();
+        servletConfig.getServletContext().setAttribute(FF4J_SESSIONATTRIBUTE_NAME, ff4j);
+        LOGGER.debug("Servlet has been initialized and ff4j store in session with {} ", ff4j.getFeatures().size());
     }
 
     /** {@inheritDoc} */
@@ -102,14 +107,16 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
             // Serve static resource file as CSS and Javascript
             String resources = req.getParameter(RESOURCE);
             if (resources != null && !resources.isEmpty()) {
-                //
+                LOGGER.debug("GET Access to console to retrieve resource {}", resources);
                 if (RESOURCE_CSS_PARAM.equalsIgnoreCase(resources)) {
                     res.setContentType(CONTENT_TYPE_CSS);
                     res.getWriter().println(ConsoleRenderer.getCSS());
+                    LOGGER.debug("Retrieving CSS");
                     return;
-                } else if (RESOURCE_JS_FILE.equalsIgnoreCase(resources)) {
+                } else if (RESOURCE_JS_PARAM.equalsIgnoreCase(resources)) {
                     res.setContentType(CONTENT_TYPE_JS);
                     res.getWriter().println(ConsoleRenderer.getJS());
+                    LOGGER.debug("Retrieving JS");
                     return;
                 }
                 
@@ -118,6 +125,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
             // Serve operation from GET
             String operation = req.getParameter(OPERATION);
             if (operation != null && !operation.isEmpty()) {
+                LOGGER.debug("GET Access to console for operation {}", resources);
                 if (OP_DISABLE.equalsIgnoreCase(operation)) {
                     opDisableFeature(req);
                     message = buildMessage(req.getParameter(FEATID), "DISABLED");
@@ -245,29 +253,26 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
      * @throws IOException
      *             error during populating http response
      */
-    private void renderPage(HttpServletRequest req, HttpServletResponse res, String message, String messagetype)
+    private void renderPage(HttpServletRequest req, HttpServletResponse res, String msg, String msgType)
             throws IOException {
         res.setContentType(CONTENT_TYPE_HTML);
         PrintWriter out = res.getWriter();
 
         // Header of the page
-        String htmlContent = ConsoleRenderer.getTemplate(req);
+        String htmlContent = ConsoleRenderer.renderTemplate(req);
 
         // Subsctitution FEATURE_ROWS
-        htmlContent = htmlContent.replaceAll("\\{" + KEY_ALERT_MESSAGE + "\\}", "");
+        final String msgBox = ConsoleRenderer.renderMessageBox(msg, msgType);
+        htmlContent = htmlContent.replaceAll("\\{" + KEY_ALERT_MESSAGE + "\\}", msgBox);
 
         // Subsctitution FEATURE_ROWS
-        htmlContent = htmlContent.replaceAll("\\{" + KEY_FEATURE_ROWS + "\\}", "");
+        final String rows = ConsoleRenderer.renderFeatureRows(ff4j, req);
+        htmlContent = htmlContent.replaceAll("\\{" + KEY_FEATURE_ROWS + "\\}", rows);
 
         // Substitution GROUP_LIST
         htmlContent = htmlContent.replaceAll("\\{" + KEY_GROUP_LIST + "\\}", "");
 
-        out.println();
-
-        // Display Message box
-        if (message != null && !message.isEmpty()) {
-            out.println(ConsoleRenderer.renderMessageBox(message, messagetype));
-        }
+        out.println(htmlContent);
 
     }
 
@@ -390,7 +395,10 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
      * @return current value of 'ff4j'
      */
     public FF4j getFf4j() {
-        return ff4jProvider.getFF4j();
+        if (ff4j == null) {
+            throw new IllegalStateException("Console Servlet has not been initialized, please set 'load-at-startup' to 1");
+        }
+        return ff4j;
     }
 
 }

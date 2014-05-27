@@ -7,8 +7,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   
   <title>FF4J - Embedded Administration Console</title>
-  <link href="${SERVLET_CONTEXT}?rsc=css" rel="stylesheet">
-  <script type="text/javascript" charset="utf-8" language="javascript" src="${SERVLET_CONTEXT}?rsc=js"></script>
+  <link href="{SERVLET_CONTEXT}?rsc=css" rel="stylesheet">
+  <script type="text/javascript" charset="utf-8" language="javascript" src="{SERVLET_CONTEXT}?rsc=js"></script>
+  
 </head>
 
 <body style="background-color:white">
@@ -42,7 +43,7 @@
           </a>
         </li>
         <li>
-          <a href="${SERVLET_CONTEXT}?op=export">
+          <a href="{SERVLET_CONTEXT}?op=export">
             <i class="shortcut-icon icon-download-alt"></i>
             <span>Export XML</span>
           </a>
@@ -66,7 +67,7 @@
  <!-- Container for all -->
  <div class="container">
 
-${ALERT}
+{ALERT}
 
  <!-- Table of Features -->
  <div class="widget widget-table action-table">
@@ -87,7 +88,7 @@ ${ALERT}
       </tr>
     </thead>
     <tbody> 
-      ${FEATURE_ROWS}
+      {FEATURE_ROWS}
     </tbody>
    </table>
   
@@ -95,16 +96,11 @@ ${ALERT}
  </div> <!-- /widget --> 
 </div> <!-- /container --> 
 
-<a data-toggle="modal" href="#modalEdit" data-id="sayHello" data-desc="my first feature"
-		style="width:6px;" class="open-EditFlipDialog btn">
-        <i class="icon-pencil" style="margin-left:-5px;"></i>
-</a>
-
 <!-- ******************* -->
 <!-- ** Creation FORM ** -->
 <!-- ******************* -->
 
-<form class="form-horizontal" action="${SERVLET_CTX}" method="POST" >
+<form class="form-horizontal" action="{SERVLET_CONTEXT}" method="POST" >
 
  <div class="modal hide fade" id="modalCreate" tabindex="-1" role="dialog" aria-labelledby="labelCreate" aria-hidden="true">
   
@@ -144,7 +140,7 @@ ${ALERT}
               <span class="sr-only"><i class="icon-inbox icon-white" ></i></span>
             </button>
             <ul class="dropdown-menu" role="menu" style="width:250px;font-style:normal;color:#696969">
-              ${GROUP_LIST}
+              {GROUP_LIST}
               <li class="divider"></li>
               <li><a href="javascript:$('#group').val('');">None</a></li>
             </ul>
@@ -221,7 +217,7 @@ ${ALERT}
 <!-- ******************* -->
 <!-- ** TOGGLE GROUP  ** -->
 <!-- ******************* -->
-<form action="${SERVLET_CONTEXT}" method="POST" enctype="multipart/form-data" >
+<form action="{SERVLET_CONTEXT}" method="POST" enctype="multipart/form-data" >
 
   <div class="modal hide fade" id="modalToggle" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     
@@ -242,7 +238,7 @@ ${ALERT}
               <span class="sr-only"><i class="icon-inbox icon-white" ></i></span>
             </button>
             <ul class="dropdown-menu" role="menu" style="width:250px;font-style:normal;color:#696969">
-              ${GROUP_LIST}
+             	{GROUP_LIST}
               <li class="divider"></li>
               <li><a href="javascript:$('#group').val('');">None</a></li>
             </ul>
@@ -263,7 +259,7 @@ ${ALERT}
 <!-- ******************* -->
 <!-- ** IMPORT MODAL  ** -->
 <!-- ******************* -->
-<form action="${SERVLET_CONTEXT}" method="POST" enctype="multipart/form-data" >
+<form action="{SERVLET_CONTEXT}" method="POST" enctype="multipart/form-data" >
 
   <div class="modal hide fade" id="modalImport" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     
@@ -289,7 +285,7 @@ ${ALERT}
 <!-- ******************* -->
 <!-- ** EDIT FORM ** -->
 <!-- ******************* -->
-<form class="form-horizontal" action="${SERVLET_CONTEXT}" method="GET" >
+<form class="form-horizontal" action="{SERVLET_CONTEXT}" method="GET" >
   <div class="modal hide fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     
     <div class="modal-header">
@@ -327,7 +323,7 @@ ${ALERT}
               <span class="sr-only"><i class="icon-inbox icon-white" ></i></span>
             </button>
             <ul class="dropdown-menu" role="menu" style="width:250px;font-style:normal;color:#696969">
-              ${GROUP_LIST}
+              {GROUP_LIST}
               <li class="divider"></li>
               <li><a href="javascript:$('#group').val('');">None</a></li>
             </ul>
