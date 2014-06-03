@@ -27,8 +27,8 @@ package org.ff4j.web.embedded;
  */
 public interface ConsoleConstants {
 
-    /** File encoding. */
-    String UTF8_ENCODING = "UTF-8";
+    
+    // -------- CONTENT-TYPE ------------------------------
 
     /** Content type for response. */
     String CONTENT_TYPE_HTML = "text/html";
@@ -39,8 +39,8 @@ public interface ConsoleConstants {
     /** Content type for response. */
     String CONTENT_TYPE_JS = "text/plain";
 
-    /** attribute name. */
-    String FF4J_SESSIONATTRIBUTE_NAME = "FF4J";
+
+    // -------- RESOURCES ------------------------------
 
     /** static resource param name. */
     String RESOURCE = "rsc";
@@ -58,17 +58,25 @@ public interface ConsoleConstants {
     String RESOURCE_JS_FILE = "ff4j-embedded.js";
 
 
+    // -------- OPERATIONS ------------------------------
+
     /** POST - Operation. */
     String OPERATION = "op";
+
+    /** POST - Operation. */
+    String SUBOPERATION = "ope";
 
     /** User operation. */
     String OP_CREATE_FEATURE = "create";
 
     /** User operation. */
-    String OP_EDIT_FEATURE = "editfp";
+    String OP_EDIT_FEATURE = "update";
 
     /** User operation: remove feature. */
-    String OP_RMV_FEATURE = "rmvfp";
+    String OP_RMV_FEATURE = "delete";
+
+    /** User operation. */
+    String OP_TOGGLE_GROUP = "toggleGroup";
 
     /** User operation. */
     String OP_ENABLE = "enable";
@@ -77,28 +85,43 @@ public interface ConsoleConstants {
     String OP_DISABLE = "disable";
 
     /** User operation. */
-    String OP_ADD_ROLE = "addrole";
-
-    /** User operation. */
-    String OP_RMV_ROLE = "rmvrole";
-
-    /** User operation. */
     String OP_IMPORT = "import";
 
     /** User operation. */
     String OP_EXPORT = "export";
 
+
+    // -------- TEMPLATING ------------------------------
+
+    /** Header. */
+    String TEMPLATE_FILE = "ff4j-template.html";
+
     /** templating. */
     String KEY_SERVLET_CONTEXT = "SERVLET_CONTEXT";
+
+    /** templating. */
+    String KEY_VERSION = "VERSION";
 
     /** templating. */
     String KEY_FEATURE_ROWS = "FEATURE_ROWS";
 
     /** templating. */
-    String KEY_GROUP_LIST = "GROUP_LIST";
+    String KEY_GROUP_LIST_EDIT = "FEATURE_GRPS_EDIT";
+
+    /** templating. */
+    String KEY_GROUP_LIST_CREATE = "FEATURE_GRPS_CREATE";
+
+    /** templating. */
+    String KEY_GROUP_LIST_TOGGLE = "FEATURE_GRPS_TOGGLE";
 
     /** templating alert. */
     String KEY_ALERT_MESSAGE = "ALERT";
+
+    /** templating. */
+    String KEY_PERMISSIONLIST = "PERMISSIONS";
+
+
+    // -------- FORM PARAM ------------------------------
 
     /** HTTP Parameter. */
     String FEATID = "uid";
@@ -111,12 +134,52 @@ public interface ConsoleConstants {
 
     /** HTTP Parameter. */
     String FLIPFILE = "flipFile";
+    
+    /** HTTP Parameter. */
+    String GROUPNAME = "groupName";
+
+    /** HTTP Parameter. */
+    String STRATEGY = "strategy";
+    
+    /** HTTP Parameter. */
+    String STRATEGY_INIT = "initParams";
+
+    /** HTTP Parameter. */
+    String PERMISSION = "permission";
+
+    // -------- MISC ------------------------------
+
+    /** File encoding. */
+    String UTF8_ENCODING = "UTF-8";
 
     /** NewLine. */
     String NEW_LINE = System.getProperty("line.separator");
 
-    /** Header. */
-    String TEMPLATE_FILE = "ff4j-template.html";
+    /** buffer size. */
+    int BUFFER_SIZE = 4096;
 
+    /** servlet init param. */
+    String PROVIDER_PARAM_NAME = "ff4jProvider";
+
+    /** attribute name. */
+    String FF4J_SESSIONATTRIBUTE_NAME = "FF4J";
+
+    /** attribute name. */
+    String PREFIX_CHECKBOX = "perm-check-";
+
+    /** permission. */
+    String PERMISSION_PUBLIC = "Public";
+
+    /** permission. */
+    String PERMISSION_RESTRICTED = "Restricted";
+
+    /** modal id. */
+    String MODAL_EDIT = "modalEdit";
+
+    /** modal ID. */
+    String MODAL_CREATE = "modalCreate";
+
+    /** modal ID. */
+    String MODAL_TOGGLE = "modalToggle";
 
 }

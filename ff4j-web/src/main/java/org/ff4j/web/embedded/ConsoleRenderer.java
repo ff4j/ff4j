@@ -45,6 +45,9 @@ public final class ConsoleRenderer implements ConsoleConstants {
     /** fin de ligne. **/
     static final String END_OF_LINE = "\r\n";
 
+    /** Get version of the component. */
+    static final String FF4J_VERSION = ConsoleRenderer.class.getPackage().getImplementationVersion();
+
     /**
      * Load HTML template file and substitute by current URL context path
      * 
@@ -57,6 +60,7 @@ public final class ConsoleRenderer implements ConsoleConstants {
             String ctx = req.getContextPath() + req.getServletPath() + "";
             htmlTemplate = loadFileAsString(TEMPLATE_FILE);
             htmlTemplate = htmlTemplate.replaceAll("\\{" + KEY_SERVLET_CONTEXT + "\\}", ctx);
+            htmlTemplate = htmlTemplate.replaceAll("\\{" + KEY_VERSION + "\\}", FF4J_VERSION);
         }
         return htmlTemplate;
     }
@@ -75,20 +79,26 @@ public final class ConsoleRenderer implements ConsoleConstants {
             sb.append("<tr>" + END_OF_LINE);
             
             // Column with uid and description as tooltip
-            sb.append("<td><a class=\"ff4j-tooltip\" tooltip=\"");
-            sb.append(currentFeature.getDescription());
-            sb.append("\">");
+            sb.append("<td><a class=\"ff4j-tooltip\" ");
+            if (null != currentFeature.getDescription()) {
+                sb.append(" tooltip=\"");
+                sb.append(currentFeature.getDescription());
+                sb.append("\"");
+            }
+            sb.append(">");
             sb.append(currentFeature.getUid());
             sb.append("</a>");
             
             // Colonne Group
-            sb.append("</td><td>&nbsp;");
-            if (currentFeature.getGroup() != null) {
+            sb.append("</td><td>");
+            if (null != currentFeature.getGroup()) {
                 sb.append(currentFeature.getGroup());
+            } else {
+                sb.append("--");
             }
             
             // Colonne Permissions
-            sb.append("</td><td>&nbsp;");
+            sb.append("</td><td>");
             Set < String > permissions = currentFeature.getPermissions();
             if (null != permissions && !permissions.isEmpty()) {
                 boolean first = true;
@@ -99,20 +109,25 @@ public final class ConsoleRenderer implements ConsoleConstants {
                     sb.append(perm);
                     first = false;
                 }
+            } else {
+                sb.append("--");
             }
             
             // Colonne Strategy
-            sb.append("</td><td>&nbsp;");
+            sb.append("</td><td>");
             FlippingStrategy fs = currentFeature.getFlippingStrategy();
             if (null != fs) {
                 sb.append(fs.getClass().getCanonicalName());
                 sb.append("<br/>&nbsp;" + fs.getInitParams());
+            } else {
+                sb.append("--");
             }
             
             // Colonne 'Holy' Toggle
             sb.append("</td><td style=\"width:8%;text-align:center\">");
             sb.append("<label class=\"switch switch-green\">");
-            sb.append("<input id=\"tick-" + currentFeature.getUid() + "\" type=\"checkbox\" class=\"switch-input\"");
+            sb.append("<input id=\"" + currentFeature.getUid() + "\" type=\"checkbox\" class=\"switch-input\"");
+            sb.append(" onclick=\"javascript:toggle(this)\" ");
             if (currentFeature.isEnable()) {
                 sb.append(" checked");
             }
@@ -124,8 +139,21 @@ public final class ConsoleRenderer implements ConsoleConstants {
             // Colonne Button Edit
             sb.append("</td><td style=\"width:5%;text-align:center\">");
             sb.append("<a data-toggle=\"modal\" href=\"#modalEdit\" data-id=\"" + currentFeature.getUid() + "\" ");
-            sb.append("data-desc=\"" + currentFeature.getDescription()
-                    + "\" style=\"width:6px;\" class=\"open-EditFlipDialog btn\">");
+            sb.append(" data-desc=\"" + currentFeature.getDescription() + "\"");
+            sb.append(" data-group=\"" + currentFeature.getGroup() + "\"");
+            sb.append(" data-strategy=\"");
+            if (null != currentFeature.getFlippingStrategy()) {
+                sb.append(currentFeature.getFlippingStrategy().getClass().getCanonicalName());
+            }
+            sb.append("\" data-stratparams=\"");
+            if (null != currentFeature.getFlippingStrategy()) {
+                sb.append(currentFeature.getFlippingStrategy().getInitParams());
+            }
+            sb.append("\" data-permissions=\"");
+            if (null != currentFeature.getPermissions() && !currentFeature.getPermissions().isEmpty()) {
+                sb.append(currentFeature.getPermissions());
+            }
+            sb.append("\" style=\"width:6px;\" class=\"open-EditFlipDialog btn\">");
             sb.append("<i class=\"icon-pencil\" style=\"margin-left:-5px;\"></i></a>");
 
             // Colonne Button Delete
@@ -142,19 +170,69 @@ public final class ConsoleRenderer implements ConsoleConstants {
         return sb.toString();
     }
     
+    /**
+     * Display message box if message.
+     * 
+     * @param message
+     *            target message to display
+     * @param type
+     *            type of messages
+     * @return html content to be displayed as message
+     */
     static String renderMessageBox(String message, String type) {
         StringBuilder sb = new StringBuilder();
         // Display Message box
         if (message != null && !message.isEmpty()) {
-            sb.append("<p><div class=\"alert alert-" + type + "\" style=\"margin-top:25px;margin-left:15px\" >");
+            sb.append("<div class=\"alert alert-" + type + "\" >");
             sb.append("<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>");
+            sb.append("<span style=\"font-style:normal;color:#696969;\">");
             sb.append(message);
-            sb.append(ConsoleRenderer.class.getPackage().getImplementationVersion());
+            sb.append("</span>");
             sb.append("</div>");
         }
         return sb.toString();
     }
 
+    /**
+     * Render group list block.
+     * 
+     * @param ff4j
+     *            target ff4j.
+     * @return list of group
+     */
+    static String renderGroupList(FF4j ff4j, String modalId) {
+        StringBuilder sb = new StringBuilder();
+        if (null != ff4j.getStore().readAllGroups()) {
+            for (String group : ff4j.getStore().readAllGroups()) {
+                sb.append("<li><a href=\"javascript:\\$('\\#" + modalId + " \\#groupName').val('");
+                sb.append(group);
+                sb.append("');\">");
+                sb.append(group);
+                sb.append("</a></li>");
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Render a permission list.
+     *
+     * @param ff4j
+     *            reference to curent ff4j instance
+     * @return string representing the list of permissions
+     */
+    static String renderPermissionList(FF4j ff4j) {
+        StringBuilder sb = new StringBuilder();
+        if (null != ff4j.getAuthorizationsManager()) {
+            for (String permission : ff4j.getAuthorizationsManager().listAllPermissions()) {
+                sb.append("\r\n<br/>&nbsp;&nbsp;&nbsp;<input type=\"checkbox\" name=\"" + PREFIX_CHECKBOX);
+                sb.append(permission);
+                sb.append("\">&nbsp;");
+                sb.append(permission);
+            }
+        }
+        return sb.toString();
+    }
 
     /**
      * Load the CSS File As String.

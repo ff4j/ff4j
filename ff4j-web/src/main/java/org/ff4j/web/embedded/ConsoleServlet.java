@@ -15,9 +15,12 @@ package org.ff4j.web.embedded;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -33,6 +36,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureXmlParser;
+import org.ff4j.core.FlippingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,23 +47,17 @@ import org.slf4j.LoggerFactory;
  */
 public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
 
-    /** Buffer size. */
-    private static final int BUFFER_SIZE = 4096;
-
     /** serial number. */
     private static final long serialVersionUID = -3982043895954284269L;
 
-    /** Parameter for this Servlet. */
-    private static final String PROVIDER_PARAM_NAME = "ff4jProvider";
-
     /** Logger for this class. */
     public static Logger LOGGER = LoggerFactory.getLogger("FF4J");
-
-    /** initializing ff4j provider. */
-    private ConsoleFF4JProvider ff4jProvider = null;
     
     /** instance of ff4j. */
     private FF4j ff4j = null;
+
+    /** initializing ff4j provider. */
+    private ConsoleFF4JProvider ff4jProvider = null;
 
     /**
      * Servlet initialization, init FF4J from "ff4jProvider" attribute Name.
@@ -97,10 +95,8 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
     /** {@inheritDoc} */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-
         String message = null;
         String messagetype = "info";
-
         // Routing on pagename
         try {
 
@@ -119,38 +115,30 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                     LOGGER.debug("Retrieving JS");
                     return;
                 }
-                
             }
 
             // Serve operation from GET
             String operation = req.getParameter(OPERATION);
             if (operation != null && !operation.isEmpty()) {
-                LOGGER.debug("GET Access to console for operation {}", resources);
                 if (OP_DISABLE.equalsIgnoreCase(operation)) {
                     opDisableFeature(req);
-                    message = buildMessage(req.getParameter(FEATID), "DISABLED");
+                    res.setContentType(CONTENT_TYPE_HTML);
+                    PrintWriter out = res.getWriter();
+                    String targetMessage = buildMessage(req.getParameter(FEATID), "DISABLED");
+                    out.println(ConsoleRenderer.renderMessageBox(targetMessage, "info"));
+                    return;
                 } else if (OP_ENABLE.equalsIgnoreCase(operation)) {
                     opEnableFeature(req);
-                    message = buildMessage(req.getParameter(FEATID), "ENABLED");
-                } else if (OP_EDIT_FEATURE.equalsIgnoreCase(operation)) {
-                    opUpdateFeatureDescription(req);
-                    message = buildMessage(req.getParameter(FEATID), "UPDATED");
-                } else if (OP_CREATE_FEATURE.equalsIgnoreCase(operation)) {
-                    opAddNewFeature(req);
-                    message = buildMessage(req.getParameter(FEATID), "ADDED");
+                    res.setContentType(CONTENT_TYPE_HTML);
+                    PrintWriter out = res.getWriter();
+                    out.println(ConsoleRenderer.renderMessageBox(buildMessage(req.getParameter(FEATID), "ENABLED"), "info"));
+                    return;
                 } else if (OP_RMV_FEATURE.equalsIgnoreCase(operation)) {
                     opDeleteFeature(req);
                     message = buildMessage(req.getParameter(FEATID), "DELETED");
-                } else if (OP_ADD_ROLE.equalsIgnoreCase(operation)) {
-                    opAddRoleToFeature(req);
-                    message = "Role <b>" + req.getParameter(ROLE) + "</b> has been successfully added to flipPoint <b>"
-                            + req.getParameter(FEATID) + " </b>";
-                } else if (OP_RMV_ROLE.equalsIgnoreCase(operation)) {
-                    opRemoveRoleFromFeature(req);
-                    message = "Role <b>" + req.getParameter(ROLE) + "</b> has been successfully removed from flipPoint <b>"
-                            + req.getParameter(FEATID) + " </b>";
                 } else if (OP_EXPORT.equalsIgnoreCase(operation)) {
-                    buildResponseForExportFeature(res);
+                    opExportFile(res);
+                    message = "Feature have been success fully exported";
                 }
             }
 
@@ -178,61 +166,75 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
     }
 
     /**
-     * Build Http response when invoking export features.
+     * Build info messages.
      * 
-     * @param res
-     *            http response
-     * @throws IOException
-     *             error when building response
+     * @param featureName
+     *            target feature name
+     * @param operationd
+     *            target operationId
+     * @return
      */
-    private void buildResponseForExportFeature(HttpServletResponse res) throws IOException {
-        InputStream in = new FeatureXmlParser().exportFeatures(getFf4j().getStore().readAll());
-        ServletOutputStream sos = null;
-        try {
-            sos = res.getOutputStream();
-            res.setContentType("text/xml");
-            res.setHeader("Content-Disposition", "attachment; filename=\"ff4j.xml\"");
-            // res.setContentLength()
-            byte[] bbuf = new byte[BUFFER_SIZE];
-            int length = 0;
-            while ((in != null) && (length != -1)) {
-                length = in.read(bbuf);
-                sos.write(bbuf, 0, length);
-            }
-        } finally {
-            if (in != null) {
-                in.close();
-            }
-            if (sos != null) {
-                sos.flush();
-                sos.close();
-            }
-        }
+    private String buildMessageGroup(String groupName, String operationId) {
+        return String.format("Group <b>%s</b> has been successfully %s", groupName, operationId);
     }
 
     /** {@inheritDoc} */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         String message = null;
-        String messagetype = "error";
+        String messagetype = "info";
         try {
-            List<FileItem> items = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(req);
-            for (FileItem item : items) {
-                if (item.isFormField()) {
-                    if (OPERATION.equalsIgnoreCase(item.getFieldName())) {
-                        // String operation = item.getString();
-                        // Proceed here action accessing through POST
+
+            if (ServletFileUpload.isMultipartContent(req)) {
+                List<FileItem> items = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(req);
+                for (FileItem item : items) {
+                    if (item.isFormField()) {
+                        if (OPERATION.equalsIgnoreCase(item.getFieldName())) {
+                            LOGGER.info("Processing action : " + item.getString());
+                        }
+                    } else if (FLIPFILE.equalsIgnoreCase(item.getFieldName())) {
+                        String filename = FilenameUtils.getName(item.getName());
+                        if (filename.toLowerCase().endsWith("xml")) {
+                            opImportFile(item.getInputStream());
+                        } else {
+                            messagetype = "error";
+                            message = "Invalid FILE, must be CSV, XML or PROPERTIES files";
+                        }
                     }
-                } else if (FLIPFILE.equalsIgnoreCase(item.getFieldName())) {
-                    String filename = FilenameUtils.getName(item.getName());
-                    if (filename.toLowerCase().endsWith("xml")) {
-                        opImportFile(item.getInputStream());
+                }
+
+            } else {
+                String operation = req.getParameter(OPERATION);
+                if (operation != null && !operation.isEmpty()) {
+
+                    if (OP_EDIT_FEATURE.equalsIgnoreCase(operation)) {
+                        opUpdateFeatureDescription(req);
+                        message = buildMessage(req.getParameter(FEATID), "UPDATED");
+
+                    } else if (OP_CREATE_FEATURE.equalsIgnoreCase(operation)) {
+                        opCreateFeature(req);
+                        message = buildMessage(req.getParameter(FEATID), "ADDED");
+
+                    } else if (OP_TOGGLE_GROUP.equalsIgnoreCase(operation)) {
+                        String groupName = req.getParameter(GROUPNAME);
+                        if (groupName != null && !groupName.isEmpty()) {
+                            String operationGroup = req.getParameter(SUBOPERATION);
+                            if (OP_ENABLE.equalsIgnoreCase(operationGroup)) {
+                                getFf4j().getStore().enableGroup(groupName);
+                                message = buildMessageGroup(groupName, "ENABLED");
+                            } else if (OP_DISABLE.equalsIgnoreCase(operationGroup)) {
+                                getFf4j().getStore().disableGroup(groupName);
+                                message = buildMessageGroup(groupName, "DISABLED");
+                            }
+                        }
                     } else {
+                        LOGGER.error("Invalid POST OPERATION" + operation);
                         messagetype = "error";
-                        message = "Invalid FILE, must be CSV, XML or PROPERTIES files";
+                        message = "Invalid REQUEST";
                     }
                 }
             }
+
         } catch (Exception e) {
             message = e.getMessage();
         }
@@ -253,8 +255,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
      * @throws IOException
      *             error during populating http response
      */
-    private void renderPage(HttpServletRequest req, HttpServletResponse res, String msg, String msgType)
-            throws IOException {
+    private void renderPage(HttpServletRequest req, HttpServletResponse res, String msg, String msgType) throws IOException {
         res.setContentType(CONTENT_TYPE_HTML);
         PrintWriter out = res.getWriter();
 
@@ -270,10 +271,18 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
         htmlContent = htmlContent.replaceAll("\\{" + KEY_FEATURE_ROWS + "\\}", rows);
 
         // Substitution GROUP_LIST
-        htmlContent = htmlContent.replaceAll("\\{" + KEY_GROUP_LIST + "\\}", "");
+        String groups = ConsoleRenderer.renderGroupList(ff4j, MODAL_EDIT);
+        htmlContent = htmlContent.replaceAll("\\{" + KEY_GROUP_LIST_EDIT + "\\}", groups);
+        groups = groups.replaceAll(MODAL_EDIT, MODAL_CREATE);
+        htmlContent = htmlContent.replaceAll("\\{" + KEY_GROUP_LIST_CREATE + "\\}", groups);
+        groups = groups.replaceAll(MODAL_CREATE, MODAL_TOGGLE);
+        htmlContent = htmlContent.replaceAll("\\{" + KEY_GROUP_LIST_TOGGLE + "\\}", groups);
+
+        // Substitution PERMISSIONS
+        final String permissions = ConsoleRenderer.renderPermissionList(ff4j);
+        htmlContent = htmlContent.replaceAll("\\{" + KEY_PERMISSIONLIST + "\\}", permissions);
 
         out.println(htmlContent);
-
     }
 
     /**
@@ -286,6 +295,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
         final String featureId = req.getParameter(FEATID);
         if (featureId != null && !featureId.isEmpty()) {
             getFf4j().enable(featureId);
+            LOGGER.info(featureId + " has been successfully enabled");
         }
     }
 
@@ -299,6 +309,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
         final String featureId = req.getParameter(FEATID);
         if (featureId != null && !featureId.isEmpty()) {
             getFf4j().disable(featureId);
+            LOGGER.info(featureId + " has been disabled");
         }
     }
 
@@ -308,12 +319,147 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
      * @param req
      *            http request containing operation parameters
      */
-    private void opAddNewFeature(HttpServletRequest req) {
+    private void opCreateFeature(HttpServletRequest req) {
+        // uid
         final String featureId = req.getParameter(FEATID);
-        final String featureDesc = req.getParameter(DESCRIPTION);
         if (featureId != null && !featureId.isEmpty()) {
-            Feature fp = new Feature(featureId, false, featureDesc);
+            Feature fp = new Feature(featureId, false);
+
+            // Description
+            final String featureDesc = req.getParameter(DESCRIPTION);
+            if (null != featureDesc && !featureDesc.isEmpty()) {
+                fp.setDescription(featureDesc);
+            }
+
+            // GroupName
+            final String groupName = req.getParameter(GROUPNAME);
+            if (null != groupName && !groupName.isEmpty()) {
+                fp.setGroup(groupName);
+            }
+
+            // Strategy
+            final String strategy = req.getParameter(STRATEGY);
+            if (null != strategy && !strategy.isEmpty()) {
+                try {
+                    Class<?> strategyClass = Class.forName(strategy);
+                    FlippingStrategy fstrategy = (FlippingStrategy) strategyClass.newInstance();
+
+                    final String strategyParams = req.getParameter(STRATEGY_INIT);
+                    if (null != strategyParams && !strategyParams.isEmpty()) {
+                        Map<String, String> initParams = new HashMap<String, String>();
+                        String[] params = strategyParams.split(";");
+                        for (String currentP : params) {
+                            String[] cur = currentP.split("=");
+                            if (cur.length < 2) {
+                                throw new IllegalArgumentException("Invalid Syntax : param1=val1,val2;param2=val3,val4");
+                            }
+                            initParams.put(cur[0], cur[1]);
+                        }
+                        fstrategy.init(featureId, initParams);
+                    }
+                    fp.setFlippingStrategy(fstrategy);
+
+                } catch (ClassNotFoundException e) {
+                    throw new IllegalArgumentException("Cannot find strategy class", e);
+                } catch (InstantiationException e) {
+                    throw new IllegalArgumentException("Cannot instanciate strategy", e);
+                } catch (IllegalAccessException e) {
+                    throw new IllegalArgumentException("Cannot instanciate : no public constructor", e);
+                }
+            }
+
+            // Permissions
+            final String permission = req.getParameter(PERMISSION);
+            if (null != permission && PERMISSION_RESTRICTED.equals(permission)) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> parameters = req.getParameterMap();
+                Set<String> permissions = new HashSet<String>();
+                for (String key : parameters.keySet()) {
+                    if (key.startsWith(PREFIX_CHECKBOX)) {
+                        permissions.add(key.replace(PREFIX_CHECKBOX, ""));
+                    }
+                }
+                fp.setPermissions(permissions);
+            }
+
+            // Creation
             getFf4j().getStore().create(fp);
+            LOGGER.info(featureId + " has been created");
+        }
+    }
+
+    /**
+     * User action to update a target feature's description.
+     * 
+     * @param req
+     *            http request containing operation parameters
+     */
+    private void opUpdateFeatureDescription(HttpServletRequest req) {
+        // uid
+        final String featureId = req.getParameter(FEATID);
+        if (featureId != null && !featureId.isEmpty()) {
+            Feature fp = new Feature(featureId, false);
+
+            // Description
+            final String featureDesc = req.getParameter(DESCRIPTION);
+            if (null != featureDesc && !featureDesc.isEmpty()) {
+                fp.setDescription(featureDesc);
+            }
+
+            // GroupName
+            final String groupName = req.getParameter(GROUPNAME);
+            if (null != groupName && !groupName.isEmpty()) {
+                fp.setGroup(groupName);
+            }
+
+            // Strategy
+            final String strategy = req.getParameter(STRATEGY);
+            if (null != strategy && !strategy.isEmpty()) {
+                try {
+                    Class<?> strategyClass = Class.forName(strategy);
+                    FlippingStrategy fstrategy = (FlippingStrategy) strategyClass.newInstance();
+
+                    final String strategyParams = req.getParameter(STRATEGY_INIT);
+                    if (null != strategyParams && !strategyParams.isEmpty()) {
+                        Map<String, String> initParams = new HashMap<String, String>();
+                        String[] params = strategyParams.split(";");
+                        for (String currentP : params) {
+                            String[] cur = currentP.split("=");
+                            if (cur.length < 2) {
+                                throw new IllegalArgumentException("Invalid Syntax : param1=val1,val2;param2=val3,val4");
+                            }
+                            initParams.put(cur[0], cur[1]);
+                        }
+                        fstrategy.init(featureId, initParams);
+                    }
+                    fp.setFlippingStrategy(fstrategy);
+
+                } catch (ClassNotFoundException e) {
+                    throw new IllegalArgumentException("Cannot find strategy class", e);
+                } catch (InstantiationException e) {
+                    throw new IllegalArgumentException("Cannot instanciate strategy", e);
+                } catch (IllegalAccessException e) {
+                    throw new IllegalArgumentException("Cannot instanciate : no public constructor", e);
+                }
+            }
+
+            // Permissions
+            final String permission = req.getParameter(PERMISSION);
+            if (null != permission && PERMISSION_RESTRICTED.equals(permission)) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> parameters = req.getParameterMap();
+                Set<String> permissions = new HashSet<String>();
+                for (String key : parameters.keySet()) {
+                    if (key.startsWith(PREFIX_CHECKBOX)) {
+                        permissions.add(key.replace(PREFIX_CHECKBOX, ""));
+                    }
+                }
+                fp.setPermissions(permissions);
+            }
+
+            // Creation
+            getFf4j().getStore().update(fp);
+            LOGGER.info(featureId + " has been created");
         }
     }
 
@@ -327,47 +473,8 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
         final String featureId = req.getParameter(FEATID);
         if (featureId != null && !featureId.isEmpty()) {
             getFf4j().getStore().delete(featureId);
+            LOGGER.info(featureId + " has been deleted");
         }
-    }
-
-    /**
-     * User action to update a target feature's description.
-     * 
-     * @param req
-     *            http request containing operation parameters
-     */
-    private void opUpdateFeatureDescription(HttpServletRequest req) {
-        final String featureId = req.getParameter(FEATID);
-        final String description = req.getParameter(DESCRIPTION);
-        if (featureId != null && !featureId.isEmpty()) {
-            Feature fp = getFf4j().getStore().read(featureId);
-            fp.setDescription(description);
-            getFf4j().getStore().update(fp);
-        }
-    }
-
-    /**
-     * User action to add a role to feature.
-     * 
-     * @param req
-     *            http request containing operation parameters
-     */
-    private void opAddRoleToFeature(HttpServletRequest req) {
-        final String flipId = req.getParameter(FEATID);
-        final String roleName = req.getParameter(ROLE);
-        getFf4j().getStore().grantRoleOnFeature(flipId, roleName);
-    }
-
-    /**
-     * User action to remove a role from feature.
-     * 
-     * @param req
-     *            http request containing operation parameters
-     */
-    private void opRemoveRoleFromFeature(HttpServletRequest req) {
-        final String flipId = req.getParameter(FEATID);
-        final String roleName = req.getParameter(ROLE);
-        getFf4j().getStore().removeRoleFromFeature(flipId, roleName);
     }
 
     /**
@@ -385,6 +492,39 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                 getFf4j().getStore().update(feature.getValue());
             } else {
                 getFf4j().getStore().create(feature.getValue());
+            }
+        }
+    }
+
+    /**
+     * Build Http response when invoking export features.
+     * 
+     * @param res
+     *            http response
+     * @throws IOException
+     *             error when building response
+     */
+    private void opExportFile(HttpServletResponse res) throws IOException {
+        InputStream in = new FeatureXmlParser().exportFeatures(getFf4j().getStore().readAll());
+        ServletOutputStream sos = null;
+        try {
+            sos = res.getOutputStream();
+            res.setContentType("text/xml");
+            res.setHeader("Content-Disposition", "attachment; filename=\"ff4j.xml\"");
+            // res.setContentLength()
+            byte[] bbuf = new byte[BUFFER_SIZE];
+            int length = 0;
+            while ((in != null) && (length != -1)) {
+                length = in.read(bbuf);
+                sos.write(bbuf, 0, length);
+            }
+        } finally {
+            if (in != null) {
+                in.close();
+            }
+            if (sos != null) {
+                sos.flush();
+                sos.close();
             }
         }
     }

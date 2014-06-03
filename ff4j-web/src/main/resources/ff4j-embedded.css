@@ -1867,6 +1867,12 @@ table {
   margin-bottom: 20px;
 }
 
+.table tbody td {
+  color:#888888;
+  font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+  font-size:.9em;
+}
+
 .table th,
 .table td {
   padding: 8px;
