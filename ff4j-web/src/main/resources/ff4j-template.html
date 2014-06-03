@@ -170,9 +170,9 @@
               		$('#modalCreate #stratlist').show();
               		$('#modalCreate #initParams').val('weight=0.5')">Ponderation</a></li>
                <li><a href="javascript:
-               		$('#modalCreate #strategy').val('org.ff4j.strategy.ReleaseDateStrategy');
+               		$('#modalCreate #strategy').val('org.ff4j.strategy.ReleaseDateFlipStrategy');
                		$('#modalCreate #stratlist').show();
-               		$('#modalCreate #initParams').val('releaseDate=2014-03-31')">ReleaseDate</a></li>
+               		$('#modalCreate #initParams').val('releaseDate=2013-07-14-14:00')">ReleaseDate</a></li>
               <li><a href="javascript:
               		$('#modalCreate #strategy').val('org.ff4j.strategy.ClientFilterStrategy');
               		$('#modalCreate #stratlist').show();
@@ -251,7 +251,7 @@
      <label class="control-label" for="groupName" style="color:#00ab8b;font-style:normal">GroupName</label>
         <div class="controls">
           <div class="btn-group">
-            <input type="text" name="groupname" id="groupname" style="width:250px;height:30px;" readonly="readonly" />
+            <input type="text" name="groupName" id="groupName" style="width:250px;height:30px;" readonly="readonly" />
             <button type="button" class="btn btn-green dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
               <span class="sr-only"><i class="icon-inbox icon-white" ></i></span>
@@ -259,7 +259,7 @@
             <ul class="dropdown-menu" role="menu" style="width:250px;font-style:normal;color:#696969">
              	{FEATURE_GRPS_TOGGLE}
               <li class="divider"></li>
-              <li><a href="javascript:$('#groupname').val('');">None</a></li>
+              <li><a href="javascript:$('#modalToggle #groupName').val('');">None</a></li>
             </ul>
           </div> <!-- btn-group -->     
         </div> <!-- controls -->
@@ -275,8 +275,8 @@
               <span class="sr-only"><i class="icon-cog icon-white" ></i></span>
             </button>
             <ul class="dropdown-menu" role="menu" style="width:250px;">
-                <li><a href="javascript:$('#ope').val('enable');">enable</a></li>
-                <li><a href="javascript:$('#ope').val('disable');">disable</a></li>
+                <li><a href="javascript:$('#modalToggle #ope').val('enable');">enable</a></li>
+                <li><a href="javascript:$('#modalToggle #ope').val('disable');">disable</a></li>
             </ul>
           </div>
         </div>
@@ -389,10 +389,10 @@
               		$('#modalEdit #strategy').val('org.ff4j.strategy.PonderationStrategy');
               		$('#modalEdit #stratlist').show();
               		$('#modalEdit #initParams').val('weight=0.5')">Ponderation</a></li>
-               <li><a href="javascript:
-               		$('#modalEdit #strategy').val('org.ff4j.strategy.ReleaseDateStrategy');
+                <li><a href="javascript:
+               		$('#modalEdit #strategy').val('org.ff4j.strategy.ReleaseDateFlipStrategy');
                		$('#modalEdit #stratlist').show();
-               		$('#modalEdit #initParams').val('releaseDate=2014-03-31')">ReleaseDate</a></li>
+               		$('#modalEdit #initParams').val('releaseDate=2013-07-14-14:00')">ReleaseDate</a></li>
               <li><a href="javascript:
               		$('#modalEdit #strategy').val('org.ff4j.strategy.ClientFilterStrategy');
               		$('#modalEdit #stratlist').show();
@@ -466,16 +466,18 @@
         /* ------------ */
         /* Permissions. */
         /* ------------ */
-        var permissions = $(this).data('permissions');
+        var permissions = $(this).data('permissions').replace("[", "").replace("]", "");
         if (permissions == '') {
           $("#modalEdit #permlist").hide();
           $("#modalEdit #permission").val('Public');
         } else {
           $("#modalEdit #permission").val('Restricted');
           $("#modalEdit #permlist").show();
-          // Split permission
-          /* $("#modalEdit #perm-check-SuperUsers").attr('checked', true); */
-          /* $(".modal-body #permission").val(permissions); */
+       	  // Split permissions
+       	  var arrayOfPermissions = permissions.split(',');
+          for(perm in arrayOfPermissions) {
+        	$("#modalEdit #perm-check-" + arrayOfPermissions[perm].trim()).attr('checked', true);
+          }
         }
         
         });
@@ -489,7 +491,7 @@
 
  function toggle(flip) {        
     if(!$(flip).is(':checked')) {
-       $.get($(location).attr('href'); + '?op=disable&uid=' + $(flip).attr('id'),
+       $.get($(location).attr('href') + '?op=disable&uid=' + $(flip).attr('id'),
              function(responseText) { 
                   $('#message').html(responseText);         
               });

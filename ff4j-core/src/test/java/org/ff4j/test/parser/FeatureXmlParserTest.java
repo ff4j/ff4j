@@ -90,5 +90,21 @@ public class FeatureXmlParserTest {
         new FeatureXmlParser().parseConfigurationFile(in);
     }
 
+    @Test
+    public void importThenExport() throws IOException {
+        // Given
+        FeatureXmlParser parser = new FeatureXmlParser();
+        InputStream in = getClass().getClassLoader().getResourceAsStream("test-featureXmlParserTest-import-export.xml");
+        Map<String, Feature> features = parser.parseConfigurationFile(in);
+        Assert.assertNotNull(features);
+        // When
+        InputStream in2 = parser.exportFeatures(features);
+        // Then
+        // output is OK
+        Map<String, Feature> features2 = parser.parseConfigurationFile(in2);
+        Assert.assertNotNull(features2);
+        Assert.assertEquals(features.size(), features2.size());
+    }
+
 
 }

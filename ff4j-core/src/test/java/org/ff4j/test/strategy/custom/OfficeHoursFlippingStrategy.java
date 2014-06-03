@@ -1,4 +1,4 @@
-package org.ff4j.sample.strategy;
+package org.ff4j.test.strategy.custom;
 
 /*
  * #%L

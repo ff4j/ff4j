@@ -24,8 +24,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -47,29 +49,57 @@ import org.xml.sax.SAXParseException;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureXmlParser {
+public final class FeatureXmlParser {
 
+    /** TAG XML. */
     public static final String FEATURES_TAG = "features";
 
+    /** TAG XML. */
     public static final String FEATURE_TAG = "feature";
+
+    /** TAG XML. */
     public static final String FEATURE_ATT_UID = "uid";
+
+    /** TAG XML. */
     public static final String FEATURE_ATT_DESC = "description";
+
+    /** TAG XML. */
     public static final String FEATURE_ATT_ENABLE = "enable";
 
+    /** TAG XML. */
     public static final String FEATUREGROUP_TAG = "feature-group";
+
+    /** TAG XML. */
     public static final String FEATUREGROUP_ATTNAME = "name";
 
+    /** TAG XML. */
     public static final String FLIPSTRATEGY_TAG = "flipstrategy";
+
+    /** TAG XML. */
     public static final String FLIPSTRATEGY_ATTCLASS = "class";
+
+    /** TAG XML. */
     public static final String FLIPSTRATEGY_PARAMTAG = "param";
+
+    /** TAG XML. */
     public static final String FLIPSTRATEGY_PARAMNAME = "name";
+
+    /** TAG XML. */
     public static final String FLIPSTRATEGY_PARAMVALUE = "value";
 
+    /** TAG XML. */
     public static final String SECURITY_TAG = "security";
+
+    /** TAG XML. */
     public static final String SECURITY_ROLE_TAG = "role";
+
+    /** TAG XML. */
     public static final String SECURITY_ROLE_ATTNAME = "name";
 
+    /** TAG XML. */
     public static final String CDATA_START = "<![CDATA[";
+
+    /** TAG XML. */
     public static final String CDATA_END = "]]>";
 
     /** XML Generation constants. */
@@ -79,16 +109,16 @@ public class FeatureXmlParser {
     private static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<features>\n\n";
 
     /** XML Generation constants. */
-    private static final String XML_FEATURE = " <feature uid=\"{0}\" description=\"{1}\" enabled=\"{2}\">\n";
+    private static final String XML_FEATURE = " <feature uid=\"{0}\" description=\"{1}\" enable=\"{2}\">\n";
 
     /** XML Generation constants. */
-    private static final String XML_AUTH = "   <auth role=\"{0}\" />\n";
+    private static final String XML_AUTH = "     <role name=\"{0}\" />\n";
 
     /** XML Generation constants. */
     private static final String END_FEATURE = " </feature>\n\n";
 
     /** XML Generation constants. */
-    private static final String END_FEATURES = "</features>";
+    private static final String END_FEATURES = "</features>\n\n";
 
     /** Document Builder use to parse XML. */
     private static DocumentBuilder builder = null;
@@ -331,20 +361,60 @@ public class FeatureXmlParser {
      *             error occurs when generating output
      */
     public InputStream exportFeatures(Map<String, Feature> mapOfFeatures) throws IOException {
-        StringBuilder strBuilder = new StringBuilder(XML_HEADER);
         if (mapOfFeatures != null && !mapOfFeatures.isEmpty()) {
+            // Recreate Groups
+            Map<String, List<Feature>> featuresPerGroup = new HashMap<String, List<Feature>>();
             for (Feature feat : mapOfFeatures.values()) {
-                strBuilder.append(MessageFormat.format(XML_FEATURE, feat.getUid(), feat.getDescription(), feat.isEnable()));
-                if (feat.getPermissions() != null && !feat.getPermissions().isEmpty()) {
-                    for (String auth : feat.getPermissions()) {
-                        strBuilder.append(MessageFormat.format(XML_AUTH, auth));
-                    }
+                String groupName = feat.getGroup();
+                if (!featuresPerGroup.containsKey(groupName)) {
+                    featuresPerGroup.put(groupName, new ArrayList<Feature>());
                 }
-                strBuilder.append(END_FEATURE);
+                featuresPerGroup.get(groupName).add(feat);
             }
+            
+            // Create output
+            StringBuilder sb = new StringBuilder(XML_HEADER);
+            for (String groupName : featuresPerGroup.keySet()) {
+                
+                /// Building featureGroup
+                if (null != groupName && !groupName.isEmpty()) {
+                    sb.append(" <" + FEATUREGROUP_TAG + " " + FEATUREGROUP_ATTNAME + "=\"" + groupName + "\" >\n\n");
+                }
+                // Loop on feature
+                for (Feature feat : featuresPerGroup.get(groupName)) {
+                    sb.append(MessageFormat.format(XML_FEATURE, feat.getUid(), feat.getDescription(), feat.isEnable()));
+                    // <security>
+                    if (null != feat.getPermissions() && !feat.getPermissions().isEmpty()) {
+                        sb.append("   <" + SECURITY_TAG + ">\n");
+                        for (String auth : feat.getPermissions()) {
+                            sb.append(MessageFormat.format(XML_AUTH, auth));
+                        }
+                        sb.append("   </" + SECURITY_TAG + ">\n");
+                    }
+                    // <flipstrategy>
+                    FlippingStrategy fs = feat.getFlippingStrategy();
+                    if (null != fs) {
+                        sb.append("   <" + FLIPSTRATEGY_TAG + " class=\"" + fs.getClass().getCanonicalName() + "\" >\n");
+                        for (String p : fs.getInitParams().keySet()) {
+                            sb.append("     <" + FLIPSTRATEGY_PARAMTAG + " " + FLIPSTRATEGY_PARAMNAME + "=\"");
+                            sb.append(p);
+                            sb.append("\" " + FLIPSTRATEGY_PARAMVALUE + "=\"");
+                            sb.append(fs.getInitParams().get(p));
+                            sb.append("\" />\n");
+                        }
+                        sb.append("   </" + FLIPSTRATEGY_TAG + ">\n");
+                    }
+                    sb.append(END_FEATURE);
+                }
+                
+                if (null != groupName && !groupName.isEmpty()) {
+                    sb.append(" </" + FEATUREGROUP_TAG + ">\n\n");
+                }
+            }
+            sb.append(END_FEATURES);
+            return new ByteArrayInputStream(sb.toString().getBytes(ENCODING));
         }
-        strBuilder.append(END_FEATURES);
-        return new ByteArrayInputStream(strBuilder.toString().getBytes(ENCODING));
+        return null;
     }
 
 

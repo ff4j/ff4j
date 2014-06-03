@@ -196,6 +196,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                         String filename = FilenameUtils.getName(item.getName());
                         if (filename.toLowerCase().endsWith("xml")) {
                             opImportFile(item.getInputStream());
+                            message = "The file <b>" + filename + "</b> has been successfully imported";
                         } else {
                             messagetype = "error";
                             message = "Invalid FILE, must be CSV, XML or PROPERTIES files";
@@ -222,9 +223,11 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                             if (OP_ENABLE.equalsIgnoreCase(operationGroup)) {
                                 getFf4j().getStore().enableGroup(groupName);
                                 message = buildMessageGroup(groupName, "ENABLED");
+                                LOGGER.info("Group '" + groupName + "' has been ENABLED.");
                             } else if (OP_DISABLE.equalsIgnoreCase(operationGroup)) {
                                 getFf4j().getStore().disableGroup(groupName);
                                 message = buildMessageGroup(groupName, "DISABLED");
+                                LOGGER.info("Group '" + groupName + "' has been DISABLED.");
                             }
                         }
                     } else {
@@ -236,6 +239,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
             }
 
         } catch (Exception e) {
+            messagetype = "error";
             message = e.getMessage();
         }
         renderPage(req, res, message, messagetype);
@@ -459,7 +463,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
 
             // Creation
             getFf4j().getStore().update(fp);
-            LOGGER.info(featureId + " has been created");
+            LOGGER.info(featureId + " has been updated");
         }
     }
 
@@ -494,6 +498,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                 getFf4j().getStore().create(feature.getValue());
             }
         }
+        LOGGER.info(mapsOfFeat.size() + " features have been imported.");
     }
 
     /**
@@ -505,7 +510,8 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
      *             error when building response
      */
     private void opExportFile(HttpServletResponse res) throws IOException {
-        InputStream in = new FeatureXmlParser().exportFeatures(getFf4j().getStore().readAll());
+        Map<String, Feature> features = getFf4j().getStore().readAll();
+        InputStream in = new FeatureXmlParser().exportFeatures(features);
         ServletOutputStream sos = null;
         try {
             sos = res.getOutputStream();
@@ -518,6 +524,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                 length = in.read(bbuf);
                 sos.write(bbuf, 0, length);
             }
+            LOGGER.info(features.size() + " features have been exported.");
         } finally {
             if (in != null) {
                 in.close();

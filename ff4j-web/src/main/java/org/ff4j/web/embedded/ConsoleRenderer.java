@@ -222,12 +222,12 @@ public final class ConsoleRenderer implements ConsoleConstants {
      * @return string representing the list of permissions
      */
     static String renderPermissionList(FF4j ff4j) {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder("<br/>");
         if (null != ff4j.getAuthorizationsManager()) {
             for (String permission : ff4j.getAuthorizationsManager().listAllPermissions()) {
-                sb.append("\r\n<br/>&nbsp;&nbsp;&nbsp;<input type=\"checkbox\" name=\"" + PREFIX_CHECKBOX);
-                sb.append(permission);
-                sb.append("\">&nbsp;");
+                sb.append("\r\n<br/>&nbsp;&nbsp;&nbsp;<input type=\"checkbox\" ");
+                sb.append(" name=\"" + PREFIX_CHECKBOX + permission + "\"");
+                sb.append(" id=\"" + PREFIX_CHECKBOX + permission + "\" >&nbsp;");
                 sb.append(permission);
             }
         }

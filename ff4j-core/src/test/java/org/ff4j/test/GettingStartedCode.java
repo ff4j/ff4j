@@ -1,4 +1,4 @@
-package org.ff4j.sample;
+package org.ff4j.test;
 
 /*
  * #%L
