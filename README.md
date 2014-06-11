@@ -7,7 +7,7 @@ FF4J, standing as Feature Flipping for Java, implements the [Feature Toggle](htt
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.ff4j/ff4j-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.ff4j/ff4j-core/) ![License Apache2](https://go-shields.herokuapp.com/license-apache2-blue.png)
 
 <p align="center">
-  <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/stack1.png?raw=true" alt="functions"/>
+  <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/stack2.png?raw=true" alt="functions"/>
   <br/><i>Capabilities of the framework</i>
 </p>
 
