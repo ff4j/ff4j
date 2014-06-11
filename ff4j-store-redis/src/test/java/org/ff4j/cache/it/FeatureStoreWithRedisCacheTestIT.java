@@ -55,6 +55,21 @@ public class FeatureStoreWithRedisCacheTestIT extends AbstractStoreJUnitTest {
     }
 
     /**
+     * TDD.
+     */
+    @Override
+    @Test
+    public void testGrantRoleToFeatureRoleDoesNotExist() throws Exception {
+        // Given
+        assertFf4j.assertThatFeatureExist(F1);
+        assertFf4j.assertThatFeatureHasNotRole(F1, ROLE_NEW);
+        // When
+        testedStore.grantRoleOnFeature(F1, ROLE_NEW);
+        // Then
+        assertFf4j.assertThatFeatureHasRole(F1, ROLE_NEW);
+    }
+
+    /**
      * This test failed - only with maven command line + only maven redis plugin
      * 
      * @throws Exception

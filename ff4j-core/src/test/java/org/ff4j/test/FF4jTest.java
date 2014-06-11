@@ -27,7 +27,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.Arrays;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;

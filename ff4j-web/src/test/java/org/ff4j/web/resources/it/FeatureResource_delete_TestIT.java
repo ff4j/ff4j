@@ -22,7 +22,7 @@ package org.ff4j.web.resources.it;
 
 import javax.ws.rs.core.Response.Status;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.ff4j.web.resources.FeatureResource;
 import org.junit.Test;

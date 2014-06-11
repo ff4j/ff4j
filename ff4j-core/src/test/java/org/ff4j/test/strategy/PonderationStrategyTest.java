@@ -11,7 +11,7 @@ package org.ff4j.test.strategy;
  * governing permissions and limitations under the License. #L%
  */
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
@@ -42,7 +42,7 @@ public class PonderationStrategyTest extends AbstractFf4jTest {
     @Test
     public void testExpressionTo0AlwaysFalse() {
         Feature f = ff4j.getFeature("pond_0");
-        Assert.assertEquals(0.0,
+        Assert.assertEquals(new Double(0.0),
                 Double.valueOf(((PonderationStrategy) f.getFlippingStrategy()).getInitParams().get("weight")));
         Assert.assertEquals(1, f.getFlippingStrategy().getInitParams().size());
         for (int i = 0; i < 10; i++) {
@@ -53,7 +53,7 @@ public class PonderationStrategyTest extends AbstractFf4jTest {
     @Test
     public void testExpressionTo1AlwaysTrue() {
         Feature f = ff4j.getFeature("pond_1");
-        Assert.assertEquals(1.0,
+        Assert.assertEquals(new Double(1.0),
                 Double.valueOf(((PonderationStrategy) f.getFlippingStrategy()).getInitParams().get("weight")));
         Assert.assertEquals(1, f.getFlippingStrategy().getInitParams().size());
         Assert.assertEquals("1", f.getFlippingStrategy().getInitParams().get("weight"));
@@ -66,7 +66,7 @@ public class PonderationStrategyTest extends AbstractFf4jTest {
     @Test
     public void testExpressionCustom() {
         Feature f = ff4j.getFeature("pond_6");
-        Assert.assertEquals(0.6,
+        Assert.assertEquals(new Double(0.6),
                 Double.valueOf(((PonderationStrategy) f.getFlippingStrategy()).getInitParams().get("weight")));
         int nbOK = 0;
         int nbKO = 0;

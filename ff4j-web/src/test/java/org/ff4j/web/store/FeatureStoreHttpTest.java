@@ -20,10 +20,12 @@ package org.ff4j.web.store;
  * #L%
  */
 
+import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.test.store.AbstractStoreJUnitTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 import com.sun.jersey.test.framework.JerseyTest;
 
@@ -51,6 +53,47 @@ public class FeatureStoreHttpTest extends AbstractStoreJUnitTest {
     protected FeatureStore initStore() {
         FeatureStoreHttp fst = new FeatureStoreHttp("http://localhost:9998/ff4j");
         return fst;
+    }
+
+    /**
+     * TDD.
+     */
+    @Test
+    @Override
+    public void testGrantRoleToFeatureRoleDoesNotExist() throws Exception {
+        // Given
+        assertFf4j.assertThatFeatureExist(F1);
+        assertFf4j.assertThatFeatureHasNotRole(F1, ROLE_NEW);
+        // When
+        testedStore.grantRoleOnFeature(F1, ROLE_NEW);
+        // Then
+        assertFf4j.assertThatFeatureHasRole(F1, ROLE_NEW);
+    }
+
+    /**
+     * TDD.
+     */
+    @Override
+    @Test
+    public void testStoreHasBeenInitialized() {
+        // Given
+        assertFf4j.assertThatStoreHasSize(EXPECTED_FEATURES_NUMBERS);
+        assertFf4j.assertThatFeatureFlipped(F1);
+    }
+
+    /**
+     * TDD.
+     */
+    @Override
+    @Test
+    public void testUpdateFlipLessAutorisation() {
+        // Given
+        assertFf4j.assertThatFeatureExist(F1);
+        assertFf4j.assertThatFeatureHasRole(F1, ROLE_USER);
+        // When
+        testedStore.update(new Feature(F1, false, null));
+        // Then
+        assertFf4j.assertThatFeatureHasNotRole(F1, ROLE_USER);
     }
 
     /**

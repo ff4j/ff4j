@@ -5,7 +5,7 @@ import java.util.Set;
 
 import javax.ws.rs.core.Response.Status;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 

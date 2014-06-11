@@ -90,9 +90,9 @@ public class FF4JMBeanTest {
         @SuppressWarnings("unchecked")
         Map<String, Boolean> fs = (Map<String, Boolean>) mbServConn.getAttribute(objectName, "FeaturesStatus");
         Assert.assertTrue(fs.containsKey("jmxEnabledFeature"));
-        Assert.assertTrue(fs.get("jmxEnabledFeature"));
+        Assert.assertFalse(fs.get("jmxEnabledFeature"));
         Assert.assertTrue(fs.containsKey("jmxDisabledFeature"));
-        Assert.assertFalse(fs.get("jmxDisabledFeature"));
+        Assert.assertTrue(fs.get("jmxDisabledFeature"));
         Assert.assertTrue(fs.containsKey("jmxFeatureWithAuth"));
         Assert.assertFalse(fs.get("jmxFeatureWithAuth"));
     }
@@ -104,7 +104,7 @@ public class FF4JMBeanTest {
         @SuppressWarnings("unchecked")
         Map<String, Boolean> fs = (Map<String, Boolean>) mbServConn.getAttribute(objectName, "FeaturesStatus");
         Assert.assertTrue(fs.containsKey("jmxEnabledFeature"));
-        Assert.assertTrue(fs.get("jmxEnabledFeature"));
+        Assert.assertFalse(fs.get("jmxEnabledFeature"));
         Assert.assertTrue(fs.containsKey("jmxDisabledFeature"));
         Assert.assertTrue(fs.get("jmxDisabledFeature"));
         Assert.assertTrue(fs.containsKey("jmxFeatureWithAuth"));

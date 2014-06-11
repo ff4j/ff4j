@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.ff4j.FF4j;
 import org.ff4j.core.FeatureStore;

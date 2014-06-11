@@ -32,7 +32,7 @@ public class FeatureStoreMongoDBCore1Test extends AbstractStoreJUnitTest {
 
     @Override
     protected FeatureStore initStore() {
-        FeatureStoreMongoDB storeMongoDB = new FeatureStoreMongoDB(fongoRule.getDb().getCollection("ff4j"));
+        FeatureStoreMongoDB storeMongoDB = new FeatureStoreMongoDB(fongoRule.getDB().getCollection("ff4j"));
         storeMongoDB.create(new Feature("AwesomeFeature", true, "some desc"));
         // First
         storeMongoDB.create(new Feature("first", true, "description", null, Arrays.asList("USER")));

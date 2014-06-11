@@ -13,7 +13,7 @@ package org.ff4j.test.store;
 
 import java.util.LinkedHashMap;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;

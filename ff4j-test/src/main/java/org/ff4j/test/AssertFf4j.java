@@ -20,7 +20,7 @@ package org.ff4j.test;
  * #L%
  */
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.ff4j.FF4j;
 

@@ -43,8 +43,7 @@
 		<!-- JMX -->
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-jmx</artifactId>
-			<version>${version.spring.jmx}</version>
+			<artifactId>spring-context</artifactId>
 		</dependency>
 		
 		<!-- test -->

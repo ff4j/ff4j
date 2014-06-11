@@ -31,8 +31,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import org.springframework.stereotype.Repository;
 
 /**
  * Implementation of {@link FeatureStore} to work with RDBMS through JDBC.
@@ -82,7 +83,8 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
         if (uid == null || uid.isEmpty()) {
             throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
         }
-        return 1 == getJdbcTemplate().queryForInt(SQL_EXIST, uid);
+        int count = getJdbcTemplate().queryForObject(SQL_EXIST, Integer.class, uid);
+        return 1 == count;
     }
 
     /** {@inheritDoc} */
@@ -210,7 +212,8 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
         if (groupName == null || groupName.isEmpty()) {
             throw new IllegalArgumentException("Groupname cannot be null nor empty");
         }
-        return getJdbcTemplate().queryForInt(SQL_EXIST_GROUP, groupName) > 0;
+        int count = getJdbcTemplate().queryForObject(SQL_EXIST_GROUP, Integer.class, groupName);
+        return count > 0;
     }
 
     /** {@inheritDoc} */

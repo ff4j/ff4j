@@ -21,7 +21,7 @@ package org.ff4j.test;
  */
 
 import static org.mockito.Mockito.mock;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.ff4j.FF4j;
 import org.ff4j.security.AuthorizationsManager;

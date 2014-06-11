@@ -22,7 +22,7 @@ package org.ff4j.test.utils;
 
 import java.io.ByteArrayOutputStream;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.ff4j.FF4j;

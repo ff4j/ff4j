@@ -12,7 +12,6 @@ package org.ff4j.security;
  * governing permissions and limitations under the License. #L%
  */
 
-import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -35,8 +34,7 @@ public class SpringSecurityAuthorisationManager implements AuthorizationsManager
         Set<String> listOfRoles = new LinkedHashSet<String>();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (!(auth instanceof AnonymousAuthenticationToken)) {
-            Collection<GrantedAuthority> rights = auth.getAuthorities();
-            for (GrantedAuthority grantedAuthority : rights) {
+            for (GrantedAuthority grantedAuthority : auth.getAuthorities()) {
                 listOfRoles.add(grantedAuthority.getAuthority());
             }
         }

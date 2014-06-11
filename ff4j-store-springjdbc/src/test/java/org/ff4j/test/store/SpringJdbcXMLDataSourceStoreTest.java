@@ -13,9 +13,9 @@ package org.ff4j.test.store;
 
 import java.util.Set;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.ff4j.FF4j;
+import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.junit.Test;
@@ -43,6 +43,17 @@ public class SpringJdbcXMLDataSourceStoreTest extends AbstractStoreJUnitTest {
     @Override
     protected FeatureStore initStore() {
         return store;
+    }
+
+    /**
+     * TDD.
+     */
+    @Test
+    @Override
+    public void testStoreHasBeenInitialized() {
+        // Given
+        assertFf4j.assertThatStoreHasSize(EXPECTED_FEATURES_NUMBERS);
+        assertFf4j.assertThatFeatureFlipped(F1);
     }
 
     /**
@@ -74,5 +85,35 @@ public class SpringJdbcXMLDataSourceStoreTest extends AbstractStoreJUnitTest {
         Assert.assertEquals(2, groups.size());
         Assert.assertTrue(groups.contains(G0));
         Assert.assertTrue(groups.contains(G1));
+    }
+
+    /**
+     * TDD.
+     */
+    @Test
+    @Override
+    public void testUpdateFlipLessAutorisation() {
+        // Given
+        assertFf4j.assertThatFeatureExist(F1);
+        assertFf4j.assertThatFeatureHasRole(F1, ROLE_USER);
+        // When
+        testedStore.update(new Feature(F1, false, null));
+        // Then
+        assertFf4j.assertThatFeatureHasNotRole(F1, ROLE_USER);
+    }
+
+    /**
+     * TDD.
+     */
+    @Test
+    @Override
+    public void testGrantRoleToFeatureRoleDoesNotExist() throws Exception {
+        // Given
+        assertFf4j.assertThatFeatureExist(F1);
+        assertFf4j.assertThatFeatureHasNotRole(F1, ROLE_NEW);
+        // When
+        testedStore.grantRoleOnFeature(F1, ROLE_NEW);
+        // Then
+        assertFf4j.assertThatFeatureHasRole(F1, ROLE_NEW);
     }
 }

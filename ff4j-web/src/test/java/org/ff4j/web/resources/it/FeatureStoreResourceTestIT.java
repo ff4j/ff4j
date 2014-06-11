@@ -2,7 +2,7 @@ package org.ff4j.web.resources.it;
 
 import javax.ws.rs.core.Response.Status;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.ff4j.store.InMemoryFeatureStore;
 import org.junit.Test;

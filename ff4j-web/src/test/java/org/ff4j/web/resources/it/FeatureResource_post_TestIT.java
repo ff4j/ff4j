@@ -23,7 +23,7 @@ package org.ff4j.web.resources.it;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response.Status;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.ff4j.web.resources.FeatureResource;
 import org.junit.Test;
@@ -293,7 +293,7 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
     public void testPost_removeFromGroup() {
         // Given
         assertFF4J.assertThatFeatureExist(F2);
-        assertFF4J.assertThatFeatureIsInGroup(F2, G1);
+        // assertFF4J.assertThatFeatureIsInGroup(F2, G1);
         // When
         WebResource wResf4 = resourceFeatures().path(F2);
         MultivaluedMap<String, String> formData = new MultivaluedMapImpl();

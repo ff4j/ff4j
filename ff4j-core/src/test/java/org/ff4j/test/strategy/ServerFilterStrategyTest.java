@@ -22,7 +22,7 @@ package org.ff4j.test.strategy;
 
 import java.text.ParseException;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;

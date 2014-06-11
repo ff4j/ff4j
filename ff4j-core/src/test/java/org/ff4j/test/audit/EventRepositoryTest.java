@@ -20,7 +20,7 @@ package org.ff4j.test.audit;
  * #L%
  */
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.ff4j.audit.Event;
 import org.ff4j.audit.EventPublisher;
