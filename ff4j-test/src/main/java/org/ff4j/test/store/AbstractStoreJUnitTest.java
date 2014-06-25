@@ -51,6 +51,9 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
     /** Default InMemoryStore for test purposes. */
     protected FeatureStore defaultStore = new InMemoryFeatureStore(TEST_FEATURES_FILE);
 
+    /** InMemoryStore initialized from input stream. */
+    protected FeatureStore inMemoryFeatureStoreFromInputStream = new InMemoryFeatureStore(getClass().getClassLoader().getResourceAsStream(TEST_FEATURES_FILE));
+
     /** {@inheritDoc} */
     @Before
     public void setUp() throws Exception {

@@ -25,6 +25,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 
 import org.junit.Assert;
@@ -63,6 +64,13 @@ public class FF4jTest extends AbstractFf4jTest {
         assertTrue(ff4j.exist("sayHello"));
         assertEquals(6, ff4j.getFeatures().size());
         assertTrue(ff4j.check("sayHello"));
+    }
+
+    @Test
+    public void initializeFromInputStream() {
+      InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("ff4j.xml");
+      FF4j ff4j = new FF4j(resourceAsStream);
+      Assert.assertEquals(5, ff4j.getFeatures().size());
     }
 
     @Test
