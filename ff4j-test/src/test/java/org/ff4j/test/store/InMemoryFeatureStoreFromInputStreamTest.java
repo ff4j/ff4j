@@ -11,7 +11,6 @@ package org.ff4j.test.store;
  * governing permissions and limitations under the License. #L%
  */
 
-import org.ff4j.FF4j;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.junit.Assert;
@@ -22,14 +21,14 @@ import java.io.InputStream;
 /**
  * All TEST LOGIC is in super class to be processed on EACH STORE.
  * 
- * @author clunven
+ * @author joemoore
  */
-public class InMemoryFeatureStoreTest extends AbstractStoreJUnitTest {
+public class InMemoryFeatureStoreFromInputStreamTest extends AbstractStoreJUnitTest {
 
     /** {@inheritDoc} */
     @Override
     public FeatureStore initStore() {
-        return defaultStore;
+        return inMemoryFeatureStoreFromInputStream;
     }
 
     /**
@@ -38,15 +37,12 @@ public class InMemoryFeatureStoreTest extends AbstractStoreJUnitTest {
     @Test(expected = IllegalArgumentException.class)
     public void testUnitFeatureInitialization3() {
         // Given
-        // 'invalid.xml' file does not exist.
-        new InMemoryFeatureStore("invalid.xml");
+        // input stream is null
+      new InMemoryFeatureStore((InputStream) null);
     }
 
     @Test
-    public void initializesFromXmlFileInputStream() {
-      InputStream resourceAsStream = InMemoryFeatureStore.class.getClassLoader().getResourceAsStream(TEST_FEATURES_FILE);
-      InMemoryFeatureStore inMemoryFeatureStore = new InMemoryFeatureStore(resourceAsStream);
-      Assert.assertNull(inMemoryFeatureStore.getFileName());
-      Assert.assertTrue(inMemoryFeatureStore.exist("first"));
+    public void fileNameUnusedAndNull() {
+      Assert.assertNull(((InMemoryFeatureStore)inMemoryFeatureStoreFromInputStream).getFileName());
     }
 }

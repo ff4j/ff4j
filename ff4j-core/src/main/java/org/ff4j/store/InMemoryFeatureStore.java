@@ -70,19 +70,51 @@ public class InMemoryFeatureStore implements FeatureStore {
     }
 
     /**
+     * Load configuration through InputStream
+     *
+     * @param xmlIN
+     *            xml InputStream
+     */
+    public InMemoryFeatureStore(InputStream xmlIN) {
+      this.fileName = null;
+      loadGroupsFromFeatures(xmlIN);
+    }
+
+    /**
      * Load configuration through FF4J.vml file.
      * 
      * @param conf
      *            xml filename
      */
     private void loadConfFile(String conf) {
-        InputStream xmlIN = getClass().getClassLoader().getResourceAsStream(conf);
-        if (xmlIN == null) {
-            throw new IllegalArgumentException("Cannot load file " + conf + " from classpath");
-        }
+        InputStream xmlIN = getInputStreamForConfFile(conf);
         this.fileName = conf;
-        this.featuresMap = new FeatureXmlParser().parseConfigurationFile(xmlIN);
-        buildGroupsFromFeatures();
+        loadGroupsFromFeatures(xmlIN);
+    }
+
+    /**
+     * Load and build features and groups from the xml InputStream
+     *
+     * @param xmlIN
+     *            xml InputStream
+     */
+    private void loadGroupsFromFeatures(InputStream xmlIN) {
+      this.featuresMap = new FeatureXmlParser().parseConfigurationFile(xmlIN);
+      buildGroupsFromFeatures();
+    }
+
+    /**
+     * Load an InputStream for the given fle path
+     *
+     * @param conf
+     *            xml filename
+     */
+    private InputStream getInputStreamForConfFile(String conf) {
+      InputStream xmlIN = getClass().getClassLoader().getResourceAsStream(conf);
+      if (xmlIN == null) {
+          throw new IllegalArgumentException("Cannot load file " + conf + " from classpath");
+      }
+      return xmlIN;
     }
 
     /**
