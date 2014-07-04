@@ -25,7 +25,7 @@ package org.ff4j.web.api;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public interface FF4jWebApiConstants {
+public interface FF4jWebConstants {
 
     /** Header param sent on creation 201. */
     String LOCATION = "Location";

@@ -121,7 +121,9 @@
 		<module>ff4j-test</module>
 		<module>ff4j-jmx</module>
 		<module>ff4j-web</module>
+		
 		<module>ff4j-security-spring</module>
+		
 		<module>ff4j-store-ehcache</module>
 		<module>ff4j-store-redis</module>
 		<module>ff4j-store-springjdbc</module>
@@ -317,6 +319,11 @@
 			</dependency>
 			<dependency>
 				<groupId>com.sun.jersey</groupId>
+				<artifactId>jersey-server</artifactId>
+				<version>${version.jersey}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.jersey</groupId>
 				<artifactId>jersey-json</artifactId>
 				<version>${version.jersey}</version>
 			</dependency>
@@ -456,7 +463,7 @@
 		
 			<plugins>
 
-				<!-- setup JDK6 -->
+				<!-- setup JDK X -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>

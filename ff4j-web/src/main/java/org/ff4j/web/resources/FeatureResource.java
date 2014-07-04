@@ -38,14 +38,14 @@ import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.utils.FeatureJsonMarshaller;
-import org.ff4j.web.api.FF4jWebApiConstants;
+import org.ff4j.web.api.FF4jWebConstants;
 
 /**
  * Represent a feature as WebResource.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureResource implements FF4jWebApiConstants {
+public class FeatureResource implements FF4jWebConstants {
 
     /** current uri of the resource. */
     @Context

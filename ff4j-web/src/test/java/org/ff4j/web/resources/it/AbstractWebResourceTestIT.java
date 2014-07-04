@@ -21,26 +21,20 @@ package org.ff4j.web.resources.it;
  */
 
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.ext.Provider;
 
 import org.ff4j.FF4j;
 import org.ff4j.test.AssertFf4j;
 import org.ff4j.test.TestsFf4jConstants;
-import org.ff4j.web.api.FF4jWebApiConstants;
+import org.ff4j.web.api.FF4jWebConstants;
+import org.ff4j.web.resources.AbstractResourceConfigFF4J;
 import org.ff4j.web.resources.FF4jResource;
-import org.ff4j.web.resources.FeatureResource;
 import org.ff4j.web.resources.FeaturesResource;
-import org.ff4j.web.resources.GroupResource;
 import org.ff4j.web.resources.GroupsResource;
-import org.ff4j.web.resources.RuntimeExceptionMapper;
 import org.ff4j.web.store.FeatureStoreHttp;
 import org.junit.Before;
 
 import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.core.ClassNamesResourceConfig;
 import com.sun.jersey.spi.container.servlet.WebComponent;
-import com.sun.jersey.spi.inject.SingletonTypeInjectableProvider;
 import com.sun.jersey.test.framework.JerseyTest;
 import com.sun.jersey.test.framework.WebAppDescriptor;
 import com.sun.jersey.test.framework.spi.container.TestContainerFactory;
@@ -51,7 +45,7 @@ import com.sun.jersey.test.framework.spi.container.grizzly2.web.GrizzlyWebTestCo
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public abstract class AbstractWebResourceTestIT extends JerseyTest implements TestsFf4jConstants, FF4jWebApiConstants {
+public abstract class AbstractWebResourceTestIT extends JerseyTest implements TestsFf4jConstants, FF4jWebConstants {
     
     /** Relative resource. */
     public final static String APIPATH = FF4jResource.class.getAnnotation(Path.class).value();
@@ -72,31 +66,27 @@ public abstract class AbstractWebResourceTestIT extends JerseyTest implements Te
     }
 
     /**
-     * Provider.
-     * 
+     * Utilization of out-of-thr-box jersey configuration.
+     *
      * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
      */
-    @Provider
-    public static class FF4jProvider extends SingletonTypeInjectableProvider<Context, FF4j> {
-        public FF4jProvider() {
-            super(FF4j.class, ff4j);
+    public static class SimpleFF4jProvider extends AbstractResourceConfigFF4J {
+
+        /** {@inheritDoc} */
+        @Override
+        public FF4j getFF4j() {
+            // injection ff4j into
+            return ff4j;
         }
+        
     }
 
     /** {@inheritDoc} */
     @Override
     public WebAppDescriptor configure() {
-        StringBuilder jerseyContext = new StringBuilder();
-        jerseyContext.append(FF4jProvider.class.getName() + ";");
-        jerseyContext.append(FF4jResource.class.getName() + ";");
-        jerseyContext.append(FeaturesResource.class.getName() + ";");
-        jerseyContext.append(FeatureResource.class.getName() + ";");
-        jerseyContext.append(GroupsResource.class.getName() + ";");
-        jerseyContext.append(GroupResource.class.getName() + ";");
-        jerseyContext.append(RuntimeExceptionMapper.class.getName());
         return new WebAppDescriptor.Builder()
-                .initParam(WebComponent.RESOURCE_CONFIG_CLASS, ClassNamesResourceConfig.class.getName())
-                .initParam(ClassNamesResourceConfig.PROPERTY_CLASSNAMES, jerseyContext.toString()).build();
+                .initParam(WebComponent.APPLICATION_CONFIG_CLASS,
+ SimpleFF4jProvider.class.getName()).build();
     }
 
     /** {@inheritDoc} */

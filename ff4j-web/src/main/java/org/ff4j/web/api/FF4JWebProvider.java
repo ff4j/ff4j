@@ -1,4 +1,4 @@
-package org.ff4j.web.embedded;
+package org.ff4j.web.api;
 
 /*
  * #%L
@@ -27,7 +27,7 @@ import org.ff4j.FF4j;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public interface ConsoleFF4JProvider {
+public interface FF4JWebProvider {
 
     /**
      * Initialize the {@link FF4j} object to be injected within console.

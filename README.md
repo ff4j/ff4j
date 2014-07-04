@@ -13,39 +13,9 @@ FF4J, standing as Feature Flipping for Java, implements the [Feature Toggle](htt
 
 ### Getting Started
 
-<p/><b>PART I - CORE</b>
 <br/>1.1 - [Hello World](#hello-world)
 <br/>1.2 - [Integration with Spring Framework](#spring)
 <br/>1.3 - [Feature Flipping through AOP](#aop)
-
-<p/><b>PART II - FEATURE STORES</b>
-<br/>2.1 - [Introducing stores](#stores)
-<br/>2.2 - [Store features in a RDBMS](#store-jdbc)
-<br/>2.3 - [Externalise features in a HTTP Store](#store-http)
-<br/>2.4 - [Externalise features in a MONGODB Store](#store-mongo)
-
-<p/><b>PART III - WEB CAPABILITIES</b>
-<br/>3.1 - [Administration Console](#web)
-<br/>3.2 - [TagLib Library](#taglib)
-<br/>3.3 - [Services REST](#store-http)
-
-<p/><b>PART IV - SECURITY</b>
-<br/>4.1 - [Introducing security](#security)
-<br/>4.2 - [String security](#security-spring)
-
-<p/><b>PART V - FLIPPING STRATEGY</b>
-<br/>5.1 - [Introducing flipping strategy](#strategy)
-<br/>5.2 - [Expression FlippingStrategy](#strategy-el)
-<br/>5.2 - [Ponderated FlippingStrategy](#strategy-pond)
-<br/>5.3 - [ReleaseDate FlippingStrategy](#strategy-date)
-
-<p/><b>PART VI - CACHING</b>
-<br/>6.1 - [Caching](#caching)
-
-<p/><b>PART VII - [JMX Management]</b>
-<br/>7.1 - [Jmx](#jmx)
-
-## PART I - CORE
 
 <a name="hello-world"/>
 ### 1.1 - Hello world
@@ -243,6 +213,10 @@ public class CoreSpringTest {
     }
 }
 ```
+
+
+
+
 
 <a name="aop"/>
 ### 1.3 - Feature Flipping through AOP

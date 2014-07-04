@@ -37,6 +37,7 @@ import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureXmlParser;
 import org.ff4j.core.FlippingStrategy;
+import org.ff4j.web.api.FF4JWebProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +58,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
     private FF4j ff4j = null;
 
     /** initializing ff4j provider. */
-    private ConsoleFF4JProvider ff4jProvider = null;
+    private FF4JWebProvider ff4jProvider = null;
 
     /**
      * Servlet initialization, init FF4J from "ff4jProvider" attribute Name.
@@ -74,7 +75,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
         try {
             Class<?> c = Class.forName(className);
             Object o = c.newInstance();
-            ff4jProvider = (ConsoleFF4JProvider) o;
+            ff4jProvider = (FF4JWebProvider) o;
             LOGGER.info("FF4J Provider has been successfully loaded with {}", className);
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException("Cannot load ff4jProvider as " + ff4jProvider, e);
@@ -83,7 +84,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
         } catch (IllegalAccessException e) {
             throw new IllegalArgumentException("No public constructor for  " + ff4jProvider + " as ff4jProvider", e);
         } catch (ClassCastException ce) {
-            throw new IllegalArgumentException("ff4jProvider expected instance of " + ConsoleFF4JProvider.class, ce);
+            throw new IllegalArgumentException("ff4jProvider expected instance of " + FF4JWebProvider.class, ce);
         }
         
         // Put the FF4J in ApplicationScope (useful for tags)

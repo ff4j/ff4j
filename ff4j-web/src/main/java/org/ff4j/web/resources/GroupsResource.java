@@ -33,14 +33,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.ff4j.core.FeatureStore;
-import org.ff4j.web.api.FF4jWebApiConstants;
+import org.ff4j.web.api.FF4jWebConstants;
 
 /**
  * Web Resource to work on groups.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class GroupsResource implements FF4jWebApiConstants {
+public class GroupsResource implements FF4jWebConstants {
 
     @Context
     private UriInfo uriInfo;

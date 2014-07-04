@@ -30,14 +30,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.ff4j.core.FeatureStore;
-import org.ff4j.web.api.FF4jWebApiConstants;
+import org.ff4j.web.api.FF4jWebConstants;
 
 /**
  * WebResource representing the store.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreResource implements FF4jWebApiConstants {
+public class FeatureStoreResource implements FF4jWebConstants {
 
     @Context
     private UriInfo uriInfo;

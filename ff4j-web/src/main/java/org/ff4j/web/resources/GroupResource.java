@@ -33,14 +33,14 @@ import javax.ws.rs.core.UriInfo;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.utils.FeatureJsonMarshaller;
-import org.ff4j.web.api.FF4jWebApiConstants;
+import org.ff4j.web.api.FF4jWebConstants;
 
 /**
  * WebResource representing a group of features.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class GroupResource implements FF4jWebApiConstants {
+public class GroupResource implements FF4jWebConstants {
 
     @Context
     private UriInfo uriInfo;

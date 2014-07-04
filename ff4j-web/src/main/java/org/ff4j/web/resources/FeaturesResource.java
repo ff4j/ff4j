@@ -33,7 +33,7 @@ import javax.ws.rs.core.UriInfo;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.utils.FeatureJsonMarshaller;
-import org.ff4j.web.api.FF4jWebApiConstants;
+import org.ff4j.web.api.FF4jWebConstants;
 
 /**
  * This store will invoke a {@link RemoteHttpFeatureStore} to perform operations upon features. Call are done though http so
@@ -41,7 +41,7 @@ import org.ff4j.web.api.FF4jWebApiConstants;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeaturesResource implements FF4jWebApiConstants {
+public class FeaturesResource implements FF4jWebConstants {
 
     @Context
     private UriInfo uriInfo;

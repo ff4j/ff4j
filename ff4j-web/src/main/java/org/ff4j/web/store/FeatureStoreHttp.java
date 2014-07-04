@@ -37,7 +37,7 @@ import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.utils.FeatureJsonMarshaller;
-import org.ff4j.web.api.FF4jWebApiConstants;
+import org.ff4j.web.api.FF4jWebConstants;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -51,7 +51,7 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreHttp implements FeatureStore, FF4jWebApiConstants {
+public class FeatureStoreHttp implements FeatureStore, FF4jWebConstants {
 
     /** Jersey Client. */
     protected Client client = null;

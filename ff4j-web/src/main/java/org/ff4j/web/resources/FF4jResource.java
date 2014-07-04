@@ -37,7 +37,7 @@ import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.utils.FeatureJsonMarshaller;
-import org.ff4j.web.api.FF4jWebApiConstants;
+import org.ff4j.web.api.FF4jWebConstants;
 
 /**
  * This is the parent class for FF4J the REST API.
@@ -46,7 +46,7 @@ import org.ff4j.web.api.FF4jWebApiConstants;
  */
 @Path("/ff4j")
 @Produces(MediaType.APPLICATION_JSON)
-public class FF4jResource implements FF4jWebApiConstants {
+public class FF4jResource implements FF4jWebConstants {
 
     /** Access to Features through store. */
     @Context
