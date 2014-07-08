@@ -13,7 +13,7 @@
   
 	<!-- Check Feature status -->
 	<tag>
-	 <description>Check feature existence and status</description>
+	 <description>Display content is feature enabled</description>
 	 <name>enable</name>
 	 <tag-class>org.ff4j.web.taglib.FeatureTagEnable</tag-class>
 	 <body-content>JSP</body-content> 
@@ -24,5 +24,20 @@
    		<rtexprvalue>true</rtexprvalue>
   	 </attribute>
 	</tag>
+	
+	<!-- Check Feature status -->
+	<tag>
+	 <description>Display content is feature disabled</description>
+	 <name>disable</name>
+	 <tag-class>org.ff4j.web.taglib.FeatureTagDisable</tag-class>
+	 <body-content>JSP</body-content> 
+  	 <attribute>
+  	 	<description>feature unique identifier</description>
+   		<name>featureid</name>
+   		<required>true</required>
+   		<rtexprvalue>true</rtexprvalue>
+  	 </attribute>
+	</tag>
+	
 
 </taglib>

@@ -12,7 +12,7 @@ FF4J, standing as Feature Flipping for Java, implements the [Feature Toggle](htt
 </p>
 
 
-### [Reference Guide - in progress](https://raw.github.com/clun/ff4j-extra/blob/master/ff4j-reference-guide-1.2.0.pdf)
+### [Reference Guide - in progress : <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/pdf.png?raw=true" alt="functions"/>](https://github.com/clun/ff4j-extra/raw/master/ff4j-reference-guide-1.2.0.pdf)
 
 
 ### Getting Started
