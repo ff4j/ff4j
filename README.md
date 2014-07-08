@@ -11,9 +11,13 @@ FF4J, standing as Feature Flipping for Java, implements the [Feature Toggle](htt
   <br/><i>Capabilities of the framework</i>
 </p>
 
+
+### [Reference Guide - in progress](https://raw.github.com/clun/ff4j-extra/blob/master/ff4j-reference-guide-1.2.0.pdf)
+
+
 ### Getting Started
 
-<br/>1.1 - [Hello World](#hello-world)
+1.1 - [Hello World](#hello-world)
 <br/>1.2 - [Integration with Spring Framework](#spring)
 <br/>1.3 - [Feature Flipping through AOP](#aop)
 
@@ -69,10 +73,10 @@ public class HelloWorldTest {
         FF4j ff4j = new FF4j("ff4j.xml");
         assertEquals(2, ff4j.getFeatures().size());
         assertTrue(ff4j.exist("sayHello"));
-        assertTrue(ff4j.isFlipped("sayHello"));
+        assertTrue(ff4j.check("sayHello"));
 
         // Test value at runtime
-        if (ff4j.isFlipped("sayHello")) {
+        if (ff4j.check("sayHello")) {
             // Feature ok !
             System.out.println("Hello World !");
         } else {
@@ -96,7 +100,7 @@ If a feature does not exist, the method `isFlipped(..)` will raise a `FeatureNot
     FF4j ff4j = new FF4j("ff4j.xml");
     
     try {
-    	ff4j.isFlipped("autoCreatedFeature");
+    	ff4j.check("autoCreatedFeature");
     	fail(); // error is Expected here
     } catch(FeatureNotFoundException fnfe) {
     	System.out.println("Standard behaviour");
@@ -105,7 +109,7 @@ If a feature does not exist, the method `isFlipped(..)` will raise a `FeatureNot
     // Change default behavior
     ff4j.autoCreate(true);
 
-    if (!ff4j.isFlipped("autoCreatedFeature")) {
+    if (!ff4j.check("autoCreatedFeature")) {
       System.out.println("Not available but code won't failed");
     } else {
       fail();
@@ -131,7 +135,7 @@ Remember : Once implementing a Feature flipping pattern, services must be tested
 
         // Testing
         assertTrue(ff4j.exist("f1"));
-        assertTrue(ff4j.isFlipped("f1"));
+        assertTrue(ff4j.check("f1"));
     }
 ```
 Note : You can use a fluent api and chain operations to work with features
@@ -147,12 +151,12 @@ Note : You can use a fluent api and chain operations to work with features
 <dependency>
   <groupId>org.springframework</groupId>
   <artifactId>spring-test</artifactId>
-  <version>3.2.7.RELEASE</version>
+  <version>4.0.3.RELEASE</version>
 </dependency>
 <dependency>
    <groupId>org.springframework</groupId>
    <artifactId>spring-context</artifactId>
-   <version>3.2.7.RELEASE</version>
+   <version>4.0.3.RELEASE</version>
 </dependency>
 ```
 
@@ -204,7 +208,7 @@ public class CoreSpringTest {
     @Test
     public void testWithSpring() {
         // Test value at runtime
-        if (ff4j.isFlipped("sayHello")) {
+        if (ff4j.check("sayHello")) {
             // Feature ok !
             System.out.println("Hello World !");
         } else {
@@ -214,17 +218,13 @@ public class CoreSpringTest {
 }
 ```
 
-
-
-
-
 <a name="aop"/>
 ### 1.3 - Feature Flipping through AOP
 
 From the beginning of this guide, we use intrusive tests statements within source code to perform flipping :
 
 ```java
-if (FF4j.isFlipped("feat")) {
+if (FF4j.check("feat")) {
   // new code
 } else {
   // legacy
@@ -241,7 +241,7 @@ if (FF4j.isFlipped("feat")) {
 <dependency>
   <groupId>org.ff4j</groupId>
   <artifactId>ff4j-aop</artifactId>
-  <version>1.1.0</version>
+  <version>1.2.0</version>
 </dependency>
 ```
 
@@ -351,12 +351,10 @@ In the previous test class, I injected the default implementation `@Qualifier("g
 
 _Note : the bean <b>id</b> are required and must be specified with the `@Qualifier` annotation. They are several implementation of the same interface in your classpath and the `@Autowired` annotation is not sufficient_
 
+
+DEPRECATED
+
 ## PART II - SECURITY
-
-<a name="security"/>
-### 2.1 - Introducing security
-
-**in progress**
 
 <a name="security-spring"/>
 ### 2.2 - String security
