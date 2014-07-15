@@ -16,17 +16,16 @@ FF4J, standing as Feature Flipping for Java, implements the [Feature Toggle](htt
 ### [Reference Guide - in progress : <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/pdf.png?raw=true" alt="functions"/>](https://github.com/clun/ff4j-extra/raw/master/ff4j-reference-guide-1.2.0.pdf)
 
 
-### Getting Started
+## Getting Started
 
-1.1 - [Hello World](#hello-world)
-<br/>1.2 - [Integration with Spring Framework](#spring)
-<br/>1.3 - [Feature Flipping through AOP](#aop)
-<br/>1.4 - [Externalize features in JDBC store](#store-jdbc)
+1 - [Hello World](#hello-world)
+<br/>2 - [Integration with Spring Framework](#spring)
+<br/>3 - [Feature Flipping through AOP](#aop)
+<br/>4 - [Externalize features in JDBC store](#store-jdbc)
 
 
 <a name="hello-world"/>
-### 1.1 - Hello world
-***
+### 1 - Hello world
 
 In this part we guide you to create a working example from scratch
 
@@ -144,7 +143,7 @@ Remember : Once implementing a Feature flipping pattern, services must be tested
 Note : You can use a fluent api and chain operations to work with features
 
 <a name="spring"/>
-### 1.2 - Integration with Spring Framework
+### 2 - Integration with Spring Framework
 
 <p/> The `ff4j` component can be (of course) defined as a Spring Bean.
 
@@ -222,7 +221,7 @@ public class CoreSpringTest {
 ```
 
 <a name="aop"/>
-### 1.3 - Feature Flipping through AOP
+### 3 - Feature Flipping through AOP
 
 From the beginning of this guide, we use intrusive tests statements within source code to perform flipping :
 
@@ -367,7 +366,7 @@ INSERT INTO FF4J_ROLES(FEAT_UID, ROLE_NAME)  VALUES('third', 'Y');
 * Let's define the FF4j bean with Spring context this time. Here the applicationContext file :
 
 <a name="store-jdbc"/>
-### 1.4 - Externalise features in a JDBC Store
+### 4 - Externalise features in a JDBC Store
 
 When working with `InMemoryFeatureStore`, features are loaded from XML files. The features can be updated at runtime (create/remove/delete) but <b>when the application restarts all changes are lost.</b>
 
@@ -432,80 +431,4 @@ InputStream data = FF4j.exportFeatures();
 ```
 _Note : you would probably prefer to export features through the provided web console_
 
-
-<a name="web"/>
-### 7 - Web Capabilities
-***
-#Administr### ation Servlet
-As you have notice we can manage features through API but to update the features at runtime we need a GUI. The `AdministrationConsoleServlet` servlet has been provided as a GUI.
-
-_Please note that this servlet is embedded in a `JAR`. It's a single class which generates HTML code, there is no dependency to web framework whatsoever, simple `HTTPServlet`. BUT, to have a decent look'and feel you must add bootstrap files in your project (architetype is undercreation) 
-
-<p align="center">
-  <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/screen1.png?raw=true" alt="console"/>
-  <br/><i>ff4j web administration console</i> 
-</p>
-
-* Please add the dependency `ff4j-web` to your project. You can see the dependency tree of this component [HERE](https://raw.github.com/clun/ff4j/master/src/site/ff4j-security-web-graph.png)
-
-```xml
-<dependency>
-  <groupId>org.ff4j</groupId>
-  <artifactId>ff4j-web</artifactId>
-  <version>...</version>
-</dependency>
-```
-
-* Then, in your web.xml file, please declare the servlet in the following way :
-
-
-
-```xml
-<!-- ff4j servlet -->
-<servlet>
-  <servlet-name>ff4j-console</servlet-name>
-  <servlet-class>org.ff4j.web.AdministrationConsoleServlet</servlet-class>
-</servlet>
-<servlet-mapping>
-  <servlet-name>ff4j-console</servlet-name>
-  <url-pattern>/ff4j-console</url-pattern>
-</servlet-mapping>
-```
-
-* Then, update your `applicationContext.xml` file to add the `FF4jWebContextHolder`
-
-```xml
-<!-- Make the Ff4j available for TagLibs and administration console -->
-<bean class="org.ff4j.web.FF4jWebContextHolder">
- <property name="ff4j" ref="ff4j" />
-</bean>
-```
-
-* Add Javascript, CSS and IMG files as the following
-
-[Working sample HERE] (https://github.com/clun/ff4j-extra/tree/master/ff4j-samples/ff4j-simpleweb/)
-
-* You're finished and should be able to visualize the console within `http://<host>:<port>/<webappcontext>/ff4j-console` : 
-
-#### TagLib library
-
-In your JSP/GSP pages, you would like to display part of the screen depending on Feature status. To do so, a _TagLib_ is proposed.
-
-* In the first lines of your pages please declare the taglib library. It's not required anymore to declare TLD files in  your `web.xml` file.
-
-```jsp
-<%@ taglib prefix="ff4j" uri="http://www.ff4j.org/taglibs/ff4j" %>
-```
-* Then you can use the tags like this : 
-
-```jsp
-<ff4j:enable featureid="venus-desc">
- <p style="text-align:justify">
-  Venus is the second planet from the Sun, orbiting it every 224.7 Earth days.[...]
- </p>
-</ff4j:enable>
-```
-
-This code is extracted from the available [demo of the FF4j web capabilities](http://ff4j-demo.octo-clu.cloudbees.net/)
-
-_Note : This taglib is still under construction and some advanced functionnalities as `FlippingStrategy` are not available yet_
+_END OF GETTING STARTED MORE INFORMATION IN THE REFERENCE GUIDE
