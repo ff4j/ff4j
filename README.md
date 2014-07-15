@@ -12,9 +12,11 @@ FF4J, standing as Feature Flipping for Java, implements the [Feature Toggle](htt
   <br/><i>Capabilities of the framework</i>
 </p>
 
+## Reference Guide
 
-### [Reference Guide - in progress : <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/pdf.png?raw=true" alt="functions"/>](https://github.com/clun/ff4j-extra/raw/master/ff4j-reference-guide-1.2.0.pdf)
+_This document is currently in progress and is changed very often_
 
+[<img height="40" src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/pdf.png?raw=true" alt="functions"/>](https://github.com/clun/ff4j-extra/raw/master/ff4j-reference-guide-1.2.0.pdf)
 
 ## Getting Started
 
@@ -430,5 +432,3 @@ From external stores such as JDBC Database, you can <b>export features as xml fi
 InputStream data = FF4j.exportFeatures();
 ```
 _Note : you would probably prefer to export features through the provided web console_
-
-_END OF GETTING STARTED MORE INFORMATION IN THE REFERENCE GUIDE
