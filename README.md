@@ -1,3 +1,4 @@
+
 [<img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/ff4j.png?raw=true" alt="functions" height="50px"/>](http://ff4j.org)
 
 ## Feature Flipping for Java [![Build Status](https://travis-ci.org/clun/ff4j.svg?branch=master)](https://travis-ci.org/clun/ff4j)
@@ -20,6 +21,8 @@ FF4J, standing as Feature Flipping for Java, implements the [Feature Toggle](htt
 1.1 - [Hello World](#hello-world)
 <br/>1.2 - [Integration with Spring Framework](#spring)
 <br/>1.3 - [Feature Flipping through AOP](#aop)
+<br/>1.4 - [Externalize features in JDBC store](#store-jdbc)
+
 
 <a name="hello-world"/>
 ### 1.1 - Hello world
@@ -352,59 +355,7 @@ In the previous test class, I injected the default implementation `@Qualifier("g
 _Note : the bean <b>id</b> are required and must be specified with the `@Qualifier` annotation. They are several implementation of the same interface in your classpath and the `@Autowired` annotation is not sufficient_
 
 
-DEPRECATED
 
-## PART II - SECURITY
-
-<a name="security-spring"/>
-### 2.2 - String security
-
-Sometimes, you would expect to allow a feature for only a subset of users. The main use cases is to test in real conditions the last beta-feature .... but only with your beta-testers.
-
-<p/>Firstly you will have to choose your security provider. FF4j does not intend to create a security context but reuse an existing one and perform filter on roles. Roles are provided by implementations of the following interface :
-
-```java
-public interface AuthorizationsManager {
-
-  // current user roles to be filtered
-  Set < String > getAuthenticatedUserRoles();
-
-  // union of all roles, useful through web console to grant permissions
-  Set < String > getEveryOneRoles();
-}
-```
-
-Today (2013/07/12) the only available implementation is based on [SpringSecurity](http://www.springsource.org/spring-security). Let's see how to do this :
-
-* Please add the dependency `ff4j-security-spring` to your project. You can see the dependency tree of this component [HERE](https://raw.github.com/clun/ff4j/master/src/site/ff4j-security-spring-graph.png)
-
-```xml
-<dependency>
-  <groupId>org.ff4j</groupId>
-  <artifactId>ff4j-security-spring</artifactId>
-  <version>...</version>
-</dependency>
-```
-
-* We will define feature `first`, enabled and expecting for role `ROLE_USER`
-* We will define feature `third`, enabled and expecting for role `X` or `Y`
-* Please write the `ff4j.xml` configuration files as following : 
-
-```xml
-<?xml version="1.0" encoding="UTF-8" ?>
-<features>
-
- <feature uid="first" enable="true" description="description" >
-  <auth role="ROLE_USER" />
- </feature>
-  
- <feature uid="third" enable="true" >
-  <auth role="X" />
-  <auth role="Y" />
- </feature>
-
-</features>
-```
 * To add user-role in the database please populate `FF4J_ROLES` table : 
 
 ```sql
@@ -415,93 +366,8 @@ INSERT INTO FF4J_ROLES(FEAT_UID, ROLE_NAME)  VALUES('third', 'Y');
 
 * Let's define the FF4j bean with Spring context this time. Here the applicationContext file :
 
-```xml
-<bean id="ff4j" class="org.ff4j.FF4j" >
-  <property name="store" ref="ff4j.featureStore" />
-  <property name="authorizationsManager" ref="ff4j.springSecuAuthManager" />
-</bean>
-  
-<bean id="ff4j.springSecuAuthManager" class="org.ff4j.security.SpringSecurityAuthorisationManager" />
-<bean id="ff4j.featureStore" class="org.ff4j.store.InMemoryFeatureStore" />
-```
-
-* In the following test case, I programmatically create a SpringSecurityContext. In an application which already use SpringSecurity you would have to do anything.
-
-```java
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath:*applicationContext-ff4j-security.xml"})
-public class FlipSecurityTests {
-  
- /** Security context. */
- private SecurityContext securityCtx;
-  
- @Before
- public void setUp() throws Exception {
-   securityCtx = SecurityContextHolder.getContext();
-   SecurityContext context = new SecurityContextImpl();
-   List < GrantedAuthority> listOfRoles = new ArrayList<GrantedAuthority>();
-   listOfRoles.add( new GrantedAuthorityImpl("ROLE_USER"));
-   User u1 = new User("user1", "user1", true, true, true, true, listOfRoles);
-   UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(u1.getUsername(),  u1.getPassword(), u1.getAuthorities());
-   token.setDetails(u1);
-   context.setAuthentication(token);
-   SecurityContextHolder.setContext(context);
- }
-
- @After
- public void tearDown() {
-   SecurityContextHolder.setContext(securityCtx);
- }
-
-//[...]
-}
-```
-
-* Please note that `user1` has only one ROLE : `ROLE_USER`. Let's flip then :
-
-```java
-//[...]
- @Test
- public void testIsAuthenticatedAndAuthorized() {
-  // check authentication 
-  Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-  Assert.assertTrue(auth.isAuthenticated());
-    
-  // init through spring
-  // new FF4j(new InMemoryFeatureStore(), new SpringSecurityAuthorisationManager());
-  
-  // not autorized because bad credential
-  Assert.assertFalse(FF4j.isFlipped("third"));
-  // autorized because role ROLE_USER
-  Assert.assertTrue(FF4j.isFlipped("first"));
-}
-```
-As you can see because `user1` does not have role `X` nor `Y` it cannot access to feature.
-
-
-## PART III - FLIPPING STRATEGY
-
-<a name="strategy"/>
-### 3.1 - Introducing flipping strategy
-
-**in progress**
-
-<a name="strategy-el"/>
-### 3.2 - Expression flipping strategy
-
-<a name="strategy-pond"/>
-### 3.3 - Ponderated fllipping strategy
-
-<a name="strategy-date"/>
-### 3.4 - Release Date fllipping strategy
-
-## PART IV - FEATURE STORES
-
-<a name="stores"/>
-### 4.1 - Introducing stores
-
 <a name="store-jdbc"/>
-### 4.2 - Externalise features in a JDBC Store
+### 1.4 - Externalise features in a JDBC Store
 
 When working with `InMemoryFeatureStore`, features are loaded from XML files. The features can be updated at runtime (create/remove/delete) but <b>when the application restarts all changes are lost.</b>
 
@@ -565,13 +431,6 @@ From external stores such as JDBC Database, you can <b>export features as xml fi
 InputStream data = FF4j.exportFeatures();
 ```
 _Note : you would probably prefer to export features through the provided web console_
-
-<a name="store-http"/>
-### 4.3 - Externalise features in a HTTP Store
-
-<a name="store-mongo"/>
-### 4.4 - Externalise features in a MONGODB Store
-
 
 
 <a name="web"/>
@@ -650,93 +509,3 @@ In your JSP/GSP pages, you would like to display part of the screen depending on
 This code is extracted from the available [demo of the FF4j web capabilities](http://ff4j-demo.octo-clu.cloudbees.net/)
 
 _Note : This taglib is still under construction and some advanced functionnalities as `FlippingStrategy` are not available yet_
-
-<a name="strategy"/>
-### 8 - Flipping Strategy
-
-Here we reached advanced functionalities which open the door for <b>A/B Testing</b>. You can implement your own `FlippingStrategy` on top of Feature status and security to decided whether flip or not.
-
-#### Sample 1 : Feature D is conditionned by combinaison of other features (A,B,C)
-
-The expression language FlippingStrategy (defined in ff4j-core) allow to define a Feature as a combination of other features. For our example we'll define A,B,C,D features as `D = (A AND B) OR (NOT(C))`.
-
-* First create the ff4.xml file : _(note the 2 extra attibutes strategy and expression)_
-
-```xml
-<?xml version="1.0" encoding="UTF-8" ?>
-<features>
- <feature uid="A" enable="true" />
- <feature uid="B" enable="false" />
- <feature uid="C" enable="false" />
- <feature uid="D" enable="true" 
-	strategy="org.ff4j.strategy.el.ExpressionFlipStrategy"
-	expression="A &amp; B | !C" />
-</features>
-```
-
-* Then test it :
-
-```java
-@Test
-public void testExpression() throws Exception {
-    // true because 'C' is false	
-    Assert.assertTrue(isFlipped("D"));
-    
-    enableFeature("C");
-    Assert.assertFalse(isFlipped("D"));
-		
-    // true because both A and B are enabled
-    enableFeature("B");
-    Assert.assertTrue(isFlipped("D"));
-}
-```
-
-#### Sample 2 : Feature is enabled only between 9:00am to 18:00.
-
-In this example we would like to limit the display a button "call me" to office hours.
-
-* First, implement your own `FlippingStrategy`. The `init` method is used to initialize component with configuration default values. (attribute `expression` in ff4j.xml)
-
-```java
-public class OfficeHoursFlippingStrategy implements FlippingStrategy {
-  private int start;
-  private int end;
-	
-  /** {@inheritDoc} */
-  public void init(String featureName, String initValue) {
-    String[] inits = initValue.split("-");
-    start = new Integer(inits[0]);
-    end = new Integer(inits[1]);
-  }
-	
-  /** {@inheritDoc} */
-  public boolean activate(String featureName, Object... executionContext) {
-    int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-    return (currentHour >= start && currentHour < end);
-  }
-}
-```
-
-* The define your `ff4j.xml` file :
-
-```xml
-<?xml version="1.0" encoding="UTF-8" ?>
-<features>
-  <feature uid="displayCallMeButton" enable="true" 
-    strategy="org.ff4j.test.strategy.OfficeHoursFlippingStrategy"
-    expression="9-18" />
-</features>
-```
-
-* And the unit test : 
-
-```java	
-@Test
-public void testExpression() throws Exception {
-  Assert.assertTrue(FF4j.isFlipped("displayCallMeButton"));
-}
-```
-
-_Please note that this unit test could failed depending on what time is it :-)_
-
-![Alt ScreenShot](https://raw.github.com/clun/ff4j/master/src/site/resources/images/octo-logo.jpeg)
