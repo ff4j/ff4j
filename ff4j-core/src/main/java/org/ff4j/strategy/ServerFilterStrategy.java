@@ -82,7 +82,7 @@ public class ServerFilterStrategy extends AbstractFlipStrategy {
     /** {@inheritDoc} */
     @Override
     public boolean evaluate(String featureName, FeatureStore store, FlippingExecutionContext executionContext) {
-        if (null == executionContext || !executionContext.isKeyExist(SERVER_HOSTNAME)) {
+        if (null == executionContext || !executionContext.containsKey(SERVER_HOSTNAME)) {
             throw new IllegalArgumentException("To work with " + getClass().getCanonicalName() + " you must provide '"
                     + SERVER_HOSTNAME + "' parameter in execution context");
         }

@@ -74,7 +74,7 @@ public class FlippingExecutionContext {
      *            target parameter key
      * @return if the parameter exist
      */
-    public boolean isKeyExist(String key) {
+    public boolean containsKey(String key) {
         return parameters.containsKey(key);
     }
 

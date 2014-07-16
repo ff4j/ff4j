@@ -54,7 +54,7 @@ public class ExpressionFlipStrategy extends AbstractFlipStrategy {
     @Override
     public boolean evaluate(String featureName, FeatureStore currentStore, FlippingExecutionContext executionContext) {
         // If execution context specified overriding initvalue
-        if ((null != executionContext) && executionContext.isKeyExist(PARAM_EXPRESSION)) {
+        if ((null != executionContext) && executionContext.containsKey(PARAM_EXPRESSION)) {
             return evaluateExpression(executionContext.getString(PARAM_EXPRESSION), currentStore);
         } else if (mapOfValue.containsKey(featureName)) {
             // Else, check initial value of featureName (if exist)

@@ -82,7 +82,7 @@ public class ClientFilterStrategy extends AbstractFlipStrategy {
     /** {@inheritDoc} */
     @Override
     public boolean evaluate(String featureName, FeatureStore store, FlippingExecutionContext executionContext) {
-        if (null == executionContext || !executionContext.isKeyExist(CLIENT_HOSTNAME)) {
+        if (null == executionContext || !executionContext.containsKey(CLIENT_HOSTNAME)) {
             throw new IllegalArgumentException("To work with " + getClass().getCanonicalName() + " you must provide '"
                     + CLIENT_HOSTNAME + "' parameter in execution context");
         }

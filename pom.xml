@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~     COORDONATES          ~ -->
+	<!-- ~ COORDONATES ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.ff4j</groupId>
 	<artifactId>ff4j-parent</artifactId>
 	<version>1.2.0-SNAPSHOT</version>
-	
+
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~     MAIN INFO            ~ -->
+	<!-- ~ MAIN INFO ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<name>Feature Flipping 4 Java</name>
 	<packaging>pom</packaging>
@@ -24,7 +25,7 @@
      </description>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~         PARENT           ~ -->
+	<!-- ~ PARENT ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
@@ -33,7 +34,7 @@
 	</parent>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~      GIT (GITHUB)        ~ -->
+	<!-- ~ GIT (GITHUB) ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<scm>
 		<connection>scm:git:git@github.com:clun/ff4j.git</connection>
@@ -42,7 +43,7 @@
 	</scm>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~   LICENSE (APACHE2)      ~ -->
+	<!-- ~ LICENSE (APACHE2) ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<licenses>
 		<license>
@@ -51,9 +52,9 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	
+
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~       ORGANIZATION       ~ -->
+	<!-- ~ ORGANIZATION ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<organization>
 		<name>Ff4J</name>
@@ -61,7 +62,7 @@
 	</organization>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~        PROPERTIES        ~ -->
+	<!-- ~ PROPERTIES ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<properties>
 
@@ -70,16 +71,16 @@
 		<encoding>UTF-8</encoding>
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
-		
+
 		<!-- License -->
 		<license.licenseName>apache_v2</license.licenseName>
 		<license.licenseResolver>${project.baseUri}/src/license</license.licenseResolver>
-		
+
 		<!-- Version -->
 		<version.cglib>3.1</version.cglib>
 		<version.mockito>1.9.5</version.mockito>
 		<version.aopalliance>1.0</version.aopalliance>
-		
+
 		<version.slf4j>1.7.7</version.slf4j>
 		<version.logback>1.1.2</version.logback>
 		<version.junit>4.11</version.junit>
@@ -104,16 +105,16 @@
 		<version.jedis>2.5.1</version.jedis>
 		<version.jersey>1.18.1</version.jersey>
 		<version.httpclient>4.3.4</version.httpclient>
-		
+
 		<!-- VERSIONS PLUGINS -->
 		<version.maven.plugin.failsafe>2.17</version.maven.plugin.failsafe>
 		<version.maven.plugin.redis>1.4.5</version.maven.plugin.redis>
 		<version.maven.plugin.surefire>2.7.2</version.maven.plugin.surefire>
-	
+
 	</properties>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~     CHILD MODULES        ~ -->
+	<!-- ~ CHILD MODULES ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<modules>
 		<module>ff4j-aop</module>
@@ -121,9 +122,9 @@
 		<module>ff4j-test</module>
 		<module>ff4j-jmx</module>
 		<module>ff4j-web</module>
-		
+
 		<module>ff4j-security-spring</module>
-		
+
 		<module>ff4j-store-ehcache</module>
 		<module>ff4j-store-redis</module>
 		<module>ff4j-store-springjdbc</module>
@@ -131,7 +132,7 @@
 	</modules>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~     DEPENDENCIES         ~ -->
+	<!-- ~ DEPENDENCIES ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<dependencyManagement>
 		<dependencies>
@@ -162,11 +163,11 @@
 				<artifactId>spring-tx</artifactId>
 				<version>${version.spring}</version>
 			</dependency>
-            <dependency>
-                <groupId>cglib</groupId>
-                <artifactId>cglib</artifactId>
-                <version>${version.cglib}</version>
-            </dependency>
+			<dependency>
+				<groupId>cglib</groupId>
+				<artifactId>cglib</artifactId>
+				<version>${version.cglib}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-web</artifactId>
@@ -253,11 +254,11 @@
 				<artifactId>hsqldb</artifactId>
 				<version>${version.hdldb}</version>
 			</dependency>
-            <dependency>
-                <groupId>org.mongodb</groupId>
-                <artifactId>mongo-java-driver</artifactId>
-                <version>${version.mongo.javadriver}</version>
-            </dependency>
+			<dependency>
+				<groupId>org.mongodb</groupId>
+				<artifactId>mongo-java-driver</artifactId>
+				<version>${version.mongo.javadriver}</version>
+			</dependency>
 			<dependency>
 				<groupId>com.github.fakemongo</groupId>
 				<artifactId>fongo</artifactId>
@@ -269,15 +270,15 @@
 				<version>${version.mockito}</version>
 			</dependency>
 			<dependency>
-             	<groupId>org.powermock</groupId>
-             	<artifactId>powermock-module-junit4</artifactId>
-             	<version>${version.powermock}</version>
-        	</dependency>
-        	<dependency>
-            	 <groupId>org.powermock</groupId>
-             	<artifactId>powermock-api-mockito</artifactId>
-             	<version>${version.powermock}</version>
-        	</dependency> 
+				<groupId>org.powermock</groupId>
+				<artifactId>powermock-module-junit4</artifactId>
+				<version>${version.powermock}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.powermock</groupId>
+				<artifactId>powermock-api-mockito</artifactId>
+				<version>${version.powermock}</version>
+			</dependency>
 
 			<!-- web -->
 			<dependency>
@@ -310,7 +311,7 @@
 				<artifactId>standard</artifactId>
 				<version>${version.taglib}</version>
 			</dependency>
-			
+
 			<!-- Webservices -->
 			<dependency>
 				<groupId>com.sun.jersey</groupId>
@@ -333,21 +334,21 @@
 				<version>${version.jersey}</version>
 			</dependency>
 			<dependency>
-      			<groupId>com.sun.jersey.jersey-test-framework</groupId>
-      			<artifactId>jersey-test-framework-inmemory</artifactId>
-      			<version>${version.jersey}</version>
-    		</dependency>
-    		<dependency>
-      			<groupId>com.sun.jersey.jersey-test-framework</groupId>
-      			<artifactId>jersey-test-framework-grizzly2</artifactId>
-     			<version>${version.jersey}</version>
-    		</dependency>
+				<groupId>com.sun.jersey.jersey-test-framework</groupId>
+				<artifactId>jersey-test-framework-inmemory</artifactId>
+				<version>${version.jersey}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.jersey.jersey-test-framework</groupId>
+				<artifactId>jersey-test-framework-grizzly2</artifactId>
+				<version>${version.jersey}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
 				<version>${version.httpclient}</version>
 			</dependency>
-			
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -357,7 +358,7 @@
 	<build>
 
 		<plugins>
-		
+
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>license-maven-plugin</artifactId>
@@ -384,7 +385,7 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>			
+			</plugin>
 
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -425,42 +426,21 @@
 					</execution>
 				</executions>
 			</plugin>
-			
-			<!-- JACOCO
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>${version.jacoco}</version>
-				<configuration>
-					<skip>${maven.test.skip}</skip>
-					<destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile>
-					<dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile>
-					<output>file</output>
-					<append>true</append>
-				</configuration>
-				<executions>
-					<execution>
-						<id>jacoco-initialize</id>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>jacoco-site</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			 -->
+
+			<!-- JACOCO <plugin> <groupId>org.jacoco</groupId> <artifactId>jacoco-maven-plugin</artifactId> 
+				<version>${version.jacoco}</version> <configuration> <skip>${maven.test.skip}</skip> 
+				<destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile> 
+				<dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile> 
+				<output>file</output> <append>true</append> </configuration> <executions> 
+				<execution> <id>jacoco-initialize</id> <goals> <goal>prepare-agent</goal> 
+				</goals> </execution> <execution> <id>jacoco-site</id> <phase>verify</phase> 
+				<goals> <goal>report</goal> </goals> </execution> </executions> </plugin> -->
 
 		</plugins>
-		
+
 
 		<pluginManagement>
-		
+
 			<plugins>
 
 				<!-- setup JDK X -->
@@ -492,7 +472,7 @@
 						<forkMode>always</forkMode>
 					</configuration>
 				</plugin>
-				
+
 				<!-- Add Implementation version in Manisfest -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -517,13 +497,13 @@
 						<encoding>UTF-8</encoding>
 					</configuration>
 				</plugin>
-				
-				 <!-- Sonar -->
-				 <plugin>
-          			<groupId>org.codehaus.mojo</groupId>
-          			<artifactId>sonar-maven-plugin</artifactId>
-          			<version>2.2</version>
-        		</plugin>
+
+				<!-- Sonar -->
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>sonar-maven-plugin</artifactId>
+					<version>2.2</version>
+				</plugin>
 
 				<!-- Shutdown eclipse warning (works with intelliJ) -->
 				<plugin>
@@ -584,6 +564,15 @@
 					<version>3.0</version>
 					<configuration>
 						<templateFile>${basedir}/src/site/ff4j-site.vm</templateFile>
+						<reportPlugins>
+							<plugin>
+								<groupId>org.apache.maven.plugins</groupId>
+								<artifactId>maven-javadoc-plugin</artifactId>
+								<configuration>
+									<additionalparam>-Xdoclint:none</additionalparam>
+								</configuration>
+							</plugin>
+						</reportPlugins>
 					</configuration>
 				</plugin>
 
@@ -604,13 +593,8 @@
 				<version>2.8</version>
 			</plugin>
 
-			<!-- JACOCO
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>${version.jacoco}</version>
-			</plugin>
-			 -->
+			<!-- JACOCO <plugin> <groupId>org.jacoco</groupId> <artifactId>jacoco-maven-plugin</artifactId> 
+				<version>${version.jacoco}</version> </plugin> -->
 
 			<!-- testings -->
 			<plugin>
@@ -622,6 +606,9 @@
 			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.9</version>
+				<configuration>
+					<additionalparam>-Xdoclint:none</additionalparam>
+				</configuration>
 			</plugin>
 
 			<!-- readable source code with links -->
@@ -682,18 +669,10 @@
 				</reportSets>
 			</plugin>
 
-			<!-- Clover
-			<plugin>
-				<groupId>com.atlassian.maven.plugins</groupId>
-				<artifactId>maven-clover2-plugin</artifactId>
-				<version>3.2.0</version>
-				<configuration>
-					<generateHtml>true</generateHtml>
-					<generatePdf>false</generatePdf>
-					<generateXml>false</generateXml>
-				</configuration>
-			</plugin>
-			 -->
+			<!-- Clover <plugin> <groupId>com.atlassian.maven.plugins</groupId> <artifactId>maven-clover2-plugin</artifactId> 
+				<version>3.2.0</version> <configuration> <generateHtml>true</generateHtml> 
+				<generatePdf>false</generatePdf> <generateXml>false</generateXml> </configuration> 
+				</plugin> -->
 
 		</plugins>
 	</reporting>
@@ -759,7 +738,7 @@
 	</profiles>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~ Project Stuff         ~ -->
+	<!-- ~ Project Stuff ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<developers>
 		<developer>
@@ -791,15 +770,15 @@
 		<system>IssueTracking@Github</system>
 		<url><![CDATA[https://github.com/clun/ff4j/issues?sort=created&direction=desc&state=open]]></url>
 	</issueManagement>
-	
+
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~ Site deployment          ~ -->
+	<!-- ~ Site deployment ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<distributionManagement>
-	 <site>
-      <id>website</id>
-      <url>file:///Users/clunven/Developpement/workspace-ff4j/mvnsite</url>
-     </site>
-    </distributionManagement>
+		<site>
+			<id>website</id>
+			<url>file:///Users/clunven/Developpement/workspace-ff4j/mvnsite</url>
+		</site>
+	</distributionManagement>
 
 </project>

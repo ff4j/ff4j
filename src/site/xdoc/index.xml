@@ -3,14 +3,15 @@
 	xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 
     <properties>
-        <title>Feature Flags 4 J</title>
-        <author email="admin@ff4j.org">Feature Flags 4J</author>
+        <title>Feature Flags 4 Java</title>
+        <author email="admin@ff4j.org">Feature Flags 4 Java</author>
     </properties>
 
     <body>
-        <section name="Try out Feature Flipping !!">
+        <section name="ff4j : Feature Toggle for Java Platform">
           <subsection name="">
             <p>
+              <img alt="ok" src="https://camo.githubusercontent.com/8d2ed7d16d5fc7df4e5572b6fb69684f89a2331c/68747470733a2f2f7261772e6769746875622e636f6d2f636c756e2f6666346a2f6d61737465722f7372632f736974652f7265736f75726365732f696d616765732f6666346a2e706e673f7261773d74727565" />
             	ff4J (stands for <i>Feature Flipping for Java</i>) helps you implementing the 
             	<a href="http://martinfowler.com/bliki/FeatureToggle.html">'feature toggle'</a> agile development practice.
      		</p>
@@ -41,27 +42,30 @@
 // Initialisation
 FF4j ff4j = new FF4j("ff4j.xml");
 
-if (ff4j.isFlipped("sayHello")) {
+if (ff4j.check("sayHello")) {
    System.out.println("Hello World !");
-}		  
+}
 ]]></pre>
+<h4>4. Getting Started</h4>
+<ul>
+<li><a href="https://github.com/clun/ff4j#hello-world">Hello World</a></li>
+<li><a href="https://github.com/clun/ff4j#spring">Integration to Spring Framework</a></li>
+<li><a href="https://github.com/clun/ff4j#aop">Flipping Through AOP</a></li>
+<li><a href="https://github.com/clun/ff4j#store-jdbc">Externalize feature in JDBC Store</a></li>
+</ul>
+<h4>5. Reference Guide</h4>
+<a href="https://github.com/clun/ff4j-extra/raw/master/ff4j-reference-guide-1.2.0.pdf">
+  <img height="40" src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/pdf.png?raw=true" alt="stack"/>Reference Guide <i>(in progress)</i>
+</a>
+
      			</td><td style="background:white;border:0px;">
      			<p style="text-align:center">
-     			<br/><br/><img src="./images/stack1.png" alt="stack"/>
+     			<br/><br/><img src="https://camo.githubusercontent.com/67164d029da0b0b1924d3a4dd1e40e405730f97d/68747470733a2f2f7261772e6769746875622e636f6d2f636c756e2f6666346a2f6d61737465722f7372632f736974652f7265736f75726365732f696d616765732f737461636b322e706e673f7261773d74727565" alt="stack"/>
      		</p>
      		
      		</td></tr></table>
-     		
-     			<p><i>Now you can check <a href="https://github.com/clun/ff4j#4---define-a-jdbc-flipstore" >reference guide</a>, to externalize features into database or use AOP. Features can be administrate through WebConsole or JMX.</i></p>
      			
-     			<p style="text-align:center">
-     			
-     			<br/><a href="http://ff4j-demo.octo-clu.cloudbees.net/" class="btn btn-inverse">
-	  		 		<i class="icon-th-large icon-white"></i>LIVE DEMO APPLICATION
-	  			</a>
-	  			
-     			<br/><br/><a href="http://ff4j-demo.octo-clu.cloudbees.net/"><img src="./images/screen1.png" alt="stack"/></a>
-     			
+     		<p style="text-align:center">
 	  		</p>
           
      	</subsection>
