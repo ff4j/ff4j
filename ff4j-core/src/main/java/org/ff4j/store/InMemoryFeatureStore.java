@@ -60,6 +60,16 @@ public class InMemoryFeatureStore implements FeatureStore {
     }
 
     /**
+     * Constructor with inputstream fileName.
+     * 
+     * @param fileName
+     *            fileName present in classPath or on fileSystem.
+     */
+    public InMemoryFeatureStore(InputStream xmlIN) {
+        loadConf(xmlIN);
+    }
+
+    /**
      * Constructor with full set of feature.
      * 
      * @param maps
@@ -76,11 +86,21 @@ public class InMemoryFeatureStore implements FeatureStore {
      *            xml filename
      */
     private void loadConfFile(String conf) {
-        InputStream xmlIN = getClass().getClassLoader().getResourceAsStream(conf);
-        if (xmlIN == null) {
-            throw new IllegalArgumentException("Cannot load file " + conf + " from classpath");
-        }
         this.fileName = conf;
+        loadConf(getClass().getClassLoader().getResourceAsStream(conf));
+    }
+
+    /**
+     * Load configuration through FF4J.vml file.
+     * 
+     * @param conf
+     *            xml filename
+     */
+    private void loadConf(InputStream xmlIN) {
+        if (xmlIN == null) {
+            throw new IllegalArgumentException("Cannot parse feature stream");
+        }
+        this.fileName = null;
         this.featuresMap = new FeatureXmlParser().parseConfigurationFile(xmlIN);
         buildGroupsFromFeatures();
     }

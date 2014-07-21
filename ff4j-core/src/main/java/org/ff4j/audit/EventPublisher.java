@@ -55,9 +55,10 @@ public class EventPublisher {
     }
 
     /**
-     * Size of thread pool.
+     * Constructor with repository
      * 
-     * @param threadCount
+     * @param er
+     *            target repository
      */
     public EventPublisher(EventRepository er) {
         repository = er;
@@ -67,6 +68,9 @@ public class EventPublisher {
      * Size of thread pool.
      * 
      * @param threadCount
+     *            thread pool size
+     * @param er
+     *            target repository
      */
     public EventPublisher(int threadCount, EventRepository er) {
         executor = Executors.newFixedThreadPool(threadCount);
@@ -100,8 +104,8 @@ public class EventPublisher {
      * 
      * @param featureName
      *            target feature name
-     * @param type
-     *            target event type
+     * @param flipped
+     *            if flipped
      */
     public void publish(String featureName, boolean flipped) {
         Event evt = new Event(featureName, EventType.HIT_FLIPPED);

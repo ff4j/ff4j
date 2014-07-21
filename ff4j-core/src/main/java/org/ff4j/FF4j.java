@@ -102,6 +102,13 @@ public class FF4j {
     }
 
     /**
+     * Constructor initializing ff4j with an InMemoryStore using an InputStream
+     */
+    public FF4j(InputStream xmlFileResourceAsStream) {
+        this.store = new InMemoryFeatureStore(xmlFileResourceAsStream);
+    }
+
+    /**
      * Elegant way to ask for flipping.
      * 
      * @param featureID
