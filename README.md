@@ -43,7 +43,7 @@ mvn archetype:create -Dpackaging=jar -Dversion=1.0 -DartifactId=ff4j-simple -Dgr
 <dependency>
   <groupId>org.ff4j</groupId>
   <artifactId>ff4j-core</artifactId>
-  <version>1.1.0</version>
+  <version>1.2.0</version>
 </dependency>
 ```
 
@@ -92,7 +92,7 @@ public class HelloWorldTest {
 
 Features are loaded from xml configuration file (ff4j.xml) and registered in a store (default is in-memory).
 
-If a feature does not exist, the method `isFlipped(..)` will raise a `FeatureNotFoundException` but you can change this behaviour by setting the `autoCreate` flag as true. If feature is not found the method will return false.
+If a feature does not exist, the method `check(..)` will raise a `FeatureNotFoundException` but you can change this behaviour by setting the `autoCreate` flag as true. If feature is not found the method will return false.
 
 * Update your unit test with this second method illustrating `autoCreate`
 
