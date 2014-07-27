@@ -44,6 +44,35 @@ public class ReleaseDateFlipStrategy extends AbstractFlipStrategy {
     /** Release Date. */
     private Date releaseDate = new Date();
 
+    /**
+     * Default constructor for introspection.
+     */
+    public ReleaseDateFlipStrategy() {}
+
+    /**
+     * Initialization with a date expression.
+     * 
+     * @param date
+     */
+    public ReleaseDateFlipStrategy(String strDate) {
+        try {
+            this.releaseDate = SDF.parse(strDate);
+        } catch (ParseException e) {
+            throw new IllegalArgumentException("Cannot parse release date, invalid format correct is 'YYYY-MM-DD-HH:mm'", e);
+        }
+        getInitParams().put(PARAMNAME_RELEASEDATE, strDate);
+    }
+
+    /**
+     * Initialisation with a date.
+     * 
+     * @param releaseDate
+     */
+    public ReleaseDateFlipStrategy(Date releaseDate) {
+        this.releaseDate = releaseDate;
+        getInitParams().put(PARAMNAME_RELEASEDATE, SDF.format(releaseDate));
+    }
+
     /** {@inheritDoc} */
     @Override
     public void init(String featureName, Map<String, String> initParam) {

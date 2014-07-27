@@ -81,44 +81,5 @@ public class ServerFilterStrategyTest extends AbstractFf4jTest {
         Assert.assertFalse(ff4j.check(F1, fex));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testFilterRequiredContext() {
-
-        // Given
-        Feature f1 = ff4j.getFeature(F1);
-        Assert.assertNotNull(f1.getFlippingStrategy());
-        ServerFilterStrategy cStra = (ServerFilterStrategy) f1.getFlippingStrategy();
-        Assert.assertNotNull(cStra.getInitParams());
-        Assert.assertEquals(1, cStra.getInitParams().size());
-        Assert.assertEquals(3, cStra.getTargetServer().size());
-        Assert.assertTrue(cStra.getTargetServer().contains("dev01"));
-        Assert.assertFalse(cStra.getTargetServer().contains(FEATURE_NEW));
-        Assert.assertTrue(f1.isEnable());
-
-        // Then FeatureContext is requires
-        ff4j.check(F1);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testFilterRequiredServerHostName() {
-
-        // Given
-        Feature f1 = ff4j.getFeature(F1);
-        Assert.assertNotNull(f1.getFlippingStrategy());
-        ServerFilterStrategy cStra = (ServerFilterStrategy) f1.getFlippingStrategy();
-        Assert.assertNotNull(cStra.getInitParams());
-        Assert.assertEquals(1, cStra.getInitParams().size());
-        Assert.assertEquals(3, cStra.getTargetServer().size());
-        Assert.assertTrue(cStra.getTargetServer().contains("dev01"));
-        Assert.assertFalse(cStra.getTargetServer().contains(FEATURE_NEW));
-        Assert.assertTrue(f1.isEnable());
-
-        // When
-        FlippingExecutionContext fex = new FlippingExecutionContext();
-        fex.addValue(FEATURE_NEW, FEATURE_NEW);
-
-        // Then
-        ff4j.check(F1, fex);
-    }
 
 }

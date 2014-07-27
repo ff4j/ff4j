@@ -26,7 +26,7 @@ _This document is currently in progress and is changed very often_
 <br/>4 - [Externalize features in JDBC store](#store-jdbc)
 
 
-<a name="hello-world"/>
+<a id="hello-world" name="hello-world"/>
 ### 1 - Hello world
 
 In this part we guide you to create a working example from scratch
@@ -386,19 +386,24 @@ When working with `InMemoryFeatureStore`, features are loaded from XML files. Th
 
 * ff4j provides you `schema-ddl.sql` to create expected tables within target database :
 ```sql
+-- Main Table to store Features
 CREATE TABLE FF4J_FEATURES (
-  UID         VARCHAR(50),
-  ENABLE      INTEGER NOT NULL,
-  DESCRIPTION   VARCHAR(255),
-  STRATEGY    VARCHAR(255),
-  PRIMARY KEY(UID)
+  "FEAT_UID"     	VARCHAR(100),
+  "ENABLE"  		INTEGER NOT NULL,
+  "DESCRIPTION" 	VARCHAR(255),
+  "STRATEGY"		VARCHAR(255),
+  "EXPRESSION"	    VARCHAR(255),
+  "GROUPNAME"		VARCHAR(255),
+  PRIMARY KEY("FEAT_UID")
 );
 
+-- Roles to store ACL, FK to main table
 CREATE TABLE FF4J_ROLES (
-  FEAT_UID   VARCHAR(50) REFERENCES FF4J_FEATURES(UID),
-  ROLE_NAME    VARCHAR(50),
-  PRIMARY KEY(FEAT_UID, ROLE_NAME)
+  "FEAT_UID"     VARCHAR(50) REFERENCES FF4J_FEATURES("FEAT_UID"),
+  "ROLE_NAME"    VARCHAR(50),
+  PRIMARY KEY("FEAT_UID", "ROLE_NAME")
 );
+
 ```
 
 * For our test, I populate the database with the following file `ff-store.sql` :
