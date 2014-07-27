@@ -374,13 +374,13 @@ When working with `InMemoryFeatureStore`, features are loaded from XML files. Th
 
 <p/>With real life applications you would expect to keep the states of your feature when the application restarts. To do so, we provide another implementations of `FeatureStore` like `DataBaseFeatureStore` to store Features into database.
 
-* Please add the dependency jdbc to your project. You can see the dependency tree of this component [HERE](https://raw.github.com/clun/ff4j/master/src/site/ff4j-jdbc-graph.png) (`mvn -P graph graph:project`).
+* In this sample we rely on Spring-JDBC so please add the dependency jdbc to your project.
 
 ```xml
 <dependency>
   <groupId>org.ff4j</groupId>
   <artifactId>ff4j-jdbc</artifactId>
-  <version>...</version>
+  <version>1.2.0</version>
 </dependency>
 ```
 
@@ -409,10 +409,27 @@ CREATE TABLE FF4J_ROLES (
 * For our test, I populate the database with the following file `ff-store.sql` :
 
 ```sql
-INSERT INTO FF4J_FEATURES(UID, ENABLE, DESCRIPTION) VALUES('first',  1, 'FisrtJDBC');
-INSERT INTO FF4J_FEATURES(UID, ENABLE, DESCRIPTION) VALUES('second', 0, 'SecondJDBC');
-INSERT INTO FF4J_FEATURES(UID, ENABLE, DESCRIPTION) VALUES('third',  0, 'ThirdJDBC');
-INSERT INTO FF4J_FEATURES(UID, ENABLE, DESCRIPTION) VALUES('forth',  1, 'ForthJDBC');
+INSERT INTO FF4J_FEATURES(FEAT_UID, ENABLE, DESCRIPTION) VALUES('AwesomeFeature',  1, 'some desc');
+
+-- First
+INSERT INTO FF4J_FEATURES(FEAT_UID, ENABLE, DESCRIPTION) VALUES('first',  1, 'description');
+INSERT INTO FF4J_ROLES(FEAT_UID, ROLE_NAME)  VALUES('first', 'USER');
+
+-- Second
+INSERT INTO FF4J_FEATURES(FEAT_UID, ENABLE, DESCRIPTION, GROUPNAME) VALUES('second', 0, 'description', 'GRP0');
+INSERT INTO FF4J_ROLES(FEAT_UID, ROLE_NAME)  VALUES('second', 'USER');
+
+-- Third
+INSERT INTO FF4J_FEATURES(FEAT_UID, ENABLE, DESCRIPTION, GROUPNAME) VALUES('third',  0, 'ThirdJDBC', 'GRP1');
+INSERT INTO FF4J_ROLES(FEAT_UID, ROLE_NAME)  VALUES('third', 'ADMINISTRATOR');
+INSERT INTO FF4J_ROLES(FEAT_UID, ROLE_NAME)  VALUES('third', 'BETA-TESTER');
+
+-- Forth
+INSERT INTO FF4J_FEATURES(FEAT_UID, ENABLE, DESCRIPTION, STRATEGY, EXPRESSION, GROUPNAME) 
+VALUES('forth',  1, 'ForthJDBC', 'org.ff4j.strategy.el.ExpressionFlipStrategy', 'expression=third|second', 'GRP1');
+INSERT INTO FF4J_ROLES(FEAT_UID, ROLE_NAME)  VALUES('forth', 'ADMINISTRATOR');
+INSERT INTO FF4J_ROLES(FEAT_UID, ROLE_NAME)  VALUES('forth', 'BETA-TESTER');
+
 ```
 
 * To run the test i will use the [Spring3 embedded dataBase] (http://static.springsource.org/spring/docs/3.0.0.M4/reference/html/ch12s08.html). The spring XML context file becomes :
