@@ -1,4 +1,4 @@
-package org.ff4j.web.api;
+package org.ff4j.web.api.test;
 
 /*
  * #%L
@@ -20,20 +20,23 @@ package org.ff4j.web.api;
  * #L%
  */
 
-import org.ff4j.FF4j;
+import org.junit.Test;
+
+import com.sun.jersey.core.util.Base64;
 
 /**
- * Loader for class ff4j within Embedded Administration Console.
+ * Encoder to test basic authentication.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public interface FF4JWebProvider {
+public class Base64EncodingTest {
 
-    /**
-     * Initialize the {@link FF4j} object to be injected within console.
-     *
-     * @return instance of ff4j for this application.
-     */
-    FF4j getFF4j();
+    @Test
+    public void testProduceHTTBasicHeader() {
+        String username = "Aladdin";
+        String password = "open sesame";
+
+        System.out.println("Authorization: Basic " + new String(Base64.encode(username + ":" + password)));
+    }
 
 }

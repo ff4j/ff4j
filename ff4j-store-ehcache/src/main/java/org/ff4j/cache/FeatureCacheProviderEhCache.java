@@ -84,6 +84,12 @@ public class FeatureCacheProviderEhCache implements FeatureCacheManager {
         return getCache();
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public String getCacheProviderName() {
+        return "EHCACHE";
+    }
+
     /**
      * Retrieve cache. If not exist, created default cache
      * 
@@ -107,4 +113,5 @@ public class FeatureCacheProviderEhCache implements FeatureCacheManager {
         cache = cacheManager.getCache(DEFAULT_CACHENAME);
         LOG.debug("CacheManager initialized as '{}'", cache.getName());
     }
+
 }

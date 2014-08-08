@@ -123,4 +123,10 @@ public class InMemoryCacheManager implements FeatureCacheManager {
         this.ttl = ttl;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public String getCacheProviderName() {
+        return "In-Memory";
+    }
+
 }

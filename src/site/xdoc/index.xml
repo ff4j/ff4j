@@ -11,7 +11,9 @@
         <section name="ff4j : Feature Toggle for Java Platform">
           <subsection name="">
             <p>
-              <img alt="ok" src="https://camo.githubusercontent.com/8d2ed7d16d5fc7df4e5572b6fb69684f89a2331c/68747470733a2f2f7261772e6769746875622e636f6d2f636c756e2f6666346a2f6d61737465722f7372632f736974652f7265736f75726365732f696d616765732f6666346a2e706e673f7261773d74727565" />
+            <img id="im" alt="element" name="im" src="https://camo.githubusercontent.com/8d2ed7d16d5fc7df4e5572b6fb69684f89a2331c/68747470733a2f2f7261772e6769746875622e636f6d2f636c756e2f6666346a2f6d61737465722f7372632f736974652f7265736f75726365732f696d616765732f6666346a2e706e673f7261773d74727565" >
+            </img>
+            
             	ff4J (stands for <i>Feature Flipping for Java</i>) helps you implementing the 
             	<a href="http://martinfowler.com/bliki/FeatureToggle.html">'feature toggle'</a> agile development practice.
      		</p>

@@ -1,4 +1,4 @@
-package org.ff4j.web.api;
+package org.ff4j.web.api.resources;
 
 /*
  * #%L
@@ -20,20 +20,25 @@ package org.ff4j.web.api;
  * #L%
  */
 
-import org.ff4j.FF4j;
+import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.UriInfo;
+
+import org.ff4j.web.api.FF4jWebConstants;
 
 /**
- * Loader for class ff4j within Embedded Administration Console.
+ * Distribution of event per feature id.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public interface FF4JWebProvider {
+@RolesAllowed({FF4jWebConstants.ROLE_READ})
+public class MonitorDistribResource implements FF4jWebConstants {
 
-    /**
-     * Initialize the {@link FF4j} object to be injected within console.
-     *
-     * @return instance of ff4j for this application.
-     */
-    FF4j getFF4j();
+    @Context
+    private UriInfo uriInfo;
+
+    @Context
+    private Request request;
 
 }

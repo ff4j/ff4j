@@ -24,8 +24,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response.Status;
 
 import org.junit.Assert;
-
-import org.ff4j.web.resources.FeatureResource;
+import org.ff4j.web.api.resources.FeatureResource;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.ClientResponse;

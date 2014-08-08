@@ -1,4 +1,4 @@
-package org.ff4j.web.api;
+package org.ff4j.web.api.jersey;
 
 /*
  * #%L
@@ -20,20 +20,28 @@ package org.ff4j.web.api;
  * #L%
  */
 
-import org.ff4j.FF4j;
+import com.sun.jersey.api.container.filter.LoggingFilter;
+import com.sun.jersey.spi.container.ContainerRequestFilter;
+import com.sun.jersey.spi.container.ContainerResponseFilter;
+import com.sun.jersey.spi.container.ResourceFilter;
 
 /**
- * Loader for class ff4j within Embedded Administration Console.
+ * Resource Filter related to logging.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public interface FF4JWebProvider {
+public class FF4jTracingContextFilter extends LoggingFilter implements ResourceFilter {
 
-    /**
-     * Initialize the {@link FF4j} object to be injected within console.
-     *
-     * @return instance of ff4j for this application.
-     */
-    FF4j getFF4j();
+    /** {@inheritDoc} */
+    @Override
+    public ContainerRequestFilter getRequestFilter() {
+        return this;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public ContainerResponseFilter getResponseFilter() {
+        return this;
+    }
 
 }

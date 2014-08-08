@@ -53,7 +53,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
 
     /** Logger for this class. */
     public static Logger LOGGER = LoggerFactory.getLogger("FF4J");
-    
+
     /** instance of ff4j. */
     private FF4j ff4j = null;
 
@@ -76,7 +76,15 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
             Class<?> c = Class.forName(className);
             Object o = c.newInstance();
             ff4jProvider = (FF4JWebProvider) o;
-            LOGGER.info("FF4J Provider has been successfully loaded with {}", className);
+            LOGGER.info("  __  __ _  _   _ ");
+            LOGGER.info(" / _|/ _| || | (_)");
+            LOGGER.info("| |_| |_| || |_| |");
+            LOGGER.info("|  _|  _|__   _| |");
+            LOGGER.info("|_| |_|    |_|_/ |");
+            LOGGER.info("             |__/   Embedded Console - v" + getClass().getPackage().getImplementationVersion());
+            LOGGER.info(" ");
+            LOGGER.info("ff4j context has been successfully initialized - {} feature(s)", ff4jProvider.getFF4j()
+                    .getFeatures().size());
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException("Cannot load ff4jProvider as " + ff4jProvider, e);
         } catch (InstantiationException e) {
@@ -86,7 +94,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
         } catch (ClassCastException ce) {
             throw new IllegalArgumentException("ff4jProvider expected instance of " + FF4JWebProvider.class, ce);
         }
-        
+
         // Put the FF4J in ApplicationScope (useful for tags)
         ff4j = ff4jProvider.getFF4j();
         servletConfig.getServletContext().setAttribute(FF4J_SESSIONATTRIBUTE_NAME, ff4j);

@@ -43,7 +43,7 @@ public class EventRepositoryTest {
             pub.publish(new Event("aer", EventType.HIT_FLIPPED));
             Thread.sleep(2);
         }
-        Assert.assertEquals(nb, pub.getRepository().getAllEvents().size());
+        Assert.assertEquals(nb, pub.getRepository().getTotalEventCount());
     }
 
     @Test
@@ -56,7 +56,7 @@ public class EventRepositoryTest {
             pub.publish(new Event("aer", EventType.HIT_FLIPPED));
             Thread.sleep(2);
         }
-        Assert.assertEquals(limit, pub.getRepository().getAllEvents().size());
+        Assert.assertEquals(limit, pub.getRepository().getTotalEventCount());
     }
 
     @Test
@@ -69,7 +69,7 @@ public class EventRepositoryTest {
             pub.publish(new Event("aer", EventType.HIT_FLIPPED));
             Thread.sleep(2);
         }
-        Assert.assertEquals(nbEvent, pub.getRepository().getAllEvents().size());
+        Assert.assertEquals(nbEvent, pub.getRepository().getTotalEventCount());
         long now = System.currentTimeMillis();
         pub.getRepository().getHitCurve("aer", 10, now - 3 * nbEvent, now);
     }

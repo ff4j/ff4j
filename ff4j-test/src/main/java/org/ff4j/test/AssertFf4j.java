@@ -20,9 +20,8 @@ package org.ff4j.test;
  * #L%
  */
 
-import org.junit.Assert;
-
 import org.ff4j.FF4j;
+import org.junit.Assert;
 
 /**
  * Give utilities method for tests.

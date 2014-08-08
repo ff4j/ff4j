@@ -241,4 +241,24 @@ public class FeatureStoreCacheProxy implements FeatureStore {
         this.cacheManager = cacheManager;
     }
 
+    // ------------ Cache related method --------------------
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isCached() {
+        return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getCacheProvider() {
+        return cacheManager.getCacheProviderName();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getCachedTargetStore() {
+        return target.getClass().getCanonicalName();
+    }
+
 }

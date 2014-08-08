@@ -1,4 +1,4 @@
-package org.ff4j.web.resources;
+package org.ff4j.web.api.resources;
 
 /*
  * #%L
@@ -20,6 +20,7 @@ package org.ff4j.web.resources;
  * #L%
  */
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -46,6 +47,7 @@ import org.ff4j.web.api.FF4jWebConstants;
  */
 @Path("/ff4j")
 @Produces(MediaType.APPLICATION_JSON)
+@RolesAllowed({FF4jWebConstants.ROLE_READ})
 public class FF4jResource implements FF4jWebConstants {
 
     /** Access to Features through store. */
@@ -77,8 +79,10 @@ public class FF4jResource implements FF4jWebConstants {
      */
     @Path(RESOURCE_MONITORING)
     public MonitoringResource getMonitoringResource() {
-        return new MonitoringResource(uriInfo, request);
+        return new MonitoringResource(uriInfo, request, ff4j.getEventRepository());
     }
+
+    // Cache
 
     /**
      * Provide core information on ff4J and available sub resources.

@@ -26,10 +26,11 @@ import org.ff4j.FF4j;
 import org.ff4j.test.AssertFf4j;
 import org.ff4j.test.TestsFf4jConstants;
 import org.ff4j.web.api.FF4jWebConstants;
-import org.ff4j.web.resources.AbstractResourceConfigFF4J;
-import org.ff4j.web.resources.FF4jResource;
-import org.ff4j.web.resources.FeaturesResource;
-import org.ff4j.web.resources.GroupsResource;
+import org.ff4j.web.api.jersey.FF4JApiApplication;
+import org.ff4j.web.api.jersey.FF4jApiConfig;
+import org.ff4j.web.api.resources.FF4jResource;
+import org.ff4j.web.api.resources.FeaturesResource;
+import org.ff4j.web.api.resources.GroupsResource;
 import org.ff4j.web.store.FeatureStoreHttp;
 import org.junit.Before;
 
@@ -70,13 +71,13 @@ public abstract class AbstractWebResourceTestIT extends JerseyTest implements Te
      *
      * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
      */
-    public static class SimpleFF4jProvider extends AbstractResourceConfigFF4J {
+    public static class SimpleFF4jProvider extends FF4JApiApplication {
+
 
         /** {@inheritDoc} */
         @Override
-        public FF4j getFF4j() {
-            // injection ff4j into
-            return ff4j;
+        public FF4jApiConfig getApiConfig() {
+            return new FF4jApiConfig(ff4j);
         }
         
     }
@@ -85,8 +86,7 @@ public abstract class AbstractWebResourceTestIT extends JerseyTest implements Te
     @Override
     public WebAppDescriptor configure() {
         return new WebAppDescriptor.Builder()
-                .initParam(WebComponent.APPLICATION_CONFIG_CLASS,
- SimpleFF4jProvider.class.getName()).build();
+                .initParam(WebComponent.APPLICATION_CONFIG_CLASS, SimpleFF4jProvider.class.getName()).build();
     }
 
     /** {@inheritDoc} */

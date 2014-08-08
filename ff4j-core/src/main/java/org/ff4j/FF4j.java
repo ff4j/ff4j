@@ -39,30 +39,24 @@ import org.ff4j.security.AuthorizationsManager;
 import org.ff4j.store.InMemoryFeatureStore;
 
 /**
- * Main component of the framework, it allows to interact with features. It provides both static and direct access.
- * 
- * <p>
- * It embedded a {@link FeatureStore} to record features statused. By default feature are stored into memory but you would like to
- * persist them in an external storage as database. There are different technologies for store, please check
- * 
- * <code>ff4j-store-* components. </code>
- * 
- * </p>
- * 
- * <p>
- * It embedded a {@link AuthorizationsManager} to limit usage of features through a security filter.
- * </p>
- * <br/>
- * <b>Caution :</b>FF4J does not created roles, it's rely on external security provider as SpringSecurity Apache Chiro.
- * 
+ * Main class, it allows to work with features.
+ *
  * <ul>
- * Other conception concerns :
- * <li>Most of methods are static to simplify usage.
- * <li>Most of methods return the instance to perform fluent api :
+ * <p>
+ * <li>
+ * It embeddes a {@link FeatureStore} to record features statused. By default, features are stored into memory but you would like
+ * to persist them in an external storage (as database) and choose among implementations available in different modules (jdbc,
+ * mongo, http...).
+ * </p>
  * 
- * <code>
- * instance.doSomething().doSomething(). and so on.
- * </code>
+ * <p>
+ * <li>It embeddes a {@link AuthorizationsManager} to add permissions and limit usage of features to granted people. FF4J does not
+ * created roles, it's rely on external security provider as SpringSecurity Apache Chiro.
+ * </p>
+ * 
+ * <p>
+ * <li>It embeddes a {@link EventRepository} to monitoring actions performed on features.
+ * </p>
  * 
  * </ul>
  * 
@@ -88,6 +82,9 @@ public class FF4j {
     /** Intialisation. */
     private final long startTime = System.currentTimeMillis();
 
+    /** Version of ff4j. */
+    private final String version = getClass().getPackage().getImplementationVersion();
+
     /**
      * Default constructor to allows instanciation through IoC. The created store is an empty {@link InMemoryFeatureStore}.
      */
@@ -102,14 +99,15 @@ public class FF4j {
     }
 
     /**
-     * Constructor initializing ff4j with an InMemoryStore using an InputStream
+     * Constructor initializing ff4j with an InMemoryStore using an InputStream. Simplify integration with Android through
+     * <code>Asset</code>
      */
     public FF4j(InputStream xmlFileResourceAsStream) {
         this.store = new InMemoryFeatureStore(xmlFileResourceAsStream);
     }
 
     /**
-     * Elegant way to ask for flipping.
+     * Ask if flipped.
      * 
      * @param featureID
      *            feature unique identifier.
@@ -144,7 +142,7 @@ public class FF4j {
             flipped = flipped && fp.getFlippingStrategy().evaluate(featureID, getStore(), executionContext);
         }
 
-        // Any modification done is logged into audit system
+        // Any access is logged into audit system
         getEventPublisher().publish(featureID, flipped);
 
         return flipped;
@@ -408,6 +406,7 @@ public class FF4j {
         sb.append(secondnumber + " seconds\"");
         // <---
         sb.append(", \"autocreate\":" + isAutocreate());
+        sb.append(", \"version\": \"" + version + "\"");
         sb.append(", \"featuresStore\":");
         sb.append(getStore() == null ? "null" : getStore().toString());
         sb.append(", \"eventRepository\":");

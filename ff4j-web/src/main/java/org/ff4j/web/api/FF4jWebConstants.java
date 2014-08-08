@@ -77,4 +77,19 @@ public interface FF4jWebConstants {
 
     /** relative path. */
     String RESOURCE_MONITORING = "monitoring";
+
+    /** relative path. */
+    String RESOURCE_FF4J = "ff4j";
+
+    /** list of curves. */
+    String RESOURCE_HITCURVES = "hitcurves";
+
+    /** distribution of hits. */
+    String RESOURCE_HITDISTRIBUTION = "hitdistribution";
+
+    /** security role. */
+    String ROLE_READ = "READ";
+
+    /** security role. */
+    String ROLE_WRITE = " WRITE";
 }

@@ -1,4 +1,4 @@
-package org.ff4j.web.resources;
+package org.ff4j.web.api.resources;
 
 /*
  * #%L ff4j-web %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not use this

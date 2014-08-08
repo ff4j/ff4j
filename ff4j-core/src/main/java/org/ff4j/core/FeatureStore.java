@@ -166,4 +166,19 @@ public interface FeatureStore {
      */
     Set<String> readAllGroups();
 
+    /**
+     * Implementation of Store to get cache.
+     *
+     * @return target store
+     */
+    boolean isCached();
+
+    /**
+     * Return false.
+     * @return
+     */
+    String getCacheProvider();
+
+    String getCachedTargetStore();
+
 }

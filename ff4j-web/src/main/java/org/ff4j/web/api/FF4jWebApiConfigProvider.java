@@ -20,20 +20,15 @@ package org.ff4j.web.api;
  * #L%
  */
 
-import org.ff4j.FF4j;
+import org.ff4j.web.api.jersey.FF4jApiConfig;
 
-/**
- * Loader for class ff4j within Embedded Administration Console.
- *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
- */
-public interface FF4JWebProvider {
+public interface FF4jWebApiConfigProvider {
 
     /**
-     * Initialize the {@link FF4j} object to be injected within console.
-     *
-     * @return instance of ff4j for this application.
+     * There are 2 ways to secure ap : final user and apiKey
+     * 
+     * @return the security config for this application.
      */
-    FF4j getFF4j();
+    FF4jApiConfig getSecurityConfig();
 
 }

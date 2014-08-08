@@ -67,4 +67,11 @@ public interface FeatureCacheManager {
      */
     Object getNativeCache();
 
+    /**
+     * Get name of expected cache.
+     * 
+     * @return target cache name
+     */
+    String getCacheProviderName();
+
 }

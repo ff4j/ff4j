@@ -20,15 +20,16 @@ package org.ff4j.audit;
  * #L%
  */
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.ff4j.audit.graph.Curve;
 
@@ -39,11 +40,14 @@ import org.ff4j.audit.graph.Curve;
  */
 public class InMemoryEventRepository implements EventRepository {
 
-    /** Store for events. */
-    private static Queue<Event> events = null;
-
     /** default retention. */
     private static final int DEFAULT_QUEUE_CAPACITY = 10000;
+
+    /** current capacity. */
+    private int queueCapacity = DEFAULT_QUEUE_CAPACITY;
+
+    /** Store for events. */
+    private final Map<String, Queue<Event>> mapOfEvents = new ConcurrentHashMap<String, Queue<Event>>();
 
     /**
      * Default constructor with default capacity to 100.000
@@ -59,57 +63,60 @@ public class InMemoryEventRepository implements EventRepository {
      *            default queue capacity
      */
     public InMemoryEventRepository(int queueCapacity) {
-        events = new ArrayBlockingQueue<Event>(queueCapacity);
+        this.queueCapacity = queueCapacity;
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean saveEvent(Event e) {
-        if (events.size() >= DEFAULT_QUEUE_CAPACITY) {
-            events.poll();
+        if (!mapOfEvents.containsKey(e.getFeatureName())) {
+            mapOfEvents.put(e.getFeatureName(), new ArrayBlockingQueue<Event>(queueCapacity));
         }
-        events.offer(e);
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public List<Event> getAllEvents() {
-        List<Event> le = new ArrayList<Event>();
-        for (Iterator<Event> itEvt = events.iterator(); itEvt.hasNext();) {
-            le.add(itEvt.next());
+        Queue<Event> myQueue = mapOfEvents.get(e.getFeatureName());
+        if (myQueue.size() >= DEFAULT_QUEUE_CAPACITY) {
+            myQueue.poll();
         }
-        return le;
+        return myQueue.offer(e);
     }
 
     /** {@inheritDoc} */
     @Override
     public Map<String, Curve> getHitCurves(Set<String> featNameSet, long interval, long startTime, long endTime) {
-        // (0) - Initialization of curves
-        Map<String, Curve> maps = new HashMap<String, Curve>(featNameSet.size());
-        for (String featureName : featNameSet) {
-            maps.put(featureName, new Curve(featureName, startTime, endTime, interval));
-        }
 
-        // (1) - Loop on events to filters and calculate hit counts.
-        for (Iterator<Event> itEvt = events.iterator(); itEvt.hasNext();) {
-            Event ce = itEvt.next();
-            // This event is in target windows and related to correct curve
-            if (featNameSet.contains(ce.getFeatureName()) && (startTime < ce.getTimestamp()) && (ce.getTimestamp() < endTime)) {
-                long slot = ((ce.getTimestamp() - startTime) / interval) + 1;
-                maps.get(ce.getFeatureName()).incrCount((int) slot);
+        // (0) - Initialization of curves
+        Map<String, Curve> maps = new HashMap<String, Curve>();
+
+        // (1) Loop over expected queues
+        for (String name : featNameSet) {
+            Queue<Event> myQueue = mapOfEvents.get(name);
+            if (myQueue != null) {
+                // Current curve
+                Curve curve = new Curve(name, startTime, endTime, interval);
+                for (Iterator<Event> itEvt = myQueue.iterator(); itEvt.hasNext();) {
+                    long t = itEvt.next().getTimestamp();
+                    // Is in target window
+                    if (startTime < t && t < endTime) {
+                        long slot = ((t - startTime) / interval) + 1;
+                        curve.incrCount((int) slot);
+                    }
+                }
+                maps.put(name, curve);
             }
         }
-
         return maps;
     }
 
     /** {@inheritDoc} */
     @Override
     public Curve getHitCurve(String featureName, long interval, long startTime, long endTime) {
-        Set < String > singleElementSet = new HashSet<String>();
-        singleElementSet.add(featureName);
+        Set<String> singleElementSet = new HashSet<String>(Arrays.asList(featureName));
         return getHitCurves(singleElementSet, interval, startTime, endTime).get(featureName);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> getCurveList() {
+        return mapOfEvents.keySet();
     }
 
     /** {@inheritDoc} */
@@ -117,8 +124,53 @@ public class InMemoryEventRepository implements EventRepository {
     public String toString() {
         StringBuilder sb = new StringBuilder("{");
         sb.append("\"type\":\"" + this.getClass().getCanonicalName() + "\"");
-        sb.append(",\"numberOfEvents\":" + events.size());
+        // Today
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        sb.append(",\"todayHits\": ");
+        /*Map<String, Integer> hitToday = getHitsCount(c.getTimeInMillis(), System.currentTimeMillis());
+        boolean first = true;
+        int totalHit = 0;
+        for (String featureName : hitToday.keySet()) {
+            if (!first) {
+                sb.append(", ");
+            }
+            int tmpHit = hitToday.get(featureName);
+            sb.append("\"" + featureName + "\":" + tmpHit);
+            totalHit += tmpHit;
+            first = false;
+        }*/
+        sb.append("0");
         sb.append("}");
+        sb.append(",\"todayTotalHit\":" + 0);
+        sb.append("");
         return sb.toString();
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public int getTotalEventCount() {
+        Set<String> queues = mapOfEvents.keySet();
+        int total = 0;
+        for (String queue : queues) {
+            total += mapOfEvents.get(queue).size();
+        }
+        return total;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, Integer> getHitsCount(long startTime, long endTime) {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Curve getTotalHitCurve(long interval, long startTime, long endTime) {
+        return null;
+    }
+
+
 }

@@ -1,4 +1,4 @@
-package org.ff4j.web.resources;
+package org.ff4j.web.api.resources;
 
 /*
  * #%L
@@ -20,11 +20,9 @@ package org.ff4j.web.resources;
  * #L%
  */
 
-import java.util.Set;
-
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -32,29 +30,30 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.ff4j.core.FeatureStore;
+import org.ff4j.audit.EventRepository;
 import org.ff4j.web.api.FF4jWebConstants;
 
 /**
- * Web Resource to work on groups.
- *
+ * Web Resource to browse monitoring informations.
+ * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class GroupsResource implements FF4jWebConstants {
-
+@RolesAllowed({FF4jWebConstants.ROLE_READ})
+public class MonitoringResource implements FF4jWebConstants {
+   
     @Context
     private UriInfo uriInfo;
 
     @Context
     private Request request;
-
-    /** Access to Features through store. */
-    private FeatureStore store = null;
+    
+    /** Repository of events. */
+    private EventRepository evtRepository;
 
     /**
      * Defaut constructor.
      */
-    public GroupsResource() {}
+    public MonitoringResource() {}
 
     /**
      * Constructor by Parent resource
@@ -63,39 +62,26 @@ public class GroupsResource implements FF4jWebConstants {
      *            current uriInfo
      * @param request
      *            current request
-     * @param store
-     *            current store
      */
-    public GroupsResource(UriInfo uriInfo, Request request, FeatureStore store) {
+    public MonitoringResource(UriInfo uriInfo, Request request, EventRepository evtRepo) {
         this.uriInfo = uriInfo;
         this.request = request;
-        this.store = store;
+        this.evtRepository = evtRepo;
     }
 
     /**
-     * Allows to retrieve feature by its id.
-     * 
-     * @param featId
-     *            target feature identifier
-     * @return feature is exist
+     * Provide core information on store and available sub resources.
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response readAll() {
-        Set<String> setOfGroup = getStore().readAllGroups();
-        StringBuilder sb = new StringBuilder(" {");
-        boolean first = true;
-        for (String group : setOfGroup) {
-            if (!first) {
-                sb.append(",");
-            }
-            first = false;
-            sb.append("\"" + group + "\":\"" + uriInfo.getAbsolutePath() + group + "\"");
+    public Response getStatus() {
+        String jsonResponse = null;
+        if (evtRepository != null) {
+            jsonResponse = evtRepository.toString();
         }
-        sb.append("}");
-        return Response.ok(sb.toString()).build();
+        return Response.ok(jsonResponse).build();
     }
-
+    
     /**
      * Access {@link FeatureResource} from path pattern
      * 
@@ -103,18 +89,10 @@ public class GroupsResource implements FF4jWebConstants {
      *            target identifier
      * @return resource for feature
      */
-    @Path("{groupName}")
-    public GroupResource getGroup(@PathParam("groupName") String groupName) {
-        return new GroupResource(uriInfo, request, store, groupName);
+    @Path(RESOURCE_HITCURVES)
+    public MonitorCurvesResource getCurveResources() {
+        return new MonitorCurvesResource(uriInfo, request, evtRepository);
     }
-
-    /**
-     * Getter accessor for attribute 'store'.
-     *
-     * @return current value of 'store'
-     */
-    public FeatureStore getStore() {
-        return store;
-    }
-
+    
+    
 }

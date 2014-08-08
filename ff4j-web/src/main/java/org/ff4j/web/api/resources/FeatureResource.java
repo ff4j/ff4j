@@ -1,4 +1,4 @@
-package org.ff4j.web.resources;
+package org.ff4j.web.api.resources;
 
 /*
  * #%L
@@ -20,12 +20,14 @@ package org.ff4j.web.resources;
  * #L%
  */
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -90,6 +92,8 @@ public class FeatureResource implements FF4jWebConstants {
      * @return feature is exist
      */
     @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({ROLE_READ})
     public Response read() {
         // if cannot be null due to state diagram (will list)
         if (!getStore().exist(id)) {
@@ -109,6 +113,7 @@ public class FeatureResource implements FF4jWebConstants {
      * @return 204 or 201
      */
     @PUT
+    @RolesAllowed({ROLE_WRITE})
     public Response upsertFeature(@Context HttpHeaders headers, byte[] data) {
         Feature feat = FeatureJsonMarshaller.unMarshallFeature(new String(data));
         if (!getStore().exist(feat.getUid())) {
@@ -126,6 +131,7 @@ public class FeatureResource implements FF4jWebConstants {
      * @return delete by its id.
      */
     @DELETE
+    @RolesAllowed({ROLE_WRITE})
     public Response deleteFeature() {
         if (id == null || "".equals(id)) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -146,6 +152,7 @@ public class FeatureResource implements FF4jWebConstants {
      */
     @POST
     @Path(OPERATION_ENABLE)
+    @RolesAllowed({ROLE_WRITE})
     public Response operationEnable() {
         if (!getStore().exist(id)) {
             return Response.status(Response.Status.NOT_FOUND).entity(new FeatureNotFoundException(id).getMessage()).build();
@@ -161,6 +168,7 @@ public class FeatureResource implements FF4jWebConstants {
      */
     @POST
     @Path(OPERATION_DISABLE)
+    @RolesAllowed({ROLE_WRITE})
     public Response operationDisable() {
         if (!getStore().exist(id)) {
             return Response.status(Response.Status.NOT_FOUND).entity(new FeatureNotFoundException(id).getMessage()).build();
@@ -177,6 +185,7 @@ public class FeatureResource implements FF4jWebConstants {
     @POST
     @Path(OPERATION_GRANTROLE)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @RolesAllowed({ROLE_WRITE})
     public Response operationGrantRole(MultivaluedMap<String, String> formParams) {
         if (!getStore().exist(id)) {
             return Response.status(Response.Status.NOT_FOUND).entity(new FeatureNotFoundException(id).getMessage()).build();
@@ -198,6 +207,7 @@ public class FeatureResource implements FF4jWebConstants {
     @POST
     @Path(OPERATION_REMOVEROLE)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @RolesAllowed({ROLE_WRITE})
     public Response operationRemoveRole(MultivaluedMap<String, String> formParams) {
         if (!getStore().exist(id)) {
             return Response.status(Response.Status.NOT_FOUND).entity(new FeatureNotFoundException(id).getMessage()).build();
@@ -219,6 +229,7 @@ public class FeatureResource implements FF4jWebConstants {
     @POST
     @Path(OPERATION_ADDGROUP)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @RolesAllowed({ROLE_WRITE})
     public Response operationAddGroup(MultivaluedMap<String, String> formParams) {
         if (!getStore().exist(id)) {
             return Response.status(Response.Status.NOT_FOUND).entity(new FeatureNotFoundException(id).getMessage()).build();
@@ -241,6 +252,7 @@ public class FeatureResource implements FF4jWebConstants {
     @POST
     @Path(OPERATION_REMOVEGROUP)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @RolesAllowed({ROLE_WRITE})
     public Response operationRemoveGroup(MultivaluedMap<String, String> formParams) {
         if (!getStore().exist(id)) {
             return Response.status(Response.Status.NOT_FOUND).entity(new FeatureNotFoundException(id).getMessage()).build();

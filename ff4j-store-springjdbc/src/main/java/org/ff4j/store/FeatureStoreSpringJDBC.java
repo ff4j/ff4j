@@ -32,7 +32,6 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.transaction.annotation.Transactional;
-
 import org.springframework.stereotype.Repository;
 
 /**
@@ -369,6 +368,11 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
         sb.append("\"datasource\":\"" + this.dataSource.getClass() + "\"");
         Set<String> myFeatures = readAll().keySet();
         sb.append(",\"numberOfFeatures\":" + myFeatures.size());
+        sb.append(",\"cached\":" + this.isCached());
+        if (this.isCached()) {
+            sb.append(",\"cacheProvider\":\"" + this.getCacheProvider() + "\"");
+            sb.append(",\"cacheStore\":\"" + this.getCachedTargetStore() + "\"");
+        }
         sb.append(",\"features\":[");
         boolean first = true;
         for (String myFeature : myFeatures) {
@@ -409,7 +413,24 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
         return jdbcTemplate;
     }
 
+    // -------- Overrided in cache proxy --------------
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean isCached() {
+        return false;
+    }
 
+    /** {@inheritDoc} */
+    @Override
+    public String getCacheProvider() {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getCachedTargetStore() {
+        return null;
+    }
 
 }

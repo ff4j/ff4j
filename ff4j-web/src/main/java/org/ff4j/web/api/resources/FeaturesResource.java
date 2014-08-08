@@ -1,4 +1,4 @@
-package org.ff4j.web.resources;
+package org.ff4j.web.api.resources;
 
 /*
  * #%L
@@ -20,9 +20,10 @@ package org.ff4j.web.resources;
  * #L%
  */
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -36,11 +37,13 @@ import org.ff4j.utils.FeatureJsonMarshaller;
 import org.ff4j.web.api.FF4jWebConstants;
 
 /**
- * WebResource representing a group of features.
- *
+ * This store will invoke a {@link RemoteHttpFeatureStore} to perform operations upon features. Call are done though http so
+ * please consider to use some cache to limit
+ * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class GroupResource implements FF4jWebConstants {
+@RolesAllowed({FF4jWebConstants.ROLE_READ})
+public class FeaturesResource implements FF4jWebConstants {
 
     @Context
     private UriInfo uriInfo;
@@ -51,13 +54,10 @@ public class GroupResource implements FF4jWebConstants {
     /** Access to Features through store. */
     private FeatureStore store = null;
 
-    /** current groupName. */
-    private String groupName = null;
-
     /**
      * Defaut constructor.
      */
-    public GroupResource() {}
+    public FeaturesResource() {}
 
     /**
      * Constructor by Parent resource
@@ -69,66 +69,55 @@ public class GroupResource implements FF4jWebConstants {
      * @param store
      *            current store
      */
-    public GroupResource(UriInfo uriInfo, Request request, FeatureStore store, String group) {
+    public FeaturesResource(UriInfo uriInfo, Request request, FeatureStore store) {
         this.uriInfo = uriInfo;
         this.request = request;
         this.store = store;
-        this.groupName = group;
+    }
+    
+    /**
+     * Access {@link FeatureResource} from path pattern
+     * 
+     * @param uid
+     *            target identifier
+     * @return resource for feature
+     */
+    @Path("{uid}")
+    public FeatureResource getFeature(@PathParam("uid") String uid) {
+        return new FeatureResource(uriInfo, request, uid, store);
     }
 
     /**
-     * Convenient method to work on groupd : Here enabling
+     * Allows to retrieve feature by its id.
      * 
-     * @return http response.
+     * @param featId
+     *            target feature identifier
+     * @return feature is exist
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response read() {
-        Feature[] storeContent = getStore().readGroup(groupName).values().toArray(new Feature[0]);
+    public Response readAll() {
+        Feature[] storeContent = getStore().readAll().values().toArray(new Feature[0]);
         String storeAsJson = FeatureJsonMarshaller.marshallFeatureArray(storeContent);
         return Response.ok(storeAsJson).build();
     }
 
     /**
-     * Convenient method to work on groupd : Here enabling
+     * Getter accessor for attribute 'ff4j'.
      * 
-     * @return http response.
-     */
-    @POST
-    @Path(OPERATION_ENABLE)
-    public Response operationEnable() {
-        getStore().enableGroup(groupName);
-        return Response.noContent().build();
-    }
-
-    /**
-     * Convenient method to work on groupd : Here enabling
-     * 
-     * @return http response.
-     */
-    @POST
-    @Path(OPERATION_DISABLE)
-    public Response operationDisableGroup() {
-        getStore().disableGroup(groupName);
-        return Response.noContent().build();
-    }
-
-    /**
-     * Getter accessor for attribute 'store'.
-     *
-     * @return current value of 'store'
+     * @return current value of 'ff4j'
      */
     public FeatureStore getStore() {
         return store;
     }
 
     /**
-     * Getter accessor for attribute 'groupName'.
-     *
-     * @return current value of 'groupName'
+     * Setter accessor for attribute 'store'.
+     * 
+     * @param store
+     *            new value for 'store '
      */
-    public String getGroupName() {
-        return groupName;
+    public void setStore(FeatureStore store) {
+        this.store = store;
     }
-
 }

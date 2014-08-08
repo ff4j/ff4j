@@ -23,10 +23,9 @@ package org.ff4j.web.resources.it;
 import javax.ws.rs.core.Response.Status;
 
 import org.junit.Assert;
-
 import org.ff4j.core.Feature;
 import org.ff4j.utils.FeatureJsonMarshaller;
-import org.ff4j.web.resources.FeatureResource;
+import org.ff4j.web.api.resources.FeatureResource;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.ClientResponse;

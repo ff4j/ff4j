@@ -115,6 +115,12 @@ public class FeatureCacheProviderRedis implements FeatureCacheManager {
         return jedis;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public String getCacheProviderName() {
+        return "REDIS";
+    }
+
     /**
      * Getter accessor for attribute 'redisHost'.
      * 

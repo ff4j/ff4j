@@ -1,4 +1,4 @@
-package org.ff4j.web.resources;
+package org.ff4j.web.api.resources;
 
 /*
  * #%L
@@ -20,8 +20,12 @@ package org.ff4j.web.resources;
  * #L%
  */
 
+import java.util.Set;
+
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -33,11 +37,12 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.web.api.FF4jWebConstants;
 
 /**
- * WebResource representing the store.
+ * Web Resource to work on groups.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreResource implements FF4jWebConstants {
+@RolesAllowed({FF4jWebConstants.ROLE_READ})
+public class GroupsResource implements FF4jWebConstants {
 
     @Context
     private UriInfo uriInfo;
@@ -51,7 +56,7 @@ public class FeatureStoreResource implements FF4jWebConstants {
     /**
      * Defaut constructor.
      */
-    public FeatureStoreResource() {}
+    public GroupsResource() {}
 
     /**
      * Constructor by Parent resource
@@ -63,30 +68,10 @@ public class FeatureStoreResource implements FF4jWebConstants {
      * @param store
      *            current store
      */
-    public FeatureStoreResource(UriInfo uriInfo, Request request, FeatureStore store) {
+    public GroupsResource(UriInfo uriInfo, Request request, FeatureStore store) {
         this.uriInfo = uriInfo;
         this.request = request;
         this.store = store;
-    }
-
-    /**
-     * Access features part of the API.
-     *
-     * @return features resource
-     */
-    @Path(RESOURCE_FEATURES)
-    public FeaturesResource getFeaturesResource() {
-        return new FeaturesResource(uriInfo, request, store);
-    }
-
-    /**
-     * Access groups part of the API.
-     * 
-     * @return groups resource
-     */
-    @Path(RESOURCE_GROUPS)
-    public GroupsResource getGroupsResource() {
-        return new GroupsResource(uriInfo, request, store);
     }
 
     /**
@@ -98,27 +83,40 @@ public class FeatureStoreResource implements FF4jWebConstants {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response describe() {
-        return Response.ok(store.toString()).build();
+    public Response readAll() {
+        Set<String> setOfGroup = getStore().readAllGroups();
+        StringBuilder sb = new StringBuilder(" {");
+        boolean first = true;
+        for (String group : setOfGroup) {
+            if (!first) {
+                sb.append(",");
+            }
+            first = false;
+            sb.append("\"" + group + "\":\"" + uriInfo.getAbsolutePath() + group + "\"");
+        }
+        sb.append("}");
+        return Response.ok(sb.toString()).build();
     }
 
     /**
-     * Getter accessor for attribute 'ff4j'.
+     * Access {@link FeatureResource} from path pattern
      * 
-     * @return current value of 'ff4j'
+     * @param uid
+     *            target identifier
+     * @return resource for feature
+     */
+    @Path("{groupName}")
+    public GroupResource getGroup(@PathParam("groupName") String groupName) {
+        return new GroupResource(uriInfo, request, store, groupName);
+    }
+
+    /**
+     * Getter accessor for attribute 'store'.
+     *
+     * @return current value of 'store'
      */
     public FeatureStore getStore() {
         return store;
-    }
-
-    /**
-     * Setter accessor for attribute 'store'.
-     * 
-     * @param store
-     *            new value for 'store '
-     */
-    public void setStore(FeatureStore store) {
-        this.store = store;
     }
 
 }
