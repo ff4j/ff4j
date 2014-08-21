@@ -57,7 +57,7 @@ mvn archetype:create -Dpackaging=jar -Dversion=1.0 -DartifactId=ff4j-simple -Dgr
 </features>
 ```
 
-* Write the following Junit test : (you may have to update junit version in your pom file with at least 4.4)
+* Write the following Junit test : (you may have to update junit version in your pom file with at least 4.5)
 
 ```java
 package org.ff4j.sample;
