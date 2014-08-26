@@ -23,11 +23,9 @@ package org.ff4j.web.resources.it;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response.Status;
 
-import org.junit.Assert;
-
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.el.ExpressionFlipStrategy;
-import org.ff4j.utils.FeatureJsonMarshaller;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.ClientResponse;
@@ -170,7 +168,7 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
         formData.add(POST_PARAMNAME_FEATURE_UID, F4);
         // Overriding parameters
         formData.add(ExpressionFlipStrategy.PARAM_EXPRESSION, "first");
-        String  fs = FeatureJsonMarshaller.renderFlippingStrategy(ff4j.getStore().read(F4).getFlippingStrategy());
+        String  fs = ff4j.getStore().read(F4).flippingStrategyAsJson();
         System.out.println(fs);
         formData.add(POST_PARAMNAME_FLIPSTRATEGY, fs.replace(",\"flippingStrategy\":", ""));
         ClientResponse resHttp = resourceff4j().path(OPERATION_FLIP).post(ClientResponse.class, formData);

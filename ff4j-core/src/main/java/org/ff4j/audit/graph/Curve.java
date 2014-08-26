@@ -35,6 +35,12 @@ public class Curve {
 
     /** Target line color. */
     private String lineColor;
+    
+    /** Number of points to be computed. */
+    private int nbRecords = 0;
+   
+    /** bandwith of an interval. */
+    private long interval = 0;
 
     /** List of point to drow for this curve. */
     private List<Point> listOfPoint = new ArrayList<Point>();
@@ -42,6 +48,13 @@ public class Curve {
     /** Type of curve to be drawn. */
     private CurveType curveType = CurveType.SPARKLINE;
 
+    /**
+     * Constructor to create curve from copy
+     */
+    public Curve(String title) {
+        this.title = title;
+    }
+    
     /**
      * Initialize a timeSeries
      * 
@@ -54,10 +67,12 @@ public class Curve {
      * @param interval
      *            interval between 2 measures
      */
-    public Curve(String title, long startTime, long endTime, long interval) {
+    public Curve(String title, long startTime, long endTime, int nbPoints) {
+        this(title);
         if (endTime > startTime) {
-            long nbslots = ((endTime - startTime) / interval) + 1;
-            for (int slot = 0; slot < nbslots; slot++) {
+            this.nbRecords = nbPoints;
+            this.interval = (endTime - startTime) / nbPoints;
+            for (int slot = 0; slot < nbPoints; slot++) {
                 getListOfPoint().add(new Point(interval * slot, 0));
             }
         }
@@ -153,6 +168,57 @@ public class Curve {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return "Curve [curveType=" + curveType + ", points=" + listOfPoint + "]";
+        StringBuilder sb = new StringBuilder("{");
+        sb.append(" \"title\" : \"" + getTitle() + "\", ");
+        sb.append(" \"type\" : \"" + getCurveType() + "\", ");
+        sb.append(" \"points\" : [");
+        boolean first = true;
+        for(Point p : listOfPoint) {
+            if (!first) {
+                sb.append(",");
+            }
+            sb.append("{ \"x\" : " + p.getX() + ", \"y\" : " + p.getY() + "}");
+            first = false;
+        }
+        sb.append("] }");
+        return sb.toString();
+    }
+
+    /**
+     * Getter accessor for attribute 'nbRecords'.
+     *
+     * @return
+     *       current value of 'nbRecords'
+     */
+    public int getNbRecords() {
+        return nbRecords;
+    }
+
+    /**
+     * Setter accessor for attribute 'nbRecords'.
+     * @param nbRecords
+     * 		new value for 'nbRecords '
+     */
+    public void setNbRecords(int nbRecords) {
+        this.nbRecords = nbRecords;
+    }
+
+    /**
+     * Getter accessor for attribute 'interval'.
+     *
+     * @return
+     *       current value of 'interval'
+     */
+    public long getInterval() {
+        return interval;
+    }
+
+    /**
+     * Setter accessor for attribute 'interval'.
+     * @param interval
+     * 		new value for 'interval '
+     */
+    public void setInterval(long interval) {
+        this.interval = interval;
     }
 }

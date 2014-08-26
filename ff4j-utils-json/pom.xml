@@ -5,9 +5,9 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~ COORDINATES ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<artifactId>ff4j-store-redis</artifactId>
+	<artifactId>ff4j-utils-json</artifactId>
 	<packaging>jar</packaging>
-	<name>ff4j-store-redis</name>
+	<name>ff4j-utils-json</name>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~ PARENT ~ -->
@@ -36,26 +36,6 @@
 			<groupId>org.ff4j</groupId>
 			<artifactId>ff4j-core</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-
-		<!-- json -->
-		<dependency>
-			<artifactId>ff4j-utils-json</artifactId>
-			<groupId>org.ff4j</groupId>
-			<version>${project.version}</version>
-		</dependency>
-		
-		<!-- cache provider -->
-		<dependency>
-			<groupId>redis.clients</groupId>
-			<artifactId>jedis</artifactId>
-			<version>${version.jedis}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>javassist</groupId>
-			<artifactId>javassist</artifactId>
-			<version>3.12.1.GA</version>
 		</dependency>
 
 		<dependency>
@@ -87,56 +67,5 @@
 		</dependency>
 
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>ru.trylogic.maven.plugins</groupId>
-				<artifactId>redis-maven-plugin</artifactId>
-				<version>${version.maven.plugin.redis}</version>
-				<configuration>
-					<forked>${redis-forked}</forked>
-				</configuration>
-				<executions>
-					<execution>
-						<id>start-redis</id>
-						<phase>pre-integration-test</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>stop-redis</id>
-						<phase>post-integration-test</phase>
-						<goals>
-							<goal>shutdown</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>${version.maven.plugin.failsafe}</version>
-				<dependencies>
-					<dependency>
-						<groupId>org.apache.maven.surefire</groupId>
-						<artifactId>surefire-junit47</artifactId>
-						<version>${version.maven.plugin.failsafe}</version>
-					</dependency>
-				</dependencies>
-				<executions>
-					<execution>
-						<goals>
-							<goal>integration-test</goal>
-							<goal>verify</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-		</plugins>
-	</build>
 
 </project>

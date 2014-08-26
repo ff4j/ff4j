@@ -1,32 +1,23 @@
 package org.ff4j.core;
 
 /*
- * #%L
- * ff4j-core
- * %%
- * Copyright (C) 2013 Ff4J
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * #%L ff4j-core %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. #L%
  */
 
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
-
-import org.ff4j.utils.FeatureJsonMarshaller;
 
 /**
  * Represents a feature flag identified by an unique identifier.
@@ -166,7 +157,86 @@ public class Feature implements Serializable {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return FeatureJsonMarshaller.marshallFeature(this);
+        return toJson();
+    }
+
+    /**
+     * Convert Feature to JSON.
+     * 
+     * @return target json
+     */
+    public String toJson() {
+        StringBuilder json = new StringBuilder("{");
+        json.append("\"uid\":\"" + uid + "\"");
+        json.append(",\"enable\":" + enable);
+        json.append(",\"description\":");
+        json.append((null == description) ? "null" : "\"" + description + "\"");
+        json.append(",\"group\":");
+        json.append((null == group) ? "null" : "\"" + group + "\"");
+        
+        // Permissions
+        json.append(",\"permissions\":");
+        json.append(permissionsAsJson());
+        
+        // Flipping strategy
+        json.append(",\"flippingStrategy\":");
+        json.append(flippingStrategyAsJson());
+        
+        json.append("}");
+        return json.toString();
+    }
+    
+    /**
+     * Generate flipping strategy as json.
+     * 
+     * @return
+     *      flippling strategy as json.     
+     */
+    public String permissionsAsJson() {
+        StringBuilder json = new StringBuilder();
+        if (null != permissions) {
+            json.append("[");
+            if (!permissions.isEmpty()) {
+                boolean first = true;
+                for (String auth : permissions) {
+                    json.append(first ? "" : ",");
+                    json.append("\"" + auth + "\"");
+                    first = false;
+                }
+            }
+            json.append("]");
+        } else {
+            json.append("null");
+        }
+        return json.toString();
+    }
+    
+    /**
+     * Generate flipping strategy as json.
+     * 
+     * @return
+     *      flippling strategy as json.     
+     */
+    public String flippingStrategyAsJson() {
+        StringBuilder json = new StringBuilder();
+        if (null != flippingStrategy) {
+            json.append("{\"initParams\":{");
+            Map < String , String> iparams = flippingStrategy.getInitParams();
+            if (iparams != null && !iparams.isEmpty()) {
+                boolean first = true;
+                for (Entry<String, String> param : iparams.entrySet()) {
+                    json.append(first ? "" : ",");
+                    json.append("\"" + param.getKey() + "\":\"" + param.getValue() + "\"");
+                    first = false;
+                }
+            }
+            json.append("},\"classType\":\"");
+            json.append(flippingStrategy.getClass().getCanonicalName());
+            json.append("\"}");
+        } else {
+            json.append("null");
+        }
+        return json.toString();
     }
 
     /**

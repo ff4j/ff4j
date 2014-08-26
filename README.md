@@ -25,7 +25,6 @@ _This document is currently in progress and is changed very often_
 <br/>3 - [Feature Flipping through AOP](#aop)
 <br/>4 - [Externalize features in JDBC store](#store-jdbc)
 
-
 <a id="hello-world" name="hello-world"/>
 ### 1 - Hello world
 

@@ -95,13 +95,4 @@ public class ServerFilterStrategy extends AbstractFlipStrategy {
         return setOfTargetServer.contains(executionContext.getString(SERVER_HOSTNAME));
     }
 
-    /**
-     * Getter accessor for attribute 'setOfTargetServer'.
-     *
-     * @return current value of 'setOfTargetServer'
-     */
-    public Set<String> getTargetServer() {
-        return setOfTargetServer;
-    }
-
 }

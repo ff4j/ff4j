@@ -1,5 +1,6 @@
 package org.ff4j.web.resources.it;
 
+import static org.ff4j.utils.json.FeatureJsonParser.parseFeatureArray;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,7 +9,6 @@ import javax.ws.rs.core.Response.Status;
 import org.junit.Assert;
 
 import org.ff4j.core.Feature;
-import org.ff4j.utils.FeatureJsonMarshaller;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.ClientResponse;
@@ -59,7 +59,7 @@ public class GroupResourceTestIT extends AbstractWebResourceTestIT {
         Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
         // Then, Entity Object
         Assert.assertNotNull(resEntity);
-        Feature[] f = FeatureJsonMarshaller.unMarshallFeatureArray(resEntity);
+        Feature[] f = parseFeatureArray(resEntity);
         Set<String> features = new HashSet<String>();
         for (Feature feature : f) {
             features.add(feature.getUid());

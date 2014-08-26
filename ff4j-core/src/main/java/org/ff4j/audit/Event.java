@@ -39,7 +39,7 @@ public class Event implements Serializable {
     private String featureName;
 
     /** Time of event creation. */
-    private final long timestamp;
+    private long timestamp;
 
     /** Default constructor. */
     public Event() {
@@ -58,6 +58,19 @@ public class Event implements Serializable {
         this();
         this.featureName = featureName;
         this.type = type;
+    }
+    
+    /**
+     * Paramterized constructor.
+     * 
+     * @param featureName
+     *            target feature name
+     * @param type
+     *            target event type
+     */
+    public Event(String featureName, EventType type, long time) {
+        this(featureName, type);
+        this.timestamp = time;
     }
 
     /**

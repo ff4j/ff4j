@@ -23,7 +23,6 @@ package org.ff4j.web.api.resources;
 import java.util.Calendar;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -41,7 +40,7 @@ import org.ff4j.web.api.FF4jWebConstants;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 @RolesAllowed({FF4jWebConstants.ROLE_READ})
-public class MonitorCurveResource extends MonitorAbstractResource {
+public class MonitorPieResource extends MonitorAbstractResource {
     
     /** target feature id (if present). */
     private String featureId = null;
@@ -49,7 +48,7 @@ public class MonitorCurveResource extends MonitorAbstractResource {
     /**
      * Defaut constructor.
      */
-    public MonitorCurveResource() {}
+    public MonitorPieResource() {}
 
     /**
      * Constructor by Parent resource
@@ -59,7 +58,7 @@ public class MonitorCurveResource extends MonitorAbstractResource {
      * @param request
      *            current request
      */
-    public MonitorCurveResource(UriInfo uriInfo, Request request, EventRepository evtRepo) {
+    public MonitorPieResource(UriInfo uriInfo, Request request, EventRepository evtRepo) {
         super(uriInfo, request, evtRepo);
     }
     
@@ -71,8 +70,8 @@ public class MonitorCurveResource extends MonitorAbstractResource {
      * @param request
      *            current request
      */
-    public MonitorCurveResource(UriInfo uriInfo, Request request, EventRepository evtRepo, String uid) {
-        super(uriInfo, request, evtRepo);
+    public MonitorPieResource(UriInfo uriInfo, Request request, EventRepository evtRepo, String uid) {
+        this(uriInfo, request, evtRepo);
         this.featureId = uid;
     }
     
@@ -81,8 +80,7 @@ public class MonitorCurveResource extends MonitorAbstractResource {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCurve(@QueryParam(PARAM_START) Long start, @QueryParam(PARAM_END) Long end,
-            @QueryParam(PARAM_NBPOINTS) @DefaultValue("100") Integer nbpoints) {
+    public Response getPie(@QueryParam(PARAM_START) Long start, @QueryParam(PARAM_END) Long end) {
         long myStart = 0;
         if (null == start) {
             Calendar c = Calendar.getInstance();
@@ -101,10 +99,10 @@ public class MonitorCurveResource extends MonitorAbstractResource {
         String jsonResponse = "ko";
         if (null != featureId) {
             // Compute Pie for dedicated feature
-            jsonResponse = getEvtRepository().getFeatureHitsCurve(featureId, myStart, myEnd, nbpoints).toString();
+            jsonResponse = getEvtRepository().getFeatureHitsPie(featureId, myStart, myEnd).toString();
         } else {
             // Create the total hit pie
-            jsonResponse = getEvtRepository().getTotalHitsCurve(myStart, myEnd, nbpoints).toString();
+            jsonResponse = getEvtRepository().getTotalHitsPie(myStart, myEnd).toString();
         }
         return Response.ok(jsonResponse).build();
     }

@@ -22,10 +22,10 @@ package org.ff4j.web.resources.it;
 
 import javax.ws.rs.core.Response.Status;
 
-import org.junit.Assert;
 import org.ff4j.core.Feature;
-import org.ff4j.utils.FeatureJsonMarshaller;
 import org.ff4j.web.api.resources.FeatureResource;
+import org.ff4j.utils.json.FeatureJsonParser;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.ClientResponse;
@@ -53,7 +53,7 @@ public class FeatureResource_get_TestIT extends AbstractWebResourceTestIT {
         Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
         Assert.assertNotNull(resEntity);
         // Then, Entity Object
-        Feature f = FeatureJsonMarshaller.unMarshallFeature(resEntity);
+        Feature f = FeatureJsonParser.parseFeature(resEntity);
         Assert.assertEquals(ff4j.getFeature(F4).toString(), f.toString());
     }
 

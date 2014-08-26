@@ -368,6 +368,11 @@ public class InMemoryFeatureStore implements FeatureStore {
     /** {@inheritDoc} */
     @Override
     public String toString() {
+        return toJson();
+    }
+
+    /** {@inheritDoc} */
+    public String toJson() {
         StringBuilder sb = new StringBuilder("{");
         sb.append("\"type\":\"" + this.getClass().getCanonicalName() + "\"");
         sb.append(",\"xmlInputFile\":\"" + this.getFileName() + "\"");

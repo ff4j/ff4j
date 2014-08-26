@@ -47,9 +47,6 @@ public class ServerFilterStrategyTest extends AbstractFf4jTest {
         ServerFilterStrategy cStra = (ServerFilterStrategy) f1.getFlippingStrategy();
         Assert.assertNotNull(cStra.getInitParams());
         Assert.assertEquals(1, cStra.getInitParams().size());
-        Assert.assertEquals(3, cStra.getTargetServer().size());
-        Assert.assertTrue(cStra.getTargetServer().contains("dev01"));
-        Assert.assertFalse(cStra.getTargetServer().contains(FEATURE_NEW));
         Assert.assertTrue(f1.isEnable());
 
         // When (add correct client name)
@@ -68,9 +65,6 @@ public class ServerFilterStrategyTest extends AbstractFf4jTest {
         ServerFilterStrategy cStra = (ServerFilterStrategy) f1.getFlippingStrategy();
         Assert.assertNotNull(cStra.getInitParams());
         Assert.assertEquals(1, cStra.getInitParams().size());
-        Assert.assertEquals(3, cStra.getTargetServer().size());
-        Assert.assertTrue(cStra.getTargetServer().contains("dev01"));
-        Assert.assertFalse(cStra.getTargetServer().contains(FEATURE_NEW));
         Assert.assertTrue(f1.isEnable());
 
         // When (add invalid client name)

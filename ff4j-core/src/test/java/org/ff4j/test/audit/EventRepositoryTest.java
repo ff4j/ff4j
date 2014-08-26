@@ -71,6 +71,6 @@ public class EventRepositoryTest {
         }
         Assert.assertEquals(nbEvent, pub.getRepository().getTotalEventCount());
         long now = System.currentTimeMillis();
-        pub.getRepository().getHitCurve("aer", 10, now - 3 * nbEvent, now);
+        pub.getRepository().getFeatureHitsCurve("aer", now - 3 * nbEvent, now, 10);
     }
 }

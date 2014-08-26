@@ -1,14 +1,12 @@
 package org.ff4j.test.strategy;
 
 import java.text.ParseException;
-import java.util.Date;
-
-import org.junit.Assert;
 
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.strategy.ReleaseDateFlipStrategy;
 import org.ff4j.test.AbstractFf4jTest;
+import org.junit.Assert;
 import org.junit.Test;
 
 /*
@@ -48,14 +46,14 @@ public class ReleaseDateFlipStrategyTest extends AbstractFf4jTest {
     public void testPastDayOK() throws ParseException {
         Feature f = ff4j.getFeature("past1");
         ReleaseDateFlipStrategy rds = (ReleaseDateFlipStrategy) f.getFlippingStrategy();
-        Assert.assertTrue(new Date().after(rds.getReleaseDate()));
+        Assert.assertTrue(rds.evaluate("past1", null, null));
     }
 
     @Test
     public void testFutureOK() throws ParseException {
         Feature f = ff4j.getFeature("future1");
         ReleaseDateFlipStrategy rds = (ReleaseDateFlipStrategy) f.getFlippingStrategy();
-        Assert.assertTrue(new Date().before(rds.getReleaseDate()));
+        Assert.assertFalse(rds.evaluate("future1", null, null));
     }
 
 }

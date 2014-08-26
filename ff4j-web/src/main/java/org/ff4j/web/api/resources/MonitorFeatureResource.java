@@ -33,18 +33,22 @@ import org.ff4j.audit.EventRepository;
 import org.ff4j.web.api.FF4jWebConstants;
 
 /**
- * Web Resource to browse monitoring informations.
- * 
+ * Resource for monitoring information about features.
+ *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 @RolesAllowed({FF4jWebConstants.ROLE_READ})
-public class MonitoringResource extends MonitorAbstractResource {
+public class MonitorFeatureResource extends MonitorAbstractResource {
+    
+    /** target featurename. */
+    private String featureId;
     
     /**
-     * Defaut constructor.
+     * Default constructor.
      */
-    public MonitoringResource() {}
-
+    public MonitorFeatureResource() {
+    }
+    
     /**
      * Constructor by Parent resource
      * 
@@ -53,21 +57,21 @@ public class MonitoringResource extends MonitorAbstractResource {
      * @param request
      *            current request
      */
-    public MonitoringResource(UriInfo uriInfo, Request request, EventRepository evtRepo) {
+    public MonitorFeatureResource(UriInfo uriInfo, Request request, EventRepository evtRepo, String uid) {
         super(uriInfo, request, evtRepo);
+        this.featureId = uid;
     }
-
+    
     /**
      * Provide core information on store and available sub resources.
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getStatus() {
-        String jsonResponse = null;
-        if (getEvtRepository() != null) {
-            jsonResponse = getEvtRepository().toString();
-        }
-        return Response.ok(jsonResponse).build();
+    public Response getFeatureInformations() {
+        StringBuilder json = new StringBuilder("{ \"name\" : \"");
+        json.append(featureId);
+        json.append("\"}");
+        return Response.ok(json.toString()).build();
     }
     
     /**
@@ -77,7 +81,7 @@ public class MonitoringResource extends MonitorAbstractResource {
      */
     @Path(RESOURCE_PIE)
     public MonitorPieResource getMonitorPieResources() {
-        return new MonitorPieResource(uriInfo, request, getEvtRepository());
+        return new MonitorPieResource(uriInfo, request, getEvtRepository(), featureId);
     }
     
     /**
@@ -87,16 +91,7 @@ public class MonitoringResource extends MonitorAbstractResource {
      */
     @Path(RESOURCE_CURVE)
     public MonitorCurveResource getCurveResources() {
-        return new MonitorCurveResource(uriInfo, request, getEvtRepository());
+        return new MonitorCurveResource(uriInfo, request, getEvtRepository(), featureId);
     }
-    
-   /** Access {@link MonitorFeaturesResource} from path pattern.
-    *
-    * @return resource for feature
-    */
-    @Path(RESOURCE_FEATURES)
-    public MonitorFeaturesResource getFeaturesResources() {
-        return new MonitorFeaturesResource(uriInfo, request, getEvtRepository());
-    }
-    
+
 }

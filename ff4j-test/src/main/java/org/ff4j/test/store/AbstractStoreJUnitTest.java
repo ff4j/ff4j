@@ -496,6 +496,7 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
         // Then
         Feature updatedFeature = testedStore.read(F1);
         Assert.assertTrue(newDescription.equals(updatedFeature.getDescription()));
+        Assert.assertNotNull(updatedFeature.getFlippingStrategy());
         Assert.assertEquals(newStrategy.toString(), updatedFeature.getFlippingStrategy().toString());
     }
 

@@ -102,6 +102,7 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("resource")
     @Override
     public Feature read(String uid) {
         if (uid == null || uid.isEmpty()) {
@@ -226,6 +227,7 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("resource")
     @Override
     public void delete(String uid) {
         if (uid == null || uid.isEmpty()) {

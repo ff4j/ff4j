@@ -93,16 +93,7 @@ public class ReleaseDateFlipStrategy extends AbstractFlipStrategy {
         // No use of executionContext
         return new Date().after(releaseDate);
     }
-
-    /**
-     * Getter accessor for attribute 'releaseDate'.
-     * 
-     * @return current value of 'releaseDate'
-     */
-    public Date getReleaseDate() {
-        return releaseDate;
-    }
-
+    
     /**
      * Setter accessor for attribute 'releaseDate'.
      * 

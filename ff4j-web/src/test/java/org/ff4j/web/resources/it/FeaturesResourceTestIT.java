@@ -20,12 +20,12 @@ package org.ff4j.web.resources.it;
  * #L%
  */
 
+import static org.ff4j.utils.json.FeatureJsonParser.parseFeatureArray;
+
 import javax.ws.rs.core.Response.Status;
 
-import org.junit.Assert;
-
 import org.ff4j.core.Feature;
-import org.ff4j.utils.FeatureJsonMarshaller;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.ClientResponse;
@@ -53,7 +53,7 @@ public class FeaturesResourceTestIT extends AbstractWebResourceTestIT {
         Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), httpResponse.getStatus());
         Assert.assertNotNull(resEntity);
         // Then, Entity Object
-        Feature[] fArray = FeatureJsonMarshaller.unMarshallFeatureArray(resEntity);
+        Feature[] fArray = parseFeatureArray(resEntity);
         Assert.assertEquals(EXPECTED_FEATURES_NUMBERS, fArray.length);
     }
 

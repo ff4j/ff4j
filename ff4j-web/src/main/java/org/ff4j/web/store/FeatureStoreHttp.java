@@ -20,7 +20,9 @@ package org.ff4j.web.store;
  * #L%
  */
 
-import static org.ff4j.utils.FeatureJsonMarshaller.unMarshallFeature;
+import static org.ff4j.utils.json.FeatureJsonParser.parseFeature;
+import static org.ff4j.utils.json.FeatureJsonParser.parseFeatureArray;
+
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,7 +38,6 @@ import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
-import org.ff4j.utils.FeatureJsonMarshaller;
 import org.ff4j.web.api.FF4jWebConstants;
 
 import com.sun.jersey.api.client.Client;
@@ -129,7 +130,7 @@ public class FeatureStoreHttp implements FeatureStore, FF4jWebConstants {
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new FeatureNotFoundException(uid);
         }
-        return unMarshallFeature(cRes.getEntity(String.class));
+        return parseFeature(cRes.getEntity(String.class));
     }
 
     /** {@inheritDoc} */
@@ -197,7 +198,7 @@ public class FeatureStoreHttp implements FeatureStore, FF4jWebConstants {
             throw new FeatureAccessException("Cannot read features, an HTTP error " + cRes.getStatus() + " occured.");
         }
         String resEntity = cRes.getEntity(String.class);
-        Feature[] fArray = FeatureJsonMarshaller.unMarshallFeatureArray(resEntity);
+        Feature[] fArray = parseFeatureArray(resEntity);
         Map<String, Feature> features = new HashMap<String, Feature>();
         for (Feature feature : fArray) {
             features.put(feature.getUid(), feature);
@@ -375,7 +376,7 @@ public class FeatureStoreHttp implements FeatureStore, FF4jWebConstants {
             throw new FeatureAccessException("Cannot grant role on feature, an HTTP error " + cRes.getStatus() + " occured.");
         }
         String resEntity = cRes.getEntity(String.class);
-        Feature[] fArray = FeatureJsonMarshaller.unMarshallFeatureArray(resEntity);
+        Feature[] fArray = parseFeatureArray(resEntity);
         Map<String, Feature> features = new HashMap<String, Feature>();
         for (Feature feature : fArray) {
             features.put(feature.getUid(), feature);

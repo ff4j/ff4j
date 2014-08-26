@@ -89,14 +89,5 @@ public class ClientFilterStrategy extends AbstractFlipStrategy {
         return setOfGrantedClient.contains(executionContext.getString(CLIENT_HOSTNAME));
     }
 
-    /**
-     * Getter accessor for attribute 'setOfGrantedClient'.
-     *
-     * @return current value of 'setOfGrantedClient'
-     */
-    public Set<String> getGrantedClient() {
-        return setOfGrantedClient;
-    }
-
 
 }

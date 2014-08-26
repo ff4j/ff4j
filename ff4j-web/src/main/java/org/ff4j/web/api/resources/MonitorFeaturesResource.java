@@ -23,13 +23,10 @@ package org.ff4j.web.api.resources;
 import java.util.Set;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
@@ -39,26 +36,18 @@ import org.ff4j.audit.EventRepository;
 import org.ff4j.web.api.FF4jWebConstants;
 
 /**
- * Class to TODO
- *
+ * Available at /api/ff4j/monitoring/features, will display
+ * all monitoring information available for features.
+ * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 @RolesAllowed({FF4jWebConstants.ROLE_READ})
-public class MonitorCurvesResource implements FF4jWebConstants {
-
-    @Context
-    private UriInfo uriInfo;
-
-    @Context
-    private Request request;
-
-    /** Repository of events. */
-    private EventRepository evtRepository;
-
+public class MonitorFeaturesResource extends MonitorAbstractResource {
+    
     /**
      * Defaut constructor.
      */
-    public MonitorCurvesResource() {}
+    public MonitorFeaturesResource() {}
 
     /**
      * Constructor by Parent resource
@@ -68,12 +57,10 @@ public class MonitorCurvesResource implements FF4jWebConstants {
      * @param request
      *            current request
      */
-    public MonitorCurvesResource(UriInfo uriInfo, Request request, EventRepository evtRepo) {
-        this.uriInfo = uriInfo;
-        this.request = request;
-        this.evtRepository = evtRepo;
+    public MonitorFeaturesResource(UriInfo uriInfo, Request request, EventRepository evtRepo) {
+        super(uriInfo, request, evtRepo);
     }
-
+    
     /**
      * Access resources /ff4j/monitoring/curves and list curves
      *
@@ -81,20 +68,22 @@ public class MonitorCurvesResource implements FF4jWebConstants {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getStatus() {
-        StringBuilder res = new StringBuilder("{");
-        Set<String> curves = evtRepository.getCurveList();
+    public Response getListFeatures() {
+        StringBuilder res = new StringBuilder("{ \"features\" : [");
+        Set<String> curves = getEvtRepository().getCurveList();
         if (null != curves) {
             boolean first = true;
             for (String curve : curves) {
                 if (!first) {
                     res.append(",");
                 }
-                res.append("\"" + curve + "\":\"./curve/" + curve + "\"");
+                res.append("{ \"" + curve + "\": \"");
+                res.append(uriInfo.getAbsolutePath().getPath());
+                res.append("/" + curve + "\" }");
                 first = false;
             }
         }
-        res.append("}");
+        res.append(" ] }");
         return Response.ok(res.toString()).build();
     }
 
@@ -105,17 +94,10 @@ public class MonitorCurvesResource implements FF4jWebConstants {
      *            target identifier
      * @return resource for feature
      */
-    @Path("{curve}")
-    public MonitorCurveResource getCurve(@PathParam("curve") String featureName,
-            @QueryParam("startTime") @DefaultValue("0") Long start, @QueryParam("endTime") Long end,
-            @QueryParam("interval") Long interval) {
-        // day = YYYY-MM-DD
-        // 100 values calaulated
-        if (end == null) {
-            end = System.currentTimeMillis();
-        }
-        return null;
-    }
-
+    @Path("{uid}")
+    public MonitorFeatureResource getFeature(@PathParam("uid") String featureName) {
+        return new MonitorFeatureResource(uriInfo, request, getEvtRepository(), featureName);
+    }    
+    
 
 }

@@ -51,9 +51,6 @@ public class ClientFilterStrategyTest extends AbstractFf4jTest {
         org.ff4j.strategy.ClientFilterStrategy cStra = (ClientFilterStrategy) f1.getFlippingStrategy();
         Assert.assertNotNull(cStra.getInitParams());
         Assert.assertEquals(1, cStra.getInitParams().size());
-        Assert.assertEquals(3, cStra.getGrantedClient().size());
-        Assert.assertTrue(cStra.getGrantedClient().contains("pierre"));
-        Assert.assertFalse(cStra.getGrantedClient().contains(FEATURE_NEW));
         Assert.assertTrue(f1.isEnable());
 
         // When (add correct client name)
@@ -72,9 +69,6 @@ public class ClientFilterStrategyTest extends AbstractFf4jTest {
         org.ff4j.strategy.ClientFilterStrategy cStra = (ClientFilterStrategy) f1.getFlippingStrategy();
         Assert.assertNotNull(cStra.getInitParams());
         Assert.assertEquals(1, cStra.getInitParams().size());
-        Assert.assertEquals(3, cStra.getGrantedClient().size());
-        Assert.assertTrue(cStra.getGrantedClient().contains("pierre"));
-        Assert.assertFalse(cStra.getGrantedClient().contains(FEATURE_NEW));
         Assert.assertTrue(f1.isEnable());
 
 
@@ -95,9 +89,6 @@ public class ClientFilterStrategyTest extends AbstractFf4jTest {
         org.ff4j.strategy.ClientFilterStrategy cStra = (ClientFilterStrategy) f1.getFlippingStrategy();
         Assert.assertNotNull(cStra.getInitParams());
         Assert.assertEquals(1, cStra.getInitParams().size());
-        Assert.assertEquals(3, cStra.getGrantedClient().size());
-        Assert.assertTrue(cStra.getGrantedClient().contains("pierre"));
-        Assert.assertFalse(cStra.getGrantedClient().contains(FEATURE_NEW));
         Assert.assertTrue(f1.isEnable());
 
         // Then FeatureContext is requires
@@ -113,9 +104,6 @@ public class ClientFilterStrategyTest extends AbstractFf4jTest {
         org.ff4j.strategy.ClientFilterStrategy cStra = (ClientFilterStrategy) f1.getFlippingStrategy();
         Assert.assertNotNull(cStra.getInitParams());
         Assert.assertEquals(1, cStra.getInitParams().size());
-        Assert.assertEquals(3, cStra.getGrantedClient().size());
-        Assert.assertTrue(cStra.getGrantedClient().contains("pierre"));
-        Assert.assertFalse(cStra.getGrantedClient().contains(FEATURE_NEW));
         Assert.assertTrue(f1.isEnable());
 
         // When

@@ -20,8 +20,10 @@ package org.ff4j.utils;
  * #L%
  */
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -92,8 +94,51 @@ public abstract class Util {
      *            enumeration of elements
      * @return
      */
+    @SuppressWarnings("unchecked")
     public static <T> Set<T> hashSet(T... els) {
         return new HashSet<T>(Arrays.asList(els));
+    }
+    
+    /**
+     * This code build the color gradient between 2 colors with defined step.
+     * @param codeFrom
+     *      color source
+     * @param codeTo
+     *      color destination
+     * @param nbDivision
+     *      number of steps
+     * @return
+     *      the list of colors
+     */
+    public static List < String > getColorGradient(String codeFrom, String codeTo, int nbDivision) {
+        List < String > colors = new ArrayList<String>();
+        if (nbDivision > 0) {
+            int rStart = Integer.parseInt(codeFrom.substring(0, 2), 16);
+            int rDelta = (Integer.parseInt(codeTo.substring(0, 2), 16) - rStart) / nbDivision;
+            int gStart = Integer.parseInt(codeFrom.substring(2, 4), 16);
+            int gDelta = (Integer.parseInt(codeTo.substring(2, 4), 16) - gStart) / nbDivision;
+            int bStart = Integer.parseInt(codeFrom.substring(4, 6), 16);
+            int bDelta = (Integer.parseInt(codeTo.substring(4, 6), 16) - bStart) / nbDivision;
+            for (int idx = 0;idx < nbDivision;idx++) {
+                String red = Integer.toHexString(rStart + rDelta * idx);
+                String green = Integer.toHexString(gStart + gDelta * idx);
+                String blue = Integer.toHexString(bStart + bDelta * idx);
+                colors.add(red + green + blue);
+            }
+        }
+        return colors;
+    }
+    
+    /**
+     * Dedicated gradient for ff4j console (Pie Chart).
+     *
+     * @param nbsectors
+     *      target sectors
+     * @return
+     *      color gradient
+     */
+    public static List < String > getColorsGradient(int nbsectors) {
+        return getColorGradient("00AB8B", "EEFFEE", nbsectors);
     }
 
 }

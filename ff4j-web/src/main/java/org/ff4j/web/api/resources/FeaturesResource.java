@@ -20,6 +20,8 @@ package org.ff4j.web.api.resources;
  * #L%
  */
 
+import static org.ff4j.utils.json.FeatureJsonParser.featureArrayToJson;
+
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -33,7 +35,6 @@ import javax.ws.rs.core.UriInfo;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.utils.FeatureJsonMarshaller;
 import org.ff4j.web.api.FF4jWebConstants;
 
 /**
@@ -98,8 +99,7 @@ public class FeaturesResource implements FF4jWebConstants {
     @Produces(MediaType.APPLICATION_JSON)
     public Response readAll() {
         Feature[] storeContent = getStore().readAll().values().toArray(new Feature[0]);
-        String storeAsJson = FeatureJsonMarshaller.marshallFeatureArray(storeContent);
-        return Response.ok(storeAsJson).build();
+        return Response.ok(featureArrayToJson(storeContent)).build();
     }
 
     /**

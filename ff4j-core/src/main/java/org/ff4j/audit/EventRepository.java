@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.ff4j.audit.graph.Curve;
+import org.ff4j.audit.graph.PieGraph;
 
 /**
  * Persistence store for {@link Event} messages.
@@ -50,50 +51,63 @@ public interface EventRepository {
      *            end time of window
      * @return
      */
-    Map<String, Integer> getHitsCount(long startTime, long endTime);
+    PieGraph getTotalHitsPie(long startTime, long endTime);
+    
+    /**
+     * Get a pie of dedicated feature.
+     * @param featureId
+     *      target feature if
+     * @param startTime
+     *      target start time
+     * @param endTime
+     *      target end time
+     * @return
+     *      target pie
+     */
+    PieGraph getFeatureHitsPie(String featureId, long startTime, long endTime);
 
     /**
      * Search event of hit to dedicated featureName.
      * 
      * @param featureName
      *            target featureName
-     * @param interval
-     *            interval between 2 measures
+     * @param nbRecord
+     *            number of measure
      * @param startTime
      *            starttime for measure
      * @param endTime
      *            endtime for measure
      * @return curve for dedicated feature
      */
-    Curve getHitCurve(String featureName, long interval, long startTime, long endTime);
+    Curve getFeatureHitsCurve(String featureName, long startTime, long endTime, int nbRecord);
     
     /**
      * Get hit curves.
      *
      * @param featNameSet
      *            target feature name set
-     * @param interval
-     *            interval between 2 measures
+     * @param nbslot
+     *            number of measure
      * @param startTime
      *            starttime for measure
      * @param endTime
      *            endtime for measure
      * @return map of curves
      */
-    Map<String, Curve> getHitCurves(Set<String> featNameSet, long interval, long startTime, long endTime);
+    Map<String, Curve> getHitCurves(Set<String> featNameSet, long startTime, long endTime, int nbslot);
 
     /**
      * Distribution of all activity over time.
      * 
-     * @param interval
-     *            target interval
+     * @param nbRecord
+     *            total number of measure
      * @param startTime
      *            target start time
      * @param endTime
      *            target end time
      * @return total curve
      */
-    Curve getTotalHitCurve(long interval, long startTime, long endTime);
+    Curve getTotalHitsCurve(long startTime, long endTime, int nbRecord);
 
     /**
      * List available curves.

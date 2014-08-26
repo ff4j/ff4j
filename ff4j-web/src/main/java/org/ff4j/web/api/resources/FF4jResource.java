@@ -37,8 +37,8 @@ import org.ff4j.FF4j;
 import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureNotFoundException;
-import org.ff4j.utils.FeatureJsonMarshaller;
 import org.ff4j.web.api.FF4jWebConstants;
+import org.ff4j.utils.json.FeatureJsonParser;
 
 /**
  * This is the parent class for FF4J the REST API.
@@ -117,7 +117,7 @@ public class FF4jResource implements FF4jWebConstants {
         // If specific strategy is defined
         boolean flipped = false;
         if (formParams.containsKey(POST_PARAMNAME_FLIPSTRATEGY)) {
-            FlippingStrategy fs = FeatureJsonMarshaller.parseFlipStrategy(uid, formParams.getFirst(POST_PARAMNAME_FLIPSTRATEGY));
+            FlippingStrategy fs = FeatureJsonParser.parseFlipStrategyAsJson(uid, formParams.getFirst(POST_PARAMNAME_FLIPSTRATEGY));
             FlippingExecutionContext fec = new FlippingExecutionContext();
             for (String key : formParams.keySet()) {
                 if (!POST_PARAMNAME_FLIPSTRATEGY.equals(key) && !POST_PARAMNAME_FEATURE_UID.equals(key)) {

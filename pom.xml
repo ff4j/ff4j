@@ -69,8 +69,8 @@
 		<!-- Compiling -->
 		<github.login />
 		<encoding>UTF-8</encoding>
-		<maven.compiler.source>1.6</maven.compiler.source>
-		<maven.compiler.target>1.6</maven.compiler.target>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
 
 		<!-- License -->
 		<license.licenseName>apache_v2</license.licenseName>
@@ -114,7 +114,7 @@
 	</properties>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~ CHILD MODULES ~ -->
+	<!-- ~ CHILD MODULES            ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<modules>
 		<module>ff4j-aop</module>
@@ -129,6 +129,8 @@
 		<module>ff4j-store-redis</module>
 		<module>ff4j-store-springjdbc</module>
 		<module>ff4j-store-mongodb</module>
+
+		<module>ff4j-utils-json</module>
 	</modules>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->

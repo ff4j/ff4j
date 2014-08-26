@@ -82,10 +82,19 @@ public interface FF4jWebConstants {
     String RESOURCE_FF4J = "ff4j";
 
     /** list of curves. */
-    String RESOURCE_HITCURVES = "hitcurves";
+    String RESOURCE_PIE = "pie";
 
     /** distribution of hits. */
-    String RESOURCE_HITDISTRIBUTION = "hitdistribution";
+    String RESOURCE_CURVE = "curve";
+    
+    /** filter for resource. */
+    String PARAM_START = "start";
+    
+    /** filter for resource. */
+    String PARAM_END = "end";
+    
+    /** nb of points in the curve. */
+    String PARAM_NBPOINTS = "nbpoints";
 
     /** security role. */
     String ROLE_READ = "READ";

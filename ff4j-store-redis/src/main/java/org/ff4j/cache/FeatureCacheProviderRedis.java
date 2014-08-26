@@ -21,7 +21,7 @@ package org.ff4j.cache;
  */
 
 import org.ff4j.core.Feature;
-import org.ff4j.utils.FeatureJsonMarshaller;
+import org.ff4j.utils.json.FeatureJsonParser;
 
 import redis.clients.jedis.Jedis;
 
@@ -51,7 +51,7 @@ public class FeatureCacheProviderRedis implements FeatureCacheManager {
 
     /** Java Redis CLIENT. */
     private final Jedis jedis;
-
+    
     /**
      * Default Constructor.
      */
@@ -104,7 +104,7 @@ public class FeatureCacheProviderRedis implements FeatureCacheManager {
         }
         String value = jedis.get(uid);
         if (value != null) {
-            return FeatureJsonMarshaller.unMarshallFeature(value);
+            return FeatureJsonParser.parseFeature(value);
         }
         return null;
     }

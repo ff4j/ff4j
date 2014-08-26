@@ -39,8 +39,8 @@ import javax.ws.rs.core.UriInfo;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureNotFoundException;
-import org.ff4j.utils.FeatureJsonMarshaller;
 import org.ff4j.web.api.FF4jWebConstants;
+import org.ff4j.utils.json.FeatureJsonParser;
 
 /**
  * Represent a feature as WebResource.
@@ -58,7 +58,6 @@ public class FeatureResource implements FF4jWebConstants {
     private Request request;
 
     /** Reference to ff4j. */
-    @Context
     private FeatureStore store;
 
     /** Current Feature identifier. */
@@ -99,7 +98,7 @@ public class FeatureResource implements FF4jWebConstants {
         if (!getStore().exist(id)) {
             return Response.status(Response.Status.NOT_FOUND).entity(new FeatureNotFoundException(id).getMessage()).build();
         } else {
-            return Response.ok(FeatureJsonMarshaller.marshallFeature(getStore().read(id))).build();
+            return Response.ok(getStore().read(id).toJson()).build();
         }
     }
 
@@ -115,7 +114,8 @@ public class FeatureResource implements FF4jWebConstants {
     @PUT
     @RolesAllowed({ROLE_WRITE})
     public Response upsertFeature(@Context HttpHeaders headers, byte[] data) {
-        Feature feat = FeatureJsonMarshaller.unMarshallFeature(new String(data));
+        Feature feat = FeatureJsonParser.parseFeature(new String(data));
+        
         if (!getStore().exist(feat.getUid())) {
             getStore().create(feat);
             String location = String.format("%s/%s", uriInfo.getAbsolutePath().toString(), id);

@@ -26,7 +26,6 @@ import javax.ws.rs.core.Context;
 import org.ff4j.FF4j;
 import org.ff4j.web.api.FF4jWebConstants;
 import org.ff4j.web.api.resources.FF4jResource;
-import org.ff4j.web.api.resources.RuntimeExceptionMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
