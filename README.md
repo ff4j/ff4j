@@ -56,7 +56,7 @@ mvn archetype:create -Dpackaging=jar -Dversion=1.0 -DartifactId=ff4j-simple -Dgr
 </features>
 ```
 
-* Write the following Junit test : (you may have to update junit version in your pom file with at least 4.4)
+* Write the following Junit test : (you may have to update junit version in your pom file with at least 4.5)
 
 ```java
 package org.ff4j.sample;
@@ -437,7 +437,7 @@ INSERT INTO FF4J_ROLES(FEAT_UID, ROLE_NAME)  VALUES('forth', 'BETA-TESTER');
 <!-- [...] -->
 <bean id="ff4j" class="org.ff4j.FF4j" p:store-ref="dbStore" />
   
-<bean id="dbStore" class="org.ff4j.store.DataBaseFeatureStore" p:dataSource-ref="ff.jdbc.datasource" />
+<bean id="dbStore" class="org.ff4j.store.JdbcFeatureStore" p:dataSource-ref="ff.jdbc.datasource" />
   
 <jdbc:embedded-database id="ff.jdbc.datasource" type="HSQL">
   <jdbc:script location="classpath:schema-ddl.sql"/>
