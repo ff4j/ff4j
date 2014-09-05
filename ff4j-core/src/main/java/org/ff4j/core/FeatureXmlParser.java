@@ -106,7 +106,12 @@ public final class FeatureXmlParser {
     private static final String ENCODING = "UTF-8";
 
     /** XML Generation constants. */
-    private static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<features>\n\n";
+    private static final String XML_HEADER = 
+            "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"//
+            + "<features xmlns=\"http://www.ff4j.org/schema/ff4j\""//
+            + "\n xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""//
+            + "\n xsi:schemaLocation=\"http://www.ff4j.org/schema/ff4j http://ff4j.org/schema/ff4j-1.2.0.xsd\">"
+            + ">\n\n";
 
     /** XML Generation constants. */
     private static final String XML_FEATURE = " <feature uid=\"{0}\" description=\"{1}\" enable=\"{2}\">\n";

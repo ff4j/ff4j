@@ -23,7 +23,6 @@ package org.ff4j.web.store;
 import static org.ff4j.utils.json.FeatureJsonParser.parseFeature;
 import static org.ff4j.utils.json.FeatureJsonParser.parseFeatureArray;
 
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -45,6 +44,7 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.core.util.Base64;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 /**
@@ -59,6 +59,9 @@ public class FeatureStoreHttp implements FeatureStore, FF4jWebConstants {
 
     /** Property to get url ROOT. */
     private String url = null;
+    
+    /** header parameter to add if secured mode enabled. */
+    private String authorization = null;
 
     /** Target jersey resource. */
     private WebResource storeWebRsc = null;
@@ -79,6 +82,34 @@ public class FeatureStoreHttp implements FeatureStore, FF4jWebConstants {
      */
     public FeatureStoreHttp(String rootApiUrl) {
         this.url = rootApiUrl;
+    }
+    
+    /**
+     * Authentication through APIKEY.
+     *
+     * @param rootApiUrl
+     *      target url
+     * @param apiKey
+     *      target api
+     */
+    public FeatureStoreHttp(String rootApiUrl, String apiKey) {
+        this(rootApiUrl);
+        this.authorization = buildAuthorization4ApiKey(apiKey);
+    }
+    
+    /**
+     * Authentication through login/password.
+     *
+     * @param rootApiUrl
+     *      target url
+     * @param username
+     *      target username
+     * @param password
+     *      target password
+     */
+    public FeatureStoreHttp(String rootApiUrl, String username, String password) {
+        this(rootApiUrl);
+        this.authorization = buildAuthorization4UserName(username, password);
     }
 
     /**
@@ -103,6 +134,9 @@ public class FeatureStoreHttp implements FeatureStore, FF4jWebConstants {
         if (storeWebRsc == null) {
             initJerseyClient();
             storeWebRsc = client.resource(url).path(RESOURCE_STORE).path(RESOURCE_FEATURES);
+            if (null != authorization) {
+                storeWebRsc.header(HEADER_AUTHORIZATION, authorization);
+            }
         }
         return storeWebRsc;
     }
@@ -116,6 +150,9 @@ public class FeatureStoreHttp implements FeatureStore, FF4jWebConstants {
         if (groupsWebRsc == null) {
             initJerseyClient();
             groupsWebRsc = client.resource(url).path(RESOURCE_STORE).path(RESOURCE_GROUPS);
+            if (null != authorization) {
+                groupsWebRsc.header(HEADER_AUTHORIZATION, authorization);
+            }
         }
         return groupsWebRsc;
     }
@@ -170,7 +207,7 @@ public class FeatureStoreHttp implements FeatureStore, FF4jWebConstants {
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             return false;
         }
-        throw new FeatureAccessException("Cannot check existence of feature, an HTTP error " + cRes.getStatus() + " occured.");
+        throw new FeatureAccessException("Cannot check existence of feature, an HTTP error " + cRes.getStatus() + " occured : " + cRes.getEntityInputStream());
     }
 
     /** {@inheritDoc} */
@@ -485,6 +522,32 @@ public class FeatureStoreHttp implements FeatureStore, FF4jWebConstants {
     @Override
     public String getCachedTargetStore() {
         return null;
+    }
+    
+    // ------- Static for authentication -------
+    
+    /**
+     * Build Authorization header for final user.
+     * @param username
+     *      target username
+     * @param password
+     *      target password
+     * @return
+     *      target header
+     */
+    public static String buildAuthorization4UserName(String username, String password) {
+        return " Basic " + new String(Base64.encode(username + ":" + password));
+    }
+    
+    /**
+     * Build Authorization header for technical user.
+     * @param apiKey
+     *      target apiKey
+     * @return
+     *      target header
+     */
+    public static String buildAuthorization4ApiKey(String apiKey) {
+        return PARAM_AUTHKEY + "=" + apiKey;
     }
 
 }

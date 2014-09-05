@@ -21,6 +21,7 @@ package org.ff4j.cache;
  */
 
 import org.ff4j.core.Feature;
+import org.ff4j.redis.AbstractRedisProvider;
 import org.ff4j.utils.json.FeatureJsonParser;
 
 import redis.clients.jedis.Jedis;
@@ -30,27 +31,7 @@ import redis.clients.jedis.Jedis;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureCacheProviderRedis implements FeatureCacheManager {
-
-    /** default host. */
-    public static final String DEFAULT_REDIS_HOST = "localhost";
-
-    /** default port. */
-    public static final int DEFAULT_REDIS_PORT = 6379;
-
-    public static final int DEFAULT_TTL = 900000000;
-
-    /** redis host. */
-    private final String redisHost = DEFAULT_REDIS_HOST;
-
-    /** redis port. */
-    private final int redisport = DEFAULT_REDIS_PORT;
-
-    /** time to live. */
-    private final int timeToLive = DEFAULT_TTL;
-
-    /** Java Redis CLIENT. */
-    private final Jedis jedis;
+public class FeatureCacheProviderRedis extends AbstractRedisProvider implements FeatureCacheManager {
     
     /**
      * Default Constructor.
@@ -92,7 +73,7 @@ public class FeatureCacheProviderRedis implements FeatureCacheManager {
         if (fp == null) {
             throw new IllegalArgumentException("Feature cannot be null nor empty");
         }
-        jedis.set(fp.getUid(), fp.toString());
+        jedis.set(fp.getUid(), fp.toJson());
         jedis.expire(fp.getUid(), timeToLive);
     }
 

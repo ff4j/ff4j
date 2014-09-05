@@ -28,6 +28,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.SecurityContext;
 
+import org.ff4j.web.api.FF4jWebConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +43,7 @@ import com.sun.jersey.spi.container.ResourceFilter;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FF4jSecurityContextFilter implements ContainerRequestFilter, ResourceFilter {
+public class FF4jSecurityContextFilter implements FF4jWebConstants, ContainerRequestFilter, ResourceFilter {
 
     /** logger for this class. */
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -69,15 +70,15 @@ public class FF4jSecurityContextFilter implements ContainerRequestFilter, Resour
         }
  
         // Get the authentification passed in HTTP headers parameters
-        String auth = containerRequest.getHeaderValue("authorization");
+        String auth = containerRequest.getHeaderValue(HEADER_AUTHORIZATION);
 
         if (auth == null) {
             handleUnAuthorized("<p>'authorization' parameter is required in header  for authentication (HTTP-Basic or ApiKey)</p>");
         }
 
         // Identification of an Application with its api key
-        if (auth.contains("apiKey")) {
-            auth = auth.replaceFirst("apiKey=", "");
+        if (auth.contains(PARAM_AUTHKEY)) {
+            auth = auth.replaceFirst(PARAM_AUTHKEY + "=", "");
             // Checking api Key
             if (!securityConfig.getApiKeys().contains(auth)) {
                 handleUnAuthorized("The api key provided '" + auth + "' is invalid ");
@@ -85,7 +86,7 @@ public class FF4jSecurityContextFilter implements ContainerRequestFilter, Resour
 
             // Positionning Roles
             Set<String> perms = securityConfig.getPermissions().get(auth);
-            SecurityContext sc = new FF4jSecurityContext(auth, "API-KEY", perms);
+            SecurityContext sc = new FF4jSecurityContext(auth, PARAM_AUTHKEY, perms);
             containerRequest.setSecurityContext(sc);
             log.info("Client successfully logged with an ApiKey");
             return containerRequest;

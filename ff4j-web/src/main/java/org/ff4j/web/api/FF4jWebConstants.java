@@ -77,6 +77,12 @@ public interface FF4jWebConstants {
 
     /** relative path. */
     String RESOURCE_MONITORING = "monitoring";
+    
+    /** relative path for security. */
+    String RESOURCE_SECURITY = "security";
+    
+    /** relative path for cache. */
+    String RESOURCE_CACHE = "cache";
 
     /** relative path. */
     String RESOURCE_FF4J = "ff4j";
@@ -101,4 +107,10 @@ public interface FF4jWebConstants {
 
     /** security role. */
     String ROLE_WRITE = " WRITE";
+    
+    /** HTTP Parameter. */
+    String PARAM_AUTHKEY = "apiKey";
+    
+    /** HTTP Header. */
+    String HEADER_AUTHORIZATION = "Authorization";
 }

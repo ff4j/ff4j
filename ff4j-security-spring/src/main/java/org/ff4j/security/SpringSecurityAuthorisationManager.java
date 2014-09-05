@@ -26,7 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
  * @author clunven
  * 
  */
-public class SpringSecurityAuthorisationManager implements AuthorizationsManager {
+public class SpringSecurityAuthorisationManager extends AbstractAuthorizationManager {
 
     /** {@inheritDoc} */
     @Override
@@ -45,16 +45,6 @@ public class SpringSecurityAuthorisationManager implements AuthorizationsManager
     @Override
     public Set<String> listAllPermissions() {
         return getCurrentUserPermissions();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("{");
-        sb.append("\"type\":\"" + this.getClass().getCanonicalName() + "\"");
-        sb.append("\"authentication\":\"" + SecurityContextHolder.getContext().getAuthentication().toString() + "\"");
-        sb.append("}");
-        return sb.toString();
-    }
+    }   
 
 }

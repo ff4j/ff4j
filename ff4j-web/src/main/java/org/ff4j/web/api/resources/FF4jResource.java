@@ -37,8 +37,8 @@ import org.ff4j.FF4j;
 import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureNotFoundException;
-import org.ff4j.web.api.FF4jWebConstants;
 import org.ff4j.utils.json.FeatureJsonParser;
+import org.ff4j.web.api.FF4jWebConstants;
 
 /**
  * This is the parent class for FF4J the REST API.
@@ -82,7 +82,22 @@ public class FF4jResource implements FF4jWebConstants {
         return new MonitoringResource(uriInfo, request, ff4j.getEventRepository());
     }
 
+    /**
+     * Access security part of the API.
+     *
+     * @returning Security resource
+     */
+    @Path(RESOURCE_SECURITY)
+    public AuthorizationManagerResource getAuthorizationManager() {
+        return new AuthorizationManagerResource(uriInfo, request, ff4j.getAuthorizationsManager());
+    }
+    
     // Cache
+    @Path(RESOURCE_CACHE)
+    public CacheResource getCache() {
+        System.out.println("getCache");
+        return new CacheResource(uriInfo, request, ff4j.getStore());
+    }
 
     /**
      * Provide core information on ff4J and available sub resources.

@@ -70,6 +70,13 @@ public abstract class FF4JApiApplication extends PackagesResourceConfig implemen
     public FF4JApiApplication() {
         super(FF4jResource.class.getPackage().getName());
         
+        log.info("  __  __ _  _   _ ");
+        log.info(" / _|/ _| || | (_)");
+        log.info("| |_| |_| || |_| |");
+        log.info("|  _|  _|__   _| |");
+        log.info("|_| |_|    |_|_/ |");
+        log.info("             |__/   WEB API Initialization...");
+        log.info(" ");
         // Initialize through configuration
         FF4jApiConfig conf = getApiConfig();
         FF4jSecurityContextFilter.securityConfig = conf;
@@ -97,7 +104,7 @@ public abstract class FF4JApiApplication extends PackagesResourceConfig implemen
 
         } else {
             // No security
-            log.info("ff4j webApi security has been set up with no seucrity");
+            log.info("ff4j webApi security has been set up with no security");
         }
     }
 

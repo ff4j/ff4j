@@ -37,5 +37,11 @@ public interface AuthorizationsManager {
      * @return list of all userroles availables
      */
     Set<String> listAllPermissions();
-
+    
+    /**
+     * Serialized as JSON.
+     * @return
+     *      json expression
+     */
+    String toJson();
 }

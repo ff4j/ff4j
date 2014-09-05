@@ -20,7 +20,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.ff4j.core.Feature;
-import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FeatureXmlParser;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
@@ -31,7 +30,7 @@ import org.ff4j.exception.GroupNotFoundException;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class InMemoryFeatureStore implements FeatureStore {
+public class InMemoryFeatureStore extends AbstractFeatureStore {
 
     /** XML File where features are load. */
     private String fileName = null;
@@ -100,7 +99,6 @@ public class InMemoryFeatureStore implements FeatureStore {
         if (xmlIN == null) {
             throw new IllegalArgumentException("Cannot parse feature stream");
         }
-        this.fileName = null;
         this.featuresMap = new FeatureXmlParser().parseConfigurationFile(xmlIN);
         buildGroupsFromFeatures();
     }
@@ -372,41 +370,19 @@ public class InMemoryFeatureStore implements FeatureStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toJson() {
-        StringBuilder sb = new StringBuilder("{");
-        sb.append("\"type\":\"" + this.getClass().getCanonicalName() + "\"");
-        sb.append(",\"xmlInputFile\":\"" + this.getFileName() + "\"");
-        sb.append(",\"cached\":" + this.isCached());
-        if (this.isCached()) {
-            sb.append(",\"cacheProvider\":\"" + this.getCacheProvider() + "\"");
-            sb.append(",\"cacheStore\":\"" + this.getCachedTargetStore() + "\"");
+        String json = super.toJson();
+        // Remove last } to enrich the json document
+        json = json.substring(0, json.length() - 1) + ",\"xmlInputFile\":";
+        // No filename inputstream, set to true)
+        if (null == fileName) {
+            json+= "null";
+        } else  {
+            json += "\"" + this.fileName + "\"";
         }
-
-        Set<String> myFeatures = readAll().keySet();
-        sb.append(",\"numberOfFeatures\":" + myFeatures.size());
-        sb.append(",\"features\":[");
-        boolean first = true;
-        for (String myFeature : myFeatures) {
-            if (!first) {
-                sb.append(",");
-            }
-            first = false;
-            sb.append("\"" + myFeature + "\"");
-        }
-        Set<String> myGroups = readAllGroups();
-        sb.append("],\"numberOfGroups\":" + myGroups.size());
-        sb.append(",\"groups\":[");
-        first = true;
-        for (String myGroup : myGroups) {
-            if (!first) {
-                sb.append(",");
-            }
-            first = false;
-            sb.append("\"" + myGroup + "\"");
-        }
-        sb.append("]");
-        sb.append("}");
-        return sb.toString();
+        json+= "}";
+        return json;
     }
 
     /**
