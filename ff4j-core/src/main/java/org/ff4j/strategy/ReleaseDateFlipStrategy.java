@@ -34,9 +34,10 @@ import org.ff4j.core.FlippingExecutionContext;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public class ReleaseDateFlipStrategy extends AbstractFlipStrategy {
-
+    public static final String DATE_PATTERN = "yyyy-MM-dd-HH:mm";
+    
     /** Pattern to create a release Date. */
-    public static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-DD-HH:mm");
+    public static final SimpleDateFormat SDF = new SimpleDateFormat(DATE_PATTERN);
 
     /** Constant for release Date. */
     private static final String PARAMNAME_RELEASEDATE = "releaseDate";
@@ -58,7 +59,7 @@ public class ReleaseDateFlipStrategy extends AbstractFlipStrategy {
         try {
             this.releaseDate = SDF.parse(strDate);
         } catch (ParseException e) {
-            throw new IllegalArgumentException("Cannot parse release date, invalid format correct is 'YYYY-MM-DD-HH:mm'", e);
+            throw new IllegalArgumentException("Cannot parse release date, invalid format correct is '" + DATE_PATTERN + "'", e);
         }
         getInitParams().put(PARAMNAME_RELEASEDATE, strDate);
     }
@@ -81,7 +82,7 @@ public class ReleaseDateFlipStrategy extends AbstractFlipStrategy {
         try {
             this.releaseDate = SDF.parse(initParam.get(PARAMNAME_RELEASEDATE));
         } catch (ParseException e) {
-            throw new IllegalArgumentException("Cannot parse release date, invalid format correct is 'YYYY-MM-DD-HH:mm'", e);
+            throw new IllegalArgumentException("Cannot parse release date, invalid format correct is '" + DATE_PATTERN + "'", e);
         }
     }
 
