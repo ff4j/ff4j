@@ -22,6 +22,8 @@ package org.ff4j.store.mongodb;
 
 import java.util.Set;
 
+import org.ff4j.core.Feature;
+
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBObject;
@@ -39,7 +41,7 @@ public final class FeatureDBObjectBuilder implements FeatureStoreMongoConstants 
     private final BasicDBObjectBuilder builder = new BasicDBObjectBuilder();
 
     /**
-     * Mongo internal object representing attribute id.
+     * Mongo internal object representing attribute featureName.
      *
      * @param value
      *      target value
@@ -48,6 +50,24 @@ public final class FeatureDBObjectBuilder implements FeatureStoreMongoConstants 
      */
     public DBObject getFeatUid(String value) {
         return new BasicDBObjectBuilder().add(UUID, value).get();
+    }
+    
+    /**
+     * Mongo internal object representing attribute featureName.
+     *
+     * @param value
+     *      target value
+     * @return
+     *      internal mong object
+     */
+    public DBObject getFeatUid(String value,String groupName,String region) {
+    	
+    	BasicDBObjectBuilder basicObject = new BasicDBObjectBuilder();
+    	DBObject whereQuesryObject = basicObject.get();
+    	whereQuesryObject.put(UUID, value);
+    	whereQuesryObject.put(GROUPNAME, groupName);
+    	whereQuesryObject.put(REGION_IDENTIFIER, region);
+        return whereQuesryObject;
     }
 
     /**
@@ -214,5 +234,29 @@ public final class FeatureDBObjectBuilder implements FeatureStoreMongoConstants 
         return builder.get();
     }
 
+	public FeatureDBObjectBuilder addRegionIdentifier(String regionIdentifier) {
+	    builder.add(REGION_IDENTIFIER, regionIdentifier);
+        return this;
+	}
+
+	public FeatureDBObjectBuilder addDocumenId(Feature feature) {
+
+		builder.add(_ID, feature.getUid()+feature.getGroup()+feature.getRegionIdentifier());
+		return this;
+	
+	}
+	
+	   /**
+     * Mongo internal object representing attribute id.
+     *
+     * @param value
+     *      target value
+     * @return
+     *      internal mong object
+     */
+    public DBObject getDocumenId(String value) {
+    	
+        return new BasicDBObjectBuilder().add(_ID, value).get();
+    }
 
 }

@@ -27,8 +27,10 @@ package org.ff4j.store.mongodb;
  */
 public interface FeatureStoreMongoConstants {
 
-    /** Identifier */
-    String UUID = "_id";
+	
+	String _ID = "_id";
+    /** feature name */
+    String UUID = "featureName";
 
     /** ENABLE */
     String ENABLE = "enable";
@@ -49,4 +51,7 @@ public interface FeatureStoreMongoConstants {
     String ROLES = "roles";
 
     String MONGO_SET = "$set";
+    
+    String REGION_IDENTIFIER = "regionIdentifier";
+     
 }

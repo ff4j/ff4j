@@ -273,15 +273,16 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
         // Given
         assertFf4j.assertThatFeatureDoesNotExist(FEATURE_NEW);
         // When (first creation)
-        Feature fp = new Feature(FEATURE_NEW, true, "description2");
+        Feature fp = new Feature(FEATURE_NEW, true, "description2", G1,"dev1");
         testedStore.create(fp);
         // Then (first creation)
         assertFf4j.assertThatFeatureExist(FEATURE_NEW);
         // When (second creation)
         Set<String> rights = new HashSet<String>(Arrays.asList(new String[] {ROLE_USER}));
-        Feature fp2 = new Feature(FEATURE_NEW, true, G1, "description3", rights);
+        Feature fp2 = new Feature(FEATURE_NEW, true, "description2", G1,"dev1");
         testedStore.create(fp2);
         // Then, expected exception
+        System.out.println(testedStore.readAll().toString());
     }
 
     /**

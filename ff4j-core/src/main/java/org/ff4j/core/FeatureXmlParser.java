@@ -71,6 +71,9 @@ public final class FeatureXmlParser {
 
     /** TAG XML. */
     public static final String FEATUREGROUP_ATTNAME = "name";
+    
+    /** TAG XML. */
+    public static final String FEATUREGROUP_ATTREGION = "region_identifier";
 
     /** TAG XML. */
     public static final String FLIPSTRATEGY_TAG = "flipstrategy";
@@ -106,12 +109,7 @@ public final class FeatureXmlParser {
     private static final String ENCODING = "UTF-8";
 
     /** XML Generation constants. */
-    private static final String XML_HEADER = 
-            "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"//
-            + "<features xmlns=\"http://www.ff4j.org/schema/ff4j\""//
-            + "\n xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""//
-            + "\n xsi:schemaLocation=\"http://www.ff4j.org/schema/ff4j http://ff4j.org/schema/ff4j-1.2.0.xsd\">"
-            + ">\n\n";
+    private static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<features>\n\n";
 
     /** XML Generation constants. */
     private static final String XML_FEATURE = " <feature uid=\"{0}\" description=\"{1}\" enable=\"{2}\">\n";
@@ -184,17 +182,23 @@ public final class FeatureXmlParser {
     private Map<String, Feature> parseFeatureGroupTag(Element featGroupTag) {
         NamedNodeMap nnm = featGroupTag.getAttributes();
         String groupName = null;
+        String regionIdentifier = null;
         if (nnm.getNamedItem(FEATUREGROUP_ATTNAME) == null) {
             throw new IllegalArgumentException("Error syntax in configuration featuregroup : must have 'name' attribute");
         }
         groupName = nnm.getNamedItem(FEATUREGROUP_ATTNAME).getNodeValue();
-
+        
+        if(nnm.getNamedItem(FEATUREGROUP_ATTREGION) != null){
+        	regionIdentifier = nnm.getNamedItem(FEATUREGROUP_ATTREGION).getNodeValue();
+        }
+        
         Map<String, Feature> groupFeatures = new HashMap<String, Feature>();
         NodeList listOfFeat = featGroupTag.getElementsByTagName(FEATURE_TAG);
         for (int k = 0; k < listOfFeat.getLength(); k++) {
             Feature f = parseFeatureTag((Element) listOfFeat.item(k));
             // Insert feature into group
             f.setGroup(groupName);
+            f.setRegionIdentifier(regionIdentifier);
             groupFeatures.put(f.getUid(), f);
         }
         return groupFeatures;
@@ -332,7 +336,7 @@ public final class FeatureXmlParser {
      * @throws ParserConfigurationException
      *             error during initialization
      */
-    public DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {
+    public synchronized DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {
         if (builder == null) {
             builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             builder.setErrorHandler(new ErrorHandler() {

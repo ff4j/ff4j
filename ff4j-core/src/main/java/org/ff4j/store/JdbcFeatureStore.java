@@ -203,6 +203,7 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
             ps.setString(idx++, strategyColumn);
             ps.setString(idx++, expressionColumn);
             ps.setString(idx++, fp.getGroup());
+            ps.setString(idx++, fp.getRegionIdentifier());
             ps.executeUpdate();
 
             // Create roles

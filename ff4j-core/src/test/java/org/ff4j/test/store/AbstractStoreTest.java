@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.Assert;
-
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
@@ -37,6 +36,8 @@ import org.junit.Test;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public abstract class AbstractStoreTest implements TestConstantsFF4j {
+
+    private static final String DOMIAN_NAME = "dev_d1";
 
     /** Initialize */
     protected FF4j ff4j = null;
@@ -250,7 +251,7 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         assertFf4j.assertThatFeatureDoesNotExist(FEATURE_NEW);
         // When
         Set<String> rights = new HashSet<String>(Arrays.asList(new String[] {ROLE_USER}));
-        Feature fp = new Feature(FEATURE_NEW, true, "description", G1, rights);
+        Feature fp = new Feature(FEATURE_NEW, true, "description", G1,DOMIAN_NAME, rights,null);
         testedStore.create(fp);
         // Then
         assertFf4j.assertThatStoreHasSize(EXPECTED_FEATURES_NUMBERS + 1);

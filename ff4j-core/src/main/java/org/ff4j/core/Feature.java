@@ -1,14 +1,23 @@
 package org.ff4j.core;
 
 /*
- * #%L ff4j-core %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not use
- * this file except in compliance with the License. You may obtain a copy of the License at
+ * #%L
+ * ff4j-core
+ * %%
+ * Copyright (C) 2013 Ff4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  * 
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
- * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License. #L%
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
  */
 
 import java.io.Serializable;
@@ -49,6 +58,9 @@ public class Feature implements Serializable {
 
     /** Feature could be grouped to enable/disable the whole group. */
     private String group;
+    
+    /** Feature could be added to a region (environment, for example DEV, QA, PROD etc....) . */
+    private String regionIdentifier;
 
     /** if not empty and @see {@link org.ff4j.security.AuthorizationsManager} provided, limit usage to this roles. */
     private Set<String> permissions = new TreeSet<String>();
@@ -115,6 +127,39 @@ public class Feature implements Serializable {
     }
 
     /**
+     * 
+     * 
+     * @param uid
+     *            
+     * @param pactive
+     *            initial feature state
+     * @param pDescription
+     *            description of feature.
+     */
+    
+    /**
+     * Simplest Constructor with Region Identifier (without security concerns)
+     * 
+     * @param uid
+     *				unique feature name (required)
+     * @param penable
+     * 				initial feature state
+     * @param pdescription
+     * 				description of feature.
+     * @param group
+     * 				Group of the feature - Application name can be a group, useful in multi applications scenarios.
+     * @param regionIdentifier
+     * 				Region identifier can be used to identify the region for example Beta versus Prod
+     */
+    public Feature(final String uid, final boolean penable, final String pdescription, final String group, final String regionIdentifier) {
+        this(uid, penable, pdescription,group);
+        if(regionIdentifier !=null && !"".equals(regionIdentifier)){
+        	this.regionIdentifier = regionIdentifier;
+        }
+        
+    }
+
+    /**
      * Constructor with limited access roles definitions
      *
      * @param uid
@@ -129,6 +174,29 @@ public class Feature implements Serializable {
     public Feature(final String uid, final boolean penable, final String pdescription, final String group,
             final Collection<String> auths) {
         this(uid, penable, pdescription, group);
+        if (auths != null && !auths.isEmpty()) {
+            this.permissions = new HashSet<String>(auths);
+        }
+    }
+    
+    /**
+     * Constructor with limited access roles definitions and region identifier
+     *
+     * @param uid
+     *            unique feature name (required)
+     * @param penable
+     *            initial feature state
+     * @param pdescription
+     *            description of feature.
+     * @param auths
+     *            limited roles to use the feature even if enabled
+     * @param regionIdentifier
+     * 				Region identifier can be used to identify the region for example Beta versus Prod            
+     */
+    public Feature(final String uid, final boolean penable, final String pdescription, final String group, String regionIdentifier,
+            final Collection<String> auths) {
+        this(uid, penable, pdescription, group);
+		this.regionIdentifier=regionIdentifier;
         if (auths != null && !auths.isEmpty()) {
             this.permissions = new HashSet<String>(auths);
         }
@@ -153,8 +221,39 @@ public class Feature implements Serializable {
             this.flippingStrategy = strat;
         }
     }
+    
 
-    /** {@inheritDoc} */
+    /**
+     * Constructor with limited access roles definitions and region identifier
+     *
+     * @param uid
+     *            unique feature name (required)
+     * @param penable
+     *            initial feature state
+     * @param pdescription
+     *            description of feature.
+     * @param auths
+     *            limited roles to use the feature even if enabled
+     * @param regionIdentifier
+     * 				Region identifier can be used to identify the region for example Beta versus Prod            
+     */
+    public Feature(String uid, boolean penable,  String description, String groupName,
+			String regionIdentifier, Set<String> rights) {
+    	
+    		this(uid,penable,description,groupName,rights);
+    		this.regionIdentifier = regionIdentifier;
+	}
+    
+    public Feature(final String uid, final boolean penable, final String pdescription, final String group,
+          String regionIdentifier ,final Collection<String> auths, final FlippingStrategy strat) {
+        this(uid, penable, pdescription, group, auths);
+        if (strat != null) {
+            this.flippingStrategy = strat;
+        }
+        this.regionIdentifier = regionIdentifier;
+    }
+
+  /** {@inheritDoc} */
     @Override
     public String toString() {
         return toJson();
@@ -174,6 +273,10 @@ public class Feature implements Serializable {
         json.append(",\"group\":");
         json.append((null == group) ? "null" : "\"" + group + "\"");
         
+        // Flipping strategy
+        json.append(",\"regionIdentifier\":");
+        json.append(regionIdentifier);
+
         // Permissions
         json.append(",\"permissions\":");
         json.append(permissionsAsJson());
@@ -221,7 +324,7 @@ public class Feature implements Serializable {
         StringBuilder json = new StringBuilder();
         if (null != flippingStrategy) {
             json.append("{\"initParams\":{");
-            Map < String , String> iparams = flippingStrategy.getInitParams();
+            Map<String , String> iparams = flippingStrategy.getInitParams();
             if (iparams != null && !iparams.isEmpty()) {
                 boolean first = true;
                 for (Entry<String, String> param : iparams.entrySet()) {
@@ -238,6 +341,7 @@ public class Feature implements Serializable {
         }
         return json.toString();
     }
+
 
     /**
      * Enable target feature
@@ -354,6 +458,23 @@ public class Feature implements Serializable {
     public void setGroup(String group) {
         this.group = group;
     }
+    
+    /**
+     * Getter accessor for attribute 'regionIdentifier'
+     * @return
+     */
+	public String getRegionIdentifier() {
+		return regionIdentifier;
+	}
+
+	/**
+	 * Setter accessor for attribute 'regionIdentifier'
+	 * @param regionIdentifier
+	 */
+	public void setRegionIdentifier(String regionIdentifier) {
+		this.regionIdentifier = regionIdentifier;
+	}
+
 
     /**
      * Getter accessor for attribute 'permissions'.
