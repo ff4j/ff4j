@@ -121,7 +121,7 @@
 		<module>ff4j-core</module>
 		<module>ff4j-test</module>
 		<module>ff4j-jmx</module>
-
+		<module>ff4j-web</module>
 		<module>ff4j-security-spring</module>
 
 		<module>ff4j-store-ehcache</module>
