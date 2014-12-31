@@ -89,7 +89,4 @@ public class FeatureStoreWithRedisCacheTestIT extends AbstractStoreJUnitTest {
     @Override
     public void testUpdateFeatureCoreData() {}
 
-
-
-
 }

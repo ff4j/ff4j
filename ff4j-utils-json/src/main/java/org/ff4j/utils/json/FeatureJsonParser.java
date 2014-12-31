@@ -68,7 +68,10 @@ public class FeatureJsonParser {
         f.setGroup((String) fMap.get("group"));
         // permissions
         List<String> perm = (ArrayList<String>) fMap.get("permissions");
-        f.setPermissions((perm != null) ? new HashSet<String>(perm) : null);
+        f.setPermissions(new HashSet<String>());
+        if (perm != null) {
+            f.getPermissions().addAll(perm);
+        }
         // flipping strategy
         f.setFlippingStrategy(parseFlipStrategy(f.getUid(), (LinkedHashMap<String, Object>) fMap.get("flippingStrategy")));
         return f;

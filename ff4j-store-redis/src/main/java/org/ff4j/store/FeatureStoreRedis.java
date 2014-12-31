@@ -21,6 +21,7 @@ package org.ff4j.store;
  */
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,7 +29,9 @@ import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.redis.AbstractRedisProvider;
+import org.ff4j.utils.Util;
 import org.ff4j.utils.json.FeatureJsonParser;
 
 import redis.clients.jedis.Jedis;
@@ -62,9 +65,7 @@ public class FeatureStoreRedis extends AbstractRedisProvider implements FeatureS
     /** {@inheritDoc} */
     @Override
     public boolean exist(String uid) {
-        if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
-        }
+        Util.assertParamNotNull(uid, "Feature identifier");
         return jedis.exists(PREFIX_KEY + uid);
     }
     
@@ -80,6 +81,9 @@ public class FeatureStoreRedis extends AbstractRedisProvider implements FeatureS
     /** {@inheritDoc} */
     @Override
     public void update(Feature fp) {
+        if (fp == null) {
+            throw new IllegalArgumentException("Feature cannot be null");
+        }
         if (!exist(fp.getUid())) {
             throw new FeatureNotFoundException(fp.getUid());
         }
@@ -90,16 +94,22 @@ public class FeatureStoreRedis extends AbstractRedisProvider implements FeatureS
     /** {@inheritDoc} */
     @Override
     public void enable(String uid) {
+        // Read from redis, feature not found if no present
         Feature f = read(uid);
+        // Update within Object
         f.enable();
+        // Serialization and update key, update TTL
         update(f);
     }
 
     /** {@inheritDoc} */
     @Override
     public void disable(String uid) {
+        // Read from redis, feature not found if no present
         Feature f = read(uid);
+        // Update within Object
         f.disable();
+        // Serialization and update key, update TTL
         update(f);
     }
 
@@ -112,7 +122,8 @@ public class FeatureStoreRedis extends AbstractRedisProvider implements FeatureS
         if (exist(fp.getUid())) {
             throw new FeatureAlreadyExistException(fp.getUid());
         }
-        update(fp);
+        jedis.set(PREFIX_KEY + fp.getUid(), fp.toJson());
+        jedis.persist(PREFIX_KEY + fp.getUid());
     }
 
     /** {@inheritDoc} */
@@ -122,6 +133,7 @@ public class FeatureStoreRedis extends AbstractRedisProvider implements FeatureS
         Map<String, Feature> myMap = new HashMap<String, Feature>();
         if (myKeys != null) {
             for (String key : myKeys) {
+                key = key.replaceAll(PREFIX_KEY, "");
                 myMap.put(key, read(key));
             }
         }
@@ -131,76 +143,141 @@ public class FeatureStoreRedis extends AbstractRedisProvider implements FeatureS
     /** {@inheritDoc} */
     @Override
     public void delete(String fpId) {
+        if (!exist(fpId)) {
+            throw new FeatureNotFoundException(fpId);
+        }
+        jedis.del(PREFIX_KEY + fpId);
     }    
 
     /** {@inheritDoc} */
     @Override
     public void grantRoleOnFeature(String flipId, String roleName) {
+        Util.assertParamNotNull(roleName, "roleName (#2)");
+        // retrieve
+        Feature f = read(flipId);
+        // modify
+        f.getPermissions().add(roleName);
+        // persist modification
+        update(f);
     }
 
     /** {@inheritDoc} */
     @Override
     public void removeRoleFromFeature(String flipId, String roleName) {
+        Util.assertParamNotNull(roleName, "roleName (#2)");
+        // retrieve
+        Feature f = read(flipId);
+        f.getPermissions().remove(roleName);
+        // persist modification
+        update(f);
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, Feature> readGroup(String groupName) {
+        Util.assertParamNotNull(groupName, "groupName");
+        Map < String, Feature > features = readAll();
+        Map < String, Feature > group = new HashMap<String, Feature>();
+        for (String uid : features.keySet()) {
+            if (groupName.equals(features.get(uid).getGroup())) {
+                group.put(uid, features.get(uid));
+            }
+        }
+        if (group.isEmpty()) {
+            throw new GroupNotFoundException(groupName);
+        }
+        return group;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public boolean existGroup(String groupName) {
+        Util.assertParamNotNull(groupName, "groupName");
+        Map < String, Feature > features = readAll();
+        Map < String, Feature > group = new HashMap<String, Feature>();
+        for (String uid : features.keySet()) {
+            if (groupName.equals(features.get(uid).getGroup())) {
+                group.put(uid, features.get(uid));
+            }
+        }
+        return !group.isEmpty();
     }
 
     /** {@inheritDoc} */
     @Override
     public void enableGroup(String groupName) {
+        Map < String, Feature > features = readGroup(groupName);
+        for (String uid : features.keySet()) {
+            features.get(uid).enable();
+            update(features.get(uid));
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public void disableGroup(String groupName) {
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean existGroup(String groupName) {
-        return false;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Map<String, Feature> readGroup(String groupName) {
-        return null;
+        Map < String, Feature > features = readGroup(groupName);
+        for (String uid : features.keySet()) {
+            features.get(uid).disable();
+            update(features.get(uid));
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public void addToGroup(String featureId, String groupName) {
-        // TODO Auto-generated method stub
-        
+        Util.assertParamNotNull(groupName, "groupName (#2)");
+        // retrieve
+        Feature f = read(featureId);
+        f.setGroup(groupName);
+        // persist modification
+        update(f);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void removeFromGroup(String featureId, String groupName) {
-        // TODO Auto-generated method stub
-        
+        Util.assertParamNotNull(groupName, "groupName (#2)");
+        if (!existGroup(groupName)) {
+            throw new GroupNotFoundException(groupName);
+        }
+        // retrieve
+        Feature f = read(featureId);
+        f.setGroup(null);
+        // persist modification
+        update(f);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Set<String> readAllGroups() {
-        // TODO Auto-generated method stub
-        return null;
+        Map < String, Feature > features = readAll();
+        Set < String > groups = new HashSet<String>();
+        for (String uid : features.keySet()) {
+            groups.add(features.get(uid).getGroup());
+        }
+        groups.remove(null);
+        return groups;
     }
 
+    // -------- Overrided in cache proxy --------------
+
+    /** {@inheritDoc} */
     @Override
     public boolean isCached() {
-        // TODO Auto-generated method stub
         return false;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getCacheProvider() {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getCachedTargetStore() {
-        // TODO Auto-generated method stub
         return null;
     }
     
-
 }

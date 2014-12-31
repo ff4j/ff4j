@@ -92,6 +92,20 @@ public abstract class Util {
                     "[Assertion failed] - this String argument must have length; it must not be null or empty");
         }
     }
+    
+    /**
+     * Parameter validation.
+     *
+     * @param param
+     *      current parameter
+     * @param paramName
+     *      current parameter name
+     */
+    public static void assertParamNotNull(String param, String paramName) {
+        if (param == null || param.isEmpty()) {
+            throw new IllegalArgumentException("Parameter '" + paramName + "' cannot be null nor empty");
+        }
+    }
 
     /**
      * Create an HashSet.
