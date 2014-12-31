@@ -135,7 +135,7 @@ public class FeatureJsonParser {
         FlippingStrategy strategy = null;
         try {
             //Map<String, Object> flipMap = objectMapper.readValue(json, HashMap.class);
-            classType = (String) flipMap.get("classType");
+            classType = (String) flipMap.get("type");
             strategy = (FlippingStrategy) Class.forName(classType).newInstance();
             HashMap<String, String> initparams = (HashMap<String, String>) flipMap.get("initParams");
             // Initialized

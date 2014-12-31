@@ -20,10 +20,6 @@ package org.ff4j.audit.graph;
  * #L%
  */
 
-public enum CurveType {
-
-    SPARKLINE,
-
-    HISTOGRAM
+public class SparklineChart {
 
 }

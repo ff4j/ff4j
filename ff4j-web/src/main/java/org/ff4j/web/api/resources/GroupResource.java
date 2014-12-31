@@ -26,59 +26,35 @@ import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
 import org.ff4j.core.Feature;
-import org.ff4j.core.FeatureStore;
 import org.ff4j.web.api.FF4jWebConstants;
+
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 
 /**
  * WebResource representing a group of features.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
+@Produces(MediaType.APPLICATION_JSON)
+@Path("/ff4j/store/groups/{groupName}")
 @RolesAllowed({FF4jWebConstants.ROLE_READ})
-public class GroupResource implements FF4jWebConstants {
-
-    @Context
-    private UriInfo uriInfo;
-
-    @Context
-    private Request request;
-
-    /** Access to Features through store. */
-    private FeatureStore store = null;
-
-    /** current groupName. */
-    private String groupName = null;
-
+@Api(value = "/ff4j/store/groups/{groupName}", description = "Resource to work with <b>single group</b>")
+public class GroupResource extends AbstractResource {
+  
     /**
      * Defaut constructor.
      */
     public GroupResource() {}
-
-    /**
-     * Constructor by Parent resource
-     * 
-     * @param uriInfo
-     *            current uriInfo
-     * @param request
-     *            current request
-     * @param store
-     *            current store
-     */
-    public GroupResource(UriInfo uriInfo, Request request, FeatureStore store, String group) {
-        this.uriInfo = uriInfo;
-        this.request = request;
-        this.store = store;
-        this.groupName = group;
-    }
-
+   
     /**
      * Convenient method to work on groupd : Here enabling
      * 
@@ -86,7 +62,11 @@ public class GroupResource implements FF4jWebConstants {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response read() {
+    @ApiOperation(value= "Read information about a group", response=Response.class)
+    @ApiResponses({
+        @ApiResponse(code = 200, message= "Information about target group"), 
+        @ApiResponse(code = 404, message= "Group not found") })
+    public Response read(@PathParam("groupName") String groupName) {
         Feature[] storeContent = getStore().readGroup(groupName).values().toArray(new Feature[0]);
         return Response.ok(featureArrayToJson(storeContent)).build();
     }
@@ -97,9 +77,11 @@ public class GroupResource implements FF4jWebConstants {
      * @return http response.
      */
     @POST
-    @Path(OPERATION_ENABLE)
+    @Path("/" + OPERATION_ENABLE)
     @RolesAllowed({ROLE_WRITE})
-    public Response operationEnable() {
+    @ApiOperation(value= "Enable a group", response=Response.class)
+    @ApiResponses(@ApiResponse(code = 204, message= "Group has been updated"))
+    public Response operationEnable(@PathParam("groupName") String groupName) {
         getStore().enableGroup(groupName);
         return Response.noContent().build();
     }
@@ -110,29 +92,13 @@ public class GroupResource implements FF4jWebConstants {
      * @return http response.
      */
     @POST
-    @Path(OPERATION_DISABLE)
+    @Path("/" + OPERATION_DISABLE)
     @RolesAllowed({ROLE_WRITE})
-    public Response operationDisableGroup() {
+    @ApiOperation(value= "Disable a group", response=Response.class)
+    @ApiResponses(@ApiResponse(code = 204, message= "Group has been disabled"))
+    public Response operationDisableGroup(@PathParam("groupName") String groupName) {
         getStore().disableGroup(groupName);
         return Response.noContent().build();
-    }
-
-    /**
-     * Getter accessor for attribute 'store'.
-     *
-     * @return current value of 'store'
-     */
-    public FeatureStore getStore() {
-        return store;
-    }
-
-    /**
-     * Getter accessor for attribute 'groupName'.
-     *
-     * @return current value of 'groupName'
-     */
-    public String getGroupName() {
-        return groupName;
     }
 
 }

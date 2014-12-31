@@ -1,8 +1,8 @@
-package org.ff4j.audit.graph;
+package org.ff4j.web.api.resources.domain;
 
 /*
  * #%L
- * ff4j-core
+ * ff4j-web
  * %%
  * Copyright (C) 2013 - 2014 Ff4J
  * %%
@@ -20,54 +20,48 @@ package org.ff4j.audit.graph;
  * #L%
  */
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.ff4j.audit.graph.PieChart;
+import org.ff4j.audit.graph.PieSector;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 /**
- * Bean representing a pie chart.
+ * Representation of a pieChart.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class PieGraph implements Serializable {
+@ApiModel( value = "pieChart", description = "resource representation of a pie chart" )
+@JsonInclude(Include.NON_NULL)
+public class PieChartApiBean {
     
-    /** serial. */
-    private static final long serialVersionUID = -6019282228665603275L;
-
     /** title of the graph. */
-    private String title = "n/a";
+    @ApiModelProperty( value = "title of the graph", required = false )
+    @JsonProperty("title")
+    private String title = null;
     
     /** sector for the graph. */
-    private List < PieSector > sectors = new ArrayList<PieSector>();
-    
-    /** {@inheritDoc} */
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("{");
-        sb.append(" \"title\" : \"" +  getTitle() + "\", ");
-        sb.append(" \"sectors\" : [");
-        if (null != sectors) {
-            boolean first = true;
-            for (PieSector pieSector : sectors) {
-                if (!first) {
-                    sb.append(", ");
-                }
-                sb.append(pieSector.toString());
-                first = false;
-            }
-        }
-        sb.append("] }");
-        return sb.toString();
-    }
+    @ApiModelProperty( value = "sectors of the pie graph", required = false )
+    @JsonProperty("sectors")
+    private List < PieSectorApiBean > sectors = new ArrayList<PieSectorApiBean>();
     
     /**
-     * Constructor with title.
+     * Constructor for the API.
      *
-     * @param t
-     *      target title.
+     * @param pie
+     *      target pie 
      */
-    public PieGraph(String t) {
-        this.title = t;
+    public PieChartApiBean(PieChart pie) {
+        title = pie.getTitle();
+        for (PieSector pieSector : pie.getSectors()) {
+            sectors.add(new PieSectorApiBean(pieSector));
+        }
     }
 
     /**
@@ -95,7 +89,7 @@ public class PieGraph implements Serializable {
      * @return
      *       current value of 'sectors'
      */
-    public List<PieSector> getSectors() {
+    public List<PieSectorApiBean> getSectors() {
         return sectors;
     }
 
@@ -104,8 +98,8 @@ public class PieGraph implements Serializable {
      * @param sectors
      * 		new value for 'sectors '
      */
-    public void setSectors(List<PieSector> sectors) {
+    public void setSectors(List<PieSectorApiBean> sectors) {
         this.sectors = sectors;
     }
-    
+
 }

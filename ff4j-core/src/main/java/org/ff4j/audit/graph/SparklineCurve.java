@@ -28,7 +28,7 @@ import java.util.List;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class Curve {
+public class SparklineCurve {
 
     /** Label for this curve. */
     private String title;
@@ -43,15 +43,12 @@ public class Curve {
     private long interval = 0;
 
     /** List of point to drow for this curve. */
-    private List<Point> listOfPoint = new ArrayList<Point>();
-
-    /** Type of curve to be drawn. */
-    private CurveType curveType = CurveType.SPARKLINE;
+    private List<SparklinePoint> listOfPoint = new ArrayList<SparklinePoint>();
 
     /**
      * Constructor to create curve from copy
      */
-    public Curve(String title) {
+    public SparklineCurve(String title) {
         this.title = title;
     }
     
@@ -67,13 +64,13 @@ public class Curve {
      * @param interval
      *            interval between 2 measures
      */
-    public Curve(String title, long startTime, long endTime, int nbPoints) {
+    public SparklineCurve(String title, long startTime, long endTime, int nbPoints) {
         this(title);
         if (endTime > startTime) {
             this.nbRecords = nbPoints;
             this.interval = (endTime - startTime) / nbPoints;
             for (int slot = 0; slot < nbPoints; slot++) {
-                getListOfPoint().add(new Point(interval * slot, 0));
+                getListOfPoint().add(new SparklinePoint(interval * slot, 0));
             }
         }
     }
@@ -85,7 +82,7 @@ public class Curve {
      *            offset of point
      */
     public void incrCount(int offset) {
-        Point p = getListOfPoint().get(offset);
+        SparklinePoint p = getListOfPoint().get(offset);
         p.setY(p.getY() + 1);
     }
 
@@ -113,7 +110,7 @@ public class Curve {
      * 
      * @return current value of 'listOfPoint'
      */
-    public List<Point> getListOfPoint() {
+    public List<SparklinePoint> getListOfPoint() {
         return listOfPoint;
     }
 
@@ -123,7 +120,7 @@ public class Curve {
      * @param listOfPoint
      *            new value for 'listOfPoint '
      */
-    public void setListOfPoint(List<Point> listOfPoint) {
+    public void setListOfPoint(List<SparklinePoint> listOfPoint) {
         this.listOfPoint = listOfPoint;
     }
 
@@ -146,34 +143,16 @@ public class Curve {
         this.title = title;
     }
 
-    /**
-     * Getter accessor for attribute 'curveType'.
-     * 
-     * @return current value of 'curveType'
-     */
-    public CurveType getCurveType() {
-        return curveType;
-    }
-
-    /**
-     * Setter accessor for attribute 'curveType'.
-     * 
-     * @param curveType
-     *            new value for 'curveType '
-     */
-    public void setCurveType(CurveType curveType) {
-        this.curveType = curveType;
-    }
+  
 
     /** {@inheritDoc} */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("{");
         sb.append(" \"title\" : \"" + getTitle() + "\", ");
-        sb.append(" \"type\" : \"" + getCurveType() + "\", ");
         sb.append(" \"points\" : [");
         boolean first = true;
-        for(Point p : listOfPoint) {
+        for(SparklinePoint p : listOfPoint) {
             if (!first) {
                 sb.append(",");
             }

@@ -20,15 +20,16 @@ package org.ff4j.web.resources.it;
  * #L%
  */
 
-import static org.ff4j.utils.json.FeatureJsonParser.parseFeatureArray;
+import java.util.List;
 
 import javax.ws.rs.core.Response.Status;
 
-import org.ff4j.core.Feature;
+import org.ff4j.web.api.resources.domain.FeatureApiBean;
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
 
 /**
@@ -44,17 +45,16 @@ public class FeaturesResourceTestIT extends AbstractWebResourceTestIT {
     @Test
     public void testGet() {
         // Given
-        assertFF4J.assertThatStoreHasSize(EXPECTED_FEATURES_NUMBERS);
         // When
         WebResource wResFeatures = resourceFeatures();
         ClientResponse httpResponse = wResFeatures.get(ClientResponse.class);
-        String resEntity = httpResponse.getEntity(String.class);
+        List<FeatureApiBean>  fList = httpResponse.getEntity(new GenericType<List<FeatureApiBean>>() {});
+        
         // Then, HTTPResponse
         Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), httpResponse.getStatus());
-        Assert.assertNotNull(resEntity);
+        Assert.assertNotNull(fList);
         // Then, Entity Object
-        Feature[] fArray = parseFeatureArray(resEntity);
-        Assert.assertEquals(EXPECTED_FEATURES_NUMBERS, fArray.length);
+        Assert.assertFalse(fList.isEmpty());
     }
 
 }

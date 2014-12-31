@@ -26,9 +26,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.ff4j.audit.EventPublisher;
-import org.ff4j.audit.EventRepository;
 import org.ff4j.audit.EventType;
-import org.ff4j.audit.InMemoryEventRepository;
+import org.ff4j.audit.repository.EventRepository;
+import org.ff4j.audit.repository.InMemoryEventRepository;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FeatureXmlParser;
@@ -193,6 +193,10 @@ public class FF4j {
     public boolean isAllowed(Feature featureName) {
         // No authorization manager, returning always true
         if (getAuthorizationsManager() == null) {
+            return true;
+        }
+        // if no permissions, the feature is public
+        if (featureName.getPermissions().isEmpty()) {
             return true;
         }
         Set<String> userRoles = getAuthorizationsManager().getCurrentUserPermissions();
@@ -517,6 +521,26 @@ public class FF4j {
      */
     public boolean isAutocreate() {
         return autocreate;
+    }
+
+    /**
+     * Getter accessor for attribute 'startTime'.
+     *
+     * @return
+     *       current value of 'startTime'
+     */
+    public long getStartTime() {
+        return startTime;
+    }
+
+    /**
+     * Getter accessor for attribute 'version'.
+     *
+     * @return
+     *       current value of 'version'
+     */
+    public String getVersion() {
+        return version;
     }
 
 }

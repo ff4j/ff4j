@@ -20,16 +20,14 @@ package org.ff4j.web.resources.it;
  * #L%
  */
 
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response.Status;
 
-import org.junit.Assert;
 import org.ff4j.web.api.resources.FeatureResource;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 /**
  * Integration test for resources {@link FeatureResource}.
@@ -118,9 +116,7 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
         assertFF4J.assertThatFeatureHasNotRole(F2, ROLE_NEW);
         // When
         WebResource wResf4 = resourceFeatures().path(F2);
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add(POST_PARAMNAME_ROLENAME, ROLE_NEW);
-        ClientResponse resHttp = wResf4.path(OPERATION_GRANTROLE).post(ClientResponse.class, formData);
+        ClientResponse resHttp = wResf4.path(OPERATION_GRANTROLE).path(ROLE_NEW).post(ClientResponse.class);
         // Then, HTTPResponse
         Assert.assertEquals("Expected status is 204", Status.NO_CONTENT.getStatusCode(), resHttp.getStatus());
         // Then, Entity Object
@@ -136,9 +132,7 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
         assertFF4J.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
         // When
         WebResource wResf4 = resourceFeatures().path(F_DOESNOTEXIST);
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add(POST_PARAMNAME_ROLENAME, ROLE_NEW);
-        ClientResponse resHttp = wResf4.path(OPERATION_GRANTROLE).post(ClientResponse.class, formData);
+        ClientResponse resHttp = wResf4.path(OPERATION_GRANTROLE).path(ROLE_NEW).post(ClientResponse.class);
         // Then, HTTPResponse
         Assert.assertEquals("Expected status is 404", Status.NOT_FOUND.getStatusCode(), resHttp.getStatus());
         // Then, Entity (erro message)
@@ -151,35 +145,13 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testPost_grantRoleInvalidParameter() {
-        // Given
-        assertFF4J.assertThatFeatureExist(F2);
-        // When
-        WebResource wResf4 = resourceFeatures().path(F2);
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add(F_DOESNOTEXIST, ROLE_NEW);
-        ClientResponse resHttp = wResf4.path(OPERATION_GRANTROLE).post(ClientResponse.class, formData);
-        // Then, HTTPResponse
-        Assert.assertEquals("Expected status is 400", Status.BAD_REQUEST.getStatusCode(), resHttp.getStatus());
-        // Then, Entity Object
-        String resEntity = resHttp.getEntity(String.class);
-        Assert.assertNotNull(resEntity);
-        Assert.assertTrue(resEntity.contains("POST parameter"));
-    }
-
-    /**
-     * TDD.
-     */
-    @Test
     public void testPost_removeRole() {
         // Given
         assertFF4J.assertThatFeatureExist(F2);
         assertFF4J.assertThatFeatureHasRole(F2, ROLE_USER);
         // When
         WebResource wResf4 = resourceFeatures().path(F2);
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add(POST_PARAMNAME_ROLENAME, ROLE_USER);
-        ClientResponse resHttp = wResf4.path(OPERATION_REMOVEROLE).post(ClientResponse.class, formData);
+        ClientResponse resHttp = wResf4.path(OPERATION_REMOVEROLE).path(ROLE_USER).post(ClientResponse.class);
         // Then, HTTPResponse
         Assert.assertEquals("Expected status is 204", Status.NO_CONTENT.getStatusCode(), resHttp.getStatus());
         // Then, Entity Object
@@ -195,9 +167,7 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
         assertFF4J.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
         // When
         WebResource wResf4 = resourceFeatures().path(F_DOESNOTEXIST);
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add(POST_PARAMNAME_ROLENAME, ROLE_NEW);
-        ClientResponse resHttp = wResf4.path(OPERATION_REMOVEROLE).post(ClientResponse.class, formData);
+        ClientResponse resHttp = wResf4.path(OPERATION_REMOVEROLE).path(ROLE_NEW).post(ClientResponse.class);
         // Then, HTTPResponse
         Assert.assertEquals("Expected status is 404", Status.NOT_FOUND.getStatusCode(), resHttp.getStatus());
         // Then, Entity (erro message)
@@ -213,17 +183,16 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
     public void testPost_removeRoleInvalidParameter() {
         // Given
         assertFF4J.assertThatFeatureExist(F2);
+        Assert.assertFalse(ff4j.getStore().read(F2).getPermissions().contains(ROLE_READ));
         // When
         WebResource wResf4 = resourceFeatures().path(F2);
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add(F_DOESNOTEXIST, ROLE_NEW);
-        ClientResponse resHttp = wResf4.path(OPERATION_REMOVEROLE).post(ClientResponse.class, formData);
+        ClientResponse resHttp = wResf4.path(OPERATION_REMOVEROLE).path(ROLE_READ).post(ClientResponse.class);
         // Then, HTTPResponse
         Assert.assertEquals("Expected status is 400", Status.BAD_REQUEST.getStatusCode(), resHttp.getStatus());
         // Then, Entity Object
         String resEntity = resHttp.getEntity(String.class);
         Assert.assertNotNull(resEntity);
-        Assert.assertTrue(resEntity.contains("POST parameter"));
+        Assert.assertTrue(resEntity.contains("Invalid role"));
     }
 
     /**
@@ -236,9 +205,7 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
         assertFF4J.assertThatFeatureNotInGroup(F2, G1);
         // When
         WebResource wResf4 = resourceFeatures().path(F2);
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add(POST_PARAMNAME_GROUPNAME, G1);
-        ClientResponse resHttp = wResf4.path(OPERATION_ADDGROUP).post(ClientResponse.class, formData);
+        ClientResponse resHttp = wResf4.path(OPERATION_ADDGROUP).path(G1).post(ClientResponse.class);
         // Then, HTTPResponse
         Assert.assertEquals("Expected status is 204", Status.NO_CONTENT.getStatusCode(), resHttp.getStatus());
         // Then, Entity Object
@@ -254,9 +221,7 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
         assertFF4J.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
         // When
         WebResource wResf4 = resourceFeatures().path(F_DOESNOTEXIST);
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add(POST_PARAMNAME_GROUPNAME, G1);
-        ClientResponse resHttp = wResf4.path(OPERATION_ADDGROUP).post(ClientResponse.class, formData);
+        ClientResponse resHttp = wResf4.path(OPERATION_ADDGROUP).path(G1).post(ClientResponse.class);
         // Then, HTTPResponse
         Assert.assertEquals("Expected status is 404", Status.NOT_FOUND.getStatusCode(), resHttp.getStatus());
         // Then, Entity (erro message)
@@ -269,35 +234,14 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testPost_addToGroupInvalidParameter() {
-        // Given
-        assertFF4J.assertThatFeatureExist(F2);
-        // When
-        WebResource wResf4 = resourceFeatures().path(F2);
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add(F_DOESNOTEXIST, G1);
-        ClientResponse resHttp = wResf4.path(OPERATION_ADDGROUP).post(ClientResponse.class, formData);
-        // Then, HTTPResponse
-        Assert.assertEquals("Expected status is 400", Status.BAD_REQUEST.getStatusCode(), resHttp.getStatus());
-        // Then, Entity Object
-        String resEntity = resHttp.getEntity(String.class);
-        Assert.assertNotNull(resEntity);
-        Assert.assertTrue(resEntity.contains("POST parameter"));
-    }
-
-    /**
-     * TDD.
-     */
-    @Test
     public void testPost_removeFromGroup() {
         // Given
         assertFF4J.assertThatFeatureExist(F2);
-        // assertFF4J.assertThatFeatureIsInGroup(F2, G1);
+        ff4j.getStore().addToGroup(F2, G0);
+        assertFF4J.assertThatFeatureIsInGroup(F2, G0);
         // When
         WebResource wResf4 = resourceFeatures().path(F2);
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add(POST_PARAMNAME_GROUPNAME, G1);
-        ClientResponse resHttp = wResf4.path(OPERATION_REMOVEGROUP).post(ClientResponse.class, formData);
+        ClientResponse resHttp = wResf4.path(OPERATION_REMOVEGROUP).path(G0).post(ClientResponse.class);
         // Then, HTTPResponse
         Assert.assertEquals("Expected status is 204", Status.NO_CONTENT.getStatusCode(), resHttp.getStatus());
         // Then, Entity Object
@@ -313,9 +257,8 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
         assertFF4J.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
         // When
         WebResource wResf4 = resourceFeatures().path(F_DOESNOTEXIST);
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add(POST_PARAMNAME_GROUPNAME, G1);
-        ClientResponse resHttp = wResf4.path(OPERATION_REMOVEGROUP).post(ClientResponse.class, formData);
+        ClientResponse resHttp = wResf4.path(OPERATION_REMOVEGROUP).path(G1).post(ClientResponse.class);
+        
         // Then, HTTPResponse
         Assert.assertEquals("Expected status is 404", Status.NOT_FOUND.getStatusCode(), resHttp.getStatus());
         // Then, Entity (erro message)
@@ -331,17 +274,16 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
     public void testPost_removeFromGroupInvalidParameter() {
         // Given
         assertFF4J.assertThatFeatureExist(F2);
+        assertFF4J.assertThatFeatureNotInGroup(F2, G1);
         // When
         WebResource wResf4 = resourceFeatures().path(F2);
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add(F_DOESNOTEXIST, G1);
-        ClientResponse resHttp = wResf4.path(OPERATION_REMOVEGROUP).post(ClientResponse.class, formData);
+        ClientResponse resHttp = wResf4.path(OPERATION_REMOVEGROUP).path("GRPXX").post(ClientResponse.class);
         // Then, HTTPResponse
         Assert.assertEquals("Expected status is 400", Status.BAD_REQUEST.getStatusCode(), resHttp.getStatus());
         // Then, Entity Object
         String resEntity = resHttp.getEntity(String.class);
         Assert.assertNotNull(resEntity);
-        Assert.assertTrue(resEntity.contains("POST parameter"));
+        Assert.assertTrue(resEntity.contains("Invalid groupName"));
     }
 
 }

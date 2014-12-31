@@ -41,6 +41,9 @@ public interface TestsFf4jConstants {
 
     /** Feature Name. */
     String F4 = "forth";
+    
+    /** Feature Name. */
+    String AWESOME = "AwesomeFeature";
 
     /** Group Name. */
     String G0 = "GRP0";
@@ -56,6 +59,9 @@ public interface TestsFf4jConstants {
 
     /** Feature Name. */
     String FEATURE_NEW = "new";
+    
+    /** Feature Name. */
+    String FEATURE_X = "x";
 
     /** Feature Name. */
     String ROLE_USER = "USER";

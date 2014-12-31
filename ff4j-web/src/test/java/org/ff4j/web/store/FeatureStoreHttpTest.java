@@ -24,6 +24,7 @@ import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.test.store.AbstractStoreJUnitTest;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -93,7 +94,7 @@ public class FeatureStoreHttpTest extends AbstractStoreJUnitTest {
         // When
         testedStore.update(new Feature(F1, false, null));
         // Then
-        assertFf4j.assertThatFeatureHasNotRole(F1, ROLE_USER);
+        Assert.assertNull(testedStore.read(F1).getPermissions());
     }
 
     /**

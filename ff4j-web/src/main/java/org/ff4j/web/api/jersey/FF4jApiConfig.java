@@ -20,14 +20,20 @@ package org.ff4j.web.api.jersey;
  * #L%
  */
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 import org.ff4j.FF4j;
 import org.ff4j.web.api.FF4JWebProvider;
 import org.ff4j.web.api.FF4jWebConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Bean to configure security for the WebAPI. This custom bean is defined to limit dependencies to Spring security for instance.
@@ -35,6 +41,9 @@ import org.ff4j.web.api.FF4jWebConstants;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public class FF4jApiConfig implements FF4JWebProvider, FF4jWebConstants {
+
+    /** logger for this class. */
+    protected final Logger log = LoggerFactory.getLogger(getClass());
 
     /** Configuration of ff4j. */
     private FF4j fF4j;
@@ -45,8 +54,14 @@ public class FF4jApiConfig implements FF4JWebProvider, FF4jWebConstants {
     /** Enable authorization for jersey. */
     private boolean enableAuthorization = false;
     
-    /** Enable loggin filter for jersey. */
+    /** Enable logging filter for jersey. */
     private boolean enableLogging = false;
+    
+    /** Enable Swagger Documentation. */
+    private boolean enableDocumentation = true;
+    
+    /** Number. */
+    private String versionNumber = getClass().getPackage().getImplementationVersion();
     
     /** User of the API (login/password). */
     private Map<String, String> users = new HashMap<String, String>();
@@ -56,20 +71,55 @@ public class FF4jApiConfig implements FF4JWebProvider, FF4jWebConstants {
 
     /** will hold all permissions for both user and apiKey. */
     private Map<String, Set<String>> permissions = new HashMap<String, Set<String>>();
+    
+    /** context Path. */
+    private String contextPath = "http://localhost:8081/ff4j-demo/api";
 
     /**
      * Default constructor.
      */
     public FF4jApiConfig() {
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(MANIFEST_FILE);
+        if (inputStream != null) {
+            try {
+                Manifest mFile = new Manifest(inputStream);
+                versionNumber = (String) mFile.getMainAttributes().get(new Attributes.Name(MANIFEST_VERSION));
+            } catch (IOException ieo) {
+                log.error("Cannot read version number from manifest", ieo);
+            }
+        }
     }
 
     /**
      * Initialized with a ff4j.
      */
     public FF4jApiConfig(FF4j ff) {
+        this();
         this.fF4j = ff;
     }
 
+    /**
+     * Fluent helper to work with API settings.
+     *
+     * @return
+     *      reference of current object
+     */
+    public FF4jApiConfig enableDocumentation() {
+        this.enableDocumentation = true;
+        return this;
+    }
+    
+    /**
+     * Fluent helper to work with API settings.
+     *
+     * @return
+     *      reference of current object
+     */
+    public FF4jApiConfig disableDocumentation() {
+        this.enableDocumentation = false;
+        return this;
+    }
+    
     /**
      * Helper method to create a user.
      * 
@@ -244,6 +294,54 @@ public class FF4jApiConfig implements FF4JWebProvider, FF4jWebConstants {
      */
     public void setPermissions(Map<String, Set<String>> permissions) {
         this.permissions = permissions;
+    }
+
+    /**
+     * Getter accessor for attribute 'enableDocumentation'.
+     *
+     * @return
+     *       current value of 'enableDocumentation'
+     */
+    public boolean isEnableDocumentation() {
+        return enableDocumentation;
+    }
+
+    /**
+     * Setter accessor for attribute 'enableDocumentation'.
+     * @param enableDocumentation
+     * 		new value for 'enableDocumentation '
+     */
+    public void setEnableDocumentation(boolean enableDocumentation) {
+        this.enableDocumentation = enableDocumentation;
+    }
+
+    /**
+     * Getter accessor for attribute 'versionNumber'.
+     *
+     * @return
+     *       current value of 'versionNumber'
+     */
+    public String getVersionNumber() {
+        return versionNumber;
+    }
+
+    /**
+     * Getter accessor for attribute 'contextPath'.
+     *
+     * @return
+     *       current value of 'contextPath'
+     */
+    public String getContextPath() {
+        return contextPath;
+    }
+
+    /**
+     * Setter accessor for attribute 'contextPath'.
+     * @param contextPath
+     * 		new value for 'contextPath '
+     */
+    public void setContextPath(String contextPath) {
+        this.contextPath = contextPath;
     }
 
 }

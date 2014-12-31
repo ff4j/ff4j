@@ -20,11 +20,12 @@ package org.ff4j.web.resources.it;
  * #L%
  */
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
 import org.junit.Assert;
-
 import org.ff4j.core.Feature;
+import org.ff4j.web.api.resources.domain.FeatureApiBean;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.ClientResponse;
@@ -43,19 +44,18 @@ public class FeatureResource_putCreate_TestIT extends AbstractWebResourceTestIT 
     @Test
     public void testPut_upsertIfNotExistCreateIt() {
         // Given
-        assertFF4J.assertThatFeatureDoesNotExist(FEATURE_NEW);
+        assertFF4J.assertThatFeatureDoesNotExist(FEATURE_X);
         // When
-        WebResource webResFeat = resourceFeatures().path(FEATURE_NEW);
-        ClientResponse res = webResFeat.put(ClientResponse.class,
-                new Feature(FEATURE_NEW).toString().getBytes());
+        Feature f = new Feature(FEATURE_X);
+        WebResource webResFeat = resourceFeatures().path(FEATURE_X);
+        ClientResponse res = webResFeat//
+                .type(MediaType.APPLICATION_JSON)//
+                .put(ClientResponse.class, new FeatureApiBean(f));
         // Then HTTPResponse
         Assert.assertEquals(Status.CREATED.getStatusCode(), res.getStatus());
         Assert.assertNotNull(res.getHeaders().getFirst(LOCATION));
-        // Then Object Entity
-        String resEntity = res.getEntity(String.class);
-        Assert.assertEquals(FEATURE_NEW, resEntity);
         // Then, testing target store
-        assertFF4J.assertThatFeatureExist(FEATURE_NEW);
+        assertFF4J.assertThatFeatureExist(FEATURE_X);
         res.close();
     }
 

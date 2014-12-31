@@ -32,16 +32,7 @@ public interface FF4jWebConstants {
 
     /** expected post parameter from POST methods. */
     String POST_PARAMNAME_FEATURE_UID = "uid";
-
-    /** expected post parameter from POST methods. */
-    String POST_PARAMNAME_FLIPSTRATEGY = "flipstrategy";
-
-    /** expected post parameter from POST methods. */
-    String POST_PARAMNAME_ROLENAME = "rolename";
-
-    /** expected post parameter from POST methods. */
-    String POST_PARAMNAME_GROUPNAME = "groupName";
-
+    
     /** parameter. */
     String POST_PARAMNAME_CUSTOM_PREFIX = "PARAM_";
 
@@ -52,7 +43,7 @@ public interface FF4jWebConstants {
     String OPERATION_DISABLE = "disable";
 
     /** Custom operation on resource. */
-    String OPERATION_FLIP = "flip";
+    String OPERATION_CHECK = "check";
 
     /** Custom operation on resource. */
     String OPERATION_GRANTROLE = "grantrole";
@@ -88,13 +79,16 @@ public interface FF4jWebConstants {
     String RESOURCE_FF4J = "ff4j";
 
     /** list of curves. */
-    String RESOURCE_PIE = "pie";
-
-    /** distribution of hits. */
-    String RESOURCE_CURVE = "curve";
+    String RESOURCE_PIE = "pieChart";
+    
+    /** list of curves. */
+    String RESOURCE_BAR = "barChart";
     
     /** filter for resource. */
     String PARAM_START = "start";
+    
+    /** featureID. */
+    String PARAM_UID = "uid";
     
     /** filter for resource. */
     String PARAM_END = "end";
@@ -113,4 +107,9 @@ public interface FF4jWebConstants {
     
     /** HTTP Header. */
     String HEADER_AUTHORIZATION = "Authorization";
+    
+    /** Manifest File. */
+    String MANIFEST_FILE = "/META-INF/MANIFEST.MF";
+    
+    String MANIFEST_VERSION = "Specification-Version";
 }

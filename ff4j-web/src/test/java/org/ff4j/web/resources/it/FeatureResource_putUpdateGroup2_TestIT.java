@@ -20,11 +20,12 @@ package org.ff4j.web.resources.it;
  * #L%
  */
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
 import org.junit.Assert;
-
 import org.ff4j.core.Feature;
+import org.ff4j.web.api.resources.domain.FeatureApiBean;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.ClientResponse;
@@ -49,7 +50,9 @@ public class FeatureResource_putUpdateGroup2_TestIT extends AbstractWebResourceT
         Feature f3 = ff4j.getFeature(F3);
         f3.setGroup("");
         WebResource webResFeat = resourceFeatures().path(F3);
-        ClientResponse res = webResFeat.put(ClientResponse.class, f3.toString().getBytes());
+        ClientResponse res = webResFeat.//
+                type(MediaType.APPLICATION_JSON).//
+                put(ClientResponse.class,  toJson(new FeatureApiBean(f3)));
         // Then HTTPResponse
         Assert.assertEquals(Status.NO_CONTENT.getStatusCode(), res.getStatus());
         // Then Object Entity : null

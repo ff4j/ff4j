@@ -23,6 +23,9 @@ package org.ff4j.audit;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.ff4j.audit.repository.EventRepository;
+import org.ff4j.audit.repository.InMemoryEventRepository;
+
 /**
  * Default implementation of repository.
  * 

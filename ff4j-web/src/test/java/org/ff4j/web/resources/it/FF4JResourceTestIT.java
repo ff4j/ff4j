@@ -20,11 +20,11 @@ package org.ff4j.web.resources.it;
  * #L%
  */
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response.Status;
 
 import org.ff4j.store.InMemoryFeatureStore;
-import org.ff4j.strategy.el.ExpressionFlipStrategy;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -44,15 +44,15 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
     @Test
     public void testGet() {
         // Given
-        Assert.assertTrue(ff4j.getStore() instanceof InMemoryFeatureStore);
+        Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getStore().getClass());
         // When
-        ClientResponse resHttp = resourceff4j().get(ClientResponse.class);
-        String resEntity = resHttp.getEntity(String.class);
+        ClientResponse resHttp = resourceff4j().type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
+        
         // Then, HTTPResponse
         Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
-        Assert.assertNotNull(resEntity);
+        
         // Then, Entity Object
-        Assert.assertTrue(resEntity.contains("uptime"));
+        //Assert.assertTrue(resEntity.contains("uptime"));
     }
 
     /**
@@ -65,8 +65,10 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
         assertFF4J.assertThatFeatureNotFlipped(F4);
         // When
         MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add(POST_PARAMNAME_FEATURE_UID, F4);
-        ClientResponse resHttp = resourceff4j().path(OPERATION_FLIP).post(ClientResponse.class, formData);
+        //formData.add("", F4);
+        ClientResponse resHttp = resourceff4j().path(OPERATION_CHECK).path(F4).//
+                type(MediaType.APPLICATION_FORM_URLENCODED).//
+                post(ClientResponse.class, formData);
         String resEntity = resHttp.getEntity(String.class);
         // Then
         Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
@@ -83,11 +85,14 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
         assertFF4J.assertThatFeatureExist(F2);
         ff4j.getStore().enable(F2);
         assertFF4J.assertThatFeatureExist(F4);
+        ff4j.getStore().enable(F4);
         assertFF4J.assertThatFeatureFlipped(F4);
         // When
         MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
         formData.add(POST_PARAMNAME_FEATURE_UID, F4);
-        ClientResponse resHttp = resourceff4j().path(OPERATION_FLIP).post(ClientResponse.class, formData);
+        ClientResponse resHttp = resourceff4j().path(OPERATION_CHECK).path(F4).//
+                type(MediaType.APPLICATION_FORM_URLENCODED).//
+                post(ClientResponse.class, formData);
         String resEntity = resHttp.getEntity(String.class);
         // Then
         Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
@@ -103,9 +108,7 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
         // Given
         assertFF4J.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
         // When
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add(POST_PARAMNAME_FEATURE_UID, F_DOESNOTEXIST);
-        ClientResponse resHttp = resourceff4j().path(OPERATION_FLIP).post(ClientResponse.class, formData);
+        ClientResponse resHttp = resourceff4j().path(OPERATION_CHECK).path(F_DOESNOTEXIST).get(ClientResponse.class);
         String resEntity = resHttp.getEntity(String.class);
         // Then
         Assert.assertEquals("Expected status is 404", Status.NOT_FOUND.getStatusCode(), resHttp.getStatus());
@@ -119,16 +122,20 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
     @Test
     public void testPost_isFlippedInvalidParameter() {
         // Given
-        assertFF4J.assertThatFeatureExist(F4);
+        assertFF4J.assertThatFeatureExist(AWESOME);
         // When
         MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add(ROLE_NEW, F4);
-        ClientResponse resHttp = resourceff4j().path(OPERATION_FLIP).post(ClientResponse.class, formData);
+        formData.add("InvalidParameter", "localhost");
+        ClientResponse resHttp = resourceff4j().path(OPERATION_CHECK) //
+                .path(AWESOME) //
+                .type(MediaType.APPLICATION_FORM_URLENCODED).//
+                post(ClientResponse.class, formData);
         String resEntity = resHttp.getEntity(String.class);
         // Then
         Assert.assertEquals("Expected status is 400", Status.BAD_REQUEST.getStatusCode(), resHttp.getStatus());
         Assert.assertNotNull(resEntity);
-        Assert.assertTrue(resEntity.contains("POST parameter"));
+        Assert.assertTrue(resEntity.contains("Invalid parameter"));
+        System.out.println(resEntity);
     }
 
     /**
@@ -137,46 +144,20 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
     @Test
     public void testPost_isFlippedWithParameters() {
         // Given
-        ff4j.getStore().disable(F2);
-        assertFF4J.assertThatFeatureExist(F4);
-        assertFF4J.assertThatFeatureNotFlipped(F4);
+        assertFF4J.assertThatFeatureExist(AWESOME);
         // When
         MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add(POST_PARAMNAME_FEATURE_UID, F4);
-        formData.add(POST_PARAMNAME_CUSTOM_PREFIX + "1", "SECOND");
-        formData.add(POST_PARAMNAME_CUSTOM_PREFIX + "0", "FIRST");
-        formData.add(POST_PARAMNAME_CUSTOM_PREFIX + "2", "T1");
-        formData.add(POST_PARAMNAME_CUSTOM_PREFIX + "2", "T2");
-        ClientResponse resHttp = resourceff4j().path(OPERATION_FLIP).post(ClientResponse.class, formData);
+        formData.add("clientHostName", "localhost");
+        ClientResponse resHttp = resourceff4j().path(OPERATION_CHECK) //
+                .path(AWESOME) //
+                .type(MediaType.APPLICATION_FORM_URLENCODED).//
+                post(ClientResponse.class, formData);
         String resEntity = resHttp.getEntity(String.class);
+        
         // Then
         Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
         Assert.assertNotNull(resEntity);
         Assert.assertFalse(Boolean.valueOf(resEntity));
-    }
-
-    /**
-     * TDD.
-     */
-    @Test
-    public void testPost_isFlippedWithCustomStrategy() {
-        // Given
-        assertFF4J.assertThatFeatureNotFlipped(F4);
-        assertFF4J.assertThatFeatureExist(F4);
-        // When
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add(POST_PARAMNAME_FEATURE_UID, F4);
-        // Overriding parameters
-        formData.add(ExpressionFlipStrategy.PARAM_EXPRESSION, "first");
-        String  fs = ff4j.getStore().read(F4).flippingStrategyAsJson();
-        System.out.println(fs);
-        formData.add(POST_PARAMNAME_FLIPSTRATEGY, fs.replace(",\"flippingStrategy\":", ""));
-        ClientResponse resHttp = resourceff4j().path(OPERATION_FLIP).post(ClientResponse.class, formData);
-        String resEntity = resHttp.getEntity(String.class);
-        // Then
-        Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
-        Assert.assertNotNull(resEntity);
-        Assert.assertTrue(Boolean.valueOf(resEntity));
-    }
+    }    
 
 }

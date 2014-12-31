@@ -22,9 +22,8 @@ package org.ff4j.web.resources.it;
 
 import javax.ws.rs.core.Response.Status;
 
-import org.ff4j.core.Feature;
 import org.ff4j.web.api.resources.FeatureResource;
-import org.ff4j.utils.json.FeatureJsonParser;
+import org.ff4j.web.api.resources.domain.FeatureApiBean;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -47,14 +46,12 @@ public class FeatureResource_get_TestIT extends AbstractWebResourceTestIT {
         assertFF4J.assertThatFeatureExist(F4);
         // When
         WebResource wResf4 = resourceFeatures().path(F4);
-        ClientResponse resHttp = wResf4.get(ClientResponse.class);
-        String resEntity = resHttp.getEntity(String.class);
-        // Then, HTTPResponse
+        ClientResponse resHttp   = wResf4.get(ClientResponse.class);
+        FeatureApiBean resEntity = resHttp.getEntity(FeatureApiBean.class);
+        // Then
         Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
         Assert.assertNotNull(resEntity);
-        // Then, Entity Object
-        Feature f = FeatureJsonParser.parseFeature(resEntity);
-        Assert.assertEquals(ff4j.getFeature(F4).toString(), f.toString());
+        Assert.assertNotNull(F4, resEntity.getUid());
     }
 
     /**

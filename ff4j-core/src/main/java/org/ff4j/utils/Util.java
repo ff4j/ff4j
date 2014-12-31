@@ -32,6 +32,12 @@ import java.util.Set;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public abstract class Util {
+    
+    /** Start Color. */
+    private static final String START_COLOR = "00AB8B";
+    
+    /** End Color. */
+    private static final String END_COLOR = "EEFFEE";
 
     /**
      * Remove default constructor.
@@ -95,7 +101,7 @@ public abstract class Util {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static <T> Set<T> hashSet(T... els) {
+    public static <T> Set<T> set(T... els) {
         return new HashSet<T>(Arrays.asList(els));
     }
     
@@ -110,7 +116,7 @@ public abstract class Util {
      * @return
      *      the list of colors
      */
-    public static List < String > getColorGradient(String codeFrom, String codeTo, int nbDivision) {
+    private static List < String > getColorGradient(String codeFrom, String codeTo, int nbDivision) {
         List < String > colors = new ArrayList<String>();
         if (nbDivision > 0) {
             int rStart = Integer.parseInt(codeFrom.substring(0, 2), 16);
@@ -138,7 +144,7 @@ public abstract class Util {
      *      color gradient
      */
     public static List < String > getColorsGradient(int nbsectors) {
-        return getColorGradient("00AB8B", "EEFFEE", nbsectors);
+        return getColorGradient(START_COLOR, END_COLOR, nbsectors);
     }
 
 }

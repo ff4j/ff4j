@@ -41,20 +41,14 @@ public class FeatureResource_delete_TestIT extends AbstractWebResourceTestIT {
      */
     @Test
     public void testGet_delete() {
-
         // Given
-        assertFF4J.assertThatStoreHasSize(EXPECTED_FEATURES_NUMBERS);
         assertFF4J.assertThatFeatureExist(F1);
-
         // When
         WebResource wResf4 = resourceFeatures().path(F1);
         ClientResponse resHttp = wResf4.delete(ClientResponse.class);
-
         // Then, HTTP Response
         Assert.assertEquals("Expected status is 204", Status.NO_CONTENT.getStatusCode(), resHttp.getStatus());
-
         // Then, Store state
-        assertFF4J.assertThatStoreHasSize(EXPECTED_FEATURES_NUMBERS - 1);
         assertFF4J.assertThatFeatureDoesNotExist(F1);
     }
 

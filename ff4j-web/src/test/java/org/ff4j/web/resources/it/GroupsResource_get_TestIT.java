@@ -1,15 +1,15 @@
 package org.ff4j.web.resources.it;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import javax.ws.rs.core.Response.Status;
 
+import org.ff4j.web.api.resources.domain.GroupDescApiBean;
 import org.junit.Assert;
-
 import org.junit.Test;
 
 import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
 
 /*
@@ -49,33 +49,12 @@ public class GroupsResource_get_TestIT extends AbstractWebResourceTestIT {
         // When
         WebResource wResff4j = resourceGroups();
         ClientResponse resHttp = wResff4j.get(ClientResponse.class);
-        String resEntity = resHttp.getEntity(String.class);
+        List<GroupDescApiBean> groupApiBeans = resHttp.getEntity(new GenericType<List<GroupDescApiBean>>() {});
         // Then, HTTPResponse
         Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
         // Then, Entity Object
-        Assert.assertNotNull(resEntity);
-        Set<String> groups = readGroupList(resEntity);
-        Assert.assertEquals(2, groups.size());
-        Assert.assertTrue(groups.containsAll(ff4j.getStore().readAllGroups()));
-    }
-
-    /**
-     * Convert JsonOutput to group set.
-     * 
-     * @param jsonOutput
-     * @return
-     */
-    private Set < String > readGroupList(String jsonOutput) {
-        // Remove brackets
-        String resEntity = jsonOutput.substring(2, jsonOutput.length() - 1);
-        // Split
-        String[] features = resEntity.split("\\,");
-        // Map as SET, remove quotes
-        Set<String> groups = new HashSet<String>();
-        for (String string : features) {
-            groups.add(string.substring(1, string.indexOf(":") - 1));
-        }
-        return groups;
+        Assert.assertNotNull(groupApiBeans);
+        Assert.assertEquals(2, groupApiBeans.size());
     }
 
 }

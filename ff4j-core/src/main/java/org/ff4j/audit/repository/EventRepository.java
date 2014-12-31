@@ -1,4 +1,4 @@
-package org.ff4j.audit;
+package org.ff4j.audit.repository;
 
 /*
  * #%L
@@ -20,11 +20,11 @@ package org.ff4j.audit;
  * #L%
  */
 
-import java.util.Map;
 import java.util.Set;
 
-import org.ff4j.audit.graph.Curve;
-import org.ff4j.audit.graph.PieGraph;
+import org.ff4j.audit.Event;
+import org.ff4j.audit.graph.BarChart;
+import org.ff4j.audit.graph.PieChart;
 
 /**
  * Persistence store for {@link Event} messages.
@@ -51,35 +51,7 @@ public interface EventRepository {
      *            end time of window
      * @return
      */
-    PieGraph getTotalHitsPie(long startTime, long endTime);
-    
-    /**
-     * Get a pie of dedicated feature.
-     * @param featureId
-     *      target feature if
-     * @param startTime
-     *      target start time
-     * @param endTime
-     *      target end time
-     * @return
-     *      target pie
-     */
-    PieGraph getFeatureHitsPie(String featureId, long startTime, long endTime);
-
-    /**
-     * Search event of hit to dedicated featureName.
-     * 
-     * @param featureName
-     *            target featureName
-     * @param nbRecord
-     *            number of measure
-     * @param startTime
-     *            starttime for measure
-     * @param endTime
-     *            endtime for measure
-     * @return curve for dedicated feature
-     */
-    Curve getFeatureHitsCurve(String featureName, long startTime, long endTime, int nbRecord);
+    PieChart getHitsPieChart(long startTime, long endTime);
     
     /**
      * Get hit curves.
@@ -94,28 +66,36 @@ public interface EventRepository {
      *            endtime for measure
      * @return map of curves
      */
-    Map<String, Curve> getHitCurves(Set<String> featNameSet, long startTime, long endTime, int nbslot);
-
-    /**
-     * Distribution of all activity over time.
-     * 
-     * @param nbRecord
-     *            total number of measure
-     * @param startTime
-     *            target start time
-     * @param endTime
-     *            target end time
-     * @return total curve
-     */
-    Curve getTotalHitsCurve(long startTime, long endTime, int nbRecord);
-
-    /**
-     * List available curves.
-     * 
-     * @return list of curves
-     */
-    Set<String> getCurveList();
+    BarChart getHitsBarChart(Set<String> featNameSet, long startTime, long endTime, int nbslot);
     
+    /**
+     * Get hit curves.
+     *
+     * @param featNameSet
+     *            target feature name set
+     * @param nbslot
+     *            number of measure
+     * @param startTime
+     *            starttime for measure
+     * @param endTime
+     *            endtime for measure
+     * @return map of curves
+     */
+    BarChart getHitsBarChart(long startTime, long endTime, int nbslot);
+    
+    /**
+     * Get a pie of dedicated feature.
+     * @param featureId
+     *      target feature if
+     * @param startTime
+     *      target start time
+     * @param endTime
+     *      target end time
+     * @return
+     *      target pie
+     */
+    PieChart getFeatureHitsPie(String featureId, long startTime, long endTime);
+   
     /**
      * Get all events.
      * 

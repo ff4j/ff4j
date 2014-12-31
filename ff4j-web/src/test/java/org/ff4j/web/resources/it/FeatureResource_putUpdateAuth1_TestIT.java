@@ -20,11 +20,12 @@ package org.ff4j.web.resources.it;
  * #L%
  */
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
 import org.junit.Assert;
-
 import org.ff4j.core.Feature;
+import org.ff4j.web.api.resources.domain.FeatureApiBean;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.ClientResponse;
@@ -44,12 +45,15 @@ public class FeatureResource_putUpdateAuth1_TestIT extends AbstractWebResourceTe
     public void testPut_upsertUpdateAddAuthorization() {
         // Given
         assertFF4J.assertThatFeatureExist(F1);
+        ff4j.getStore().removeRoleFromFeature(F1, ROLE_NEW);
         assertFF4J.assertThatFeatureHasNotRole(F1, ROLE_NEW);
         // When
         Feature fNew = ff4j.getFeature(F1);
         fNew.getPermissions().add(ROLE_NEW);
         WebResource webResFeat = resourceFeatures().path(F1);
-        ClientResponse res = webResFeat.put(ClientResponse.class, fNew.toString().getBytes());
+        ClientResponse res = webResFeat //
+                .type(MediaType.APPLICATION_JSON) //
+                .put(ClientResponse.class, new FeatureApiBean(fNew));
         // Then HTTPResponse
         Assert.assertEquals(Status.NO_CONTENT.getStatusCode(), res.getStatus());
         // Then Object Entity : null

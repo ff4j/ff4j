@@ -25,10 +25,11 @@ import static org.ff4j.utils.json.FeatureJsonParser.parseFeatureArray;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
 import org.ff4j.core.Feature;
@@ -38,14 +39,17 @@ import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.web.api.FF4jWebConstants;
+import org.ff4j.web.api.resources.domain.FeatureApiBean;
+import org.ff4j.web.api.resources.domain.GroupDescApiBean;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.core.util.Base64;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 /**
  * Implementation of store using {@link HttpClient} connection.
@@ -118,6 +122,7 @@ public class FeatureStoreHttp implements FeatureStore, FF4jWebConstants {
     private void initJerseyClient() {
         if (client == null) {
             ClientConfig config = new DefaultClientConfig();
+            config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
             client = Client.create(config);
         }
         if (url == null) {
@@ -188,7 +193,8 @@ public class FeatureStoreHttp implements FeatureStore, FF4jWebConstants {
         if (uid == null || uid.isEmpty()) {
             throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
         }
-        ClientResponse cRes = storeWebRsc.path(uid).path(OPERATION_DISABLE).post(ClientResponse.class);
+        System.out.println(uid);
+        ClientResponse cRes = getStore().path(uid).path(OPERATION_DISABLE).post(ClientResponse.class);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new FeatureNotFoundException(uid);
         }
@@ -220,7 +226,9 @@ public class FeatureStoreHttp implements FeatureStore, FF4jWebConstants {
             throw new FeatureAlreadyExistException(fp.getUid());
         }
         // Now can process upsert through PUT HTTP method
-        ClientResponse cRes = getStore().path(fp.getUid()).put(ClientResponse.class, fp.toString().getBytes());
+        ClientResponse cRes = getStore().path(fp.getUid())//
+                .type(MediaType.APPLICATION_JSON) //
+                .put(ClientResponse.class, new FeatureApiBean(fp));
         // Check response code CREATED or raised error
         if (Status.CREATED.getStatusCode() != cRes.getStatus()) {
             throw new FeatureAccessException("Cannot create feature, an HTTP error " + cRes.getStatus() + " occured.");
@@ -267,7 +275,9 @@ public class FeatureStoreHttp implements FeatureStore, FF4jWebConstants {
         if (!exist(fp.getUid())) {
             throw new FeatureNotFoundException(fp.getUid());
         }
-        ClientResponse cRes = getStore().path(fp.getUid()).put(ClientResponse.class, fp.toString().getBytes());
+        ClientResponse cRes = getStore().path(fp.getUid()) //
+                .type(MediaType.APPLICATION_JSON)
+                .put(ClientResponse.class, new FeatureApiBean(fp));
         if (Status.NO_CONTENT.getStatusCode() != cRes.getStatus()) {
             throw new FeatureAccessException("Cannot update feature, an HTTP error " + cRes.getStatus() + " occured.");
         }
@@ -282,9 +292,7 @@ public class FeatureStoreHttp implements FeatureStore, FF4jWebConstants {
         if (roleName == null || roleName.isEmpty()) {
             throw new IllegalArgumentException("roleName cannot be null nor empty");
         }
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add(POST_PARAMNAME_ROLENAME, roleName);
-        ClientResponse cRes = getStore().path(uid).path(OPERATION_GRANTROLE).post(ClientResponse.class, formData);
+        ClientResponse cRes = getStore().path(uid).path(OPERATION_GRANTROLE).path(roleName).post(ClientResponse.class);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new FeatureNotFoundException(uid);
         }
@@ -308,9 +316,7 @@ public class FeatureStoreHttp implements FeatureStore, FF4jWebConstants {
         if (roleName == null || roleName.isEmpty()) {
             throw new IllegalArgumentException("roleName cannot be null nor empty");
         }
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add(POST_PARAMNAME_ROLENAME, roleName);
-        ClientResponse cRes = getStore().path(uid).path(OPERATION_REMOVEROLE).post(ClientResponse.class, formData);
+        ClientResponse cRes = getStore().path(uid).path(OPERATION_REMOVEROLE).path(roleName).post(ClientResponse.class);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new FeatureNotFoundException(uid);
         }
@@ -328,9 +334,7 @@ public class FeatureStoreHttp implements FeatureStore, FF4jWebConstants {
         if (groupName == null || groupName.isEmpty()) {
             throw new IllegalArgumentException("Groupname cannot be null nor empty");
         }
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add(POST_PARAMNAME_GROUPNAME, groupName);
-        ClientResponse cRes = getStore().path(uid).path(OPERATION_ADDGROUP).post(ClientResponse.class, formData);
+        ClientResponse cRes = getStore().path(uid).path(OPERATION_ADDGROUP).path(groupName).post(ClientResponse.class);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new FeatureNotFoundException(uid);
         }
@@ -354,15 +358,12 @@ public class FeatureStoreHttp implements FeatureStore, FF4jWebConstants {
         if (groupName == null || groupName.isEmpty()) {
             throw new IllegalArgumentException("Groupname cannot be null nor empty");
         }
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add(POST_PARAMNAME_GROUPNAME, groupName);
-        ClientResponse cRes = getStore().path(uid).path(OPERATION_REMOVEGROUP).post(ClientResponse.class, formData);
+        ClientResponse cRes = getStore().path(uid).path(OPERATION_REMOVEGROUP).path(groupName).post(ClientResponse.class);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
-            String errorMsg = cRes.getEntity(String.class);
-            if (errorMsg.contains("group")) {
-                throw new GroupNotFoundException(groupName);
-            }
             throw new FeatureNotFoundException(uid);
+        }
+        if (Status.BAD_REQUEST.getStatusCode() == cRes.getStatus()) {
+            throw new GroupNotFoundException(groupName);
         }
         if (Status.NO_CONTENT.getStatusCode() != cRes.getStatus()) {
             throw new FeatureAccessException("Cannot remove feature from group, an HTTP error " + cRes.getStatus() + " occured.");
@@ -441,29 +442,15 @@ public class FeatureStoreHttp implements FeatureStore, FF4jWebConstants {
     @Override
     public Set<String> readAllGroups() {
         ClientResponse cRes = getGroups().get(ClientResponse.class);
+        List<GroupDescApiBean> groupApiBeans = cRes.getEntity(new GenericType<List<GroupDescApiBean>>() {});
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
             throw new FeatureAccessException("Cannot read groups, an HTTP error " + cRes.getStatus() + " occured.");
         }
-        return readGroupList(cRes.getEntity(String.class));
-    }
-
-    /**
-     * Convert JsonOutput to group set.
-     * 
-     * @param jsonOutput
-     * @return
-     */
-    private Set<String> readGroupList(String jsonOutput) {
-        // Remove brackets
-        String resEntity = jsonOutput.substring(2, jsonOutput.length() - 1);
-        // Split
-        String[] features = resEntity.split("\\,");
-        // Map as SET, remove quotes
-        Set<String> groups = new HashSet<String>();
-        for (String string : features) {
-            groups.add(string.substring(1, string.indexOf(":") - 1));
+        Set < String > groupNames = new HashSet<String>();
+        for (GroupDescApiBean groupApiBean : groupApiBeans) {
+            groupNames.add(groupApiBean.getGroupName());
         }
-        return groups;
+        return groupNames;
     }
 
     /** {@inheritDoc} */

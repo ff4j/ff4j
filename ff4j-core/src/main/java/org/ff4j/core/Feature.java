@@ -230,7 +230,7 @@ public class Feature implements Serializable {
                     first = false;
                 }
             }
-            json.append("},\"classType\":\"");
+            json.append("},\"type\":\"");
             json.append(flippingStrategy.getClass().getCanonicalName());
             json.append("\"}");
         } else {

@@ -20,9 +20,10 @@ package org.ff4j.test;
  * #L%
  */
 
-import org.junit.Assert;
+import java.util.Set;
 
 import org.ff4j.FF4j;
+import org.junit.Assert;
 
 /**
  * Give utilities method for tests.
@@ -173,7 +174,11 @@ public class AssertFf4j {
      */
     public AssertFf4j assertThatFeatureHasNotRole(String featureName, String roleName) {
         assertThatFeatureExist(featureName);
-        Assert.assertFalse(ff4j.getFeature(featureName).getPermissions().contains(roleName));
+        Set < String > permissions = ff4j.getFeature(featureName).getPermissions();
+        // if null the test is automatically true
+        if (permissions != null) {
+            Assert.assertFalse("Persmission must not have " + roleName, ff4j.getFeature(featureName).getPermissions().contains(roleName));
+        }
         return this;
     }
 
@@ -189,7 +194,9 @@ public class AssertFf4j {
     public AssertFf4j assertThatFeatureIsInGroup(String featureName, String groupName) {
         assertThatFeatureExist(featureName);
         String group = ff4j.getFeature(featureName).getGroup();
-        Assert.assertTrue(group != null && groupName.equals(group));
+        Assert.assertTrue("'" + featureName + "' must be in group '" + 
+                  groupName + "' but is in <" + group + ">", 
+                  group != null && groupName.equals(group));
         return this;
     }
 

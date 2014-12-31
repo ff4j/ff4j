@@ -20,83 +20,117 @@ package org.ff4j.web.api.resources;
  * #L%
  */
 
-import javax.annotation.security.RolesAllowed;
+import java.util.Calendar;
+import java.util.Date;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.Response.Status;
 
-import org.ff4j.audit.EventRepository;
-import org.ff4j.web.api.FF4jWebConstants;
+import org.codehaus.jackson.annotate.JsonIgnoreType;
+import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.utils.Util;
+import org.ff4j.web.api.resources.domain.BarChartApiBean;
+import org.ff4j.web.api.resources.domain.EventRepositoryApiBean;
+import org.ff4j.web.api.resources.domain.FeatureMonitoringApiBean;
+import org.ff4j.web.api.resources.domain.PieChartApiBean;
+import org.ff4j.web.api.resources.domain.PieSectorApiBean;
+
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 
 /**
- * Web Resource to browse monitoring informations.
- * 
+ * Monitoring Resource.
+ *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-@RolesAllowed({FF4jWebConstants.ROLE_READ})
-public class MonitoringResource extends MonitorAbstractResource {
+@Path("/ff4j/monitoring")
+@JsonIgnoreType
+@Api(value = "/ff4j/monitoring", description = "<b>Audit</b> and Supervision")
+public class MonitoringResource extends AbstractResource {
     
-    /**
-     * Defaut constructor.
-     */
-    public MonitoringResource() {}
-
-    /**
-     * Constructor by Parent resource
-     * 
-     * @param uriInfo
-     *            current uriInfo
-     * @param request
-     *            current request
-     */
-    public MonitoringResource(UriInfo uriInfo, Request request, EventRepository evtRepo) {
-        super(uriInfo, request, evtRepo);
-    }
-
     /**
      * Provide core information on store and available sub resources.
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getStatus() {
-        String jsonResponse = null;
-        if (getEvtRepository() != null) {
-            jsonResponse = getEvtRepository().toString();
+    @ApiOperation(value= "Display <b>Monitoring</b> information for <b><u>all</u></b> features",
+                  notes= "The <b>EventRepository</b> handle to store audit events is not required", 
+                  response=EventRepositoryApiBean.class)
+    @ApiResponses({ 
+        @ApiResponse(code = 200, message= "Status of event repository bean", response=EventRepositoryApiBean.class),
+        @ApiResponse(code = 404, message= "No event repository defined",     response=String.class)
+    })
+    public Response getMonitoringStatus(
+            @ApiParam(required=false, name="start", value="Start of window <br>(default is today 00:00)")
+            @QueryParam(PARAM_START) Long start,
+            @ApiParam(required=false, name="end", value="End  of window <br>(default is tomorrow 00:00)")
+            @QueryParam(PARAM_END) Long end) {
+        if (null == getRepo()) {
+            return Response.status(Status.NOT_FOUND).entity("No monitoring has been defined").build();
         }
-        return Response.ok(jsonResponse).build();
+        return Response.ok(new EventRepositoryApiBean(getRepo(), start, end)).build();
     }
     
     /**
-     * Access {@link MonitorPieResource} from path pattern
-     * 
-     * @return resource for feature
+     * Provide core information on store and available sub resources.
      */
-    @Path(RESOURCE_PIE)
-    public MonitorPieResource getMonitorPieResources() {
-        return new MonitorPieResource(uriInfo, request, getEvtRepository());
+    @GET
+    @Path("/{uid}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value= "Display <b>Monitoring</b> for a <b><u>single</u></b> feature",
+                  notes= "Each feature will display a pieChart and a barChart for hits",
+                  response=FeatureMonitoringApiBean.class)
+    @ApiResponses({
+        @ApiResponse(code = 200, message= "Status of current ff4j monitoring bean", response=FeatureMonitoringApiBean.class), 
+        @ApiResponse(code = 404, message= "Feature not found", response=String.class) })
+    public Response getFeatureMonitoring(
+            @ApiParam(required=true, name="uid", value="Unique identifier of feature")
+            @PathParam("uid") String uid, 
+            @ApiParam(required=false, name="start", value="Start of window <br>(default is today 00:00)")
+            @QueryParam(PARAM_START) Long start,
+            @ApiParam(required=false, name="end", value="End  of window <br>(default is tomorrow 00:00)")
+            @QueryParam(PARAM_END) Long end) {
+        if (!ff4j.getStore().exist(uid)) {
+            String errMsg = new FeatureNotFoundException(uid).getMessage();
+            return Response.status(Response.Status.NOT_FOUND).entity(errMsg).build();
+        }
+        // Today
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        if (start == null) {
+            start = c.getTimeInMillis();
+        }
+        // Tomorrow 00:00
+        Calendar c2 = Calendar.getInstance();
+        c2.setTime(new Date(System.currentTimeMillis() + 1000 * 3600 * 24));
+        c2.set(Calendar.HOUR_OF_DAY, 0);
+        c2.set(Calendar.MINUTE, 0);
+        c2.set(Calendar.SECOND, 0);
+        if (end == null) {
+            end = c2.getTimeInMillis();
+        }
+        // Build response
+        FeatureMonitoringApiBean fmab = new FeatureMonitoringApiBean(uid);
+        fmab.setEventsPie(new PieChartApiBean(getRepo().getFeatureHitsPie(uid, start, end)));
+        fmab.setBarChart(new BarChartApiBean(getRepo().getHitsBarChart(Util.set(uid), start, end, 24)));
+        int hitcount = 0;
+        for (PieSectorApiBean sec : fmab.getEventsPie().getSectors()) {
+            hitcount+= sec.getValue();
+        }
+        fmab.setHitCount(hitcount);
+        return Response.ok().entity(fmab).build();
     }
-    
-    /**
-     * Access {@link MonitorCurveResource} from path pattern
-     *
-     * @return resource for feature
-     */
-    @Path(RESOURCE_CURVE)
-    public MonitorCurveResource getCurveResources() {
-        return new MonitorCurveResource(uriInfo, request, getEvtRepository());
-    }
-    
-   /** Access {@link MonitorFeaturesResource} from path pattern.
-    *
-    * @return resource for feature
-    */
-    @Path(RESOURCE_FEATURES)
-    public MonitorFeaturesResource getFeaturesResources() {
-        return new MonitorFeaturesResource(uriInfo, request, getEvtRepository());
-    }
+
     
 }

@@ -27,7 +27,7 @@ package org.ff4j.audit.graph;
  * 
  * @param <T>
  */
-public class Point {
+public class SparklinePoint {
 
     /** abscissa. */
     private double x;
@@ -43,7 +43,7 @@ public class Point {
      * @param y
      *            value
      */
-    public Point(double x, double y) {
+    public SparklinePoint(double x, double y) {
         this.x = x;
         this.y = y;
     }

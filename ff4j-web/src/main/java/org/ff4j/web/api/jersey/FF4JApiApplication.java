@@ -23,6 +23,7 @@ package org.ff4j.web.api.jersey;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Context;
 
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.ff4j.FF4j;
 import org.ff4j.web.api.FF4jWebConstants;
 import org.ff4j.web.api.resources.FF4jResource;
@@ -32,7 +33,17 @@ import org.slf4j.LoggerFactory;
 import com.sun.jersey.api.container.filter.LoggingFilter;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.api.core.ResourceConfig;
+import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.spi.inject.SingletonTypeInjectableProvider;
+import com.wordnik.swagger.config.ConfigFactory;
+import com.wordnik.swagger.config.ScannerFactory;
+import com.wordnik.swagger.config.SwaggerConfig;
+import com.wordnik.swagger.jaxrs.config.DefaultJaxrsScanner;
+import com.wordnik.swagger.jaxrs.listing.ApiDeclarationProvider;
+import com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON;
+import com.wordnik.swagger.jaxrs.listing.ResourceListingProvider;
+import com.wordnik.swagger.jaxrs.reader.DefaultJaxrsApiReader;
+import com.wordnik.swagger.reader.ClassReaders;
 
 /**
  * 
@@ -69,7 +80,6 @@ public abstract class FF4JApiApplication extends PackagesResourceConfig implemen
      */
     public FF4JApiApplication() {
         super(FF4jResource.class.getPackage().getName());
-        
         log.info("  __  __ _  _   _ ");
         log.info(" / _|/ _| || | (_)");
         log.info("| |_| |_| || |_| |");
@@ -84,6 +94,13 @@ public abstract class FF4JApiApplication extends PackagesResourceConfig implemen
         
         // Register ff4J bean to be injected into resources.
         getSingletons().add(new FF4jInjectableProvider(conf.getFF4j()));
+        
+        // Pojo Mapping to 'ON'
+        getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
+        
+        // Mapping Jackson Custom
+        getSingletons().add(new JacksonJsonProvider());
+        getSingletons().add(new FF4jJacksonMapper());
         
         // Authorization, JSR250
         if (conf.isEnableAuthorization()) {
@@ -105,6 +122,21 @@ public abstract class FF4JApiApplication extends PackagesResourceConfig implemen
         } else {
             // No security
             log.info("ff4j webApi security has been set up with no security");
+        }
+        
+        // Enable Documentation if required
+        if (conf.isEnableDocumentation()) {
+           getSingletons().add(new ApiListingResourceJSON());
+           getSingletons().add(new ApiDeclarationProvider());
+           getSingletons().add(new ResourceListingProvider());
+           ScannerFactory.setScanner(new DefaultJaxrsScanner());
+           ClassReaders.setReader(new DefaultJaxrsApiReader());
+           // Setup Swagger
+           SwaggerConfig config = ConfigFactory.config();
+           config.setApiVersion(getClass().getPackage().getImplementationVersion());
+           config.setBasePath(conf.getContextPath());
+           config.setApiPath("/api");
+           // <---
         }
     }
 

@@ -172,7 +172,9 @@ public class AssertFf4j {
      */
     public AssertFf4j assertThatFeatureHasNotRole(String featureName, String roleName) {
         assertThatFeatureExist(featureName);
-        Assert.assertFalse(ff4j.getFeature(featureName).getPermissions().contains(roleName));
+        if (null != ff4j.getFeature(featureName).getPermissions()) {
+            Assert.assertFalse("Feature must no contain role " + roleName, ff4j.getFeature(featureName).getPermissions().contains(roleName));
+        }
         return this;
     }
 
@@ -188,7 +190,9 @@ public class AssertFf4j {
     public AssertFf4j assertThatFeatureIsInGroup(String featureName, String groupName) {
         assertThatFeatureExist(featureName);
         String group = ff4j.getFeature(featureName).getGroup();
-        Assert.assertTrue(group != null && groupName.equals(group));
+        Assert.assertTrue("'" + featureName + "' must be in group '" + 
+                groupName + "' but is in <" + group + ">", 
+                group != null && groupName.equals(group));
         return this;
     }
 
@@ -230,7 +234,7 @@ public class AssertFf4j {
      */
     public AssertFf4j assertThatFeatureIsDisabled(String featureName) {
         assertThatFeatureExist(featureName);
-        Assert.assertFalse(ff4j.getStore().read(featureName).isEnable());
+        Assert.assertFalse("'" + featureName + "' must be disabled", ff4j.getStore().read(featureName).isEnable());
         return this;
     }
 

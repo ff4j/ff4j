@@ -20,11 +20,12 @@ package org.ff4j.web.resources.it;
  * #L%
  */
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
-import org.junit.Assert;
-
 import org.ff4j.core.Feature;
+import org.ff4j.web.api.resources.domain.FeatureApiBean;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.ClientResponse;
@@ -41,7 +42,7 @@ public class FeatureResource_putUpdateGroup1_TestIT extends AbstractWebResourceT
      * TDD, update by adding in the authorization
      */
     @Test
-    public void testPut_upsertUpdateAddGroup() {
+    public void testPut_upsertUpdateAddGroup() throws Exception {
         // Given
         assertFF4J.assertThatFeatureExist(F1);
         assertFF4J.assertThatFeatureNotInGroup(F1, "g2");
@@ -49,7 +50,10 @@ public class FeatureResource_putUpdateGroup1_TestIT extends AbstractWebResourceT
         Feature f1 = ff4j.getFeature(F1);
         f1.setGroup("g2");
         WebResource webResFeat = resourceFeatures().path(F1);
-        ClientResponse res = webResFeat.put(ClientResponse.class, f1.toString().getBytes());
+        ClientResponse res = webResFeat.//
+                type(MediaType.APPLICATION_JSON).//
+                put(ClientResponse.class,  toJson(new FeatureApiBean(f1)));
+        
         // Then HTTPResponse
         Assert.assertEquals(Status.NO_CONTENT.getStatusCode(), res.getStatus());
         // Then Object Entity : null

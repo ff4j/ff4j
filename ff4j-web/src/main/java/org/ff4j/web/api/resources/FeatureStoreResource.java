@@ -20,77 +20,50 @@ package org.ff4j.web.api.resources;
  * #L%
  */
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
-import org.ff4j.core.FeatureStore;
+import org.ff4j.cache.FeatureCacheManager;
+import org.ff4j.core.Feature;
 import org.ff4j.web.api.FF4jWebConstants;
+import org.ff4j.web.api.resources.domain.CacheApiBean;
+import org.ff4j.web.api.resources.domain.EventRepositoryApiBean;
+import org.ff4j.web.api.resources.domain.FeatureApiBean;
+import org.ff4j.web.api.resources.domain.FeatureStoreApiBean;
+import org.ff4j.web.api.resources.domain.GroupDescApiBean;
+
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 
 /**
  * WebResource representing the store.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
+@Path("/ff4j/store")
+@Produces(MediaType.APPLICATION_JSON)
 @RolesAllowed({FF4jWebConstants.ROLE_READ})
-public class FeatureStoreResource implements FF4jWebConstants {
-
-    @Context
-    private UriInfo uriInfo;
-
-    @Context
-    private Request request;
-
-    /** Access to Features through store. */
-    private FeatureStore store = null;
-
+@Api(value = "/ff4j/store", description = "Administrate Features, Groups and Cache")
+public class FeatureStoreResource extends AbstractResource {
+    
     /**
-     * Defaut constructor.
+     * Default Constructor.
      */
-    public FeatureStoreResource() {}
-
-    /**
-     * Constructor by Parent resource
-     * 
-     * @param uriInfo
-     *            current uriInfo
-     * @param request
-     *            current request
-     * @param store
-     *            current store
-     */
-    public FeatureStoreResource(UriInfo uriInfo, Request request, FeatureStore store) {
-        this.uriInfo = uriInfo;
-        this.request = request;
-        this.store = store;
+    public FeatureStoreResource() {
     }
-
-    /**
-     * Access features part of the API.
-     *
-     * @return features resource
-     */
-    @Path(RESOURCE_FEATURES)
-    public FeaturesResource getFeaturesResource() {
-        return new FeaturesResource(uriInfo, request, store);
-    }
-
-    /**
-     * Access groups part of the API.
-     * 
-     * @return groups resource
-     */
-    @Path(RESOURCE_GROUPS)
-    public GroupsResource getGroupsResource() {
-        return new GroupsResource(uriInfo, request, store);
-    }
-
+    
     /**
      * Allows to retrieve feature by its id.
      * 
@@ -99,28 +72,94 @@ public class FeatureStoreResource implements FF4jWebConstants {
      * @return feature is exist
      */
     @GET
+    @ApiOperation(
+            value= "Display information regarding to <b>Features</b>",
+            notes= "other sub resources to be displayed",
+            response=FeatureStoreApiBean.class)
+    @ApiResponses(@ApiResponse(code = 200, message= "status of current ff4j bean"))
     @Produces(MediaType.APPLICATION_JSON)
-    public Response describe() {
-        return Response.ok(store.toString()).build();
+    public FeatureStoreApiBean get() {
+        return new FeatureStoreApiBean(ff4j.getStore());
+    }
+    
+    @GET
+    @Path("/" + RESOURCE_FEATURES)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value= "Display information regarding <b>Features</b>", response=EventRepositoryApiBean.class)
+    @ApiResponses(@ApiResponse(code = 200, message= "get all features"))
+    public List < FeatureApiBean> readFeatures() {
+        Feature[] storeContent = getStore().readAll().values().toArray(new Feature[0]);
+        List < FeatureApiBean > apiBean = new ArrayList<FeatureApiBean>();
+        for (Feature feature : storeContent) {
+            apiBean.add(new FeatureApiBean(feature));
+        }
+        return apiBean;
     }
 
     /**
-     * Getter accessor for attribute 'ff4j'.
+     * Access groups part of the API.
      * 
-     * @return current value of 'ff4j'
+     * @return groups resource
      */
-    public FeatureStore getStore() {
-        return store;
+    @GET
+    @Path("/" + RESOURCE_GROUPS)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value= "Display information regarding <b>Groups</b>", response=GroupDescApiBean.class)
+    @ApiResponses({@ApiResponse(code = 200, message="Groups resource", response=GroupDescApiBean.class)})
+    public List < GroupDescApiBean > readGroups() {
+        Map< String, Feature > features = getStore().readAll();
+        Map< String , GroupDescApiBean > groups = new HashMap<String, GroupDescApiBean>();
+        if (features != null && !features.isEmpty()) {
+            // Build groups from features
+            for (String featureName : features.keySet()) {
+                String groupName = features.get(featureName).getGroup();
+                // Add current group to list
+                if (groupName != null && !groupName.isEmpty()) {
+                    if (!groups.containsKey(groupName)) {
+                        groups.put(groupName, new GroupDescApiBean(groupName, new ArrayList<String>()));
+                    }
+                    groups.get(groupName).getFeatures().add(featureName);
+                }
+            }
+        }
+        return new ArrayList<GroupDescApiBean>(groups.values());
     }
-
+    
     /**
-     * Setter accessor for attribute 'store'.
+     * Allows to retrieve feature by its id.
      * 
-     * @param store
-     *            new value for 'store '
+     * @param featId
+     *            target feature identifier
+     * @return feature is exist
      */
-    public void setStore(FeatureStore store) {
-        this.store = store;
+    @GET
+    @Path("/" + RESOURCE_CACHE)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value= "Display information related to <b>Cache</b>")
+    @ApiResponses({ @ApiResponse(code = 200, message= "status of current ff4j monitoring bean", response=CacheApiBean.class),
+                    @ApiResponse(code = 404, message= "no cache content provided") })
+    public Response getStatus() {
+        if (!getStore().isCached()) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Current Store is not cached").build();
+        }
+        return Response.ok(new CacheApiBean(getStore())).build();
+    }
+    
+    /**
+     * POST Operation to clean cache.
+     */
+    @POST
+    @Path("/" + RESOURCE_CACHE)
+    @Produces(MediaType.TEXT_PLAIN)
+    @ApiOperation(value= "Clear Cache", response=Response.class)
+    @ApiResponses({ @ApiResponse(code = 200, message= "cache is cleard"),
+                    @ApiResponse(code = 404, message= "no cache content provided") })
+    public Response clear() {
+        if (!getStore().isCached()) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Current Store is not cached").build();
+        }
+        ((FeatureCacheManager) getStore()).clear();
+        return Response.ok("Cache has been cleared").build();
     }
 
 }

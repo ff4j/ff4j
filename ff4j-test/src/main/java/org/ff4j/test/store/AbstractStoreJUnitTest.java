@@ -612,6 +612,8 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
     @Test
     public void testEnableGroup() {
         // Given
+        testedStore.disable(F2);
+        testedStore.addToGroup(F2, G0);
         assertFf4j.assertThatFeatureIsDisabled(F2);
         assertFf4j.assertThatFeatureIsInGroup(F2, G0);
         // When
@@ -716,6 +718,8 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
         assertFf4j.assertThatGroupExist(G1);
         assertFf4j.assertThatFeatureExist(F3);
         assertFf4j.assertThatFeatureExist(F4);
+        testedStore.addToGroup(F3, G1);
+        testedStore.addToGroup(F4, G1);
         assertFf4j.assertThatFeatureIsInGroup(F3, G1);
         assertFf4j.assertThatFeatureIsInGroup(F4, G1);
         // When
