@@ -69,8 +69,8 @@
 		<!-- Compiling -->
 		<github.login />
 		<encoding>UTF-8</encoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
 
 		<!-- License -->
 		<license.licenseName>apache_v2</license.licenseName>
