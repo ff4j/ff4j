@@ -94,7 +94,7 @@ public class FeatureStoreHttpTest extends AbstractStoreJUnitTest {
         // When
         testedStore.update(new Feature(F1, false, null));
         // Then
-        Assert.assertNull(testedStore.read(F1).getPermissions());
+        Assert.assertTrue(testedStore.read(F1).getPermissions().isEmpty());
     }
 
     /**

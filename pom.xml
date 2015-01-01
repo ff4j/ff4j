@@ -69,8 +69,8 @@
 		<!-- Compiling -->
 		<github.login />
 		<encoding>UTF-8</encoding>
-		<maven.compiler.source>1.7</maven.compiler.source>
-		<maven.compiler.target>1.7</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 
 		<!-- License -->
 		<license.licenseName>apache_v2</license.licenseName>
@@ -80,14 +80,11 @@
 		<version.cglib>3.1</version.cglib>
 		<version.mockito>1.9.5</version.mockito>
 		<version.aopalliance>1.0</version.aopalliance>
-
 		<version.slf4j>1.7.7</version.slf4j>
 		<version.logback>1.1.2</version.logback>
 		<version.junit>4.11</version.junit>
 		<version.hdldb>2.3.2</version.hdldb>
 		<version.powermock>1.5.5</version.powermock>
-		<version.fongo>1.5.1</version.fongo>
-		<version.mongo.javadriver>2.12.2</version.mongo.javadriver>
 		<version.spring>4.0.5.RELEASE</version.spring>
 		<version.spring.security>3.2.4.RELEASE</version.spring.security>
 		<version.commons-lang>2.6</version.commons-lang>
@@ -100,11 +97,19 @@
 		<version.jstl>1.1.2</version.jstl>
 		<version.taglib>1.1.2</version.taglib>
 		<version.jsr311>1.1.1</version.jsr311>
-		<version.ehcache>2.6.6</version.ehcache>
 		<version.jacoco>0.6.3.201306030806</version.jacoco>
-		<version.jedis>2.5.1</version.jedis>
 		<version.jersey>1.18.1</version.jersey>
 		<version.httpclient>4.3.4</version.httpclient>
+		
+		<!-- ehcache -->
+		<version.ehcache>2.6.6</version.ehcache>
+		<!-- mongo -->
+		<version.mongo.javadriver>2.12.2</version.mongo.javadriver>
+		<version.fongo>1.5.1</version.fongo>
+		<!-- redis -->
+		<version.jedis>2.5.1</version.jedis>
+		<!-- neo -->
+		<version.neo4j>2.1.6</version.neo4j>
 
 		<!-- VERSIONS PLUGINS -->
 		<version.maven.plugin.failsafe>2.17</version.maven.plugin.failsafe>
@@ -125,11 +130,12 @@
 
 		<module>ff4j-security-spring</module>
 
-		<module>ff4j-store-ehcache</module>
-		<module>ff4j-store-redis</module>
 		<module>ff4j-store-springjdbc</module>
+		<module>ff4j-store-ehcache</module>
 		<module>ff4j-store-mongodb</module>
-
+		<module>ff4j-store-redis</module>
+		<module>ff4j-store-neo4j</module>
+		
 		<module>ff4j-utils-json</module>
 	</modules>
 
