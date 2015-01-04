@@ -102,6 +102,7 @@ public class HelloWorld implements FF4jNeo4jConstants {
             result = resultIterator.next();
             tx.success();
         }
+        System.out.println(result);
     }
     
     @Test

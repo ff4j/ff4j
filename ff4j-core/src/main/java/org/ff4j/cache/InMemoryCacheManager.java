@@ -21,6 +21,7 @@ package org.ff4j.cache;
  */
 
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 
 import org.ff4j.core.Feature;
@@ -97,6 +98,18 @@ public class InMemoryCacheManager implements FeatureCacheManager {
         // not in cache
         return null;
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public String getCacheProviderName() {
+        return "In-Memory";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> listCachedFeatureNames() {
+        return cache.keySet();
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -123,10 +136,6 @@ public class InMemoryCacheManager implements FeatureCacheManager {
         this.ttl = ttl;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public String getCacheProviderName() {
-        return "In-Memory";
-    }
+   
 
 }

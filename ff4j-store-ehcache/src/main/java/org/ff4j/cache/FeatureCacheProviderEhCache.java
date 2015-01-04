@@ -11,6 +11,9 @@ package org.ff4j.cache;
  * governing permissions and limitations under the License. #L%
  */
 
+import java.util.HashSet;
+import java.util.Set;
+
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -83,6 +86,13 @@ public class FeatureCacheProviderEhCache implements FeatureCacheManager {
     public Object getNativeCache() {
         return getCache();
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    @SuppressWarnings("unchecked")
+    public Set<String> listCachedFeatureNames() {
+        return new HashSet<String>(getCache().getKeys());
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -112,6 +122,6 @@ public class FeatureCacheProviderEhCache implements FeatureCacheManager {
         }
         cache = cacheManager.getCache(DEFAULT_CACHENAME);
         LOG.debug("CacheManager initialized as '{}'", cache.getName());
-    }
+    }   
 
 }

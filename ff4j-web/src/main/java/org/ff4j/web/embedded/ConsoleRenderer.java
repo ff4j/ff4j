@@ -117,8 +117,10 @@ public final class ConsoleRenderer implements ConsoleConstants {
             sb.append("</td><td>");
             FlippingStrategy fs = currentFeature.getFlippingStrategy();
             if (null != fs) {
-                sb.append(fs.getClass().getCanonicalName());
-                sb.append("<br/>&nbsp;" + fs.getInitParams());
+                // Escape $ caracter within className
+                sb.append(fs.getClass().getCanonicalName().replaceAll("\\$", "_"));
+                String initParams = "<br/>&nbsp;" + fs.getInitParams();
+                sb.append(initParams.replaceAll("\\$", "_"));
             } else {
                 sb.append("--");
             }

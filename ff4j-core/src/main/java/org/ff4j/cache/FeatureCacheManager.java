@@ -20,7 +20,11 @@ package org.ff4j.cache;
  * #L%
  */
 
+import java.util.Set;
+
 import org.ff4j.core.Feature;
+import org.ff4j.core.FeatureStore;
+import org.ff4j.exception.FeatureNotFoundException;
 
 /**
  * Cache Layer on top of {@link FeatureStore} to enhance performances.
@@ -59,6 +63,14 @@ public interface FeatureCacheManager {
      * @return target feature if exist (could raise {@link FeatureNotFoundException} as FeatureStore).
      */
     Feature get(String featureId);
+    
+    /**
+     * List feature names in cache.
+     *
+     * @return
+     *      feature names in cache
+     */
+    Set < String > listCachedFeatureNames();
 
     /**
      * Access to embedded implementation of cache.

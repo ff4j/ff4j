@@ -20,7 +20,11 @@ package org.ff4j.web.api.resources.domain;
  * #L%
  */
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.ff4j.cache.FeatureStoreCacheProxy;
 import org.ff4j.core.FeatureStore;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -46,6 +50,10 @@ public class CacheApiBean {
     @JsonProperty("cacheStore")
     @ApiModelProperty( value = "if a cachestore is defined", required = false )
     private String cacheStore = null;
+    
+    @JsonProperty("featureNames")
+    @ApiModelProperty( value = "list of features within cache", required = false )
+    private Set < String > featureNames = new HashSet<String>();
 
     /**
      * Constructor from its feature store.
@@ -55,8 +63,9 @@ public class CacheApiBean {
      */
     public CacheApiBean(FeatureStore featureStore) {
         if (featureStore.isCached()) {
-            cacheStore = featureStore.getCachedTargetStore();
+            cacheStore    = featureStore.getCachedTargetStore();
             cacheProvider = featureStore.getCacheProvider();
+            featureNames  = ((FeatureStoreCacheProxy) featureStore).getCacheManager().listCachedFeatureNames();
         }
     }
     
@@ -96,6 +105,25 @@ public class CacheApiBean {
      */
     public void setCacheStore(String cacheStore) {
         this.cacheStore = cacheStore;
+    }
+
+    /**
+     * Getter accessor for attribute 'featureNames'.
+     *
+     * @return
+     *       current value of 'featureNames'
+     */
+    public Set<String> getFeatureNames() {
+        return featureNames;
+    }
+
+    /**
+     * Setter accessor for attribute 'featureNames'.
+     * @param featureNames
+     * 		new value for 'featureNames '
+     */
+    public void setFeatureNames(Set<String> featureNames) {
+        this.featureNames = featureNames;
     }
 
 }

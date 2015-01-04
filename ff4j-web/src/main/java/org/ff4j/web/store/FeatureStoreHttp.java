@@ -32,6 +32,7 @@ import java.util.Set;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureAccessException;
@@ -39,6 +40,7 @@ import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.web.api.FF4jWebConstants;
+import org.ff4j.web.api.jersey.FF4jJacksonMapper;
 import org.ff4j.web.api.resources.domain.FeatureApiBean;
 import org.ff4j.web.api.resources.domain.GroupDescApiBean;
 
@@ -123,6 +125,8 @@ public class FeatureStoreHttp implements FeatureStore, FF4jWebConstants {
         if (client == null) {
             ClientConfig config = new DefaultClientConfig();
             config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
+            config.getSingletons().add(new JacksonJsonProvider());
+            config.getSingletons().add(new FF4jJacksonMapper());
             client = Client.create(config);
         }
         if (url == null) {

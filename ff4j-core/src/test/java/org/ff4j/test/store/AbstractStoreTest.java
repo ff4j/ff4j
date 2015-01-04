@@ -135,8 +135,7 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         assertFf4j.assertThatFeatureIsInGroup(F4, G1);
     }
 
-
-        /**
+    /**
      * TDD.
      */
     @Test(expected = IllegalArgumentException.class)

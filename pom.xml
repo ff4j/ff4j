@@ -92,9 +92,9 @@
 		<version.commons-io>2.4</version.commons-io>
 		<version.commons-fileupload>1.3.1</version.commons-fileupload>
 		<version.servlet-api>2.5</version.servlet-api>
-		<version.jsp-api>2.1</version.jsp-api>
+		<version.jsp-api>2.2</version.jsp-api>
 		<version.jackson>1.9.11</version.jackson>
-		<version.jstl>1.1.2</version.jstl>
+		<version.jstl>1.2</version.jstl>
 		<version.taglib>1.1.2</version.taglib>
 		<version.jsr311>1.1.1</version.jsr311>
 		<version.jacoco>0.6.3.201306030806</version.jacoco>
@@ -134,7 +134,7 @@
 		<module>ff4j-store-ehcache</module>
 		<module>ff4j-store-mongodb</module>
 		<module>ff4j-store-redis</module>
-		<module>ff4j-store-neo4j</module>
+		<!-- <module>ff4j-store-neo4j</module> -->
 		
 		<module>ff4j-utils-json</module>
 	</modules>

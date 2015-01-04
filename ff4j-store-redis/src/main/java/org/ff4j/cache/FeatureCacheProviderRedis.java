@@ -20,6 +20,8 @@ package org.ff4j.cache;
  * #L%
  */
 
+import java.util.Set;
+
 import org.ff4j.core.Feature;
 import org.ff4j.redis.AbstractRedisProvider;
 import org.ff4j.utils.json.FeatureJsonParser;
@@ -89,6 +91,12 @@ public class FeatureCacheProviderRedis extends AbstractRedisProvider implements 
         }
         return null;
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> listCachedFeatureNames() {
+        return jedis.keys(PREFIX_KEY + "*");
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -128,5 +136,7 @@ public class FeatureCacheProviderRedis extends AbstractRedisProvider implements 
     public int getTimeToLive() {
         return timeToLive;
     }
+
+    
 
 }
