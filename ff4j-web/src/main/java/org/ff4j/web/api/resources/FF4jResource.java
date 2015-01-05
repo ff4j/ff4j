@@ -27,6 +27,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -68,7 +70,7 @@ public class FF4jResource extends AbstractResource {
                 @ApiResponse(code = 200, message= "Success, return status of ff4j instance", response=FF4jStatusApiBean.class))
     @Produces(MediaType.APPLICATION_JSON)
     public FF4jStatusApiBean getStatus() {
-        return new FF4jStatusApiBean(ff4j);
+       return new FF4jStatusApiBean(ff4j);
     }
     
     /**
@@ -107,7 +109,10 @@ public class FF4jResource extends AbstractResource {
     @ApiResponses({
         @ApiResponse(code = 200, message= "if feature is flipped"),
         @ApiResponse(code = 404, message= "feature has not been found")})
-    public Response check(@PathParam("uid") String uid) {
+    public Response check(@Context HttpHeaders headers, @PathParam("uid") String uid) {
+        // HoldSecurity Context
+        holdSecurityContext();
+        
         // Expected Custom FlipStrategy (JSON)
         if (!ff4j.getStore().exist(uid)) {
             String errMsg = new FeatureNotFoundException(uid).getMessage();
@@ -130,8 +135,10 @@ public class FF4jResource extends AbstractResource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @ApiOperation(value= "<b>Advanced check</b> feature toggle (parameterized)", response=Boolean.class)
     @ApiResponses(@ApiResponse(code = 200, message= "if feature is flipped"))
-    public Response checkPOST(@PathParam("uid") String uid, MultivaluedMap<String, String> formParams) {
-        // Expected Custom FlipStrategy (JSON)
+    public Response checkPOST(@Context HttpHeaders headers, @PathParam("uid") String uid, MultivaluedMap<String, String> formParams) {
+        // HoldSecurity Context
+        holdSecurityContext();
+        
         if (!ff4j.getStore().exist(uid)) {
             String errMsg = new FeatureNotFoundException(uid).getMessage();
             return Response.status(Response.Status.NOT_FOUND).entity(errMsg).build();

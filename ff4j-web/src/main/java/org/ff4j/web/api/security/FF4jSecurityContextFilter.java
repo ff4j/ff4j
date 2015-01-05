@@ -1,4 +1,4 @@
-package org.ff4j.web.api.jersey;
+package org.ff4j.web.api.security;
 
 /*
  * #%L
@@ -29,6 +29,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.SecurityContext;
 
 import org.ff4j.web.api.FF4jWebConstants;
+import org.ff4j.web.api.conf.FF4jApiConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,9 +101,15 @@ public class FF4jSecurityContextFilter implements FF4jWebConstants, ContainerReq
                 handleUnAuthorized("Invalid BASIC Token, cannot parse");
             }
 
+            // Validation login/password
+            String expectedPassword = securityConfig.getUsers().get(lap[0]);
+            if (expectedPassword == null || !(lap[1].equals(expectedPassword))) {
+                handleUnAuthorized("<p>Invalid username or password.</p>");
+            }
+            
             // Positionning Roles
-            Set<String> perms = securityConfig.getPermissions().get(auth);
-            SecurityContext sc = new FF4jSecurityContext(auth, "BASIC", perms);
+            Set<String> perms = securityConfig.getPermissions().get(lap[0]);
+            SecurityContext sc = new FF4jSecurityContext(lap[0], "BASIC", perms);
             containerRequest.setSecurityContext(sc);
             log.info("Client successfully logged with a user/pasword pair ");
             return containerRequest;

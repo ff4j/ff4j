@@ -22,12 +22,16 @@ package org.ff4j.web.api.resources;
 
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
 import org.ff4j.FF4j;
 import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.web.api.FF4jWebConstants;
+import org.ff4j.web.api.security.FF4jSecurityContext;
+
+import com.sun.jersey.spi.container.ContainerRequest;
 
 /**
  * SuperClass for common injections.
@@ -48,11 +52,18 @@ public abstract class AbstractResource implements FF4jWebConstants {
     @Context
     protected Request request;
     
+    /** security context is included within resources to get permissions. */
+    @Context
+    protected SecurityContext securityContext;
+    
     /** Access to Features through store. */
     private FeatureStore store;
     
     /** Access to event repository. */
     private EventRepository repo;
+    
+    /** Put current security context as threadlocal to be reused by the AuthenticationProvider. */
+    public static final ThreadLocal< FF4jSecurityContext > securityContextHolder = new ThreadLocal<FF4jSecurityContext>();
     
     /**
      * Getter accessor for attribute 'repo'.
@@ -79,5 +90,19 @@ public abstract class AbstractResource implements FF4jWebConstants {
         return store;
     }
     
+    /**
+     * Return custom FF4J Security Context.
+     *
+     * @return
+     */
+    public void holdSecurityContext() {
+        if (securityContext != null) {
+            ContainerRequest cr = (ContainerRequest) securityContext;
+            if (cr.getSecurityContext() instanceof FF4jSecurityContext) {
+                FF4jSecurityContext ctx = (FF4jSecurityContext) cr.getSecurityContext();
+                securityContextHolder.set(ctx);
+            }
+        }
+    }
 
 }

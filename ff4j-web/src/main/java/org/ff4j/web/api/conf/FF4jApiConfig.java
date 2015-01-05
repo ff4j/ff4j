@@ -1,4 +1,4 @@
-package org.ff4j.web.api.jersey;
+package org.ff4j.web.api.conf;
 
 /*
  * #%L
@@ -30,7 +30,7 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 import org.ff4j.FF4j;
-import org.ff4j.web.api.FF4JWebProvider;
+import org.ff4j.web.api.FF4JProvider;
 import org.ff4j.web.api.FF4jWebConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FF4jApiConfig implements FF4JWebProvider, FF4jWebConstants {
+public class FF4jApiConfig implements FF4JProvider, FF4jWebConstants {
 
     /** logger for this class. */
     protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -120,6 +120,26 @@ public class FF4jApiConfig implements FF4JWebProvider, FF4jWebConstants {
         return this;
     }
     
+    public FF4jApiConfig enableAuthentication() {
+        this.enableAuthentication = true;
+        return this;
+    }
+    
+    public FF4jApiConfig disableAuthentication() {
+        this.enableAuthentication = false;
+        return this;
+    }
+    
+    public FF4jApiConfig disableAuthorization() {
+        this.enableAuthorization = false;
+        return this;
+    }
+    
+    public FF4jApiConfig enableAuthorization() {
+        this.enableAuthorization = true;
+        return this;
+    }
+    
     /**
      * Helper method to create a user.
      * 
@@ -132,7 +152,7 @@ public class FF4jApiConfig implements FF4JWebProvider, FF4jWebConstants {
      * @param write
      *            role write
      */
-    public void createUser(String userName, String password, boolean read, boolean write) {
+    public FF4jApiConfig createUser(String userName, String password, boolean read, boolean write, Set <String > usrPerm) {
         users.put(userName, password);
         Set<String> tmpPerm = new HashSet<String>();
         if (read) {
@@ -141,7 +161,11 @@ public class FF4jApiConfig implements FF4JWebProvider, FF4jWebConstants {
         if (write) {
             tmpPerm.add(ROLE_WRITE);
         }
+        if (usrPerm != null) {
+            tmpPerm.addAll(usrPerm);
+        }
         permissions.put(userName, tmpPerm);
+        return this;
     }
 
     /**
@@ -154,7 +178,7 @@ public class FF4jApiConfig implements FF4JWebProvider, FF4jWebConstants {
      * @param write
      *            role write
      */
-    public void createApiKey(String apiKey, boolean read, boolean write) {
+    public FF4jApiConfig createApiKey(String apiKey, boolean read, boolean write, Set <String > usrPerm) {
         apiKeys.add(apiKey);
         Set<String> tmpPerm = new HashSet<String>();
         if (read) {
@@ -163,7 +187,11 @@ public class FF4jApiConfig implements FF4JWebProvider, FF4jWebConstants {
         if (write) {
             tmpPerm.add(ROLE_WRITE);
         }
+        if (usrPerm != null) {
+            tmpPerm.addAll(usrPerm);
+        }
         permissions.put(apiKey, tmpPerm);
+        return this;
     }
 
     /** {@inheritDoc} */

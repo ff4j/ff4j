@@ -1,4 +1,4 @@
-package org.ff4j.web.api.jersey;
+package org.ff4j.web.api.security;
 
 /*
  * #%L
@@ -34,7 +34,7 @@ import javax.ws.rs.core.SecurityContext;
  */
 public class FF4jSecurityContext implements SecurityContext, Serializable {
 
-    /** serial. */
+    /** Serial. */
     private static final long serialVersionUID = 9041009506390024931L;
 
     /** Permissions for user. */
@@ -89,6 +89,35 @@ public class FF4jSecurityContext implements SecurityContext, Serializable {
     @Override
     public String getAuthenticationScheme() {
         return authScheme;
+    }
+
+    /**
+     * Getter accessor for attribute 'userRoles'.
+     *
+     * @return
+     *       current value of 'userRoles'
+     */
+    public Set<String> getUserRoles() {
+        return userRoles;
+    }
+
+    /**
+     * Setter accessor for attribute 'userRoles'.
+     * @param userRoles
+     * 		new value for 'userRoles '
+     */
+    public void setUserRoles(Set<String> userRoles) {
+        this.userRoles = userRoles;
+    }
+
+    /**
+     * Getter accessor for attribute 'userName'.
+     *
+     * @return
+     *       current value of 'userName'
+     */
+    public String getUserName() {
+        return userName;
     }
 
 }

@@ -75,6 +75,25 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
         Assert.assertNotNull(resEntity);
         Assert.assertFalse(Boolean.valueOf(resEntity));
     }
+    
+    /**
+     * TDD.
+     */
+    @Test
+    public void testPost_isNotFlippedGET() {
+        // Given
+        assertFF4J.assertThatFeatureExist(F4);
+        ff4j.disable(F4);
+        assertFF4J.assertThatFeatureNotFlipped(F4);
+        // When
+        ClientResponse resHttp = resourceff4j().path(OPERATION_CHECK).path(F4).//
+                get(ClientResponse.class);
+        String resEntity = resHttp.getEntity(String.class);
+        // Then
+        Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
+        Assert.assertNotNull(resEntity);
+        Assert.assertFalse(Boolean.valueOf(resEntity));
+    }
 
     /**
      * TDD.

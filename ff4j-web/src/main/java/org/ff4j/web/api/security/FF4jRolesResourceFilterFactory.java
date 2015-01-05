@@ -1,4 +1,4 @@
-package org.ff4j.web.api.jersey;
+package org.ff4j.web.api.security;
 
 /*
  * #%L
@@ -23,6 +23,8 @@ package org.ff4j.web.api.jersey;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.ff4j.web.api.conf.FF4jApiConfig;
+
 import com.sun.jersey.api.container.filter.RolesAllowedResourceFilterFactory;
 import com.sun.jersey.api.model.AbstractMethod;
 import com.sun.jersey.spi.container.ResourceFilter;
@@ -39,8 +41,8 @@ public class FF4jRolesResourceFilterFactory extends RolesAllowedResourceFilterFa
 
     /** {@inheritDoc} */
     @Override
-    public List<ResourceFilter> create(AbstractMethod am) {
-
+    public List<ResourceFilter> create(AbstractMethod am) {        
+        
         // Enable authorization through RolesAllowed and JSR250 annotation
         List<ResourceFilter> rolesFilters = super.create(am);
         if (null == rolesFilters) {
@@ -50,14 +52,9 @@ public class FF4jRolesResourceFilterFactory extends RolesAllowedResourceFilterFa
         // Convert into mutable List, so as to add more filters that we need
         // (RolesAllowedResourceFilterFactory generates immutable list of filters)
         List<ResourceFilter> filters = new ArrayList<ResourceFilter>(rolesFilters);
-
+        
         // As Authorization is enable, authenticate is mandator and came first
         filters.add(0, new FF4jSecurityContextFilter());
-
-        // Add logging is required
-        if (apiConfig.isEnableLogging()) {
-            filters.add(new FF4jTracingContextFilter());
-        }
 
         return filters;
     }

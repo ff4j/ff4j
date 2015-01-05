@@ -100,7 +100,7 @@ public interface FF4jWebConstants {
     String ROLE_READ = "READ";
 
     /** security role. */
-    String ROLE_WRITE = " WRITE";
+    String ROLE_WRITE = "WRITE";
     
     /** HTTP Parameter. */
     String PARAM_AUTHKEY = "apiKey";

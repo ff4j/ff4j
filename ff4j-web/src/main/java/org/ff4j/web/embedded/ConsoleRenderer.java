@@ -114,7 +114,7 @@ public final class ConsoleRenderer implements ConsoleConstants {
             }
             
             // Colonne Strategy
-            sb.append("</td><td>");
+            sb.append("</td><td style=\"word-break: break-all;\">");
             FlippingStrategy fs = currentFeature.getFlippingStrategy();
             if (null != fs) {
                 // Escape $ caracter within className

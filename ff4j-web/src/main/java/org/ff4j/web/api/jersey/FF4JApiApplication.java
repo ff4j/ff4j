@@ -26,7 +26,10 @@ import javax.ws.rs.core.Context;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.ff4j.FF4j;
 import org.ff4j.web.api.FF4jWebConstants;
+import org.ff4j.web.api.conf.FF4jApiConfig;
 import org.ff4j.web.api.resources.FF4jResource;
+import org.ff4j.web.api.security.FF4jRolesResourceFilterFactory;
+import org.ff4j.web.api.security.FF4jSecurityContextFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,6 +90,7 @@ public abstract class FF4JApiApplication extends PackagesResourceConfig implemen
         log.info("|_| |_|    |_|_/ |");
         log.info("             |__/   WEB API Initialization...");
         log.info(" ");
+        
         // Initialize through configuration
         FF4jApiConfig conf = getApiConfig();
         FF4jSecurityContextFilter.securityConfig = conf;
