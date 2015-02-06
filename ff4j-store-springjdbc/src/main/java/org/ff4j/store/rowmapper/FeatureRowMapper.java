@@ -44,6 +44,7 @@ public class FeatureRowMapper implements ParameterizedRowMapper<Feature>, JdbcFe
         Feature f = new Feature(featUid, rs.getInt(COL_FEAT_ENABLE) > 0);
         f.setDescription(rs.getString(COL_FEAT_DESCRIPTION));
         f.setGroup(rs.getString(COL_FEAT_GROUPNAME));
+        f.setRegionIdentifier(rs.getString(COL_FEAT_REGION_IDENTIFIER));
 
         // Build Flipping Strategy From DataBase
         String strategy = rs.getString(COL_FEAT_STRATEGY);

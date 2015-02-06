@@ -42,7 +42,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, FeatureStore {
 
-    /** Row Mapper for FlipPoint. */
+    private static final String FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY = "Feature identifier cannot be null nor empty";
+
+	private static final String FEATURE_CANNOT_BE_NULL_NOR_EMPTY = "Feature identifier (param#0) cannot be null nor empty";
+
+	/** Row Mapper for FlipPoint. */
     private static final FeatureRowMapper MAPPER = new FeatureRowMapper();
 
     /** SQL DataSource. */
@@ -56,7 +60,7 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
     @Override
     public void enable(String uid) {
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_CANNOT_BE_NULL_NOR_EMPTY);
         }
         if (!exist(uid)) {
             throw new FeatureNotFoundException(uid);
@@ -68,7 +72,7 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
     @Override
     public void disable(String uid) {
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_CANNOT_BE_NULL_NOR_EMPTY);
         }
         if (!exist(uid)) {
             throw new FeatureNotFoundException(uid);
@@ -80,7 +84,7 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
     @Override
     public boolean exist(String uid) {
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_CANNOT_BE_NULL_NOR_EMPTY);
         }
         int count = getJdbcTemplate().queryForObject(SQL_EXIST, Integer.class, uid);
         return 1 == count;
@@ -90,7 +94,7 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
     @Override
     public Feature read(String uid) {
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_CANNOT_BE_NULL_NOR_EMPTY);
         }
         List<Feature> dbFlips = getJdbcTemplate().query(SQLQUERY_GET_FEATURE_BY_ID, MAPPER, uid);
         if (dbFlips.isEmpty()) {
@@ -120,10 +124,10 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
             expressionColumn = ParameterUtils.fromMap(fp.getFlippingStrategy().getInitParams());
         }
         getJdbcTemplate().update(SQL_CREATE, fp.getUid(), fp.isEnable() ? 1 : 0, fp.getDescription(), strategyColumn,
-                expressionColumn, fp.getGroup());
+                expressionColumn, fp.getGroup(),fp.getRegionIdentifier());
         if (fp.getPermissions() != null) {
             for (String role : fp.getPermissions()) {
-                getJdbcTemplate().update(SQL_ADD_ROLE, fp.getUid(), role);
+                getJdbcTemplate().update(SQL_ADD_ROLE_BY_GROUP_REGION, fp.getUid(), role,fp.getGroup(),fp.getRegionIdentifier());
             }
         }
     }
@@ -133,7 +137,7 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
     @Transactional
     public void delete(String uid) {
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_CANNOT_BE_NULL_NOR_EMPTY);
         }
         if (!exist(uid)) {
             throw new FeatureNotFoundException(uid);
@@ -152,7 +156,7 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
     @Transactional
     public void grantRoleOnFeature(String uid, String roleName) {
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY);
         }
         if (roleName == null || roleName.isEmpty()) {
             throw new IllegalArgumentException("roleName cannot be null nor empty");
@@ -168,7 +172,7 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
     @Transactional
     public void removeRoleFromFeature(String uid, String roleName) {
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY);
         }
         if (roleName == null || roleName.isEmpty()) {
             throw new IllegalArgumentException("roleName cannot be null nor empty");
@@ -237,7 +241,7 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
     @Transactional
     public void addToGroup(String uid, String groupName) {
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY);
         }
         if (groupName == null || groupName.isEmpty()) {
             throw new IllegalArgumentException("Groupname cannot be null nor empty");
@@ -253,7 +257,7 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
     @Transactional
     public void removeFromGroup(String uid, String groupName) {
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY);
         }
         if (groupName == null || groupName.isEmpty()) {
             throw new IllegalArgumentException("Groupname cannot be null nor empty");
@@ -291,7 +295,7 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
             }
         }
         return mapFP;
-    }
+    } 
 
     /** {@inheritDoc} */
     @Override
@@ -308,7 +312,7 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
     @Transactional
     public void update(Feature fp) {
         if (fp == null) {
-            throw new IllegalArgumentException("Feature cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_CANNOT_BE_NULL_NOR_EMPTY);
         }
         Feature fpExist = read(fp.getUid());
 
@@ -350,6 +354,146 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
             }
         }
     }
+       
+    
+ // Logic to fetch feature based on group and region
+    
+    /**
+     * Enable features based by group name and region
+     * @param featId
+     * @param groupName
+     * @param region
+     */
+    public void enable(String featId,String groupName,String region) {
+        if (!exist(featId,groupName,region)) {
+            throw new FeatureNotFoundException(featId);
+        }
+        getJdbcTemplate().update(SQL_FEATURE_STATUS_ENABLE, featId,groupName,region);
+    }
+
+    
+    public void disable(String featId,String groupName,String region) {
+        if (!exist(featId,groupName,region)) {
+            throw new FeatureNotFoundException(featId);
+        }
+        getJdbcTemplate().update(SQL_FEATURE_STATUS_DISABLE, featId,groupName,region);
+    }
+
+    public boolean exist(String featId,String groupName,String region) {
+        return 1 == getJdbcTemplate().queryForInt(SQL_EXIST_FOR_GROUP_REGION, featId,groupName,region);
+    }
+
+    public Feature read(String featId,String groupName,String region) {
+        List<Feature> dbFlips = getJdbcTemplate().query(SQLQUERY_GET_FEATURE_BY_GROUP_REGION, MAPPER, featId,groupName,region);
+        if (dbFlips.isEmpty()) {
+            throw new FeatureNotFoundException(featId);
+        }
+        Feature fp = dbFlips.get(0);
+        List<String> auths = getJdbcTemplate().query(SQL_GET_ROLES_BY_GROUP_REGION, new SingleColumnRowMapper<String>(), featId,groupName,region);
+        fp.getPermissions().addAll(auths);
+        return dbFlips.get(0);
+    }
+
+    public void delete(String fpId,String groupName,String region) {
+        if (!exist(fpId,groupName,region)) {
+            throw new FeatureNotFoundException(fpId);
+        }
+        Feature fp = read(fpId,groupName,region);
+        if (fp.getPermissions() != null) {
+            for (String role : fp.getPermissions()) {
+                getJdbcTemplate().update(SQL_DELETE_ROLE_BY_GROUP_REGION, fp.getUid(), role,groupName,region);
+            }
+        }
+        getJdbcTemplate().update(SQL_DELETE_BY_GROUP_REGION, fp.getUid(),groupName,region);
+    }
+    
+    public List<String> readAllGroups(String region){
+    	
+		return getJdbcTemplate().query(SQL_GET_ALLGROUPS_BY_REGION, new SingleColumnRowMapper<String>(), region);
+
+    }
+    
+    public void grantRoleOnFeature(String fpId, String roleName,String groupName,String region) {
+        if (!exist(fpId,groupName,region)) {
+            throw new FeatureNotFoundException(fpId);
+        }
+        getJdbcTemplate().update(SQL_ADD_ROLE_BY_GROUP_REGION, fpId, roleName,groupName,region);
+    }
+
+    public void removeRoleFromFeature(String fpId, String roleName,String groupName,String region) {
+        if (!exist(fpId,groupName,region)) {
+            throw new FeatureNotFoundException(fpId);
+        }
+        getJdbcTemplate().update(SQL_DELETE_ROLE_BY_GROUP_REGION, fpId, roleName);
+    }
+
+    public Map<String, Feature> readAll(String groupName,String region) {
+        LinkedHashMap<String, Feature> mapFP = new LinkedHashMap<String, Feature>();
+        
+        List<Feature> lFp = null;
+        if(groupName ==null){
+        	
+        	lFp = getJdbcTemplate().query(SQLQUERY_ALLFEATURES_BY_REGION, MAPPER,region);
+        	
+        	 for (Feature flipPoint : lFp) {
+                 mapFP.put(generateAFeatureKey(flipPoint.getUid(), flipPoint.getGroup()), flipPoint);
+             }
+        	
+        }else{
+        	
+        	lFp = getJdbcTemplate().query(SQLQUERY_ALLFEATURES_BY_GROUP_REGION, MAPPER,groupName,region);
+        	 
+        	for (Feature flipPoint : lFp) {
+                 mapFP.put(flipPoint.getUid(), flipPoint);
+             }
+        }
+        
+       
+        return mapFP;
+    }
+
+    public void updateByGroupRegion(Feature fp) {
+        Feature fpExist = read(fp.getUid(),fp.getGroup(),fp.getRegionIdentifier());
+
+        // Update core Flip POINT
+        String fStrategy = null;
+        String fExpression = null;
+        if (fp.getFlippingStrategy() != null) {
+            fStrategy = fp.getFlippingStrategy().getClass().getCanonicalName();
+            fExpression = ParameterUtils.fromMap(fp.getFlippingStrategy().getInitParams());
+        }
+        String enable = "0";
+        if (fp.isEnable()) {
+            enable = "1";
+        }
+        getJdbcTemplate().update(SQL_UPDATE_BY_GROUP_REGION, enable, fp.getDescription(), fStrategy, fExpression, fp.getGroup(),fp.getRegionIdentifier(), fp.getUid(),fp.getGroup(),fp.getRegionIdentifier());
+
+        // To be deleted : not in second but in first
+        Set<String> toBeDeleted = new HashSet<String>();
+        toBeDeleted.addAll(fpExist.getPermissions());
+        toBeDeleted.removeAll(fp.getPermissions());
+        for (String roleToBeDelete : toBeDeleted) {
+            removeRoleFromFeature(fpExist.getUid(), roleToBeDelete);
+        }
+
+        // To be created : in second but not in first
+        Set<String> toBeAdded = new HashSet<String>();
+        toBeAdded.addAll(fp.getPermissions());
+        toBeAdded.removeAll(fpExist.getPermissions());
+        for (String addee : toBeAdded) {
+            grantRoleOnFeature(fpExist.getUid(), addee);
+        }
+
+        // enable/disable
+        if (fp.isEnable() != fpExist.isEnable()) {
+            if (fp.isEnable()) {
+                enable(fp.getUid(),fp.getGroup(),fp.getRegionIdentifier());
+            } else {
+                disable(fp.getUid(),fp.getGroup(),fp.getRegionIdentifier());
+            }
+        }
+    }
+
 
     /**
      * @param dataSource
@@ -365,14 +509,14 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
     public String toString() {
         StringBuilder sb = new StringBuilder("{");
         sb.append("\"type\":\"" + this.getClass().getCanonicalName() + "\"");
-        sb.append("\"datasource\":\"" + this.dataSource.getClass() + "\"");
-        Set<String> myFeatures = readAll().keySet();
+        if(this.dataSource != null){
+        	
+        	sb.append("\"datasource\":\"" + this.dataSource.getClass() + "\"");	
+        } else{
+        	
+        	sb.append("\"datasource\":\"" + this.dataSource + "\"");
+        }        Set<String> myFeatures = readAll().keySet();
         sb.append(",\"numberOfFeatures\":" + myFeatures.size());
-        sb.append(",\"cached\":" + this.isCached());
-        if (this.isCached()) {
-            sb.append(",\"cacheProvider\":\"" + this.getCacheProvider() + "\"");
-            sb.append(",\"cacheStore\":\"" + this.getCachedTargetStore() + "\"");
-        }
         sb.append(",\"features\":[");
         boolean first = true;
         for (String myFeature : myFeatures) {
@@ -412,6 +556,17 @@ public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, Featur
         }
         return jdbcTemplate;
     }
+
+    /**
+     * Generates a key by combining the passed feature name and group name strings.
+     * @param featureName feature name
+     * @param groupName group name
+     * @return
+     */
+    private String generateAFeatureKey(String featureName, String groupName) {
+		
+    	return featureName+groupName;
+	}
 
     // -------- Overrided in cache proxy --------------
 

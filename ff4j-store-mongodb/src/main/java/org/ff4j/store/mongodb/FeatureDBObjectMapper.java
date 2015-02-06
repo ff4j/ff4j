@@ -46,6 +46,7 @@ public final class FeatureDBObjectMapper implements FeatureStoreMongoConstants {
      * @return
      */
     public Feature mapFeature(DBObject dbObject) {
+    	
         String featUid = (String) dbObject.get(UUID);
         boolean status = (Boolean) dbObject.get(ENABLE);
 
@@ -54,6 +55,7 @@ public final class FeatureDBObjectMapper implements FeatureStoreMongoConstants {
         f.setGroup((String) dbObject.get(GROUPNAME));
         f.setPermissions(mapAuthorization(dbObject));
         f.setFlippingStrategy(mapStrategy(featUid, dbObject));
+        f.setRegionIdentifier((String)dbObject.get(REGION_IDENTIFIER));
         return f;
     }
 
@@ -71,10 +73,11 @@ public final class FeatureDBObjectMapper implements FeatureStoreMongoConstants {
             strategyColumn = feature.getFlippingStrategy().getClass().getCanonicalName();
             expressionColumn = ParameterUtils.fromMap(feature.getFlippingStrategy().getInitParams());
         }
-        return new FeatureDBObjectBuilder().addFeatUid(feature.getUid()).//
+        return new FeatureDBObjectBuilder().addDocumenId(feature).addFeatUid(feature.getUid()).//
                 addEnable(feature.isEnable()).//
                 addDescription(feature.getDescription()).//
                 addGroupName(feature.getGroup()).//
+                addRegionIdentifier(feature.getRegionIdentifier()).
                 addStrategy(strategyColumn).//
                 addExpression(expressionColumn).//
                 addRoles(feature.getPermissions()).build();
