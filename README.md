@@ -42,7 +42,7 @@ mvn archetype:create -Dpackaging=jar -Dversion=1.0 -DartifactId=ff4j-simple -Dgr
 <dependency>
   <groupId>org.ff4j</groupId>
   <artifactId>ff4j-core</artifactId>
-  <version>1.2.0</version>
+  <version>1.3</version>
 </dependency>
 ```
 
@@ -244,7 +244,7 @@ if (FF4j.check("feat")) {
 <dependency>
   <groupId>org.ff4j</groupId>
   <artifactId>ff4j-aop</artifactId>
-  <version>1.2.0</version>
+  <version>1.3</version>
 </dependency>
 ```
 
@@ -379,7 +379,7 @@ When working with `InMemoryFeatureStore`, features are loaded from XML files. Th
 <dependency>
   <groupId>org.ff4j</groupId>
   <artifactId>ff4j-jdbc</artifactId>
-  <version>1.2.0</version>
+  <version>1.3</version>
 </dependency>
 ```
 
