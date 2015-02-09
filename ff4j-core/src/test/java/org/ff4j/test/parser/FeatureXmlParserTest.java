@@ -28,9 +28,10 @@ import java.io.InputStream;
 import java.util.Map;
 
 import org.junit.Assert;
-
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureXmlParser;
+import org.ff4j.property.PropertyLogLevel;
+import org.ff4j.property.PropertyLogLevel.LogLevel;
 import org.junit.Test;
 
 /**
@@ -105,6 +106,30 @@ public class FeatureXmlParserTest {
         Assert.assertNotNull(features2);
         Assert.assertEquals(features.size(), features2.size());
     }
-
+    
+    @Test
+    public void testPropertiesParsing() throws IOException {
+        // Given
+        FeatureXmlParser parser = new FeatureXmlParser();
+        InputStream in = getClass().getClassLoader().getResourceAsStream("ff4j.xml");
+        // When
+        Map<String, Feature> features = parser.parseConfigurationFile(in);
+        // Then
+        Assert.assertNotNull(features);
+        Feature f = features.get("first");
+        Assert.assertNotNull(f);
+        Assert.assertNotNull(f.getUid());
+        Assert.assertNotNull(f.getCustomProperties());
+        Assert.assertNotNull(f.getCustomProperties().get("ppint"));
+        Assert.assertEquals(f.getCustomProperties().get("ppint").asInt(), 12);
+        Assert.assertEquals(f.getCustomProperties().get("ppdouble").asDouble(), 12.5,0);
+        Assert.assertEquals(f.getCustomProperties().get("ppboolean").asBoolean(),true);
+        Assert.assertEquals(f.getCustomProperties().get("ppstring").asString(), "hello");
+        
+        PropertyLogLevel pll = (PropertyLogLevel) f.getCustomProperties().get("myLogLevel");
+        Assert.assertEquals(pll.getValue(), LogLevel.DEBUG); 
+        System.out.println(f.getCustomProperties());
+        
+    }
 
 }

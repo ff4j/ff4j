@@ -36,7 +36,7 @@ import com.mongodb.DBObject;
  * @author William Delanoue (@twillouer) </a>
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreMongoDB implements FeatureStore, FeatureStoreMongoConstants {
+public class FeatureStoreMongoDB extends AbstractFeatureStore implements FeatureStoreMongoConstants {
 
     /** Map from DBObject to Feature. */
     private static final FeatureDBObjectMapper MAPPER = new FeatureDBObjectMapper();
@@ -55,6 +55,17 @@ public class FeatureStoreMongoDB implements FeatureStore, FeatureStoreMongoConst
      */
     public FeatureStoreMongoDB(DBCollection collection) {
         this.collection = collection;
+    }
+    
+    /**
+     * Parameterized constructor with collection.
+     * 
+     * @param collection
+     *            the collection to set
+     */
+    public FeatureStoreMongoDB(DBCollection collection, String xmlConfFile) {
+        this.collection = collection;
+        importFeaturesFromXmlFile(xmlConfFile);
     }
 
     /** {@inheritDoc} */

@@ -44,7 +44,7 @@
 // Initialisation
 FF4j ff4j = new FF4j("ff4j.xml");
 
-if (ff4j.check("sayHello")) {
+if (ff4j.check("hello")) {
    System.out.println("Hello World !");
 }
 ]]></pre>

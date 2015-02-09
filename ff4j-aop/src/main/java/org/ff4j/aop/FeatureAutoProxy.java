@@ -59,19 +59,26 @@ public class FeatureAutoProxy extends AbstractAutoProxyCreator {
     private Object[] addAnnotedInterface(Class<?> currentInterface) {
         String currentInterfaceName = currentInterface.getCanonicalName();
         if (!currentInterfaceName.startsWith("java.")) {
+            // Avoid process same interface several times
             Boolean isInterfaceFlipped = processedInterface.get(currentInterfaceName);
             if (isInterfaceFlipped != null) {
                 if (isInterfaceFlipped) {
                     return PROXY_WITHOUT_ADDITIONAL_INTERCEPTORS;
                 }
             } else {
-                for (Method method : currentInterface.getDeclaredMethods()) {
-                    if (method.isAnnotationPresent(Flip.class)) {
-                        processedInterface.put(currentInterfaceName, true);
-                        return PROXY_WITHOUT_ADDITIONAL_INTERCEPTORS;
+               if ((currentInterface != null) && (currentInterface.isAnnotationPresent(Flip.class))) {
+                   // If annotation is registered on Interface class 
+                   processedInterface.put(currentInterfaceName, true);
+                    return PROXY_WITHOUT_ADDITIONAL_INTERCEPTORS;
+                } else {
+                    for (Method method : currentInterface.getDeclaredMethods()) {
+                        if (method.isAnnotationPresent(Flip.class)) {
+                            processedInterface.put(currentInterfaceName, true);
+                            return PROXY_WITHOUT_ADDITIONAL_INTERCEPTORS;
+                        }
                     }
+                    processedInterface.put(currentInterfaceName, false);
                 }
-                processedInterface.put(currentInterfaceName, false);
             }
         }
         return null;

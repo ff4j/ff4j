@@ -11,17 +11,27 @@ package org.ff4j.test.store;
  * governing permissions and limitations under the License. #L%
  */
 
+import java.net.UnknownHostException;
 import java.util.Arrays;
 
-import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.core.FlippingStrategy;
 import org.ff4j.store.FeatureStoreMongoDB;
-import org.ff4j.utils.ParameterUtils;
+import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Rule;
+import org.junit.Test;
 
 import com.github.fakemongo.junit.FongoRule;
+import com.mongodb.DBCollection;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
 
+/**
+ * Unit testing of MongoDB Store.
+ *
+ * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ */
 public class FeatureStoreMongoDBCore1Test extends AbstractStoreJUnitTest {
 
     /**
@@ -30,22 +40,52 @@ public class FeatureStoreMongoDBCore1Test extends AbstractStoreJUnitTest {
     @Rule
     public FongoRule fongoRule = new FongoRule(false);
 
+    /** {@inheritDoc} */
     @Override
     protected FeatureStore initStore() {
-        FeatureStoreMongoDB storeMongoDB = new FeatureStoreMongoDB(fongoRule.getDB().getCollection("ff4j"));
-        storeMongoDB.create(new Feature("AwesomeFeature", true, "some desc"));
-        // First
-        storeMongoDB.create(new Feature("first", true, "description", null, Arrays.asList("USER")));
-        // Second
-        storeMongoDB.create(new Feature("second", false, "description", "GRP0", Arrays.asList("USER")));
-        // Third
-        storeMongoDB.create(new Feature("third", false, "ThirdJDBC", "GRP1", Arrays.asList("ADMINISTRATOR", "BETA-TESTER")));
-        // Forth ?? Fourth ?
-        FlippingStrategy strategy = new org.ff4j.strategy.el.ExpressionFlipStrategy();
-        strategy.init("forth", ParameterUtils.toMap("expression=third|second"));
-        storeMongoDB.create(new Feature("forth", true, "ForthJDBC", "GRP1", Arrays.asList("ADMINISTRATOR", "BETA-TESTER"),
-                strategy));
-
-        return storeMongoDB;
+        return new FeatureStoreMongoDB(fongoRule.getDB().getCollection("ff4j"), "ff4j.xml");
+        
+        // Could initialize this way
+        //storeMongoDB.importFeaturesFromXmlFile("ff4j.xml");
+        
+        // Or this way
+        // storeMongoDB.create(new Feature("AwesomeFeature", true, "some desc"));
+        //storeMongoDB.create(new Feature("first", true, "description", null, Arrays.asList("USER")));
+        //storeMongoDB.create(new Feature("second", false, "description", "GRP0", Arrays.asList("USER")));
+        //storeMongoDB.create(new Feature("third", false, "ThirdJDBC", "GRP1", Arrays.asList("ADMINISTRATOR", "BETA-TESTER")));
+        //FlippingStrategy strategy = new org.ff4j.strategy.el.ExpressionFlipStrategy();
+        //strategy.init("forth", ParameterUtils.toMap("expression=third|second"));
+        //storeMongoDB.create(new Feature("forth", true, "ForthJDBC", "GRP1", Arrays.asList("ADMINISTRATOR", "BETA-TESTER"),
+        //        strategy));
     }
+    
+    /**
+     * Open real connection to MongoDB.
+     *
+     * @return
+     *      target mongo client
+     * @throws UnknownHostException
+     *      exeption when creating server address
+     */
+    private MongoClient getMongoClient() throws UnknownHostException {
+        // Given (using real connection)
+        MongoCredential credential = MongoCredential.createMongoCRCredential("username", "FF4J", "password".toCharArray());
+        ServerAddress adr = new ServerAddress("localhost", 22012);
+        return new MongoClient(adr, Arrays.asList(credential));
+    }
+    
+    /**
+     * LazyBSONObjectList vs BasicBSONObjectList
+     */
+    @Test
+    @Ignore
+    public void emptyListAttributes() throws UnknownHostException {
+        DBCollection features = getMongoClient().getDB("FF4J").getCollection("feature");
+        // When
+        FeatureStore mongoStore = new FeatureStoreMongoDB(features, "ff4j.xml");
+        // Then (no error)
+        Assert.assertTrue(mongoStore.readAll().keySet().size() > 0);
+    }
+    
+    
 }

@@ -64,24 +64,26 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
     public Object invoke(final MethodInvocation pMInvoc) throws Throwable {
         Method method = pMInvoc.getMethod();
         Logger targetLogger = getLogger(method);
+        Flip ff = null;
         if (method.isAnnotationPresent(Flip.class)) {
-            Flip ff = method.getAnnotation(Flip.class);
-            if (shouldFlip(ff)) {
-                // Required parameters
-                if (!assertRequiredParams(ff)) {
-                    String msg = String.format("alterBeanName or alterClazz is required for {}", method.getDeclaringClass());
-                    throw new IllegalArgumentException(msg);
-                }
-
-                if (shouldCallAlterBeanMethod(pMInvoc, ff.alterBean(), targetLogger)) {
-                    return callAlterBeanMethod(pMInvoc, ff.alterBean(), targetLogger);
-                }
-
-                // Test alterClazz Property of annotation
-                if (shouldCallAlterClazzMethod(pMInvoc, ff.alterClazz(), targetLogger)) {
-                    return callAlterClazzMethodOnFirst(pMInvoc, ff, targetLogger);
-                }
-
+            ff = method.getAnnotation(Flip.class);
+        } else if (method.getDeclaringClass().isAnnotationPresent(Flip.class)) {
+            ff = method.getDeclaringClass().getAnnotation(Flip.class);
+        }
+        
+        if (ff != null&& shouldFlip(ff)) {
+           
+            // Required parameters
+            if (!assertRequiredParams(ff)) {
+                String msg = String.format("alterBeanName or alterClazz is required for {}", method.getDeclaringClass());
+                throw new IllegalArgumentException(msg);
+            }
+            if (shouldCallAlterBeanMethod(pMInvoc, ff.alterBean(), targetLogger)) {
+                return callAlterBeanMethod(pMInvoc, ff.alterBean(), targetLogger);
+            }
+            // Test alterClazz Property of annotation
+            if (shouldCallAlterClazzMethod(pMInvoc, ff.alterClazz(), targetLogger)) {
+                return callAlterClazzMethodOnFirst(pMInvoc, ff, targetLogger);
             }
         }
         // do not catch throwable

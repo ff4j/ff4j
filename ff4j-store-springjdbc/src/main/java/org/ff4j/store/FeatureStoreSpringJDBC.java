@@ -40,7 +40,7 @@ import org.springframework.stereotype.Repository;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 @Repository
-public class FeatureStoreSpringJDBC implements JdbcFeatureStoreConstants, FeatureStore {
+public class FeatureStoreSpringJDBC extends AbstractFeatureStore implements JdbcFeatureStoreConstants {
 
     /** Row Mapper for FlipPoint. */
     private static final FeatureRowMapper MAPPER = new FeatureRowMapper();

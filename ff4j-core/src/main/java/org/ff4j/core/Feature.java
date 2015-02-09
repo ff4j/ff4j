@@ -15,9 +15,13 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
+
+import org.ff4j.exception.PropertyNotFoundException;
+import org.ff4j.property.AbstractProperty;
+import org.ff4j.utils.JsonUtils;
+import org.ff4j.utils.Util;
 
 /**
  * Represents a feature flag identified by an unique identifier.
@@ -55,6 +59,9 @@ public class Feature implements Serializable {
 
     /** Custom behaviour to define if feature if enable or not e.g. A/B Testing capabilities. */
     private FlippingStrategy flippingStrategy;
+    
+    /** Add you own attributes to a feature. */
+    private Map < String, ? extends AbstractProperty<?> > customProperties;
 
     /**
      * Simplest constructor initializing feature to disable.
@@ -173,72 +180,16 @@ public class Feature implements Serializable {
         json.append((null == description) ? "null" : "\"" + description + "\"");
         json.append(",\"group\":");
         json.append((null == group) ? "null" : "\"" + group + "\"");
-        
         // Permissions
-        json.append(",\"permissions\":");
-        json.append(permissionsAsJson());
-        
+        json.append(",\"permissions\":" + JsonUtils.permissionsAsJson(permissions));
         // Flipping strategy
-        json.append(",\"flippingStrategy\":");
-        json.append(flippingStrategyAsJson());
-        
+        json.append(",\"flippingStrategy\":" + JsonUtils.flippingStrategyAsJson(flippingStrategy));
+        // Custom properties
+        json.append(",\"customProperties\":" + JsonUtils.customPropertiesAsJson(customProperties));
         json.append("}");
         return json.toString();
     }
     
-    /**
-     * Generate flipping strategy as json.
-     * 
-     * @return
-     *      flippling strategy as json.     
-     */
-    public String permissionsAsJson() {
-        StringBuilder json = new StringBuilder();
-        if (null != permissions) {
-            json.append("[");
-            if (!permissions.isEmpty()) {
-                boolean first = true;
-                for (String auth : permissions) {
-                    json.append(first ? "" : ",");
-                    json.append("\"" + auth + "\"");
-                    first = false;
-                }
-            }
-            json.append("]");
-        } else {
-            json.append("null");
-        }
-        return json.toString();
-    }
-    
-    /**
-     * Generate flipping strategy as json.
-     * 
-     * @return
-     *      flippling strategy as json.     
-     */
-    public String flippingStrategyAsJson() {
-        StringBuilder json = new StringBuilder();
-        if (null != flippingStrategy) {
-            json.append("{\"initParams\":{");
-            Map < String , String> iparams = flippingStrategy.getInitParams();
-            if (iparams != null && !iparams.isEmpty()) {
-                boolean first = true;
-                for (Entry<String, String> param : iparams.entrySet()) {
-                    json.append(first ? "" : ",");
-                    json.append("\"" + param.getKey() + "\":\"" + param.getValue() + "\"");
-                    first = false;
-                }
-            }
-            json.append("},\"type\":\"");
-            json.append(flippingStrategy.getClass().getCanonicalName());
-            json.append("\"}");
-        } else {
-            json.append("null");
-        }
-        return json.toString();
-    }
-
     /**
      * Enable target feature
      */
@@ -373,5 +324,41 @@ public class Feature implements Serializable {
     public void setPermissions(Set<String> permissions) {
         this.permissions = permissions;
     }
+    
+    /**
+     * Accessor to read a custom property from Feature.
+     *
+     * @param propId
+     *         property
+     * @return
+     *         property value (if exist)
+     */
+    @SuppressWarnings("unchecked")
+    public <T> AbstractProperty<T> getProperty(String propId) {
+        Util.assertNotNull(propId);
+        if (customProperties != null && customProperties.containsKey(propId)) {
+          return (AbstractProperty<T>) customProperties.get(propId);
+        }
+        throw new PropertyNotFoundException(propId);
+    }
 
+    /**
+     * Getter accessor for attribute 'customProperties'.
+     *
+     * @return
+     *       current value of 'customProperties'
+     */
+    public Map<String, ? extends AbstractProperty<?>> getCustomProperties() {
+        return customProperties;
+    }
+
+    /**
+     * Setter accessor for attribute 'customProperties'.
+     * @param customProperties
+     * 		new value for 'customProperties '
+     */
+    public void setCustomProperties(Map<String, ? extends AbstractProperty<?>> customProperties) {
+        this.customProperties = customProperties;
+    }
+    
 }

@@ -148,6 +148,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                 } else if (OP_EXPORT.equalsIgnoreCase(operation)) {
                     opExportFile(res);
                     message = "Feature have been success fully exported";
+                    return;
                 }
             }
 

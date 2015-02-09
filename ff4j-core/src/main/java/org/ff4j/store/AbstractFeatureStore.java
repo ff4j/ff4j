@@ -20,12 +20,51 @@ package org.ff4j.store;
  * #L%
  */
 
+import java.io.InputStream;
+import java.util.Map;
 import java.util.Set;
 
+import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.core.FeatureXmlParser;
 
+/**
+ * SuperClass for stores.
+ *
+ * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ */
 public abstract class AbstractFeatureStore implements FeatureStore {
 
+    /**
+     * Initialize store from XML Configuration File.
+     *
+     * @param xmlConfFile
+     *      xml configuration file
+     */
+    public Map < String, Feature > importFeaturesFromXmlFile(String xmlConfFile) {
+        // Argument validation
+        if (xmlConfFile == null || xmlConfFile.isEmpty()) {
+            throw new IllegalArgumentException("Configuration filename cannot be null nor empty");
+        }
+        // Load as Inputstream
+        InputStream xmlIS = getClass().getClassLoader().getResourceAsStream(xmlConfFile);
+        if (xmlIS == null) {
+            throw new IllegalArgumentException("File " + xmlConfFile + " could not be read, please check path and rights");
+        }
+        // Use the Feature Parser
+        Map < String, Feature > features = new FeatureXmlParser().parseConfigurationFile(xmlIS);
+
+        // Override existing configuration within database
+        for (String featureName : features.keySet()) {
+            if (exist(featureName)) {
+                delete(featureName);
+            }
+            create(features.get(featureName));
+        }
+        return features;
+    }
+    
+    
     /** {@inheritDoc} */
     public String toJson() {
         StringBuilder sb = new StringBuilder("{");

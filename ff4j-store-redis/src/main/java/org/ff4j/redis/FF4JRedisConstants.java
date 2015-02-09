@@ -4,7 +4,7 @@ package org.ff4j.redis;
  * #%L
  * ff4j-store-redis
  * %%
- * Copyright (C) 2013 - 2014 Ff4J
+ * Copyright (C) 2013 - 2015 Ff4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,36 +20,23 @@ package org.ff4j.redis;
  * #L%
  */
 
-import redis.clients.jedis.Jedis;
-
 /**
- * Parent class to work with Jedis.
+ * Required constants for REDIS.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public abstract class AbstractRedisProvider {
-
+public interface FF4JRedisConstants {
+    
     /** prefix of keys. */
-    public static final String PREFIX_KEY = "FF4J_";
+    public String PREFIX_KEY = "FF4J_";
     
     /** default host. */
-    public static final String DEFAULT_REDIS_HOST = "localhost";
+    public String DEFAULT_REDIS_HOST = "localhost";
 
     /** default port. */
-    public static final int DEFAULT_REDIS_PORT = 6379;
+    public int DEFAULT_REDIS_PORT = 6379;
 
     /** default ttl. */
-    public static final int DEFAULT_TTL = 900000000;
+    public int DEFAULT_TTL = 900000000;
 
-    /** redis host. */
-    protected String redisHost = DEFAULT_REDIS_HOST;
-
-    /** redis port. */
-    protected int redisport = DEFAULT_REDIS_PORT;
-
-    /** time to live. */
-    protected int timeToLive = DEFAULT_TTL;
-
-    /** Java Redis CLIENT. */
-    protected Jedis jedis;
 }

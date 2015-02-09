@@ -87,7 +87,7 @@ public abstract class Util {
      *            target object
      */
     public static void assertHasLength(String text) {
-        if (null != text && !text.isEmpty()) {
+        if (null == text || text.isEmpty()) {
             throw new IllegalArgumentException(
                     "[Assertion failed] - this String argument must have length; it must not be null or empty");
         }

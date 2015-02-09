@@ -36,7 +36,7 @@ import org.ff4j.utils.ParameterUtils;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore {
+public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcFeatureStoreConstants {
 
     /** Access to storage. */
     private DataSource dataSource;
@@ -53,6 +53,18 @@ public class JdbcFeatureStore implements JdbcFeatureStoreConstants, FeatureStore
     public JdbcFeatureStore(DataSource jdbcDS) {
         this.dataSource = jdbcDS;
     }
+    
+    /**
+     * Constructor from DataSource.
+     * 
+     * @param jdbcDS
+     *            native jdbc datasource
+     */
+    public JdbcFeatureStore(DataSource jdbcDS, String xmlConfFile) {
+        this(jdbcDS);
+        importFeaturesFromXmlFile(xmlConfFile);
+    }
+    
 
     /** {@inheritDoc} */
     @Override

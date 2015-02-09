@@ -23,6 +23,8 @@ package org.ff4j.core;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +38,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -74,7 +78,22 @@ public final class FeatureXmlParser {
 
     /** TAG XML. */
     public static final String FLIPSTRATEGY_TAG = "flipstrategy";
+    
+    /** TAG XML. */
+    public static final String PROPERTIES_TAG = "properties";
+    
+    /** TAG XML. */
+    public static final String PROPERTY_TAG = "property";
+    
+    /** TAG XML. */
+    public static final String PROPERTY_PARAMTYPE = "type";
+    
+    /** TAG XML. */
+    public static final String PROPERTY_PARAMNAME = "name";
 
+    /** TAG XML. */
+    public static final String PROPERTY_PARAMVALUE = "value";
+    
     /** TAG XML. */
     public static final String FLIPSTRATEGY_ATTCLASS = "class";
 
@@ -236,8 +255,64 @@ public final class FeatureXmlParser {
         if (securities.getLength() > 0) {
             f.setPermissions(parseListAuthorizations((Element) securities.item(0)));
         }
+        
+        // Properties
+        NodeList properties = featXmlTag.getElementsByTagName(PROPERTIES_TAG);
+        if (properties.getLength() > 0) {
+            f.setCustomProperties(parseCustomProperties((Element) properties.item(0), f.getUid()));
+        }
 
         return f;
+    }
+    
+    /**
+     * Parse Properties.
+     *
+     * @param properties tag
+     * @param uid
+     *      current featureid
+     * @return
+     *      properties map
+     */
+    private Map < String , ? extends AbstractProperty<?>> parseCustomProperties(Element propertiesTag, String uid) {
+        Map< String , AbstractProperty<?>> properties = new HashMap<String, AbstractProperty<?>>(); 
+        // <properties>
+        NodeList lisOfProperties = propertiesTag.getElementsByTagName(PROPERTY_TAG);
+        for (int k = 0; k < lisOfProperties.getLength(); k++) {
+            // <property name='' value='' (type='') >
+            Element propertyTag = (Element) lisOfProperties.item(k);
+            NamedNodeMap attMap = propertyTag.getAttributes();
+            if (attMap.getNamedItem(PROPERTY_PARAMNAME) == null) {
+                throw new IllegalArgumentException("Invalid XML Syntax, 'name' is a required attribute of 'property' TAG");
+            }
+            if (attMap.getNamedItem(PROPERTY_PARAMVALUE) == null) {
+                throw new IllegalArgumentException("Invalid XML Syntax, 'value' is a required attribute of 'property' TAG");
+            }
+            String name  = attMap.getNamedItem(PROPERTY_PARAMNAME).getNodeValue();
+            String value = attMap.getNamedItem(PROPERTY_PARAMVALUE).getNodeValue();
+            if (attMap.getNamedItem(PROPERTY_PARAMTYPE) != null) {
+                String optionalType = attMap.getNamedItem(PROPERTY_PARAMTYPE).getNodeValue();
+                try {
+                    Constructor<?> constr = Class.forName(optionalType).getConstructor(String.class, String.class);
+                    properties.put(name, (AbstractProperty<?>) constr.newInstance(name, value));
+                } catch (InstantiationException e) {
+                    throw new IllegalArgumentException("Cannot instanciate '" + optionalType + "' check default constructor", e);
+                } catch (IllegalAccessException e) {
+                    throw new IllegalArgumentException("Cannot instanciate '" + optionalType + "' check visibility", e);
+                } catch (ClassNotFoundException e) {
+                    throw new IllegalArgumentException("Cannot instanciate '" + optionalType + "' not found", e);
+                } catch (InvocationTargetException e) {
+                    throw new IllegalArgumentException("Cannot instanciate '" + optionalType + "'  erro within constructor", e);
+                } catch (NoSuchMethodException e) {
+                    throw new IllegalArgumentException("Cannot instanciate '" + optionalType + "' constructor not found", e);
+                } catch (SecurityException e) {
+                    throw new IllegalArgumentException("Cannot instanciate '" + optionalType + "' check constructor visibility", e);
+                }
+            } else {
+                properties.put(name, new Property(name, value));
+            }
+        }
+        return properties;
     }
 
     /**
@@ -320,7 +395,7 @@ public final class FeatureXmlParser {
         NodeList lisOfAuth = securityTag.getElementsByTagName(SECURITY_ROLE_TAG);
         for (int k = 0; k < lisOfAuth.getLength(); k++) {
             Element role = (Element) lisOfAuth.item(k);
-          authorizations.add(role.getAttributes().getNamedItem(SECURITY_ROLE_ATTNAME).getNodeValue());
+            authorizations.add(role.getAttributes().getNamedItem(SECURITY_ROLE_ATTNAME).getNodeValue());
         }
         return authorizations;
     }

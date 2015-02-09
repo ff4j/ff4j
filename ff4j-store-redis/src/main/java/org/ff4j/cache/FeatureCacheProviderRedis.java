@@ -23,7 +23,7 @@ package org.ff4j.cache;
 import java.util.Set;
 
 import org.ff4j.core.Feature;
-import org.ff4j.redis.AbstractRedisProvider;
+import org.ff4j.redis.FF4JRedisConstants;
 import org.ff4j.utils.json.FeatureJsonParser;
 
 import redis.clients.jedis.Jedis;
@@ -33,7 +33,19 @@ import redis.clients.jedis.Jedis;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureCacheProviderRedis extends AbstractRedisProvider implements FeatureCacheManager {
+public class FeatureCacheProviderRedis implements FeatureCacheManager, FF4JRedisConstants {
+    
+    /** redis host. */
+    protected String redisHost = DEFAULT_REDIS_HOST;
+
+    /** redis port. */
+    protected int redisport = DEFAULT_REDIS_PORT;
+
+    /** time to live. */
+    protected int timeToLive = DEFAULT_TTL;
+    
+    /** Java Redis CLIENT. */
+    protected Jedis jedis;
     
     /**
      * Default Constructor.

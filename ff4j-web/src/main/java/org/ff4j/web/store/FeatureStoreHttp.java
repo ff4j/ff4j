@@ -34,11 +34,11 @@ import javax.ws.rs.core.Response.Status;
 
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.ff4j.core.Feature;
-import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
+import org.ff4j.store.AbstractFeatureStore;
 import org.ff4j.web.api.FF4jWebConstants;
 import org.ff4j.web.api.jersey.FF4jJacksonMapper;
 import org.ff4j.web.api.resources.domain.FeatureApiBean;
@@ -58,7 +58,7 @@ import com.sun.jersey.core.util.Base64;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreHttp implements FeatureStore, FF4jWebConstants {
+public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebConstants {
 
     /** Jersey Client. */
     protected Client client = null;

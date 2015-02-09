@@ -20,15 +20,12 @@ package org.ff4j.store.it;
  * #L%
  */
 
-import java.util.Arrays;
 import java.util.Map;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.core.FlippingStrategy;
 import org.ff4j.store.FeatureStoreRedis;
 import org.ff4j.test.store.AbstractStoreJUnitTest;
-import org.ff4j.utils.ParameterUtils;
 import org.junit.After;
 
 /**
@@ -42,13 +39,15 @@ public class FeatureStoreRedisTestIT extends AbstractStoreJUnitTest {
     @Override
     protected FeatureStore initStore() {
         FeatureStoreRedis redisStore = new FeatureStoreRedis();
-        redisStore.create(new Feature("AwesomeFeature", true, "some desc"));
+        redisStore.importFeaturesFromXmlFile("ff4j.xml");
+        
+        /*redisStore.create(new Feature("AwesomeFeature", true, "some desc"));
         redisStore.create(new Feature("first", true, "description", null, Arrays.asList("USER")));
         redisStore.create(new Feature("second", false, "description", "GRP0", Arrays.asList("USER")));
         redisStore.create(new Feature("third", false, "ThirdJDBC", "GRP1", Arrays.asList("ADMINISTRATOR", "BETA-TESTER")));
         FlippingStrategy strategy = new org.ff4j.strategy.el.ExpressionFlipStrategy();
         strategy.init("forth", ParameterUtils.toMap("expression=third|second"));
-        redisStore.create(new Feature("forth", true, "ForthJDBC", "GRP1", Arrays.asList("ADMINISTRATOR", "BETA-TESTER"),strategy));
+        redisStore.create(new Feature("forth", true, "ForthJDBC", "GRP1", Arrays.asList("ADMINISTRATOR", "BETA-TESTER"),strategy));*/
         return redisStore;
     }
     

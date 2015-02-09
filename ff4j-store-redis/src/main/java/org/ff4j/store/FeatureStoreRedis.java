@@ -30,7 +30,7 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
-import org.ff4j.redis.AbstractRedisProvider;
+import org.ff4j.redis.FF4JRedisConstants;
 import org.ff4j.utils.Util;
 import org.ff4j.utils.json.FeatureJsonParser;
 
@@ -41,13 +41,33 @@ import redis.clients.jedis.Jedis;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreRedis extends AbstractRedisProvider implements FeatureStore {
+public class FeatureStoreRedis extends AbstractFeatureStore implements FF4JRedisConstants {
+    
+    /** redis host. */
+    protected String redisHost = DEFAULT_REDIS_HOST;
+
+    /** redis port. */
+    protected int redisport = DEFAULT_REDIS_PORT;
+
+    /** time to live. */
+    protected int timeToLive = DEFAULT_TTL;
+    
+    /** Java Redis CLIENT. */
+    protected Jedis jedis;
     
     /**
      * Default Constructor.
      */
     public FeatureStoreRedis() {
         jedis = new Jedis(redisHost, redisport);
+    }
+    
+    /**
+     * Default Constructor.
+     */
+    public FeatureStoreRedis(String xmlFeaturesfFile) {
+       this();
+       importFeaturesFromXmlFile(xmlFeaturesfFile);
     }
 
     /**
@@ -59,7 +79,22 @@ public class FeatureStoreRedis extends AbstractRedisProvider implements FeatureS
      *            target redis port
      */
     public FeatureStoreRedis(String host, int port) {
-        jedis = new Jedis(redisHost, redisport);
+        this.redisHost = host;
+        this.redisport = port;
+        jedis = new Jedis(host, port);
+    }
+
+    /**
+     * Contact remote redis server.
+     * 
+     * @param host
+     *            target redis host
+     * @param port
+     *            target redis port
+     */
+    public FeatureStoreRedis(String host, int port, String xmlFeaturesfFile) {
+        this(host, port);
+        importFeaturesFromXmlFile(xmlFeaturesfFile);
     }
     
     /** {@inheritDoc} */

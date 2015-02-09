@@ -23,7 +23,6 @@ package org.ff4j.store.mongodb;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bson.types.BasicBSONList;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureAccessException;
@@ -87,10 +86,11 @@ public final class FeatureDBObjectMapper implements FeatureStoreMongoConstants {
      *            target
      * @return
      */
+    @SuppressWarnings("rawtypes")
     private Set<String> mapAuthorization(DBObject dbObject) {
         Set<String> authorisation = new HashSet<String>();
         if (dbObject.containsField(ROLES)) {
-            for (Object role : (BasicBSONList) dbObject.get(ROLES)) {
+            for (Object role : (Iterable) dbObject.get(ROLES)) {
                 authorisation.add(role.toString());
             }
         }

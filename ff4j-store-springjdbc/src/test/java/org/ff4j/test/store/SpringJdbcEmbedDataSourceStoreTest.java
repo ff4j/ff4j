@@ -48,7 +48,9 @@ public class SpringJdbcEmbedDataSourceStoreTest extends AbstractStoreJUnitTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        db = builder.setType(EmbeddedDatabaseType.HSQL).addScript("classpath:schema-ddl.sql").addScript("classpath:ff-store.sql")
+        db = builder.setType(EmbeddedDatabaseType.HSQL).//
+                addScript("classpath:schema-ddl.sql").//
+                addScript("classpath:ff-store.sql")
                 .build();
     }
 
