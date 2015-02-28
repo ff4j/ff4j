@@ -27,12 +27,11 @@ import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.store.rowmapper.FeatureRowMapper;
 import org.ff4j.store.rowmapper.RoleRowMapper;
 import org.ff4j.utils.ParameterUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Implementation of {@link FeatureStore} to work with RDBMS through JDBC.
@@ -46,7 +45,6 @@ public class FeatureStoreSpringJDBC extends AbstractFeatureStore implements Jdbc
     private static final FeatureRowMapper MAPPER = new FeatureRowMapper();
 
     /** SQL DataSource. */
-    @Autowired
     private DataSource dataSource;
 
     /** Access to storage. */

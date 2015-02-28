@@ -99,8 +99,8 @@ public final class FF4jStatusApiBean {
         uptime += secondnumber + " seconds\"";
         autocreate = ff4j.isAutocreate();
         version = ff4j.getVersion();
-        if (null != ff4j.getStore()) {
-            featuresStore = new FeatureStoreApiBean(ff4j.getStore());
+        if (null != ff4j.getFeatureStore()) {
+            featuresStore = new FeatureStoreApiBean(ff4j.getFeatureStore());
         }
         if (null != ff4j.getEventRepository()) {
             eventRepository = new EventRepositoryApiBean(ff4j.getEventRepository(), null, null);

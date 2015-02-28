@@ -129,7 +129,7 @@ public class AssertFf4j {
      * @return current object
      */
     public AssertFf4j assertThatStoreHasSize(int expectedNumber) {
-        Assert.assertEquals(expectedNumber, ff4j.getStore().readAll().size());
+        Assert.assertEquals(expectedNumber, ff4j.getFeatureStore().readAll().size());
         return this;
     }
 
@@ -141,7 +141,7 @@ public class AssertFf4j {
      * @return current object
      */
     public AssertFf4j assertThatStoreHasNumberOfGroups(int expectedNumber) {
-        Assert.assertEquals(expectedNumber, ff4j.getStore().readAllGroups().size());
+        Assert.assertEquals(expectedNumber, ff4j.getFeatureStore().readAllGroups().size());
         return this;
     }
 
@@ -225,7 +225,7 @@ public class AssertFf4j {
      */
     public AssertFf4j assertThatFeatureIsEnabled(String featureName) {
         assertThatFeatureExist(featureName);
-        Assert.assertTrue(ff4j.getStore().read(featureName).isEnable());
+        Assert.assertTrue(ff4j.getFeatureStore().read(featureName).isEnable());
         return this;
     }
 
@@ -238,7 +238,7 @@ public class AssertFf4j {
      */
     public AssertFf4j assertThatFeatureIsDisabled(String featureName) {
         assertThatFeatureExist(featureName);
-        Assert.assertFalse(ff4j.getStore().read(featureName).isEnable());
+        Assert.assertFalse(ff4j.getFeatureStore().read(featureName).isEnable());
         return this;
     }
 
@@ -252,7 +252,7 @@ public class AssertFf4j {
      * @return current object
      */
     public AssertFf4j assertThatGroupExist(String groupName) {
-        Assert.assertTrue("Group '" + groupName + " ' does no exist", ff4j.getStore().existGroup(groupName));
+        Assert.assertTrue("Group '" + groupName + " ' does no exist", ff4j.getFeatureStore().existGroup(groupName));
         return this;
     }
 
@@ -266,7 +266,7 @@ public class AssertFf4j {
      * @return current object
      */
     public AssertFf4j assertThatGroupDoesNotExist(String groupName) {
-        Assert.assertFalse("Group '" + groupName + " ' does no exist", ff4j.getStore().existGroup(groupName));
+        Assert.assertFalse("Group '" + groupName + " ' does no exist", ff4j.getFeatureStore().existGroup(groupName));
         return this;
     }
 
@@ -281,7 +281,7 @@ public class AssertFf4j {
      */
     public AssertFf4j assertThatGroupHasSize(int expected, String groupName) {
         assertThatGroupExist(groupName);
-        Assert.assertEquals(expected, ff4j.getStore().readGroup(groupName).size());
+        Assert.assertEquals(expected, ff4j.getFeatureStore().readGroup(groupName).size());
         return this;
     }
 

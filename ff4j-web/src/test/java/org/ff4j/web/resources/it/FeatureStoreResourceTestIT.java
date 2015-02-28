@@ -37,7 +37,7 @@ public class FeatureStoreResourceTestIT extends AbstractWebResourceTestIT {
     @Test
     public void testGet() {
         // Given
-        Assert.assertTrue(ff4j.getStore() instanceof InMemoryFeatureStore);
+        Assert.assertTrue(ff4j.getFeatureStore() instanceof InMemoryFeatureStore);
         // When
         ClientResponse resHttp = resourceStore().get(ClientResponse.class);
         String resEntity = resHttp.getEntity(String.class);

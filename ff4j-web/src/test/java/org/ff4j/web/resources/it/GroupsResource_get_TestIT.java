@@ -45,7 +45,7 @@ public class GroupsResource_get_TestIT extends AbstractWebResourceTestIT {
     @Test
     public void getGroups() {
         // Given
-        Assert.assertEquals(2, ff4j.getStore().readAllGroups().size());
+        Assert.assertEquals(2, ff4j.getFeatureStore().readAllGroups().size());
         // When
         WebResource wResff4j = resourceGroups();
         ClientResponse resHttp = wResff4j.get(ClientResponse.class);

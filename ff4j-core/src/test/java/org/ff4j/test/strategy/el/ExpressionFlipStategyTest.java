@@ -56,15 +56,15 @@ public class ExpressionFlipStategyTest {
     public void testExplicitevaluate() {
         ExpressionFlipStrategy efs = new ExpressionFlipStrategy();
 
-        Assert.assertTrue(efs.evaluate("D", ff4j.getStore(), null));
-        Assert.assertTrue(efs.evaluate("TOTO", ff4j.getStore(), null));
+        Assert.assertTrue(efs.evaluate("D", ff4j.getFeatureStore(), null));
+        Assert.assertTrue(efs.evaluate("TOTO", ff4j.getFeatureStore(), null));
 
         FlippingExecutionContext fex = new FlippingExecutionContext();
         fex.putString(ExpressionFlipStrategy.PARAM_EXPRESSION, "D");
-        Assert.assertTrue(efs.evaluate("D", ff4j.getStore(), fex));
+        Assert.assertTrue(efs.evaluate("D", ff4j.getFeatureStore(), fex));
 
         fex.putString(ExpressionFlipStrategy.PARAM_EXPRESSION, "TOTO");
-        Assert.assertFalse(efs.evaluate("D", ff4j.getStore(), fex));
+        Assert.assertFalse(efs.evaluate("D", ff4j.getFeatureStore(), fex));
     }
 
 }

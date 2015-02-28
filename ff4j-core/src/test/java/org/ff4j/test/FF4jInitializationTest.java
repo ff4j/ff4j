@@ -41,8 +41,8 @@ public class FF4jInitializationTest {
      * Factorisation of assertions for different ff4j initializations.
      */
     private void testingGeneratedFF4j(FF4j f) {
-        Assert.assertNotNull(f.getStore());
-        Assert.assertTrue(f.getStore() instanceof InMemoryFeatureStore);
+        Assert.assertNotNull(f.getFeatureStore());
+        Assert.assertTrue(f.getFeatureStore() instanceof InMemoryFeatureStore);
         Assert.assertFalse(f.check("new"));
     }
 

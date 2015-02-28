@@ -99,7 +99,7 @@ public class MonitoringResource extends AbstractResource {
             @QueryParam(PARAM_START) Long start,
             @ApiParam(required=false, name="end", value="End  of window <br>(default is tomorrow 00:00)")
             @QueryParam(PARAM_END) Long end) {
-        if (!ff4j.getStore().exist(uid)) {
+        if (!ff4j.getFeatureStore().exist(uid)) {
             String errMsg = new FeatureNotFoundException(uid).getMessage();
             return Response.status(Response.Status.NOT_FOUND).entity(errMsg).build();
         }

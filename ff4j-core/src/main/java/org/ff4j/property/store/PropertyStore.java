@@ -30,6 +30,16 @@ import org.ff4j.property.AbstractProperty;
 public interface PropertyStore {
     
     /**
+     * Check existence of target property.
+     *
+     * @param name
+     *      target name
+     * @return
+     *      if the property exist
+     */
+    boolean exist(String name);
+    
+    /**
      * Create new property within store.
      * 
      * @param value
@@ -55,7 +65,17 @@ public interface PropertyStore {
      * @param newValue
      *      new value
      */
-    <T> void update(String name, AbstractProperty<T> newValue);
+    void update(String name, String newValue);
+    
+    /**
+     * Update existing property.
+     *
+     * @param name
+     *      target name
+     * @param newValue
+     *      new value
+     */
+    <T> void update(AbstractProperty<T> fixedValue);
     
     /**
      * Delete current property.

@@ -204,8 +204,8 @@ public final class ConsoleRenderer implements ConsoleConstants {
      */
     static String renderGroupList(FF4j ff4j, String modalId) {
         StringBuilder sb = new StringBuilder();
-        if (null != ff4j.getStore().readAllGroups()) {
-            for (String group : ff4j.getStore().readAllGroups()) {
+        if (null != ff4j.getFeatureStore().readAllGroups()) {
+            for (String group : ff4j.getFeatureStore().readAllGroups()) {
                 sb.append("<li><a href=\"javascript:\\$('\\#" + modalId + " \\#groupName').val('");
                 sb.append(group);
                 sb.append("');\">");

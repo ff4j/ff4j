@@ -45,7 +45,7 @@ public class FeatureResource_putUpdateAuth2_TestIT extends AbstractWebResourceTe
     public void testPut_upsertUpdateRemoveAuthorization() {
         // Given
         assertFF4J.assertThatFeatureExist(F1);
-        ff4j.getStore().grantRoleOnFeature(F1, ROLE_USER);
+        ff4j.getFeatureStore().grantRoleOnFeature(F1, ROLE_USER);
         assertFF4J.assertThatFeatureHasRole(F1, ROLE_USER);
         // When
         Feature fNew = ff4j.getFeature(F1);

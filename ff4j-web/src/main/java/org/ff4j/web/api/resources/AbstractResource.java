@@ -83,9 +83,9 @@ public abstract class AbstractResource implements FF4jWebConstants {
      * 
      * @return current value of 'store'
      */
-    public FeatureStore getStore() {
+    public FeatureStore getFeatureStore() {
         if (store == null) {
-            store = ff4j.getStore();
+            store = ff4j.getFeatureStore();
         }
         return store;
     }

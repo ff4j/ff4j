@@ -111,7 +111,7 @@ public class FF4JMBean {
     @ManagedOperationParameters({@ManagedOperationParameter(name = "authRole", description = "role to grant on feature"),
             @ManagedOperationParameter(name = "featureId", description = "target feature id")})
     public void grantRoleOnFeature(String authRole, String featureId) {
-        getFf4j().getStore().grantRoleOnFeature(featureId, authRole);
+        getFf4j().getFeatureStore().grantRoleOnFeature(featureId, authRole);
     }
 
     /**
@@ -124,7 +124,7 @@ public class FF4JMBean {
     @ManagedOperationParameters({@ManagedOperationParameter(name = "authRole", description = "role to remove on feature"),
             @ManagedOperationParameter(name = "featureId", description = "target feature id")})
     public void removeAuthRoleFromFeature(String authRole, String featureId) {
-        getFf4j().getStore().removeRoleFromFeature(featureId, authRole);
+        getFf4j().getFeatureStore().removeRoleFromFeature(featureId, authRole);
     }
 
     /**

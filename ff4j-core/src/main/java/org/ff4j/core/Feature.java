@@ -61,7 +61,7 @@ public class Feature implements Serializable {
     private FlippingStrategy flippingStrategy;
     
     /** Add you own attributes to a feature. */
-    private Map < String, ? extends AbstractProperty<?> > customProperties;
+    private Map < String, AbstractProperty<?> > customProperties;
 
     /**
      * Simplest constructor initializing feature to disable.
@@ -348,7 +348,7 @@ public class Feature implements Serializable {
      * @return
      *       current value of 'customProperties'
      */
-    public Map<String, ? extends AbstractProperty<?>> getCustomProperties() {
+    public Map<String, AbstractProperty<?>> getCustomProperties() {
         return customProperties;
     }
 
@@ -357,7 +357,7 @@ public class Feature implements Serializable {
      * @param customProperties
      * 		new value for 'customProperties '
      */
-    public void setCustomProperties(Map<String, ? extends AbstractProperty<?>> customProperties) {
+    public void setCustomProperties(Map<String, AbstractProperty<?>> customProperties) {
         this.customProperties = customProperties;
     }
     

@@ -37,7 +37,7 @@ public interface ConsoleConstants {
     String CONTENT_TYPE_CSS = "text/css";
 
     /** Content type for response. */
-    String CONTENT_TYPE_JS = "text/plain";
+    String CONTENT_TYPE_JS = "application/javascript";
 
 
     // -------- RESOURCES ------------------------------

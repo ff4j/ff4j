@@ -51,8 +51,8 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
     @Before
     public void setUp() throws Exception {
         ff4j = new FF4j();
-        ff4j.setStore(initStore());
-        testedStore = ff4j.getStore();
+        ff4j.setFeatureStore(initStore());
+        testedStore = ff4j.getFeatureStore();
         assertFf4j = new AssertFf4j(ff4j);
     }
 

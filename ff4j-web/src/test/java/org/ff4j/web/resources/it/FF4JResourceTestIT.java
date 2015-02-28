@@ -44,7 +44,7 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
     @Test
     public void testGet() {
         // Given
-        Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getStore().getClass());
+        Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getFeatureStore().getClass());
         // When
         ClientResponse resHttp = resourceff4j().type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
         
@@ -102,9 +102,9 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
     public void testPost_isFlipped() {
         // Given
         assertFF4J.assertThatFeatureExist(F2);
-        ff4j.getStore().enable(F2);
+        ff4j.getFeatureStore().enable(F2);
         assertFF4J.assertThatFeatureExist(F4);
-        ff4j.getStore().enable(F4);
+        ff4j.getFeatureStore().enable(F4);
         assertFF4J.assertThatFeatureFlipped(F4);
         // When
         MultivaluedMap<String, String> formData = new MultivaluedMapImpl();

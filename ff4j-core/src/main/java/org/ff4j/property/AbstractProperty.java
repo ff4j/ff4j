@@ -20,49 +20,59 @@ package org.ff4j.property;
  * #L%
  */
 
-import java.util.List;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.ff4j.utils.Util;
 
 /**
- * Property to be store
+ * Abstraction of Property.
  *
- * { name="", type="INT", value="", fixedValue="" }
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public abstract class AbstractProperty < T > {
+public abstract class AbstractProperty < T > implements Serializable {
     
-    /** Unique identifier. */
+    /** serial. */
+    private static final long serialVersionUID = 4987351300418126366L;
+
+    /** Unique name for property. */
     protected String name;
     
-    /** Typed value. */
+    /** Canonical name for JSON serialization. */
+    protected String type = getClass().getCanonicalName();
+    
+    /** Current Value. */
     protected T value;
     
-    /** Close list of value. */
-    protected List < T > fixedValues;
+    /** If value have a limited set of values. */
+    protected Set < T > fixedValues;
     
     /**
      * Default constructor.
-     *
-     * @param json
      */
     public AbstractProperty() {
     }
             
     /**
-     * Default constructor.
+     * Constructor by property name.
      *
-     * @param json
+     * @param name
+     *         unique property name
      */
     public AbstractProperty(String name) {
         Util.assertHasLength(name);
         this.name = name;
     }
             
+   
     /**
-     * Init from String.
+     * Constructor with name and value as String.
      *
-     * @param json
+     * @param name
+     *      current name
+     * @param value
+     *      current value
      */
     public AbstractProperty(String name, String value) {
         this(name);
@@ -70,11 +80,14 @@ public abstract class AbstractProperty < T > {
     }
     
     /**
-     * Param JSON.
+     * Constructor with name , value and target available values
      *
-     * @param json
+     * @param name
+     *      current name
+     * @param value
+     *      current value
      */
-    public AbstractProperty(String name, T value, List <T> fixed) {
+    public AbstractProperty(String name, T value, Set <T> fixed) {
         this(name);
         this.value = value;
         this.fixedValues = fixed;
@@ -84,20 +97,43 @@ public abstract class AbstractProperty < T > {
     }
     
     /**
-     * To be implemented if dedicated implementation.
+     * Help XML parsing to realize downcastings.
      *
      * @param v
+     *      current value as String
+     */
+    public void add2FixedValueFromString(String v) {
+        add2FixedValue(fromString(v));
+    }
+    
+    /**
+     * Add element to fixed values.
+     * 
+     * @param value
      *      current value
+     */
+    public void add2FixedValue(T value) {
+        if (fixedValues == null) {
+            fixedValues = new HashSet<T>();
+        }
+        fixedValues.add(value);
+    }
+    
+    /**
+     * Unmarshalling of value for serailized string expression.
+     *
+     * @param v
+     *      value represented as a serialized String
      * @return
-     *      target objet
+     *      target value
      */
     public abstract T fromString(String v);
     
     /** 
-     * Handle Values.
+     * Serialized value as String
      *
      * @return
-     *      targate values
+     *      current value as a string or null
      */
     public String asString() {
         if (value == null) {
@@ -107,7 +143,7 @@ public abstract class AbstractProperty < T > {
     }
     
     /**
-     * Return value as int if possible.
+     * Return value as int (if possible).
      *
      * @return
      *      int value
@@ -154,6 +190,16 @@ public abstract class AbstractProperty < T > {
     public void setValue(T value) {
         this.value = value;
     }
+    
+    /**
+     * Load value from its string expression.
+     *
+     * @param value
+     *      current string value
+     */
+    public void setValueFromString(String value) {
+        this.value = fromString(value);
+    }
 
     /**
      * Getter accessor for attribute 'name'.
@@ -180,7 +226,7 @@ public abstract class AbstractProperty < T > {
      * @return
      *       current value of 'fixedValues'
      */
-    public List<T> getFixedValues() {
+    public Set<T> getFixedValues() {
         return fixedValues;
     }
 
@@ -189,14 +235,19 @@ public abstract class AbstractProperty < T > {
      * @param fixedValues
      * 		new value for 'fixedValues '
      */
-    public void setFixedValues(List<T> fixedValues) {
+    public void setFixedValues(Set<T> fixedValues) {
         this.fixedValues = fixedValues;
     }
 
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        String start = "{\"name\":\"" + name + "\",\"value\":\"" + value + "\",\"fixedValues\":";
+        String start = "{\"name\":\"" + name + "\",\"type\":\"" + this.getClass().getCanonicalName() + "\",\"value\":";
+        String sep = "\"";
+        if (value instanceof Integer || value instanceof Double || value instanceof Boolean ) {
+            sep = "";
+        }
+        start += sep + value + sep + ",\"fixedValues\":";
         if (fixedValues == null) {
             start+="null";
         } else {
@@ -204,13 +255,32 @@ public abstract class AbstractProperty < T > {
             boolean first = true;
             for (T fv : fixedValues) {
                 start += first ? "" : ",";
-                start += "\"" + fv.toString() + "\"";
+                start += sep + fv.toString() + sep;
                 first = false;
             }
             start += "]";
         }
         start += "}";
         return start;
+    }
+
+    /**
+     * Getter accessor for attribute 'type'.
+     *
+     * @return
+     *       current value of 'type'
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * Setter accessor for attribute 'type'.
+     * @param type
+     * 		new value for 'type '
+     */
+    public void setType(String type) {
+        this.type = type;
     }
 
 }

@@ -1,4 +1,4 @@
-package org.ff4j.core;
+package org.ff4j.conf;
 
 /*
  * #%L
@@ -38,6 +38,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.ff4j.core.Feature;
+import org.ff4j.core.FlippingStrategy;
 import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.Property;
 import org.w3c.dom.Document;
@@ -53,7 +55,7 @@ import org.xml.sax.SAXParseException;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public final class FeatureXmlParser {
+public final class XmlParser {
 
     /** TAG XML. */
     public static final String FEATURES_TAG = "features";
@@ -83,6 +85,9 @@ public final class FeatureXmlParser {
     public static final String PROPERTIES_TAG = "properties";
     
     /** TAG XML. */
+    public static final String PROPERTIES_CUSTOM_TAG = "custom-properties";
+    
+    /** TAG XML. */
     public static final String PROPERTY_TAG = "property";
     
     /** TAG XML. */
@@ -93,6 +98,9 @@ public final class FeatureXmlParser {
 
     /** TAG XML. */
     public static final String PROPERTY_PARAMVALUE = "value";
+    
+    /** TAG XML. */
+    public static final String PROPERTY_PARAMFIXED_VALUES = "fixedValues";
     
     /** TAG XML. */
     public static final String FLIPSTRATEGY_ATTCLASS = "class";
@@ -127,26 +135,88 @@ public final class FeatureXmlParser {
     /** XML Generation constants. */
     private static final String XML_HEADER = 
             "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"//
-            + "<features xmlns=\"http://www.ff4j.org/schema/ff4j\""//
+            + "<ff4j xmlns=\"http://www.ff4j.org/schema/ff4j\""//
             + "\n xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""//
-            + "\n xsi:schemaLocation=\"http://www.ff4j.org/schema/ff4j http://ff4j.org/schema/ff4j-1.2.0.xsd\">"
+            + "\n xsi:schemaLocation=\"http://www.ff4j.org/schema/ff4j http://ff4j.org/schema/ff4j-1.4.0.xsd\">"
             + ">\n\n";
 
     /** XML Generation constants. */
-    private static final String XML_FEATURE = " <feature uid=\"{0}\" description=\"{1}\" enable=\"{2}\">\n";
+    private static final String XML_FEATURE = "  <feature uid=\"{0}\" description=\"{1}\" enable=\"{2}\">\n";
 
     /** XML Generation constants. */
-    private static final String XML_AUTH = "     <role name=\"{0}\" />\n";
+    private static final String XML_AUTH = "      <role name=\"{0}\" />\n";
 
     /** XML Generation constants. */
-    private static final String END_FEATURE = " </feature>\n\n";
+    private static final String END_FEATURE = "  </feature>\n\n";
 
     /** XML Generation constants. */
-    private static final String END_FEATURES = "</features>\n\n";
+    private static final String BEGIN_FEATURES = " <features>\n\n";
+    
+    /** XML Generation constants. */
+    private static final String END_FEATURES = " </features>\n\n";
+    
+    /** XML Generation constants. */
+    private static final String BEGIN_PROPERTIES = " <properties>\n\n";
+    
+    /** XML Generation constants. */
+    private static final String BEGIN_CUSTOMPROPERTIES = "   <custom-properties>\n";
+    
+    /** XML Generation constants. */
+    private static final String END_CUSTOMPROPERTIES = "   </custom-properties>\n";
+    
+    /** XML Generation constants. */
+    private static final String END_PROPERTIES = " </properties>\n\n";
+    
+    /** XML Generation constants. */
+    private static final String END_FF4J = "</ff4j>\n\n";
 
     /** Document Builder use to parse XML. */
     private static DocumentBuilder builder = null;
    
+    /**
+     * Parsing of XML Configuration file.
+     *
+     * @param file
+     *      target file
+     * @return
+     *      features and properties find within file
+     */
+    public XmlConfiguration parseConfigurationFile(InputStream in) {
+        try {
+            
+            // Object to be build by parsing
+            XmlConfiguration xmlConf = new XmlConfiguration();
+                
+            // Load XML as a Document
+            Document ff4jDocument = getDocumentBuilder().parse(in);
+            
+            // Features Tag
+            NodeList fList = ff4jDocument.getElementsByTagName(FEATURES_TAG);
+            if (fList.getLength() > 1) {
+                throw new IllegalArgumentException("Root Tag is 'features' and must be unique, please check");
+            } else if (fList.getLength() == 1) {
+                xmlConf.setFeatures(parseFeaturesTag( (Element) fList.item(0)));
+            }
+            
+            // Properties Tag
+            NodeList pList = ff4jDocument.getElementsByTagName(PROPERTIES_TAG);
+            if (pList.getLength() > 1) {
+                throw new IllegalArgumentException("Root Tag is 'properties' and must be unique, please check");
+            } else if (pList.getLength() == 1) {
+               xmlConf.setProperties(parsePropertiesTag((Element) pList.item(0)));
+            }
+            
+            return xmlConf;
+            
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Cannot parse XML data, please check file access ", e);
+        } catch (ParserConfigurationException e1) {
+            throw new IllegalArgumentException("Error during initialization of parser ", e1);
+        } catch (SAXException e2) {
+            throw new IllegalArgumentException("Cannot parse XML, invalid format ", e2);
+        }
+    }
+    
     /**
      * Load map of {@link Feature} from an inpustream (containing xml text).
      * 
@@ -156,41 +226,23 @@ public final class FeatureXmlParser {
      * @throws IOException
      *             exception raised when reading inputstream
      */
-    public Map<String, Feature> parseConfigurationFile(InputStream in) {
-        LinkedHashMap<String, Feature> xmlFeatures = new LinkedHashMap<String, Feature>();
-        try {
-            // Load XML as a Document
-            Document ff4jDocument = getDocumentBuilder().parse(in);
-
-            // Features Tag
-            NodeList rootList = ff4jDocument.getElementsByTagName(FEATURES_TAG);
-            if (rootList.getLength() != 1) {
-                throw new IllegalArgumentException("Root Tag is 'features' and must be unique, please check");
-            }
-            Element featuresTag = (Element) rootList.item(0);
-
-            NodeList firstLevelNodes = featuresTag.getChildNodes();
-            for (int i = 0; i < firstLevelNodes.getLength(); i++) {
-                if (firstLevelNodes.item(i) instanceof Element) {
-                    Element currentCore = (Element) firstLevelNodes.item(i);
-                    if (FEATURE_TAG.equals(currentCore.getNodeName())) {
-                        Feature singleFeature = parseFeatureTag(currentCore);
-                        xmlFeatures.put(singleFeature.getUid(), singleFeature);
-                    } else if (FEATUREGROUP_TAG.equals(currentCore.getNodeName())) {
-                        xmlFeatures.putAll(parseFeatureGroupTag(currentCore));
-                    } else {
-                        throw new IllegalArgumentException("Invalid XML Format, Features sub nodes are [feature,feature-group]");
-                    }
+    public Map<String, Feature> parseFeaturesTag(Element featuresTag) {
+        Map<String, Feature> xmlFeatures = new LinkedHashMap<String, Feature>();
+        NodeList firstLevelNodes = featuresTag.getChildNodes();
+        for (int i = 0; i < firstLevelNodes.getLength(); i++) {
+            if (firstLevelNodes.item(i) instanceof Element) {
+                Element currentCore = (Element) firstLevelNodes.item(i);
+                if (FEATURE_TAG.equals(currentCore.getNodeName())) {
+                    Feature singleFeature = parseFeatureTag(currentCore);
+                    xmlFeatures.put(singleFeature.getUid(), singleFeature);
+                } else if (FEATUREGROUP_TAG.equals(currentCore.getNodeName())) {
+                    xmlFeatures.putAll(parseFeatureGroupTag(currentCore));
+                } else {
+                    throw new IllegalArgumentException("Invalid XML Format, Features sub nodes are [feature,feature-group]");
                 }
             }
-            return xmlFeatures;
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Cannot parse XML data, please check file access ", e);
-        } catch (ParserConfigurationException e1) {
-            throw new IllegalArgumentException("Error during initialization of parser ", e1);
-        } catch (SAXException e2) {
-            throw new IllegalArgumentException("Cannot parse XML, invalid format ", e2);
         }
+        return xmlFeatures;
     }
 
     /**
@@ -257,9 +309,9 @@ public final class FeatureXmlParser {
         }
         
         // Properties
-        NodeList properties = featXmlTag.getElementsByTagName(PROPERTIES_TAG);
+        NodeList properties = featXmlTag.getElementsByTagName(PROPERTIES_CUSTOM_TAG);
         if (properties.getLength() > 0) {
-            f.setCustomProperties(parseCustomProperties((Element) properties.item(0), f.getUid()));
+            f.setCustomProperties(parsePropertiesTag((Element) properties.item(0)));
         }
 
         return f;
@@ -274,7 +326,7 @@ public final class FeatureXmlParser {
      * @return
      *      properties map
      */
-    private Map < String , ? extends AbstractProperty<?>> parseCustomProperties(Element propertiesTag, String uid) {
+    private Map < String , AbstractProperty<?>> parsePropertiesTag(Element propertiesTag) {
         Map< String , AbstractProperty<?>> properties = new HashMap<String, AbstractProperty<?>>(); 
         // <properties>
         NodeList lisOfProperties = propertiesTag.getElementsByTagName(PROPERTY_TAG);
@@ -290,11 +342,15 @@ public final class FeatureXmlParser {
             }
             String name  = attMap.getNamedItem(PROPERTY_PARAMNAME).getNodeValue();
             String value = attMap.getNamedItem(PROPERTY_PARAMVALUE).getNodeValue();
+            
+            AbstractProperty<?> ap = new Property(name, value);
+            // If specific type defined ?
             if (attMap.getNamedItem(PROPERTY_PARAMTYPE) != null) {
                 String optionalType = attMap.getNamedItem(PROPERTY_PARAMTYPE).getNodeValue();
                 try {
+                    // Construction by dedicated constructor with introspection
                     Constructor<?> constr = Class.forName(optionalType).getConstructor(String.class, String.class);
-                    properties.put(name, (AbstractProperty<?>) constr.newInstance(name, value));
+                    ap = (AbstractProperty<?>) constr.newInstance(name, value);
                 } catch (InstantiationException e) {
                     throw new IllegalArgumentException("Cannot instanciate '" + optionalType + "' check default constructor", e);
                 } catch (IllegalAccessException e) {
@@ -308,9 +364,27 @@ public final class FeatureXmlParser {
                 } catch (SecurityException e) {
                     throw new IllegalArgumentException("Cannot instanciate '" + optionalType + "' check constructor visibility", e);
                 }
-            } else {
-                properties.put(name, new Property(name, value));
             }
+            
+            // Is there any fixed Value ?
+            NodeList listOfFixedValue = propertyTag.getElementsByTagName(PROPERTY_PARAMFIXED_VALUES);
+            if (listOfFixedValue.getLength() != 0) {
+                Element fixedValueTag = (Element) listOfFixedValue.item(0);
+                NodeList listOfValues =  fixedValueTag.getElementsByTagName(PROPERTY_PARAMVALUE);
+                for (int l = 0; l < listOfValues.getLength(); l++) {
+                    Element valueTag = (Element) listOfValues.item(l);
+                    ap.add2FixedValueFromString(valueTag.getTextContent());
+                }
+            }
+            
+            // Check fixed value
+            if (ap.getFixedValues() != null && !ap.getFixedValues().contains(ap.getValue())) {
+                throw new IllegalArgumentException("Cannot create property <" + ap.getName() + 
+                        "> invalid value <" + ap.getValue() + 
+                        "> expected one of " + ap.getFixedValues());
+            }
+            
+            properties.put(name, ap);
         }
         return properties;
     }
@@ -434,16 +508,95 @@ public final class FeatureXmlParser {
     /**
      * Create XML output stream from a map of {@link Feature}.
      * 
+     * @param mapOfFeatures
+     *            map of features
+     * @return streams
+     * @throws IOException
+     *             error occurs when generating output
+     */
+    public InputStream exportFeatures(Map<String, Feature> mapOfFeatures) throws IOException {    
+        return new ByteArrayInputStream(exportFeaturesPart(mapOfFeatures).getBytes(ENCODING));
+    }
+    
+    /**
+     * Create XML output stream from a map of {@link Property}.
+     * 
+     * @param mapOfProperties
+     *            map of properties
+     * @return streams
+     * @throws IOException
+     *             error occurs when generating output
+     */
+    public InputStream exportProperties(Map < String, AbstractProperty<?>> mapOfProperties) throws IOException {   
+        return new ByteArrayInputStream(exportPropertiesPart(mapOfProperties).getBytes(ENCODING));
+    }
+    
+    /**
+     * Create XML output stream with both {@link Feature} and {@link Property}.
+     * 
      * @param f
      *            map of features
      * @return streams
      * @throws IOException
      *             error occurs when generating output
      */
-    public InputStream exportFeatures(Map<String, Feature> mapOfFeatures) throws IOException {
+    public InputStream exportAll(Map<String, Feature> mapOfFeatures, Map < String, AbstractProperty<?>> mapOfProperties) throws IOException {   
+        // Create output
+        StringBuilder sb = new StringBuilder(XML_HEADER);
+        sb.append(exportFeaturesPart(mapOfFeatures));
+        sb.append(exportPropertiesPart(mapOfProperties));
+        sb.append(END_FF4J);
+        return new ByteArrayInputStream(sb.toString().getBytes(ENCODING));
+    }
+    
+    /**
+     * Utility method to export from configuration.
+     *
+     * @param conf
+     *      target configuration
+     * @return
+     *      target stream
+     * @throws IOException
+     *      error during marshalling
+     */
+    public InputStream exportAll(XmlConfiguration conf) throws IOException {
+        return exportAll(conf.getFeatures(), conf.getProperties());
+    }
+    
+    /**
+     * Create dedicated output for Properties.
+     *
+     * @param mapOfProperties
+     *      target properties
+     * @return
+     *      XML Flow     
+     */
+    private String exportPropertiesPart(Map < String, AbstractProperty<?>> mapOfProperties) {
+        // Create <features>
+        StringBuilder sb = new StringBuilder(BEGIN_PROPERTIES);
+        if (mapOfProperties != null && !mapOfProperties.isEmpty()) {
+            sb.append(buildPropertiesPart(mapOfProperties));
+        }
+        sb.append(END_PROPERTIES);
+        return sb.toString();
+    }
+    
+    /**
+     * Export Features part of the XML.
+     *
+     * @param mapOfFeatures
+     *      current map of feaures.
+     * 
+     * @return
+     *      all XML
+     */
+    private String exportFeaturesPart(Map<String, Feature> mapOfFeatures) {
+        // Create <features>
+        StringBuilder sb = new StringBuilder(BEGIN_FEATURES);
+        
+        // Recreate Groups
+        Map<String, List<Feature>> featuresPerGroup = new HashMap<String, List<Feature>>();
         if (mapOfFeatures != null && !mapOfFeatures.isEmpty()) {
-            // Recreate Groups
-            Map<String, List<Feature>> featuresPerGroup = new HashMap<String, List<Feature>>();
             for (Feature feat : mapOfFeatures.values()) {
                 String groupName = feat.getGroup();
                 if (!featuresPerGroup.containsKey(groupName)) {
@@ -451,51 +604,87 @@ public final class FeatureXmlParser {
                 }
                 featuresPerGroup.get(groupName).add(feat);
             }
+        }
             
-            // Create output
-            StringBuilder sb = new StringBuilder(XML_HEADER);
-            for (String groupName : featuresPerGroup.keySet()) {
-                
-                /// Building featureGroup
-                if (null != groupName && !groupName.isEmpty()) {
-                    sb.append(" <" + FEATUREGROUP_TAG + " " + FEATUREGROUP_ATTNAME + "=\"" + groupName + "\" >\n\n");
-                }
-                // Loop on feature
-                for (Feature feat : featuresPerGroup.get(groupName)) {
-                    sb.append(MessageFormat.format(XML_FEATURE, feat.getUid(), feat.getDescription(), feat.isEnable()));
-                    // <security>
-                    if (null != feat.getPermissions() && !feat.getPermissions().isEmpty()) {
-                        sb.append("   <" + SECURITY_TAG + ">\n");
-                        for (String auth : feat.getPermissions()) {
-                            sb.append(MessageFormat.format(XML_AUTH, auth));
-                        }
-                        sb.append("   </" + SECURITY_TAG + ">\n");
+        for (String groupName : featuresPerGroup.keySet()) {
+            /// Building featureGroup
+            if (null != groupName && !groupName.isEmpty()) {
+                sb.append(" <" + FEATUREGROUP_TAG + " " + FEATUREGROUP_ATTNAME + "=\"" + groupName + "\" >\n\n");
+            }
+            // Loop on feature
+            for (Feature feat : featuresPerGroup.get(groupName)) {
+                sb.append(MessageFormat.format(XML_FEATURE, feat.getUid(), feat.getDescription(), feat.isEnable()));
+                // <security>
+                if (null != feat.getPermissions() && !feat.getPermissions().isEmpty()) {
+                    sb.append("   <" + SECURITY_TAG + ">\n");
+                    for (String auth : feat.getPermissions()) {
+                        sb.append(MessageFormat.format(XML_AUTH, auth));
                     }
-                    // <flipstrategy>
-                    FlippingStrategy fs = feat.getFlippingStrategy();
-                    if (null != fs) {
-                        sb.append("   <" + FLIPSTRATEGY_TAG + " class=\"" + fs.getClass().getCanonicalName() + "\" >\n");
-                        for (String p : fs.getInitParams().keySet()) {
-                            sb.append("     <" + FLIPSTRATEGY_PARAMTAG + " " + FLIPSTRATEGY_PARAMNAME + "=\"");
-                            sb.append(p);
-                            sb.append("\" " + FLIPSTRATEGY_PARAMVALUE + "=\"");
-                            sb.append(fs.getInitParams().get(p));
-                            sb.append("\" />\n");
-                        }
-                        sb.append("   </" + FLIPSTRATEGY_TAG + ">\n");
-                    }
-                    sb.append(END_FEATURE);
+                    sb.append("   </" + SECURITY_TAG + ">\n");
                 }
-                
-                if (null != groupName && !groupName.isEmpty()) {
-                    sb.append(" </" + FEATUREGROUP_TAG + ">\n\n");
+                // <flipstrategy>
+                FlippingStrategy fs = feat.getFlippingStrategy();
+                if (null != fs) {
+                    sb.append("   <" + FLIPSTRATEGY_TAG + " class=\"" + fs.getClass().getCanonicalName() + "\" >\n");
+                    for (String p : fs.getInitParams().keySet()) {
+                        sb.append("     <" + FLIPSTRATEGY_PARAMTAG + " " + FLIPSTRATEGY_PARAMNAME + "=\"");
+                        sb.append(p);
+                        sb.append("\" " + FLIPSTRATEGY_PARAMVALUE + "=\"");
+                        sb.append(fs.getInitParams().get(p));
+                        sb.append("\" />\n");
+                    }
+                    sb.append("   </" + FLIPSTRATEGY_TAG + ">\n");
+                }
+                // <custom-properties>
+                Map < String, AbstractProperty<?>> props = feat.getCustomProperties();
+                if (props != null && !props.isEmpty()) {
+                    sb.append(BEGIN_CUSTOMPROPERTIES);
+                    sb.append(buildPropertiesPart(feat.getCustomProperties()));
+                    sb.append(END_CUSTOMPROPERTIES);
+                }
+                sb.append(END_FEATURE);
+            }
+            
+            if (null != groupName && !groupName.isEmpty()) {
+                sb.append(" </" + FEATUREGROUP_TAG + ">\n\n");
+            }
+        }
+        sb.append(END_FEATURES);
+        return sb.toString();
+    }
+    
+    /**
+     * Create XML content of the properties or custom properties elements.
+     *
+     * @param props
+     *      properties elements.
+     * @return
+     */
+    private String buildPropertiesPart(Map < String, AbstractProperty<?>> props) {
+        StringBuilder sb = new StringBuilder();
+        if (props != null && !props.isEmpty()) {
+            // Loop over property
+            for (AbstractProperty<?> property : props.values()) {
+                sb.append("    <" + PROPERTY_TAG + " " + PROPERTY_PARAMNAME + "=\"" + property.getName() + "\" ");
+                sb.append(PROPERTY_PARAMVALUE + "=\"" + property.asString() + "\" ");
+                if (!(property instanceof Property)) {
+                    sb.append(PROPERTY_PARAMTYPE  + "=\"" + property.getClass().getCanonicalName()  + "\"");
+                }
+                // Processing fixedValue is present
+                if (property.getFixedValues() != null && !property.getFixedValues().isEmpty()) {
+                    sb.append(">\n");
+                    sb.append("     <fixedValues>\n");
+                    for (Object o : property.getFixedValues()) {
+                        sb.append("      <value>" + o.toString() + "</value>\n");
+                    }
+                    sb.append("     </fixedValues>\n");
+                    sb.append("    </property>\n");
+                } else {
+                    sb.append("/>\n");
                 }
             }
-            sb.append(END_FEATURES);
-            return new ByteArrayInputStream(sb.toString().getBytes(ENCODING));
         }
-        return null;
+        return sb.toString();
     }
-
 
 }

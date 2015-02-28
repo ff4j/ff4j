@@ -67,7 +67,7 @@ public class GroupResource extends AbstractResource {
         @ApiResponse(code = 200, message= "Information about target group"), 
         @ApiResponse(code = 404, message= "Group not found") })
     public Response read(@PathParam("groupName") String groupName) {
-        Feature[] storeContent = getStore().readGroup(groupName).values().toArray(new Feature[0]);
+        Feature[] storeContent = getFeatureStore().readGroup(groupName).values().toArray(new Feature[0]);
         return Response.ok(featureArrayToJson(storeContent)).build();
     }
 
@@ -82,7 +82,7 @@ public class GroupResource extends AbstractResource {
     @ApiOperation(value= "Enable a group", response=Response.class)
     @ApiResponses(@ApiResponse(code = 204, message= "Group has been updated"))
     public Response operationEnable(@PathParam("groupName") String groupName) {
-        getStore().enableGroup(groupName);
+        getFeatureStore().enableGroup(groupName);
         return Response.noContent().build();
     }
 
@@ -97,7 +97,7 @@ public class GroupResource extends AbstractResource {
     @ApiOperation(value= "Disable a group", response=Response.class)
     @ApiResponses(@ApiResponse(code = 204, message= "Group has been disabled"))
     public Response operationDisableGroup(@PathParam("groupName") String groupName) {
-        getStore().disableGroup(groupName);
+        getFeatureStore().disableGroup(groupName);
         return Response.noContent().build();
     }
 

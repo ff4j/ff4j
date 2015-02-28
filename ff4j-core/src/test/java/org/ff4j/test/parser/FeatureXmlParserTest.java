@@ -27,11 +27,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-import org.junit.Assert;
+import org.ff4j.conf.XmlConfiguration;
+import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
-import org.ff4j.core.FeatureXmlParser;
+import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.PropertyLogLevel;
 import org.ff4j.property.PropertyLogLevel.LogLevel;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -43,7 +45,7 @@ public class FeatureXmlParserTest {
     @Test
     public void testLoaderXMLFile() {
         InputStream in = getClass().getClassLoader().getResourceAsStream("test-featureXmlParserTest-ok.xml");
-        Map<String, Feature> features = new FeatureXmlParser().parseConfigurationFile(in);
+        Map<String, Feature> features = new XmlParser().parseConfigurationFile(in).getFeatures();
 
         Assert.assertEquals(7, features.size());
         Assert.assertTrue(features.containsKey("f0"));
@@ -64,57 +66,91 @@ public class FeatureXmlParserTest {
     @Test(expected = IllegalArgumentException.class)
     public void testSaxException() {
         InputStream in = new ByteArrayInputStream("<TOTO>Invalid</TOTO2>".getBytes());
-        new FeatureXmlParser().parseConfigurationFile(in);
+        new XmlParser().parseConfigurationFile(in);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testNullFile() {
-        new FeatureXmlParser().parseConfigurationFile(null);
+        new XmlParser().parseConfigurationFile(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testLoaderRequiredUid() {
         InputStream in = getClass().getClassLoader().getResourceAsStream("test-featureXmlParserTest-ko-uidrequired.xml");
-        new FeatureXmlParser().parseConfigurationFile(in);
+        new XmlParser().parseConfigurationFile(in);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testLoaderRequiredEnable() {
         InputStream in = getClass().getClassLoader().getResourceAsStream("test-featureXmlParserTest-ko-enablerequired.xml");
-        new FeatureXmlParser().parseConfigurationFile(in);
+        new XmlParser().parseConfigurationFile(in);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testLoaderLoadInvalidStream() throws IOException {
         InputStream in = getClass().getClassLoader().getResourceAsStream("test-featureXmlParserTest-ok.xml");
         in.close();
-        new FeatureXmlParser().parseConfigurationFile(in);
+        new XmlParser().parseConfigurationFile(in);
     }
 
     @Test
     public void importThenExport() throws IOException {
         // Given
-        FeatureXmlParser parser = new FeatureXmlParser();
+        XmlParser parser = new XmlParser();
         InputStream in = getClass().getClassLoader().getResourceAsStream("test-featureXmlParserTest-import-export.xml");
-        Map<String, Feature> features = parser.parseConfigurationFile(in);
+        Map<String, Feature> features = parser.parseConfigurationFile(in).getFeatures();
         Assert.assertNotNull(features);
         // When
         InputStream in2 = parser.exportFeatures(features);
         // Then
         // output is OK
-        Map<String, Feature> features2 = parser.parseConfigurationFile(in2);
+        Map<String, Feature> features2 = parser.parseConfigurationFile(in2).getFeatures();
         Assert.assertNotNull(features2);
         Assert.assertEquals(features.size(), features2.size());
     }
     
     @Test
+    public void importThenExportFeatures2() throws IOException {
+        // Given
+        XmlParser parser = new XmlParser();
+        InputStream in = getClass().getClassLoader().getResourceAsStream("ff4j-parser-all.xml");
+        Map<String, Feature> features = parser.parseConfigurationFile(in).getFeatures();
+        Assert.assertNotNull(features);
+        // When
+        InputStream in3 = parser.exportFeatures(features);
+        // Then
+        // output is OK
+        Map<String, Feature> features2 = parser.parseConfigurationFile(in3).getFeatures();
+        Assert.assertNotNull(features2);
+        Assert.assertEquals(features.size(), features2.size());
+    }
+    
+    @Test
+    public void importThenExportALL() throws IOException {
+        // Given
+        XmlParser parser = new XmlParser();
+        InputStream in = getClass().getClassLoader().getResourceAsStream("ff4j-parser-all.xml");
+        XmlConfiguration conf = parser.parseConfigurationFile(in);
+        Assert.assertNotNull(conf.getFeatures());
+        Assert.assertNotNull(conf.getProperties());
+        // When
+        InputStream in3 = parser.exportAll(conf);
+        // Then
+        XmlConfiguration conf2 = parser.parseConfigurationFile(in3);
+        Assert.assertNotNull(conf2.getFeatures());
+        Assert.assertNotNull(conf2.getProperties());
+    }
+    
+    @Test
     public void testPropertiesParsing() throws IOException {
         // Given
-        FeatureXmlParser parser = new FeatureXmlParser();
+        XmlParser parser = new XmlParser();
         InputStream in = getClass().getClassLoader().getResourceAsStream("ff4j.xml");
+        
         // When
-        Map<String, Feature> features = parser.parseConfigurationFile(in);
+        XmlConfiguration conf = parser.parseConfigurationFile(in);
         // Then
+        Map<String, Feature> features = conf.getFeatures();
         Assert.assertNotNull(features);
         Feature f = features.get("first");
         Assert.assertNotNull(f);
@@ -125,11 +161,65 @@ public class FeatureXmlParserTest {
         Assert.assertEquals(f.getCustomProperties().get("ppdouble").asDouble(), 12.5,0);
         Assert.assertEquals(f.getCustomProperties().get("ppboolean").asBoolean(),true);
         Assert.assertEquals(f.getCustomProperties().get("ppstring").asString(), "hello");
-        
+        Assert.assertEquals(f.getCustomProperties().get("regionIdentifier").asString(), "AMER");
+        Assert.assertNotNull(f.getCustomProperties().get("regionIdentifier").getFixedValues());
+        Assert.assertFalse(f.getCustomProperties().get("regionIdentifier").getFixedValues().isEmpty());
         PropertyLogLevel pll = (PropertyLogLevel) f.getCustomProperties().get("myLogLevel");
-        Assert.assertEquals(pll.getValue(), LogLevel.DEBUG); 
-        System.out.println(f.getCustomProperties());
+        Assert.assertEquals(pll.getValue(), LogLevel.DEBUG);
+        
+        // Then
+        Map < String, AbstractProperty<?>> properties = conf.getProperties();
+        Assert.assertNotNull(properties);
+        System.out.println(properties);
         
     }
+    
+    @Test
+    public void testParsingALL() throws IOException {
+        // Given
+        XmlParser parser = new XmlParser();
+        InputStream in = getClass().getClassLoader().getResourceAsStream("ff4j-parser-all.xml");
+        // When
+        XmlConfiguration conf = parser.parseConfigurationFile(in);
+        // Then
+        Map<String, Feature> features = conf.getFeatures();
+        Assert.assertNotNull(features);
+        // Then
+        Map < String, AbstractProperty<?>> properties = conf.getProperties();
+        Assert.assertNotNull(properties);
+    }
+    
+    @Test
+    public void testParsingFeatures() throws IOException {
+        // Given
+        XmlParser parser = new XmlParser();
+        InputStream in = getClass().getClassLoader().getResourceAsStream("ff4j-parser-features.xml");
+        // When
+        XmlConfiguration conf = parser.parseConfigurationFile(in);
+        // Then
+        Map<String, Feature> features = conf.getFeatures();
+        Assert.assertNotNull(features);
+        // Then
+        Map < String, AbstractProperty<?>> properties = conf.getProperties();
+        Assert.assertNotNull(properties);
+    }
+    
+    
+    @Test
+    public void testParsingProperties() throws IOException {
+        // Given
+        XmlParser parser = new XmlParser();
+        InputStream in = getClass().getClassLoader().getResourceAsStream("ff4j-parser-properties.xml");
+        // When
+        XmlConfiguration conf = parser.parseConfigurationFile(in);
+        // Then
+        Map<String, Feature> features = conf.getFeatures();
+        Assert.assertNotNull(features);
+        // Then
+        Map < String, AbstractProperty<?>> properties = conf.getProperties();
+        Assert.assertNotNull(properties);
+    }
+    
+    
 
 }

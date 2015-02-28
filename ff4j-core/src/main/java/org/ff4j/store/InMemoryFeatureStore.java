@@ -19,8 +19,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
-import org.ff4j.core.FeatureXmlParser;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
@@ -99,7 +99,7 @@ public class InMemoryFeatureStore extends AbstractFeatureStore {
         if (xmlIN == null) {
             throw new IllegalArgumentException("Cannot parse feature stream");
         }
-        this.featuresMap = new FeatureXmlParser().parseConfigurationFile(xmlIN);
+        this.featuresMap = new XmlParser().parseConfigurationFile(xmlIN).getFeatures();
         buildGroupsFromFeatures();
     }
 

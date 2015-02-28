@@ -34,8 +34,8 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 import org.ff4j.FF4j;
+import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
-import org.ff4j.core.FeatureXmlParser;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.web.api.FF4JProvider;
 import org.slf4j.Logger;
@@ -231,11 +231,11 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                         if (groupName != null && !groupName.isEmpty()) {
                             String operationGroup = req.getParameter(SUBOPERATION);
                             if (OP_ENABLE.equalsIgnoreCase(operationGroup)) {
-                                getFf4j().getStore().enableGroup(groupName);
+                                getFf4j().getFeatureStore().enableGroup(groupName);
                                 message = buildMessageGroup(groupName, "ENABLED");
                                 LOGGER.info("Group '" + groupName + "' has been ENABLED.");
                             } else if (OP_DISABLE.equalsIgnoreCase(operationGroup)) {
-                                getFf4j().getStore().disableGroup(groupName);
+                                getFf4j().getFeatureStore().disableGroup(groupName);
                                 message = buildMessageGroup(groupName, "DISABLED");
                                 LOGGER.info("Group '" + groupName + "' has been DISABLED.");
                             }
@@ -397,7 +397,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
             }
 
             // Creation
-            getFf4j().getStore().create(fp);
+            getFf4j().getFeatureStore().create(fp);
             LOGGER.info(featureId + " has been created");
         }
     }
@@ -472,7 +472,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
             }
 
             // Creation
-            getFf4j().getStore().update(fp);
+            getFf4j().getFeatureStore().update(fp);
             LOGGER.info(featureId + " has been updated");
         }
     }
@@ -486,7 +486,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
     private void opDeleteFeature(HttpServletRequest req) {
         final String featureId = req.getParameter(FEATID);
         if (featureId != null && !featureId.isEmpty()) {
-            getFf4j().getStore().delete(featureId);
+            getFf4j().getFeatureStore().delete(featureId);
             LOGGER.info(featureId + " has been deleted");
         }
     }
@@ -500,12 +500,13 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
      *             Error raised if the configuration cannot be read
      */
     private void opImportFile(InputStream in) throws IOException {
-        Map<String, Feature> mapsOfFeat = new FeatureXmlParser().parseConfigurationFile(in);
+        
+        Map<String, Feature> mapsOfFeat = new XmlParser().parseConfigurationFile(in).getFeatures();
         for (Entry<String, Feature> feature : mapsOfFeat.entrySet()) {
-            if (getFf4j().getStore().exist(feature.getKey())) {
-                getFf4j().getStore().update(feature.getValue());
+            if (getFf4j().getFeatureStore().exist(feature.getKey())) {
+                getFf4j().getFeatureStore().update(feature.getValue());
             } else {
-                getFf4j().getStore().create(feature.getValue());
+                getFf4j().getFeatureStore().create(feature.getValue());
             }
         }
         LOGGER.info(mapsOfFeat.size() + " features have been imported.");
@@ -520,8 +521,8 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
      *             error when building response
      */
     private void opExportFile(HttpServletResponse res) throws IOException {
-        Map<String, Feature> features = getFf4j().getStore().readAll();
-        InputStream in = new FeatureXmlParser().exportFeatures(features);
+        Map<String, Feature> features = getFf4j().getFeatureStore().readAll();
+        InputStream in = new XmlParser().exportFeatures(features);
         ServletOutputStream sos = null;
         try {
             sos = res.getOutputStream();

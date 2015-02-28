@@ -20,32 +20,36 @@ package org.ff4j.property;
  * #L%
  */
 
-import java.util.List;
+import java.util.Set;
 
 /**
- * Default implementation of {@link AbstractProperty}.
+ * Default implementation of {@link AbstractProperty} as Simple string property
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class Property extends AbstractProperty< String>{
+public class Property extends AbstractProperty<String>{
     
+    /** serial. */
+    private static final long serialVersionUID = -7894832435341748278L;
+
     /**
-     * Default constructor..
+     * Default constructor.
      */
     public Property() {
     }
     
     /**
-     * Default constructor.
+     * Constructor by property name.
+     *
      * @param name
-     *      default.
+     *      property name
      */
     public Property(String name) {
         super(name);
     }
     
     /**
-     * Reference super constructor.
+     * Constructor by property value.
      * 
      * @param name
      *      current name
@@ -57,23 +61,29 @@ public class Property extends AbstractProperty< String>{
     }
     
     /**
-     * Reference super constructor.
+     * Full Constructor.
      * 
      * @param name
      *      current name
      * @param value
      *      current value
+     * @param fixed
+     *      fixed values available for this property
      */
-    public Property(String name, String value, List < String> fixed) {
+    public Property(String name, String value, Set < String> fixed) {
         super(name, value, fixed);
     }
 
     /** {@inheritDoc} */
     @Override
     public String fromString(String v) {
-        if (v == null || (fixedValues!= null && !fixedValues.contains(v))) {
-            throw new IllegalArgumentException("Invalid value corrects are " + fixedValues);
+        if (v == null) {
+            throw new IllegalArgumentException("Property value cannot be null");
         }
+        // Use to initialize fixedValue, cannot check them immediately
+        //if (fixedValues!= null && !fixedValues.contains(v)) {
+        //    throw new IllegalArgumentException("Invalid value corrects are " + fixedValues);
+        // }
         return v;
     }
 

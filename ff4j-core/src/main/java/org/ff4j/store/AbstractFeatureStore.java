@@ -24,9 +24,10 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Set;
 
+import org.ff4j.conf.XmlConfiguration;
+import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.core.FeatureXmlParser;
 
 /**
  * SuperClass for stores.
@@ -52,7 +53,8 @@ public abstract class AbstractFeatureStore implements FeatureStore {
             throw new IllegalArgumentException("File " + xmlConfFile + " could not be read, please check path and rights");
         }
         // Use the Feature Parser
-        Map < String, Feature > features = new FeatureXmlParser().parseConfigurationFile(xmlIS);
+        XmlConfiguration conf = new XmlParser().parseConfigurationFile(xmlIS);
+        Map < String, Feature > features = conf.getFeatures();
 
         // Override existing configuration within database
         for (String featureName : features.keySet()) {

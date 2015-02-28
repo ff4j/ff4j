@@ -181,7 +181,7 @@ public class SecuredFF4JResourceTestIT extends JerseyTest implements TestsFf4jCo
     @Test
     public void testKO_NotAuthorized_NoApiKeyNorCredentials() {
         // Given
-        Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getStore().getClass());
+        Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getFeatureStore().getClass());
         // When
         ClientResponse resHttp = resourceff4j().type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
         // Then, HTTPResponse
@@ -194,7 +194,7 @@ public class SecuredFF4JResourceTestIT extends JerseyTest implements TestsFf4jCo
     @Test
     public void testOK_withApiKey() {
         // Given
-        Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getStore().getClass());
+        Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getFeatureStore().getClass());
         // When
         ClientResponse resHttp = resourceff4j().header(HEADER_AUTHORIZATION, PARAM_AUTHKEY + "=456" ).type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
         // Then, HTTPResponse
@@ -207,7 +207,7 @@ public class SecuredFF4JResourceTestIT extends JerseyTest implements TestsFf4jCo
     @Test
     public void testOK_withCredentials() {
         // Given
-        Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getStore().getClass());
+        Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getFeatureStore().getClass());
         // When
         String authent = FeatureStoreHttp.buildAuthorization4UserName("user", "user");
         ClientResponse resHttp = resourceff4j().header(HEADER_AUTHORIZATION, authent).type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
@@ -221,7 +221,7 @@ public class SecuredFF4JResourceTestIT extends JerseyTest implements TestsFf4jCo
     @Test
     public void testKO_withInvalidApiKey() {
         // Given
-        Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getStore().getClass());
+        Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getFeatureStore().getClass());
         // When
         ClientResponse resHttp = resourceff4j().header(HEADER_AUTHORIZATION, PARAM_AUTHKEY + "=INVALID" ).type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
         // Then, HTTPResponse
@@ -234,7 +234,7 @@ public class SecuredFF4JResourceTestIT extends JerseyTest implements TestsFf4jCo
     @Test
     public void testKO_withInvalidUserName() {
         // Given
-        Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getStore().getClass());
+        Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getFeatureStore().getClass());
         // When
         String authent = FeatureStoreHttp.buildAuthorization4UserName("incalidUser", "user");
         ClientResponse resHttp = resourceff4j().header(HEADER_AUTHORIZATION, authent).type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
@@ -248,7 +248,7 @@ public class SecuredFF4JResourceTestIT extends JerseyTest implements TestsFf4jCo
     @Test
     public void testKO_withInvalidPassword() {
         // Given
-        Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getStore().getClass());
+        Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getFeatureStore().getClass());
         // When
         String authent = FeatureStoreHttp.buildAuthorization4UserName("user", "invalidPassword");
         ClientResponse resHttp = resourceff4j().header(HEADER_AUTHORIZATION, authent).type(MediaType.APPLICATION_JSON).get(ClientResponse.class);

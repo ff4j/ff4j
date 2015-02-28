@@ -21,6 +21,7 @@ package org.ff4j.property;
  */
 
 import java.util.Arrays;
+import java.util.HashSet;
 
 import org.ff4j.property.PropertyLogLevel.LogLevel;
 
@@ -31,32 +32,35 @@ import org.ff4j.property.PropertyLogLevel.LogLevel;
  */
 public class PropertyLogLevel extends AbstractProperty<LogLevel> {
 
+    /** Serial. */
+    private static final long serialVersionUID = 1792311055570779010L;
+
     /** Expected Log Levels. */
     public static enum LogLevel {TRACE, DEBUG, INFO, WARN, ERROR, FATAL};
     
     /**
-     * Dedicated property.
+     * Constructor by string expression.
      *
      * @param uid
-     *      target identifier
-     * @param value
-     *      current value
+     *      unique name
+     * @param lvl
+     *      current log level
      */
     public PropertyLogLevel(String uid, String lvl) {
        super(uid, lvl);
-       setFixedValues(Arrays.asList(LogLevel.values()));
+       setFixedValues(new HashSet<LogLevel>(Arrays.asList(LogLevel.values())));
     }
     
     /**
-     * Dedicated property.
+     * Constructor by enum expression.
      *
      * @param uid
-     *      target identifier
-     * @param value
-     *      current value
+     *      unique name
+     * @param lvlv
+     *      current log level
      */
     public PropertyLogLevel(String uid, LogLevel lvl) {
-        super(uid, lvl, Arrays.asList(LogLevel.values()));
+        super(uid, lvl, new HashSet<LogLevel>(Arrays.asList(LogLevel.values())));
     }
     
     /** {@inheritDoc} */

@@ -79,7 +79,7 @@ public class FeatureStoreResource extends AbstractResource {
     @ApiResponses(@ApiResponse(code = 200, message= "status of current ff4j bean"))
     @Produces(MediaType.APPLICATION_JSON)
     public FeatureStoreApiBean get() {
-        return new FeatureStoreApiBean(ff4j.getStore());
+        return new FeatureStoreApiBean(ff4j.getFeatureStore());
     }
     
     @GET
@@ -88,7 +88,7 @@ public class FeatureStoreResource extends AbstractResource {
     @ApiOperation(value= "Display information regarding <b>Features</b>", response=EventRepositoryApiBean.class)
     @ApiResponses(@ApiResponse(code = 200, message= "get all features"))
     public List < FeatureApiBean> readFeatures() {
-        Feature[] storeContent = getStore().readAll().values().toArray(new Feature[0]);
+        Feature[] storeContent = getFeatureStore().readAll().values().toArray(new Feature[0]);
         List < FeatureApiBean > apiBean = new ArrayList<FeatureApiBean>();
         for (Feature feature : storeContent) {
             apiBean.add(new FeatureApiBean(feature));
@@ -107,7 +107,7 @@ public class FeatureStoreResource extends AbstractResource {
     @ApiOperation(value= "Display information regarding <b>Groups</b>", response=GroupDescApiBean.class)
     @ApiResponses({@ApiResponse(code = 200, message="Groups resource", response=GroupDescApiBean.class)})
     public List < GroupDescApiBean > readGroups() {
-        Map< String, Feature > features = getStore().readAll();
+        Map< String, Feature > features = getFeatureStore().readAll();
         Map< String , GroupDescApiBean > groups = new HashMap<String, GroupDescApiBean>();
         if (features != null && !features.isEmpty()) {
             // Build groups from features
@@ -139,10 +139,10 @@ public class FeatureStoreResource extends AbstractResource {
     @ApiResponses({ @ApiResponse(code = 200, message= "status of current ff4j monitoring bean", response=CacheApiBean.class),
                     @ApiResponse(code = 404, message= "no cache content provided") })
     public Response getStatus() {
-        if (!getStore().isCached()) {
+        if (!getFeatureStore().isCached()) {
             return Response.status(Response.Status.NOT_FOUND).entity("Current Store is not cached").build();
         }
-        return Response.ok(new CacheApiBean(getStore())).build();
+        return Response.ok(new CacheApiBean(getFeatureStore())).build();
     }
     
     /**
@@ -155,10 +155,10 @@ public class FeatureStoreResource extends AbstractResource {
     @ApiResponses({ @ApiResponse(code = 200, message= "cache is cleard"),
                     @ApiResponse(code = 404, message= "no cache content provided") })
     public Response clear() {
-        if (!getStore().isCached()) {
+        if (!getFeatureStore().isCached()) {
             return Response.status(Response.Status.NOT_FOUND).entity("Current Store is not cached").build();
         }
-        ((FeatureStoreCacheProxy) getStore()).getCacheManager().clear();;
+        ((FeatureStoreCacheProxy) getFeatureStore()).getCacheManager().clear();;
         return Response.ok("Cache has been cleared").build();
     }
 

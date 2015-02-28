@@ -29,12 +29,14 @@ import org.ff4j.audit.EventPublisher;
 import org.ff4j.audit.EventType;
 import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.audit.repository.InMemoryEventRepository;
+import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.core.FeatureXmlParser;
 import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.property.store.InMemoryPropertyStore;
+import org.ff4j.property.store.PropertyStore;
 import org.ff4j.security.AuthorizationsManager;
 import org.ff4j.store.InMemoryFeatureStore;
 
@@ -65,7 +67,10 @@ import org.ff4j.store.InMemoryFeatureStore;
 public class FF4j {
 
     /** Storage to persist feature within {@link FeatureStore}. */
-    private FeatureStore store = new InMemoryFeatureStore();
+    private FeatureStore fstore = new InMemoryFeatureStore();
+    
+    /** Storage to persist properties within {@link PropertyStore}. */
+    private PropertyStore pStore = new InMemoryPropertyStore();
 
     /** Security policy to limit access through ACL with {@link AuthorizationsManager}. */
     private AuthorizationsManager authorizationsManager = null;
@@ -95,7 +100,7 @@ public class FF4j {
      * Constructor initializing ff4j with an InMemoryStore
      */
     public FF4j(String xmlFile) {
-        this.store = new InMemoryFeatureStore(xmlFile);
+        this.fstore = new InMemoryFeatureStore(xmlFile);
     }
 
     /**
@@ -103,7 +108,7 @@ public class FF4j {
      * <code>Asset</code>
      */
     public FF4j(InputStream xmlFileResourceAsStream) {
-        this.store = new InMemoryFeatureStore(xmlFileResourceAsStream);
+        this.fstore = new InMemoryFeatureStore(xmlFileResourceAsStream);
     }
 
     /**
@@ -139,7 +144,7 @@ public class FF4j {
 
         // If custom strategy has been defined, delegate flipping to
         if (flipped && fp.getFlippingStrategy() != null) {
-            flipped = flipped && fp.getFlippingStrategy().evaluate(featureID, getStore(), executionContext);
+            flipped = flipped && fp.getFlippingStrategy().evaluate(featureID, getFeatureStore(), executionContext);
         }
 
         // Any access is logged into audit system
@@ -174,7 +179,7 @@ public class FF4j {
         Feature fp = getFeature(featureID);
         boolean flipped = fp.isEnable() && isAllowed(fp);
         if (strats != null) {
-            flipped = flipped && strats.evaluate(featureID, getStore(), executionContext);
+            flipped = flipped && strats.evaluate(featureID, getFeatureStore(), executionContext);
         }
 
         // Any modification done is logged into audit system
@@ -214,7 +219,7 @@ public class FF4j {
      * @return get store features
      */
     public Map<String, Feature> getFeatures() {
-        return getStore().readAll();
+        return getFeatureStore().readAll();
     }
 
     /**
@@ -225,7 +230,7 @@ public class FF4j {
      */
     public FF4j enable(String featureID) {
         try {
-            getStore().enable(featureID);
+            getFeatureStore().enable(featureID);
         } catch (FeatureNotFoundException fnfe) {
             if (this.autocreate) {
                 return create(new Feature(featureID, true));
@@ -244,7 +249,7 @@ public class FF4j {
      * @return current instance
      */
     public FF4j enableGroup(String groupName) {
-        getStore().enableGroup(groupName);
+        getFeatureStore().enableGroup(groupName);
         getEventPublisher().publish(groupName, EventType.ENABLE_GROUP);
         return this;
     }
@@ -257,7 +262,7 @@ public class FF4j {
      * @return current instance
      */
     public FF4j disableGroup(String groupName) {
-        getStore().enableGroup(groupName);
+        getFeatureStore().enableGroup(groupName);
         getEventPublisher().publish(groupName, EventType.DISABLE_GROUP);
         return this;
     }
@@ -269,7 +274,7 @@ public class FF4j {
      *            unique feature identifier.
      */
     public FF4j create(Feature fp) {
-        getStore().create(fp);
+        getFeatureStore().create(fp);
         getEventPublisher().publish(fp.getUid(), EventType.CREATE);
         return this;
     }
@@ -312,7 +317,7 @@ public class FF4j {
      */
     public FF4j disable(String featureID) {
         try {
-            getStore().disable(featureID);
+            getFeatureStore().disable(featureID);
         } catch (FeatureNotFoundException fnfe) {
             if (this.autocreate) {
                 return create(new Feature(featureID, false));
@@ -331,7 +336,7 @@ public class FF4j {
      * @return flag to check existence of
      */
     public boolean exist(String featureId) {
-        return getStore().exist(featureId);
+        return getFeatureStore().exist(featureId);
     }
 
     /**
@@ -344,11 +349,11 @@ public class FF4j {
     public Feature getFeature(String featureID) {
         Feature fp = null;
         try {
-            fp = getStore().read(featureID);
+            fp = getFeatureStore().read(featureID);
         } catch (FeatureNotFoundException fnfe) {
             if (this.autocreate) {
                 fp = new Feature(featureID, false);
-                getStore().create(fp);
+                getFeatureStore().create(fp);
             } else {
                 throw fnfe;
             }
@@ -363,7 +368,7 @@ public class FF4j {
      * @throws IOException
      */
     public InputStream exportFeatures() throws IOException {
-        return new FeatureXmlParser().exportFeatures(getStore().readAll());
+        return new XmlParser().exportFeatures(getFeatureStore().readAll());
     }
 
     /**
@@ -385,7 +390,7 @@ public class FF4j {
      *            target feature
      */
     public FF4j delete(String fpId) {
-        getStore().delete(fpId);
+        getFeatureStore().delete(fpId);
         getEventPublisher().publish(fpId, EventType.DELETE);
         return this;
     }
@@ -412,7 +417,7 @@ public class FF4j {
         sb.append(", \"autocreate\":" + isAutocreate());
         sb.append(", \"version\": \"" + version + "\"");
         sb.append(", \"featuresStore\":");
-        sb.append(getStore() == null ? "null" : getStore().toString());
+        sb.append(getFeatureStore() == null ? "null" : getFeatureStore().toString());
         sb.append(", \"eventRepository\":");
         sb.append(getEventRepository() == null ? "null" : getEventRepository().toString());
         sb.append(", \"authorizationsManager\":");
@@ -428,10 +433,21 @@ public class FF4j {
     /**
      * Access store as static way (single store).
      * 
+     * @deprecated use {@link #getFeatureStore()} instead as since 1.4 there are both Features and properties stores  
      * @return current store
      */
+    @Deprecated
     public FeatureStore getStore() {
-        return store;
+        return fstore;
+    }
+    
+    /**
+     * Access store as static way (single store).
+     * 
+     * @return current store
+     */
+    public FeatureStore getFeatureStore() {
+        return fstore;
     }
 
     /**
@@ -440,8 +456,19 @@ public class FF4j {
      * @param fbs
      *            target store.
      */
+    @Deprecated
     public void setStore(FeatureStore fbs) {
-        this.store = fbs;
+        this.fstore = fbs;
+    }
+    
+    /**
+     * NON Static to be use by Injection of Control.
+     * 
+     * @param fbs
+     *            target store.
+     */
+    public void setFeatureStore(FeatureStore fbs) {
+        this.fstore = fbs;
     }
 
     /**
@@ -541,6 +568,25 @@ public class FF4j {
      */
     public String getVersion() {
         return version;
+    }
+
+    /**
+     * Getter accessor for attribute 'pStore'.
+     *
+     * @return
+     *       current value of 'pStore'
+     */
+    public PropertyStore getPropertiesStore() {
+        return pStore;
+    }
+
+    /**
+     * Setter accessor for attribute 'pStore'.
+     * @param pStore
+     * 		new value for 'pStore '
+     */
+    public void setPropertiesStore(PropertyStore pStore) {
+        this.pStore = pStore;
     }
 
 }

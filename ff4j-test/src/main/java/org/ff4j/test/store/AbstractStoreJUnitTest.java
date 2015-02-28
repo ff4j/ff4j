@@ -16,8 +16,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.Assert;
-
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
@@ -29,6 +27,7 @@ import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.PonderationStrategy;
 import org.ff4j.test.AssertFf4j;
 import org.ff4j.test.TestsFf4jConstants;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -55,8 +54,8 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
     @Before
     public void setUp() throws Exception {
         ff4j = new FF4j();
-        ff4j.setStore(initStore());
-        testedStore = ff4j.getStore();
+        ff4j.setFeatureStore(initStore());
+        testedStore = ff4j.getFeatureStore();
         assertFf4j = new AssertFf4j(ff4j);
     }
 
