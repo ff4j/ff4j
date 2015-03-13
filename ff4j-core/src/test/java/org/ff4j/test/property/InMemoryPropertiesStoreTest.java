@@ -2,6 +2,8 @@ package org.ff4j.test.property;
 
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.store.PropertyStore;
+import org.junit.Assert;
+import org.junit.Test;
 
 /*
  * #%L
@@ -33,7 +35,25 @@ public class InMemoryPropertiesStoreTest extends AbstractPropertyStoreJunitTest 
     /** {@inheritDoc} */
     @Override
     protected PropertyStore initPropertyStore() {
-        return new InMemoryPropertyStore();
+        return new InMemoryPropertyStore("ff4j.xml");
     }
+    
+    /** TDD. */
+    @Test
+    public void exist_filled() {
+        // When-Then
+        Assert.assertTrue(testedStore.exist("a"));
+        Assert.assertFalse(testedStore.exist("k"));
+    }
+    
+    /** TDD. */
+    @Test
+    public void valueFixed() {
+        // When-Then
+        Assert.assertTrue(testedStore.exist("a"));
+        Assert.assertEquals("AMER", testedStore.read("a").getValue());
+    }
+    
+   
 
 }

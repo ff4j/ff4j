@@ -78,7 +78,7 @@ public abstract class AbstractPropertyStoreJunitTest {
         // Given
         testedStore.exist("");
         // Then
-     // then expect to fail
+        // then expect to fail
     }
     
     /** TDD. */

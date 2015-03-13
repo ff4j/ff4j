@@ -2,8 +2,6 @@
 <!--
   #%L
   ff4j-core
-  $Id:$
-  $HeadURL:$
   %%
   Copyright (C) 2013 Ff4J
   %%
@@ -24,10 +22,21 @@
 <features xmlns="http://www.ff4j.org/schema/ff4j" 
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	 xsi:schemaLocation="http://www.ff4j.org/schema/ff4j http://ff4j.org/schema/ff4j-1.2.0.xsd">
-	
-	<feature uid="displayCallMeButton" enable="true" 
-		strategy="org.ff4j.sample.strategy.OfficeHoursFlippingStrategy"
-		expression="9-18" />
 
+	<!-- No Expression -->
+	<feature uid="first" enable="true" description="some desc">
+		<flipstrategy class="org.ff4j.strategy.OfficeHourStrategy" >
+			<param name="monday"    	 value="08:00-12:00,13:30-18:00" />
+			<param name="tuesday"   	 value="08:00-12:00,13:30-18:00" />
+			<param name="wednesday" 	 value="08:00-12:00,13:30-18:00" />
+			<param name="thursday"  	 value="08:00-12:00,13:30-18:00" />
+			<param name="friday" 		 value="08:00-12:00,13:30-18:00" />
+			<param name="saturday" 		 value="10:00-19:00" 			/>
+			<param name="sunday" 		 value="" />
+			<param name="publicHolidays" value="2015-01-01,2015-05-01,2015-12-25" />
+			<param name="specialOpenings" value="[08:00-12:00]@2015-01-01;[08:00-12:00]@2015-01-02" />
+		</flipstrategy>
+	</feature>
+		
 </features>
 

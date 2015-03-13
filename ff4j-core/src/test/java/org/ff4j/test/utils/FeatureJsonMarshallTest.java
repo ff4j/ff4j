@@ -87,6 +87,17 @@ public class FeatureJsonMarshallTest implements TestConstantsFF4j {
         assertMarshalling(f4);
     }
     
+    /** TDD. */
+    @Test
+    public void marshallOfficeHourFlippingStrategy()
+    throws Exception {
+        // When-Then
+        Feature f = new FF4j("test-strategy-officehour.xml").getFeature("first");
+        System.out.println(f.toJson());
+        assertMarshalling(f);
+    }
+    
+    
     /**
      * Check cutom (fast) serialization against Jackson.
      * 

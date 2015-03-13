@@ -20,9 +20,11 @@ package org.ff4j.property.store;
  * #L%
  */
 
+import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.ff4j.conf.XmlParser;
 import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.AbstractProperty;
@@ -38,10 +40,70 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
     /** InMemory Feature Map */
     private Map<String, AbstractProperty<?>> properties = new LinkedHashMap<String, AbstractProperty<?>>();
 
+    /** FileName used to retrieve properties. */
+    private String fileName;
+    
     /**
      * Default Constructor 
      */
     public InMemoryPropertyStore() {
+    }
+    
+    /**
+     * Constructor with configuration fileName.
+     * 
+     * @param fileName
+     *            fileName present in classPath or on fileSystem.
+     */
+    public InMemoryPropertyStore(String fileName) {
+        if (fileName == null || fileName.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "fileName is required, cannot be null nor empty : the file must exist in classpath");
+        }
+        loadConfFile(fileName);
+    }
+    
+    /**
+     * Constructor with inputstream fileName.
+     * 
+     * @param fileName
+     *            fileName present in classPath or on fileSystem.
+     */
+    public InMemoryPropertyStore(InputStream xmlIN) {
+        loadConf(xmlIN);
+    }
+    
+    /**
+     * Constructor with full set of feature.
+     * 
+     * @param maps
+     */
+    public InMemoryPropertyStore(Map<String, AbstractProperty<?>> maps) {
+        this.properties = maps;
+    }
+    
+    /**
+     * Load configuration through FF4J.vml file.
+     * 
+     * @param conf
+     *            xml filename
+     */
+    private void loadConfFile(String conf) {
+        this.fileName = conf;
+        loadConf(getClass().getClassLoader().getResourceAsStream(conf));
+    }
+
+    /**
+     * Load configuration through FF4J.vml file.
+     * 
+     * @param conf
+     *            xml filename
+     */
+    private void loadConf(InputStream xmlIN) {
+        if (xmlIN == null) {
+            throw new IllegalArgumentException("Cannot parse stream with properties");
+        }
+        this.properties = new XmlParser().parseConfigurationFile(xmlIN).getProperties();
     }
     
     /** {@inheritDoc} */
@@ -109,6 +171,44 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
         }
         // Delete
         properties.remove(name);
+    }
+
+    /**
+     * Getter accessor for attribute 'properties'.
+     *
+     * @return
+     *       current value of 'properties'
+     */
+    public Map<String, AbstractProperty<?>> getProperties() {
+        return properties;
+    }
+
+    /**
+     * Setter accessor for attribute 'properties'.
+     * @param properties
+     * 		new value for 'properties '
+     */
+    public void setProperties(Map<String, AbstractProperty<?>> properties) {
+        this.properties = properties;
+    }
+
+    /**
+     * Getter accessor for attribute 'fileName'.
+     *
+     * @return
+     *       current value of 'fileName'
+     */
+    public String getFileName() {
+        return fileName;
+    }
+
+    /**
+     * Setter accessor for attribute 'fileName'.
+     * @param fileName
+     * 		new value for 'fileName '
+     */
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
       

@@ -30,14 +30,13 @@
 	 		<value>EAST</value>
 	 	</fixedValues>
 	 </property>
-	 
-	 <property name="b" 	  value="12"   />
+	 <property name="b" value="12"   />
 	
-	 <property name="c"   value="12.5" />
+	 <property name="c" value="12.5" />
 	
 	 <property name="d"  value="true" />
 	
-	 <property name="e"   value="hello" />
+	 <property name="e"  value="hello" />
 	
 	 <property name="f"  value="12,13,14" />
 	

@@ -1,12 +1,10 @@
-package org.ff4j.test.strategy.custom;
+package org.ff4j.strategy;
 
 /*
  * #%L
  * ff4j-core
- * $Id:$
- * $HeadURL:$
  * %%
- * Copyright (C) 2013 Ff4J
+ * Copyright (C) 2013 - 2015 Ff4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,17 +20,28 @@ package org.ff4j.test.strategy.custom;
  * #L%
  */
 
-import org.ff4j.FF4j;
-import org.junit.Test;
+/**
+ * Implement dark launch through dedicated weight ration.
+ *
+ * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ */
+public class DarkLaunchStrategy extends PonderationStrategy {
+    
+    /**
+     * Default Constructor.
+     */
+    public DarkLaunchStrategy() {
+        super();
+    }
 
-public class OfficeHoursFlippingStrategyTest  {
-	
-	@Test
-	public void testExpression() throws Exception {
-		
-		new FF4j("ff4j-office.xml");
-		//Assert.assertTrue(FF4j.isFlipped("displayCallMeButton"));
-		
-	}
-		
+    /**
+     * Parameterized constructor.
+     * 
+     * @param ratio
+     *           expected feature to use new feature
+     */
+    public DarkLaunchStrategy(double ratio) {
+        super(ratio);
+    }
+
 }
