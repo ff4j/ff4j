@@ -44,7 +44,6 @@ public class FeatureJsonParserTest {
            // Check serialised
            assertMarshalling(features.get(key));
            Feature f1 = FeatureJsonParser.parseFeature(features.get(key).toJson());
-           System.out.println(f1.toJson());
            assertMarshalling(f1);
        }
     }

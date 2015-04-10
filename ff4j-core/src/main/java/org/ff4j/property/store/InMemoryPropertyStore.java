@@ -172,15 +172,11 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
         // Delete
         properties.remove(name);
     }
-
-    /**
-     * Getter accessor for attribute 'properties'.
-     *
-     * @return
-     *       current value of 'properties'
-     */
-    public Map<String, AbstractProperty<?>> getProperties() {
-        return properties;
+    
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, AbstractProperty<?>> readAllProperties() {
+       return properties;
     }
 
     /**
@@ -210,6 +206,8 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
+
+    
 
       
 

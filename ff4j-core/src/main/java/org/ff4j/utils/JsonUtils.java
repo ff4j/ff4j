@@ -101,23 +101,18 @@ public class JsonUtils {
      * @return
      *      target json expression
      */
-    public static final String customPropertiesAsJson(final Map < String, ? extends AbstractProperty<?> > customProperties) {
-        StringBuilder json = new StringBuilder();
-        if (null != customProperties) {
-            json.append("{");
-            if (!customProperties.isEmpty()) {
-                boolean first = true;
-                for (String key : customProperties.keySet()) {
-                    json.append(first ? "" : ",");
-                    json.append("\"" + key + "\":" + customProperties.get(key).toString());
-                    first = false;
-                }
+    public static final String customPropertiesAsJson(final Map<String, ? extends AbstractProperty<?>> customProperties) {
+        StringBuilder json = new StringBuilder("{");
+        if (null != customProperties && !customProperties.isEmpty()) {
+            boolean first = true;
+            for (String key : customProperties.keySet()) {
+                json.append(first ? "" : ",");
+                json.append("\"" + key + "\":" + customProperties.get(key).toString());
+                first = false;
             }
-            json.append("}");
-        } else {
-            json.append("null");
         }
+        json.append("}");
         return json.toString();
-    }    
+    } 
 
 }

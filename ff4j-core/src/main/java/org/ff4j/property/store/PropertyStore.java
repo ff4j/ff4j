@@ -1,5 +1,7 @@
 package org.ff4j.property.store;
 
+import java.util.Map;
+
 import org.ff4j.property.AbstractProperty;
 
 /*
@@ -23,7 +25,7 @@ import org.ff4j.property.AbstractProperty;
  */
 
 /**
- * Properties.
+ * CRUD repository to perform operation on properties.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
@@ -84,5 +86,13 @@ public interface PropertyStore {
      *      target name
      */
     void delete(String name);
+    
+    /**
+     * Retrieve all properties from store.
+     *
+     * @return
+     *      all properties from store
+     */
+    Map<String, AbstractProperty<?> > readAllProperties();
 
 }

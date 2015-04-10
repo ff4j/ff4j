@@ -39,7 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 @Repository
-public class FeatureStoreSpringJDBC extends AbstractFeatureStore implements JdbcFeatureStoreConstants {
+public class FeatureStoreSpringJDBC extends AbstractFeatureStore implements JdbcStoreConstants {
 
     /** Row Mapper for FlipPoint. */
     private static final FeatureRowMapper MAPPER = new FeatureRowMapper();

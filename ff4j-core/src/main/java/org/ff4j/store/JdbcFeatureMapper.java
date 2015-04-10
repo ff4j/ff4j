@@ -1,10 +1,10 @@
-package org.ff4j.store.rowmapper;
+package org.ff4j.store;
 
 /*
  * #%L
- * ff4j-store-jdbc
+ * ff4j-core
  * %%
- * Copyright (C) 2013 - 2014 Ff4J
+ * Copyright (C) 2013 - 2015 Ff4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,26 +26,31 @@ import java.sql.SQLException;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureAccessException;
-import org.ff4j.store.JdbcStoreConstants;
 import org.ff4j.utils.ParameterUtils;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 
 /**
- * Mapper to convert result into
- * 
+ * Map resultset into {@link Feature}
+ *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureRowMapper implements ParameterizedRowMapper<Feature>, JdbcStoreConstants {
-
-    /** {@inheritDoc} */
-    @Override
-    public Feature mapRow(ResultSet rs, int rowNum) throws SQLException {
+public class JdbcFeatureMapper implements JdbcStoreConstants {
+    
+    /**
+     * Map feature result to bean.
+     * 
+     * @param rs
+     *            current resultSet
+     * @return current Feature without roles
+     * @throws SQLException
+     *             error accured when parsing resultSet
+     */
+    public Feature mapFeature(ResultSet rs) throws SQLException {
+        // Feature
+        Feature f = null;
+        boolean enabled = rs.getInt(COL_FEAT_ENABLE) > 0;
         String featUid = rs.getString(COL_FEAT_UID);
-        Feature f = new Feature(featUid, rs.getInt(COL_FEAT_ENABLE) > 0);
-        f.setDescription(rs.getString(COL_FEAT_DESCRIPTION));
-        f.setGroup(rs.getString(COL_FEAT_GROUPNAME));
-
-        // Build Flipping Strategy From DataBase
+        f = new Feature(featUid, enabled, rs.getString(COL_FEAT_DESCRIPTION), rs.getString(COL_FEAT_GROUPNAME));
+        // Strategy
         String strategy = rs.getString(COL_FEAT_STRATEGY);
         if (strategy != null && !"".equals(strategy)) {
             try {
@@ -62,5 +67,6 @@ public class FeatureRowMapper implements ParameterizedRowMapper<Feature>, JdbcSt
         }
         return f;
     }
+
 
 }

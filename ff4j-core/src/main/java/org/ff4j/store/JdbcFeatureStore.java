@@ -15,6 +15,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -24,11 +25,12 @@ import javax.sql.DataSource;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
+import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.store.JdbcPropertyMapper;
 import org.ff4j.utils.ParameterUtils;
 
 /**
@@ -36,10 +38,16 @@ import org.ff4j.utils.ParameterUtils;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcFeatureStoreConstants {
+public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStoreConstants {
 
     /** Access to storage. */
     private DataSource dataSource;
+    
+    /** Mapper. */
+    private JdbcPropertyMapper JDBC_PROPERTY_MAPPER = new JdbcPropertyMapper();
+
+    /** Mapper. */
+    private JdbcFeatureMapper JDBC_FEATURE_MAPPER = new JdbcFeatureMapper();
 
     /** Default Constructor. */
     public JdbcFeatureStore() {}
@@ -128,7 +136,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcFeatu
             rs = ps.executeQuery();
             Feature f = null;
             if (rs.next()) {
-                f = mapRow2Feature(rs);
+                f = JDBC_FEATURE_MAPPER.mapFeature(rs);
             } else {
                 throw new FeatureNotFoundException(uid);
             }
@@ -140,6 +148,14 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcFeatu
             while (rs.next()) {
                 f.getPermissions().add(rs.getString("ROLE_NAME"));
             }
+            
+            // 3d request to get custom properties by uid
+            ps = buildStatement(SQL_GET_CUSTOMPROPERTIES_BYFEATUREID, uid);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                AbstractProperty<?> ap = JDBC_PROPERTY_MAPPER.map(rs);
+                f.getCustomProperties().put(ap.getName(), ap);
+            }
             return f;
         } catch (SQLException sqlEX) {
             throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
@@ -147,40 +163,8 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcFeatu
             closeResultSet(rs);
             closeStatement(ps);
         }
-    }
-
-    /**
-     * Map feature result to bean.
-     * 
-     * @param rs
-     *            current resultSet
-     * @return current Feature without roles
-     * @throws SQLException
-     *             error accured when parsing resultSet
-     */
-    private Feature mapRow2Feature(ResultSet rs) throws SQLException {
-        // Feature
-        Feature f = null;
-        boolean enabled = rs.getInt(COL_FEAT_ENABLE) > 0;
-        String featUid = rs.getString(COL_FEAT_UID);
-        f = new Feature(featUid, enabled, rs.getString(COL_FEAT_DESCRIPTION), rs.getString(COL_FEAT_GROUPNAME));
-        // Strategy
-        String strategy = rs.getString(COL_FEAT_STRATEGY);
-        if (strategy != null && !"".equals(strategy)) {
-            try {
-                FlippingStrategy flipStrategy = (FlippingStrategy) Class.forName(strategy).newInstance();
-                flipStrategy.init(featUid, ParameterUtils.toMap(rs.getString(COL_FEAT_EXPRESSION)));
-                f.setFlippingStrategy(flipStrategy);
-            } catch (InstantiationException ie) {
-                throw new FeatureAccessException("Cannot instantiate Strategy, no default constructor available", ie);
-            } catch (IllegalAccessException iae) {
-                throw new FeatureAccessException("Cannot instantiate Strategy, no visible constructor", iae);
-            } catch (ClassNotFoundException e) {
-                throw new FeatureAccessException("Cannot instantiate Strategy, classNotFound", e);
-            }
-        }
-        return f;
-    }
+    }  
+    
 
     /** {@inheritDoc} */
     @Override
@@ -226,6 +210,25 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcFeatu
                     ps.executeUpdate();
                 }
             }
+            
+            // Create customproperties
+            if (fp.getCustomProperties() != null && !fp.getCustomProperties().isEmpty()) {
+                for (AbstractProperty<?> pp : fp.getCustomProperties().values()) {
+                    ps = sqlConn.prepareStatement(SQL_CREATE_CUSTOMPROPERTY);
+                    ps.setString(1, pp.getName());
+                    ps.setString(2, pp.getType());
+                    ps.setString(3, pp.asString());
+                    if (pp.getFixedValues() != null && pp.getFixedValues().size() > 0) {
+                        String fixedValues = pp.getFixedValues().toString();
+                        ps.setString(4, fixedValues.substring(1, fixedValues.length() - 1));
+                    } else {
+                        ps.setString(4, null);
+                    }
+                    
+                    ps.setString(5, fp.getUid());
+                    ps.executeUpdate();
+                }
+            }
 
             // Commit
             sqlConn.commit();
@@ -256,6 +259,16 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcFeatu
             // Create connection
             sqlConn = getDataSource().getConnection();
             sqlConn.setAutoCommit(false);
+            
+            // Delete Properties
+            if (fp.getCustomProperties() != null && !fp.getCustomProperties().isEmpty()) {
+                for (String property : fp.getCustomProperties().keySet()) {
+                    ps = sqlConn.prepareStatement(SQL_DELETE_CUSTOMPROPERTY);
+                    ps.setString(1, property);
+                    ps.setString(2, fp.getUid());
+                    ps.executeUpdate();
+                }
+            }
 
             // Delete Roles
             if (fp.getPermissions() != null) {
@@ -362,7 +375,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcFeatu
             ps = buildStatement(SQLQUERY_ALLFEATURES);
             rs = ps.executeQuery();
             while (rs.next()) {
-                Feature f = mapRow2Feature(rs);
+                Feature f = JDBC_FEATURE_MAPPER.mapFeature(rs);
                 mapFP.put(f.getUid(), f);
             }
 
@@ -426,7 +439,9 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcFeatu
         }
         update(SQL_UPDATE, enable, fp.getDescription(), fStrategy, fExpression, fp.getGroup(), fp.getUid());
 
-        // To be deleted : not in second but in first
+        // ROLES
+        
+        // To be deleted (not in new value but was at first)
         Set<String> toBeDeleted = new HashSet<String>();
         toBeDeleted.addAll(fpExist.getPermissions());
         toBeDeleted.removeAll(fp.getPermissions());
@@ -441,8 +456,63 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcFeatu
         for (String addee : toBeAdded) {
             grantRoleOnFeature(fpExist.getUid(), addee);
         }
+        
+        // REMOVE EXISTING CUSTOM PROPERTIES
+        if (fpExist.getCustomProperties() != null && !fpExist.getCustomProperties().isEmpty()) {
+            PreparedStatement ps = null;
+            ResultSet rs = null;
+            try {
+                ps = buildStatement(SQL_DELETE_CUSTOMPROPERTIES, fpExist.getUid());
+                ps.executeUpdate();
+            } catch (SQLException sqlEX) {
+                throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
+            } finally {
+                closeResultSet(rs);
+                closeStatement(ps);
+            }
+        }
+        
+        // CREATE PROPERTIES
+        if (fp.getCustomProperties() != null && !fp.getCustomProperties().isEmpty()) {
+            createCustomProperties(fp.getUid(), fp.getCustomProperties().values());
+        }   
+    }
+    
+    /**
+     * Ease creation of properties in Database.
+     * 
+     * @param uid
+     *      target unique identifier
+     * @param props
+     *      target properties.
+     */
+    private void createCustomProperties(String uid, Collection <AbstractProperty<?> > props) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            for (AbstractProperty<?> pp : props) {
+                ps = buildStatement(SQL_CREATE_CUSTOMPROPERTY);
+                ps.setString(1, pp.getName());
+                ps.setString(2, pp.getType());
+                ps.setString(3, pp.asString());
+                if (pp.getFixedValues() != null && pp.getFixedValues().size() > 0) {
+                    String fixedValues = pp.getFixedValues().toString();
+                    ps.setString(4, fixedValues.substring(1, fixedValues.length() - 1));
+                } else {
+                    ps.setString(4, null);
+                }
+                ps.setString(5, uid);
+                ps.executeUpdate();
+            }
+        } catch (SQLException sqlEX) {
+            throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
+        } finally {
+            closeResultSet(rs);
+            closeStatement(ps);
+        }
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean existGroup(String groupName) {
         if (groupName == null || groupName.isEmpty()) {
@@ -506,7 +576,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcFeatu
             ps = buildStatement(SQLQUERY_GET_FEATURE_GROUP, groupName);
             rs = ps.executeQuery();
             while (rs.next()) {
-                Feature f = mapRow2Feature(rs);
+                Feature f = JDBC_FEATURE_MAPPER.mapFeature(rs);
                 mapFP.put(f.getUid(), f);
             }
 

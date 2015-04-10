@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.Assert;
-
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
@@ -25,6 +24,8 @@ import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
+import org.ff4j.property.Property;
+import org.ff4j.property.PropertyLogLevel;
 import org.ff4j.strategy.PonderationStrategy;
 import org.ff4j.test.AssertFf4j;
 import org.ff4j.test.TestConstantsFF4j;
@@ -250,6 +251,10 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         // When
         Set<String> rights = new HashSet<String>(Arrays.asList(new String[] {ROLE_USER}));
         Feature fp = new Feature(FEATURE_NEW, true, "description", G1, rights);
+        fp.getCustomProperties().put("TEST", new Property("word", "hello", new HashSet<String>(Arrays.asList("hello","hi"))));
+        fp.getCustomProperties().put("loglevel", new PropertyLogLevel("loglevel", PropertyLogLevel.LogLevel.DEBUG));
+        
+        
         testedStore.create(fp);
         // Then
         assertFf4j.assertThatStoreHasSize(EXPECTED_FEATURES_NUMBERS + 1);
@@ -525,6 +530,60 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         testedStore.update(new Feature(F1, false, null));
         // Then
         assertFf4j.assertThatFeatureHasNotRole(F1, ROLE_USER);
+    }
+    
+    /**
+     * TDD.
+     */
+    @Test
+    public void testUpdateAddNewCustomProperty() {
+        // Given
+        assertFf4j.assertThatFeatureExist(F1);
+        Feature fpBis = testedStore.read(F1);
+        Assert.assertFalse(fpBis.getCustomProperties().containsKey("PPP"));
+        // When
+        fpBis.getCustomProperties().put("PPP",new Property("PPP", "hello"));
+        testedStore.update(fpBis);
+        // Then
+        fpBis = testedStore.read(F1);
+        Assert.assertTrue(fpBis.getCustomProperties().containsKey("PPP"));
+    }
+    
+    /**
+     * TDD.
+     */
+    @Test
+    public void testUpdateUpdateProperty() {
+        // Given
+        assertFf4j.assertThatFeatureExist(F1);
+        Feature fpBis = testedStore.read(F1);
+        Assert.assertTrue(fpBis.getCustomProperties().containsKey("ppint"));
+        Property p = (Property) fpBis.getCustomProperties().get("ppint");
+        Assert.assertEquals("12", p.asString());
+        // When
+        fpBis.getCustomProperties().put("ppint", new Property("ppint", "14"));
+        testedStore.update(fpBis);
+        // Then
+        fpBis = testedStore.read(F1);
+        p = (Property) fpBis.getCustomProperties().get("ppint");
+        Assert.assertEquals("14", p.asString());
+    }
+    
+    /**
+     * TDD.
+     */
+    @Test
+    public void testUpdateRemoveCustomProperty() {
+     // Given
+        assertFf4j.assertThatFeatureExist(F1);
+        Feature fpBis = testedStore.read(F1);
+        Assert.assertTrue(fpBis.getCustomProperties().containsKey("ppint"));
+        // When
+        fpBis.getCustomProperties().remove("ppint");
+        testedStore.update(fpBis);
+        // Then
+        fpBis = testedStore.read(F1);
+        Assert.assertFalse(fpBis.getCustomProperties().containsKey("ppint"));
     }
 
     /**

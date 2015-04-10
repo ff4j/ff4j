@@ -16,7 +16,7 @@ package org.ff4j.store;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public interface JdbcFeatureStoreConstants {
+public interface JdbcStoreConstants {
 
     /** sql query expression */
     String SQLQUERY_ALLFEATURES = "SELECT FEAT_UID,ENABLE,DESCRIPTION,STRATEGY,EXPRESSION,GROUPNAME FROM FF4J_FEATURES";
@@ -71,9 +71,51 @@ public interface JdbcFeatureStoreConstants {
 
     /** sql query expression */
     String SQL_GET_ROLES = "SELECT ROLE_NAME FROM FF4J_ROLES WHERE FEAT_UID = ?";
-
+    
     /** sql query expression */
     String SQL_GET_ALLROLES = "SELECT FEAT_UID,ROLE_NAME FROM FF4J_ROLES";
+    
+    // ------- Properties -------------
+    
+    /** sql query expression */
+    String SQL_GET_CUSTOMPROPERTIES_BYFEATUREID = "SELECT PROPERTY_ID,CLAZZ,CURRENTVALUE,FIXEDVALUES,FEAT_UID "
+            + "FROM FF4J_CUSTOM_PROPERTIES "
+            + "WHERE FEAT_UID = ?";
+    
+    /** sql query expression */
+    String SQL_GET_CUSTOMPROPERTY_BYID = "SELECT PROPERTY_ID,CLAZZ,CURRENTVALUE,FIXEDVALUES,FEAT_UID "
+            + "FROM FF4J_CUSTOM_PROPERTIES "
+            + "WHERE PROPERTY_ID = ? AND FEAT_UID = ?";
+    
+    /** sql query expression */
+    String SQL_DELETE_CUSTOMPROPERTY = "DELETE FROM FF4J_CUSTOM_PROPERTIES WHERE PROPERTY_ID = ? AND FEAT_UID = ?";
+    
+    /** sql query expression */
+    String SQL_DELETE_CUSTOMPROPERTIES = "DELETE FROM FF4J_CUSTOM_PROPERTIES WHERE FEAT_UID = ?";
+    
+    /** sql query expression */
+    String SQL_CREATE_CUSTOMPROPERTY = "INSERT INTO FF4J_CUSTOM_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES, FEAT_UID) VALUES(?, ?, ?, ?, ?)";
+    
+    /** Create property. */
+    String SQL_PROPERTY_CREATE = "INSERT INTO FF4J_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES) VALUES(?,?,?,?)";
+    
+    /** Delete property. */
+    String SQL_PROPERTY_DELETE = "DELETE FROM FF4J_PROPERTIES WHERE PROPERTY_ID = ?";
+    
+    /** Test if property exist. */
+    String SQL_PROPERTY_EXIST = "SELECT COUNT(*) FROM FF4J_PROPERTIES WHERE PROPERTY_ID = ?";
+    
+    /** Test if property exist. */
+    String SQL_PROPERTY_READ = "SELECT PROPERTY_ID,CLAZZ,CURRENTVALUE,FIXEDVALUES FROM FF4J_PROPERTIES WHERE PROPERTY_ID = ?";
+    
+    /** sql query expression */
+    String SQL_PROPERTY_UPDATE = "UPDATE FF4J_PROPERTIES SET CURRENTVALUE = ? WHERE PROPERTY_ID = ?";
+
+    /** sql query expression */
+    String SQL_PROPERTY_READALL = "SELECT PROPERTY_ID,CLAZZ,CURRENTVALUE,FIXEDVALUES,FEAT_UID FROM FF4J_PROPERTIES";
+    
+    
+    // ----- Columns
 
     /** sql column name from table FF4J_FEATURES. */
     String COL_FEAT_UID = "FEAT_UID";
@@ -98,5 +140,19 @@ public interface JdbcFeatureStoreConstants {
 
     /** sql column name from table FF4J_ROLES. */
     String COL_ROLE_ROLENAME = "ROLE_NAME";
-
+    
+    /** sql column name from table FF4J_PROPERTIES. */
+    String COL_PROPERTY_ID = "PROPERTY_ID";
+    
+    /** sql column name from table FF4J_PROPERTIES. */
+    String COL_PROPERTY_TYPE = "CLAZZ";
+    
+    /** sql column name from table FF4J_PROPERTIES. */
+    String COL_PROPERTY_VALUE = "CURRENTVALUE";
+    
+    /** sql column name from table FF4J_PROPERTIES. */
+    String COL_PROPERTY_FIXED = "FIXEDVALUES";
+    
+    /** sql column name from table FF4J_PROPERTIES. */
+    String COL_PROPERTY_FEATID = "FEAT_UID";
 }

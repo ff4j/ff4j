@@ -96,52 +96,52 @@ public class FeatureJsonParser {
      */
     @SuppressWarnings("unchecked")
     private static Map < String, AbstractProperty<?>> parseCustomProperties(String uid, LinkedHashMap<String, Object> customPTag) {
-        if (null == customPTag || customPTag.isEmpty()) return null;
         Map < String, AbstractProperty<?>> myProperties = new LinkedHashMap<String, AbstractProperty<?>>();
-        
-        // Loop over properties
-        for (Map.Entry<String, Object> property : customPTag.entrySet()) {
-            HashMap<String, Object> propertyJson = (HashMap<String, Object>) property.getValue();
-            String propertyName = (String) propertyJson.get("name");
-            String propertyVal  = String.valueOf(propertyJson.get("value"));
-            AbstractProperty<?> ap = new Property(propertyName, propertyVal);
-            
-            // Dedicated Type
-            String propertyType = (String) propertyJson.get("type");
-            if (propertyType != null) {
-                try {
-                    // Construction by dedicated constructor with introspection
-                    Constructor<?> constr = Class.forName(propertyType).getConstructor(String.class, String.class);
-                    ap = (AbstractProperty<?>) constr.newInstance(propertyName, propertyVal);
-                } catch (InstantiationException e) {
-                    throw new IllegalArgumentException("Cannot instanciate '" + propertyType + "' check default constructor", e);
-                } catch (IllegalAccessException e) {
-                    throw new IllegalArgumentException("Cannot instanciate '" + propertyType + "' check visibility", e);
-                } catch (ClassNotFoundException e) {
-                    throw new IllegalArgumentException("Cannot instanciate '" + propertyType + "' not found", e);
-                } catch (InvocationTargetException e) {
-                    throw new IllegalArgumentException("Cannot instanciate '" + propertyType + "'  erro within constructor", e);
-                } catch (NoSuchMethodException e) {
-                    throw new IllegalArgumentException("Cannot instanciate '" + propertyType + "' constructor not found", e);
-                } catch (SecurityException e) {
-                    throw new IllegalArgumentException("Cannot instanciate '" + propertyType + "' check constructor visibility", e);
+        if (null != customPTag && !customPTag.isEmpty()) {
+            // Loop over properties
+            for (Map.Entry<String, Object> property : customPTag.entrySet()) {
+                HashMap<String, Object> propertyJson = (HashMap<String, Object>) property.getValue();
+                String propertyName = (String) propertyJson.get("name");
+                String propertyVal  = String.valueOf(propertyJson.get("value"));
+                AbstractProperty<?> ap = new Property(propertyName, propertyVal);
+                
+                // Dedicated Type
+                String propertyType = (String) propertyJson.get("type");
+                if (propertyType != null) {
+                    try {
+                        // Construction by dedicated constructor with introspection
+                        Constructor<?> constr = Class.forName(propertyType).getConstructor(String.class, String.class);
+                        ap = (AbstractProperty<?>) constr.newInstance(propertyName, propertyVal);
+                    } catch (InstantiationException e) {
+                        throw new IllegalArgumentException("Cannot instanciate '" + propertyType + "' check default constructor", e);
+                    } catch (IllegalAccessException e) {
+                        throw new IllegalArgumentException("Cannot instanciate '" + propertyType + "' check visibility", e);
+                    } catch (ClassNotFoundException e) {
+                        throw new IllegalArgumentException("Cannot instanciate '" + propertyType + "' not found", e);
+                    } catch (InvocationTargetException e) {
+                        throw new IllegalArgumentException("Cannot instanciate '" + propertyType + "'  erro within constructor", e);
+                    } catch (NoSuchMethodException e) {
+                        throw new IllegalArgumentException("Cannot instanciate '" + propertyType + "' constructor not found", e);
+                    } catch (SecurityException e) {
+                        throw new IllegalArgumentException("Cannot instanciate '" + propertyType + "' check constructor visibility", e);
+                    }
                 }
+                
+                //  Is there any fixed Value ?
+                List <Object> listOfFixedValue = (List<Object>) propertyJson.get("fixedValues");
+                if (listOfFixedValue != null) {
+                    for (Object v : listOfFixedValue) {
+                        ap.add2FixedValueFromString(String.valueOf(v));
+                    }
+                    // Check fixed value
+                    if (ap.getFixedValues() != null && !ap.getFixedValues().contains(ap.getValue())) {
+                        throw new IllegalArgumentException("Cannot create property <" + ap.getName() + 
+                                "> invalid value <" + ap.getValue() + 
+                                "> expected one of " + ap.getFixedValues());
+                    }
+                }
+                myProperties.put(ap.getName(),ap);
             }
-            
-            //  Is there any fixed Value ?
-            List <Object> listOfFixedValue = (List<Object>) propertyJson.get("fixedValues");
-            if (listOfFixedValue != null) {
-                for (Object v : listOfFixedValue) {
-                    ap.add2FixedValueFromString(String.valueOf(v));
-                }
-                // Check fixed value
-                if (ap.getFixedValues() != null && !ap.getFixedValues().contains(ap.getValue())) {
-                    throw new IllegalArgumentException("Cannot create property <" + ap.getName() + 
-                            "> invalid value <" + ap.getValue() + 
-                            "> expected one of " + ap.getFixedValues());
-                }
-            }
-            myProperties.put(ap.getName(),ap);
         }
         return myProperties;
         

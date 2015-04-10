@@ -27,7 +27,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.ff4j.store.JdbcFeatureStoreConstants;
+import org.ff4j.store.JdbcStoreConstants;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 
 /**
@@ -35,7 +35,7 @@ import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class RoleRowMapper implements ParameterizedRowMapper<Integer>, JdbcFeatureStoreConstants {
+public class RoleRowMapper implements ParameterizedRowMapper<Integer>, JdbcStoreConstants {
 
     /** Default Row Mapper to get groups. */
     private final Map<String, Set<String>> roles = new HashMap<String, Set<String>>();
