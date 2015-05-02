@@ -11,24 +11,21 @@ package org.ff4j.store;
  * governing permissions and limitations under the License. #L%
  */
 
+import com.mongodb.client.MongoCollection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.bson.Document;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
-import org.ff4j.store.mongodb.FeatureDBObjectBuilder;
-import org.ff4j.store.mongodb.FeatureDBObjectMapper;
+import org.ff4j.store.mongodb.FeatureDocumentBuilder;
+import org.ff4j.store.mongodb.FeatureDocumentMapper;
 import org.ff4j.store.mongodb.FeatureStoreMongoConstants;
-
-import com.mongodb.BasicDBObject;
-import com.mongodb.BasicDBObjectBuilder;
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
 
 /**
  * Implementation of {@link FeatureStore} to work with MongoDB.
@@ -36,16 +33,16 @@ import com.mongodb.DBObject;
  * @author William Delanoue (@twillouer) </a>
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreMongoDB extends AbstractFeatureStore implements FeatureStoreMongoConstants {
+public class FeatureStoreMongoCollection extends AbstractFeatureStore implements FeatureStoreMongoConstants {
 
     /** Map from DBObject to Feature. */
-    private static final FeatureDBObjectMapper MAPPER = new FeatureDBObjectMapper();
+    private static final FeatureDocumentMapper MAPPER = new FeatureDocumentMapper();
 
     /** Build fields. */
-    private static final FeatureDBObjectBuilder BUILDER = new FeatureDBObjectBuilder();
+    private static final FeatureDocumentBuilder BUILDER = new FeatureDocumentBuilder();
 
     /** MongoDB collection. */
-    private final DBCollection collection;
+    private final MongoCollection<Document> collection;
 
     /**
      * Parameterized constructor with collection.
@@ -53,7 +50,7 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore implements Feature
      * @param collection
      *            the collection to set
      */
-    public FeatureStoreMongoDB(DBCollection collection) {
+    public FeatureStoreMongoCollection(MongoCollection<Document> collection) {
         this.collection = collection;
     }
     
@@ -63,7 +60,7 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore implements Feature
      * @param collection
      *            the collection to set
      */
-    public FeatureStoreMongoDB(DBCollection collection, String xmlConfFile) {
+    public FeatureStoreMongoCollection(MongoCollection<Document> collection, String xmlConfFile) {
         this.collection = collection;
         importFeaturesFromXmlFile(xmlConfFile);
     }
@@ -95,9 +92,9 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore implements Feature
         if (!exist(uid)) {
             throw new FeatureNotFoundException(uid);
         }
-        DBObject target = BUILDER.getFeatUid(uid);
+        Document target = BUILDER.getFeatUid(uid);
         Object enabledd = BUILDER.getEnable(enable);
-        collection.update(target, BasicDBObjectBuilder.start(MONGO_SET, enabledd).get());
+        collection.updateOne(target, new Document(MONGO_SET, enabledd));
     }
 
     /** {@inheritDoc} */
@@ -112,7 +109,7 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore implements Feature
         if (uid == null || uid.isEmpty()) {
             throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
         }
-        DBObject object = collection.findOne(BUILDER.getFeatUid(uid));
+        Document object = collection.find(BUILDER.getFeatUid(uid)).first();
         if (object==null) {
             throw new FeatureNotFoundException(uid);
         }
@@ -128,7 +125,7 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore implements Feature
         if (exist(fp.getUid())) {
             throw new FeatureAlreadyExistException(fp.getUid());
         }
-        collection.save(MAPPER.toDBObject(fp));
+        collection.insertOne(MAPPER.toDocument(fp));
     }
 
     /** {@inheritDoc} */
@@ -140,7 +137,7 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore implements Feature
         if (!exist(uid)) {
             throw new FeatureNotFoundException(uid);
         }
-        collection.remove(BUILDER.getFeatUid(uid));
+        collection.deleteOne(BUILDER.getFeatUid(uid));
     }
 
     /** {@inheritDoc} */
@@ -155,7 +152,7 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore implements Feature
         if (!exist(uid)) {
             throw new FeatureNotFoundException(uid);
         }
-        collection.update(BUILDER.getFeatUid(uid), new BasicDBObject("$addToSet", BUILDER.getRoles(roleName)));
+        collection.updateOne(BUILDER.getFeatUid(uid), new Document("$addToSet", BUILDER.getRoles(roleName)));
     }
 
     /** {@inheritDoc} */
@@ -170,15 +167,15 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore implements Feature
         if (!exist(uid)) {
             throw new FeatureNotFoundException(uid);
         }
-        collection.update(BUILDER.getFeatUid(uid), new BasicDBObject("$pull", BUILDER.getRoles(roleName)));
+        collection.updateOne(BUILDER.getFeatUid(uid), new Document("$pull", BUILDER.getRoles(roleName)));
     }
 
     /** {@inheritDoc} */
     @Override
     public Map<String, Feature> readAll() {
         LinkedHashMap<String, Feature> mapFP = new LinkedHashMap<String, Feature>();
-        for(DBObject dbObject : collection.find()) {
-            Feature feature = MAPPER.mapFeature(dbObject);
+        for(Document document : collection.find()) {
+            Feature feature = MAPPER.mapFeature(document);
             mapFP.put(feature.getUid(), feature);
         }
         return mapFP;
@@ -191,7 +188,7 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore implements Feature
             throw new IllegalArgumentException("Feature cannot be null nor empty");
         }
         Feature fpExist = read(fp.getUid());
-        collection.save(MAPPER.toDBObject(fp));
+        collection.updateOne(BUILDER.getFeatUid(fp.getUid()), new Document(MONGO_SET, MAPPER.toDocument(fp)));
         // enable/disable
         if (fp.isEnable() != fpExist.isEnable()) {
             if (fp.isEnable()) {
@@ -215,8 +212,8 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore implements Feature
     @Override
     public Set<String> readAllGroups() {
         Set<String> setOfGroups = new HashSet<String>();
-        for (DBObject dbObject : collection.find()) {
-            setOfGroups.add((String) dbObject.get(GROUPNAME));
+        for (Document document : collection.find()) {
+            setOfGroups.add(document.getString(GROUPNAME));
         }
         setOfGroups.remove(null);
         setOfGroups.remove("");
@@ -233,8 +230,8 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore implements Feature
             throw new GroupNotFoundException(groupName);
         }
         LinkedHashMap<String, Feature> mapFP = new LinkedHashMap<String, Feature>();
-        for (DBObject dbObject : collection.find(BUILDER.getGroupName(groupName))) {
-            Feature feature = MAPPER.mapFeature(dbObject);
+        for (Document document : collection.find(BUILDER.getGroupName(groupName))) {
+            Feature feature = MAPPER.mapFeature(document);
             mapFP.put(feature.getUid(), feature);
         }
         return mapFP;
@@ -249,9 +246,9 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore implements Feature
         if (!existGroup(groupName)) {
             throw new GroupNotFoundException(groupName);
         }
-        for (DBObject dbObject : collection.find(BUILDER.getGroupName(groupName))) {
-            Object enabledd = BUILDER.getEnable(true);
-            collection.update(dbObject, BasicDBObjectBuilder.start(MONGO_SET, enabledd).get());
+        for (Document document : collection.find(BUILDER.getGroupName(groupName))) {
+            Object enabled = BUILDER.getEnable(true);
+            collection.updateOne(document, new Document(MONGO_SET, enabled));
         }
     }
 
@@ -264,9 +261,9 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore implements Feature
         if (!existGroup(groupName)) {
             throw new GroupNotFoundException(groupName);
         }
-        for (DBObject dbObject : collection.find(BUILDER.getGroupName(groupName))) {
-            Object enabledd = BUILDER.getEnable(false);
-            collection.update(dbObject, BasicDBObjectBuilder.start(MONGO_SET, enabledd).get());
+        for (Document document: collection.find(BUILDER.getGroupName(groupName))) {
+            Object enabled = BUILDER.getEnable(false);
+            collection.updateOne(document, new Document(MONGO_SET, enabled));
         }
     }
 
@@ -282,9 +279,9 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore implements Feature
         if (!exist(uid)) {
             throw new FeatureNotFoundException(uid);
         }
-        DBObject target = BUILDER.getFeatUid(uid);
-        DBObject nGroupName = BUILDER.getGroupName(groupName);
-        collection.update(target, BasicDBObjectBuilder.start(MONGO_SET, nGroupName).get());
+        Document target = BUILDER.getFeatUid(uid);
+        Document nGroupName = BUILDER.getGroupName(groupName);
+        collection.updateOne(target, new Document(MONGO_SET, nGroupName));
     }
 
     /** {@inheritDoc} */
@@ -302,9 +299,9 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore implements Feature
         if (!existGroup(groupName)) {
             throw new GroupNotFoundException(groupName);
         }
-        DBObject target = BUILDER.getFeatUid(uid);
-        DBObject nGroupName = BUILDER.getGroupName("");
-        collection.update(target, BasicDBObjectBuilder.start(MONGO_SET, nGroupName).get());
+        Document target = BUILDER.getFeatUid(uid);
+        Document nGroupName = BUILDER.getGroupName("");
+        collection.updateOne(target, new Document(MONGO_SET, nGroupName));
     }
 
     /** {@inheritDoc} */
@@ -312,7 +309,7 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore implements Feature
     public String toString() {
         StringBuilder sb = new StringBuilder("{");
         sb.append("\"type\":\"" + this.getClass().getCanonicalName() + "\"");
-        sb.append("\"mongodb\":\"" + this.collection.getName() + "\"");
+        sb.append("\"mongodb\":\"" + this.collection.getNamespace().getFullName() + "\"");
         sb.append(",\"cached\":" + this.isCached());
         if (this.isCached()) {
             sb.append(",\"cacheProvider\":\"" + this.getCacheProvider() + "\"");
