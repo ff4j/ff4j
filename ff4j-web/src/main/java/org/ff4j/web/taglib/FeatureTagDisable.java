@@ -20,7 +20,13 @@ package org.ff4j.web.taglib;
  * #L%
  */
 
+import java.util.Map;
+
+import javax.servlet.jsp.PageContext;
+
+import org.apache.commons.lang.StringUtils;
 import org.ff4j.FF4j;
+import org.ff4j.core.FlippingExecutionContext;
 
 /**
  * Content of enclosing tag will be displayed if feature not enable.
@@ -39,8 +45,16 @@ public class FeatureTagDisable extends AbstractFeatureTag {
 
     /** {@inheritDoc} */
     @Override
-    protected boolean eval(FF4j ff4j) {
-        return !ff4j.check(getFeatureid());
+    protected boolean eval(FF4j ff4j, PageContext jspContext) {
+        FlippingExecutionContext executionContext = new FlippingExecutionContext();
+        executionContext.putString("LOCALE", pageContext.getRequest().getLocalName());
+        
+        @SuppressWarnings("unchecked")
+        Map < String, String[]> parameters = pageContext.getRequest().getParameterMap();
+        for (String param : parameters.keySet()) {
+            executionContext.putString(param, StringUtils.join(parameters.get(param), ","));
+        }
+        return !ff4j.check(getFeatureid(), executionContext);
     }
 
 }

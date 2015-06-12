@@ -541,4 +541,23 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebCon
         return PARAM_AUTHKEY + "=" + apiKey;
     }
 
+    /**
+     * Getter accessor for attribute 'url'.
+     *
+     * @return
+     *       current value of 'url'
+     */
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     * Setter accessor for attribute 'url'.
+     * @param url
+     * 		new value for 'url '
+     */
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
 }

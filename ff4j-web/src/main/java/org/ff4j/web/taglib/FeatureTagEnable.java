@@ -11,9 +11,15 @@ package org.ff4j.web.taglib;
  * governing permissions and limitations under the License. #L%
  */
 
+import java.util.Map;
+
+import javax.servlet.jsp.PageContext;
+
+import org.apache.commons.lang.StringUtils;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.core.FlippingExecutionContext;
 
 /**
  * Taglib to filter display based on {@link Feature} status within {@link FeatureStore}.
@@ -41,8 +47,16 @@ public class FeatureTagEnable extends AbstractFeatureTag {
 
     /** {@inheritDoc} */
     @Override
-    protected boolean eval(FF4j ff4j) {
-        return ff4j.check(getFeatureid());
+    protected boolean eval(FF4j ff4j, PageContext jspContext) {
+        FlippingExecutionContext executionContext = new FlippingExecutionContext();
+        executionContext.putString("LOCALE", pageContext.getRequest().getLocalName());
+        
+        @SuppressWarnings("unchecked")
+        Map < String, String[]> parameters = pageContext.getRequest().getParameterMap();
+        for (String param : parameters.keySet()) {
+            executionContext.putString(param, StringUtils.join(parameters.get(param), ","));
+        }
+        return ff4j.check(getFeatureid(), executionContext);
     }
 
 }

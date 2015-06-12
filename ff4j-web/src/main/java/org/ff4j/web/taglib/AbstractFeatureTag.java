@@ -23,6 +23,7 @@ package org.ff4j.web.taglib;
 import java.io.IOException;
 
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import org.ff4j.FF4j;
@@ -82,7 +83,7 @@ public abstract class AbstractFeatureTag extends TagSupport implements ConsoleCo
             }
 
             // Everything is OK
-            if (eval(ff4j)) {
+            if (eval(ff4j, pageContext)) {
                 return EVAL_BODY_INCLUDE;
             }
 
@@ -92,7 +93,7 @@ public abstract class AbstractFeatureTag extends TagSupport implements ConsoleCo
         return SKIP_BODY;
     }
     
-    protected abstract boolean eval(FF4j ff4j);
+    protected abstract boolean eval(FF4j ff4j, PageContext pageContext);
 
     /**
      * Getter accessor for attribute 'featureid'.

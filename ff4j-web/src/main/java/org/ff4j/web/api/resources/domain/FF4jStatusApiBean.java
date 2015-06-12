@@ -83,7 +83,6 @@ public final class FF4jStatusApiBean {
      *      target ff4j.
      */
     public FF4jStatusApiBean(FF4j ff4j) {
-        System.out.println("1");
         // UpTime
         long up = System.currentTimeMillis() - ff4j.getStartTime();
         long daynumber = new Double(Math.floor(up / (1000 * 3600 * 24))).longValue();

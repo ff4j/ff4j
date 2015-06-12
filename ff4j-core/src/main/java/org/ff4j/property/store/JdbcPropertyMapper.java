@@ -52,7 +52,7 @@ public class JdbcPropertyMapper implements JdbcStoreConstants {
         AbstractProperty<?> ap = new Property(propertyName, propertyValue);
        
         // Dedicated Type
-        String propertyType =  rs.getString(COL_PROPERTY_TYPE);
+        String propertyType = rs.getString(COL_PROPERTY_TYPE);
         if (propertyType != null) {
             try {
                 // Construction by dedicated constructor with introspection

@@ -1,0 +1,16 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="ff4j" class="org.ff4j.FF4j">
+		<property name="store" ref="ff4j.store" />
+	</bean>
+
+	<bean id="ff4j.store" class="org.ff4j.web.store.FeatureStoreHttp">
+		<constructor-arg index="0" type="java.lang.String" name="rootApiUrl" value="http://cannys.ddns.net:8081/ff4j-demo/api/ff4j" />
+	</bean>
+	
+
+</beans>
