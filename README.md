@@ -42,7 +42,7 @@ mvn archetype:create -Dpackaging=jar -Dversion=1.0 -DartifactId=ff4j-simple -Dgr
 <dependency>
   <groupId>org.ff4j</groupId>
   <artifactId>ff4j-core</artifactId>
-  <version>1.3</version>
+  <version>1.3.1</version>
 </dependency>
 ```
 
