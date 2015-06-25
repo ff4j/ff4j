@@ -20,7 +20,7 @@
   -->
 <features xmlns="http://www.ff4j.org/schema/ff4j" 
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	 xsi:schemaLocation="http://www.ff4j.org/schema/ff4j http://ff4j.org/schema/ff4j-1.4.0.xsd">
+	 xsi:schemaLocation="http://www.ff4j.org/schema/ff4j http://ff4j.org/schema/ff4j-1.3.0.xsd">
 	
 		<feature uid="AwesomeFeature" enable="true" description="some desc" />
 	

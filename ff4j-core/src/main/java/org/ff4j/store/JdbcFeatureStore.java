@@ -755,6 +755,9 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
      * @return current value of 'dataSource'
      */
     public DataSource getDataSource() {
+    	if (dataSource == null) {
+    		throw new IllegalStateException("DataSource has not been initialized");
+    	}
         return dataSource;
     }
 

@@ -24,7 +24,7 @@ import org.junit.Test;
 /**
  * All TEST LOGIC is in super class to be processed on EACH STORE.
  * 
- * @author clunven
+ * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public class InMemoryStoreTest extends AbstractStoreTest {
 

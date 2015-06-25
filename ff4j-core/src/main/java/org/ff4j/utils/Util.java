@@ -114,7 +114,6 @@ public abstract class Util {
      *            enumeration of elements
      * @return
      */
-    @SuppressWarnings("unchecked")
     public static <T> Set<T> set(T... els) {
         return new HashSet<T>(Arrays.asList(els));
     }

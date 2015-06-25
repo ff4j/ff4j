@@ -18,29 +18,33 @@
   limitations under the License.
   #L%
   -->
-<properties xmlns="http://www.ff4j.org/schema/ff4j" 
+<ff4j xmlns="http://www.ff4j.org/schema/ff4j" 
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	 xsi:schemaLocation="http://www.ff4j.org/schema/ff4j http://ff4j.org/schema/ff4j-1.4.0.xsd">
-	
-	 <property name="a" value="AMER" >
-	 	<fixedValues>
-	 		<value>AMER</value>
-	 		<value>EAST</value>
-	 		<value>EAST</value>
-	 		<value>EAST</value>
-	 	</fixedValues>
-	 </property>
-	 <property name="b" value="12"   />
-	
-	 <property name="c" value="12.5" />
-	
-	 <property name="d"  value="true" />
-	
-	 <property name="e"  value="hello" />
-	
-	 <property name="f"  value="12,13,14" />
-	
-	 <property name="g" value="DEBUG" type="org.ff4j.property.PropertyLogLevel" />
 
-</properties>
+	<properties>
+	
+		 <property name="a" value="AMER" >
+		 	<fixedValues>
+		 		<value>AMER</value>
+		 		<value>EAST</value>
+		 		<value>EAST</value>
+		 		<value>EAST</value>
+		 	</fixedValues>
+		 </property>
+		 
+		 <property name="b" value="12"   />
+		
+		 <property name="c" value="12.5" />
+		
+		 <property name="d"  value="true" />
+		
+		 <property name="e"  value="hello" />
+		
+		 <property name="f"  value="12,13,14" />
+		
+		 <property name="g" value="DEBUG" type="org.ff4j.property.PropertyLogLevel" />
+	
+	</properties>
+</ff4j>
 

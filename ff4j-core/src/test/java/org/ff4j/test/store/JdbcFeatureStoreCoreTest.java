@@ -31,8 +31,10 @@ public class JdbcFeatureStoreCoreTest extends AbstractStoreTest {
     @Override
     protected FeatureStore initStore() {
         builder = new EmbeddedDatabaseBuilder();
-        db = builder.setType(EmbeddedDatabaseType.HSQL).addScript("classpath:schema-ddl.sql").addScript("classpath:ff-store.sql")
-                .build();
+        db = builder.
+        		setType(EmbeddedDatabaseType.HSQL).//
+        		addScript("classpath:schema-ddl.sql").//
+        		addScript("classpath:ff-store.sql").build();
 
         JdbcFeatureStore jdbcStore = new JdbcFeatureStore();
         jdbcStore.setDataSource(db);
@@ -44,8 +46,9 @@ public class JdbcFeatureStoreCoreTest extends AbstractStoreTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        db = builder.setType(EmbeddedDatabaseType.HSQL).addScript("classpath:schema-ddl.sql").addScript("classpath:ff-store.sql")
-                .build();
+        db = builder.setType(EmbeddedDatabaseType.HSQL).
+        		addScript("classpath:schema-ddl.sql").
+        		addScript("classpath:ff-store.sql").build();
     }
 
     /** {@inheritDoc} */

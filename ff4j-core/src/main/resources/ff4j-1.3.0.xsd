@@ -1,60 +1,35 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns="http://www.ff4j.org/schema/ff4j" 
 		   targetNamespace="http://www.ff4j.org/schema/ff4j"
 		   attributeFormDefault="unqualified"
 		   elementFormDefault="qualified" 
-		   xmlns:xs="http://www.w3.org/2001/XMLSchema"
-		   xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" 
-		    vc:minVersion="1.1" >
-		    
-	<xs:element name="ff4j">
-		<xs:annotation>
-			<xs:documentation>FF4J root configuration tag</xs:documentation>
-		</xs:annotation>
-		<xs:complexType>
-			<xs:choice minOccurs="0" maxOccurs="unbounded">
-				<xs:element ref="features" minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element ref="properties" minOccurs="0" maxOccurs="unbounded"/>
-			</xs:choice>
-		</xs:complexType>
-	</xs:element>
-	
+		   xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<!-- Root Element -->
 	<xs:element name="features">
 		<xs:complexType>
-			<xs:choice minOccurs="0" maxOccurs="unbounded">
-				<xs:element ref="feature"/>
-				<xs:element ref="feature-group"/>
+			<xs:choice maxOccurs="unbounded" minOccurs="0">
+
+				<!-- Element Feature -->
+				<xs:element name="feature" type="featureType" maxOccurs="unbounded" minOccurs="0" />
+
+				<!-- Element FeatureGroup -->
+				<xs:element name="feature-group" maxOccurs="unbounded"
+					minOccurs="0">
+					<xs:complexType>
+						<xs:sequence minOccurs="0" maxOccurs="unbounded" >
+							<xs:element name="feature" type="featureType" />
+						</xs:sequence>
+						<xs:attribute type="xs:string" name="name" use="required" />
+					</xs:complexType>
+				</xs:element>
+
 			</xs:choice>
 		</xs:complexType>
 	</xs:element>
-	
-	<xs:element name="properties">
-		<xs:complexType>
-			<xs:sequence minOccurs="0" maxOccurs="unbounded">
-				<xs:element ref="property"/>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
-	
-	<xs:element name="feature" type="featureType">
-		<xs:annotation>
-			<xs:documentation>Core feature</xs:documentation>
-		</xs:annotation>
-	</xs:element>
-	
-	<xs:element name="feature-group">
-		<xs:complexType>
-			<xs:sequence minOccurs="0" maxOccurs="unbounded">
-				<xs:element ref="feature"/>
-			</xs:sequence>
-			<xs:attribute name="name" type="xs:string" use="required"/>
-		</xs:complexType>
-	</xs:element>
-	
-	<xs:element name="property" type="propertyType"/>
-	
+
 	<xs:complexType name="featureType" mixed="true">
-		<xs:choice minOccurs="0" maxOccurs="unbounded">
+		<xs:choice maxOccurs="unbounded" minOccurs="0">
+
 			<!-- Security -->
 			<xs:element name="security" minOccurs="0" maxOccurs="1">
 				<xs:complexType>
@@ -63,7 +38,7 @@
 							<xs:complexType>
 								<xs:simpleContent>
 									<xs:extension base="xs:string">
-										<xs:attribute name="name" type="xs:string" use="required"/>
+										<xs:attribute type="xs:string" name="name" use="required" />
 									</xs:extension>
 								</xs:simpleContent>
 							</xs:complexType>
@@ -71,6 +46,7 @@
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
+
 			<!-- FlipStrategy -->
 			<xs:element name="flipstrategy" minOccurs="0" maxOccurs="1">
 				<xs:complexType>
@@ -79,16 +55,17 @@
 							<xs:complexType>
 								<xs:simpleContent>
 									<xs:extension base="xs:string">
-										<xs:attribute name="name" type="xs:string" use="required"/>
-										<xs:attribute name="value" type="xs:string" use="required"/>
+										<xs:attribute type="xs:string" name="name"  use="required" />
+										<xs:attribute type="xs:string" name="value" use="required" />
 									</xs:extension>
 								</xs:simpleContent>
 							</xs:complexType>
 						</xs:element>
 					</xs:sequence>
-					<xs:attribute name="class" type="xs:string" use="required"/>
+					<xs:attribute type="xs:string" name="class" use="required"/>
 				</xs:complexType>
 			</xs:element>
+			
 			<xs:element name="custom-properties" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence minOccurs="0" maxOccurs="unbounded">
@@ -96,11 +73,15 @@
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
+
 		</xs:choice>
-		<xs:attribute name="uid" type="xs:string" use="required"/>
-		<xs:attribute name="enable" type="xs:boolean" use="required"/>
-		<xs:attribute name="description" type="xs:string" use="optional"/>
+		<xs:attribute type="xs:string" name="uid" use="required"/>
+		<xs:attribute type="xs:string" name="description" use="optional" />
+		<xs:attribute type="xs:boolean" name="enable" use="required"	 />
 	</xs:complexType>
+	
+	<xs:element name="property" type="propertyType"/>
+	
 	
 	<xs:complexType name="propertyType">
 		<xs:sequence minOccurs="0">
@@ -116,5 +97,5 @@
 		<xs:attribute name="value" type="xs:string" use="required"/>
 		<xs:attribute name="type" type="xs:string" use="optional"/>
 	</xs:complexType>
-	
+
 </xs:schema>
