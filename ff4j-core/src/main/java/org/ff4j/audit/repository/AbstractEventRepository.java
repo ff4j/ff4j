@@ -27,8 +27,14 @@ import org.ff4j.audit.graph.BarChart;
 import org.ff4j.audit.graph.PieChart;
 import org.ff4j.audit.graph.PieSector;
 
-public abstract class AbstractEventRepository implements EventRepository {
 
+/**
+ * Superclass implementing the custom serialization.
+ *
+ * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ */
+public abstract class AbstractEventRepository implements EventRepository { 
+    
     /** {@inheritDoc} */
     @Override
     public String toString() {

@@ -11,21 +11,15 @@ package org.ff4j.test.store;
  * governing permissions and limitations under the License. #L%
  */
 
-import java.io.FileReader;
-import java.sql.Connection;
-import java.sql.SQLException;
-
 import javax.sql.DataSource;
 
-import org.apache.commons.dbcp.BasicDataSource;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.JdbcFeatureStore;
-import org.ff4j.test.utils.SqlScriptRunner;
-import org.junit.After;
+import org.ff4j.test.utils.JdbcTestHelper;
 import org.junit.Before;
 
 /**
- * This test is meant to test the JDBC feature store directly.
+ * This test is meant to access a Jfeature store in 'pure' JDBC.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
@@ -35,72 +29,22 @@ public class JdbcFeatureDataSourceTest extends AbstractStoreTest {
     private DataSource sqlDataSource;
     
     /** Should reinit tables on each test , except first */
-    private static boolean tableCreated = false;
+    private static boolean dropTable = false;
   
     /** {@inheritDoc} */
     @Override
     protected FeatureStore initStore() {
-    	sqlDataSource = initHQLInMemoryDataSource();
+    	sqlDataSource = JdbcTestHelper.createInMemoryHQLDataSource();
         return new JdbcFeatureStore(sqlDataSource);
     }
     
-    /**
-     * Initialize DataSource with a pool of connections to HQL database.
-     *
-     * @return
-     * 		current data source
-     */
-    private DataSource initHQLInMemoryDataSource() {
-    	// Init DataSource
-    	BasicDataSource dbcpDataSource = new BasicDataSource();
-    	dbcpDataSource.setDriverClassName("org.hsqldb.jdbcDriver");
-    	dbcpDataSource.setUsername("sa");
-    	dbcpDataSource.setPassword("");
-    	dbcpDataSource.setUrl("jdbc:hsqldb:mem:.");
-    	dbcpDataSource.setMaxActive(100);
-    	dbcpDataSource.setMaxIdle(50);
-    	dbcpDataSource.setInitialSize(50);
-    	dbcpDataSource.setValidationQuery("select 1 from INFORMATION_SCHEMA.SYSTEM_USERS;");
-    	dbcpDataSource.setPoolPreparedStatements(true);
-    	return dbcpDataSource;
-    }
-    
-    /**
-     * Execute expected SQL scripts.
-     */
-    private void runDDL() {
-    	// Create a SQL Connection and execute DDL
-    	SqlScriptRunner ssr;
-    	Connection sqlConnection = null;
-		try {
-			sqlConnection = sqlDataSource.getConnection();
-			ssr = new SqlScriptRunner(sqlConnection, true, true);
-			if (tableCreated) {
-				ssr.runScript(new FileReader("src/main/resources/schema-drop.sql"));
-			}
-			ssr.runScript(new FileReader("src/main/resources/schema-ddl.sql"));
-			ssr.runScript(new FileReader("src/test/resources/ff-store.sql"));
-			tableCreated = true;
-		} catch (Exception e) {
-			throw new IllegalArgumentException("Cannot initialized DB", e);
-		} finally {
-			try {
-				sqlConnection.commit();
-				sqlConnection.close();
-			} catch (SQLException e) {}
-		}
-    }
-
     /** {@inheritDoc} */
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        runDDL();
+        JdbcTestHelper.initDBSchema(sqlDataSource, dropTable);
+        dropTable = true;
     }
 
-    /** {@inheritDoc} */
-    @After
-    public void tearDown() throws Exception {
-    }
 }

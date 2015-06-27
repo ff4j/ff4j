@@ -11,6 +11,11 @@ package org.ff4j.store;
  * governing permissions and limitations under the License. #L%
  */
 
+import static org.ff4j.utils.JdbcUtils.closeConnection;
+import static org.ff4j.utils.JdbcUtils.closeResultSet;
+import static org.ff4j.utils.JdbcUtils.closeStatement;
+import static org.ff4j.utils.JdbcUtils.rollback;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,8 +37,9 @@ import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.store.JdbcPropertyMapper;
 import org.ff4j.utils.ParameterUtils;
+import org.ff4j.utils.Util;
 
-/**
+;/**
  * Implementation of {@link FeatureStore} to work with RDBMS through JDBC.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
@@ -72,7 +78,6 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
         this(jdbcDS);
         importFeaturesFromXmlFile(xmlConfFile);
     }
-    
 
     /** {@inheritDoc} */
     @Override
@@ -104,10 +109,18 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
         if (uid == null || uid.isEmpty()) {
             throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
         }
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        Connection          sqlConn = null;
+        PreparedStatement   ps = null;
+        ResultSet           rs = null;
         try {
-            ps = buildStatement(SQL_EXIST, uid);
+            // Pick connection
+            sqlConn = getDataSource().getConnection();
+            
+            // Query Exist
+            ps = sqlConn.prepareStatement(SQL_EXIST);
+            ps.setString(1, uid);
+            
+            // Execute
             rs = ps.executeQuery();
             if (rs.next()) {
                 return 1 == rs.getInt(1);
@@ -118,6 +131,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
+            closeConnection(sqlConn);
         }
     }
 
@@ -128,11 +142,17 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
         if (uid == null || uid.isEmpty()) {
             throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
         }
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        
+        Connection          sqlConn = null;
+        PreparedStatement   ps = null;
+        ResultSet           rs = null;
         try {
-            // Returns features
-            ps = buildStatement(SQLQUERY_GET_FEATURE_BY_ID, uid);
+            // Pick connection
+            sqlConn = getDataSource().getConnection();
+            
+            // Read a feature by its ID (tables FEATURES)
+            ps = sqlConn.prepareStatement(SQLQUERY_GET_FEATURE_BY_ID);
+            ps.setString(1, uid);
             rs = ps.executeQuery();
             Feature f = null;
             if (rs.next()) {
@@ -141,16 +161,17 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
                 throw new FeatureNotFoundException(uid);
             }
 
-            // 2nd request
-            ps = ps.getConnection().prepareStatement(SQL_GET_ROLES);
+            // Enrich to get roles 2nd request
+            ps = sqlConn.prepareStatement(SQL_GET_ROLES);
             ps.setString(1, uid);
             rs = ps.executeQuery();
             while (rs.next()) {
                 f.getPermissions().add(rs.getString("ROLE_NAME"));
             }
             
-            // 3d request to get custom properties by uid
-            ps = buildStatement(SQL_GET_CUSTOMPROPERTIES_BYFEATUREID, uid);
+            // Enrich with properties 3d request to get custom properties by uid
+            ps = sqlConn.prepareStatement(SQL_GET_CUSTOMPROPERTIES_BYFEATUREID);
+            ps.setString(1, uid);
             rs = ps.executeQuery();
             while (rs.next()) {
                 AbstractProperty<?> ap = JDBC_PROPERTY_MAPPER.map(rs);
@@ -162,9 +183,9 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
+            closeConnection(sqlConn);
         }
-    }  
-    
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -181,24 +202,24 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
 
             // Create connection
             sqlConn = getDataSource().getConnection();
+            
+            // Begin TX
             sqlConn.setAutoCommit(false);
 
             // Create feature
             ps = sqlConn.prepareStatement(SQL_CREATE);
-            int idx = 1;
-            ps.setString(idx++, fp.getUid());
-            ps.setInt(idx++, fp.isEnable() ? 1 : 0);
-            ps.setString(idx++, fp.getDescription());
-
+            ps.setString(1, fp.getUid());
+            ps.setInt(2, fp.isEnable() ? 1 : 0);
+            ps.setString(3, fp.getDescription());
             String strategyColumn = null;
             String expressionColumn = null;
             if (fp.getFlippingStrategy() != null) {
-                strategyColumn = fp.getFlippingStrategy().getClass().getCanonicalName();
+                strategyColumn   = fp.getFlippingStrategy().getClass().getCanonicalName();
                 expressionColumn = ParameterUtils.fromMap(fp.getFlippingStrategy().getInitParams());
             }
-            ps.setString(idx++, strategyColumn);
-            ps.setString(idx++, expressionColumn);
-            ps.setString(idx++, fp.getGroup());
+            ps.setString(4, strategyColumn);
+            ps.setString(5, expressionColumn);
+            ps.setString(6, fp.getGroup());
             ps.executeUpdate();
 
             // Create roles
@@ -224,7 +245,6 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
                     } else {
                         ps.setString(4, null);
                     }
-                    
                     ps.setString(5, fp.getUid());
                     ps.executeUpdate();
                 }
@@ -238,6 +258,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
             throw new FeatureAccessException("Cannot update features database, SQL ERROR", sqlEX);
         } finally {
             closeStatement(ps);
+            closeConnection(sqlConn);
         }
     }
 
@@ -293,25 +314,10 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
             throw new FeatureAccessException("Cannot update features database, SQL ERROR", sqlEX);
         } finally {
             closeStatement(ps);
+            closeConnection(sqlConn);
         }
     }
-
-    /**
-     * Utility method to perform rollback in correct way.
-     * 
-     * @param sqlConn
-     *            current sql connection
-     */
-    private void rollback(Connection sqlConn) {
-        try {
-            if (!sqlConn.isClosed()) {
-                sqlConn.rollback();
-            }
-        } catch (SQLException e) {
-            throw new FeatureAccessException("Cannot rollback database, SQL ERROR", e);
-        }
-    }
-
+  
     /** {@inheritDoc} */
     @Override
     public void grantRoleOnFeature(String uid, String roleName) {
@@ -341,38 +347,18 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
         }
         update(SQL_DELETE_ROLE, uid, roleName);
     }
-
-    /**
-     * Build {@link PreparedStatement} from parameters
-     * 
-     * @param query
-     *            query template
-     * @param params
-     *            current parameters
-     * @return working {@link PreparedStatement}
-     * @throws SQLException
-     *             sql error when working with statement
-     */
-    public PreparedStatement buildStatement(String query, String... params) throws SQLException {
-        Connection sqlConn = getDataSource().getConnection();
-        PreparedStatement ps = sqlConn.prepareStatement(query);
-        if (params != null && params.length > 0) {
-            for (int i = 0; i < params.length; i++) {
-                ps.setString(i + 1, params[i]);
-            }
-        }
-        return ps;
-    }
-
+    
     /** {@inheritDoc} */
     @Override
     public Map<String, Feature> readAll() {
         LinkedHashMap<String, Feature> mapFP = new LinkedHashMap<String, Feature>();
+        Connection sqlConn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             // Returns features
-            ps = buildStatement(SQLQUERY_ALLFEATURES);
+            sqlConn = dataSource.getConnection();
+            ps = sqlConn.prepareStatement(SQLQUERY_ALLFEATURES);
             rs = ps.executeQuery();
             while (rs.next()) {
                 Feature f = JDBC_FEATURE_MAPPER.mapFeature(rs);
@@ -392,6 +378,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
+            closeConnection(sqlConn);
         }
     }
 
@@ -399,11 +386,13 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
     @Override
     public Set<String> readAllGroups() {
         Set<String> setOFGroup = new HashSet<String>();
+        Connection sqlConn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             // Returns features
-            ps = buildStatement(SQLQUERY_ALLGROUPS);
+            sqlConn = dataSource.getConnection();
+            ps = sqlConn.prepareStatement(SQLQUERY_ALLGROUPS);
             rs = ps.executeQuery();
             while (rs.next()) {
                 String groupName = rs.getString(COL_FEAT_GROUPNAME);
@@ -417,12 +406,17 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
+            closeConnection(sqlConn);
         }
     }
 
     /** {@inheritDoc} */
     @Override
     public void update(Feature fp) {
+        /**
+         * TODO : THIS OPERATION IS NOT PERFORMED IN A SINGLE TX but leverage on sub method
+         * Create a single Connect and COMMIT at end
+         */
         if (fp == null) {
             throw new IllegalArgumentException("Feature cannot be null nor empty");
         }
@@ -459,16 +453,18 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
         
         // REMOVE EXISTING CUSTOM PROPERTIES
         if (fpExist.getCustomProperties() != null && !fpExist.getCustomProperties().isEmpty()) {
+            Connection sqlConn = null;
             PreparedStatement ps = null;
-            ResultSet rs = null;
             try {
-                ps = buildStatement(SQL_DELETE_CUSTOMPROPERTIES, fpExist.getUid());
+                sqlConn = dataSource.getConnection();
+                ps = sqlConn.prepareStatement(SQL_DELETE_CUSTOMPROPERTIES);
+                ps.setString(1, fpExist.getUid());
                 ps.executeUpdate();
             } catch (SQLException sqlEX) {
                 throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
             } finally {
-                closeResultSet(rs);
                 closeStatement(ps);
+                closeConnection(sqlConn);
             }
         }
         
@@ -487,11 +483,21 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
      *      target properties.
      */
     private void createCustomProperties(String uid, Collection <AbstractProperty<?> > props) {
+        Util.assertNotNull(uid);
+        if (props == null | props.isEmpty()) return;
+       
+        Connection sqlConn = null;
         PreparedStatement ps = null;
-        ResultSet rs = null;
+        
         try {
+            sqlConn = dataSource.getConnection();
+            
+            // Begin TX
+            sqlConn.setAutoCommit(false);
+            
+            // Queries
             for (AbstractProperty<?> pp : props) {
-                ps = buildStatement(SQL_CREATE_CUSTOMPROPERTY);
+                ps = sqlConn.prepareStatement(SQL_CREATE_CUSTOMPROPERTY);
                 ps.setString(1, pp.getName());
                 ps.setString(2, pp.getType());
                 ps.setString(3, pp.asString());
@@ -504,11 +510,15 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
                 ps.setString(5, uid);
                 ps.executeUpdate();
             }
+            
+            // End TX
+            sqlConn.commit();
+            
         } catch (SQLException sqlEX) {
             throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
         } finally {
-            closeResultSet(rs);
             closeStatement(ps);
+            closeConnection(sqlConn);
         }
     }
 
@@ -518,10 +528,13 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
         if (groupName == null || groupName.isEmpty()) {
             throw new IllegalArgumentException("Groupname cannot be null nor empty");
         }
+        Connection sqlConn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = buildStatement(SQL_EXIST_GROUP, groupName);
+            sqlConn = dataSource.getConnection();
+            ps = sqlConn.prepareStatement(SQL_EXIST_GROUP);
+            ps.setString(1, groupName);
             rs = ps.executeQuery();
             if (rs.next()) {
                 return (rs.getInt(1) > 0);
@@ -532,6 +545,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
+            closeConnection(sqlConn);
         }
     }
 
@@ -569,11 +583,14 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
             throw new GroupNotFoundException(groupName);
         }
         LinkedHashMap<String, Feature> mapFP = new LinkedHashMap<String, Feature>();
+        Connection sqlConn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             // Returns features
-            ps = buildStatement(SQLQUERY_GET_FEATURE_GROUP, groupName);
+            sqlConn = dataSource.getConnection();
+            ps = sqlConn.prepareStatement(SQLQUERY_GET_FEATURE_GROUP);
+            ps.setString(1, groupName);
             rs = ps.executeQuery();
             while (rs.next()) {
                 Feature f = JDBC_FEATURE_MAPPER.mapFeature(rs);
@@ -596,6 +613,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
+            closeConnection(sqlConn);
         }
     }
 
@@ -695,6 +713,27 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
     }
 
     /**
+     * Build {@link PreparedStatement} from parameters
+     * 
+     * @param query
+     *            query template
+     * @param params
+     *            current parameters
+     * @return working {@link PreparedStatement}
+     * @throws SQLException
+     *             sql error when working with statement
+     */
+    private PreparedStatement buildStatement(Connection sqlConn, String query, String... params) throws SQLException {
+        PreparedStatement ps = sqlConn.prepareStatement(query);
+        if (params != null && params.length > 0) {
+            for (int i = 0; i < params.length; i++) {
+                ps.setString(i + 1, params[i]);
+            }
+        }
+        return ps;
+    }
+    
+    /**
      * Utility method to perform UPDATE and DELETE operations.
      * 
      * @param query
@@ -703,49 +742,17 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
      *            sql query params
      */
     private void update(String query, String... params) {
+        Connection sqlConnection = null;
         PreparedStatement ps = null;
         try {
-            ps = buildStatement(query, params);
+            sqlConnection = dataSource.getConnection();
+            ps = buildStatement(sqlConnection, query, params);
             ps.executeUpdate();
         } catch (SQLException sqlEX) {
             throw new FeatureAccessException("Cannot update features database, SQL ERROR", sqlEX);
         } finally {
             closeStatement(ps);
-        }
-    }
-
-    /**
-     * Close resultset.
-     * 
-     * @param rs
-     *            target resultset
-     */
-    private void closeResultSet(ResultSet rs) {
-        try {
-            if (rs != null) {
-                rs.close();
-            }
-        } catch (SQLException e) {
-            throw new FeatureAccessException("An error occur when closing resultset", e);
-        }
-    }
-
-    /**
-     * Utility method to close statement properly.
-     * 
-     * @param ps
-     * 
-     */
-    private void closeStatement(PreparedStatement ps) {
-        try {
-            if (ps != null) {
-                if (ps.getConnection() != null) {
-                    ps.getConnection().close();
-                }
-                ps.close();
-            }
-        } catch (SQLException e) {
-            throw new FeatureAccessException("An error occur when closing statement", e);
+            closeConnection(sqlConnection);
         }
     }
 

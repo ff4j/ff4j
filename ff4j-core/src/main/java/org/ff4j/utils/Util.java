@@ -22,6 +22,7 @@ package org.ff4j.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -88,8 +89,19 @@ public abstract class Util {
      */
     public static void assertHasLength(String text) {
         if (null == text || text.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "[Assertion failed] - this String argument must have length; it must not be null or empty");
+            throw new IllegalArgumentException("[Assertion failed] - Target STRING must not be null nor empty");
+        }
+    }
+    
+    /**
+     * Check that string is not null
+     * 
+     * @param object
+     *            target object
+     */
+    public static void assertNotEmpty(Collection<?> collec) {
+        if (null == collec || collec.isEmpty()) {
+            throw new IllegalArgumentException("[Assertion failed] - Target COLLECTION must not be null nor empty");
         }
     }
     
@@ -103,7 +115,7 @@ public abstract class Util {
      */
     public static void assertParamNotNull(String param, String paramName) {
         if (param == null || param.isEmpty()) {
-            throw new IllegalArgumentException("Parameter '" + paramName + "' cannot be null nor empty");
+            throw new IllegalArgumentException("Missing Parameter '" + paramName + "' must not be null nor empty");
         }
     }
 
@@ -114,7 +126,8 @@ public abstract class Util {
      *            enumeration of elements
      * @return
      */
-    public static <T> Set<T> set(T... els) {
+    @SafeVarargs
+	public static <T> Set<T> set(T... els) {
         return new HashSet<T>(Arrays.asList(els));
     }
     

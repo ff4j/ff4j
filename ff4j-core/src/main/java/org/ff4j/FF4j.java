@@ -262,7 +262,7 @@ public class FF4j {
      * @return current instance
      */
     public FF4j disableGroup(String groupName) {
-        getFeatureStore().enableGroup(groupName);
+        getFeatureStore().disableGroup(groupName);
         getEventPublisher().publish(groupName, EventType.DISABLE_GROUP);
         return this;
     }

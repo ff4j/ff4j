@@ -54,7 +54,7 @@ public class Event implements Serializable {
      * @param type
      *            target event type
      */
-    public Event(String featureName, EventType type) {
+    public Event(String featureName, EventType type) {  
         this();
         this.featureName = featureName;
         this.type = type;
@@ -123,7 +123,27 @@ public class Event implements Serializable {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return "Event [type=" + type + ", featureName=" + featureName + ", timestamp=" + timestamp + "]";
+        return toJson();
+    }
+    
+    /**
+     * Serialized as a CSV line (without line return).
+     *
+     * @return
+     *      current evetn as CSV item
+     */
+    public String toCSV() {
+        return timestamp + ";" + featureName + ";" + type;
+    }
+    
+    /**
+     * Serialized as a Json document.
+     *
+     * @return
+     *      current evetn as CSV item
+     */
+    public String toJson() {
+        return "{\"type\": \"" + type + "\", \"featureName\":\"" + featureName + "\", \"timestamp\":" + timestamp + "}";
     }
 
 }

@@ -102,5 +102,5 @@ public interface EventRepository {
      * @return all event in the repository
      */
     int getTotalEventCount();
-
+  
 }

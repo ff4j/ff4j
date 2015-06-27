@@ -20,14 +20,11 @@ package org.ff4j.test.audit;
  * #L%
  */
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
 import org.ff4j.audit.Event;
 import org.ff4j.audit.EventPublisher;
 import org.ff4j.audit.EventType;
 import org.ff4j.audit.graph.BarChart;
+import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.audit.repository.InMemoryEventRepository;
 import org.junit.Assert;
 import org.junit.Test;
@@ -37,30 +34,23 @@ import org.junit.Test;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class EventRepositoryTest {
+public class InMemoryEventRepositoryTest extends AbstractEventRepositoryTest {
 
-    @Test
-    public void testAudit() throws InterruptedException {
-        int nb = 500;
-        EventPublisher pub = new EventPublisher();
-        for (int i = 0; i < nb; i++) {
-            pub.publish(new Event("aer", EventType.HIT_FLIPPED));
-            Thread.sleep(2);
-        }
-        Assert.assertEquals(nb, pub.getRepository().getTotalEventCount());
+    private int limit = 100;
+    
+    /** {@inheritDoc} */
+    @Override
+    protected EventRepository initRepository() {
+        return new InMemoryEventRepository(limit);
     }
 
     @Test
-    public void testAuditWithLimit() throws InterruptedException {
-        int nb = 500;
-        int limit = 25;
-        EventPublisher pub = new EventPublisher();
-        pub.setRepository(new InMemoryEventRepository(limit));
-        for (int i = 0; i < nb; i++) {
-            pub.publish(new Event("aer", EventType.HIT_FLIPPED));
+    public void testNotExceedLimit() throws InterruptedException {
+        for (int i = 0; i < (2 * limit); i++) {
+            publisher.publish(new Event("aer", EventType.HIT_FLIPPED));
             Thread.sleep(2);
         }
-        Assert.assertEquals(limit, pub.getRepository().getTotalEventCount());
+        Assert.assertEquals(limit, repo.getTotalEventCount());
     }
 
     @Test
@@ -95,17 +85,5 @@ public class EventRepositoryTest {
             
         }
         System.out.println(bc.toJson());
-    }
-    
-    @Test
-    public void testCalendar() {
-        Calendar c2 = Calendar.getInstance();
-        c2.setTime(new Date(System.currentTimeMillis() + 1000 * 3600 * 24));
-        c2.set(Calendar.HOUR_OF_DAY, 0);
-        c2.set(Calendar.MINUTE, 0);
-        c2.set(Calendar.SECOND, 0);
-        
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm YYYY-MM-dd");
-        System.out.println(sdf.format(c2.getTime()));
     }
 }

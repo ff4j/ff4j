@@ -114,6 +114,31 @@ public interface JdbcStoreConstants {
     /** sql query expression */
     String SQL_PROPERTY_READALL = "SELECT PROPERTY_ID,CLAZZ,CURRENTVALUE,FIXEDVALUES,FEAT_UID FROM FF4J_PROPERTIES";
     
+    // ------- AUDIT -------------
+    
+    String TABLE_AUDIT = "FF4J_AUDIT";
+    
+    /** sql column name for table FF4J_AUDIT. */
+    String COL_EVENT_TIME = "EVT_TIME";
+    
+    /** sql column name for table FF4J_AUDIT. */
+    String COL_EVENT_TYPE = "EVT_TYPE";
+    
+    /** sql column name for table FF4J_AUDIT. */
+    String COL_EVENT_UID = "FEAT_UID";
+    
+    /** Creation. */
+    String SQL_AUDIT_INSERT = "INSERT INTO " + TABLE_AUDIT + "(" + COL_EVENT_TIME + "," + COL_EVENT_TYPE + "," + COL_EVENT_UID + ") VALUES (?,?, ?)";
+    
+    /** Creation. */
+    String SQL_AUDIT_COUNT = "SELECT COUNT(*) FROM " + TABLE_AUDIT;
+    
+    /** Deletion of single entry. */
+    String SQL_AUDIT_DELETE = "DELETE FROM " + TABLE_AUDIT + " WHERE (" + COL_EVENT_TIME + " = ?) AND (" + COL_EVENT_TYPE + " LIKE ? " + COL_EVENT_UID + ")";
+    
+    /** Purge a while part. */
+    String SQL_AUDIT_PURGE = "";
+    
     
     // ----- Columns
 
@@ -155,4 +180,5 @@ public interface JdbcStoreConstants {
     
     /** sql column name from table FF4J_PROPERTIES. */
     String COL_PROPERTY_FEATID = "FEAT_UID";
+   
 }

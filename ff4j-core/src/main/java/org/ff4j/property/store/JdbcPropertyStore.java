@@ -41,7 +41,7 @@ import org.ff4j.utils.Util;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class JdbcPropertyStore extends AbstractPropertyStore implements  JdbcStoreConstants {
+public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStoreConstants {
 
     /** Access to storage. */
     private DataSource dataSource;
