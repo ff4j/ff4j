@@ -77,7 +77,7 @@ public class EventPublisher {
      */
     public EventPublisher(int queueCapacity, int poolSize, EventRepository er) {
         // Initializing queue
-        queue = new ArrayBlockingQueue<>(queueCapacity);
+        queue = new ArrayBlockingQueue<Runnable>(queueCapacity);
         
         // Executor with worker to process threads
         RejectedExecutionHandler rej = (new RejectedExecutionHandler() {
