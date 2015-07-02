@@ -20,8 +20,15 @@ package org.ff4j.audit;
  * #L%
  */
 
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.audit.repository.InMemoryEventRepository;
@@ -32,51 +39,85 @@ import org.ff4j.audit.repository.InMemoryEventRepository;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public class EventPublisher {
-
-    /** default pool size. */
-    private static final int DEFAULT_POOL_SIZE = 3;
-
+    
+    /** DEFAULT. */
+    public static final int DEFAULT_QUEUE_CAPACITY = 100;
+    
+    /** DEFAULT. */
+    public static final int DEFAULT_POOL_SIZE = 4;
+    
+    /** 2s to save the event other wize skip. */
+    public static long timeout = 2000L;
+    
+    /** queueing incoming events. */
+    private final BlockingQueue<Runnable> queue;
+    
     /** Executor for item writer. */
-    private ExecutorService executor = Executors.newFixedThreadPool(DEFAULT_POOL_SIZE);
+    private ExecutorService executor;
 
     /** Repository to save events. */
-    private EventRepository repository = new InMemoryEventRepository();
+    private EventRepository repository;
 
     /**
      * Default constructor.
      */
     public EventPublisher() {
+        this(DEFAULT_QUEUE_CAPACITY, DEFAULT_POOL_SIZE, new InMemoryEventRepository());
     }
-
+    
     /**
-     * Size of thread pool.
-     * 
-     * @param threadCount
-     */
-    public EventPublisher(int threadCount) {
-        executor = Executors.newFixedThreadPool(threadCount);
-    }
-
-    /**
-     * Constructor with repository
-     * 
-     * @param er
-     *            target repository
+     * Default constructor.
      */
     public EventPublisher(EventRepository er) {
-        repository = er;
+        this(DEFAULT_QUEUE_CAPACITY, DEFAULT_POOL_SIZE, er);
     }
-
+        
     /**
-     * Size of thread pool.
-     * 
-     * @param threadCount
-     *            thread pool size
-     * @param er
-     *            target repository
+     * Default constructor.
      */
-    public EventPublisher(int threadCount, EventRepository er) {
-        executor = Executors.newFixedThreadPool(threadCount);
+    public EventPublisher(int queueCapacity, int poolSize, EventRepository er) {
+        // Initializing queue
+        queue = new ArrayBlockingQueue<>(queueCapacity);
+        
+        // Executor with worker to process threads
+        RejectedExecutionHandler rej = (new RejectedExecutionHandler() {
+            @Override
+            public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                // try once again
+                executor.execute(r);
+            }
+        });
+        
+         class CustomThreadFactory implements ThreadFactory {
+            final AtomicInteger poolNumber = new AtomicInteger(1);
+            final ThreadGroup group;
+            final AtomicInteger threadNumber = new AtomicInteger(1);
+            final String namePrefix;
+     
+            CustomThreadFactory() {
+                SecurityManager s = System.getSecurityManager();
+                group = (s != null)? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+                namePrefix = "ff4j-monitoring-pool-" + poolNumber.getAndIncrement() +  "-thread-";
+            }
+     
+            public Thread newThread(Runnable r) {
+                Thread t = new Thread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
+                if (t.isDaemon())
+                    t.setDaemon(false);
+                if (t.getPriority() != Thread.NORM_PRIORITY)
+                    t.setPriority(Thread.NORM_PRIORITY);
+                return t;
+            }
+        };
+      
+        executor = new ThreadPoolExecutor(poolSize, poolSize, 0L, TimeUnit.MILLISECONDS, queue, new CustomThreadFactory() , rej);
+       
+        // Override repository
         repository = er;
     }
 
@@ -87,7 +128,15 @@ public class EventPublisher {
      *            event.
      */
     public void publish(Event e) {
-        executor.submit(new EventWorker(e, repository));
+        final Future<Boolean> check = executor.submit(new EventWorker(e, repository));
+        try {
+            if (timeout != 0) {
+                check.get(timeout, TimeUnit.MILLISECONDS);
+            }
+        } catch (Exception e1) {
+            e1.printStackTrace();
+            System.err.println("Cannot push event into monitoring");
+        }
     }
 
     /**
@@ -111,9 +160,9 @@ public class EventPublisher {
      *            if flipped
      */
     public void publish(String featureName, boolean flipped) {
-        Event evt = new Event(featureName, EventType.HIT_FLIPPED);
+        Event evt = new Event(featureName, EventType.FEATURE_CHECK_ON);
         if (!flipped) {
-            evt.setType(EventType.HIT_NOT_FLIPPED);
+            evt.setType(EventType.FEATURE_CHECK_OFF);
         }
         publish(evt);
     }

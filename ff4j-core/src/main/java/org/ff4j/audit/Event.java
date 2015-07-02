@@ -136,6 +136,17 @@ public class Event implements Serializable {
         return timestamp + ";" + featureName + ";" + type;
     }
     
+    
+    /**
+     * Serialized as a CSV line (without line return).
+     *
+     * @return
+     *      current evetn as CSV item
+     */
+    public String toThreadName() {
+        return timestamp + "-" + featureName + "-" + type;
+    }
+    
     /**
      * Serialized as a Json document.
      *

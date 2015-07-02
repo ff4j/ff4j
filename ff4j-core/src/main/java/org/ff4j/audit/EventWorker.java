@@ -33,6 +33,9 @@ public class EventWorker implements Callable<Boolean> {
 
     /** Target event to insert. */
     private Event event = null;
+    
+    /** current thread name if relevant. */
+    private String name = null;
 
     /** Repository to store event. */
     private EventRepository eventRepository = null;
@@ -54,6 +57,10 @@ public class EventWorker implements Callable<Boolean> {
     public EventWorker(Event e, EventRepository repo) {
         this.event = e;
         this.eventRepository = repo;
+        if (e != null) {
+            this.name = e.toThreadName();
+            Thread.currentThread().setName("FF4J Monitoring worker processing " + name);
+        }
     }
 
     /** {@inheritDoc} */
@@ -66,9 +73,29 @@ public class EventWorker implements Callable<Boolean> {
             if (!ok) {
                 retryCount++;
                 Thread.sleep(RETRY_DELAY);
+                System.out.println("Retrying (" + retryCount + " time) ");
             }
         }
         return ok;
+    }
+
+    /**
+     * Getter accessor for attribute 'name'.
+     *
+     * @return
+     *       current value of 'name'
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Setter accessor for attribute 'name'.
+     * @param name
+     * 		new value for 'name '
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
 }

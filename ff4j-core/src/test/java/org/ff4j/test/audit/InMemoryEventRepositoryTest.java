@@ -21,9 +21,7 @@ package org.ff4j.test.audit;
  */
 
 import org.ff4j.audit.Event;
-import org.ff4j.audit.EventPublisher;
 import org.ff4j.audit.EventType;
-import org.ff4j.audit.graph.BarChart;
 import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.audit.repository.InMemoryEventRepository;
 import org.junit.Assert;
@@ -36,7 +34,7 @@ import org.junit.Test;
  */
 public class InMemoryEventRepositoryTest extends AbstractEventRepositoryTest {
 
-    private int limit = 100;
+    private int limit = 60;
     
     /** {@inheritDoc} */
     @Override
@@ -47,43 +45,9 @@ public class InMemoryEventRepositoryTest extends AbstractEventRepositoryTest {
     @Test
     public void testNotExceedLimit() throws InterruptedException {
         for (int i = 0; i < (2 * limit); i++) {
-            publisher.publish(new Event("aer", EventType.HIT_FLIPPED));
+            publisher.publish(new Event("aer", EventType.FEATURE_CHECK_ON));
             Thread.sleep(2);
         }
         Assert.assertEquals(limit, repo.getTotalEventCount());
-    }
-
-    @Test
-    public void testBarChart() throws InterruptedException {
-        // Given
-        int nbEvent = 100;
-        int nbSlot  = 10;
-        
-        EventPublisher pub = new EventPublisher();
-        // When
-        for (int i = 0; i < nbEvent; i++) {
-            pub.publish(new Event("evt1", EventType.HIT_FLIPPED));
-            pub.publish(new Event("evt2", EventType.HIT_FLIPPED));
-            Thread.sleep(2);
-        }
-        long endTime = System.currentTimeMillis();
-        long startTime = endTime - (3 * nbEvent);
-        BarChart bc = pub.getRepository().getHitsBarChart(startTime, endTime, nbSlot);
-        // Then
-        Assert.assertEquals(2*nbEvent, pub.getRepository().getTotalEventCount());
-        Assert.assertNotNull(bc);
-        Assert.assertEquals(2, bc.getSeries().size());
-        Assert.assertEquals(nbSlot, bc.getLabels().size());
-        Assert.assertNotNull(bc.getSeries().get("evt1"));
-        Assert.assertNotNull(bc.getSeries().get("evt2"));
-        Assert.assertEquals(nbSlot, bc.getSeries().get("evt1").getValues().size());
-        Assert.assertEquals(nbSlot, bc.getSeries().get("evt2").getValues().size());
-        for (int i = 0; i < nbSlot; i++) {
-            System.out.println(bc.getLabels().get(i) + 
-                    ", evt1<" +  bc.getSeries().get("evt1").getValues().get(i).intValue() + 
-                    ">, evt2<" +  bc.getSeries().get("evt2").getValues().get(i).intValue() + ">");
-            
-        }
-        System.out.println(bc.toJson());
-    }
+    }  
 }

@@ -21,7 +21,7 @@
 	<!-- ~     PROPERTIES           ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<properties>
-		<metrics.version>3.1.0</metrics.version>
+		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
 	</properties>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -38,7 +38,6 @@
 		<dependency>
         	<groupId>io.dropwizard.metrics</groupId>
         	<artifactId>metrics-core</artifactId>
-       	 	<version>${metrics.version}</version>
     	</dependency>
     	
     	<!-- Support for tests -->

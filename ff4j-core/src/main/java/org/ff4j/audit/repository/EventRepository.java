@@ -33,6 +33,12 @@ import org.ff4j.audit.graph.PieChart;
  */
 public interface EventRepository {
 
+    /** total hit count. */
+    String TITLE_PIE_HITCOUNT = "Total Hit Counts";
+    
+    /** distribution. */
+    String TITLE_BARCHAR_HIT = "HitCounts Distribution";
+    
     /**
      * Save event into store synchronously.
      * 
@@ -41,6 +47,14 @@ public interface EventRepository {
      * @return if saving is OK
      */
     boolean saveEvent(Event e);
+    
+    /**
+     * List feature names monitored.
+     *
+     * @return
+     *      target list of features
+     */
+    Set < String> getFeatureNames();
 
     /**
      * Get total hit of feature on a period of time.

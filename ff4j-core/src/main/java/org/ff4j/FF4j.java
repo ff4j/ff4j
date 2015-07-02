@@ -237,7 +237,7 @@ public class FF4j {
             }
             throw fnfe;
         }
-        getEventPublisher().publish(featureID, EventType.ENABLE);
+        getEventPublisher().publish(featureID, EventType.ENABLE_FEATURE);
         return this;
     }
 
@@ -250,7 +250,7 @@ public class FF4j {
      */
     public FF4j enableGroup(String groupName) {
         getFeatureStore().enableGroup(groupName);
-        getEventPublisher().publish(groupName, EventType.ENABLE_GROUP);
+        getEventPublisher().publish(groupName, EventType.ENABLE_FEATUREGROUP);
         return this;
     }
 
@@ -263,7 +263,7 @@ public class FF4j {
      */
     public FF4j disableGroup(String groupName) {
         getFeatureStore().disableGroup(groupName);
-        getEventPublisher().publish(groupName, EventType.DISABLE_GROUP);
+        getEventPublisher().publish(groupName, EventType.DISABLE_FEATUREGROUP);
         return this;
     }
 
@@ -275,7 +275,7 @@ public class FF4j {
      */
     public FF4j create(Feature fp) {
         getFeatureStore().create(fp);
-        getEventPublisher().publish(fp.getUid(), EventType.CREATE);
+        getEventPublisher().publish(fp.getUid(), EventType.CREATE_FEATURE);
         return this;
     }
 
@@ -324,7 +324,7 @@ public class FF4j {
             }
             throw fnfe;
         }
-        getEventPublisher().publish(featureID, EventType.DISABLE);
+        getEventPublisher().publish(featureID, EventType.DISABLE_FEATURE);
         return this;
     }
 
@@ -391,7 +391,7 @@ public class FF4j {
      */
     public FF4j delete(String fpId) {
         getFeatureStore().delete(fpId);
-        getEventPublisher().publish(fpId, EventType.DELETE);
+        getEventPublisher().publish(fpId, EventType.DELETE_FEATURE);
         return this;
     }
 

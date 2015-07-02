@@ -28,27 +28,27 @@ package org.ff4j.audit;
 public enum EventType {
 
     /** create new feature in the repoitory. */
-    CREATE,
+    CREATE_FEATURE,
 
     /** delete new feature in the repoitory. */
-    DELETE,
+    DELETE_FEATURE,
 
     /** enable feature. */
-    ENABLE,
+    ENABLE_FEATURE,
 
     /** disable feature. */
-    DISABLE,
+    DISABLE_FEATURE,
 
     /** enable group. */
-    ENABLE_GROUP,
+    ENABLE_FEATUREGROUP,
 
     /** disable group. */
-    DISABLE_GROUP,
+    DISABLE_FEATUREGROUP,
 
     /** flipped. */
-    HIT_FLIPPED,
+    FEATURE_CHECK_ON,
 
     /** not flipped. */
-    HIT_NOT_FLIPPED
+    FEATURE_CHECK_OFF
 
 }

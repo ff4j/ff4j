@@ -45,12 +45,6 @@ import org.ff4j.utils.Util;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public class InMemoryEventRepository extends AbstractEventRepository {
-
-    /** total hit count. */
-    private static final String TITLE_PIE_HITCOUNT = "Total Hit Counts";
-    
-    /** distribution. */
-    private static final String TITLE_BARCHAR_HIT = "HitCounts Distribution";
     
     /** default retention. */
     private static final int DEFAULT_QUEUE_CAPACITY = 100000;
@@ -85,7 +79,7 @@ public class InMemoryEventRepository extends AbstractEventRepository {
             mapOfEvents.put(e.getFeatureName(), new ArrayBlockingQueue<Event>(queueCapacity));
         }
         Queue<Event> myQueue = mapOfEvents.get(e.getFeatureName());
-        if (myQueue.size() >= DEFAULT_QUEUE_CAPACITY) {
+        if (myQueue.size() >= queueCapacity) {
             myQueue.poll();
         }
         return myQueue.offer(e);
@@ -102,7 +96,7 @@ public class InMemoryEventRepository extends AbstractEventRepository {
             int counter = 0;
             for (Event evt : qEvents) {
                 if (evt.getTimestamp() > startTime && evt.getTimestamp() < endTime) {
-                    if (EventType.HIT_FLIPPED.equals(evt.getType())) {
+                    if (EventType.FEATURE_CHECK_ON.equals(evt.getType())) {
                         counter++;
                     }
                 }
@@ -126,16 +120,16 @@ public class InMemoryEventRepository extends AbstractEventRepository {
             for (Event evt : qEvents) {
                 if (evt.getTimestamp() > startTime && evt.getTimestamp() < endTime) {
                     switch (evt.getType()) {
-                        case HIT_FLIPPED:
+                        case FEATURE_CHECK_ON:
                             nbFlip++;
                         break;
-                        case HIT_NOT_FLIPPED:
+                        case FEATURE_CHECK_OFF:
                             notFlip++;
                         break;
-                        case ENABLE:
+                        case ENABLE_FEATURE:
                             nbEnable++;
                         break;
-                        case DISABLE:
+                        case DISABLE_FEATURE:
                             nbDisable++;
                         default:
                         break;
@@ -143,17 +137,23 @@ public class InMemoryEventRepository extends AbstractEventRepository {
                 }
             }
         }
-        pieGraph.getSectors().add(new PieSector("ENABLE", nbEnable, colors.get(0)));
-        pieGraph.getSectors().add(new PieSector("DISABLE", nbDisable, colors.get(1)));
-        pieGraph.getSectors().add(new PieSector("FLIP", nbFlip, colors.get(2)));
-        pieGraph.getSectors().add(new PieSector("NOT_FLIP", notFlip, colors.get(3)));
+        if (nbEnable > 0) {
+            pieGraph.getSectors().add(
+                    new PieSector(EventType.ENABLE_FEATURE.toString(), nbEnable, colors.get(0)));
+        }
+        if (nbDisable > 0) {
+            pieGraph.getSectors().add(new PieSector(
+                    EventType.DISABLE_FEATURE.toString(), nbDisable, colors.get(1)));
+        }
+        if (nbFlip > 0) {
+            pieGraph.getSectors().add(new PieSector(
+                    EventType.FEATURE_CHECK_ON.toString(), nbFlip, colors.get(2)));
+        }
+        if (notFlip > 0) {
+            pieGraph.getSectors().add(new PieSector(
+                    EventType.FEATURE_CHECK_OFF.toString(), notFlip, colors.get(3)));
+        }
         return pieGraph;
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public BarChart getHitsBarChart(long startTime, long endTime, int nbslot) {
-        return getHitsBarChart(mapOfEvents.keySet(), startTime, endTime, nbslot);
     }
     
     /** {@inheritDoc} */
@@ -181,7 +181,7 @@ public class InMemoryEventRepository extends AbstractEventRepository {
                  Event evt = itEvt.next();
                  long t = evt.getTimestamp();
                  // Filter event in the slot and type flipped (= used)
-                 if (startTime < t && t < endTime && EventType.HIT_FLIPPED.equals(evt.getType())) {
+                 if (startTime < t && t < endTime && EventType.FEATURE_CHECK_ON.equals(evt.getType())) {
                      currentSeries.incrCount((int) ((t - startTime) / slotWitdh));
                  }
              }
@@ -199,6 +199,12 @@ public class InMemoryEventRepository extends AbstractEventRepository {
             total += mapOfEvents.get(queue).size();
         }
         return total;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> getFeatureNames() {
+        return  mapOfEvents.keySet();
     }
 
 }

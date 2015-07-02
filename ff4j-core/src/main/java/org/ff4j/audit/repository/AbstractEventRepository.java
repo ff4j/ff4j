@@ -35,6 +35,14 @@ import org.ff4j.audit.graph.PieSector;
  */
 public abstract class AbstractEventRepository implements EventRepository { 
     
+
+    /** {@inheritDoc} */
+    @Override
+    public BarChart getHitsBarChart(long startTime, long endTime, int nbslot) {
+        return getHitsBarChart(getFeatureNames(), startTime, endTime, nbslot);
+    }
+    
+    
     /** {@inheritDoc} */
     @Override
     public String toString() {

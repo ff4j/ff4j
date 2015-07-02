@@ -1,5 +1,7 @@
 package org.ff4j.store;
 
+import org.ff4j.audit.EventType;
+
 /*
  * #%L ff4j-core %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not use
  * this file except in compliance with the License. You may obtain a copy of the License at
@@ -133,11 +135,31 @@ public interface JdbcStoreConstants {
     /** Creation. */
     String SQL_AUDIT_COUNT = "SELECT COUNT(*) FROM " + TABLE_AUDIT;
     
+    /** Creation. */
+    String SQL_AUDIT_LISTFEATURES = "SELECT DISTINCT " + COL_EVENT_UID + " FROM " + TABLE_AUDIT;
+    
+    /** Count target feature. */
+    String SQL_AUDIT_COUNTFEATURE =  "SELECT COUNT(*) FROM " + TABLE_AUDIT   + // Count
+                                     " WHERE (" + COL_EVENT_UID + " LIKE ?)" + // Select target feature
+                                     " AND   (" + COL_EVENT_TYPE + " LIKE '" + EventType.FEATURE_CHECK_ON + "') " + // only checked
+                                     " AND   (" + COL_EVENT_TIME + "> ?) " +    // lower bound
+                                     " AND   (" + COL_EVENT_TIME + "< ?)";      // upper bound
+    /** Count target feature. */
+    String SQL_AUDIT_FEATURE_EVENTOK = "SELECT * FROM " + TABLE_AUDIT  + // Count
+                                     " WHERE (" + COL_EVENT_UID + " LIKE ?)" + // Select target feature
+                                     " AND   (" + COL_EVENT_TYPE + " LIKE '" + EventType.FEATURE_CHECK_ON + "') " + // only checked
+                                     " AND   (" + COL_EVENT_TIME + "> ?) " +    // lower bound
+                                     " AND   (" + COL_EVENT_TIME + "< ?)";      // upper bound
+    
+    /** List events for a dedicate feature (in a time window). */
+    String SQL_AUDIT_FEATURE_ALLEVENTS = "SELECT * FROM " + TABLE_AUDIT  +      // Count
+                                     " WHERE (" + COL_EVENT_UID + " LIKE ?)" +  // Select target feature
+                                     " AND   (" + COL_EVENT_TIME + "> ?) " +    // lower bound
+                                     " AND   (" + COL_EVENT_TIME + "< ?)";      // upper bound
+    
     /** Deletion of single entry. */
     String SQL_AUDIT_DELETE = "DELETE FROM " + TABLE_AUDIT + " WHERE (" + COL_EVENT_TIME + " = ?) AND (" + COL_EVENT_TYPE + " LIKE ? " + COL_EVENT_UID + ")";
     
-    /** Purge a while part. */
-    String SQL_AUDIT_PURGE = "";
     
     
     // ----- Columns
