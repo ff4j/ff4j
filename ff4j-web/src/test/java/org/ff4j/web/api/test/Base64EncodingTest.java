@@ -33,8 +33,8 @@ public class Base64EncodingTest {
 
     @Test
     public void testProduceHTTBasicHeader() {
-        String username = "Aladdin";
-        String password = "open sesame";
+        String username = "cedrick.lunven@softwareag.com";
+        String password = "manage";
 
         System.out.println("Authorization: Basic " + new String(Base64.encode(username + ":" + password)));
     }

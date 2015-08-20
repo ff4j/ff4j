@@ -22,13 +22,13 @@ package org.ff4j.property;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Calendar;
 
 /**
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class PropertyDate extends AbstractProperty< Date > {
+public class PropertyCalendar extends AbstractProperty< Calendar > {
 
     /** serial. */
     private static final long serialVersionUID = -134543098672660987L;
@@ -39,7 +39,7 @@ public class PropertyDate extends AbstractProperty< Date > {
     /**
      * Default constructor.
      */
-    public PropertyDate() {
+    public PropertyCalendar() {
     }
     
     /**
@@ -48,7 +48,7 @@ public class PropertyDate extends AbstractProperty< Date > {
      * @param name
      *      property name
      */
-    public PropertyDate(String name) {
+    public PropertyCalendar(String name) {
         super(name);
     }
     
@@ -60,7 +60,7 @@ public class PropertyDate extends AbstractProperty< Date > {
      * @param lvl
      *      current log level
      */
-    public PropertyDate(String uid, String value) {
+    public PropertyCalendar(String uid, String value) {
        super(uid, value);
     }
     
@@ -72,16 +72,17 @@ public class PropertyDate extends AbstractProperty< Date > {
      * @param lvl
      *      current log level
      */
-    public PropertyDate(String uid, Date date) {
+    public PropertyCalendar(String uid, Calendar date) {
        super(uid, date);
-       
     }
     
     /** {@inheritDoc} */
     @Override
-    public Date fromString(String v) {
+    public Calendar fromString(String v) {
         try {
-            return SDF.parse(v);
+        	Calendar c = Calendar.getInstance();
+        	c.setTime(SDF.parse(v));
+            return c;
         } catch (ParseException e) {
            throw new IllegalArgumentException("Illegal expression for date, expecting yyyy-MM-dd HH:mm", e);
         }

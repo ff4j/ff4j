@@ -13,11 +13,10 @@ package org.ff4j.test.store;
 
 import java.util.Set;
 
-import org.junit.Assert;
-import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureNotFoundException;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +31,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:*applicationContext-jdbc-test.xml")
 public class SpringJdbcXMLDataSourceStoreTest extends AbstractStoreJUnitTest {
-
-    @Autowired
-    private FF4j ff4j;
-
+   
     @Autowired
     private FeatureStore store;
 

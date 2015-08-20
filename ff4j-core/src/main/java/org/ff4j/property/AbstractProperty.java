@@ -21,6 +21,8 @@ package org.ff4j.property;
  */
 
 import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -51,7 +53,7 @@ public abstract class AbstractProperty < T > implements Serializable {
     /**
      * Default constructor.
      */
-    public AbstractProperty() {
+    protected AbstractProperty() {
     }
             
     /**
@@ -60,11 +62,10 @@ public abstract class AbstractProperty < T > implements Serializable {
      * @param name
      *         unique property name
      */
-    public AbstractProperty(String name) {
+    protected AbstractProperty(String name) {
         Util.assertHasLength(name);
         this.name = name;
     }
-            
    
     /**
      * Constructor with name and value as String.
@@ -74,7 +75,7 @@ public abstract class AbstractProperty < T > implements Serializable {
      * @param value
      *      current value
      */
-    public AbstractProperty(String name, String value) {
+    protected AbstractProperty(String name, String value) {
         this(name);
         this.value = fromString(value);
     }
@@ -86,12 +87,12 @@ public abstract class AbstractProperty < T > implements Serializable {
      *      current name
      * @param value
      *      current value
-     */
-    public AbstractProperty(String name, T value, Set <T> fixed) {
+     */    
+	protected AbstractProperty(String name, T value, T... fixed) {
         this(name);
         this.value = value;
-        this.fixedValues = fixed;
-        if (fixedValues!= null && !fixedValues.contains(value)) {
+        this.fixedValues = new HashSet<T>(Arrays.asList(fixed));
+        if (fixedValues != null &&  !fixedValues.isEmpty() && !fixedValues.contains(value)) {
             throw new IllegalArgumentException("Invalid value corrects are " + fixedValues);
         }
     }
@@ -128,6 +129,20 @@ public abstract class AbstractProperty < T > implements Serializable {
      *      target value
      */
     public abstract T fromString(String v);
+    
+    /**
+     * Check dynamically the class of the parameter T.
+     *
+     * @return
+     *      class of template T parameter
+     * @throws Exception
+     *      error on reading type
+     */
+    @SuppressWarnings({ "unchecked" })
+    public Class<T> parameterizedType() {
+        ParameterizedType pt = ((ParameterizedType) getClass().getGenericSuperclass());
+        return  (Class<T>) pt.getActualTypeArguments()[0];
+    }
     
     /** 
      * Serialized value as String

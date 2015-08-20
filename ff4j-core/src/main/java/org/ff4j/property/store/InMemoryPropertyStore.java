@@ -187,6 +187,16 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
     public void setProperties(Map<String, AbstractProperty<?>> properties) {
         this.properties = properties;
     }
+    
+    /**
+     * Setter accessor for attribute 'locations'.
+     * 
+     * @param locations
+     *            new value for 'locations '
+     */
+    public void setLocation(String locations) {
+        loadConfFile(locations);
+    }
 
     /**
      * Getter accessor for attribute 'fileName'.

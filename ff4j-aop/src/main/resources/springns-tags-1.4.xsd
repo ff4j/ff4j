@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.ff4j.org/schema/springns"
+			xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+			targetNamespace="http://www.ff4j.org/schema/springns"
+			elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<xsd:import namespace="http://www.springframework.org/schema/beans" />
+	
+	<!-- Connection-factory Tag Definition -->
+	<xsd:element name="ff4j">
+		<xsd:complexType>
+			<xsd:attribute name="id" 		  		type="xsd:string"	use="optional" />
+			<xsd:attribute name="autocreate"  		type="xsd:boolean"	use="optional" />
+			<xsd:attribute name="fileName" 	  		type="xsd:string"	use="optional" />
+			<xsd:attribute name="authManager" 		type="xsd:string"	use="optional" />
+			<xsd:attribute name="storeProperty" 	type="xsd:string"	use="optional" />
+			<xsd:attribute name="storeFeature" 		type="xsd:string"	use="optional" />
+			<xsd:attribute name="auditRepository" 	type="xsd:string"	use="optional" />
+		</xsd:complexType>
+	</xsd:element>
+	
+	<!-- Declaration of placeholding -->
+	<xsd:element name="property-placeholder" >
+	</xsd:element>
+	
+	
+	
+</xsd:schema>

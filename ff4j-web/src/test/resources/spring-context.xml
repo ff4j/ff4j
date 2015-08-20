@@ -28,7 +28,7 @@
 	</bean>
 
 	<bean id="ff4j.store" class="org.ff4j.web.store.FeatureStoreHttp">
-		<constructor-arg index="0" type="java.lang.String" name="rootApiUrl" value="http://cannys.ddns.net:8081/ff4j-demo/api/ff4j" />
+		<constructor-arg index="0" type="java.lang.String" name="rootApiUrl" value="http://localhost:9998/ff4j" />
 	</bean>
 	
 

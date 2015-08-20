@@ -23,7 +23,7 @@ package org.ff4j.property;
 import java.util.Set;
 
 /**
- * Default implementation of {@link AbstractProperty} as Simple string property
+ * Default implementation of {@link AbstractProperty} as Simple string property.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
@@ -71,7 +71,7 @@ public class Property extends AbstractProperty<String>{
      *      fixed values available for this property
      */
     public Property(String name, String value, Set < String> fixed) {
-        super(name, value, fixed);
+        super(name, value, fixed.toArray(new String[0]));
     }
 
     /** {@inheritDoc} */

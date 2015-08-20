@@ -1,5 +1,7 @@
 package org.ff4j.test.property;
 
+import java.util.Date;
+
 /*
  * #%L
  * ff4j-test
@@ -25,6 +27,7 @@ import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.Property;
+import org.ff4j.property.PropertyDate;
 import org.ff4j.property.PropertyLogLevel;
 import org.ff4j.property.PropertyLogLevel.LogLevel;
 import org.ff4j.property.store.PropertyStore;
@@ -110,6 +113,17 @@ public abstract class AbstractPropertyStoreJunitTest {
         testedStore.create(new PropertyLogLevel("log", LogLevel.DEBUG));
         // Then
         Assert.assertTrue(testedStore.exist("log"));
+    }
+    
+    /** TDD. */
+    @Test
+    public void addPropertyOK_Date() {
+        // Given
+        //Assert.assertFalse(testedStore.exist("log"));
+        // When
+        testedStore.create(new PropertyDate("ddate", new Date()));
+        // Then
+        Assert.assertTrue(testedStore.exist("ddate"));
     }
     
     /** TDD. */

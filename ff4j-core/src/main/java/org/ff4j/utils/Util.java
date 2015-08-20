@@ -126,7 +126,6 @@ public abstract class Util {
      *            enumeration of elements
      * @return
      */
-    @SafeVarargs
 	public static <T> Set<T> set(T... els) {
         return new HashSet<T>(Arrays.asList(els));
     }

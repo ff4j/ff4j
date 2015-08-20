@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.Assert;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
@@ -25,10 +24,12 @@ import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.property.Property;
+import org.ff4j.property.PropertyInt;
 import org.ff4j.property.PropertyLogLevel;
 import org.ff4j.strategy.PonderationStrategy;
 import org.ff4j.test.AssertFf4j;
 import org.ff4j.test.TestConstantsFF4j;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -558,14 +559,14 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         assertFf4j.assertThatFeatureExist(F1);
         Feature fpBis = testedStore.read(F1);
         Assert.assertTrue(fpBis.getCustomProperties().containsKey("ppint"));
-        Property p = (Property) fpBis.getCustomProperties().get("ppint");
+        PropertyInt p = (PropertyInt) fpBis.getCustomProperties().get("ppint");
         Assert.assertEquals("12", p.asString());
         // When
-        fpBis.getCustomProperties().put("ppint", new Property("ppint", "14"));
+        fpBis.getCustomProperties().put("ppint", new PropertyInt("ppint", 14));
         testedStore.update(fpBis);
         // Then
         fpBis = testedStore.read(F1);
-        p = (Property) fpBis.getCustomProperties().get("ppint");
+        p = (PropertyInt) fpBis.getCustomProperties().get("ppint");
         Assert.assertEquals("14", p.asString());
     }
     

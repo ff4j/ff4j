@@ -1,8 +1,8 @@
-package org.ff4j.web.store;
+package org.ff4j.spring.autowire;
 
 /*
  * #%L
- * ff4j-web
+ * ff4j-aop
  * %%
  * Copyright (C) 2013 - 2015 Ff4J
  * %%
@@ -21,18 +21,21 @@ package org.ff4j.web.store;
  */
 
 
-import org.ff4j.FF4j;
-import org.junit.Test;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class SpringStore {
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface AutowiredFF4JProperty {
     
-    @Test
-    public void testRay() {
-        ClassPathXmlApplicationContext appCtx = new ClassPathXmlApplicationContext("spring-context.xml");
-        FF4j ff4j = appCtx.getBean(FF4j.class);
-        System.out.println(ff4j.getFeatures().keySet());
-        
-    }
+    /**
+     * Extract value from the expression : @property{first}.
+     */
+    String value();
 
+    boolean required() default true;
 }

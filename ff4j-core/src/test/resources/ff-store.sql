@@ -26,19 +26,19 @@ INSERT INTO FF4J_FEATURES(FEAT_UID, ENABLE, DESCRIPTION) VALUES('first',  1, 'de
 INSERT INTO FF4J_ROLES(FEAT_UID, ROLE_NAME)  VALUES('first', 'USER');
 
 INSERT INTO FF4J_CUSTOM_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES, FEAT_UID) 
-VALUES('ppint', 'org.ff4j.property.Property', '12', NULL, 'first');;
+VALUES('ppint', 'org.ff4j.property.PropertyInt', '12', NULL, 'first');;
 
 INSERT INTO FF4J_CUSTOM_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES, FEAT_UID) 
-VALUES('ppdouble', 'org.ff4j.property.Property', '12.5', NULL, 'first');;
+VALUES('ppdouble', 'org.ff4j.property.PropertyDouble', '12.5', NULL, 'first');;
 
 INSERT INTO FF4J_CUSTOM_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES, FEAT_UID) 
-VALUES('ppboolean', 'org.ff4j.property.Property', 'true', NULL, 'first');;
+VALUES('ppboolean', 'org.ff4j.property.PropertyBoolean', 'true', NULL, 'first');;
 
 INSERT INTO FF4J_CUSTOM_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES, FEAT_UID) 
 VALUES('ppString', 'org.ff4j.property.Property', 'hello', NULL, 'first');;
 
 INSERT INTO FF4J_CUSTOM_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES, FEAT_UID) 
-VALUES('ppListInt', 'org.ff4j.property.Property', '12,13,14', NULL, 'first');
+VALUES('ppListInt', 'org.ff4j.property.PropertyInt','12' , '12,13,14', 'first');
 
 INSERT INTO FF4J_CUSTOM_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES, FEAT_UID) 
 VALUES('digitValue', 'org.ff4j.property.PropertyInt', '1', '0,1,2,3', 'first');
@@ -48,6 +48,10 @@ VALUES('regionIdentifier', 'org.ff4j.property.Property', 'AMER', 'AMER,EAST,SSSS
 
 INSERT INTO FF4J_CUSTOM_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES, FEAT_UID) 
 VALUES('myLogLevel', 'org.ff4j.property.PropertyLogLevel', 'DEBUG', 'FATAL,WARN,TRACE,ERROR,INFO,DEBUG', 'first');
+
+INSERT INTO FF4J_CUSTOM_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES, FEAT_UID) 
+VALUES('date', 'org.ff4j.property.PropertyDate', '2015-08-15 12:00', NULL, 'AwesomeFeature');
+
 
 -- Second
 INSERT INTO FF4J_FEATURES(FEAT_UID, ENABLE, DESCRIPTION, GROUPNAME) VALUES('second', 0, 'description', 'GRP0');

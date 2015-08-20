@@ -32,7 +32,7 @@
 			</security>
 			
 			<custom-properties>
-			  <property name="ppint" 	  value="12"   />
+			  <property name="ppint" 	  type="org.ff4j.property.PropertyInt" value="12"   />
 			  <property name="ppdouble"   value="12.5" />
 			  <property name="ppboolean"  value="true" />
 			  <property name="ppstring"   value="hello" />

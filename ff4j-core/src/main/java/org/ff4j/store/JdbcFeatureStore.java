@@ -135,8 +135,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
         }
     }
 
-    /** {@inheritDoc} */
-    @SuppressWarnings("resource")
+    /** {@inheritDoc} */    
     @Override
     public Feature read(String uid) {
         if (uid == null || uid.isEmpty()) {
@@ -263,7 +262,6 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
     }
 
     /** {@inheritDoc} */
-    @SuppressWarnings("resource")
     @Override
     public void delete(String uid) {
         if (uid == null || uid.isEmpty()) {

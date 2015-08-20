@@ -46,6 +46,29 @@ public class PropertyLogLevel extends AbstractProperty<LogLevel> {
      * @param lvl
      *      current log level
      */
+    public PropertyLogLevel() {
+    }
+    
+    /**
+     * Constructor by string expression.
+     *
+     * @param uid
+     *      unique name
+     * @param lvl
+     *      current log level
+     */
+    public PropertyLogLevel(String uid) {
+       super(uid);
+    }
+    
+    /**
+     * Constructor by string expression.
+     *
+     * @param uid
+     *      unique name
+     * @param lvl
+     *      current log level
+     */
     public PropertyLogLevel(String uid, String lvl) {
        super(uid, lvl);
        setFixedValues(new HashSet<LogLevel>(Arrays.asList(LogLevel.values())));
@@ -60,7 +83,7 @@ public class PropertyLogLevel extends AbstractProperty<LogLevel> {
      *      current log level
      */
     public PropertyLogLevel(String uid, LogLevel lvl) {
-        super(uid, lvl, new HashSet<LogLevel>(Arrays.asList(LogLevel.values())));
+        super(uid, lvl, LogLevel.values());
     }
     
     /** {@inheritDoc} */

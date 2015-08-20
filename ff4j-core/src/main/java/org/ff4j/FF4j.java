@@ -35,6 +35,7 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.security.AuthorizationsManager;
@@ -66,6 +67,15 @@ import org.ff4j.store.InMemoryFeatureStore;
  */
 public class FF4j {
 
+    /** Do not through {@link FeatureNotFoundException} exception and but feature is required. */
+    private boolean autocreate = false;
+
+    /** Intialisation. */
+    private final long startTime = System.currentTimeMillis();
+
+    /** Version of ff4j. */
+    private final String version = getClass().getPackage().getImplementationVersion();
+    
     /** Storage to persist feature within {@link FeatureStore}. */
     private FeatureStore fstore = new InMemoryFeatureStore();
     
@@ -81,14 +91,8 @@ public class FF4j {
     /** Event Publisher. */
     private EventPublisher eventPublisher = null;
     
-    /** Do not through {@link FeatureNotFoundException} exception and but feature is required. */
-    private boolean autocreate = false;
-
-    /** Intialisation. */
-    private final long startTime = System.currentTimeMillis();
-
-    /** Version of ff4j. */
-    private final String version = getClass().getPackage().getImplementationVersion();
+    
+    public void setFileName(String f) {}
 
     /**
      * Default constructor to allows instanciation through IoC. The created store is an empty {@link InMemoryFeatureStore}.
@@ -101,6 +105,7 @@ public class FF4j {
      */
     public FF4j(String xmlFile) {
         this.fstore = new InMemoryFeatureStore(xmlFile);
+        this.pStore = new InMemoryPropertyStore(xmlFile);
     }
 
     /**
@@ -220,6 +225,16 @@ public class FF4j {
      */
     public Map<String, Feature> getFeatures() {
         return getFeatureStore().readAll();
+    }
+    
+    /**
+     * Return all properties from store.
+     *
+     * @return
+     * 		target property store.
+     */
+    public Map < String, AbstractProperty<?>> getProperties() {
+    	return getPropertiesStore().readAllProperties();
     }
 
     /**
@@ -529,16 +544,6 @@ public class FF4j {
             eventPublisher = new EventPublisher(eventRepository);
         }
         return eventPublisher;
-    }
-
-    /**
-     * Setter accessor for attribute 'eventPublisher'.
-     * 
-     * @param eventPublisher
-     *            new value for 'eventPublisher '
-     */
-    public void setEventPublisher(EventPublisher eventPublisher) {
-        this.eventPublisher = eventPublisher;
     }
 
     /**
