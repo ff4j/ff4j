@@ -23,6 +23,7 @@ import javax.lang.model.type.NullType;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.ff4j.FF4j;
+import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.core.FlippingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,24 +71,49 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
         } else if (method.getDeclaringClass().isAnnotationPresent(Flip.class)) {
             ff = method.getDeclaringClass().getAnnotation(Flip.class);
         }
-        
-        if (ff != null&& shouldFlip(ff)) {
-           
-            // Required parameters
-            if (!assertRequiredParams(ff)) {
-                String msg = String.format("alterBeanName or alterClazz is required for {}", method.getDeclaringClass());
-                throw new IllegalArgumentException(msg);
-            }
-            if (shouldCallAlterBeanMethod(pMInvoc, ff.alterBean(), targetLogger)) {
-                return callAlterBeanMethod(pMInvoc, ff.alterBean(), targetLogger);
-            }
-            // Test alterClazz Property of annotation
-            if (shouldCallAlterClazzMethod(pMInvoc, ff.alterClazz(), targetLogger)) {
-                return callAlterClazzMethodOnFirst(pMInvoc, ff, targetLogger);
+
+        if (ff != null) {
+            FlippingExecutionContext context = retrieveContext(ff, pMInvoc, targetLogger);
+            if (shouldFlip(ff, context)) {
+
+                // Required parameters
+                if (!assertRequiredParams(ff)) {
+                    String msg = String.format("alterBeanName or alterClazz is required for {}", method.getDeclaringClass());
+                    throw new IllegalArgumentException(msg);
+                }
+                if (shouldCallAlterBeanMethod(pMInvoc, ff.alterBean(), targetLogger)) {
+                    return callAlterBeanMethod(pMInvoc, ff.alterBean(), targetLogger);
+                }
+                // Test alterClazz Property of annotation
+                if (shouldCallAlterClazzMethod(pMInvoc, ff.alterClazz(), targetLogger)) {
+                    return callAlterClazzMethodOnFirst(pMInvoc, ff, targetLogger);
+                }
             }
         }
         // do not catch throwable
         return pMInvoc.proceed();
+    }
+
+    private FlippingExecutionContext retrieveContext(Flip ff, MethodInvocation methodInvocation, Logger logger) {
+        FlippingExecutionContext context = null;
+        if (ff.contextLocation() == ContextLocation.FF4J) {
+            context = getFf4j().getCurrentContext();
+        } else if (ff.contextLocation() == ContextLocation.PARAMETER) {
+            // We are looking for the first parameter (not argument!) that is an instance of FlippingExecutionContext
+            int p = 0;
+            for (Class<?> cls : methodInvocation.getMethod().getParameterTypes()) {
+                if (FlippingExecutionContext.class.isAssignableFrom(cls)) {
+                    context = FlippingExecutionContext.class.cast(methodInvocation.getArguments()[p]);
+                    break;
+                }
+                p++;
+            }
+            if (context == null) {
+                logger.warn("ff4j-aop: Context location is 'PARAMETER' and no context was found as parameter" +
+                        " (maybe the argument was null)");
+            }
+        }
+        return context;
     }
 
     /**
@@ -148,9 +174,10 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
      * 
      * @param ff
      *            annotation over current method
+     * @param context
      * @return if flippinf should be considere
      */
-    private boolean shouldFlip(Flip ff) {
+    private boolean shouldFlip(Flip ff, FlippingExecutionContext context) {
         boolean shouldFlip = false;
         if (ff.strategy() != NullType.class) {
             // Does this strategy has already be invoked ?
@@ -167,10 +194,10 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
                 }
             }
             FlippingStrategy targetStrategy = strategySingletons.get(strategyClassName);
-            shouldFlip = getFf4j().checkOveridingStrategy(ff.name(), targetStrategy);
+            shouldFlip = getFf4j().checkOveridingStrategy(ff.name(), targetStrategy, context);
         } else {
             // no strategy, simple flip
-            shouldFlip = getFf4j().check(ff.name());
+            shouldFlip = getFf4j().check(ff.name(), context);
         }
         return shouldFlip;
     }
