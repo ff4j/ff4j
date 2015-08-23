@@ -47,6 +47,13 @@ public @interface Flip {
     Class<?> strategy() default NullType.class;
 
     /**
+     * Location of the flipping execution context.
+     *
+     * @return flippinf execution context location
+     */
+    ContextLocation contextLocation() default ContextLocation.NONE;
+
+    /**
      * Set implementation clazz to be used.
      * 
      * @return mock java class

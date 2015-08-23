@@ -20,6 +20,7 @@ package org.ff4j.aop;
  * #L%
  */
 
+import org.ff4j.core.FlippingExecutionContext;
 import org.junit.Assert;
 
 import org.ff4j.FF4j;
@@ -41,11 +42,43 @@ public class FeatureFlippingThoughAopTest {
     @Qualifier("greeting.english")
     private GreetingService greeting;
 
+    @Autowired
+    @Qualifier("context.english")
+    private ContextService context;
+
     @Test
     public void testAOP() {
         Assert.assertTrue(greeting.sayHello("CLU").startsWith("Hello"));
         ff4j.enable("language-french");
         Assert.assertTrue(greeting.sayHello("CLU").startsWith("Bonjour"));
+    }
+
+    @Test
+    public void testAOPWithParameter() {
+        ff4j.enable("context-french");
+
+        Assert.assertTrue(context.sayHelloWithParameter("CLU", null).startsWith("Hello"));
+
+        FlippingExecutionContext executionContext = new FlippingExecutionContext();
+
+        executionContext.putString("user.settings.language", "english");
+        Assert.assertTrue(context.sayHelloWithParameter("CLU", executionContext).startsWith("Hello"));
+
+        executionContext.putString("user.settings.language", "french");
+        Assert.assertTrue(context.sayHelloWithParameter("CLU", executionContext).startsWith("Bonjour"));
+    }
+
+    @Test
+    public void testAOPWithThreadLocal() {
+        ff4j.enable("context-french");
+
+        FlippingExecutionContext executionContext = ff4j.getCurrentContext();
+
+        executionContext.putString("user.settings.language", "english");
+        Assert.assertTrue(context.sayHelloWithThreadLocal("CLU").startsWith("Hello"));
+
+        executionContext.putString("user.settings.language", "french");
+        Assert.assertTrue(context.sayHelloWithThreadLocal("CLU").startsWith("Bonjour"));
     }
 
 }

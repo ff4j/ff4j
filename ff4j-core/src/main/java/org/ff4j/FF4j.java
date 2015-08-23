@@ -91,7 +91,8 @@ public class FF4j {
     /** Event Publisher. */
     private EventPublisher eventPublisher = null;
     
-    
+    private ThreadLocal<FlippingExecutionContext> currentExecutionContext = new ThreadLocal<FlippingExecutionContext>();
+
     public void setFileName(String f) {}
 
     /**
@@ -594,4 +595,16 @@ public class FF4j {
         this.pStore = pStore;
     }
 
+    public FlippingExecutionContext getCurrentContext() {
+        FlippingExecutionContext context = this.currentExecutionContext.get();
+        if (context == null) {
+            context = new FlippingExecutionContext();
+            this.currentExecutionContext.set(context);
+        }
+        return context;
+    }
+
+    public void removeCurrentContext() {
+        this.currentExecutionContext.remove();
+    }
 }
