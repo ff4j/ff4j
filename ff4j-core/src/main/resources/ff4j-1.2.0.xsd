@@ -56,7 +56,7 @@
 								<xs:simpleContent>
 									<xs:extension base="xs:string">
 										<xs:attribute type="xs:string" name="name"  use="required" />
-										<xs:attribute type="xs:string" name="value" use="required" />
+										<xs:attribute type="xs:string" name="value" use="optional" />
 									</xs:extension>
 								</xs:simpleContent>
 							</xs:complexType>
