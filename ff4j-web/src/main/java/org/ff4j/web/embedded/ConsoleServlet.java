@@ -29,6 +29,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static org.ff4j.web.embedded.ConsoleRenderer.renderMessageBox;
+
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -52,7 +54,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
     private static final long serialVersionUID = -3982043895954284269L;
 
     /** Logger for this class. */
-    public static Logger LOGGER = LoggerFactory.getLogger("FF4J");
+    public Logger LOGGER = LoggerFactory.getLogger(getClass());
 
     /** instance of ff4j. */
     private FF4j ff4j = null;
@@ -75,6 +77,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
         try {
             Class<?> c = Class.forName(className);
             Object o = c.newInstance();
+            
             ff4jProvider = (FF4JProvider) o;
             LOGGER.info("  __  __ _  _   _ ");
             LOGGER.info(" / _|/ _| || | (_)");
@@ -83,8 +86,8 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
             LOGGER.info("|_| |_|    |_|_/ |");
             LOGGER.info("             |__/   Embedded Console - v" + getClass().getPackage().getImplementationVersion());
             LOGGER.info(" ");
-            LOGGER.info("ff4j context has been successfully initialized - {} feature(s)", ff4jProvider.getFF4j()
-                    .getFeatures().size());
+            LOGGER.info("ff4j context has been successfully initialized - {} feature(s)", ff4jProvider.getFF4j().getFeatures().size());
+            
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException("Cannot load ff4jProvider as " + ff4jProvider, e);
         } catch (InstantiationException e) {
@@ -100,6 +103,36 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
         servletConfig.getServletContext().setAttribute(FF4J_SESSIONATTRIBUTE_NAME, ff4j);
         LOGGER.debug("Servlet has been initialized and ff4j store in session with {} ", ff4j.getFeatures().size());
     }
+  
+    /**
+     * Deliver CSS and Javascript files/
+     * 
+     * @param req
+     *            request
+     * @param res
+     *            response
+     * @return value for resources
+     * @throws IOException
+     *             exceptions
+     */
+    private boolean serveStaticResources(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        // Serve static resource file as CSS and Javascript
+        String resources = req.getParameter(RESOURCE);
+        if (resources != null && !resources.isEmpty()) {
+            if (RESOURCE_CSS_PARAM.equalsIgnoreCase(resources)) {
+                res.setContentType(CONTENT_TYPE_CSS);
+                res.getWriter().println(ConsoleRenderer.getCSS());
+                LOGGER.debug("Retrieving CSS");
+                return true;
+            } else if (RESOURCE_JS_PARAM.equalsIgnoreCase(resources)) {
+                res.setContentType(CONTENT_TYPE_JS);
+                res.getWriter().println(ConsoleRenderer.getJS());
+                LOGGER.debug("Retrieving JS");
+                return true;
+            }
+        }
+        return false;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -108,43 +141,33 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
         String messagetype = "info";
         // Routing on pagename
         try {
-
-            // Serve static resource file as CSS and Javascript
-            String resources = req.getParameter(RESOURCE);
-            if (resources != null && !resources.isEmpty()) {
-                LOGGER.debug("GET Access to console to retrieve resource {}", resources);
-                if (RESOURCE_CSS_PARAM.equalsIgnoreCase(resources)) {
-                    res.setContentType(CONTENT_TYPE_CSS);
-                    res.getWriter().println(ConsoleRenderer.getCSS());
-                    LOGGER.debug("Retrieving CSS");
-                    return;
-                } else if (RESOURCE_JS_PARAM.equalsIgnoreCase(resources)) {
-                    res.setContentType(CONTENT_TYPE_JS);
-                    res.getWriter().println(ConsoleRenderer.getJS());
-                    LOGGER.debug("Retrieving JS");
-                    return;
-                }
-            }
+            
+            // 'RSC' parameter will load some static resources
+            if (serveStaticResources(req, res)) return;
 
             // Serve operation from GET
             String operation = req.getParameter(OPERATION);
+            String featureId = req.getParameter(FEATID);
             if (operation != null && !operation.isEmpty()) {
                 if (OP_DISABLE.equalsIgnoreCase(operation)) {
-                    opDisableFeature(req);
+                    if (featureId != null && !featureId.isEmpty() && getFf4j().exist(featureId)) {
+                        getFf4j().disable(featureId);
+                        LOGGER.info(featureId + " has been disabled");
+                    } else {
+                        
+                    }
                     res.setContentType(CONTENT_TYPE_HTML);
-                    PrintWriter out = res.getWriter();
-                    String targetMessage = buildMessage(req.getParameter(FEATID), "DISABLED");
-                    out.println(ConsoleRenderer.renderMessageBox(targetMessage, "info"));
+                    res.getWriter().println(renderMessageBox(msg(req.getParameter(FEATID), "DISABLED"), "info"));
                     return;
                 } else if (OP_ENABLE.equalsIgnoreCase(operation)) {
                     opEnableFeature(req);
                     res.setContentType(CONTENT_TYPE_HTML);
                     PrintWriter out = res.getWriter();
-                    out.println(ConsoleRenderer.renderMessageBox(buildMessage(req.getParameter(FEATID), "ENABLED"), "info"));
+                    out.println(ConsoleRenderer.renderMessageBox(msg(req.getParameter(FEATID), "ENABLED"), "info"));
                     return;
                 } else if (OP_RMV_FEATURE.equalsIgnoreCase(operation)) {
                     opDeleteFeature(req);
-                    message = buildMessage(req.getParameter(FEATID), "DELETED");
+                    message = msg(req.getParameter(FEATID), "DELETED");
                 } else if (OP_EXPORT.equalsIgnoreCase(operation)) {
                     opExportFile(res);
                     message = "Feature have been success fully exported";
@@ -171,7 +194,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
      *            target operationId
      * @return
      */
-    private String buildMessage(String featureName, String operationId) {
+    private String msg(String featureName, String operationId) {
         return String.format("Feature <b>%s</b> has been successfully %s", featureName, operationId);
     }
 
@@ -220,11 +243,11 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
 
                     if (OP_EDIT_FEATURE.equalsIgnoreCase(operation)) {
                         opUpdateFeatureDescription(req);
-                        message = buildMessage(req.getParameter(FEATID), "UPDATED");
+                        message = msg(req.getParameter(FEATID), "UPDATED");
 
                     } else if (OP_CREATE_FEATURE.equalsIgnoreCase(operation)) {
                         opCreateFeature(req);
-                        message = buildMessage(req.getParameter(FEATID), "ADDED");
+                        message = msg(req.getParameter(FEATID), "ADDED");
 
                     } else if (OP_TOGGLE_GROUP.equalsIgnoreCase(operation)) {
                         String groupName = req.getParameter(GROUPNAME);
