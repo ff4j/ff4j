@@ -631,6 +631,22 @@
 						<templateFile>${basedir}/src/site/ff4j-site.vm</templateFile>
 					</configuration>
 				</plugin>
+				
+				<!-- Sign -->
+				<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>${version.maven.plugin.gpg}</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
 
 			</plugins>
 		</pluginManagement>
@@ -795,35 +811,6 @@
 						<groupId>org.fusesource.mvnplugins</groupId>
 						<artifactId>maven-graph-plugin</artifactId>
 						<version>${version.maven.plugin.graph}</version>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
-		<!-- When release:perfom artifacts are signed -->
-		<profile>
-			<id>release-sign-artifacts</id>
-			<activation>
-				<property>
-					<name>performRelease</name>
-					<value>true</value>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<version>${version.maven.plugin.gpg}</version>
-						<executions>
-							<execution>
-								<id>sign-artifacts</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
 					</plugin>
 				</plugins>
 			</build>
