@@ -5,6 +5,7 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.test.TestsFf4jConstants;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /*
@@ -26,7 +27,7 @@ import org.junit.Test;
  * limitations under the License.
  * #L%
  */
-
+@Ignore
 public class RedisCacheManagerTestIT implements TestsFf4jConstants {
 
     @Test

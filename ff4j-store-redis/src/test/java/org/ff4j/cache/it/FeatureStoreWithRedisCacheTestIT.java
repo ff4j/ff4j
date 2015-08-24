@@ -25,6 +25,7 @@ import org.ff4j.cache.FeatureCacheProviderRedis;
 import org.ff4j.cache.FeatureStoreCacheProxy;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.test.store.AbstractStoreJUnitTest;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -32,6 +33,7 @@ import org.junit.Test;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
+@Ignore
 public class FeatureStoreWithRedisCacheTestIT extends AbstractStoreJUnitTest {
 
     /** Initial feature number. */
