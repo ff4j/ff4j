@@ -619,9 +619,6 @@
 				<version>2.8</version>
 			</plugin>
 
-			<!-- JACOCO <plugin> <groupId>org.jacoco</groupId> <artifactId>jacoco-maven-plugin</artifactId> 
-				<version>${version.jacoco}</version> </plugin> -->
-
 			<!-- testings -->
 			<plugin>
 				<artifactId>maven-surefire-report-plugin</artifactId>
