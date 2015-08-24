@@ -23,14 +23,14 @@
      to flip through custom FlippingStrategy.
      </description>
 
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~ PARENT ~ -->
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~~~~~~~~~~~~~~ -->
+	<!-- ~ Deprecated ~
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>
 		<version>7</version>
 	</parent>
+	-->
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~ GIT (GITHUB) ~ -->
@@ -117,7 +117,13 @@
 		<version.maven.plugin.failsafe>2.17</version.maven.plugin.failsafe>
 		<version.maven.plugin.redis>1.4.5</version.maven.plugin.redis>
 		<version.maven.plugin.surefire>2.7.2</version.maven.plugin.surefire>
+		<version.maven.plugin.gpg>1.5</version.maven.plugin.gpg>
+		<version.maven.plugin.graph>1.4</version.maven.plugin.graph>
+		<version.maven.plugin.site>3.0</version.maven.plugin.site>
+		<version.maven.plugin.resources>2.4</version.maven.plugin.resources>
 
+		
+		
 	</properties>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -449,14 +455,44 @@
 				</executions>
 			</plugin>
 
-			<!-- JACOCO <plugin> <groupId>org.jacoco</groupId> <artifactId>jacoco-maven-plugin</artifactId> 
-				<version>${version.jacoco}</version> <configuration> <skip>${maven.test.skip}</skip> 
-				<destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile> 
-				<dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile> 
-				<output>file</output> <append>true</append> </configuration> <executions> 
-				<execution> <id>jacoco-initialize</id> <goals> <goal>prepare-agent</goal> 
-				</goals> </execution> <execution> <id>jacoco-site</id> <phase>verify</phase> 
-				<goals> <goal>report</goal> </goals> </execution> </executions> </plugin> -->
+			<plugin>
+			  <groupId>org.sonatype.plugins</groupId>
+			  <artifactId>nexus-staging-maven-plugin</artifactId>
+			  <version>1.6.3</version>
+			  <extensions>true</extensions>
+			  <configuration>
+				<serverId>ossrh</serverId>
+				<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+				<autoReleaseAfterClose>true</autoReleaseAfterClose>
+			  </configuration>
+			</plugin>
+			
+			 <plugin>
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-source-plugin</artifactId>
+			  <version>2.2.1</version>
+			  <executions>
+				<execution>
+				  <id>attach-sources</id>
+				  <goals>
+					<goal>jar-no-fork</goal>
+				  </goals>
+				</execution>
+			  </executions>
+			</plugin>
+			<plugin>
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-javadoc-plugin</artifactId>
+			  <version>2.9.1</version>
+			  <executions>
+				<execution>
+				  <id>attach-javadocs</id>
+				  <goals>
+					<goal>jar</goal>
+				  </goals>
+				</execution>
+			  </executions>
+			</plugin>
 
 		</plugins>
 
@@ -519,7 +555,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-resources-plugin</artifactId>
-					<version>2.4</version>
+					<version>${version.maven.plugin.resources}</version>
 					<configuration>
 						<escapeString>\</escapeString>
 						<encoding>UTF-8</encoding>
@@ -589,21 +625,9 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
-					<version>3.0</version>
+					<version>${version.maven.plugin.site}</version>
 					<configuration>
 						<templateFile>${basedir}/src/site/ff4j-site.vm</templateFile>
-					</configuration>
-				</plugin>
-
-				<plugin>
-					<groupId>org.sonatype.plugins</groupId>
-					<artifactId>nexus-staging-maven-plugin</artifactId>
-					<version>1.6.2</version>
-					<extensions>true</extensions>
-					<configuration>
-						<serverId>sonatype-nexus-staging</serverId>
-						<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-						<autoReleaseAfterClose>false</autoReleaseAfterClose>
 					</configuration>
 				</plugin>
 
@@ -709,7 +733,6 @@
 		</plugins>
 	</reporting>
 
-
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~ Profiles (tooling) ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -770,7 +793,7 @@
 					<plugin>
 						<groupId>org.fusesource.mvnplugins</groupId>
 						<artifactId>maven-graph-plugin</artifactId>
-						<version>1.4</version>
+						<version>${version.maven.plugin.graph}</version>
 					</plugin>
 				</plugins>
 			</build>
@@ -790,7 +813,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.1</version>
+						<version>${version.maven.plugin.gpg}</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
@@ -832,7 +855,7 @@
 	<!-- Builds on jenkins continuous integration -->
 	<ciManagement>
 		<system>Jenkins@Cloudbees</system>
-		<url>https://octo-clu.ci.cloudbees.com/</url>
+		<url>https://travis-ci.org/clun/ff4j/builds</url>
 	</ciManagement>
 
 	<!-- Jira issue management -->
@@ -845,9 +868,17 @@
 	<!-- ~ Site deployment ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
 		<site>
 			<id>website</id>
-			<url>file:///Users/clunven/Developpement/workspace-ff4j/mvnsite</url>
+			<url>file:///clunven/workspace-ff4j/mvnsite</url>
 		</site>
 	</distributionManagement>
 
