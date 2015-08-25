@@ -1,5 +1,7 @@
 package org.ff4j.web.embedded;
 
+import java.io.IOException;
+
 /*
  * #%L AdministrationConsoleRenderer.java (ff4j-web) by Cedrick LUNVEN %% Copyright (C) 2013 Ff4J %% Licensed under the Apache
  * License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of
@@ -13,11 +15,13 @@ package org.ff4j.web.embedded;
  */
 
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
@@ -48,6 +52,77 @@ public final class ConsoleRenderer implements ConsoleConstants {
     /** Get version of the component. */
     static final String FF4J_VERSION = ConsoleRenderer.class.getPackage().getImplementationVersion();
 
+    /**
+     * Render the ff4f console webpage through different block.
+     * 
+     * @param req
+     *            http request (with parameters)
+     * @param res
+     *            http response (with outouput test)
+     * @param message
+     *            text in the information box (blue/green/orange/red)
+     * @param messagetype
+     *            type of informatice message (info,success,warning,error)
+     * @throws IOException
+     *             error during populating http response
+     */
+    public static void renderPage(FF4j ff4j, HttpServletRequest req, HttpServletResponse res, String msg, String msgType) throws IOException {
+        res.setContentType(CONTENT_TYPE_HTML);
+        PrintWriter out = res.getWriter();
+
+        // Header of the page
+        String htmlContent = renderTemplate(req);
+
+        // Subsctitution MESSAGE BOX
+        htmlContent = htmlContent.replaceAll("\\{" + KEY_ALERT_MESSAGE + "\\}", renderMessageBox(msg, msgType));
+
+        // Subsctitution FEATURE_ROWS
+        final String rows = renderFeatureRows(ff4j, req);
+        htmlContent = htmlContent.replaceAll("\\{" + KEY_FEATURE_ROWS + "\\}", rows);
+
+        // Substitution GROUP_LIST
+        String groups = ConsoleRenderer.renderGroupList(ff4j, MODAL_EDIT);
+        htmlContent = htmlContent.replaceAll("\\{" + KEY_GROUP_LIST_EDIT + "\\}", groups);
+        groups = groups.replaceAll(MODAL_EDIT, MODAL_CREATE);
+        htmlContent = htmlContent.replaceAll("\\{" + KEY_GROUP_LIST_CREATE + "\\}", groups);
+        groups = groups.replaceAll(MODAL_CREATE, MODAL_TOGGLE);
+        htmlContent = htmlContent.replaceAll("\\{" + KEY_GROUP_LIST_TOGGLE + "\\}", groups);
+
+        // Substitution PERMISSIONS
+        final String permissions = renderPermissionList(ff4j);
+        htmlContent = htmlContent.replaceAll("\\{" + KEY_PERMISSIONLIST + "\\}", permissions);
+
+        out.println(htmlContent);
+    }
+
+    /**
+     * Deliver CSS and Javascript files/
+     * 
+     * @param req
+     *            request
+     * @param res
+     *            response
+     * @return value for resources
+     * @throws IOException
+     *             exceptions
+     */
+    public static boolean renderResources(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        // Serve static resource file as CSS and Javascript
+        String resources = req.getParameter(RESOURCE);
+        if (resources != null && !resources.isEmpty()) {
+            if (RESOURCE_CSS_PARAM.equalsIgnoreCase(resources)) {
+                res.setContentType(CONTENT_TYPE_CSS);
+                res.getWriter().println(ConsoleRenderer.getCSS());
+                return true;
+            } else if (RESOURCE_JS_PARAM.equalsIgnoreCase(resources)) {
+                res.setContentType(CONTENT_TYPE_JS);
+                res.getWriter().println(ConsoleRenderer.getJS());
+                return true;
+            }
+        }
+        return false;
+    }
+    
     /**
      * Load HTML template file and substitute by current URL context path
      * 
