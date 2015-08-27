@@ -50,7 +50,7 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
     /** Processed Interfaces. */
     private final Set<String> targetInterfacesNames = new HashSet<String>();
 
-    /** Strategies should be instanciate only once, keep references */
+    /** Strategies should be instantiate only once, keep references */
     private final Map<String, FlippingStrategy> strategySingletons = new HashMap<String, FlippingStrategy>();
 
     /** Spring Application Context. */
@@ -186,10 +186,10 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
                 try {
                     strategySingletons.put(strategyClassName, (FlippingStrategy) ff.strategy().newInstance());
                 } catch (InstantiationException e) {
-                    throw new IllegalArgumentException("ff4j-aop: Cannot instanciate alterbean " + strategyClassName
+                    throw new IllegalArgumentException("ff4j-aop: Cannot instantiate alterbean " + strategyClassName
                             + " please check default constructor existence & visibility", e);
                 } catch (IllegalAccessException e) {
-                    throw new IllegalArgumentException("ff4j-aop: Cannot instanciate alterbean " + strategyClassName
+                    throw new IllegalArgumentException("ff4j-aop: Cannot instantiate alterbean " + strategyClassName
                             + " please check constructor visibility", e);
                 }
             }

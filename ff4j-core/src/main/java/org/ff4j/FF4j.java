@@ -96,7 +96,7 @@ public class FF4j {
     public void setFileName(String f) {}
 
     /**
-     * Default constructor to allows instanciation through IoC. The created store is an empty {@link InMemoryFeatureStore}.
+     * Default constructor to allows instantiation through IoC. The created store is an empty {@link InMemoryFeatureStore}.
      */
     public FF4j() {
     }

@@ -113,17 +113,17 @@ public class FeatureJsonParser {
                         Constructor<?> constr = Class.forName(propertyType).getConstructor(String.class, String.class);
                         ap = (AbstractProperty<?>) constr.newInstance(propertyName, propertyVal);
                     } catch (InstantiationException e) {
-                        throw new IllegalArgumentException("Cannot instanciate '" + propertyType + "' check default constructor", e);
+                        throw new IllegalArgumentException("Cannot instantiate '" + propertyType + "' check default constructor", e);
                     } catch (IllegalAccessException e) {
-                        throw new IllegalArgumentException("Cannot instanciate '" + propertyType + "' check visibility", e);
+                        throw new IllegalArgumentException("Cannot instantiate '" + propertyType + "' check visibility", e);
                     } catch (ClassNotFoundException e) {
-                        throw new IllegalArgumentException("Cannot instanciate '" + propertyType + "' not found", e);
+                        throw new IllegalArgumentException("Cannot instantiate '" + propertyType + "' not found", e);
                     } catch (InvocationTargetException e) {
-                        throw new IllegalArgumentException("Cannot instanciate '" + propertyType + "'  erro within constructor", e);
+                        throw new IllegalArgumentException("Cannot instantiate '" + propertyType + "'  error within constructor", e);
                     } catch (NoSuchMethodException e) {
-                        throw new IllegalArgumentException("Cannot instanciate '" + propertyType + "' constructor not found", e);
+                        throw new IllegalArgumentException("Cannot instantiate '" + propertyType + "' constructor not found", e);
                     } catch (SecurityException e) {
-                        throw new IllegalArgumentException("Cannot instanciate '" + propertyType + "' check constructor visibility", e);
+                        throw new IllegalArgumentException("Cannot instantiate '" + propertyType + "' check constructor visibility", e);
                     }
                 }
                 

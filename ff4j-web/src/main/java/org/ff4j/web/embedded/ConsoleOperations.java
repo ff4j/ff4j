@@ -95,9 +95,9 @@ public class ConsoleOperations implements ConsoleConstants {
                 } catch (ClassNotFoundException e) {
                     throw new IllegalArgumentException("Cannot find strategy class", e);
                 } catch (InstantiationException e) {
-                    throw new IllegalArgumentException("Cannot instanciate strategy", e);
+                    throw new IllegalArgumentException("Cannot instantiate strategy", e);
                 } catch (IllegalAccessException e) {
-                    throw new IllegalArgumentException("Cannot instanciate : no public constructor", e);
+                    throw new IllegalArgumentException("Cannot instantiate : no public constructor", e);
                 }
             }
 
@@ -170,9 +170,9 @@ public class ConsoleOperations implements ConsoleConstants {
                 } catch (ClassNotFoundException e) {
                     throw new IllegalArgumentException("Cannot find strategy class", e);
                 } catch (InstantiationException e) {
-                    throw new IllegalArgumentException("Cannot instanciate strategy", e);
+                    throw new IllegalArgumentException("Cannot instantiate strategy", e);
                 } catch (IllegalAccessException e) {
-                    throw new IllegalArgumentException("Cannot instanciate : no public constructor", e);
+                    throw new IllegalArgumentException("Cannot instantiate : no public constructor", e);
                 }
             }
 
