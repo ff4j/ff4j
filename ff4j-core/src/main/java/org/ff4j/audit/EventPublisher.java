@@ -49,14 +49,14 @@ public class EventPublisher {
     /** 2s to save the event other wize skip. */
     public static long timeout = 2000L;
     
-    /** queueing incoming events. */
-    private final BlockingQueue<Runnable> queue;
-    
     /** Executor for item writer. */
     private ExecutorService executor;
 
     /** Repository to save events. */
     private EventRepository repository;
+
+    /** the amount of time to wait after submitting for the task to complete. */
+    private final long submitTimeout;
 
     /**
      * Default constructor.
@@ -76,9 +76,16 @@ public class EventPublisher {
      * Default constructor.
      */
     public EventPublisher(int queueCapacity, int poolSize, EventRepository er) {
+        this(queueCapacity, poolSize, er, timeout);
+    }
+
+    /**
+     * Default constructor.
+     */
+    public EventPublisher(int queueCapacity, int poolSize, EventRepository er, long submitTimeout) {
         // Initializing queue
-        queue = new ArrayBlockingQueue<Runnable>(queueCapacity);
-        
+        final BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(queueCapacity);
+
         // Executor with worker to process threads
         RejectedExecutionHandler rej = (new RejectedExecutionHandler() {
             @Override
@@ -113,12 +120,33 @@ public class EventPublisher {
                     t.setPriority(Thread.NORM_PRIORITY);
                 return t;
             }
-        };
-      
+        }
+
         executor = new ThreadPoolExecutor(poolSize, poolSize, 0L, TimeUnit.MILLISECONDS, queue, new CustomThreadFactory() , rej);
-       
+
         // Override repository
         repository = er;
+
+        this.submitTimeout = submitTimeout;
+    }
+
+    /**
+     * @param er the event repository to use
+     * @param executorService the executor service
+     */
+    public EventPublisher(EventRepository er, ExecutorService executorService) {
+        this(er, executorService, timeout);
+    }
+
+    /**
+     * @param er the event repository to use
+     * @param executorService the executor service
+     * @param submitTimeout
+     */
+    public EventPublisher(EventRepository er, ExecutorService executorService, long submitTimeout) {
+        repository = er;
+        executor = executorService;
+        this.submitTimeout = submitTimeout;
     }
 
     /**
@@ -130,8 +158,8 @@ public class EventPublisher {
     public void publish(Event e) {
         final Future<Boolean> check = executor.submit(new EventWorker(e, repository));
         try {
-            if (timeout != 0) {
-                check.get(timeout, TimeUnit.MILLISECONDS);
+            if (submitTimeout != 0) {
+                check.get(submitTimeout, TimeUnit.MILLISECONDS);
             }
         } catch (Exception e1) {
             e1.printStackTrace();

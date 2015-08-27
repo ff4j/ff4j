@@ -536,6 +536,16 @@ public class FF4j {
     }
 
     /**
+     * Setter accessor for attribute 'eventPublisher'.
+     *
+     * @param eventPublisher
+     *            new value for 'eventPublisher '
+     */
+    public void setEventPublisher(EventPublisher eventPublisher) {
+        this.eventPublisher = eventPublisher;
+    }
+
+    /**
      * Getter accessor for attribute 'eventPublisher'.
      * 
      * @return current value of 'eventPublisher'
