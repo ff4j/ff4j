@@ -80,7 +80,7 @@ public interface JdbcStoreConstants {
     // ------- Properties -------------
     
     /** sql query expression */
-    String SQL_GET_CUSTOMPROPERTIES_BYFEATUREID = "SELECT PROPERTY_ID,CLAZZ,CURRENTVALUE,FIXEDVALUES,FEAT_UID "
+    String SQL_GET_CUSTOMPROPERTIES_BYFEATUREID = "SELECT PROPERTY_ID,CLAZZ,CURRENTVALUE,DESCRIPTION,FIXEDVALUES,FEAT_UID "
             + "FROM FF4J_CUSTOM_PROPERTIES "
             + "WHERE FEAT_UID = ?";
     
@@ -99,7 +99,7 @@ public interface JdbcStoreConstants {
     String SQL_CREATE_CUSTOMPROPERTY = "INSERT INTO FF4J_CUSTOM_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES, FEAT_UID) VALUES(?, ?, ?, ?, ?)";
     
     /** Create property. */
-    String SQL_PROPERTY_CREATE = "INSERT INTO FF4J_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES) VALUES(?,?,?,?)";
+    String SQL_PROPERTY_CREATE = "INSERT INTO FF4J_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, DESCRIPTION, FIXEDVALUES) VALUES(?, ?, ?, ?, ?)";
     
     /** Delete property. */
     String SQL_PROPERTY_DELETE = "DELETE FROM FF4J_PROPERTIES WHERE PROPERTY_ID = ?";
@@ -108,13 +108,13 @@ public interface JdbcStoreConstants {
     String SQL_PROPERTY_EXIST = "SELECT COUNT(*) FROM FF4J_PROPERTIES WHERE PROPERTY_ID = ?";
     
     /** Test if property exist. */
-    String SQL_PROPERTY_READ = "SELECT PROPERTY_ID,CLAZZ,CURRENTVALUE,FIXEDVALUES FROM FF4J_PROPERTIES WHERE PROPERTY_ID = ?";
+    String SQL_PROPERTY_READ = "SELECT PROPERTY_ID,CLAZZ,CURRENTVALUE,DESCRIPTION,FIXEDVALUES FROM FF4J_PROPERTIES WHERE PROPERTY_ID = ?";
     
     /** sql query expression */
     String SQL_PROPERTY_UPDATE = "UPDATE FF4J_PROPERTIES SET CURRENTVALUE = ? WHERE PROPERTY_ID = ?";
 
     /** sql query expression */
-    String SQL_PROPERTY_READALL = "SELECT PROPERTY_ID,CLAZZ,CURRENTVALUE,FIXEDVALUES,FEAT_UID FROM FF4J_PROPERTIES";
+    String SQL_PROPERTY_READALL = "SELECT PROPERTY_ID,CLAZZ,CURRENTVALUE,DESCRIPTION,FIXEDVALUES,FEAT_UID FROM FF4J_PROPERTIES";
     
     // ------- AUDIT -------------
     
@@ -160,8 +160,6 @@ public interface JdbcStoreConstants {
     /** Deletion of single entry. */
     String SQL_AUDIT_DELETE = "DELETE FROM " + TABLE_AUDIT + " WHERE (" + COL_EVENT_TIME + " = ?) AND (" + COL_EVENT_TYPE + " LIKE ? " + COL_EVENT_UID + ")";
     
-    
-    
     // ----- Columns
 
     /** sql column name from table FF4J_FEATURES. */
@@ -202,5 +200,8 @@ public interface JdbcStoreConstants {
     
     /** sql column name from table FF4J_PROPERTIES. */
     String COL_PROPERTY_FEATID = "FEAT_UID";
+    
+    /** sql column name from table FF4J_PROPERTIES. */
+    String COL_PROPERTY_DESCRIPTION = "DESCRIPTION";
    
 }

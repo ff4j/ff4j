@@ -54,7 +54,7 @@ import com.wordnik.swagger.reader.ClassReaders;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  *
  */
-@ApplicationPath("api")
+//@ApplicationPath("api")
 public abstract class FF4JApiApplication extends PackagesResourceConfig implements FF4jWebConstants {
 
     /** logger for this class. */

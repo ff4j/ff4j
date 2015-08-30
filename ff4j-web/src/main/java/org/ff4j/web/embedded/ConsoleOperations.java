@@ -120,6 +120,15 @@ public class ConsoleOperations implements ConsoleConstants {
             LOGGER.info(featureId + " has been created");
         }
     }
+    
+    public static void updateProperty(FF4j ff4j, HttpServletRequest req) {
+        //final String featureId = req.getParameter(FEATID);
+        
+    }
+    
+    public static void createProperty(FF4j ff4j, HttpServletRequest req) {
+        //final String featureId = req.getParameter(FEATID);
+    }
 
     /**
      * User action to update a target feature's description.

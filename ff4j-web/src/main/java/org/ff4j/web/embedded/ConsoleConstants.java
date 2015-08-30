@@ -38,6 +38,9 @@ public interface ConsoleConstants {
 
     /** Content type for response. */
     String CONTENT_TYPE_JS = "application/javascript";
+    
+    /** Content type for response. */
+    String CONTENT_TYPE_JSON = "application/json";
 
 
     // -------- RESOURCES ------------------------------
@@ -68,15 +71,30 @@ public interface ConsoleConstants {
 
     /** User operation. */
     String OP_CREATE_FEATURE = "create";
+    
+    /** User operation. */
+    String OP_CREATE_PROPERTY = "createProperty";
 
     /** User operation. */
     String OP_EDIT_FEATURE = "update";
+    
+    /** User operation. */
+    String OP_EDIT_PROPERTY = "updateProperty";
 
     /** User operation: remove feature. */
     String OP_RMV_FEATURE = "delete";
+    
+    /** User operation: remove feature. */
+    String OP_RMV_PROPERTY = "deleteProperty";
+    
+    /** User operation: remove feature. */
+    String OP_READ_PROPERTY = "readProperty";
 
     /** User operation. */
     String OP_TOGGLE_GROUP = "toggleGroup";
+    
+    /** User operation: remove feature. */
+    String OP_READ_FEATURE = "readFeature";
 
     /** User operation. */
     String OP_ENABLE = "enable";
@@ -104,6 +122,9 @@ public interface ConsoleConstants {
 
     /** templating. */
     String KEY_FEATURE_ROWS = "FEATURE_ROWS";
+    
+    /** templating. */
+    String KEY_PROPERTIES_ROWS = "PROPERTIES_ROWS";
 
     /** templating. */
     String KEY_GROUP_LIST_EDIT = "FEATURE_GRPS_EDIT";
@@ -146,6 +167,9 @@ public interface ConsoleConstants {
 
     /** HTTP Parameter. */
     String PERMISSION = "permission";
+    
+    /** HTTP Parameter. */
+    String NAME = "name";
 
     // -------- MISC ------------------------------
 

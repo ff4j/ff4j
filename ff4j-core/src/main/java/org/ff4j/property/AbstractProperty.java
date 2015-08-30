@@ -41,6 +41,9 @@ public abstract class AbstractProperty < T > implements Serializable {
     /** Unique name for property. */
     protected String name;
     
+    /** Short description of the property. */
+    protected String description = null;
+    
     /** Canonical name for JSON serialization. */
     protected String type = getClass().getCanonicalName();
     
@@ -257,14 +260,30 @@ public abstract class AbstractProperty < T > implements Serializable {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        String start = "{\"name\":\"" + name + "\",\"type\":\"" + this.getClass().getCanonicalName() + "\",\"value\":";
+        return toJson();
+    }
+    
+    /** {@inheritDoc} */
+    public String toJson() {
+        String start = "{\"name\":\"" + name + "\",";
+        start+= "\"description\":";
+        if (null != description) {
+            start+= "\"" + description + "\",";
+        } else {
+            start+= "null,";
+        }
+        start+= "\"type\":\"" + this.getClass().getCanonicalName() + "\",";
+        
+        start+= "\"value\":";
         String sep = "\"";
+        
         if (value instanceof Integer || value instanceof Double || value instanceof Boolean ) {
             sep = "";
         }
-        start += sep + value + sep + ",\"fixedValues\":";
+        start += sep + value + sep;
+        start += ",\"fixedValues\":";
         if (fixedValues == null) {
-            start+="null";
+            start += "null";
         } else {
             start += "[";
             boolean first = true;
@@ -296,6 +315,25 @@ public abstract class AbstractProperty < T > implements Serializable {
      */
     public void setType(String type) {
         this.type = type;
+    }
+
+    /**
+     * Getter accessor for attribute 'description'.
+     *
+     * @return
+     *       current value of 'description'
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Setter accessor for attribute 'description'.
+     * @param description
+     * 		new value for 'description '
+     */
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }

@@ -73,6 +73,12 @@ public class JdbcPropertyMapper implements JdbcStoreConstants {
             }
         }
         
+        // Description
+        String description = rs.getString(COL_PROPERTY_DESCRIPTION);
+        if (description != null && !"".equals(description)) {
+            ap.setDescription(description);
+        }
+        
         // Is there any fixed Value ?
         String fixedValues = rs.getString(COL_PROPERTY_FIXED);
         if (fixedValues != null && !"".equals(fixedValues)) {
@@ -90,6 +96,5 @@ public class JdbcPropertyMapper implements JdbcStoreConstants {
         }
         return ap;
     }
-    
     
 }

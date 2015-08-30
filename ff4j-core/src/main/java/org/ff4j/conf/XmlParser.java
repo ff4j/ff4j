@@ -95,6 +95,9 @@ public final class XmlParser {
     
     /** TAG XML. */
     public static final String PROPERTY_PARAMNAME = "name";
+    
+    /** TAG XML. */
+    public static final String PROPERTY_PARAMDESCRIPTION = "description";
 
     /** TAG XML. */
     public static final String PROPERTY_PARAMVALUE = "value";
@@ -342,10 +345,9 @@ public final class XmlParser {
             }
             String name  = attMap.getNamedItem(PROPERTY_PARAMNAME).getNodeValue();
             String value = attMap.getNamedItem(PROPERTY_PARAMVALUE).getNodeValue();
-            
             AbstractProperty<?> ap = new Property(name, value);
             // If specific type defined ?
-            if (attMap.getNamedItem(PROPERTY_PARAMTYPE) != null) {
+            if (null != attMap.getNamedItem(PROPERTY_PARAMTYPE)) {
                 String optionalType = attMap.getNamedItem(PROPERTY_PARAMTYPE).getNodeValue();
                 try {
                     // Construction by dedicated constructor with introspection
@@ -364,6 +366,10 @@ public final class XmlParser {
                 } catch (SecurityException e) {
                     throw new IllegalArgumentException("Cannot instanciate '" + optionalType + "' check constructor visibility", e);
                 }
+            }
+            
+            if (null != attMap.getNamedItem(PROPERTY_PARAMDESCRIPTION)) {
+                ap.setDescription(attMap.getNamedItem(PROPERTY_PARAMDESCRIPTION).getNodeValue());
             }
             
             // Is there any fixed Value ?

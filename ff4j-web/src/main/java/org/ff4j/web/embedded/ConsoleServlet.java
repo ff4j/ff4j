@@ -1,6 +1,15 @@
 package org.ff4j.web.embedded;
 
+import static org.ff4j.web.embedded.ConsoleOperations.createFeature;
+import static org.ff4j.web.embedded.ConsoleOperations.createProperty;
+import static org.ff4j.web.embedded.ConsoleOperations.exportFile;
+import static org.ff4j.web.embedded.ConsoleOperations.importFile;
+import static org.ff4j.web.embedded.ConsoleOperations.updateFeatureDescription;
+import static org.ff4j.web.embedded.ConsoleOperations.updateProperty;
+import static org.ff4j.web.embedded.ConsoleRenderer.msg;
 import static org.ff4j.web.embedded.ConsoleRenderer.renderMessageBox;
+import static org.ff4j.web.embedded.ConsoleRenderer.renderMsgGroup;
+import static org.ff4j.web.embedded.ConsoleRenderer.renderMsgProperty;
 import static org.ff4j.web.embedded.ConsoleRenderer.renderPage;
 
 /*
@@ -29,6 +38,8 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 import org.ff4j.FF4j;
+import org.ff4j.core.Feature;
+import org.ff4j.property.AbstractProperty;
 import org.ff4j.web.api.FF4JProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,37 +124,64 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                 
                 // operation which do not required features
                 if (OP_EXPORT.equalsIgnoreCase(operation)) {
-                    ConsoleOperations.exportFile(ff4j, res);
+                    exportFile(ff4j, res);
                     message = "Feature have been success fully exported";
                     return;
                 }                
                 
                 // Work on a feature ID
-                if ((featureId != null) && (!featureId.isEmpty()) 
-                        && getFf4j().getFeatureStore().exist(featureId)) {
+                if ((featureId != null) && (!featureId.isEmpty())) {
                     
-                    if (OP_DISABLE.equalsIgnoreCase(operation)) {
-                        getFf4j().disable(featureId);
-                        res.setContentType(CONTENT_TYPE_HTML);
-                        res.getWriter().println(renderMessageBox(msg(featureId, "DISABLED"), "info"));
-                        LOGGER.info(featureId + " has been disabled");
-                        return;
-                    } 
+                    if (getFf4j().getFeatureStore().exist(featureId)) {
                     
-                    if (OP_ENABLE.equalsIgnoreCase(operation)) {
-                        getFf4j().enable(featureId);
-                        res.setContentType(CONTENT_TYPE_HTML);
-                        res.getWriter().println(renderMessageBox(msg(featureId, "ENABLED"), "info"));
-                        LOGGER.info(featureId + " has been successfully enabled");
-                        return;
-                    } 
-                    
-                    // As no return the page is draw
-                    if (OP_RMV_FEATURE.equalsIgnoreCase(operation)) {
-                        getFf4j().getFeatureStore().delete(featureId);
-                        message = msg(featureId, "DELETED");
-                        LOGGER.info(featureId + " has been deleted");
+                        if (OP_DISABLE.equalsIgnoreCase(operation)) {
+                            getFf4j().disable(featureId);
+                            res.setContentType(CONTENT_TYPE_HTML);
+                            res.getWriter().println(renderMessageBox(msg(featureId, "DISABLED"), "info"));
+                            LOGGER.info(featureId + " has been disabled");
+                            return;
+                        } 
+                        
+                        if (OP_ENABLE.equalsIgnoreCase(operation)) {
+                            getFf4j().enable(featureId);
+                            res.setContentType(CONTENT_TYPE_HTML);
+                            res.getWriter().println(renderMessageBox(msg(featureId, "ENABLED"), "info"));
+                            LOGGER.info("Feature '" + featureId + "' has been successfully enabled");
+                            return;
+                        }
+                        
+                        if (OP_READ_FEATURE.equalsIgnoreCase(operation)) {
+                            Feature f = getFf4j().getFeatureStore().read(featureId);
+                            res.setContentType(CONTENT_TYPE_JSON);
+                            res.getWriter().println(f.toJson());
+                            return;
+                        }
+                        
+                        // As no return the page is draw
+                        if (OP_RMV_FEATURE.equalsIgnoreCase(operation)) {
+                            getFf4j().getFeatureStore().delete(featureId);
+                            message = msg(featureId, "DELETED");
+                            LOGGER.info(featureId + " has been deleted");
+                        }
+                        
                     }
+                    
+                    if (getFf4j().getPropertiesStore().exist(featureId)) {
+                    
+                        if (OP_RMV_PROPERTY.equalsIgnoreCase(operation)) {
+                            getFf4j().getPropertiesStore().delete(featureId);
+                            message = renderMsgProperty(featureId, "DELETED");
+                            LOGGER.info("Property '" + featureId + "' has been deleted");
+                        }
+                        
+                        if (OP_READ_PROPERTY.equalsIgnoreCase(operation)) {
+                            AbstractProperty<?> ap = getFf4j().getPropertiesStore().read(featureId);
+                            res.setContentType(CONTENT_TYPE_JSON);
+                            res.getWriter().println(ap.toString());
+                            return;
+                        }
+                    }
+                 
                 }
             }
 
@@ -155,32 +193,6 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
 
         // Default page rendering (table)
         renderPage(getFf4j(), req, res, message, messagetype);
-    }
-
-    /**
-     * Build info messages.
-     * 
-     * @param featureName
-     *            target feature name
-     * @param operationd
-     *            target operationId
-     * @return
-     */
-    private String msg(String featureName, String operationId) {
-        return String.format("Feature <b>%s</b> has been successfully %s", featureName, operationId);
-    }
-
-    /**
-     * Build info messages.
-     * 
-     * @param featureName
-     *            target feature name
-     * @param operationd
-     *            target operationId
-     * @return
-     */
-    private String msgGroup(String groupName, String operationId) {
-        return String.format("Group <b>%s</b> has been successfully %s", groupName, operationId);
     }
 
     /** {@inheritDoc} */
@@ -200,7 +212,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                     } else if (FLIPFILE.equalsIgnoreCase(item.getFieldName())) {
                         String filename = FilenameUtils.getName(item.getName());
                         if (filename.toLowerCase().endsWith("xml")) {
-                            ConsoleOperations.importFile(getFf4j(), item.getInputStream());
+                            importFile(getFf4j(), item.getInputStream());
                             message = "The file <b>" + filename + "</b> has been successfully imported";
                         } else {
                             messagetype = "error";
@@ -210,15 +222,24 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                 }
 
             } else {
+                
                 String operation = req.getParameter(OPERATION);
                 if (operation != null && !operation.isEmpty()) {
 
                     if (OP_EDIT_FEATURE.equalsIgnoreCase(operation)) {
-                        ConsoleOperations.updateFeatureDescription(getFf4j(), req);
+                        updateFeatureDescription(getFf4j(), req);
                         message = msg(req.getParameter(FEATID), "UPDATED");
 
+                    } else if (OP_EDIT_PROPERTY.equalsIgnoreCase(operation)) {
+                        updateProperty(getFf4j(), req);
+                        message = renderMsgProperty(req.getParameter(FEATID), "UPDATED");
+                       
+                    } else if (OP_CREATE_PROPERTY.equalsIgnoreCase(operation)) {
+                        createProperty(getFf4j(), req);
+                        message = renderMsgProperty(req.getParameter(FEATID), "ADDED");
+                        
                     } else if (OP_CREATE_FEATURE.equalsIgnoreCase(operation)) {
-                        ConsoleOperations.createFeature(getFf4j(), req);
+                        createFeature(getFf4j(), req);
                         message = msg(req.getParameter(FEATID), "ADDED");
 
                     } else if (OP_TOGGLE_GROUP.equalsIgnoreCase(operation)) {
@@ -227,11 +248,11 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                             String operationGroup = req.getParameter(SUBOPERATION);
                             if (OP_ENABLE.equalsIgnoreCase(operationGroup)) {
                                 getFf4j().getFeatureStore().enableGroup(groupName);
-                                message = msgGroup(groupName, "ENABLED");
+                                message = renderMsgGroup(groupName, "ENABLED");
                                 LOGGER.info("Group '" + groupName + "' has been ENABLED.");
                             } else if (OP_DISABLE.equalsIgnoreCase(operationGroup)) {
                                 getFf4j().getFeatureStore().disableGroup(groupName);
-                                message = msgGroup(groupName, "DISABLED");
+                                message = renderMsgGroup(groupName, "DISABLED");
                                 LOGGER.info("Group '" + groupName + "' has been DISABLED.");
                             }
                         }

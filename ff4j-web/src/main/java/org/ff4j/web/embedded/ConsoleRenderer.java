@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingStrategy;
+import org.ff4j.property.AbstractProperty;
 
 /**
  * Used to build GUI Interface for feature flip servlet. It contains gui component render and parmeters
@@ -66,7 +67,7 @@ public final class ConsoleRenderer implements ConsoleConstants {
      * @throws IOException
      *             error during populating http response
      */
-    public static void renderPage(FF4j ff4j, HttpServletRequest req, HttpServletResponse res, String msg, String msgType) throws IOException {
+    static void renderPage(FF4j ff4j, HttpServletRequest req, HttpServletResponse res, String msg, String msgType) throws IOException {
         res.setContentType(CONTENT_TYPE_HTML);
         PrintWriter out = res.getWriter();
 
@@ -77,9 +78,11 @@ public final class ConsoleRenderer implements ConsoleConstants {
         htmlContent = htmlContent.replaceAll("\\{" + KEY_ALERT_MESSAGE + "\\}", renderMessageBox(msg, msgType));
 
         // Subsctitution FEATURE_ROWS
-        final String rows = renderFeatureRows(ff4j, req);
-        htmlContent = htmlContent.replaceAll("\\{" + KEY_FEATURE_ROWS + "\\}", rows);
-
+        htmlContent = htmlContent.replaceAll("\\{" + KEY_FEATURE_ROWS + "\\}", renderFeatureRows(ff4j, req));
+        
+        // substitution PROPERTIES_ROWS
+        htmlContent = htmlContent.replaceAll("\\{" + KEY_PROPERTIES_ROWS + "\\}", renderPropertiesRows(ff4j, req));
+        
         // Substitution GROUP_LIST
         String groups = ConsoleRenderer.renderGroupList(ff4j, MODAL_EDIT);
         htmlContent = htmlContent.replaceAll("\\{" + KEY_GROUP_LIST_EDIT + "\\}", groups);
@@ -95,6 +98,46 @@ public final class ConsoleRenderer implements ConsoleConstants {
         out.println(htmlContent);
     }
 
+
+    /**
+     * Build info messages.
+     * 
+     * @param featureName
+     *            target feature name
+     * @param operationd
+     *            target operationId
+     * @return
+     */
+    static String msg(String featureName, String operationId) {
+        return String.format("Feature <b>%s</b> has been successfully %s", featureName, operationId);
+    }
+    
+    /**
+     * Build info messages.
+     * 
+     * @param featureName
+     *            target feature name
+     * @param operationd
+     *            target operationId
+     * @return
+     */
+    static  String renderMsgProperty(String featureName, String operationId) {
+        return String.format("Property <b>%s</b> has been successfully %s", featureName, operationId);
+    }
+
+    /**
+     * Build info messages.
+     * 
+     * @param featureName
+     *            target feature name
+     * @param operationd
+     *            target operationId
+     * @return
+     */
+    static String renderMsgGroup(String groupName, String operationId) {
+        return String.format("Group <b>%s</b> has been successfully %s", groupName, operationId);
+    }
+    
     /**
      * Deliver CSS and Javascript files/
      * 
@@ -106,7 +149,7 @@ public final class ConsoleRenderer implements ConsoleConstants {
      * @throws IOException
      *             exceptions
      */
-    public static boolean renderResources(HttpServletRequest req, HttpServletResponse res) throws IOException {
+     static boolean renderResources(HttpServletRequest req, HttpServletResponse res) throws IOException {
         // Serve static resource file as CSS and Javascript
         String resources = req.getParameter(RESOURCE);
         if (resources != null && !resources.isEmpty()) {
@@ -138,6 +181,66 @@ public final class ConsoleRenderer implements ConsoleConstants {
             htmlTemplate = htmlTemplate.replaceAll("\\{" + KEY_VERSION + "\\}", FF4J_VERSION);
         }
         return htmlTemplate;
+    }
+    
+    static final String renderPropertiesRows(FF4j ff4j, HttpServletRequest req) {
+        StringBuilder sb = new StringBuilder();
+        final Map < String, AbstractProperty<?>> mapOfProperties = ff4j.getProperties();
+        for(String uid : mapOfProperties.keySet()) {
+            AbstractProperty<?> currentProperty = mapOfProperties.get(uid);
+            sb.append("<tr>" + END_OF_LINE);
+            
+            // Column with uid and description as tooltip
+            sb.append("<td><a class=\"ff4j-properties\" ");
+            if (null != currentProperty.getDescription()) {
+                sb.append(" tooltip=\"");
+                sb.append(currentProperty.getDescription());
+                sb.append("\"");
+            }
+            sb.append(">");
+            sb.append(currentProperty.getName());
+            sb.append("</a>");
+           
+            // Colonne Value
+            sb.append("</td><td>");
+            if (null != currentProperty.asString()) {
+                sb.append(currentProperty.asString());
+            } else {
+                sb.append("--");
+            }
+            
+            // Colonne Type
+            sb.append("</td><td>");
+            sb.append(currentProperty.getType());
+            
+            // Colonne Fixed Value
+            sb.append("</td><td>");
+            if (null != currentProperty.getFixedValues()) {
+                for (Object o : currentProperty.getFixedValues()) {
+                    sb.append("<li>" + o.toString());
+                }
+            } else {
+                sb.append("--");
+            }
+            
+            // Colonne Button Edit
+            sb.append("</td><td style=\"width:5%;text-align:center\">");
+            sb.append("<a data-toggle=\"modal\" href=\"#modalEditProperty\" data-pname=\"" + currentProperty.getName() + "\" ");
+            sb.append(" style=\"width:6px;\" class=\"open-EditPropertyDialog btn\">");
+            sb.append("<i class=\"icon-pencil\" style=\"margin-left:-5px;\"></i></a>");
+
+            // Colonne Button Delete
+            sb.append("</td><td style=\"width:5%;text-align:center\">");
+            sb.append("<a href=\"");
+            sb.append(req.getContextPath());
+            sb.append(req.getServletPath());
+            sb.append("?op=" + OP_RMV_PROPERTY + "&" + FEATID + "=" + currentProperty.getName());
+            sb.append("\" style=\"width:6px;\" class=\"btn\">");
+            sb.append("<i class=\"icon-trash\" style=\"margin-left:-5px;\"></i>");
+            sb.append("</a>");
+            sb.append("</td></tr>");
+        }
+        return sb.toString();
     }
 
     /**

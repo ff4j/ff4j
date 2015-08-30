@@ -65,7 +65,7 @@
 
 		<!-- License -->
 		<license.licenseName>apache_v2</license.licenseName>
-		<license.licenseResolver>${project.baseUri}/src/license</license.licenseResolver>
+		<license.licenseResolver>${project.baseUri}src/license</license.licenseResolver>
 
 		<!-- Version -->
 		<version.cglib>3.1</version.cglib>
@@ -380,7 +380,7 @@
 
 		<plugins>
 
-			<!-- License -->
+			<!-- License 
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>license-maven-plugin</artifactId>
@@ -407,7 +407,7 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin>-->
 
 			<!-- Junit -->
 			<plugin>
