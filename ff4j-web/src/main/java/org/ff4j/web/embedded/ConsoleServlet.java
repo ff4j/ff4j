@@ -92,7 +92,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException("Cannot load ff4jProvider as " + ff4jProvider, e);
         } catch (InstantiationException e) {
-            throw new IllegalArgumentException("Cannot instanciate  " + ff4jProvider + " as ff4jProvider", e);
+            throw new IllegalArgumentException("Cannot instantiate  " + ff4jProvider + " as ff4jProvider", e);
         } catch (IllegalAccessException e) {
             throw new IllegalArgumentException("No public constructor for  " + ff4jProvider + " as ff4jProvider", e);
         } catch (ClassCastException ce) {

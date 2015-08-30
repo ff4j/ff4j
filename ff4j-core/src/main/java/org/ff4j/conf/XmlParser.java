@@ -354,17 +354,17 @@ public final class XmlParser {
                     Constructor<?> constr = Class.forName(optionalType).getConstructor(String.class, String.class);
                     ap = (AbstractProperty<?>) constr.newInstance(name, value);
                 } catch (InstantiationException e) {
-                    throw new IllegalArgumentException("Cannot instanciate '" + optionalType + "' check default constructor", e);
+                    throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' check default constructor", e);
                 } catch (IllegalAccessException e) {
-                    throw new IllegalArgumentException("Cannot instanciate '" + optionalType + "' check visibility", e);
+                    throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' check visibility", e);
                 } catch (ClassNotFoundException e) {
-                    throw new IllegalArgumentException("Cannot instanciate '" + optionalType + "' not found", e);
+                    throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' not found", e);
                 } catch (InvocationTargetException e) {
-                    throw new IllegalArgumentException("Cannot instanciate '" + optionalType + "'  erro within constructor", e);
+                    throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "'  error within constructor", e);
                 } catch (NoSuchMethodException e) {
-                    throw new IllegalArgumentException("Cannot instanciate '" + optionalType + "' constructor not found", e);
+                    throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' constructor not found", e);
                 } catch (SecurityException e) {
-                    throw new IllegalArgumentException("Cannot instanciate '" + optionalType + "' check constructor visibility", e);
+                    throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' check constructor visibility", e);
                 }
             }
             
