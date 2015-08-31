@@ -59,7 +59,6 @@ public class EventWorker implements Callable<Boolean> {
         this.eventRepository = repo;
         if (e != null) {
             this.name = e.toThreadName();
-            Thread.currentThread().setName("FF4J Monitoring worker processing " + name);
         }
     }
 
