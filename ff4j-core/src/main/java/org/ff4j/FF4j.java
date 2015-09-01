@@ -90,7 +90,9 @@ public class FF4j {
 
     /** Event Publisher. */
     private EventPublisher eventPublisher = null;
-    
+
+    private boolean enableAudit = true;
+
     private ThreadLocal<FlippingExecutionContext> currentExecutionContext = new ThreadLocal<FlippingExecutionContext>();
 
     public void setFileName(String f) {}
@@ -154,14 +156,16 @@ public class FF4j {
         }
 
         // Any access is logged into audit system
-        getEventPublisher().publish(featureID, flipped);
+        if (this.isEnableAudit()) {
+            getEventPublisher().publish(featureID, flipped);
+        }
 
         return flipped;
     }
 
     /**
      * Overriding strategy on feature.
-     * 
+     *
      * @param featureID
      *            feature unique identifier.
      * @param executionContext
@@ -174,7 +178,7 @@ public class FF4j {
 
     /**
      * Overriding strategy on feature.
-     * 
+     *
      * @param featureID
      *            feature unique identifier.
      * @param executionContext
@@ -189,14 +193,16 @@ public class FF4j {
         }
 
         // Any modification done is logged into audit system
-        getEventPublisher().publish(featureID, flipped);
+        if (this.isEnableAudit()) {
+            getEventPublisher().publish(featureID, flipped);
+        }
 
         return flipped;
     }
 
     /**
      * Load SecurityProvider roles (e.g : SpringSecurity GrantedAuthorities)
-     * 
+     *
      * @param featureName
      *            target name of the feature
      * @return if the feature is allowed
@@ -253,51 +259,66 @@ public class FF4j {
             }
             throw fnfe;
         }
-        getEventPublisher().publish(featureID, EventType.ENABLE_FEATURE);
+
+        if (this.isEnableAudit()) {
+            getEventPublisher().publish(featureID, EventType.ENABLE_FEATURE);
+        }
+
         return this;
     }
 
     /**
      * Enable group.
-     * 
+     *
      * @param groupName
      *            target groupeName
      * @return current instance
      */
     public FF4j enableGroup(String groupName) {
         getFeatureStore().enableGroup(groupName);
-        getEventPublisher().publish(groupName, EventType.ENABLE_FEATUREGROUP);
+
+        if (this.isEnableAudit()) {
+            getEventPublisher().publish(groupName, EventType.ENABLE_FEATUREGROUP);
+        }
+
         return this;
     }
 
     /**
      * Disable group.
-     * 
+     *
      * @param groupName
      *            target groupeName
      * @return current instance
      */
     public FF4j disableGroup(String groupName) {
         getFeatureStore().disableGroup(groupName);
-        getEventPublisher().publish(groupName, EventType.DISABLE_FEATUREGROUP);
+
+        if (this.isEnableAudit()) {
+            getEventPublisher().publish(groupName, EventType.DISABLE_FEATUREGROUP);
+        }
+
         return this;
     }
 
     /**
      * Create new Feature.
-     * 
-     * @param featureID
-     *            unique feature identifier.
+     *
+     * @param fp the feature.
      */
     public FF4j create(Feature fp) {
         getFeatureStore().create(fp);
-        getEventPublisher().publish(fp.getUid(), EventType.CREATE_FEATURE);
+
+        if (this.isEnableAudit()) {
+            getEventPublisher().publish(fp.getUid(), EventType.CREATE_FEATURE);
+        }
+
         return this;
     }
 
     /**
      * Create new Feature.
-     * 
+     *
      * @param featureID
      *            unique feature identifier.
      */
@@ -340,13 +361,17 @@ public class FF4j {
             }
             throw fnfe;
         }
-        getEventPublisher().publish(featureID, EventType.DISABLE_FEATURE);
+
+        if (this.isEnableAudit()) {
+            getEventPublisher().publish(featureID, EventType.DISABLE_FEATURE);
+        }
+
         return this;
     }
 
     /**
      * Check if target feature exist.
-     * 
+     *
      * @param featureId
      *            unique feature identifier.
      * @return flag to check existence of
@@ -401,13 +426,17 @@ public class FF4j {
 
     /**
      * Delete feature name.
-     * 
+     *
      * @param fpId
      *            target feature
      */
     public FF4j delete(String fpId) {
         getFeatureStore().delete(fpId);
-        getEventPublisher().publish(fpId, EventType.DELETE_FEATURE);
+
+        if (this.isEnableAudit()) {
+            getEventPublisher().publish(fpId, EventType.DELETE_FEATURE);
+        }
+
         return this;
     }
 
@@ -546,8 +575,22 @@ public class FF4j {
     }
 
     /**
+     * @param enableAudit the enableAudit to set
+     */
+    public void setEnableAudit(final boolean enableAudit) {
+        this.enableAudit = enableAudit;
+    }
+
+    /**
+     * @return the enableAudit
+     */
+    public boolean isEnableAudit() {
+        return this.enableAudit;
+    }
+
+	/**
      * Getter accessor for attribute 'eventPublisher'.
-     * 
+     *
      * @return current value of 'eventPublisher'
      */
     public EventPublisher getEventPublisher() {
