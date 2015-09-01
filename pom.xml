@@ -96,7 +96,8 @@
 		<version.hdldb>2.3.2</version.hdldb>
 		<version.ehcache>2.6.6</version.ehcache>
 		<version.mongo.javadriver>2.12.2</version.mongo.javadriver>
-		<version.fongo>1.5.1</version.fongo>
+		<version.fongo>1.6.2</version.fongo>
+		<!-- redis -->
 		<version.jedis>2.5.1</version.jedis>
 		<version.neo4j>2.1.6</version.neo4j>
 
@@ -135,6 +136,7 @@
 		<module>ff4j-store-springjdbc</module>
 		<module>ff4j-store-ehcache</module>
 		<module>ff4j-store-mongodb</module>
+		<module>ff4j-store-mongodb-v3</module>
 		<module>ff4j-store-redis</module>
 		<!-- <module>ff4j-store-neo4j</module> -->
 		
