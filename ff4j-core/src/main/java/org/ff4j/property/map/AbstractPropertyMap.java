@@ -1,18 +1,19 @@
-package org.ff4j.property;
+package org.ff4j.property.map;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+
+import org.ff4j.property.AbstractProperty;
 
 public class AbstractPropertyMap < T, M extends Map<String, ? extends T>> extends AbstractProperty < M > implements Map< String, T > {
 
     /** serial. */
     private static final long serialVersionUID = 2612494170643655559L;
 
-    @Override
+    /** {@inheritDoc} */
     public int size() {
-        // TODO Auto-generated method stub
-        return 0;
+        return (null == getValue()) ? -1 : getValue().size();
     }
 
     @Override

@@ -1,9 +1,11 @@
-package org.ff4j.property;
+package org.ff4j.property.list;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
+
+import org.ff4j.property.AbstractPropertyMultiValued;
 
 /**
  * SuperClass for property as lists.
@@ -17,6 +19,47 @@ public class AbstractPropertyList < T > extends AbstractPropertyMultiValued< T, 
 
     /** Serial. */
     private static final long serialVersionUID = 4064427839404299895L;
+    
+    /**
+     * Default constructor.
+     */
+    public AbstractPropertyList() {
+    }
+    
+    /**
+     * Constructor by property name.
+     *
+     * @param name
+     *      property name
+     */
+    public AbstractPropertyList(String name) {
+        super(name);
+    }
+    
+    /**
+     * Constructor by string expression.
+     *
+     * @param uid
+     *      unique name
+     * @param lvl
+     *      current double value
+     */
+    public AbstractPropertyList(String uid, String value) {
+       super(uid, value);
+    }
+    
+    /**
+     * Constructor by T expression.
+     *
+     * @param uid
+     *      unique name
+     * @param lvl
+     *      current double value
+     */
+    public AbstractPropertyList(String uid, List<T> value) {
+       super(uid, value);
+    }
+    
 
     /** {@inheritDoc} */
     @Override

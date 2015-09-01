@@ -109,6 +109,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException {
+       
         String message = null;
         String messagetype = "info";
         // Routing on pagename
@@ -120,6 +121,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
             // Serve operation from GET
             String operation = req.getParameter(OPERATION);
             String featureId = req.getParameter(FEATID);
+            LOGGER.info("GET - op=" + operation + " feat=" + featureId);
             if (operation != null && !operation.isEmpty()) {
                 
                 // operation which do not required features
@@ -189,6 +191,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
             // Any Error is trapped and display in the console
             messagetype = "error";
             message = e.getMessage();
+            LOGGER.error("An error occured ", e);
         }
 
         // Default page rendering (table)
@@ -224,23 +227,25 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
             } else {
                 
                 String operation = req.getParameter(OPERATION);
+                String uid = req.getParameter(FEATID);
+                LOGGER.info("POST - op=" + operation + " feat=" + uid);
                 if (operation != null && !operation.isEmpty()) {
 
                     if (OP_EDIT_FEATURE.equalsIgnoreCase(operation)) {
                         updateFeatureDescription(getFf4j(), req);
-                        message = msg(req.getParameter(FEATID), "UPDATED");
+                        message = msg(uid, "UPDATED");
 
                     } else if (OP_EDIT_PROPERTY.equalsIgnoreCase(operation)) {
                         updateProperty(getFf4j(), req);
-                        message = renderMsgProperty(req.getParameter(FEATID), "UPDATED");
+                        message = renderMsgProperty(uid, "UPDATED");
                        
                     } else if (OP_CREATE_PROPERTY.equalsIgnoreCase(operation)) {
                         createProperty(getFf4j(), req);
-                        message = renderMsgProperty(req.getParameter(FEATID), "ADDED");
+                        message = renderMsgProperty(uid, "ADDED");
                         
                     } else if (OP_CREATE_FEATURE.equalsIgnoreCase(operation)) {
                         createFeature(getFf4j(), req);
-                        message = msg(req.getParameter(FEATID), "ADDED");
+                        message = msg(uid, "ADDED");
 
                     } else if (OP_TOGGLE_GROUP.equalsIgnoreCase(operation)) {
                         String groupName = req.getParameter(GROUPNAME);
@@ -261,12 +266,17 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                         messagetype = "error";
                         message = "Invalid REQUEST";
                     }
+                } else {
+                    LOGGER.error("No ID provided" + operation);
+                    messagetype = "error";
+                    message = "Invalid UID";
                 }
             }
 
         } catch (Exception e) {
             messagetype = "error";
             message = e.getMessage();
+            LOGGER.error("An error occured ", e);
         }
         renderPage(ff4j, req, res, message, messagetype);
     }

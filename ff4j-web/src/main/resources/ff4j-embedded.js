@@ -576,4 +576,7 @@
 	}(window.jQuery);
 
 
+function ff4j_getPathFromUrl(url) {
+		  return url.split(/[?#]/)[0];
+}
 

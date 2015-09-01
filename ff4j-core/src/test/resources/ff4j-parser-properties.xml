@@ -45,6 +45,8 @@
 		 <property name="f"  value="12,13,14" />
 		
 		 <property name="g" value="DEBUG" type="org.ff4j.property.PropertyLogLevel" />
+		 
+		 <property name="h" description="Sample property" value="10,11,12" type="org.ff4j.property.list.PropertyListInt" />
 	
 	</properties>
 </ff4j>

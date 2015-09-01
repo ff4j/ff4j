@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="apple-mobile-web-app-capable" content="yes">
   
-  <title>FF4J - Embedded Administration Console</title>
+  <title>FF4J Console</title>
   <link href="{SERVLET_CONTEXT}?rsc=css" rel="stylesheet">
   <script type="text/javascript" charset="utf-8" src="{SERVLET_CONTEXT}?rsc=js"></script>
   
@@ -525,9 +525,9 @@
 <!-- ** EDIT FORM PROPERTY** -->
 <!-- *********************** -->
 <form class="form-horizontal" action="{SERVLET_CONTEXT}" method="POST" >
-  <input type="hidden" name="op" value="updateProperty"  />
+  <input type="hidden" name="op"  value="updateProperty"  />
   <div class="modal hide fade" id="modalEditProperty" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    
+ 	 
     <div class="modal-header" style="background-color:#19599A">
       <button class="close" data-dismiss="modal">x</button>
       <h4 id="myModalLabel">Edit Property</h4>
@@ -535,6 +535,8 @@
     
   <!-- Body -->
   <div class="modal-body" style="height:500px">
+    
+    <input type="hidden" id="uid" name="uid" value=""      />
     
     <!-- Name --> 
     <div class="control-group"> 
@@ -554,42 +556,51 @@
     
      <!-- Type --> 
     <div class="control-group">  
-      <label class="control-label" for="pType" style="color:#19599A;font-style:normal">Type</label>  
-      <div class="controls">
-        <input type="text" name="pType" id="pType" style="width:250px;height:30px;" />  
-      </div>
+      <label class="control-label" for="pType" style="color:#19599A;font-style:normal">Type</label>
+       <div class="controls"  id="div-type-property">
+	      <div class="btn-group">
+	            <input type="text" name="pType" id="pType" style="width:250px;height:30px;font-style:normal" >
+	            <button type="button" class="btn btn-blue dropdown-toggle" data-toggle="dropdown">
+	              <span class="caret"></span>
+	              <span class="sr-only"><i class="icon-cog icon-white" ></i></span>
+	            </button>
+	            <ul class="dropdown-menu" role="menu" style="width:250px;">
+	            	<li><a href="javascript:$('#modalEditProperty #pType').val('org.ff4j.property.PropertyBoolean');">boolean</a></li>
+	                <li><a href="javascript:$('#modalEditProperty #pType').val('org.ff4j.property.PropertyInt');">int</a></li>
+	                <li><a href="javascript:$('#modalEditProperty #pType').val('org.ff4j.property.PropertyDouble');">double</a></li>
+	                <li><a href="javascript:$('#modalEditProperty #pType').val('org.ff4j.property.PropertyDate');">date</a></li>
+	                <li><a href="javascript:$('#modalEditProperty #pType').val('org.ff4j.property.PropertyCalendar');">calendar</a></li>
+	                <li><a href="javascript:$('#modalEditProperty #pType').val('org.ff4j.property.PropertyLogLevel');">loglevel</a></li>
+	                <li><a href="javascript:$('#modalEditProperty #pType').val('type_your_className');">other</a></li>
+	            </ul>
+	        </div>
+	   </div>
     </div>
 
     <!-- Value --> 
-    <div class="control-group">  
+    <div class="control-group" >  
       <label class="control-label" for="pValue" style="color:#19599A;font-style:normal">Value</label>  
-      <div class="controls">
-       <input type="text" name="pValue" id="pValue" style="width:250px;height:30px;" />  
-      </div>
+      <div class="controls" id="div-value-property" ></div>
     </div>
-    <!-- Value --> 
-    <div class="control-group">  
-      <label class="control-label" for="values" style="color:#19599A;font-style:normal">multivalue</label>  
-      <div class="controls">
-       <input type="text" name="values" id="values" style="width:250px;height:30px;" />  
-      </div>
-    </div>
-    
-    <!-- Value --> 
-    <div class="control-group">  
-      <label class="control-label" for="pValue" style="color:#19599A;font-style:normal">Multivalue</label>  
-      <div class="controls">
-       <input type="checkbox" name="multi" id="multi" style="width:250px;height:30px;" />  
-      </div>
-    </div>
-    
+       
     <!-- Value --> 
     <div class="control-group">  
       <label class="control-label" for="pValue" style="color:#19599A;font-style:normal">FixedValue</label>  
       <div class="controls">
-       <input type="text" name="pValue" id="pValue" style="width:250px;height:30px;" />  
+      <table class="table table-striped table-bordered">
+	     <thead>
+	      <tr style="">
+	       <th style="width:20%;text-align:center;background-color:#19599A;color:white"><b>Value</th>
+	       <th style="width:20%;text-align:center;background-color:#19599A;color:white"><b>Edit</th>
+	      </tr>
+	    </thead>
+	    <tbody id="modalEditPropertyFixedValues">
+	    </tbody>
+	    </table>
       </div>
     </div>
+    
+   </div>
 
    <div class="modal-footer">
       <button class="btn btn" data-dismiss="modal"><i class="icon-remove" ></i>&nbsp;Cancel</button>
@@ -598,28 +609,53 @@
 
  	<script type="text/javascript" >
       $(document).on("click", ".open-EditPropertyDialog", function () {
-    	$.get($(location).attr('href') + '?op=readProperty&uid=' + $(this).data('pname'),
+    	$.get(ff4j_getPathFromUrl($(location).attr('href')) + '?op=readProperty&uid=' + $(this).data('pname'),
                 function(myProperty) { 
     				  // Read Json Expression for property
+    				 $("#modalEditProperty #uid").val(myProperty.name);
         			 $("#modalEditProperty #name").val(myProperty.name);
         			 $("#modalEditProperty #desc").val(myProperty.description);
-        			 console.log(myProperty.description);
         			 $("#modalEditProperty #pType").val(myProperty.type);
-        			 
-        			 // If fixedValue are not empty create a SelectBOX
-        			 // Otherwise create a simple form with the value
-        			 
-        			 $("#modalEditProperty #pValue").val(myProperty.value);
-        			 
-        			 // Fill Target Fields
+        			 $("#modalEditPropertyFixedValues").html('');
+        			         			 
+        			 if (myProperty.fixedValues) {
+        				var htmlForValues = '<div class="btn-group">';
+        				htmlForValues+= '<input type="text" name="pValue" id="pValue" style="width:250px;height:30px;font-style:normal" value="'+ myProperty.value +'" readonly="readonly">';
+        				htmlForValues+= '<button type="button" class="btn btn-blue dropdown-toggle" data-toggle="dropdown">'
+        					htmlForValues+= '<span class="caret"></span>';
+        					htmlForValues+= '<span class="sr-only"><i class="icon-cog icon-white" ></i></span>';
+        					htmlForValues+= '</button>';
+        					htmlForValues+= '<ul class="dropdown-menu" role="menu" style="width:250px;">';
+        				    
+        				var htmlForFixedValueList = '';
+        				for (fixed in myProperty.fixedValues) {
+        					htmlForFixedValueList+= '<tr><td>' + myProperty.fixedValues[fixed] + '</td><td>';
+        					htmlForFixedValueList+= '<a href="' + ff4j_getPathFromUrl($(location).attr('href')) + '?op=deleteFixedValue';
+        					htmlForFixedValueList+= '&uid=' + myProperty.name;
+        					htmlForFixedValueList+= '&fixedValue=' + myProperty.fixedValues[fixed] + '" style="width:6px;" class="btn"><i class="icon-trash" style="margin-left:-5px;"></i></a></td></tr>';
+        					
+        					htmlForValues+= '<li><a href="javascript:$(\'#modalEditProperty #pValue\').val(\'' + myProperty.fixedValues[fixed] + '\');">' + myProperty.fixedValues[fixed] + '</a></li>';
+        				}
+        				htmlForValues+= '</ul></div> </div>';
+        			 	$("#div-value-property").html(htmlForValues);
+        			 	
+        			 	
+        			 	htmlForFixedValueList+= '<tr><td><input type="text" name="newValue" id="newValue" style="width:250px;height:30px;"/></td>';
+        			 	htmlForFixedValueList+= '    <td><a href="javascript:void(0)" onclick="createFixedValue()" style="width:6px;" class="btn"><i class="icon-plus" style="margin-left:-5px;"></i></a></td></tr>';
+        			 	$("#modalEditPropertyFixedValues").html(htmlForFixedValueList);
+        			 	
+    				 } else {
+    					 var htmlForValue = '<input type="text" name="pValue" id="pValue" style="width:250px;height:30px;" value="';
+    					 htmlForValue+= myProperty.value;
+    					 htmlForValue+= '" required/>';
+    					 $("#div-value-property").html(htmlForValue);
+    				 }
                  });
       });
       </script> 
         
     </script>
   </div>
-  
-  
   
 </form>
 
@@ -640,15 +676,22 @@
     }
   }
  
+ function createFixedValue() {
+	 alert($.get("#newValue").text());
+ }
+ 
  // Keyboard shortcuts
  $(window).keydown(function(e) {
 	// Enable keypress detection only if not in input element
 	if ($(e.target).closest("input")[0]) {
        return;
-   }
+    }
+	if ($(e.target).closest("textarea")[0]) {
+	       return;
+	}
 	switch (e.keyCode) {
 		case 69: // e
-			window.location=$(location).attr('href') + '?op=export';
+			window.location= ff4j_getPathFromUrl($(location).attr('href')) + '?op=export';
 		return;
 		case 70: // f
 			$('#modalCreate').modal('show');	
@@ -666,8 +709,6 @@
 });
 
 </script>
-
-
 
 </body>
 </html>

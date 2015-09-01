@@ -26,8 +26,8 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +38,8 @@ import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FlippingStrategy;
+import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.PropertyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,10 +123,49 @@ public class ConsoleOperations implements ConsoleConstants {
         }
     }
     
+    /**
+     * Sample Element should be updated like name, description, value
+     * @param ff4j
+     * @param req
+     */
     public static void updateProperty(FF4j ff4j, HttpServletRequest req) {
-        //final String featureId = req.getParameter(FEATID);
+        String name         = req.getParameter("name");
+        String type         = req.getParameter("pType");
+        String description  = req.getParameter("desc");
+        String value        = req.getParameter("pValue");
+        String uid          = req.getParameter("uid");
         
+        AbstractProperty<?> ap = null;
+        if (ff4j.getPropertiesStore().exist(uid)) {
+            // Do not change name, just and update
+            if (uid.equalsIgnoreCase(name)) {
+                ap = ff4j.getPropertiesStore().read(uid);
+                // just an update for the value
+                if (ap.getType().equalsIgnoreCase(type)) {
+                    ap.setDescription(description);
+                    ap.setValueFromString(value);
+                    ff4j.getPropertiesStore().update(ap);
+                } else {
+                    ap = PropertyFactory.createProperty(name, type, value);
+                    ap.setDescription(description);
+                    // Note : Fixed Values are LOST if type changed => cannot cast ? to T
+                    LOGGER.warn("By changing property type you loose the fixedValues, cannot evaluate ? at runtime");
+                    ff4j.getPropertiesStore().delete(name);
+                    ff4j.getPropertiesStore().create(ap);
+                }
+                
+            } else {
+                // Name change delete and create a new
+                ap = PropertyFactory.createProperty(name, type, value);
+                ap.setDescription(description);
+                // Note : Fixed Values are LOST if name changed => cannot cast ? to T
+                LOGGER.warn("By changing property name you loose the fixedValues, cannot evaluate ? at runtime");
+                ff4j.getPropertiesStore().delete(uid);
+                ff4j.getPropertiesStore().create(ap);
+            }
+        }
     }
+    
     
     public static void createProperty(FF4j ff4j, HttpServletRequest req) {
         //final String featureId = req.getParameter(FEATID);

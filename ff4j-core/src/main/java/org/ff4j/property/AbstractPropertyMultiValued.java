@@ -22,13 +22,53 @@ public abstract class AbstractPropertyMultiValued < T, C extends Collection< T>>
     /** required if should be splip. */
     public String separator = ",";
     
+    /**
+     * Default constructor.
+     */
+    public AbstractPropertyMultiValued() {
+    }
+    
+    /**
+     * Constructor by property name.
+     *
+     * @param name
+     *      property name
+     */
+    public AbstractPropertyMultiValued(String name) {
+        super(name);
+    }
+    
+    /**
+     * Constructor by string expression.
+     *
+     * @param uid
+     *      unique name
+     * @param lvl
+     *      current double value
+     */
+    @SuppressWarnings("unchecked")
+    public AbstractPropertyMultiValued(String uid, C value) {
+       super(uid, value);
+    }
+    
+    /**
+     * Constructor by string expression.
+     *
+     * @param uid
+     *      unique name
+     * @param lvl
+     *      current double value
+     */
+    public AbstractPropertyMultiValued(String uid, String value) {
+       super(uid, value);
+    }
+    
     /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     @Override
     public C fromString(String v) {
         if (v == null) return null;
-        // Caution, separator should not be escaped charaters like ., ? 
-        String[] items = v.split(separator);
+        String[] items = v.split(getSeparator());
         return (C) Arrays.asList(items);
     }
     
@@ -49,6 +89,9 @@ public abstract class AbstractPropertyMultiValued < T, C extends Collection< T>>
      *       current value of 'separator'
      */
     public String getSeparator() {
+        if (null == separator) {
+            separator = ",";
+        }
         return separator;
     }
 

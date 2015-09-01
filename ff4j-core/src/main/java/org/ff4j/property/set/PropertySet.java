@@ -1,7 +1,9 @@
-package org.ff4j.property;
+package org.ff4j.property.set;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import org.ff4j.property.AbstractPropertyMultiValued;
 
 /**
  * SuperClass for property as lists.
@@ -11,7 +13,7 @@ import java.util.Set;
  * @param <T>
  *      current type
  */
-public class AbstractPropertySet < T > extends AbstractPropertyMultiValued< T, Set <T>>{
+public class PropertySet < T > extends AbstractPropertyMultiValued< T, Set <T>> implements Set < T >{
 
     /** Serial. */
     private static final long serialVersionUID = 4064427839404299895L;
