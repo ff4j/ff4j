@@ -95,8 +95,6 @@
 		<!-- STORES -->
 		<version.hdldb>2.3.2</version.hdldb>
 		<version.ehcache>2.6.6</version.ehcache>
-		<version.mongo.javadriver>2.12.2</version.mongo.javadriver>
-		<version.fongo>1.6.2</version.fongo>
 		<!-- redis -->
 		<version.jedis>2.5.1</version.jedis>
 		<version.neo4j>2.1.6</version.neo4j>
@@ -277,16 +275,7 @@
 				<artifactId>commons-dbcp</artifactId>
 				<version>${version.commons-dbcp}</version>
 			</dependency>
-			<dependency>
-				<groupId>org.mongodb</groupId>
-				<artifactId>mongo-java-driver</artifactId>
-				<version>${version.mongo.javadriver}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.github.fakemongo</groupId>
-				<artifactId>fongo</artifactId>
-				<version>${version.fongo}</version>
-			</dependency>
+			
 			<dependency>
 				<groupId>org.mockito</groupId>
 				<artifactId>mockito-all</artifactId>
