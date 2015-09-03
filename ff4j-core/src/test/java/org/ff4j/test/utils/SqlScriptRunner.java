@@ -72,7 +72,7 @@ public class SqlScriptRunner {
     
     private boolean fullLineDelimiter = false;
 
-    private PrintWriter logWriter = new PrintWriter(System.out);
+    private PrintWriter logWriter;// = new PrintWriter(System.out);
     
     private PrintWriter errorLogWriter = new PrintWriter(System.err);
 

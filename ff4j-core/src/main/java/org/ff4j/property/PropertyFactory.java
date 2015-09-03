@@ -50,10 +50,6 @@ public class PropertyFactory {
             throw new IllegalArgumentException("Type (param#1) is expected to create property");
 
         AbstractProperty<?> ap = new Property(pName, pValue);
-        System.out.println("NAME=" + pName);
-        System.out.println("TYPE=" + pType);
-        System.out.println("VALUE=" + pValue);
-
         try {
             // Construction by dedicated constructor with introspection
             Constructor<?> constr = Class.forName(pType).getConstructor(String.class, String.class);

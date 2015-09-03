@@ -197,7 +197,6 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebCon
         if (uid == null || uid.isEmpty()) {
             throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
         }
-        System.out.println(uid);
         ClientResponse cRes = getStore().path(uid).path(OPERATION_DISABLE).post(ClientResponse.class);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new FeatureNotFoundException(uid);

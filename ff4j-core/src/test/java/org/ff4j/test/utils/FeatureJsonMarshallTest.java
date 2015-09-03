@@ -96,7 +96,6 @@ public class FeatureJsonMarshallTest implements TestConstantsFF4j {
     throws Exception {
         // When-Then
         Feature f = new FF4j("test-strategy-officehour.xml").getFeature("first");
-        System.out.println(f.toJson());
         assertMarshalling(f);
     }
     

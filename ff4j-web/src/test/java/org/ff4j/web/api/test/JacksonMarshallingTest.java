@@ -42,7 +42,7 @@ public class JacksonMarshallingTest {
     @Test
     public void testMarshall() throws JsonGenerationException, JsonMappingException, IOException {
         FF4jStatusApiBean fsab = new FF4jStatusApiBean();
-        System.out.println(mapper.writeValueAsString(fsab));
+        mapper.writeValueAsString(fsab);
     }
 
 }

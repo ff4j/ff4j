@@ -1,5 +1,7 @@
 package org.ff4j.web.api.test;
 
+import org.junit.Assert;
+
 /*
  * #%L
  * ff4j-web
@@ -24,6 +26,7 @@ import org.junit.Test;
 
 import com.sun.jersey.core.util.Base64;
 
+
 /**
  * Encoder to test basic authentication.
  *
@@ -33,10 +36,13 @@ public class Base64EncodingTest {
 
     @Test
     public void testProduceHTTBasicHeader() {
-        String username = "cedrick.lunven@softwareag.com";
-        String password = "manage";
-
-        System.out.println("Authorization: Basic " + new String(Base64.encode(username + ":" + password)));
+        // Given
+        String username = "login";
+        String password = "pwd";
+        // When
+        String base64 = new String(Base64.encode(username + ":" + password));
+        // Then
+        Assert.assertEquals("bG9naW46cHdk", base64);  
     }
 
 }

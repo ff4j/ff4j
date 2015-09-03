@@ -170,8 +170,6 @@ public class FeatureXmlParserTest {
         // Then
         Map < String, AbstractProperty<?>> properties = conf.getProperties();
         Assert.assertNotNull(properties);
-        System.out.println(properties);
-        
     }
     
     @Test

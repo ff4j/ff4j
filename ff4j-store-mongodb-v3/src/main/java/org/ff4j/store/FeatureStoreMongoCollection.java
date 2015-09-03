@@ -31,7 +31,7 @@ import org.ff4j.store.mongodb.FeatureStoreMongoConstants;
  * Implementation of {@link FeatureStore} to work with MongoDB.
  * 
  * @author William Delanoue (@twillouer) </a>
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)</a>
  */
 public class FeatureStoreMongoCollection extends AbstractFeatureStore implements FeatureStoreMongoConstants {
 

@@ -72,7 +72,6 @@ public class EventWorker implements Callable<Boolean> {
             if (!ok) {
                 retryCount++;
                 Thread.sleep(RETRY_DELAY);
-                System.out.println("Retrying (" + retryCount + " time) ");
             }
         }
         return ok;

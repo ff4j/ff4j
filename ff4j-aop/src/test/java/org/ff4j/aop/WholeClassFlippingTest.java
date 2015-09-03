@@ -51,7 +51,6 @@ public class WholeClassFlippingTest {
         // when
         ff4j.enable("language-french");
         // Then
-        System.out.println(wholeClassFlipping.hello1());
         Assert.assertTrue(wholeClassFlipping.hello1().startsWith("Francais"));
         Assert.assertTrue(wholeClassFlipping.hello2().startsWith("Tour"));
         

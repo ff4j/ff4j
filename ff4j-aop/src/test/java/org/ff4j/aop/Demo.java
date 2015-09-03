@@ -1,5 +1,8 @@
 package org.ff4j.aop;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /*
  * #%L
  * ff4j-aop
@@ -24,17 +27,20 @@ import org.springframework.stereotype.Component;
 
 public class Demo {
     
+    /** Information relative to logging. */
+    private static Logger logger = LoggerFactory.getLogger(Demo.class);
+    
     @Flip(name = "myFeature", alterBean = "fr")
     public interface Greeting { void sayHello(); }
     
     @Component("fr")
     private static class HelloFR implements Greeting {
-        public void sayHello() { System.out.println("Bonjour"); }
+        public void sayHello() { logger.info("Bonjour"); }
     }
     
     @Component("en")
     private static class HelloEN implements Greeting {
-        public void sayHello() { System.out.println("Hello"); }
+        public void sayHello() { logger.info("Hello"); }
     }
 
 }

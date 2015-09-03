@@ -154,7 +154,6 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
         Assert.assertEquals("Expected status is 400", Status.BAD_REQUEST.getStatusCode(), resHttp.getStatus());
         Assert.assertNotNull(resEntity);
         Assert.assertTrue(resEntity.contains("Invalid parameter"));
-        System.out.println(resEntity);
     }
 
     /**

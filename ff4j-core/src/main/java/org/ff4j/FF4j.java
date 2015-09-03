@@ -69,6 +69,9 @@ public class FF4j {
 
     /** Do not through {@link FeatureNotFoundException} exception and but feature is required. */
     private boolean autocreate = false;
+    
+    /** Capture informations relative to audit. */
+    private boolean enableAudit = false;
 
     /** Intialisation. */
     private final long startTime = System.currentTimeMillis();
@@ -88,13 +91,12 @@ public class FF4j {
     /** Repository for audit event. */
     private EventRepository eventRepository = new InMemoryEventRepository();
 
-    /** Event Publisher. */
+    /** Event Publisher (threadpool, executor) to send data into {@link EventRepository} */
     private EventPublisher eventPublisher = null;
     
+    /** Hold flipping execution context as Thread-safe data. */
     private ThreadLocal<FlippingExecutionContext> currentExecutionContext = new ThreadLocal<FlippingExecutionContext>();
-
-    public void setFileName(String f) {}
-
+   
     /**
      * Default constructor to allows instantiation through IoC. The created store is an empty {@link InMemoryFeatureStore}.
      */
@@ -152,7 +154,9 @@ public class FF4j {
         if (flipped && fp.getFlippingStrategy() != null) {
             flipped = flipped && fp.getFlippingStrategy().evaluate(featureID, getFeatureStore(), executionContext);
         }
-
+        // Update current context
+        currentExecutionContext.set(executionContext);
+        
         // Any access is logged into audit system
         getEventPublisher().publish(featureID, flipped);
 
@@ -169,7 +173,7 @@ public class FF4j {
      * @return
      */
     public boolean checkOveridingStrategy(String featureID, FlippingStrategy strats) {
-        return checkOveridingStrategy(featureID, strats, null);
+        return checkOveridingStrategy(featureID, strats, currentExecutionContext.get());
     }
 
     /**
@@ -617,4 +621,30 @@ public class FF4j {
     public void removeCurrentContext() {
         this.currentExecutionContext.remove();
     }
+
+    /**
+     * Getter accessor for attribute 'enableAudit'.
+     *
+     * @return
+     *       current value of 'enableAudit'
+     */
+    public boolean isEnableAudit() {
+        return enableAudit;
+    }
+
+    /**
+     * Setter accessor for attribute 'enableAudit'.
+     * @param enableAudit
+     * 		new value for 'enableAudit '
+     */
+    public void setEnableAudit(boolean enableAudit) {
+        this.enableAudit = enableAudit;
+    }
+    
+    /**
+     * Required for spring namespace and 'fileName' attribut on ff4j tag.
+     * @param fname
+     *      target name
+     */
+    public void setFileName(String fname) { }
 }
