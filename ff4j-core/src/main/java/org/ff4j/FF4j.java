@@ -94,6 +94,8 @@ public class FF4j {
     /** Event Publisher (threadpool, executor) to send data into {@link EventRepository} */
     private EventPublisher eventPublisher = null;
     
+    private volatile boolean shutdownEventPublisher;
+
     /** Hold flipping execution context as Thread-safe data. */
     private ThreadLocal<FlippingExecutionContext> currentExecutionContext = new ThreadLocal<FlippingExecutionContext>();
    
@@ -555,8 +557,10 @@ public class FF4j {
      * @return current value of 'eventPublisher'
      */
     public EventPublisher getEventPublisher() {
+        // TODO: this is not thread-safe
         if (eventPublisher == null) {
             eventPublisher = new EventPublisher(eventRepository);
+            this.shutdownEventPublisher = true;
         }
         return eventPublisher;
     }
@@ -647,4 +651,14 @@ public class FF4j {
      *      target name
      */
     public void setFileName(String fname) { }
+
+    /**
+     * Shuts down the event publisher if we actually started it (As opposed to
+     * having it dependency-injected).
+     */
+    public void stop() {
+        if (this.eventPublisher != null && this.shutdownEventPublisher) {
+            this.eventPublisher.stop();
+        }
+    }
 }
