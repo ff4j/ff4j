@@ -58,6 +58,8 @@ public class EventPublisher {
     /** the amount of time to wait after submitting for the task to complete. */
     private final long submitTimeout;
 
+    private final boolean shutdownExecutor;
+
     /**
      * Default constructor.
      */
@@ -128,6 +130,7 @@ public class EventPublisher {
         repository = er;
 
         this.submitTimeout = submitTimeout;
+        this.shutdownExecutor = true;
     }
 
     /**
@@ -147,6 +150,7 @@ public class EventPublisher {
         repository = er;
         executor = executorService;
         this.submitTimeout = submitTimeout;
+        this.shutdownExecutor = false;
     }
 
     /**
@@ -180,7 +184,7 @@ public class EventPublisher {
     }
 
     /**
-     * Paramterized constructor.
+     * Parameterized constructor.
      * 
      * @param featureName
      *            target feature name
@@ -193,6 +197,18 @@ public class EventPublisher {
             evt.setType(EventType.FEATURE_CHECK_OFF);
         }
         publish(evt);
+    }
+
+    /**
+     * Stops the event publisher. If we started an executor service, it will
+     * be shutdown here.
+     */
+    public void stop() {
+        if (!this.shutdownExecutor) {
+            return;
+        }
+
+        this.executor.shutdownNow();
     }
 
     /**
