@@ -11,10 +11,13 @@ package org.ff4j.test.store;
  * governing permissions and limitations under the License. #L%
  */
 
+import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.FeatureStoreSpringJDBC;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -58,6 +61,15 @@ public class SpringJdbcEmbedDataSourceStoreTest extends AbstractStoreJUnitTest {
     @After
     public void tearDown() throws Exception {
         db.shutdown();
+    }
+
+    /**
+     * TDD.
+     */
+    @Test
+    public void testReadCustomProperties() {
+        Feature f = testedStore.read(F1);
+        Assert.assertNotNull(f.getCustomProperties().get(CUSTOM_PROPERTY));
     }
 
 }

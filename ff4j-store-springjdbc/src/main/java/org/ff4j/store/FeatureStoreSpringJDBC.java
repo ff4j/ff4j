@@ -24,6 +24,8 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
+import org.ff4j.property.AbstractProperty;
+import org.ff4j.store.rowmapper.CustomPropertyRowMapper;
 import org.ff4j.store.rowmapper.FeatureRowMapper;
 import org.ff4j.store.rowmapper.RoleRowMapper;
 import org.ff4j.utils.ParameterUtils;
@@ -43,6 +45,9 @@ public class FeatureStoreSpringJDBC extends AbstractFeatureStore implements Jdbc
 
     /** Row Mapper for FlipPoint. */
     private static final FeatureRowMapper MAPPER = new FeatureRowMapper();
+
+    /** Mapper for custom properties. */
+    private static final CustomPropertyRowMapper JDBC_PROPERTY_MAPPER = new CustomPropertyRowMapper();
 
     /** SQL DataSource. */
     private DataSource dataSource;
@@ -95,6 +100,11 @@ public class FeatureStoreSpringJDBC extends AbstractFeatureStore implements Jdbc
             throw new FeatureNotFoundException(uid);
         }
         Feature fp = dbFlips.get(0);
+
+        List<AbstractProperty<?>> customProperties = getJdbcTemplate().query(SQL_GET_CUSTOMPROPERTIES_BYFEATUREID, JDBC_PROPERTY_MAPPER, uid);
+        for (AbstractProperty<?> ap : customProperties) {
+            fp.getCustomProperties().put(ap.getName(), ap);
+        }
         List<String> auths = getJdbcTemplate().query(SQL_GET_ROLES, new SingleColumnRowMapper<String>(), uid);
         fp.getPermissions().addAll(auths);
         return fp;
@@ -141,6 +151,9 @@ public class FeatureStoreSpringJDBC extends AbstractFeatureStore implements Jdbc
             for (String role : fp.getPermissions()) {
                 getJdbcTemplate().update(SQL_DELETE_ROLE, fp.getUid(), role);
             }
+        }
+        if (fp.getCustomProperties() != null) {
+            getJdbcTemplate().update(SQL_DELETE_CUSTOMPROPERTIES, fp.getUid());
         }
         getJdbcTemplate().update(SQL_DELETE, fp.getUid());
     }
