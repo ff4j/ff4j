@@ -10,7 +10,7 @@ package org.ff4j.test;
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -41,9 +41,12 @@ public interface TestsFf4jConstants {
 
     /** Feature Name. */
     String F4 = "forth";
-    
+
     /** Feature Name. */
     String AWESOME = "AwesomeFeature";
+
+    /** Custom property name. */
+    String CUSTOM_PROPERTY = "KEY-1";
 
     /** Group Name. */
     String G0 = "GRP0";
@@ -59,7 +62,7 @@ public interface TestsFf4jConstants {
 
     /** Feature Name. */
     String FEATURE_NEW = "new";
-    
+
     /** Feature Name. */
     String FEATURE_X = "x";
 
