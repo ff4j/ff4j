@@ -32,14 +32,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:applicationContext-ff4j-aop-test.xml")
-public class WholeClassFlippingTest {
+public class FlippingServiceTest {
 
     @Autowired
     private FF4j ff4j;
 
     @Autowired
-    @Qualifier("whole.english")
-    private WholeClassFlipping wholeClassFlipping;
+    @Qualifier("whole.english.service")
+    private FlippingServiceStereotype service;
 
     /**
      * TDD
@@ -47,13 +47,13 @@ public class WholeClassFlippingTest {
     @Test
     public void testAOPClass() {
         // Given english mode
-        Assert.assertTrue(wholeClassFlipping.hello1().startsWith("Hello"));
-        Assert.assertTrue(wholeClassFlipping.hello2().startsWith("Big"));
+        Assert.assertTrue(service.hello1().startsWith("Hello"));
+        Assert.assertTrue(service.hello2().startsWith("Big"));
         // when
         ff4j.enable("language-french");
         // Then
-        Assert.assertTrue(wholeClassFlipping.hello1().startsWith("Francais"));
-        Assert.assertTrue(wholeClassFlipping.hello2().startsWith("Tour"));
+        Assert.assertTrue(service.hello1().startsWith("Francais"));
+        Assert.assertTrue(service.hello2().startsWith("Tour"));
 
     }
 

@@ -35,6 +35,8 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 /**
  * When Proxified, analyze bean to eventually invoke ANOTHER implementation (flip up).
@@ -216,8 +218,8 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
     private boolean shouldCallAlterBeanMethod(final MethodInvocation pMInvoc, String alterBean, Logger logger) {
         boolean callAlterBeanMethod = false;
         Method method = pMInvoc.getMethod();
-        Component component = pMInvoc.getThis().getClass().getAnnotation(Component.class);
-        String currentBeanName = component.value();
+
+        String currentBeanName = currentBeanName(pMInvoc);
         if (alterBean != null && !alterBean.isEmpty()) {
             if (alterBean.equals(currentBeanName)) {
                 logger.debug("FeatureFlipping on method:{} class:{} already on the alterBean {}", method.getName(), method
@@ -232,6 +234,26 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
             }
         }
         return callAlterBeanMethod;
+    }
+
+    private String currentBeanName(MethodInvocation pMInvoc) {
+        Class<?> targetClass = (pMInvoc.getThis() != null ? AopUtils.getTargetClass(pMInvoc.getThis()) : null);       
+        if (targetClass == null) {
+            throw new IllegalArgumentException("ff4j-aop: Static methods cannot be feature flipped");
+        }
+        Component component = targetClass.getAnnotation(Component.class);
+        if (component != null) {
+            return component.value();
+        }
+        Service service = targetClass.getAnnotation(Service.class);
+        if (service != null) {
+            return service.value();
+        }
+        Repository repo = targetClass.getAnnotation(Repository.class);
+        if (repo != null) {
+            return repo.value();
+        }
+        throw new IllegalArgumentException("ff4j-aop: Feature bean must be annotated as a Service or a Component");
     }
 
     private Object callAlterBeanMethod(final MethodInvocation pMInvoc, String alterBean, Logger targetLogger) {
