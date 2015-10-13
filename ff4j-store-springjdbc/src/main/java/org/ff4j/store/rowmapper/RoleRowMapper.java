@@ -28,14 +28,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.ff4j.store.JdbcStoreConstants;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 
 /**
  * Implementation of JDBC store using Spring JDBC.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class RoleRowMapper implements ParameterizedRowMapper<Integer>, JdbcStoreConstants {
+public class RoleRowMapper implements RowMapper<Integer>, JdbcStoreConstants {
 
     /** Default Row Mapper to get groups. */
     private final Map<String, Set<String>> roles = new HashMap<String, Set<String>>();

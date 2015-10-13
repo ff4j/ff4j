@@ -28,14 +28,14 @@ import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.store.JdbcStoreConstants;
 import org.ff4j.utils.ParameterUtils;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 
 /**
  * Mapper to convert result into
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureRowMapper implements ParameterizedRowMapper<Feature>, JdbcStoreConstants {
+public class FeatureRowMapper implements RowMapper<Feature>, JdbcStoreConstants {
 
     /** {@inheritDoc} */
     @Override
