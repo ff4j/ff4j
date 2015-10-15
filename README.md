@@ -28,7 +28,7 @@ _This document is currently in progress and is changed very often_
 <a id="hello-world" name="hello-world"/>
 ### 1 - Hello world
 
-In this part we guide you to create a working example from scratch
+In this part, we guide you to create a working example from scratch
 
 * Create a empty maven project
 
@@ -46,7 +46,7 @@ mvn archetype:create -Dpackaging=jar -Dversion=1.0 -DartifactId=ff4j-simple -Dgr
 </dependency>
 ```
 
-* Create the following `ff4j.xml` file in 'src/test/resources' folder (create it does not exist)
+* Create the following `ff4j.xml` file in 'src/test/resources' folder (create it if does not exist)
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -146,7 +146,7 @@ Note : You can use a fluent api and chain operations to work with features
 <a name="spring"/>
 ### 2 - Integration with Spring Framework
 
-<p/> The `ff4j` component can be (of course) defined as a Spring Bean.
+<p/> The `ff4j` component can (of course) be defined as a Spring Bean.
 
 * Add Spring dependencies to your project
 
@@ -224,7 +224,7 @@ public class CoreSpringTest {
 <a name="aop"/>
 ### 3 - Feature Flipping through AOP
 
-From the beginning of this guide, we use intrusive tests statements within source code to perform flipping :
+Since the beginning of this guide, we have been using intrusive test statements within source code to perform flipping :
 
 ```java
 if (FF4j.check("feat")) {
@@ -234,7 +234,7 @@ if (FF4j.check("feat")) {
 }
 ```
 
-<p/>This approach is quite intrusive into source code. You can even nested different feature toggles at you may consider to clean often your code and remove obsolete features. A good alternative is to rely on [Dependency Injection](http://en.wikipedia.org/wiki/Dependency_Injection) : target implementation of the service is injected at runtime.
+<p/>This approach is quite intrusive into source code. You can even nest different feature toggles that you may consider to clean often your code and remove obsolete features. A good alternative is to rely on [Dependency Injection](http://en.wikipedia.org/wiki/Dependency_Injection) : target implementation of the service is injected at runtime.
 
 <p/>Ff4j provide the `@Flip` annotation to perform flipping on methods using AOP proxies. At runtime, the target service is proxified by the ff4j which choose an implementation instead of another using feature status (enable/disable).
 
@@ -350,9 +350,9 @@ public class FeatureFlippingThoughAopTest {
 }
 ```
 
-In the previous test class, I injected the default implementation `@Qualifier("greeting.english")`. If the feature is not enabled, it's the `GreetingServiceEnglishImpl` class that will be executed. If I enable the feature `language-french` _(defined in the annotation)_, the alter-bean `language-french` will be fetch and executed.
+In the previous test class, I injected the default implementation `@Qualifier("greeting.english")`. If the feature is not enabled, it's the `GreetingServiceEnglishImpl` class that will be executed. If I enable the feature `language-french` _(defined in the annotation)_, the alter-bean `language-french` will be fetched and executed.
 
-_Note : the bean <b>id</b> are required and must be specified with the `@Qualifier` annotation. They are several implementation of the same interface in your classpath and the `@Autowired` annotation is not sufficient_
+_Note : the bean <b>id</b> is required and must be specified with the `@Qualifier` annotation. They are several implementations of the same interface in your classpath and the `@Autowired` annotation is not sufficient_
 
 
 
@@ -364,16 +364,16 @@ INSERT INTO FF4J_ROLES(FEAT_UID, ROLE_NAME)  VALUES('third', 'X');
 INSERT INTO FF4J_ROLES(FEAT_UID, ROLE_NAME)  VALUES('third', 'Y');
 ```
 
-* Let's define the FF4j bean with Spring context this time. Here the applicationContext file :
+* Let's define the FF4j bean with Spring context this time. Here is the applicationContext file :
 
 <a name="store-jdbc"/>
 ### 4 - Externalise features in a JDBC Store
 
 When working with `InMemoryFeatureStore`, features are loaded from XML files. The features can be updated at runtime (create/remove/delete) but <b>when the application restarts all changes are lost.</b>
 
-<p/>With real life applications you would expect to keep the states of your feature when the application restarts. To do so, we provide another implementations of `FeatureStore` like `DataBaseFeatureStore` to store Features into database.
+<p/>With real life applications you would expect to keep the states of your features when the application restarts. To do so, we are providing other implementations of `FeatureStore` like `DataBaseFeatureStore` to store Features into database.
 
-* In this sample we rely on Spring-JDBC so please add the dependency jdbc to your project.
+* In this sample we rely on Spring-JDBC so please add the `jdbc` dependency to your project.
 
 ```xml
 <dependency>
@@ -383,7 +383,7 @@ When working with `InMemoryFeatureStore`, features are loaded from XML files. Th
 </dependency>
 ```
 
-* ff4j provides you `schema-ddl.sql` to create expected tables within target database :
+* ff4j provides you with `schema-ddl.sql` to create the expected tables within the target database :
 ```sql
 -- Main Table to store Features
 CREATE TABLE FF4J_FEATURES (
@@ -431,7 +431,7 @@ INSERT INTO FF4J_ROLES(FEAT_UID, ROLE_NAME)  VALUES('forth', 'BETA-TESTER');
 
 ```
 
-* To run the test i will use the [Spring3 embedded dataBase] (http://static.springsource.org/spring/docs/3.0.0.M4/reference/html/ch12s08.html). The spring XML context file becomes :
+* To run the test, I will use the [Spring3 embedded dataBase] (http://static.springsource.org/spring/docs/3.0.0.M4/reference/html/ch12s08.html). The spring XML context file becomes :
 
 ```xml
 <!-- [...] -->
@@ -447,7 +447,7 @@ INSERT INTO FF4J_ROLES(FEAT_UID, ROLE_NAME)  VALUES('forth', 'BETA-TESTER');
 
 From external stores such as JDBC Database, you can <b>export features as xml file</b>. 
 
-<p/>It could be very useful to realize deliveries from an environment to another. To realize such export please do 
+<p/>It could be very useful to perform deliveries from an environment to another. To realize such export please do 
 
 ```java
 InputStream data = FF4j.exportFeatures();
