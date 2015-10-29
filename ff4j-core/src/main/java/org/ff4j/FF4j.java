@@ -160,7 +160,9 @@ public class FF4j {
         currentExecutionContext.set(executionContext);
         
         // Any access is logged into audit system
-        getEventPublisher().publish(featureID, flipped);
+        if (isEnableAudit()) {
+            getEventPublisher().publish(featureID, flipped);
+        }
 
         return flipped;
     }
@@ -195,8 +197,9 @@ public class FF4j {
         }
 
         // Any modification done is logged into audit system
-        getEventPublisher().publish(featureID, flipped);
-
+        if (isEnableAudit()) {            
+            getEventPublisher().publish(featureID, flipped);
+        }
         return flipped;
     }
 
@@ -259,7 +262,9 @@ public class FF4j {
             }
             throw fnfe;
         }
-        getEventPublisher().publish(featureID, EventType.ENABLE_FEATURE);
+        if (isEnableAudit()) {            
+            getEventPublisher().publish(featureID, EventType.ENABLE_FEATURE);
+        }
         return this;
     }
 
@@ -272,7 +277,9 @@ public class FF4j {
      */
     public FF4j enableGroup(String groupName) {
         getFeatureStore().enableGroup(groupName);
-        getEventPublisher().publish(groupName, EventType.ENABLE_FEATUREGROUP);
+        if (isEnableAudit()) {
+            getEventPublisher().publish(groupName, EventType.ENABLE_FEATUREGROUP);
+        }
         return this;
     }
 
@@ -285,7 +292,9 @@ public class FF4j {
      */
     public FF4j disableGroup(String groupName) {
         getFeatureStore().disableGroup(groupName);
-        getEventPublisher().publish(groupName, EventType.DISABLE_FEATUREGROUP);
+        if (isEnableAudit()) {
+            getEventPublisher().publish(groupName, EventType.DISABLE_FEATUREGROUP);
+        }
         return this;
     }
 
@@ -297,7 +306,9 @@ public class FF4j {
      */
     public FF4j create(Feature fp) {
         getFeatureStore().create(fp);
-        getEventPublisher().publish(fp.getUid(), EventType.CREATE_FEATURE);
+        if (isEnableAudit()) {
+            getEventPublisher().publish(fp.getUid(), EventType.CREATE_FEATURE);
+        }
         return this;
     }
 
@@ -346,7 +357,9 @@ public class FF4j {
             }
             throw fnfe;
         }
-        getEventPublisher().publish(featureID, EventType.DISABLE_FEATURE);
+        if (isEnableAudit()) {
+            getEventPublisher().publish(featureID, EventType.DISABLE_FEATURE);
+        }
         return this;
     }
 
@@ -413,7 +426,9 @@ public class FF4j {
      */
     public FF4j delete(String fpId) {
         getFeatureStore().delete(fpId);
-        getEventPublisher().publish(fpId, EventType.DELETE_FEATURE);
+        if (isEnableAudit()) {
+            getEventPublisher().publish(fpId, EventType.DELETE_FEATURE);
+        }
         return this;
     }
 
@@ -613,6 +628,12 @@ public class FF4j {
         this.pStore = pStore;
     }
 
+    /**
+     * Initialize flipping execution context.
+     *
+     * @return
+     *      get current context
+     */
     public FlippingExecutionContext getCurrentContext() {
         FlippingExecutionContext context = this.currentExecutionContext.get();
         if (context == null) {
@@ -621,7 +642,10 @@ public class FF4j {
         }
         return context;
     }
-
+    
+    /**
+     * Clear context.
+     */
     public void removeCurrentContext() {
         this.currentExecutionContext.remove();
     }

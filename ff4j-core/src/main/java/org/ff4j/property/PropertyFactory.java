@@ -61,7 +61,7 @@ public class PropertyFactory {
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException("Cannot instantiate '" + pType + "' class not found : " + e.getMessage(), e);
         } catch (InvocationTargetException e) {
-            throw new IllegalArgumentException("Cannot instantiate '" + pType + "' error within constructor : " + e.getMessage(), e);
+            throw new IllegalArgumentException("Cannot instantiate '" + pType + "' error within constructor (InvocationTargetException)", e);
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException("Cannot instantiate '" + pType + "' constructor not found :" + e.getMessage(), e);
         } catch (SecurityException e) {

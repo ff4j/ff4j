@@ -159,16 +159,29 @@ public class ConsoleOperations implements ConsoleConstants {
                 ap = PropertyFactory.createProperty(name, type, value);
                 ap.setDescription(description);
                 // Note : Fixed Values are LOST if name changed => cannot cast ? to T
-                LOGGER.warn("By changing property name you loose the fixedValues, cannot evaluate ? at runtime");
+                LOGGER.warn("By changing property name you loose the fixedValues, cannot evaluate generics at runtime (type inference)");
                 ff4j.getPropertiesStore().delete(uid);
                 ff4j.getPropertiesStore().create(ap);
             }
         }
     }
     
-    
+    /**
+     * Create new property in store.
+     *
+     * @param ff4j
+     *      current ff4j instance.
+     * @param req
+     *      current http request
+     */
     public static void createProperty(FF4j ff4j, HttpServletRequest req) {
-        //final String featureId = req.getParameter(FEATID);
+        String name         = req.getParameter("name");
+        String type         = req.getParameter("pType");
+        String description  = req.getParameter("desc");
+        String value        = req.getParameter("pValue");
+        AbstractProperty<?> ap = PropertyFactory.createProperty(name, type, value);
+        ap.setDescription(description);
+        ff4j.getPropertiesStore().create(ap);
     }
 
     /**

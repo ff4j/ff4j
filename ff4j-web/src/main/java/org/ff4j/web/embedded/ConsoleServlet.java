@@ -182,6 +182,23 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                             res.getWriter().println(ap.toString());
                             return;
                         }
+                        
+                        if (OP_DELETE_FIXEDVALUE.equalsIgnoreCase(operation)) {
+                            String fixedValue = req.getParameter(PARAM_FIXEDVALUE);
+                            AbstractProperty<?> ap = getFf4j().getPropertiesStore().read(featureId);
+                            ap.getFixedValues().remove(fixedValue);
+                            getFf4j().getPropertiesStore().update(ap);
+                            return;
+                        }
+                        
+                        if (OP_ADD_FIXEDVALUE.equalsIgnoreCase(operation)) {
+                            String fixedValue = req.getParameter(PARAM_FIXEDVALUE);
+                            AbstractProperty<?> ap = getFf4j().getPropertiesStore().read(featureId);
+                            ap.add2FixedValueFromString(fixedValue);
+                            getFf4j().getPropertiesStore().update(ap);
+                            return;
+                        }
+                        
                     }
                  
                 }
@@ -241,7 +258,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                        
                     } else if (OP_CREATE_PROPERTY.equalsIgnoreCase(operation)) {
                         createProperty(getFf4j(), req);
-                        message = renderMsgProperty(uid, "ADDED");
+                        message = renderMsgProperty(req.getParameter(NAME), "ADDED");
                         
                     } else if (OP_CREATE_FEATURE.equalsIgnoreCase(operation)) {
                         createFeature(getFf4j(), req);

@@ -89,6 +89,12 @@ public interface ConsoleConstants {
     
     /** User operation: remove feature. */
     String OP_READ_PROPERTY = "readProperty";
+    
+    /** remove a value of a listed. */
+    String OP_DELETE_FIXEDVALUE = "deleteFixedValue";
+    
+    /** remove a value of a listed. */
+    String OP_ADD_FIXEDVALUE = "addFixedValue";
 
     /** User operation. */
     String OP_TOGGLE_GROUP = "toggleGroup";
@@ -205,5 +211,8 @@ public interface ConsoleConstants {
 
     /** modal ID. */
     String MODAL_TOGGLE = "modalToggle";
+    
+    /** FixedValue to be remove. */
+    String PARAM_FIXEDVALUE = "fixedValue";
 
 }
