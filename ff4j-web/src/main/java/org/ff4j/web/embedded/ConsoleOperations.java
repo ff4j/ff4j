@@ -194,8 +194,11 @@ public class ConsoleOperations implements ConsoleConstants {
         // uid
         final String featureId = req.getParameter(FEATID);
         if (featureId != null && !featureId.isEmpty()) {
-            Feature fp = new Feature(featureId, false);
-
+            // https://github.com/clun/ff4j/issues/66
+            Feature old = ff4j.getFeatureStore().read(featureId);
+            Feature fp = new Feature(featureId, old.isEnable());
+            // <--
+            
             // Description
             final String featureDesc = req.getParameter(DESCRIPTION);
             if (null != featureDesc && !featureDesc.isEmpty()) {
