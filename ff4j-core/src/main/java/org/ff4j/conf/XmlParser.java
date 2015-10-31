@@ -636,7 +636,10 @@ public final class XmlParser {
                         sb.append("     <" + FLIPSTRATEGY_PARAMTAG + " " + FLIPSTRATEGY_PARAMNAME + "=\"");
                         sb.append(p);
                         sb.append("\" " + FLIPSTRATEGY_PARAMVALUE + "=\"");
-                        sb.append(fs.getInitParams().get(p));
+                        // Escape special characters to build XML
+                        // https://github.com/clun/ff4j/issues/63
+                        String paramValue = fs.getInitParams().get(p);
+                        sb.append(escapeXML(paramValue));
                         sb.append("\" />\n");
                     }
                     sb.append("   </" + FLIPSTRATEGY_TAG + ">\n");
@@ -692,5 +695,14 @@ public final class XmlParser {
         }
         return sb.toString();
     }
+   
+    public String escapeXML(String value) {
+        if (value == null) return null;
+        value = value.replaceAll("&", "&amp;");
+        value = value.replaceAll(">", "&gt;");
+        value = value.replaceAll("<", "&lt;");
+        return value;
+    }
+    
 
 }
