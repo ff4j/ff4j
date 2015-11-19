@@ -14,7 +14,7 @@ FF4J, standing as Feature Flipping for Java, implements the [Feature Toggle](htt
 
 ## Reference Guide
 
-[<img height="40" src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/pdf.png?raw=true" alt="functions"/> Reference Guide 1.2.0.pdf](https://github.com/clun/ff4j-extra/raw/master/ff4j-reference-guide-1.2.0.pdf)
+[<img height="40" src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/pdf.png?raw=true" alt="functions"/> Reference Guide 1.3.pdf](https://github.com/clun/ff4j-extra/raw/master/ff4j-reference-guide-1.3.pdf)
 
 _This document is currently in progress and is changed very often_
 
