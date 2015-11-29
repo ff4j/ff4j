@@ -88,7 +88,7 @@
 		<version.taglib>1.1.2</version.taglib>
 		<version.jsr311>1.1.1</version.jsr311>
 		<version.jacoco>0.6.3.201306030806</version.jacoco>
-		<version.jersey>1.18.1</version.jersey>
+		<version.jersey>1.19</version.jersey>
 		<version.httpclient>4.3.4</version.httpclient>
 		<version.metrics>3.1.0</version.metrics>		
 		
@@ -332,6 +332,21 @@
 			<dependency>
 				<groupId>com.sun.jersey</groupId>
 				<artifactId>jersey-client</artifactId>
+				<version>${version.jersey}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.jersey</groupId>
+				<artifactId>jersey-core</artifactId>
+				<version>${version.jersey}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.jersey</groupId>
+				<artifactId>jersey-servlet</artifactId>
+				<version>${version.jersey}</version>
+			</dependency>
+			<dependency>
+				 <groupId>com.sun.jersey.contribs</groupId>
+				<artifactId>jersey-multipart</artifactId>
 				<version>${version.jersey}</version>
 			</dependency>
 			<dependency>

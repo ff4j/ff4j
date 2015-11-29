@@ -29,8 +29,8 @@ import org.ff4j.audit.graph.PieChart;
 import org.ff4j.audit.graph.PieSector;
 import org.ff4j.audit.repository.EventRepository;
 
-import com.wordnik.swagger.annotations.ApiModel;
-import com.wordnik.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Bean to represent the event repository.

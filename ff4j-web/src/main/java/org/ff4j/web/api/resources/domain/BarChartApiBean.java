@@ -27,8 +27,8 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.ff4j.audit.graph.BarChart;
 import org.ff4j.audit.graph.BarSeries;
 
-import com.wordnik.swagger.annotations.ApiModel;
-import com.wordnik.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Representation of a barchart for the API.

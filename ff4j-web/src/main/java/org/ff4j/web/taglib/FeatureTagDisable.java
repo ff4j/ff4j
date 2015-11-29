@@ -24,7 +24,6 @@ import java.util.Map;
 
 import javax.servlet.jsp.PageContext;
 
-import org.apache.commons.lang.StringUtils;
 import org.ff4j.FF4j;
 import org.ff4j.core.FlippingExecutionContext;
 
@@ -52,7 +51,16 @@ public class FeatureTagDisable extends AbstractFeatureTag {
         @SuppressWarnings("unchecked")
         Map < String, String[]> parameters = pageContext.getRequest().getParameterMap();
         for (String param : parameters.keySet()) {
-            executionContext.putString(param, StringUtils.join(parameters.get(param), ","));
+            String[] innerParams = parameters.get(param);
+            if (innerParams != null) {
+                StringBuilder sb = new StringBuilder();
+                for (String innerParam : innerParams) {
+                    sb.append(innerParam);
+                    sb.append(",");
+                }
+                String expression = sb.toString();
+                executionContext.putString(param, expression.substring(0, expression.length() - 1));
+            }
         }
         return !ff4j.check(getFeatureid(), executionContext);
     }

@@ -26,7 +26,7 @@ import java.util.List;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ff4j.security.AuthorizationsManager;
 
-import com.wordnik.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModel;
 
 @ApiModel( value = "authorization", description = "resource representation of a security" )
 public class AuthorizationsManagerApiBean {

@@ -41,10 +41,10 @@ import org.ff4j.web.api.FF4jWebConstants;
 import org.ff4j.web.api.resources.domain.AuthorizationsManagerApiBean;
 import org.ff4j.web.api.resources.domain.FF4jStatusApiBean;
 
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiResponse;
-import com.wordnik.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * This is the parent class for FF4J the REST API.

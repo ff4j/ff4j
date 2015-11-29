@@ -17,15 +17,10 @@ import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.api.core.ResourceConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.spi.inject.SingletonTypeInjectableProvider;
-import com.wordnik.swagger.config.ConfigFactory;
-import com.wordnik.swagger.config.ScannerFactory;
-import com.wordnik.swagger.config.SwaggerConfig;
-import com.wordnik.swagger.jaxrs.config.DefaultJaxrsScanner;
-import com.wordnik.swagger.jaxrs.listing.ApiDeclarationProvider;
-import com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON;
-import com.wordnik.swagger.jaxrs.listing.ResourceListingProvider;
-import com.wordnik.swagger.jaxrs.reader.DefaultJaxrsApiReader;
-import com.wordnik.swagger.reader.ClassReaders;
+
+import io.swagger.config.ScannerFactory;
+import io.swagger.jaxrs.config.BeanConfig;
+
 
 /**
  * 
@@ -109,16 +104,20 @@ public abstract class FF4JApiApplication extends PackagesResourceConfig implemen
         
         // Enable Documentation if required
         if (conf.isEnableDocumentation()) {
-           getSingletons().add(new ApiListingResourceJSON());
-           getSingletons().add(new ApiDeclarationProvider());
-           getSingletons().add(new ResourceListingProvider());
-           ScannerFactory.setScanner(new DefaultJaxrsScanner());
-           ClassReaders.setReader(new DefaultJaxrsApiReader());
-           // Setup Swagger
-           SwaggerConfig config = ConfigFactory.config();
-           config.setApiVersion(getClass().getPackage().getImplementationVersion());
-           config.setBasePath(conf.getContextPath());
-           config.setApiPath("/api");
+           
+           BeanConfig beanConfig = new BeanConfig();
+           beanConfig.setVersion("1.0.2");
+           beanConfig.setSchemes(new String[]{"http"});
+           beanConfig.setHost("localhost:8282");
+           beanConfig.setBasePath("/api");
+           beanConfig.setResourcePackage("org.ff4j.web.api.resources");
+           beanConfig.setScan(true);
+           ScannerFactory.setScanner(beanConfig);
+            
+           getSingletons().add(io.swagger.jaxrs.listing.ApiListingResource.class);
+           getSingletons().add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
+           
+          
            // <---
         }
     }
