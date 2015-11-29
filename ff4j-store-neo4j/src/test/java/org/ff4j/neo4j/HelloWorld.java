@@ -1,17 +1,7 @@
 package org.ff4j.neo4j;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.ff4j.core.Feature;
-import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
-import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.ResourceIterator;
-import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseSettings;
 import org.neo4j.test.TestGraphDatabaseFactory;
 

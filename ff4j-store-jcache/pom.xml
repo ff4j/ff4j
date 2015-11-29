@@ -5,7 +5,7 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~         COORDINATES      ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<artifactId>ff4j-store-jcache</artifactId>
+	<artifactId>ff4j-store-terracotta</artifactId>
 	<packaging>jar</packaging>
 	<name>ff4j-store-jcache</name>
 
@@ -77,18 +77,7 @@
 		    <version>${ignite.version}</version>
 		    <scope>test</scope>
 		</dependency>
-		<dependency>
-		    <groupId>org.apache.ignite</groupId>
-		    <artifactId>ignite-spring</artifactId>
-		    <version>${ignite.version}</version>
-		    <scope>test</scope>
-		</dependency>
-		<dependency>
-		    <groupId>org.apache.ignite</groupId>
-		    <artifactId>ignite-indexing</artifactId>
-		    <version>${ignite.version}</version>
-		    <scope>test</scope>
-		</dependency>
+		
 		
 		<!-- Terracotta -->
 		<dependency>
