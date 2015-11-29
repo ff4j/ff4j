@@ -24,7 +24,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.ff4j.cache.FeatureStoreCacheProxy;
+import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.core.FeatureStore;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -65,7 +65,7 @@ public class CacheApiBean {
         if (featureStore.isCached()) {
             cacheStore    = featureStore.getCachedTargetStore();
             cacheProvider = featureStore.getCacheProvider();
-            featureNames  = ((FeatureStoreCacheProxy) featureStore).getCacheManager().listCachedFeatureNames();
+            featureNames  = ((FF4jCacheProxy) featureStore).getCacheManager().listCachedFeatureNames();
         }
     }
     

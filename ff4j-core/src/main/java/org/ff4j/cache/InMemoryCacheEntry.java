@@ -31,7 +31,16 @@ public final class InMemoryCacheEntry<T> implements Serializable {
 
     /** serial. */
     private static final long serialVersionUID = -1444331517339058103L;
+    
+    /** Default TTL is one hour. */
+    public static final long DEFAULT_TTL = 3600L;
 
+    /** externalized as constant. */
+    public static final long TO_MILLIS = 1000L;
+
+    /** TTL of this entry. */
+    private long timeToLive = DEFAULT_TTL;
+    
     /** Insertion date, allow to compute time-to-live. */
     private final long insertedDate;
 
@@ -47,6 +56,16 @@ public final class InMemoryCacheEntry<T> implements Serializable {
     public InMemoryCacheEntry(T entry) {
         this.entry = entry;
         this.insertedDate = System.currentTimeMillis();
+    }
+    
+    /**
+     * Compute the timeout property.
+     *
+     * @return
+     *      time to live
+     */
+    public boolean hasReachTimeToLive() {
+        return ((System.currentTimeMillis() - getInsertedDate()) >= (TO_MILLIS * timeToLive));
     }
 
     /**

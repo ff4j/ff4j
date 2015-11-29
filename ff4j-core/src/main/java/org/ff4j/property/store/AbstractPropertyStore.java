@@ -57,10 +57,10 @@ public abstract class AbstractPropertyStore implements PropertyStore {
 
         // Override existing configuration within database
         for (String featureName : properties.keySet()) {
-            if (exist(featureName)) {
-                delete(featureName);
+            if (existProperty(featureName)) {
+                deleteProperty(featureName);
             }
-            create(properties.get(featureName));
+            createProperty(properties.get(featureName));
         }
         return properties;
     }

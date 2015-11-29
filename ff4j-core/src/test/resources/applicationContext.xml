@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd" >
+	
+	<!-- <import resource="applicationContext-security.xml" /> -->
+	
+	<!-- <import resource="applicationContext-jmx.xml"/>  -->
+	
+	<!-- Store -->
+	<bean id="ff4j.store" class="org.ff4j.store.InMemoryFeatureStore" >
+		<property name="location" value="ff4j.xml" />
+	</bean>
+	
+	<bean id="ff4j.cache" class="org.ff4j.cache.InMemoryCacheManager">
+		<property name="ttl" value="1" />
+	</bean>
+	
+	<bean id="ff4j.storeproxy" class="org.ff4j.cache.FeatureStoreCacheProxy">
+		<property name="target" ref="ff4j.store" />
+		<property name="cacheManager" ref="ff4j.cache" />
+	</bean>
+	
+	<!-- FF4J -->
+	<bean id="ff4j" class="org.ff4j.FF4j" >
+		<property name="store" ref="ff4j.storeproxy" />
+		<property name="authorizationsManager" >
+			<bean class="org.ff4j.security.SpringSecurityAuthorisationManager" />
+		</property>
+	</bean>
+	
+</beans>

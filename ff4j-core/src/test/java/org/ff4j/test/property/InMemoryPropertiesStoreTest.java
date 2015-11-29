@@ -1,5 +1,10 @@
 package org.ff4j.test.property;
 
+import java.util.Date;
+
+import org.ff4j.FF4j;
+import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.PropertyDate;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.junit.Assert;
@@ -42,16 +47,29 @@ public class InMemoryPropertiesStoreTest extends AbstractPropertyStoreJunitTest 
     @Test
     public void exist_filled() {
         // When-Then
-        Assert.assertTrue(testedStore.exist("a"));
-        Assert.assertFalse(testedStore.exist("k"));
+        Assert.assertTrue(testedStore.existProperty("a"));
+        Assert.assertFalse(testedStore.existProperty("k"));
     }
     
     /** TDD. */
     @Test
     public void valueFixed() {
         // When-Then
-        Assert.assertTrue(testedStore.exist("a"));
-        Assert.assertEquals("AMER", testedStore.read("a").getValue());
+        Assert.assertTrue(testedStore.existProperty("a"));
+        Assert.assertEquals("AMER", testedStore.readProperty("a").getValue());
+    }
+    
+    public void testProperty() {
+        
+        FF4j ff4j = new FF4j("ff4j.xml");
+        
+        ff4j.getPropertiesStore().createProperty(new PropertyDate("property_3", new Date()));
+       
+        AbstractProperty<?> ap = ff4j.getPropertiesStore().readProperty("property_3");
+        PropertyDate pDate = (PropertyDate) ap;
+        pDate.setValue(new Date());
+        ff4j.getPropertiesStore().updateProperty(pDate);
+        ff4j.getPropertiesStore().deleteProperty("property_3");
     }
     
    

@@ -29,10 +29,17 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<dependencies>
 	
-		<!-- logger -->
+		<!-- ff4j -->
 		<dependency>
 			<groupId>org.ff4j</groupId>
 			<artifactId>ff4j-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<!-- json -->
+		<dependency>
+			<artifactId>ff4j-utils-json</artifactId>
+			<groupId>org.ff4j</groupId>
 			<version>${project.version}</version>
 		</dependency>
 		

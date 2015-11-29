@@ -71,7 +71,7 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test(expected = IllegalArgumentException.class)
     public void existKO_Null() {
         // given
-        testedStore.exist(null);
+        testedStore.existProperty(null);
         // then expect to fail
     }
     
@@ -79,7 +79,7 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test(expected = IllegalArgumentException.class)
     public void existKO_Empty() {
         // Given
-        testedStore.exist("");
+        testedStore.existProperty("");
         // Then
         // then expect to fail
     }
@@ -88,7 +88,7 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test
     public void exist_false() {
         // When-Then
-        Assert.assertFalse(testedStore.exist("toto"));
+        Assert.assertFalse(testedStore.existProperty("toto"));
     }
     
     // --------------- create -----------    
@@ -97,11 +97,11 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test
     public void addPropertyOK_simple() {
         // Given
-        Assert.assertFalse(testedStore.exist("toto"));
+        Assert.assertFalse(testedStore.existProperty("toto"));
         // When
-        testedStore.create(new Property("toto", "ff4j"));
+        testedStore.createProperty(new Property("toto", "ff4j"));
         // Then
-        Assert.assertTrue(testedStore.exist("toto"));
+        Assert.assertTrue(testedStore.existProperty("toto"));
     }
     
     /** TDD. */
@@ -110,9 +110,9 @@ public abstract class AbstractPropertyStoreJunitTest {
         // Given
         //Assert.assertFalse(testedStore.exist("log"));
         // When
-        testedStore.create(new PropertyLogLevel("log", LogLevel.DEBUG));
+        testedStore.createProperty(new PropertyLogLevel("log", LogLevel.DEBUG));
         // Then
-        Assert.assertTrue(testedStore.exist("log"));
+        Assert.assertTrue(testedStore.existProperty("log"));
     }
     
     /** TDD. */
@@ -121,19 +121,19 @@ public abstract class AbstractPropertyStoreJunitTest {
         // Given
         //Assert.assertFalse(testedStore.exist("log"));
         // When
-        testedStore.create(new PropertyDate("ddate", new Date()));
+        testedStore.createProperty(new PropertyDate("ddate", new Date()));
         // Then
-        Assert.assertTrue(testedStore.exist("ddate"));
+        Assert.assertTrue(testedStore.existProperty("ddate"));
     }
     
     /** TDD. */
     @Test(expected = PropertyAlreadyExistException.class)
     public void addPropertyKO_AlreadyExist() {
         // Given
-        testedStore.create(new PropertyLogLevel("log", LogLevel.DEBUG));
-        Assert.assertTrue(testedStore.exist("log"));
+        testedStore.createProperty(new PropertyLogLevel("log", LogLevel.DEBUG));
+        Assert.assertTrue(testedStore.existProperty("log"));
         // When
-        testedStore.create(new PropertyLogLevel("log", LogLevel.DEBUG));
+        testedStore.createProperty(new PropertyLogLevel("log", LogLevel.DEBUG));
         // Then expect to fail
     }
     
@@ -141,7 +141,7 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test(expected = IllegalArgumentException.class)
     public void addPropertyKO_Null() {
         // Given
-        testedStore.create(null);
+        testedStore.createProperty(null);
         // Then expect to fail
     }
     
@@ -149,7 +149,7 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test(expected = IllegalArgumentException.class)
     public void addPropertyKO_NullName() {
         // Given
-        testedStore.create(new Property(null, ""));
+        testedStore.createProperty(new Property(null, ""));
         // Then expect to fail
     }
     
@@ -157,7 +157,7 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test(expected = IllegalArgumentException.class)
     public void addPropertyKO_EmptyName() {
         // Given
-        testedStore.create(new Property("", ""));
+        testedStore.createProperty(new Property("", ""));
         // Then expect to fail
     }
     
@@ -165,7 +165,7 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test(expected = IllegalArgumentException.class)
     public void addPropertyKO_NullValue() {
         // Given
-        testedStore.create(new Property("hi", null));
+        testedStore.createProperty(new Property("hi", null));
         // Then No error
     }
     
@@ -173,7 +173,7 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test(expected = IllegalArgumentException.class)
     public void addPropertyKO_InvalidValue() {
         // Given
-        testedStore.create(new PropertyLogLevel("log", "TRUC"));
+        testedStore.createProperty(new PropertyLogLevel("log", "TRUC"));
         // Then No error
     }
     
@@ -183,9 +183,9 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test
     public void readOK() {
         // Given
-        testedStore.create(new Property("toto", "ff4j"));
+        testedStore.createProperty(new Property("toto", "ff4j"));
         // When
-        AbstractProperty<?> ap = testedStore.read("toto");
+        AbstractProperty<?> ap = testedStore.readProperty("toto");
         // Then
         Assert.assertNotNull(ap);
         Assert.assertNotNull(ap.getName());
@@ -199,9 +199,9 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test
     public void readOKFixed() {
         // Given
-        testedStore.create(new PropertyLogLevel("log", LogLevel.ERROR));
+        testedStore.createProperty(new PropertyLogLevel("log", LogLevel.ERROR));
         // When
-        AbstractProperty<?> log = testedStore.read("log");
+        AbstractProperty<?> log = testedStore.readProperty("log");
         // Then
         Assert.assertNotNull(log);
         Assert.assertNotNull(log.getName());
@@ -215,14 +215,14 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test(expected = IllegalArgumentException.class)
     public void readKO_null() {
         // Given
-        testedStore.read(null);
+        testedStore.readProperty(null);
     }
     
     /** TDD. */
     @Test(expected = IllegalArgumentException.class)
     public void readKO_empty() {
         // Given
-        testedStore.read("");
+        testedStore.readProperty("");
         // Expected error
         Assert.fail();
     }
@@ -231,9 +231,9 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test(expected = PropertyNotFoundException.class)
     public void readKO_notExist() {
         // Given
-        Assert.assertFalse(testedStore.exist("invalid"));
+        Assert.assertFalse(testedStore.existProperty("invalid"));
         // When
-        testedStore.read("invalid");
+        testedStore.readProperty("invalid");
         // Expected error
         Assert.fail();
     }
@@ -244,9 +244,9 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test(expected = PropertyNotFoundException.class)
     public void updateKO_doesnotExist() {
         // Given
-        Assert.assertFalse(testedStore.exist("invalid"));
+        Assert.assertFalse(testedStore.existProperty("invalid"));
         // When
-        testedStore.update("invalid", "aa");
+        testedStore.updateProperty("invalid", "aa");
         // Expected error
         Assert.fail();
     }
@@ -255,7 +255,7 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test(expected = IllegalArgumentException.class)
     public void updateKO_null() {
         // When
-        testedStore.update(null, "aa");
+        testedStore.updateProperty(null, "aa");
         // Expected error
         Assert.fail();
     }
@@ -264,7 +264,7 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test(expected = IllegalArgumentException.class)
     public void updateKO_empty() {
         // When
-        testedStore.update("", "aa");
+        testedStore.updateProperty("", "aa");
         // Expected error
         Assert.fail();
     }
@@ -273,9 +273,9 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test(expected = IllegalArgumentException.class)
     public void updateKO_InvalidValue() {
         // Given
-        testedStore.create(new PropertyLogLevel("log", LogLevel.ERROR));
+        testedStore.createProperty(new PropertyLogLevel("log", LogLevel.ERROR));
         // When
-        testedStore.update("log", "KO");
+        testedStore.updateProperty("log", "KO");
         // Expected error
         Assert.fail();
         
@@ -285,11 +285,11 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test
     public void updateOK() {
         // Given
-        testedStore.create(new PropertyLogLevel("log", LogLevel.ERROR));
+        testedStore.createProperty(new PropertyLogLevel("log", LogLevel.ERROR));
         // When
-        testedStore.update("log", "INFO");
+        testedStore.updateProperty("log", "INFO");
         // Then
-        Assert.assertEquals(LogLevel.INFO, testedStore.read("log").getValue());
+        Assert.assertEquals(LogLevel.INFO, testedStore.readProperty("log").getValue());
     }
     
     // ------------------ delete -------------------- 
@@ -298,7 +298,7 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test(expected = IllegalArgumentException.class)
     public void deleteKO_null() {
         // When
-        testedStore.delete(null);
+        testedStore.deleteProperty(null);
         // Expected Error
         Assert.fail();
     }
@@ -307,7 +307,7 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test(expected = IllegalArgumentException.class)
     public void deleteKO_empty() {
         // When
-        testedStore.delete("");
+        testedStore.deleteProperty("");
         // Expected Error
         Assert.fail();
     }
@@ -316,9 +316,9 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test(expected = PropertyNotFoundException.class)
     public void deleteKO_doesnotexist() {
         // Given
-        Assert.assertFalse(testedStore.exist("invalid"));
+        Assert.assertFalse(testedStore.existProperty("invalid"));
         // When
-        testedStore.delete("invalid");
+        testedStore.deleteProperty("invalid");
         // Expected Error
         Assert.fail();
     }
@@ -327,12 +327,12 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test
     public void deleteOK() {
         // Given
-        testedStore.create(new Property("toto", "ff4j"));
-        Assert.assertTrue(testedStore.exist("toto"));
+        testedStore.createProperty(new Property("toto", "ff4j"));
+        Assert.assertTrue(testedStore.existProperty("toto"));
         // When
-        testedStore.delete("toto");
+        testedStore.deleteProperty("toto");
         // Then
-        Assert.assertFalse(testedStore.exist("toto"));
+        Assert.assertFalse(testedStore.existProperty("toto"));
     }
     
 }

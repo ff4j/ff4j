@@ -33,7 +33,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.ff4j.cache.FeatureStoreCacheProxy;
+import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.core.Feature;
 import org.ff4j.web.api.FF4jWebConstants;
 import org.ff4j.web.api.resources.domain.CacheApiBean;
@@ -158,7 +158,7 @@ public class FeatureStoreResource extends AbstractResource {
         if (!getFeatureStore().isCached()) {
             return Response.status(Response.Status.NOT_FOUND).entity("Current Store is not cached").build();
         }
-        ((FeatureStoreCacheProxy) getFeatureStore()).getCacheManager().clear();;
+        ((FF4jCacheProxy) getFeatureStore()).getCacheManager().clearFeatures();
         return Response.ok("Cache has been cleared").build();
     }
 

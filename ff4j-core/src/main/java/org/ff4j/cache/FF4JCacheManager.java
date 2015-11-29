@@ -25,18 +25,25 @@ import java.util.Set;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 
 /**
  * Cache Layer on top of {@link FeatureStore} to enhance performances.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public interface FeatureCacheManager {
+public interface FF4JCacheManager {
 
     /**
-     * Remove everything present within cache.
+     * Remove everything present within feature cache.
      */
-    void clear();
+    void clearFeatures();
+    
+    /**
+     * Remove everything present within properties cache.
+     */
+    void clearProperties();
 
     /**
      * Remove a feature from cache by its identifier. Could be invoked for any modification of target feature through store or
@@ -45,7 +52,16 @@ public interface FeatureCacheManager {
      * @param featureId
      *            feature identifier
      */
-    void evict(String featureId);
+    void evictFeature(String featureId);
+    
+    /**
+     * Remove a property from cache by its identifier. Could be invoked for any modification of target feature through store or
+     * when time-to-live reached.
+     * 
+     * @param propertyName
+     *            property unique identifier
+     */
+    void evictProperty(String propertyName);
 
     /**
      * Add feature to cache.
@@ -53,16 +69,33 @@ public interface FeatureCacheManager {
      * @param feat
      *            target feature to be cached
      */
-    void put(Feature feat);
+    void putFeature(Feature feat);
+    
+    /**
+     * Add property to cache.
+     * 
+     * @param feat
+     *            target property to be cached
+     */
+    void putProperty(AbstractProperty<?> feat);
 
     /**
-     * Return feature stored in cache.
+     * Return {@link Feature} stored in cache.
      * 
      * @param featureId
      *            target feature identifier
      * @return target feature if exist (could raise {@link FeatureNotFoundException} as FeatureStore).
      */
-    Feature get(String featureId);
+    Feature getFeature(String featureId);
+    
+    /**
+     * Return {@link Property} stored in cache.
+     * 
+     * @param featureId
+     *            target feature identifier
+     * @return target feature if exist (could raise {@link FeatureNotFoundException} as FeatureStore).
+     */
+    AbstractProperty<?> getProperty(String featureId);
     
     /**
      * List feature names in cache.
@@ -71,13 +104,28 @@ public interface FeatureCacheManager {
      *      feature names in cache
      */
     Set < String > listCachedFeatureNames();
+    
+    /**
+     * List property names in cache.
+     *
+     * @return
+     *      feature names in cache
+     */
+    Set < String > listCachedPropertyNames();
 
     /**
-     * Access to embedded implementation of cache.
+     * Access to embedded implementation of cache for Features.
      * 
      * @return native implementation of cache.
      */
-    Object getNativeCache();
+    Object getFeatureNativeCache();
+    
+    /**
+     * Access to embedded implementation of cach for Properties
+     * 
+     * @return native implementation of cache.
+     */
+    Object getPropertyNativeCache();
 
     /**
      * Get name of expected cache.

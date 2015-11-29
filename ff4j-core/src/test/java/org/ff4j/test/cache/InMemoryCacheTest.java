@@ -22,10 +22,12 @@ package org.ff4j.test.cache;
 
 import org.junit.Assert;
 
-import org.ff4j.cache.FeatureStoreCacheProxy;
+import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.cache.InMemoryCacheManager;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.property.Property;
+import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.test.store.AbstractStoreTest;
 import org.junit.Test;
@@ -40,51 +42,68 @@ public class InMemoryCacheTest extends AbstractStoreTest {
     /** {@inheritDoc} */
     @Override
     public FeatureStore initStore() {
-        return new FeatureStoreCacheProxy(new InMemoryFeatureStore("ff4j.xml"), new InMemoryCacheManager());
+        return new FF4jCacheProxy(
+                new InMemoryFeatureStore("ff4j.xml"), 
+                new InMemoryPropertyStore("ff4j.xml"),
+                new InMemoryCacheManager());
     }
 
     @Test
     public void testInitializations() {
-        InMemoryCacheManager fcm = new InMemoryCacheManager();
-        fcm.setTtl(10);
-        Assert.assertEquals(10, fcm.getTtl());
-        Assert.assertNotNull(fcm.getNativeCache());
+        InMemoryCacheManager fcm = new InMemoryCacheManager();        
+        Assert.assertNotNull(fcm.getFeatureNativeCache());
+        Assert.assertNotNull(fcm.getPropertyNativeCache());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testPutNullisIlegal() {
-        new InMemoryCacheManager().put(null);
+        new InMemoryCacheManager().putFeature(null);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testPutNullPropertyisIlegal() {
+        new InMemoryCacheManager().putProperty(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testPutNullFeatureId() {
         Feature f = new Feature("a");
         f.setUid(null);
-        new InMemoryCacheManager().put(f);
+        new InMemoryCacheManager().putFeature(f);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testPutNullPropertyName() {
+        Property p = new Property();
+        p.setName(null);
+        new InMemoryCacheManager().putProperty(p);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testPutEmptyFeatureId() {
         Feature f = new Feature("a");
         f.setUid("");
-        new InMemoryCacheManager().put(f);
+        new InMemoryCacheManager().putFeature(f);
     }
-
+    
+    
     @Test(expected = IllegalArgumentException.class)
-    public void testRequiredArgumentTarget() {
-        new FeatureStoreCacheProxy().getTarget();
+    public void testPutEmptyPropertyName() {
+        Property p = new Property();
+        p.setName("");
+        new InMemoryCacheManager().putProperty(p);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testRequiredArgumentCacheManager() {
-        new FeatureStoreCacheProxy().getCacheManager();
+        new FF4jCacheProxy().getCacheManager();
     }
 
     @Test
     public void testExistBis() {
-        FeatureStoreCacheProxy fscp = new FeatureStoreCacheProxy();
-        fscp.setCacheManager(new InMemoryCacheManager());
-        fscp.setTarget(new InMemoryFeatureStore("ff4j.xml"));
+        FF4jCacheProxy fscp = new FF4jCacheProxy(
+                new InMemoryFeatureStore("ff4j.xml"), null,  
+                new InMemoryCacheManager());
         Assert.assertFalse(fscp.exist("toto"));
         Assert.assertFalse(fscp.exist("toto"));
         Assert.assertTrue(fscp.exist("first"));

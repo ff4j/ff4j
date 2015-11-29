@@ -23,8 +23,10 @@ package org.ff4j.cache;
 import java.util.Set;
 
 import org.ff4j.core.Feature;
-import org.ff4j.redis.FF4JRedisConstants;
+import org.ff4j.property.AbstractProperty;
+import org.ff4j.redis.RedisConnection;
 import org.ff4j.utils.json.FeatureJsonParser;
+import org.ff4j.utils.json.PropertyJsonParser;
 
 import redis.clients.jedis.Jedis;
 
@@ -33,87 +35,35 @@ import redis.clients.jedis.Jedis;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureCacheProviderRedis implements FeatureCacheManager, FF4JRedisConstants {
+public class FeatureCacheProviderRedis implements FF4JCacheManager {
     
-    /** redis host. */
-    protected String redisHost = DEFAULT_REDIS_HOST;
-
-    /** redis port. */
-    protected int redisport = DEFAULT_REDIS_PORT;
-
+    /** prefix of keys. */
+    public static String KEY_FEATURE = "FF4J_FEATURE_";
+    
+    /** prefix of keys. */
+    public static String KEY_PROPERTY = "FF4J_PROPERTY_";
+    
+    /** default ttl. */
+    private static int DEFAULT_TTL = 900000000;
+    
     /** time to live. */
     protected int timeToLive = DEFAULT_TTL;
     
-    /** Java Redis CLIENT. */
-    protected Jedis jedis;
+    /** Wrapping of redis connection (isolation). */
+    private RedisConnection redisConnection;
     
-    /**
-     * Default Constructor.
-     */
     public FeatureCacheProviderRedis() {
-        jedis = new Jedis(redisHost, redisport);
+        redisConnection = new RedisConnection();
     }
 
-    /**
-     * Contact remote redis server.
-     * 
-     * @param host
-     *            target redis host
-     * @param port
-     *            target redis port
-     */
     public FeatureCacheProviderRedis(String host, int port) {
-        jedis = new Jedis(redisHost, redisport);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void clear() {
-        jedis.flushAll();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void evict(String uid) {
-        if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
-        }
-        jedis.del(uid);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void put(Feature fp) {
-        if (fp == null) {
-            throw new IllegalArgumentException("Feature cannot be null nor empty");
-        }
-        jedis.set(fp.getUid(), fp.toJson());
-        jedis.expire(fp.getUid(), timeToLive);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Feature get(String uid) {
-        if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
-        }
-        String value = jedis.get(uid);
-        if (value != null) {
-            return FeatureJsonParser.parseFeature(value);
-        }
-        return null;
+        redisConnection = new RedisConnection(host, port);
     }
     
     /** {@inheritDoc} */
     @Override
     public Set<String> listCachedFeatureNames() {
-        return jedis.keys(PREFIX_KEY + "*");
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Object getNativeCache() {
-        return jedis;
+        return getJedis().keys(KEY_FEATURE + "*");
     }
 
     /** {@inheritDoc} */
@@ -121,34 +71,131 @@ public class FeatureCacheProviderRedis implements FeatureCacheManager, FF4JRedis
     public String getCacheProviderName() {
         return "REDIS";
     }
-
-    /**
-     * Getter accessor for attribute 'redisHost'.
-     * 
-     * @return current value of 'redisHost'
-     */
-    public String getRedisHost() {
-        return redisHost;
-    }
-
-    /**
-     * Getter accessor for attribute 'redisport'.
-     * 
-     * @return current value of 'redisport'
-     */
-    public int getRedisport() {
-        return redisport;
-    }
-
-    /**
-     * Getter accessor for attribute 'timeToLive'.
-     * 
-     * @return current value of 'timeToLive'
-     */
-    public int getTimeToLive() {
-        return timeToLive;
-    }
-
     
+    /** {@inheritDoc} */
+    @Override
+    public void clearFeatures() {
+        getJedis().del(KEY_FEATURE + "*");
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void clearProperties() {
+        getJedis().del(KEY_PROPERTY + "*");
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void evictFeature(String uid) {
+        if (uid == null || uid.isEmpty()) {
+            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
+        }
+        getJedis().del(KEY_FEATURE + uid);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void evictProperty(String propertyName) {
+        if (propertyName == null || propertyName.isEmpty()) {
+            throw new IllegalArgumentException("PropertyName cannot be null nor empty");
+        }
+        getJedis().del(KEY_PROPERTY + propertyName);
+    }
+
+    @Override
+    public void putFeature(Feature fp) {
+        if (fp == null) {
+            throw new IllegalArgumentException("Feature cannot be null nor empty");
+        }
+        getJedis().set(KEY_FEATURE + fp.getUid(), fp.toJson());
+        getJedis().expire(KEY_FEATURE + fp.getUid(), timeToLive);
+    }
+
+    @Override
+    public void putProperty(AbstractProperty<?> property) {
+        if (property == null) {
+            throw new IllegalArgumentException("Feature cannot be null nor empty");
+        }
+        getJedis().set(KEY_PROPERTY + property.getName(), property.toJson());
+        getJedis().expire(KEY_PROPERTY + property.getName(), timeToLive);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Feature getFeature(String uid) {
+        if (uid == null || uid.isEmpty()) {
+            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
+        }
+        String value = getJedis().get(KEY_FEATURE + uid);
+        if (value != null) {
+            return FeatureJsonParser.parseFeature(value);
+        }
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public AbstractProperty<?> getProperty(String propertyName) {
+        if (propertyName == null || propertyName.isEmpty()) {
+            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
+        }
+        String value = getJedis().get(KEY_PROPERTY + propertyName);
+        if (value != null) {
+            return PropertyJsonParser.parseProperty(value);
+        }
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> listCachedPropertyNames() {
+        return getJedis().keys(KEY_PROPERTY + "*");
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object getFeatureNativeCache() {
+        return getJedis();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object getPropertyNativeCache() {
+        return getJedis();
+    } 
+    
+    /**
+     * Safe acces to Jedis, avoid JNPE.
+     *
+     * @return
+     */
+    public Jedis getJedis() {
+        if (redisConnection == null) {
+            throw new IllegalArgumentException("Cannot found any redisConnection");
+        }
+        if (redisConnection.getJedis() == null) {
+            throw new IllegalArgumentException("Cannot found any jedis connection, please build connection");
+        }
+        return redisConnection.getJedis() ;
+    }
+
+    /**
+     * Getter accessor for attribute 'redisConnection'.
+     *
+     * @return
+     *       current value of 'redisConnection'
+     */
+    public RedisConnection getRedisConnection() {
+        return redisConnection;
+    }
+
+    /**
+     * Setter accessor for attribute 'redisConnection'.
+     * @param redisConnection
+     * 		new value for 'redisConnection '
+     */
+    public void setRedisConnection(RedisConnection redisConnection) {
+        this.redisConnection = redisConnection;
+    }
 
 }

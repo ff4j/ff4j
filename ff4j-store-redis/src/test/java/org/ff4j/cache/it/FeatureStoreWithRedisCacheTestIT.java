@@ -20,10 +20,12 @@ package org.ff4j.cache.it;
  * #L%
  */
 
-import org.ff4j.cache.FeatureCacheManager;
+import org.ff4j.cache.FF4JCacheManager;
+import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.cache.FeatureCacheProviderRedis;
-import org.ff4j.cache.FeatureStoreCacheProxy;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.property.store.InMemoryPropertyStore;
+import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.store.AbstractStoreJUnitTest;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -40,12 +42,13 @@ public class FeatureStoreWithRedisCacheTestIT extends AbstractStoreJUnitTest {
     private static final int EXPECTED_FEATURES_NUMBERS = 5;
 
     /** Cache Manager. */
-    private static final FeatureCacheManager cache = new FeatureCacheProviderRedis();
+    private static final FF4JCacheManager cache = new FeatureCacheProviderRedis();
 
     /** {@inheritDoc} */
     @Override
     protected FeatureStore initStore() {
-        return new FeatureStoreCacheProxy(defaultStore, cache);
+        PropertyStore pStore = new InMemoryPropertyStore(TEST_FEATURES_FILE);
+        return new FF4jCacheProxy(defaultStore, pStore, cache);
     }
 
     /** {@inheritDoc} */

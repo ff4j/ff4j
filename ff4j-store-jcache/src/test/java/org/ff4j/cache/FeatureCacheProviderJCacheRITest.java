@@ -1,8 +1,11 @@
-package org.ff4j.redis;
+package org.ff4j.cache;
+
+import org.ff4j.cache.FF4JCacheManager;
+import org.ff4j.cache.FF4jJCacheManager;
 
 /*
  * #%L
- * ff4j-store-redis
+ * ff4j-store-ehcache
  * %%
  * Copyright (C) 2013 - 2015 Ff4J
  * %%
@@ -20,23 +23,19 @@ package org.ff4j.redis;
  * #L%
  */
 
+import org.ff4j.test.cache.AbstractCacheManagerJUnitTest;
+import org.jsr107.ri.spi.RICachingProvider;
+
 /**
- * Required constants for REDIS.
+ * Test cache manager.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public interface FF4JRedisConstants {
-    
-    /** prefix of keys. */
-    public String PREFIX_KEY = "FF4J_";
-    
-    /** default host. */
-    public String DEFAULT_REDIS_HOST = "localhost";
+public class FeatureCacheProviderJCacheRITest extends AbstractCacheManagerJUnitTest {
 
-    /** default port. */
-    public int DEFAULT_REDIS_PORT = 6379;
-
-    /** default ttl. */
-    public int DEFAULT_TTL = 900000000;
+    /** {@inheritDoc} */
+    protected FF4JCacheManager getCacheManager() {
+        return new FF4jJCacheManager(RICachingProvider.class.getName());
+    }
 
 }

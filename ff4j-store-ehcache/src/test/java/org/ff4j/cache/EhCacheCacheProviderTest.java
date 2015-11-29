@@ -23,6 +23,8 @@ package org.ff4j.cache;
 import net.sf.ehcache.Cache;
 
 import org.ff4j.core.FeatureStore;
+import org.ff4j.property.store.InMemoryPropertyStore;
+import org.ff4j.property.store.PropertyStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.test.store.AbstractStoreJUnitTest;
 import org.junit.After;
@@ -35,13 +37,14 @@ import org.junit.After;
 public class EhCacheCacheProviderTest extends AbstractStoreJUnitTest {
 
     /** Cache Manager. */
-    private final FeatureCacheManager cache = new FeatureCacheProviderEhCache();
+    private final FF4JCacheManager cache = new FeatureCacheProviderEhCache();
 
     /** {@inheritDoc} */
     @Override
     public FeatureStore initStore() {
-        FeatureStore store = new InMemoryFeatureStore("test-ehcacheProvider.xml");
-        return new FeatureStoreCacheProxy(store, cache);
+        FeatureStore  store  = new InMemoryFeatureStore("test-ehcacheProvider.xml");
+        PropertyStore pstore = new InMemoryPropertyStore("test-ehcacheProvider.xml");
+        return new FF4jCacheProxy(store, pstore,  cache);
     }
 
     /**
@@ -49,7 +52,7 @@ public class EhCacheCacheProviderTest extends AbstractStoreJUnitTest {
      */
     @After
     public void tearDown() {
-        ((Cache) cache.getNativeCache()).removeAll();
+        ((Cache) cache.getFeatureNativeCache()).removeAll();
     }
 
 }

@@ -696,6 +696,13 @@ public final class XmlParser {
         return sb.toString();
     }
    
+    /**
+     * Substitution to create XML.
+     *
+     * @param value
+     *      target XML
+     * @return
+     */
     public String escapeXML(String value) {
         if (value == null) return null;
         value = value.replaceAll("&", "&amp;");

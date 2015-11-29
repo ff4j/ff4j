@@ -39,7 +39,7 @@ public interface PropertyStore {
      * @return
      *      if the property exist
      */
-    boolean exist(String name);
+    boolean existProperty(String name);
     
     /**
      * Create new property within store.
@@ -47,7 +47,7 @@ public interface PropertyStore {
      * @param value
      *      target value
      */
-    <T> void create(AbstractProperty<T> value);
+    <T> void createProperty(AbstractProperty<T> value);
     
     /**
      * Read property value.
@@ -57,7 +57,7 @@ public interface PropertyStore {
      * @return
      *      property of exist
      */
-    AbstractProperty<?> read(String name);
+    AbstractProperty<?> readProperty(String name);
     
     /**
      * Update existing property.
@@ -67,7 +67,7 @@ public interface PropertyStore {
      * @param newValue
      *      new value
      */
-    void update(String name, String newValue);
+    void updateProperty(String name, String newValue);
     
     /**
      * Update existing property.
@@ -77,7 +77,7 @@ public interface PropertyStore {
      * @param newValue
      *      new value
      */
-    <T> void update(AbstractProperty<T> fixedValue);
+    <T> void updateProperty(AbstractProperty<T> fixedValue);
     
     /**
      * Delete current property.
@@ -85,7 +85,7 @@ public interface PropertyStore {
      * @param name
      *      target name
      */
-    void delete(String name);
+    void deleteProperty(String name);
     
     /**
      * Retrieve all properties from store.

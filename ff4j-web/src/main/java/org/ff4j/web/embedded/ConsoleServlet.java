@@ -168,16 +168,16 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                         
                     }
                     
-                    if (getFf4j().getPropertiesStore().exist(featureId)) {
+                    if (getFf4j().getPropertiesStore().existProperty(featureId)) {
                     
                         if (OP_RMV_PROPERTY.equalsIgnoreCase(operation)) {
-                            getFf4j().getPropertiesStore().delete(featureId);
+                            getFf4j().getPropertiesStore().deleteProperty(featureId);
                             message = renderMsgProperty(featureId, "DELETED");
                             LOGGER.info("Property '" + featureId + "' has been deleted");
                         }
                         
                         if (OP_READ_PROPERTY.equalsIgnoreCase(operation)) {
-                            AbstractProperty<?> ap = getFf4j().getPropertiesStore().read(featureId);
+                            AbstractProperty<?> ap = getFf4j().getPropertiesStore().readProperty(featureId);
                             res.setContentType(CONTENT_TYPE_JSON);
                             res.getWriter().println(ap.toString());
                             return;
@@ -185,17 +185,17 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                         
                         if (OP_DELETE_FIXEDVALUE.equalsIgnoreCase(operation)) {
                             String fixedValue = req.getParameter(PARAM_FIXEDVALUE);
-                            AbstractProperty<?> ap = getFf4j().getPropertiesStore().read(featureId);
+                            AbstractProperty<?> ap = getFf4j().getPropertiesStore().readProperty(featureId);
                             ap.getFixedValues().remove(fixedValue);
-                            getFf4j().getPropertiesStore().update(ap);
+                            getFf4j().getPropertiesStore().updateProperty(ap);
                             return;
                         }
                         
                         if (OP_ADD_FIXEDVALUE.equalsIgnoreCase(operation)) {
                             String fixedValue = req.getParameter(PARAM_FIXEDVALUE);
-                            AbstractProperty<?> ap = getFf4j().getPropertiesStore().read(featureId);
+                            AbstractProperty<?> ap = getFf4j().getPropertiesStore().readProperty(featureId);
                             ap.add2FixedValueFromString(fixedValue);
-                            getFf4j().getPropertiesStore().update(ap);
+                            getFf4j().getPropertiesStore().updateProperty(ap);
                             return;
                         }
                         

@@ -27,13 +27,12 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.junit.Assert;
-
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.store.InMemoryFeatureStore;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -46,6 +45,32 @@ public class FF4jTest extends AbstractFf4jTest {
     @Override
     public FF4j initFF4j() {
         return new FF4j("ff4j.xml");
+    }
+    
+    public void helloWorld() {
+        
+        FF4j ff4j = new FF4j("ff4j.xml");
+        
+        if (ff4j.check("feature_1")) {
+            System.out.println("Feature_1 is toggle ON !");
+        }
+        
+        
+        // Feature Store is crud
+        Feature f1 = ff4j.getFeatureStore().read("feature_1");
+        ff4j.getFeatureStore().create(new Feature("feature_3"));
+        ff4j.getFeatureStore().delete("feature_3");
+        
+        // Syntax sugar
+        ff4j.getFeature("feature_2");
+        ff4j.exist("feature_1");
+        ff4j.enable("feature_1");
+        ff4j.create(new Feature("feature_3"));
+        
+        // Dynamically create feature and add it to the store
+        ff4j.create("sayHello");
+        
+        System.out.println(f1);
     }
 
     @Test
@@ -93,7 +118,7 @@ public class FF4jTest extends AbstractFf4jTest {
         assertTrue(ff4j.exist("f1"));
         assertTrue(ff4j.check("f1"));
     }
-
+  
     // enabling...
 
     @Test
@@ -152,8 +177,30 @@ public class FF4jTest extends AbstractFf4jTest {
         Assert.assertTrue(ff4j.checkOveridingStrategy("coco", mockFlipStrategy));
         Assert.assertTrue(ff4j.checkOveridingStrategy("coco", null, null));
         Assert.assertFalse(ff4j.checkOveridingStrategy("cocorico", mockFlipStrategy));
+        
+        
     }
     
+    public void test() {
+        
+        FF4j ff4j = new FF4j("ff4j.xml").
+                autoCreate(false).
+                create(new Feature("MyFeature", false)).
+                enable("MyFeature");
+        
+        if (ff4j.check("MyFeature")) {
+            
+        }
+        
+        ff4j.disable("MyFeature");
+        
+        Feature f = ff4j.getFeatureStore().read("MyFeature");
+        
+        
+        System.out.println(f);
+    }
+    
+        
     @Test
     public void testToString() {
         Assert.assertTrue(ff4j.toString().contains(InMemoryFeatureStore.class.getCanonicalName()));

@@ -31,7 +31,7 @@ public class EhCacheCacheManagerTest extends AbstractCacheManagerJUnitTest {
 
     /** {@inheritDoc} */
     @Override
-    protected FeatureCacheManager getCacheManager() {
+    protected FF4JCacheManager getCacheManager() {
         return new FeatureCacheProviderEhCache();
     }
 

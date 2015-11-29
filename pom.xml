@@ -94,7 +94,7 @@
 		
 		<!-- STORES -->
 		<version.hdldb>2.3.2</version.hdldb>
-		<version.ehcache>2.6.6</version.ehcache>
+		<version.ehcache>2.6.11</version.ehcache>
 		<!-- redis -->
 		<version.jedis>2.5.1</version.jedis>
 		<version.neo4j>2.1.6</version.neo4j>
@@ -129,16 +129,20 @@
 		<module>ff4j-web</module>
 		<!-- <module>ff4j-metrics</module> -->
 
+		<module>ff4j-utils-json</module>
 		<module>ff4j-security-spring</module>
 
+		<!-- nosql -->
 		<module>ff4j-store-springjdbc</module>
-		<module>ff4j-store-ehcache</module>
 		<module>ff4j-store-mongodb</module>
 		<module>ff4j-store-mongodb-v3</module>
-		<module>ff4j-store-redis</module>
 		<!-- <module>ff4j-store-neo4j</module> -->
 		
-		<module>ff4j-utils-json</module>
+		<!-- Caches -->
+		<module>ff4j-store-jcache</module>
+		<module>ff4j-store-ehcache</module>
+		<module>ff4j-store-redis</module>
+		
 	</modules>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->

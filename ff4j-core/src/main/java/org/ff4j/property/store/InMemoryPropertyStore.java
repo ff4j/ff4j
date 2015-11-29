@@ -108,19 +108,19 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
     
     /** {@inheritDoc} */
     @Override
-    public boolean exist(String name) {
+    public boolean existProperty(String name) {
         Util.assertHasLength(name);
         return properties.containsKey(name);
     }
     
     /** {@inheritDoc} */
     @Override
-    public <T> void create(AbstractProperty<T> value) {
+    public <T> void createProperty(AbstractProperty<T> value) {
         // Check Params
         Util.assertNotNull(value);
         Util.assertHasLength(value.getName());
         // Check value
-        if (exist(value.getName())) {
+        if (existProperty(value.getName())) {
             throw new PropertyAlreadyExistException(value.getName());
         }
         // Create
@@ -129,7 +129,7 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
 
     /** {@inheritDoc} */
     @Override
-    public AbstractProperty<?> read(String name) {
+    public AbstractProperty<?> readProperty(String name) {
         Util.assertHasLength(name);
         if (!properties.containsKey(name)) {
             throw new PropertyNotFoundException(name);
@@ -139,10 +139,10 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
 
     /** {@inheritDoc} */
     @Override
-    public <T> void update(AbstractProperty<T> newValue) {
+    public <T> void updateProperty(AbstractProperty<T> newValue) {
         Util.assertNotNull(newValue);
         Util.assertHasLength(newValue.getName());
-        if (!exist(newValue.getName())) {
+        if (!existProperty(newValue.getName())) {
             throw new PropertyNotFoundException(newValue.getName());
         }
         // Update
@@ -151,20 +151,20 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
     
     /** {@inheritDoc} */
     @Override
-    public void update(String name, String newValue) {
+    public void updateProperty(String name, String newValue) {
         Util.assertHasLength(name);
         Util.assertHasLength(newValue);
-        if (!exist(name)) {
+        if (!existProperty(name)) {
             throw new PropertyNotFoundException(name);
         }
         // Update
-        AbstractProperty<?> current = read(name);
+        AbstractProperty<?> current = readProperty(name);
         current.setValueFromString(newValue);
     } 
     
     /** {@inheritDoc} */
     @Override
-    public void delete(String name) {
+    public void deleteProperty(String name) {
         Util.assertHasLength(name);
         if (!properties.containsKey(name)) {
             throw new PropertyNotFoundException(name);

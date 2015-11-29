@@ -45,7 +45,7 @@ public class FeatureStoreNeo4J implements FeatureStore {
     /** {@inheritDoc} */
     @Override
     public void enable(String featureID) {
-        try ( Transaction tx = graphDb.beginTx() ) {
+        /*try ( Transaction tx = graphDb.beginTx() ) {
             Node firstNode = graphDb.createNode();
             firstNode.setProperty( "message", "Hello, " );
             Node secondNode = graphDb.createNode();
@@ -55,7 +55,7 @@ public class FeatureStoreNeo4J implements FeatureStore {
             
             // Database operations go here
             tx.success();
-        }
+        }*/
     }
 
     @Override

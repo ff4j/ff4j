@@ -136,22 +136,22 @@ public class ConsoleOperations implements ConsoleConstants {
         String uid          = req.getParameter("uid");
         
         AbstractProperty<?> ap = null;
-        if (ff4j.getPropertiesStore().exist(uid)) {
+        if (ff4j.getPropertiesStore().existProperty(uid)) {
             // Do not change name, just and update
             if (uid.equalsIgnoreCase(name)) {
-                ap = ff4j.getPropertiesStore().read(uid);
+                ap = ff4j.getPropertiesStore().readProperty(uid);
                 // just an update for the value
                 if (ap.getType().equalsIgnoreCase(type)) {
                     ap.setDescription(description);
                     ap.setValueFromString(value);
-                    ff4j.getPropertiesStore().update(ap);
+                    ff4j.getPropertiesStore().updateProperty(ap);
                 } else {
                     ap = PropertyFactory.createProperty(name, type, value);
                     ap.setDescription(description);
                     // Note : Fixed Values are LOST if type changed => cannot cast ? to T
                     LOGGER.warn("By changing property type you loose the fixedValues, cannot evaluate ? at runtime");
-                    ff4j.getPropertiesStore().delete(name);
-                    ff4j.getPropertiesStore().create(ap);
+                    ff4j.getPropertiesStore().deleteProperty(name);
+                    ff4j.getPropertiesStore().createProperty(ap);
                 }
                 
             } else {
@@ -160,8 +160,8 @@ public class ConsoleOperations implements ConsoleConstants {
                 ap.setDescription(description);
                 // Note : Fixed Values are LOST if name changed => cannot cast ? to T
                 LOGGER.warn("By changing property name you loose the fixedValues, cannot evaluate generics at runtime (type inference)");
-                ff4j.getPropertiesStore().delete(uid);
-                ff4j.getPropertiesStore().create(ap);
+                ff4j.getPropertiesStore().deleteProperty(uid);
+                ff4j.getPropertiesStore().createProperty(ap);
             }
         }
     }
@@ -181,7 +181,7 @@ public class ConsoleOperations implements ConsoleConstants {
         String value        = req.getParameter("pValue");
         AbstractProperty<?> ap = PropertyFactory.createProperty(name, type, value);
         ap.setDescription(description);
-        ff4j.getPropertiesStore().create(ap);
+        ff4j.getPropertiesStore().createProperty(ap);
     }
 
     /**

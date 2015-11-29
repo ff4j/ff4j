@@ -72,7 +72,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
      
     /** {@inheritDoc} */
     @Override
-    public boolean exist(String name) {
+    public boolean existProperty(String name) {
         Util.assertHasLength(name);
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -93,11 +93,11 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
 
     /** {@inheritDoc} */
     @Override
-    public <T> void create(AbstractProperty<T> ap) {
+    public <T> void createProperty(AbstractProperty<T> ap) {
         if (ap == null) {
             throw new IllegalArgumentException("Property cannot be null nor empty");
         }
-        if (exist(ap.getName())) {
+        if (existProperty(ap.getName())) {
             throw new PropertyAlreadyExistException(ap.getName());
         }
         PreparedStatement ps = null;
@@ -125,7 +125,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
 
     /** {@inheritDoc} */
     @Override
-    public AbstractProperty<?> read(String name) {
+    public AbstractProperty<?> readProperty(String name) {
         PreparedStatement ps = null;
         ResultSet rs = null;
         Util.assertHasLength(name);
@@ -149,13 +149,13 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
 
     /** {@inheritDoc} */
     @Override
-    public void update(String name, String newValue) {
+    public void updateProperty(String name, String newValue) {
         Util.assertHasLength(name);
-        if (!exist(name)) {
+        if (!existProperty(name)) {
             throw new PropertyNotFoundException(name);
         }
         // Update
-        AbstractProperty<?> current = read(name);
+        AbstractProperty<?> current = readProperty(name);
         current.setValueFromString(newValue);
         //
         PreparedStatement ps = null;
@@ -171,23 +171,23 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
 
     /** {@inheritDoc} */
     @Override
-    public <T> void update(AbstractProperty<T> prop) {
+    public <T> void updateProperty(AbstractProperty<T> prop) {
         if (prop == null || prop.getName() == null) {
             throw new IllegalArgumentException("Cannot update property, please provide property name");
         }
         // Delete
-        delete(prop.getName());
+        deleteProperty(prop.getName());
         // Create
-        create(prop);
+        createProperty(prop);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void delete(String name) {
+    public void deleteProperty(String name) {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Property identifier (param#0) cannot be null nor empty");
         }
-        if (!exist(name)) {
+        if (!existProperty(name)) {
             throw new PropertyNotFoundException(name);
         }
         PreparedStatement ps = null;

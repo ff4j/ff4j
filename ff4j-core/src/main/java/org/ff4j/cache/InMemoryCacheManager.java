@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import org.ff4j.core.Feature;
+import org.ff4j.property.AbstractProperty;
 
 /**
  * Proposition of inmemory cache implementation.
@@ -34,71 +35,19 @@ import org.ff4j.core.Feature;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class InMemoryCacheManager implements FeatureCacheManager {
-
-    /** Default TTL is one hour. */
-    public static final long DEFAULT_TTL = 3600L;
-
-    /** externalized as constant. */
-    public static final long TO_MILLIS = 1000L;
+public class InMemoryCacheManager implements FF4JCacheManager {    
 
     /** cache name if several caches within memory. */
     public static final String DEFAULT_CACHENAME = "ff4j-cache";
 
     /** Cached Feature Map */
-    private final Map<String, InMemoryCacheEntry<Feature>> cache = new WeakHashMap<String, InMemoryCacheEntry<Feature>>();
-
-    /**
-     * Time to live : The maximum number of seconds an element can exist in the cache regardless of use. The element expires at
-     * this limit and will no longer be returned from the cache. The default value is 0, which means no TTL eviction takes place
-     * (infinite lifetime).
-     */
-    private long ttl = DEFAULT_TTL;
-
-    /** {@inheritDoc} */
-    @Override
-    public void clear() {
-        cache.clear();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void evict(String featureId) {
-        if (cache.containsKey(featureId)) {
-            cache.remove(featureId);
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void put(Feature feat) {
-        if (feat == null) {
-            throw new IllegalArgumentException("ff4j-core: Cannot insert null feature into cache");
-        }
-        if (feat.getUid() == null || feat.getUid().isEmpty()) {
-            throw new IllegalArgumentException("ff4j-core: Cannot insert feature with null identifier into cache");
-        }
-        cache.put(feat.getUid(), new InMemoryCacheEntry<Feature>(feat));
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Feature get(String featureId) {
-        InMemoryCacheEntry<Feature> ice = cache.get(featureId);
-        if (ice != null) {
-            // a feature is stored in cache with this identifier
-            if ((System.currentTimeMillis() - ice.getInsertedDate()) >= (TO_MILLIS * ttl)) {
-                // it has reach its time-to-live
-                evict(featureId);
-            } else {
-                // return cached value
-                return ice.getEntry();
-            }
-        }
-        // not in cache
-        return null;
-    }
+    private final Map<String, InMemoryCacheEntry<Feature>> featuresCache = 
+            new WeakHashMap<String, InMemoryCacheEntry<Feature>>();
     
+    /** Cached Property Map */
+    private final Map<String, InMemoryCacheEntry<AbstractProperty<?>>> propertyCache = 
+            new WeakHashMap<String, InMemoryCacheEntry<AbstractProperty<?>>>();
+       
     /** {@inheritDoc} */
     @Override
     public String getCacheProviderName() {
@@ -108,34 +57,127 @@ public class InMemoryCacheManager implements FeatureCacheManager {
     /** {@inheritDoc} */
     @Override
     public Set<String> listCachedFeatureNames() {
-        return cache.keySet();
+        return featuresCache.keySet();
     }
 
     /** {@inheritDoc} */
     @Override
-    public Object getNativeCache() {
-        return cache;
+    public void clearFeatures() {
+        getFeaturesCache().clear();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void clearProperties() {
+        getPropertyCache().clear();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void evictFeature(String featureId) {
+        if (getFeaturesCache().containsKey(featureId)) {
+            getFeaturesCache().remove(featureId);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void evictProperty(String propertyName) {
+        if (getPropertyCache().containsKey(propertyName)) {
+            getPropertyCache().remove(propertyName);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void putFeature(Feature feat) {
+        if (feat == null) {
+            throw new IllegalArgumentException("ff4j-core: Cannot insert null feature into cache");
+        }
+        if (feat.getUid() == null || feat.getUid().isEmpty()) {
+            throw new IllegalArgumentException("ff4j-core: Cannot insert feature with null identifier into cache");
+        }
+        getFeaturesCache().put(feat.getUid(), new InMemoryCacheEntry<Feature>(feat));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void putProperty(AbstractProperty<?> prop) {
+        if (prop == null) {
+            throw new IllegalArgumentException("ff4j-core: Cannot insert null property into cache");
+        }
+        if (prop.getName() == null || prop.getName().isEmpty()) {
+            throw new IllegalArgumentException("ff4j-core: Cannot insert property with null identifier into cache");
+        }
+        getPropertyCache().put(prop.getName(), new InMemoryCacheEntry<AbstractProperty<?>>(prop));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Feature getFeature(String featureId) {
+        InMemoryCacheEntry<Feature> cacheEntry = getFeaturesCache().get(featureId);
+        if (cacheEntry != null) {
+            if (cacheEntry.hasReachTimeToLive()) {
+                evictFeature(featureId);
+            } else {
+                // return cached value
+                return cacheEntry.getEntry();
+            }
+        }
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public AbstractProperty<?> getProperty(String pName) {
+        InMemoryCacheEntry<AbstractProperty<?>> cacheEntry = getPropertyCache().get(pName);
+        if (cacheEntry != null) {
+            if (cacheEntry.hasReachTimeToLive()) {
+                evictProperty(pName);
+            } else {
+                // return cached value
+                return cacheEntry.getEntry();
+            }
+        }
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> listCachedPropertyNames() {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object getFeatureNativeCache() {
+        return getFeaturesCache();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object getPropertyNativeCache() {
+        return getPropertyCache();
     }
 
     /**
-     * Getter accessor for attribute 'ttl'.
-     * 
-     * @return current value of 'ttl'
+     * Getter accessor for attribute 'featuresCache'.
+     *
+     * @return
+     *       current value of 'featuresCache'
      */
-    public long getTtl() {
-        return ttl;
+    public Map<String, InMemoryCacheEntry<Feature>> getFeaturesCache() {
+        return featuresCache;
     }
 
     /**
-     * Setter accessor for attribute 'ttl'.
-     * 
-     * @param ttl
-     *            new value for 'ttl '
+     * Getter accessor for attribute 'propertyCache'.
+     *
+     * @return
+     *       current value of 'propertyCache'
      */
-    public void setTtl(long ttl) {
-        this.ttl = ttl;
-    }
-
-   
+    public Map<String, InMemoryCacheEntry<AbstractProperty<?>>> getPropertyCache() {
+        return propertyCache;
+    }   
 
 }

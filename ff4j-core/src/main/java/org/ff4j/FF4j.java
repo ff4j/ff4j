@@ -417,6 +417,17 @@ public class FF4j {
         setAutocreate(flag);
         return this;
     }
+    
+    /**
+     * Enable autocreation of features when not found.
+     * 
+     * @param flag
+     *            target value for autocreate flag
+     * @return current instance
+     */
+    public FF4j autoCreate() {
+        return autoCreate(true);
+    }
 
     /**
      * Delete feature name.

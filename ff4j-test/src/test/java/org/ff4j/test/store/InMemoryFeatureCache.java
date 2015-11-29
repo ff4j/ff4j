@@ -20,7 +20,7 @@ package org.ff4j.test.store;
  * #L%
  */
 
-import org.ff4j.cache.FeatureCacheManager;
+import org.ff4j.cache.FF4JCacheManager;
 import org.ff4j.cache.InMemoryCacheManager;
 import org.ff4j.test.cache.AbstractCacheManagerJUnitTest;
 
@@ -33,7 +33,7 @@ public class InMemoryFeatureCache extends AbstractCacheManagerJUnitTest {
 
     /** {@inheritDoc} */
     @Override
-    protected FeatureCacheManager getCacheManager() {
+    protected FF4JCacheManager getCacheManager() {
         return new InMemoryCacheManager();
     }
 

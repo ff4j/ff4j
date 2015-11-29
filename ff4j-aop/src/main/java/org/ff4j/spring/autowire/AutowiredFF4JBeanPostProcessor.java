@@ -167,7 +167,7 @@ public class AutowiredFF4JBeanPostProcessor implements BeanPostProcessor {
     }
 
     private AbstractProperty<?> readProperty(Field field, String propertyName, boolean required) {
-        if (!ff4j.getPropertiesStore().exist(propertyName)) {
+        if (!ff4j.getPropertiesStore().existProperty(propertyName)) {
             if (required) {
                 throw new IllegalArgumentException("Cannot autowiring field '" + field.getName() + "' with FF4J property as"
                         + " target property has not been found");
@@ -176,7 +176,7 @@ public class AutowiredFF4JBeanPostProcessor implements BeanPostProcessor {
                 return null;
             }
         }   
-        return  ff4j.getPropertiesStore().read(propertyName);
+        return  ff4j.getPropertiesStore().readProperty(propertyName);
     }
     
 }

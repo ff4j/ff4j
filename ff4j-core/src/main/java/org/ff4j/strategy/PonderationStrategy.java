@@ -1,5 +1,7 @@
 package org.ff4j.strategy;
 
+import java.io.Serializable;
+
 /*
  * #%L
  * ff4j-core
@@ -30,7 +32,10 @@ import org.ff4j.core.FlippingExecutionContext;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class PonderationStrategy extends AbstractFlipStrategy {
+public class PonderationStrategy extends AbstractFlipStrategy implements Serializable {
+
+    /** Serial number. */
+    private static final long serialVersionUID = -2353911851539414159L;
 
     /** Return equiprobability as 50%. */
     private static final double HALF = 0.5;
@@ -91,6 +96,13 @@ public class PonderationStrategy extends AbstractFlipStrategy {
      */
     public void setWeight(double weight) {
         this.weight = weight;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, String> getInitParams() {
+        this.initParams.put(PARAM_WEIGHT, String.valueOf(weight));
+        return initParams;
     }
 
 }

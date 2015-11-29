@@ -34,7 +34,7 @@ import org.ff4j.utils.ParameterUtils;
 public abstract class AbstractFlipStrategy implements FlippingStrategy {
 
     /** Initial parameters. */
-    private Map<String, String> initParams = new HashMap<String, String>();
+    protected Map<String, String> initParams = new HashMap<String, String>();
 
     /** ClassType. */
     private final String type = getClass().getCanonicalName();
