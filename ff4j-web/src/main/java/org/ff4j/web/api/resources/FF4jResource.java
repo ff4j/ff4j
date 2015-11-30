@@ -54,7 +54,7 @@ import io.swagger.annotations.ApiResponses;
 @Path("/ff4j")
 @Produces(MediaType.APPLICATION_JSON)
 @RolesAllowed({FF4jWebConstants.ROLE_READ})
-@Api(value = "/ff4j", description = "Check features and settings")
+@Api(value = "/ff4j")
 public class FF4jResource extends AbstractResource {
     
     /**

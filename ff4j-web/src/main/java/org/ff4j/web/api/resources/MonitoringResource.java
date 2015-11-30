@@ -54,7 +54,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @Path("/ff4j/monitoring")
 @JsonIgnoreType
-@Api(value = "/ff4j/monitoring", description = "<b>Audit</b> and Supervision")
+@Api(value = "/ff4j/monitoring")
 public class MonitoringResource extends AbstractResource {
     
     /**

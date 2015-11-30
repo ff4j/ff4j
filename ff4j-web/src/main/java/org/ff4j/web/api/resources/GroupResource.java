@@ -47,7 +47,7 @@ import io.swagger.annotations.ApiResponses;
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/ff4j/store/groups/{groupName}")
 @RolesAllowed({FF4jWebConstants.ROLE_READ})
-@Api(value = "/ff4j/store/groups/{groupName}", description = "Resource to work with <b>single group</b>")
+@Api(value = "/ff4j/store/groups/{groupName}")
 public class GroupResource extends AbstractResource {
   
     /**

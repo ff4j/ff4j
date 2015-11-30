@@ -60,7 +60,7 @@ import io.swagger.annotations.ApiResponses;
 @Path("/ff4j/store/features/{uid}")
 @Produces(MediaType.APPLICATION_JSON)
 @RolesAllowed({FF4jWebConstants.ROLE_WRITE})
-@Api(value = "/ff4j/store/features/{uid}", description = "Resource to work with <b>single feature</b>")
+@Api(value = "/ff4j/store/features/{uid}")
 public class FeatureResource extends AbstractResource {
    
     /**

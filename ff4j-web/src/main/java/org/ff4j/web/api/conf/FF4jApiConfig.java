@@ -72,9 +72,15 @@ public class FF4jApiConfig implements FF4JProvider, FF4jWebConstants {
     /** will hold all permissions for both user and apiKey. */
     private Map<String, Set<String>> permissions = new HashMap<String, Set<String>>();
     
+    private String host = "localhost";
+    
+    private int port = 8282;
+    
+    private String webContext = "ff4j-demo";
+    
     /** context Path. */
-    private String contextPath = "http://localhost:8081/ff4j-demo/api";
-
+    private String contextPath = "http://" + host + ":" + port + "/" + webContext + "/api";
+   
     /**
      * Default constructor.
      */
@@ -370,6 +376,63 @@ public class FF4jApiConfig implements FF4JProvider, FF4jWebConstants {
      */
     public void setContextPath(String contextPath) {
         this.contextPath = contextPath;
+    }
+
+    /**
+     * Getter accessor for attribute 'host'.
+     *
+     * @return
+     *       current value of 'host'
+     */
+    public String getHost() {
+        return host;
+    }
+
+    /**
+     * Setter accessor for attribute 'host'.
+     * @param host
+     * 		new value for 'host '
+     */
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    /**
+     * Getter accessor for attribute 'port'.
+     *
+     * @return
+     *       current value of 'port'
+     */
+    public int getPort() {
+        return port;
+    }
+
+    /**
+     * Setter accessor for attribute 'port'.
+     * @param port
+     * 		new value for 'port '
+     */
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    /**
+     * Getter accessor for attribute 'webContext'.
+     *
+     * @return
+     *       current value of 'webContext'
+     */
+    public String getWebContext() {
+        return webContext;
+    }
+
+    /**
+     * Setter accessor for attribute 'webContext'.
+     * @param webContext
+     * 		new value for 'webContext '
+     */
+    public void setWebContext(String webContext) {
+        this.webContext = webContext;
     }
 
 }

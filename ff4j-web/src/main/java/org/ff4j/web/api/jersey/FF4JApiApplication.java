@@ -1,5 +1,7 @@
 package org.ff4j.web.api.jersey;
 
+import java.util.Set;
+
 import javax.ws.rs.core.Context;
 
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
@@ -106,20 +108,33 @@ public abstract class FF4JApiApplication extends PackagesResourceConfig implemen
         if (conf.isEnableDocumentation()) {
            
            BeanConfig beanConfig = new BeanConfig();
-           beanConfig.setVersion("1.0.2");
-           beanConfig.setSchemes(new String[]{"http"});
-           beanConfig.setHost("localhost:8282");
-           beanConfig.setBasePath("/api");
+           beanConfig.setTitle("FF4J (ff4j.org) WebAPI");
+           beanConfig.setDescription("Administrate and operate all tasks on your features through this api");
            beanConfig.setResourcePackage("org.ff4j.web.api.resources");
+           beanConfig.setContact("@clunven");
+           beanConfig.setLicense("Apache 2.0");
+           beanConfig.setLicenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html");
+           
+           beanConfig.setVersion(getApiConfig().getVersionNumber());
+           beanConfig.setSchemes(new String[]{"http"});
+           beanConfig.setHost(getApiConfig().getHost() + ":" + getApiConfig().getPort());
+           beanConfig.setBasePath("/" + getApiConfig().getWebContext() + "/api");
            beanConfig.setScan(true);
            ScannerFactory.setScanner(beanConfig);
             
            getSingletons().add(io.swagger.jaxrs.listing.ApiListingResource.class);
            getSingletons().add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
-           
-          
-           // <---
         }
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<Class<?>> getClasses() {
+        Set<Class<?>> classes =  super.getClasses();
+        classes.add(io.swagger.jaxrs.listing.ApiListingResource.class);
+        classes.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
+        return classes;
+    }
+    
 
 }

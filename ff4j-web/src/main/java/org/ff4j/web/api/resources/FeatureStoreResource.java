@@ -55,7 +55,7 @@ import io.swagger.annotations.ApiResponses;
 @Path("/ff4j/store")
 @Produces(MediaType.APPLICATION_JSON)
 @RolesAllowed({FF4jWebConstants.ROLE_READ})
-@Api(value = "/ff4j/store", description = "Administrate Features, Groups and Cache")
+@Api(value = "/ff4j/store")
 public class FeatureStoreResource extends AbstractResource {
     
     /**
