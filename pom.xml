@@ -88,7 +88,7 @@
 		<version.taglib>1.1.2</version.taglib>
 		<version.jsr311>1.1.1</version.jsr311>
 		<version.jacoco>0.6.3.201306030806</version.jacoco>
-		<version.jersey1x>1.19</version.jersey1x>
+		<version.jersey>1.19</version.jersey>
 		<version.jersey2x>2.22.1</version.jersey2x>
 		<version.httpclient>4.3.4</version.httpclient>
 		<version.metrics>3.1.0</version.metrics>		
