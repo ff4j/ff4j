@@ -29,12 +29,6 @@ import org.neo4j.graphdb.RelationshipType;
  */
 public enum FF4jNeo4jRelationShips implements RelationshipType {
     
-    /** member. */
-    MEMBER_OF,
-    
-    /** required. */
-    REQUIRED_ROLE,
-    
-    /** USE. */
-    REQUIRED_STRATEGY;
+    /** member of a group. */
+    MEMBER_OF
 }

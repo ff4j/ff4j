@@ -29,6 +29,11 @@ import org.ff4j.audit.repository.EventRepository;
 
 import com.codahale.metrics.MetricRegistry;
 
+/**
+ * Class to TODO
+ *
+ * @author Cedrick Lunven (@clunven)</a>
+ */
 public class MetricsRegistryEventRepository extends MetricRegistry implements EventRepository {
 
     /** {@inheritDoc} */
@@ -66,6 +71,12 @@ public class MetricsRegistryEventRepository extends MetricRegistry implements Ev
     @Override
     public int getTotalEventCount() {
         return 0;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> getFeatureNames() {
+        return null;
     }
 
 }

@@ -67,20 +67,24 @@
 		<license.licenseName>apache_v2</license.licenseName>
 		<license.licenseResolver>${project.baseUri}src/license</license.licenseResolver>
 
-		<!-- Version -->
-		<version.cglib>3.1</version.cglib>
-		<version.mockito>1.9.5</version.mockito>
-		<version.aopalliance>1.0</version.aopalliance>
+		<!-- Versions -->
 		<version.slf4j>1.7.7</version.slf4j>
 		<version.logback>1.1.2</version.logback>
+		
 		<version.junit>4.12</version.junit>
 		<version.powermock>1.5.5</version.powermock>
+		<version.mockito>1.9.5</version.mockito>
+		
+		<version.cglib>3.1</version.cglib>
+		<version.aopalliance>1.0</version.aopalliance>
 		<version.spring>4.0.5.RELEASE</version.spring>
 		<version.spring.security>3.2.4.RELEASE</version.spring.security>
+		
 		<version.commons-lang>2.6</version.commons-lang>
 		<version.commons-dbcp>1.4</version.commons-dbcp>
 		<version.commons-io>2.4</version.commons-io>
 		<version.commons-fileupload>1.3.1</version.commons-fileupload>
+		
 		<version.servlet-api>2.5</version.servlet-api>
 		<version.jsp-api>2.2</version.jsp-api>
 		<version.jackson>1.9.11</version.jackson>
@@ -91,14 +95,13 @@
 		<version.jersey>1.19</version.jersey>
 		<version.jersey2x>2.22.1</version.jersey2x>
 		<version.httpclient>4.3.4</version.httpclient>
-		<version.metrics>3.1.0</version.metrics>		
 		
-		<!-- STORES -->
+		<version.metrics>3.1.0</version.metrics>		
 		<version.hdldb>2.3.2</version.hdldb>
+		
 		<version.ehcache>2.6.11</version.ehcache>
-		<!-- redis -->
 		<version.jedis>2.5.1</version.jedis>
-		<version.neo4j>2.1.6</version.neo4j>
+		<version.neo4j>2.3.1</version.neo4j>
 
 		<!-- VERSIONS PLUGINS -->
 		<version.maven.plugin.failsafe>2.18.1</version.maven.plugin.failsafe>

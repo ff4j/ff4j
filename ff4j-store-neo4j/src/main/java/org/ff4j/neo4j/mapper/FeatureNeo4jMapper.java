@@ -21,12 +21,17 @@ package org.ff4j.neo4j.mapper;
  */
 
 import org.ff4j.core.Feature;
-import org.ff4j.neo4j.FF4jNeo4jConstants;
 import org.ff4j.neo4j.FF4jNeo4jLabels;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 
-public class FeatureNeo4jMapper implements FF4jNeo4jConstants {
+public class FeatureNeo4jMapper {
+    
+    public static String attributeUID = "uid";
+    
+    public static String attributeGroup = "group";
+    
+    public static String attributeValue = "value";
     
     /**
      * Hide default constructor.
@@ -42,11 +47,11 @@ public class FeatureNeo4jMapper implements FF4jNeo4jConstants {
      * @return
      *      target node
      */
-    static public Node getFeatureNode(GraphDatabaseService graphDb, Feature feature) {
+    static public Node createFeatureNode(GraphDatabaseService graphDb, Feature feature) {
         Node nodeFeature = graphDb.createNode(FF4jNeo4jLabels.FEATURE);
-        nodeFeature.setProperty(P_FEATURE_UID, feature.getUid());
-        nodeFeature.setProperty(P_FEATURE_DESCRIPTION, feature.getDescription());
-        nodeFeature.setProperty(P_FEATURE_ENABLE, feature.isEnable());
+        nodeFeature.setProperty(attributeUID, feature.getUid());
+        nodeFeature.setProperty(attributeGroup, feature.getGroup());
+        nodeFeature.setProperty(attributeValue, feature.toJson());
         return nodeFeature;
     }
 

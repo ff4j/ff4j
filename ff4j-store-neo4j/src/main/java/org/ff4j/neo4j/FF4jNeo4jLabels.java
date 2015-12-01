@@ -35,9 +35,6 @@ public enum FF4jNeo4jLabels implements Label {
     /** Node Group. */
     FEATURE_GROUP,
     
-    /** Node Role. */
-    ROLE,
-    
-    /** Strategy. */
-    FLIPPING_STRATEGY
+    /** Node Property. */
+    PROPERTY,
 }

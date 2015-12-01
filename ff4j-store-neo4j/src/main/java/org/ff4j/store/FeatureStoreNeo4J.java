@@ -26,7 +26,6 @@ import java.util.Set;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 /**
  * Implementatino of NEO4J Store.
@@ -36,7 +35,7 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 public class FeatureStoreNeo4J implements FeatureStore {
 
     /** Persistent storage. */
-    private GraphDatabaseService graphDb = new GraphDatabaseFactory().newEmbeddedDatabase("");
+    private GraphDatabaseService graphDb;
     
     /** {@inheritDoc} */
     @Override
