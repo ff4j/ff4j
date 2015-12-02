@@ -4,32 +4,26 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FlippingExecutionContext;
 
 /**
- * Request sent to Drools.
+ * Wrapper Bean for ff4j context {@link FlippingExecutionContext} to be used as Drools Fact.
  * 
  * @author Cedrick Lunven (@clunven)</a>
  */
 public class FF4jDroolsRequest {
     
-    /** Current feature on which apply this strategy. */
+    /** Current feature on which apply the strategy. */
     private String featureName = "";
     
-    /** Reference to feature if required for assessing rule. */
+    /** Reference to feature store. */
     private FeatureStore featureStore;
     
-    /** Current context to execute the rules. */
+    /** FF4J context to send facts into drools session. */
     private FlippingExecutionContext executionContext;
     
-    /** Target expected result, shoudl be updated after rule execution. */
+    /** Target result, expected to be updated by rule files. */
     private boolean toggled = false;
     
-    /** Value must be evaluated. */
+    /** Avoid loop and several evaluation. */
     private boolean evaluated = false;
-    
-    /**
-     * Allow default initialization
-     */
-    public FF4jDroolsRequest() {
-    }
     
     /**
      * Parameter of the execute method.

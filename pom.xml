@@ -135,6 +135,7 @@
 
 		<module>ff4j-utils-json</module>
 		<module>ff4j-security-spring</module>
+		<module>ff4j-strategy-drools</module>
 
 		<!-- nosql -->
 		<module>ff4j-store-springjdbc</module>

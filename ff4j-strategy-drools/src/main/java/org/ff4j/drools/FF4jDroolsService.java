@@ -14,15 +14,16 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Singleton pattern to instanciate drool object once and reuse for each
- * feature. We assuming that spring do not autowired drools element into
- * Features and we need to wrap it.
+ * Singleton pattern to instanciate drool Session once and be reused for each feature.
+ * 
+ * <p>It can be initialized in 2 ways, from kbase name or a list of drl files.
  *
  * @author Cedrick Lunven (@clunven)</a>
  */
@@ -34,10 +35,10 @@ public final class FF4jDroolsService implements Serializable {
     /** logger provide by drools. */
     private static final Logger LOGGER = LoggerFactory.getLogger(FF4jDroolsFlippingStrategy.class);
 
-    /** protected instance. */
+    /** Protected instance. */
     private static FF4jDroolsService _instance;
     
-    /** Drools service must be singleton . */
+    /** Drools services first level. */
     private KieServices kieServices;
 
     /** Container for sessions. */
@@ -46,10 +47,10 @@ public final class FF4jDroolsService implements Serializable {
     /** Working Session. */
     private KieSession ksession;
 
-    /** target drools base name. */
+    /**  base name coming from strategy. */
     private String basename;
 
-    /** list of files. */
+    /** drl files coming from strategy. */
     private Set<String> ruleFiles = new HashSet<>();
     
     /**
@@ -59,7 +60,7 @@ public final class FF4jDroolsService implements Serializable {
     }
     
     /**
-     * Check singleton.
+     * Session must be initialized once.
      *
      * @return
      *      singleton already created.
@@ -139,17 +140,18 @@ public final class FF4jDroolsService implements Serializable {
          * : session.getFactHandles(filter)
          * 
          * FF4J expects the fact {@link FF4JDroolsRequest} to be modified by the target rules. By default the status is 'false'.
-         */        
+         */
         _instance.ksession.setGlobal("store", request.getFeatureStore());
 
         // FactHandle drHandler = ksession.insert(droolsRequest);
-        _instance.ksession.insert(request);
+        FactHandle requestHandle = _instance.ksession.insert(request);
 
         // Execute the rules
         ksession.fireAllRules();
 
-        // Empty the stateful session
-        _instance.ksession.dispose();
+        // clean session, note that retract() is deprecated
+        _instance.ksession.delete(requestHandle);
+        //_instance.ksession.dispose();
 
         LOGGER.debug("Evaluating feature " + request.getFeatureName() + " to " + request.isToggled());        
         return request.isToggled();

@@ -12,37 +12,59 @@ import org.ff4j.core.FlippingStrategy;
 import org.ff4j.strategy.AbstractFlipStrategy;
 
 /**
- * Proposition of {@link FlippingStrategy} invoking the JBoss Drools rule Engine
- * to implement the strategy logic. We create a "Fact" with all context related to FF4j and
- * expect the rules to update this fact. In the end we drive the toggling with the 'toggled' attribute. 
+ * Proposition of {@link FlippingStrategy} delegating the evaluation of feature 
+ * toggling to the JBoss Drools Rule Engine. 
+ * 
+ * <p>The {@link FlippingExecutionContext} is embeded in a Request {@link FF4jDroolsRequest} and 
+ * insert as <code>Fact</code> in the Drools session.
+ * 
+ * <p>The rules are expected to update the request and espacially the status boolean <code>toggled</code>.
+ * You can initialize the drools Engine with both the KbaseName or a set of DRL files.
+ * 
+ * <p>You can find a sample of rules below :
+ * <pre>rule "f1_checkSampleThreshold"
+ *   dialect "mvel"
+ *   when
+ *     $req : FF4jDroolsRequest( featureName == "f1", evaluated == false )
+ *   then
+ *     System.out.println("Evaluating F1 Strategy");
+ *     System.out.println(store.getClass().getName());
+ *     modify ($req) {
+ *       evaluated = true,
+ *       toggled = true
+ *     };
+ *  end
+ * </pre>
  *
  * @author Cedrick Lunven (@clunven)</a>
  */
 public class FF4jDroolsFlippingStrategy extends AbstractFlipStrategy {
 
-    /** key initParam. */
-    private static final String KEY_BASE_NAME = "BASENAME";
+    /** key to be used in map initParam. */
+    private static final String KEY_BASE_NAME = "basename";
     
-    /** key initParam. */
-    private static final String KEY_RULES_FILES = "RULES_FILES";
+    /** key to be used in map initParam. */
+    private static final String KEY_RULES_FILES = "ruleFiles";
     
-    /** target drools base name. */
+    /** (If initialized with the kmodule.xml file) State as the kSession name. */
     private String basename;
 
-    /** list of files. */
+    /** (If initialized with drl rule files), State as the kSession name. */
     private Set<String> ruleFiles = new HashSet<>();
 
     /**
-     * Constructor.
+     * Keep default constructor to allow dependency injection.
      */
     public FF4jDroolsFlippingStrategy() {
     }
     
     /**
-     * Constructor.
+     * Constructor to work with kSession names.
      *
-     * @param drlFiles
-     *            drools rules files
+     * <p><pre><ksession name="ff4jDroolsStrategy"/></pre>
+     *
+     * @param baseName
+     *           Ksession name locate in META-INF/kmodule.xml (convention)
      */
     public FF4jDroolsFlippingStrategy(String baseName) {
        this.basename = baseName;
@@ -54,10 +76,10 @@ public class FF4jDroolsFlippingStrategy extends AbstractFlipStrategy {
     }
     
     /**
-     * Constructor.
+     * Constructor to work with drl rule files.
      *
-     * @param drlFiles
-     *            drools rules files
+     * @param files
+     *          rules files can be DRL, RDRL...
      */
     public FF4jDroolsFlippingStrategy(Set<String> files) {
         this.ruleFiles = files;
@@ -67,7 +89,12 @@ public class FF4jDroolsFlippingStrategy extends AbstractFlipStrategy {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Generate InitParameters to be used in json serialization.
+     * 
+     * @return
+     *      the init param map
+     */
     @Override
     public Map<String, String> getInitParams() {
         initParams.put(KEY_BASE_NAME, basename);
@@ -76,7 +103,9 @@ public class FF4jDroolsFlippingStrategy extends AbstractFlipStrategy {
     }
     
     /**
-     * New in Java8, Stringjoiner enhance string concat..
+     * Utility HashSet < String > values separated by comma.
+     * 
+     * <p>New in Java8, Stringjoiner enhance string concatenation
      *
      * @return
      *      hasehet to string easily
@@ -87,18 +116,27 @@ public class FF4jDroolsFlippingStrategy extends AbstractFlipStrategy {
         return  joiner.toString();
     }
 
-    /** {@inheritDoc} */
+    /** 
+     * Initialization through initParam and not the constructor to be used by the
+     * XML feature system.
+     * 
+     * @param featureName
+     *      current feature unique identifier
+     * @param initParam
+     *      attribute defined through XML configuration for instance
+     */
     @Override
     public void init(String featureName, Map<String, String> initParam) {
-        super.init(featureName, initParams);
+        super.init(featureName, initParam);
+        
         if (!FF4jDroolsService.isInitialized()) {
             
-            if (initParam.containsKey(KEY_BASE_NAME)) {
+            if (initParams.containsKey(KEY_BASE_NAME)) {
                 this.basename = initParams.get(KEY_BASE_NAME);
                 FF4jDroolsService.initFromBaseName(basename);
             
-            } else if (initParam.containsKey(KEY_RULES_FILES)) {
-                String exp = initParam.get(KEY_RULES_FILES);
+            } else if (initParams.containsKey(KEY_RULES_FILES)) {
+                String exp = initParams.get(KEY_RULES_FILES);
                 this.ruleFiles = new HashSet <String > (Arrays.asList(exp.split(",")));
                 FF4jDroolsService.initFromRulesFiles(ruleFiles);
             
