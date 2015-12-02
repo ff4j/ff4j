@@ -26,6 +26,7 @@ rule "f1_checkSampleThreshold"
         $req : FF4jDroolsRequest( featureName == "f1", evaluated == false )
      then
         System.out.println("Evaluating F1 Strategy");
+        // Work with the target Store
         System.out.println(store.getClass().getName());
         modify ($req) {
             evaluated = true,
