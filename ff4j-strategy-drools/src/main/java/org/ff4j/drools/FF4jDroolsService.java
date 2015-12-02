@@ -7,8 +7,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.drools.core.ClockType;
-import org.ff4j.core.FeatureStore;
-import org.ff4j.core.FlippingExecutionContext;
 import org.kie.api.KieServices;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.ResourceType;
@@ -18,6 +16,8 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.utils.KieHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Singleton pattern to instanciate drool object once and reuse for each
@@ -26,13 +26,16 @@ import org.kie.internal.utils.KieHelper;
  *
  * @author Cedrick Lunven (@clunven)</a>
  */
-public final class FF4JDroolsService implements Serializable {
+public final class FF4jDroolsService implements Serializable {
     
     /** Serial. */
     private static final long serialVersionUID = -4732368029311891671L;
+    
+    /** logger provide by drools. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(FF4jDroolsFlippingStrategy.class);
 
     /** protected instance. */
-    private static FF4JDroolsService _instance;
+    private static FF4jDroolsService _instance;
     
     /** Drools service must be singleton . */
     private KieServices kieServices;
@@ -52,7 +55,7 @@ public final class FF4JDroolsService implements Serializable {
     /**
      * Implementation of singleton pattern (Hide Constructor).
      */
-    private FF4JDroolsService() {
+    private FF4jDroolsService() {
     }
     
     /**
@@ -70,7 +73,7 @@ public final class FF4JDroolsService implements Serializable {
      *
      * @return
      */
-    public static synchronized FF4JDroolsService getInstance() {
+    public static synchronized FF4jDroolsService getInstance() {
         if (!isInitialized()) {
             throw new IllegalStateException("The service has not been initialized yet, "
                     + "please init with initFromBaseName() or initFromRulesFiles()");
@@ -93,7 +96,7 @@ public final class FF4JDroolsService implements Serializable {
         if (isInitialized()) {
             throw new IllegalStateException("This Factory has already be initialized once");
         }
-        _instance               = new FF4JDroolsService();
+        _instance               = new FF4jDroolsService();
         _instance.basename      = baseName; 
         _instance.kieServices   = KieServices.Factory.get();
         _instance.kieContainer  = _instance.kieServices.newKieClasspathContainer();
@@ -114,15 +117,18 @@ public final class FF4JDroolsService implements Serializable {
         if (isInitialized()) {
             throw new IllegalStateException("This Factory has already be initialized once");
         }
-        _instance               = new FF4JDroolsService();
+        _instance               = new FF4jDroolsService();
         _instance.ruleFiles     = ruleFiles; 
         
         KieHelper helper = new KieHelper();
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
-        
-        ruleFiles.stream().forEach(drlFile -> helper.addContent(loadResourceAsString(drlFile),
-                                             ResourceType.determineResourceType(drlFile)));
+        //ruleFiles.stream().forEach(drlFile -> helper.addContent(loadResourceAsString(drlFile), ResourceType.determineResourceType(drlFile)));
+        for (String drlFile : ruleFiles) {
+            String fileContent    = loadResourceAsString(drlFile);            
+            ResourceType typeFile = ResourceType.determineResourceType(drlFile);
+            helper.addContent(fileContent, typeFile);
+        }
         _instance.ksession = helper.build(EventProcessingOption.STREAM).newKieSession(sessionConfig, null);
     }
     
@@ -145,6 +151,7 @@ public final class FF4JDroolsService implements Serializable {
         // Empty the stateful session
         _instance.ksession.dispose();
 
+        LOGGER.debug("Evaluating feature " + request.getFeatureName() + " to " + request.isToggled());        
         return request.isToggled();
     }
     

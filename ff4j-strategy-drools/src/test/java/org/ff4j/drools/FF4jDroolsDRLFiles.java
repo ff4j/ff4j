@@ -10,19 +10,15 @@ import org.junit.Test;
  *
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class FF4jDroolsFlippingStrategyTest {
-    
+public class FF4jDroolsDRLFiles {
+   
     @Test
-    public void testX() {
-        
+    public void testDroolsStrategyFromDRLFiles() {
         FF4j ff4j = new FF4j();
-        
         Feature f1 = new Feature("f1", true);
         f1.setFlippingStrategy(new FF4jDroolsFlippingStrategy(Util.set("ff4jDroolsSample.drl")));
-        //f1.setFlippingStrategy(new FF4jDroolsFlippingStrategy("ff4jDroolsStrategy"));
         ff4j.create(f1);
         ff4j.check("f1");
-                
-        
     }
+    
 }

@@ -1,8 +1,10 @@
 package org.ff4j.drools;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringJoiner;
 
 import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FlippingExecutionContext;
@@ -45,7 +47,10 @@ public class FF4jDroolsFlippingStrategy extends AbstractFlipStrategy {
     public FF4jDroolsFlippingStrategy(String baseName) {
        this.basename = baseName;
        initParams.put(KEY_BASE_NAME, basename);
-       FF4JDroolsService.initFromBaseName(basename);
+       // Do not initialize for each feature, it's a static contexte to be initialized once
+       if (!FF4jDroolsService.isInitialized()) {
+           FF4jDroolsService.initFromBaseName(basename);
+       }
     }
     
     /**
@@ -56,45 +61,64 @@ public class FF4jDroolsFlippingStrategy extends AbstractFlipStrategy {
      */
     public FF4jDroolsFlippingStrategy(Set<String> files) {
         this.ruleFiles = files;
-        initParams.put(KEY_RULES_FILES, files.toString());
-        FF4JDroolsService.initFromRulesFiles(files);
+        initParams.put(KEY_RULES_FILES, getRulesFileAsString());
+        if (!FF4jDroolsService.isInitialized()) {
+            FF4jDroolsService.initFromRulesFiles(files);
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public Map<String, String> getInitParams() {
         initParams.put(KEY_BASE_NAME, basename);
+        initParams.put(KEY_RULES_FILES, getRulesFileAsString());
         return initParams;
+    }
+    
+    /**
+     * New in Java8, Stringjoiner enhance string concat..
+     *
+     * @return
+     *      hasehet to string easily
+     */
+    private String getRulesFileAsString() {
+        StringJoiner joiner = new StringJoiner(",");
+        ruleFiles.forEach(e ->joiner.add(e));
+        return  joiner.toString();
     }
 
     /** {@inheritDoc} */
     @Override
     public void init(String featureName, Map<String, String> initParam) {
         super.init(featureName, initParams);
-        if (!FF4JDroolsService.isInitialized()) {
+        if (!FF4jDroolsService.isInitialized()) {
+            
             if (initParam.containsKey(KEY_BASE_NAME)) {
                 this.basename = initParams.get(KEY_BASE_NAME);
-                FF4JDroolsService.initFromBaseName(basename);
+                FF4jDroolsService.initFromBaseName(basename);
+            
             } else if (initParam.containsKey(KEY_RULES_FILES)) {
                 String exp = initParam.get(KEY_RULES_FILES);
-                // TODO Convert from Stirng to HASSHET
-                FF4JDroolsService.initFromBaseName(basename);
+                this.ruleFiles = new HashSet <String > (Arrays.asList(exp.split(",")));
+                FF4jDroolsService.initFromRulesFiles(ruleFiles);
+            
             } else {
                 throw new IllegalArgumentException("Init param '" + KEY_BASE_NAME + "' is required to fetch Drools settings");
             }
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * To retrieve result for rules execution there are 2 ways: 
+     * - Modifed an existing fact 
+     * - Retrieve FacHandler from session like session.getFactHandles(filter)
+     * 
+     * FF4J expects the fact {@link FF4JDroolsRequest} to be modified by the target rules. 
+     * By default the status is 'false'.
+     */
     @Override
     public boolean evaluate(String uid, FeatureStore store, FlippingExecutionContext ctx) {
-        /*
-         * To retrieve result for rules execution there are 2 ways: - Modifed an existing fact - Retrieve FacHandler from session
-         * : session.getFactHandles(filter)
-         * 
-         * FF4J expects the fact {@link FF4JDroolsRequest} to be modified by the target rules. By default the status is 'false'.
-         */
-        return FF4JDroolsService.getInstance().evaluate(new FF4jDroolsRequest(uid, store, ctx));
+        return FF4jDroolsService.getInstance().evaluate(new FF4jDroolsRequest(uid, store, ctx));
     }
 
     /**
@@ -114,6 +138,25 @@ public class FF4jDroolsFlippingStrategy extends AbstractFlipStrategy {
      */
     public void setBasename(String basename) {
         this.basename = basename;
+    }
+
+    /**
+     * Getter accessor for attribute 'ruleFiles'.
+     *
+     * @return
+     *       current value of 'ruleFiles'
+     */
+    public Set<String> getRuleFiles() {
+        return ruleFiles;
+    }
+
+    /**
+     * Setter accessor for attribute 'ruleFiles'.
+     * @param ruleFiles
+     * 		new value for 'ruleFiles '
+     */
+    public void setRuleFiles(Set<String> ruleFiles) {
+        this.ruleFiles = ruleFiles;
     }
 
 }
