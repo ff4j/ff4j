@@ -35,8 +35,8 @@ import org.ff4j.audit.repository.InMemoryEventRepository;
 
 /**
  * Default implementation of repository.
- * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ *
+ * @author Cedrick Lunven (@clunven)
  */
 public class EventPublisher {
     

@@ -4,7 +4,7 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~         COORDINATES      ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<artifactId>ff4j-store-terracotta</artifactId>
+	<artifactId>ff4j-store-jcache</artifactId>
 	<packaging>jar</packaging>
 	<name>ff4j-store-jcache</name>
 
@@ -23,6 +23,9 @@
 	<properties>
 		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
 		<ignite.version>1.4.0</ignite.version>
+		<ehcache.version>3.0.0.m3</ehcache.version>
+		<jsr107.version>1.0.0</jsr107.version>
+		<hazelcast.version>3.5.3</hazelcast.version>
 	</properties>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -41,7 +44,7 @@
 		<dependency>
 			<groupId>javax.cache</groupId>
 			<artifactId>cache-api</artifactId>
-			<version>1.0.0</version>
+			<version>${jsr107.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		
@@ -49,7 +52,7 @@
 		<dependency>
 			<groupId>org.jsr107.ri</groupId>
 			<artifactId>cache-ri-impl</artifactId>
-			<version>1.0.0</version>
+			<version>${jsr107.version}</version>
 			<scope>test</scope>
 		</dependency>
 		
@@ -57,7 +60,7 @@
 		<dependency>
 			<groupId>org.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
-			<version>3.0.0.m3</version>
+			<version>${ehcache.version}</version>
 			<scope>test</scope>
 		</dependency>
 		
@@ -65,7 +68,7 @@
 		<dependency>
 			<groupId>com.hazelcast</groupId>
 			<artifactId>hazelcast</artifactId>
-			<version>3.5.3</version>
+			<version>${hazelcast.version}</version>
 			<scope>test</scope>
 		</dependency>
 		
@@ -77,15 +80,6 @@
 		    <scope>test</scope>
 		</dependency>
 		
-		
-		<!-- Terracotta -->
-		<dependency>
-			<groupId>org.terracotta</groupId>
-			<artifactId>terracotta-toolkit-runtime-ee</artifactId>
-			<version>4.0.1</version>
-		</dependency>
-		
-
 		<!-- tests -->
 		<dependency>
 			<artifactId>ff4j-test</artifactId>
@@ -111,18 +105,6 @@
 
 	</dependencies>
 
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~       REPOSITORIES       ~ -->
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<repositories>
-		<repository>
-			<id>terracotta-repository</id>
-			<url>http://www.terracotta.org/download/reflector/releases</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-	</repositories>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~       BUILD              ~ -->
@@ -138,13 +120,7 @@
                 </configuration>
             </plugin>
             
-			<plugin>
-				<groupId>org.terracotta.maven.plugins</groupId>
-				<artifactId>tc-maven-plugin</artifactId>
-				<version>1.9.4</version>
-			</plugin>
 		</plugins>
 	</build>
-
 
 </project>

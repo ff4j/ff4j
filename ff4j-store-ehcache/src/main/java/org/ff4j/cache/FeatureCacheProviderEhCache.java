@@ -14,15 +14,16 @@ package org.ff4j.cache;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
-
 import org.ff4j.core.Feature;
 import org.ff4j.ehcache.FF4JEhCacheConstants;
 import org.ff4j.property.AbstractProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
+import net.sf.ehcache.config.Configuration;
 
 /**
  * Cache-aside implementation with EHCACHE.
@@ -38,6 +39,12 @@ public class FeatureCacheProviderEhCache implements FF4JCacheManager, FF4JEhCach
     /** Logger for the class. */
     private static final Logger LOG = LoggerFactory.getLogger(FF4jCacheProxy.class);
     
+    /** Setup Cache configuration to work with Terracotta for instance. */
+    private Configuration cacheConfiguration;
+    
+    /** The cache manager. */
+    private CacheManager cacheManager;
+    
     /** Eh Cache - cache-aside mode utlization. */
     private Cache cacheFeatures = null;
     
@@ -47,7 +54,15 @@ public class FeatureCacheProviderEhCache implements FF4JCacheManager, FF4JEhCach
     /**
      * Default constructor to allow IoC.
      */
-    public FeatureCacheProviderEhCache() {}
+    public FeatureCacheProviderEhCache() {
+    }
+    
+    /**
+     * Default constructor to allow IoC.
+     */
+    public FeatureCacheProviderEhCache(Configuration config) {
+        this.cacheConfiguration = config;
+    }
    
     /** {@inheritDoc} */
     @Override
@@ -66,7 +81,11 @@ public class FeatureCacheProviderEhCache implements FF4JCacheManager, FF4JEhCach
      * Ininitialize cache
      */
     private void initializeCache() {
-        CacheManager cacheManager = CacheManager.create();
+        if (null == getCacheConfiguration()) {
+            this.cacheManager = CacheManager.create();
+        } else {
+            this.cacheManager = CacheManager.create(getCacheConfiguration());  
+        }
         if (!cacheManager.cacheExists(CACHENAME_FEATURES)) {
             cacheManager.addCache(CACHENAME_FEATURES);
         }
@@ -165,7 +184,6 @@ public class FeatureCacheProviderEhCache implements FF4JCacheManager, FF4JEhCach
         return cacheFeatures;
     }
 
-
     /**
      * Setter accessor for attribute 'cacheFeatures'.
      * @param cacheFeatures
@@ -174,7 +192,6 @@ public class FeatureCacheProviderEhCache implements FF4JCacheManager, FF4JEhCach
     public void setCacheFeatures(Cache cacheFeatures) {
         this.cacheFeatures = cacheFeatures;
     }
-
 
     /**
      * Getter accessor for attribute 'cacheProperties'.
@@ -187,7 +204,6 @@ public class FeatureCacheProviderEhCache implements FF4JCacheManager, FF4JEhCach
         return cacheProperties;
     }
 
-
     /**
      * Setter accessor for attribute 'cacheProperties'.
      * @param cacheProperties
@@ -195,6 +211,44 @@ public class FeatureCacheProviderEhCache implements FF4JCacheManager, FF4JEhCach
      */
     public void setCacheProperties(Cache cacheProperties) {
         this.cacheProperties = cacheProperties;
+    }
+
+    /**
+     * Getter accessor for attribute 'cacheConfiguration'.
+     *
+     * @return
+     *       current value of 'cacheConfiguration'
+     */
+    public Configuration getCacheConfiguration() {
+        return cacheConfiguration;
+    }
+
+    /**
+     * Setter accessor for attribute 'cacheConfiguration'.
+     * @param cacheConfiguration
+     * 		new value for 'cacheConfiguration '
+     */
+    public void setCacheConfiguration(Configuration cacheConfiguration) {
+        this.cacheConfiguration = cacheConfiguration;
+    }
+
+    /**
+     * Getter accessor for attribute 'cacheManager'.
+     *
+     * @return
+     *       current value of 'cacheManager'
+     */
+    public CacheManager getCacheManager() {
+        return cacheManager;
+    }
+
+    /**
+     * Setter accessor for attribute 'cacheManager'.
+     * @param cacheManager
+     * 		new value for 'cacheManager '
+     */
+    public void setCacheManager(CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
     }   
 
 }

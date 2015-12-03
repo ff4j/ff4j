@@ -25,7 +25,7 @@ import java.io.Serializable;
 /**
  * Audit information relevant to features.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class Event implements Serializable {
 

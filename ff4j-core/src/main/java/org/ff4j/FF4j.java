@@ -42,7 +42,7 @@ import org.ff4j.security.AuthorizationsManager;
 import org.ff4j.store.InMemoryFeatureStore;
 
 /**
- * Main class, it allows to work with features.
+ * Principal class stands as public api to work with FF4J.
  *
  * <ul>
  * <p>
@@ -63,7 +63,7 @@ import org.ff4j.store.InMemoryFeatureStore;
  * 
  * </ul>
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class FF4j {
 

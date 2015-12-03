@@ -49,6 +49,14 @@
     		<artifactId>ehcache-core</artifactId>
     		<version>${version.ehcache}</version>
 		</dependency>
+		
+		<!-- Terracotta -->
+		<dependency>
+			<groupId>org.terracotta</groupId>
+			<artifactId>terracotta-toolkit-runtime-ee</artifactId>
+			<version>4.0.1</version>
+		</dependency>
+		
 
 		<!-- tests -->
 		<dependency>
@@ -74,5 +82,31 @@
 		</dependency>
 		
 	</dependencies>
+	
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~       REPOSITORIES       ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<repositories>
+		<repository>
+			<id>terracotta-repository</id>
+			<url>http://www.terracotta.org/download/reflector/releases</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+	</repositories>
+	
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~       BUILD              ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.terracotta.maven.plugins</groupId>
+				<artifactId>tc-maven-plugin</artifactId>
+				<version>1.9.4</version>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

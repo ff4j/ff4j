@@ -23,7 +23,7 @@ package org.ff4j.audit;
 /**
  * Different types of events.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public enum EventType {
 

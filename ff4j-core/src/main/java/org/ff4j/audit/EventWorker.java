@@ -27,7 +27,7 @@ import org.ff4j.audit.repository.EventRepository;
 /**
  * Worker to save {@link Event} into {@link EventRepository} asynchronously.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class EventWorker implements Callable<Boolean> {
 

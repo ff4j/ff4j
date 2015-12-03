@@ -40,6 +40,7 @@ public abstract class AbstractCacheManagerJUnitTest implements TestsFf4jConstant
     
     /**
      * Implementation of cache manager.
+     *
      * @return
      */
     protected abstract FF4JCacheManager getCacheManager();

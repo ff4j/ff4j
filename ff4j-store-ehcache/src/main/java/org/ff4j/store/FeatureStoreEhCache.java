@@ -28,14 +28,15 @@ import java.util.Set;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.ehcache.FF4JEhCacheConstants;
+import org.ff4j.ehcache.FF4jEhCacheWrapper;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.utils.Util;
 
 import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
+import net.sf.ehcache.config.Configuration;
 
 /**
  * {@link FeatureStore} to persist data into
@@ -43,23 +44,31 @@ import net.sf.ehcache.Element;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public class FeatureStoreEhCache extends AbstractFeatureStore implements FF4JEhCacheConstants {
-    
-    /** Eh Cache - cache-aside mode utlization. */
-    private Cache cache = null;
+  
+    /** Wrap EHCACHE Manager. */
+    private FF4jEhCacheWrapper wrapper;
     
     /**
      * Default Constructor.
      */
     public FeatureStoreEhCache() {
+        wrapper = new FF4jEhCacheWrapper();
     }
     
     /**
      * Default Constructor.
      */
-    public FeatureStoreEhCache(String xmlFeaturesfFile) {
-       this();
-       importFeaturesFromXmlFile(xmlFeaturesfFile);
+    public FeatureStoreEhCache(Configuration cacheConfig) {
+        wrapper = new FF4jEhCacheWrapper(cacheConfig);
     }
+    
+    /**
+     * Default Constructor.
+     */
+    public FeatureStoreEhCache(String xmlEhCacheConfig) {
+        wrapper = new FF4jEhCacheWrapper(xmlEhCacheConfig);
+    }
+    
     
     /** {@inheritDoc} */
     @Override
@@ -265,41 +274,25 @@ public class FeatureStoreEhCache extends AbstractFeatureStore implements FF4JEhC
      * @return
      */
     private Cache getCache() {
-        if (cache == null) {
-            initializeCache();
-        }
-        return cache;
-    }
-
-    /**
-     * Ininitialize cache
-     */
-    private void initializeCache() {
-        CacheManager cacheManager = CacheManager.create();
-        if (!cacheManager.cacheExists(CACHENAME_FEATURES)) {
-            cacheManager.addCache(CACHENAME_FEATURES);
-        }
-        cache = cacheManager.getCache(CACHENAME_FEATURES);
-    }   
-    
-    // -------- Overrided in cache proxy --------------
-
+        return wrapper.getCacheFeatures();
+    } 
+   
     /** {@inheritDoc} */
     @Override
     public boolean isCached() {
-        return false;
+        return true;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getCacheProvider() {
-        return null;
+        return "ehCache";
     }
 
     /** {@inheritDoc} */
     @Override
     public String getCachedTargetStore() {
-        return null;
+        return getClass().getName();
     }
     
 }
