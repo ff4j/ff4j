@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.ehcache.FF4jEhCacheWrapper;
 import org.ff4j.store.FeatureStoreEhCache;
 import org.ff4j.test.store.AbstractStoreJUnitTest;
 import org.junit.After;
@@ -32,7 +33,7 @@ import net.sf.ehcache.config.TerracottaConfiguration;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 @Ignore
-public class FeatureStoreTerracottaTest extends AbstractStoreJUnitTest {
+public class FeatureStoreTerracottaTestIT extends AbstractStoreJUnitTest {
 
     /** Terracotta URL. */
     private static final String TERRACOTTA_URL = "localhost:9510";
@@ -43,11 +44,13 @@ public class FeatureStoreTerracottaTest extends AbstractStoreJUnitTest {
         
         // Configuration to wirk with Terracotta
         Configuration managerConfiguration = new Configuration();
-        managerConfiguration.name("configTerracotta") //
-                .terracotta(new TerracottaClientConfiguration().url(TERRACOTTA_URL))
-                .cache(new CacheConfiguration().name("confBigMemory") //
-                        .maxBytesLocalHeap(128, MemoryUnit.MEGABYTES) //
-                        .terracotta(new TerracottaConfiguration()));
+        managerConfiguration.name("config")
+            .terracotta(new TerracottaClientConfiguration().url(TERRACOTTA_URL))
+            .cache(new CacheConfiguration()
+                .name(FF4jEhCacheWrapper.CACHENAME_FEATURES)
+                .maxBytesLocalHeap(128, MemoryUnit.MEGABYTES)
+                .terracotta(new TerracottaConfiguration())
+            );
 
         FeatureStoreEhCache ehcacheStore = new FeatureStoreEhCache(managerConfiguration);
         ehcacheStore.importFeaturesFromXmlFile("ff4j.xml");

@@ -43,22 +43,34 @@
 			<version>${project.version}</version>
 		</dependency>
 		
-		<!--  cache provider -->
+		<!-- Cache provider -->
 		<dependency>
     		<groupId>net.sf.ehcache</groupId>
-    		<artifactId>ehcache-core</artifactId>
+    		<artifactId>ehcache</artifactId>
     		<version>${version.ehcache}</version>
 		</dependency>
 		
 		<!-- Terracotta -->
 		<dependency>
-			<groupId>org.terracotta</groupId>
-			<artifactId>terracotta-toolkit-runtime-ee</artifactId>
-			<version>4.0.1</version>
+      		<groupId>org.terracotta</groupId>
+      		<artifactId>terracotta-toolkit-runtime</artifactId>
+     		<version>4.3.1</version>
+     		<scope>test</scope>
+   	 	</dependency>
+		<dependency>
+			<groupId>org.terracotta.toolkit</groupId>
+			<artifactId>terracotta-toolkit-api</artifactId>
+			<version>2.7</version>
+			<scope>test</scope>
 		</dependency>
-		
+		<dependency>
+			<groupId>org.terracotta.toolkit</groupId>
+		 	<artifactId>terracotta-toolkit-api-internal</artifactId>
+		 	<version>1.17</version>
+		 	<scope>test</scope>
+		</dependency>
 
-		<!-- tests -->
+		<!-- Tests -->
 		<dependency>
 			<artifactId>ff4j-test</artifactId>
 			<groupId>org.ff4j</groupId>
@@ -84,29 +96,111 @@
 	</dependencies>
 	
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~       REPOSITORIES       ~ -->
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<repositories>
-		<repository>
-			<id>terracotta-repository</id>
-			<url>http://www.terracotta.org/download/reflector/releases</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-	</repositories>
-	
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~       BUILD              ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.terracotta.maven.plugins</groupId>
-				<artifactId>tc-maven-plugin</artifactId>
-				<version>1.9.4</version>
+			<!--
+			<plugin> 
+	 			<groupId>org.terracotta.maven.plugins</groupId> 
+	 			<artifactId>tc-maven-plugin</artifactId> 
+	 			<version>2.0.0</version>
+	 			<configuration>
+	 				<config>${basedir}/src/test/resources/tc-config.xml</config>
+	 			</configuration>
+	 			<executions>
+					<execution>
+						<id>start-terracotta</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+						    <goal>clean</goal>
+							<goal>run-integration</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>stop-terracotta</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>terminate-integration</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
+			-->
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>${version.maven.plugin.failsafe}</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.surefire</groupId>
+						<artifactId>surefire-junit47</artifactId>
+						<version>${version.maven.plugin.failsafe}</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
 		</plugins>
 	</build>
+	
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~       REPOSITORIES       ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<repositories>
+		<repository>
+			<id>terracotta-snapshots</id>
+			<url>http://www.terracotta.org/download/reflector/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>terracotta-releases</id>
+			<url>http://www.terracotta.org/download/reflector/releases</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>terracotta-snapshots</id>
+			<url>http://www.terracotta.org/download/reflector/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>terracotta-releases</id>
+			<url>http://www.terracotta.org/download/reflector/releases</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
+	
+	
 
 </project>

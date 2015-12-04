@@ -14,10 +14,10 @@ import net.sf.ehcache.config.Configuration;
 public final class FF4jEhCacheWrapper {
    
     /** Default cache name. */
-    private static final String CACHENAME_FEATURES = "ff4jCacheFeatures";
+    public static final String CACHENAME_FEATURES = "ff4jCacheFeatures";
     
     /** Default cache name. */
-    private static final String CACHENAME_PROPERTIES = "ff4jCacheProperties";
+    public static final String CACHENAME_PROPERTIES = "ff4jCacheProperties";
     
     /** The cache manager. */
     private CacheManager cacheManager;
@@ -61,6 +61,7 @@ public final class FF4jEhCacheWrapper {
         if (cacheManager == null) {
             if (null != cacheConfiguration) {
                 this.cacheManager = CacheManager.create(cacheConfiguration);
+                
             } else if (cacheConfigurationFile != null){
                 this.cacheManager = CacheManager.create(cacheConfigurationFile);
             } else {

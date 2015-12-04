@@ -1,0 +1,17 @@
+<tc:tc-config xmlns:tc="http://www.terracotta.org/config">
+
+  <servers>
+    <server name="localhost" host="localhost">
+      <tsa-port>9510</tsa-port>
+      <jmx-port>9520</jmx-port>
+      <management-port>9540</management-port>
+      <data>target/terracotta/server/data</data>
+      <logs>target/terracotta/server/logs</logs>
+    </server>
+  </servers>
+
+  <clients>
+    <logs>target/terracotta/clients/%(tc.nodeName)-logs</logs>
+  </clients>
+
+</tc:tc-config>
