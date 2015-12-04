@@ -113,7 +113,7 @@
 		<version.maven.plugin.resources>2.4</version.maven.plugin.resources>
 		<version.maven.plugin.release>2.5.2</version.maven.plugin.release>
 		<version.maven.plugin.sonar>2.2</version.maven.plugin.sonar>
-		<version.maven.plugin.javadoc>2.9.1</version.maven.plugin.javadoc>
+		<version.maven.plugin.javadoc>2.10.3</version.maven.plugin.javadoc>
 		<version.maven.plugin.source>2.2.1</version.maven.plugin.source>
 		<version.maven.plugin.license>1.8</version.maven.plugin.license>
 		<version.maven.plugin.nexus>1.6.6</version.maven.plugin.nexus>
@@ -428,10 +428,13 @@
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${version.maven.plugin.surefire}</version>
+				
 				<configuration>
 					<skip>true</skip>
 				</configuration>
+				
 				<executions>
+					
 					<execution>
 						<id>unit-test</id>
 						<phase>test</phase>
@@ -446,6 +449,7 @@
 							</excludes>
 						</configuration>
 					</execution>
+					
 					<execution>
 						<id>integration-test</id>
 						<phase>integration-test</phase>
@@ -459,8 +463,6 @@
 								<include>**/*IT.java</include>
 							</includes>
 						</configuration>
-					</execution>
-					<execution>
 					</execution>
 				</executions>
 			</plugin>
@@ -494,6 +496,13 @@
 						<target>${maven.compiler.target}</target>
 						<showWarnings>true</showWarnings>
 					</configuration>
+				</plugin>
+				
+				<!-- Javadoc -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>${version.maven.plugin.javadoc}</version>
 				</plugin>
 
 				<!-- release through SCM -->

@@ -32,7 +32,6 @@ import net.sf.ehcache.config.TerracottaConfiguration;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-@Ignore
 public class FeatureStoreTerracottaTestIT extends AbstractStoreJUnitTest {
 
     /** Terracotta URL. */
@@ -45,7 +44,13 @@ public class FeatureStoreTerracottaTestIT extends AbstractStoreJUnitTest {
         // Configuration to wirk with Terracotta
         Configuration managerConfiguration = new Configuration();
         managerConfiguration.name("config")
+            
             .terracotta(new TerracottaClientConfiguration().url(TERRACOTTA_URL))
+            
+            .defaultCache(new CacheConfiguration()
+                .maxBytesLocalHeap(128, MemoryUnit.MEGABYTES)
+                .terracotta(new TerracottaConfiguration()))
+            
             .cache(new CacheConfiguration()
                 .name(FF4jEhCacheWrapper.CACHENAME_FEATURES)
                 .maxBytesLocalHeap(128, MemoryUnit.MEGABYTES)

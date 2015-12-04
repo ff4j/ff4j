@@ -69,6 +69,7 @@
 		 	<version>1.17</version>
 		 	<scope>test</scope>
 		</dependency>
+		
 
 		<!-- Tests -->
 		<dependency>
@@ -94,26 +95,63 @@
 		</dependency>
 		
 	</dependencies>
-	
+
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~       BUILD              ~ -->
+	<!-- ~ BUILD                    ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<build>
 		<plugins>
-			<!--
-			<plugin> 
-	 			<groupId>org.terracotta.maven.plugins</groupId> 
-	 			<artifactId>tc-maven-plugin</artifactId> 
-	 			<version>2.0.0</version>
-	 			<configuration>
-	 				<config>${basedir}/src/test/resources/tc-config.xml</config>
-	 			</configuration>
-	 			<executions>
+		
+			<plugin>
+		    <groupId>org.codehaus.mojo</groupId>
+		    <artifactId>properties-maven-plugin</artifactId>
+		    <version>1.0.0</version>
+		    <executions>
+		        <execution>
+		        	<id>Define conf for TerraCotta</id>
+		            <phase>pre-integration-test</phase>
+		            <goals>
+		                <goal>set-system-properties</goal>
+		            </goals>
+		            <configuration>
+		                <properties>
+		                    <property>
+		                        <name>tc.config</name>
+		                        <value>${basedir}/src/test/resources/tc-config.xml</value>
+		                    </property>
+		                </properties>
+		            </configuration>
+		        </execution>
+		    </executions>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.terracotta.maven.plugins</groupId>
+				<artifactId>tc-maven-plugin</artifactId>
+				<version>2.1.0</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.terracotta</groupId>
+						<artifactId>terracotta</artifactId>
+						<version>4.3.0.0.26</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+				  <config>${basedir}/src/test/resources/tc-config.xml</config>
+				  <tc.config>${basedir}/src/test/resources/tc-config.xml</tc.config>
+		                <properties>
+		                    <property>
+		                        <name>tc.config</name>
+		                        <value>${basedir}/src/test/resources/tc-config.xml</value>
+		                    </property>
+		                </properties>
+		        </configuration>
+				<executions>
 					<execution>
 						<id>start-terracotta</id>
 						<phase>pre-integration-test</phase>
 						<goals>
-						    <goal>clean</goal>
+							<goal>clean</goal>
 							<goal>run-integration</goal>
 						</goals>
 					</execution>
@@ -126,7 +164,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			-->
 			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
