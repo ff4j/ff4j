@@ -1,13 +1,14 @@
 package org.ff4j.store;
 
 import org.ff4j.property.store.PropertyStore;
-import org.ff4j.test.property.AbstractPropertyStoreJunitTest;
+import org.junit.Ignore;
 
 /**
  * Work with properties
  * 
  * @author Cedrick Lunven (@clunven)</a>
  */
+@Ignore
 public class PropertyStoreEhCacheTest  extends AbstractPropertyStoreJunitTest {
 
     /** {@inheritDoc} */
