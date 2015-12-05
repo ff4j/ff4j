@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  #%L
+  ff4j-core
+  %%
+  Copyright (C) 2013 Ff4J
+  %%
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
+<features xmlns="http://www.ff4j.org/schema/ff4j" 
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://www.ff4j.org/schema/ff4j http://ff4j.org/schema/ff4j-1.2.0.xsd">
+
+	<feature uid="AwesomeFeature" enable="true" description="some desc" >
+		<flipstrategy class="org.ff4j.strategy.ClientFilterStrategy">
+			<param name="grantedClients" value="C1,C2" />
+		</flipstrategy>
+	</feature>
+	
+	<feature uid="first" enable="true" description="description" >
+		<security>
+			<role name="USER" />
+		</security>
+	</feature>
+	
+	<feature-group name="GRP0">
+		<feature uid="second" enable="false" description="description" >
+			<security>
+				<role name="USER" />
+			</security>
+		</feature>
+	</feature-group>
+	
+	
+	<feature-group name="GRP1">
+	
+		<feature uid="forth" enable="true" description="description" >
+			<flipstrategy class="org.ff4j.strategy.el.ExpressionFlipStrategy">
+				<param name="expression" value="third | second" />
+			</flipstrategy>
+			<security>
+				<role name="ADMINISTRATOR" />
+				<role name="BETA-TESTER" />
+			</security>
+		</feature>
+		
+		<feature uid="third" enable="false" >
+			<security>
+				<role name="ADMINISTRATOR" />
+				<role name="BETA-TESTER" />
+			</security>
+		</feature>
+	
+	</feature-group>
+	
+</features>
+

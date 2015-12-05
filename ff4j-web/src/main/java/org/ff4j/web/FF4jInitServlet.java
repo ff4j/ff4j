@@ -24,7 +24,6 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
-import org.ff4j.web.api.FF4JProvider;
 import org.ff4j.web.embedded.ConsoleConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

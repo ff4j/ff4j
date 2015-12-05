@@ -80,7 +80,7 @@
 		    <scope>test</scope>
 		</dependency>
 		
-		<!-- tests -->
+		<!-- Tests -->
 		<dependency>
 			<artifactId>ff4j-test</artifactId>
 			<groupId>org.ff4j</groupId>

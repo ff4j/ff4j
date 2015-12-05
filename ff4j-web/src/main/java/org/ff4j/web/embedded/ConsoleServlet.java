@@ -40,7 +40,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.property.AbstractProperty;
-import org.ff4j.web.api.FF4JProvider;
+import org.ff4j.web.FF4JProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

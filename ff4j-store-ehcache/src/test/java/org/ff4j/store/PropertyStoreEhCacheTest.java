@@ -1,21 +1,21 @@
 package org.ff4j.store;
 
 import org.ff4j.property.store.PropertyStore;
-import org.junit.Ignore;
+import org.ff4j.test.propertystore.AbstractPropertyStoreJunitTest;
 
 /**
  * Work with properties
  * 
  * @author Cedrick Lunven (@clunven)</a>
  */
-@Ignore
-public class PropertyStoreEhCacheTest  extends AbstractPropertyStoreJunitTest {
+
+public class PropertyStoreEhCacheTest extends AbstractPropertyStoreJunitTest {
 
     /** {@inheritDoc} */
     @Override
     protected PropertyStore initPropertyStore() {
         PropertyStoreEhCache ehcachePStore = new PropertyStoreEhCache();
-        ehcachePStore.importPropertiesFromXmlFile("ff4j.xml");
+        ehcachePStore.importPropertiesFromXmlFile("ff4j-properties.xml");
         return ehcachePStore;
     }
 

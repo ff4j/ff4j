@@ -19,7 +19,6 @@ import org.ff4j.ehcache.FF4jEhCacheWrapper;
 import org.ff4j.store.FeatureStoreEhCache;
 import org.ff4j.test.store.AbstractStoreJUnitTest;
 import org.junit.After;
-import org.junit.Ignore;
 
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.Configuration;
