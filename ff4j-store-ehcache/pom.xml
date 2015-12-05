@@ -136,16 +136,7 @@
 						<version>4.3.0.0.26</version>
 					</dependency>
 				</dependencies>
-				<configuration>
-				  <config>${basedir}/src/test/resources/tc-config.xml</config>
-				  <tc.config>${basedir}/src/test/resources/tc-config.xml</tc.config>
-		                <properties>
-		                    <property>
-		                        <name>tc.config</name>
-		                        <value>${basedir}/src/test/resources/tc-config.xml</value>
-		                    </property>
-		                </properties>
-		        </configuration>
+				
 				<executions>
 					<execution>
 						<id>start-terracotta</id>

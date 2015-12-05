@@ -335,4 +335,19 @@ public abstract class AbstractPropertyStoreJunitTest {
         Assert.assertFalse(testedStore.existProperty("toto"));
     }
     
+    @Test
+    public void exist_filled() {
+        // When-Then
+        Assert.assertTrue(testedStore.existProperty("a"));
+        Assert.assertFalse(testedStore.existProperty("k"));
+    }
+    
+    @Test
+    public void valueFixed() {
+        // When-Then
+        Assert.assertTrue(testedStore.existProperty("a"));
+        Assert.assertEquals("AMER", testedStore.readProperty("a").getValue());
+    }
+
+    
 }
