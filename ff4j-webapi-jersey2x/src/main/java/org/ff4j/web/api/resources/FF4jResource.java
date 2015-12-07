@@ -37,7 +37,7 @@ import javax.ws.rs.core.Response.Status;
 import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.security.AuthorizationsManager;
-import org.ff4j.web.api.FF4jWebConstants;
+import org.ff4j.web.FF4jWebConstants;
 import org.ff4j.web.api.resources.domain.AuthorizationsManagerApiBean;
 import org.ff4j.web.api.resources.domain.FF4jStatusApiBean;
 

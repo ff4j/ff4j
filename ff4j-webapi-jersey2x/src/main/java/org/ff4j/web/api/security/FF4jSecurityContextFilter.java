@@ -1,5 +1,7 @@
 package org.ff4j.web.api.security;
 
+import java.io.IOException;
+
 /*
  * #%L
  * ff4j-web
@@ -23,56 +25,52 @@ package org.ff4j.web.api.security;
 import java.util.Set;
 
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.SecurityContext;
 
-import org.ff4j.web.api.FF4jWebConstants;
-import org.ff4j.web.api.conf.FF4jApiConfig;
+import org.ff4j.web.FF4jApiConfig;
+import org.ff4j.web.FF4jWebConstants;
+import org.glassfish.jersey.internal.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.sun.jersey.core.util.Base64;
-import com.sun.jersey.spi.container.ContainerRequest;
-import com.sun.jersey.spi.container.ContainerRequestFilter;
-import com.sun.jersey.spi.container.ContainerResponseFilter;
-import com.sun.jersey.spi.container.ResourceFilter;
 
 /**
  * Filter to get security.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FF4jSecurityContextFilter implements FF4jWebConstants, ContainerRequestFilter, ResourceFilter {
+public class FF4jSecurityContextFilter implements ContainerRequestFilter, FF4jWebConstants {
 
     /** logger for this class. */
     private final Logger log = LoggerFactory.getLogger(getClass());
     
     /** security configuration. */
     public static FF4jApiConfig securityConfig = null;
-
+    
     /**
-     * Apply the filter : check input request, validate or not with user auth
+     * Apply the filter ozz: check input request, validate or not with user auth
      * 
      * @param containerRequest
      *            The request from Tomcat server
      */
     @Override
-    public ContainerRequest filter(ContainerRequest containerRequest) throws WebApplicationException {
+    public void filter(ContainerRequestContext containerRequest) throws IOException {
         String method = containerRequest.getMethod();
-        String path = containerRequest.getPath(true);
+        String path = containerRequest.getUriInfo().getPath();
         log.debug("Entering security filter for <" + path + ">");
  
         //We do allow wadl to be retrieve
         if (method.equals("GET") && (path.equals("application.wadl") || path.equals("application.wadl/xsd0.xsd"))) {
             log.info("Accessing schema and wadl ok");
-            return containerRequest;
+            return;
         }
  
         // Get the authentification passed in HTTP headers parameters
-        String auth = containerRequest.getHeaderValue(HEADER_AUTHORIZATION);
-
+        String auth = containerRequest.getHeaderString(HEADER_AUTHORIZATION);
         if (auth == null) {
             handleUnAuthorized("<p>'authorization' parameter is required in header  for authentication (HTTP-Basic or ApiKey)</p>");
         }
@@ -90,12 +88,12 @@ public class FF4jSecurityContextFilter implements FF4jWebConstants, ContainerReq
             SecurityContext sc = new FF4jSecurityContext(auth, PARAM_AUTHKEY, perms);
             containerRequest.setSecurityContext(sc);
             log.info("Client successfully logged with an ApiKey");
-            return containerRequest;
+            return;
         }
 
         // Identification of a final user in HTTP-BASIC MODE
         if (auth.toUpperCase().contains("BASIC")) {
-            byte[] decodedBytes = Base64.decode(auth.replaceFirst("[B|b]asic ", ""));
+            byte[] decodedBytes = Base64.decode(auth.replaceFirst("[B|b]asic ", "").getBytes());
             String[] lap = new String(decodedBytes).split(":", 2);
             if (lap == null || lap.length != 2) {
                 handleUnAuthorized("Invalid BASIC Token, cannot parse");
@@ -112,11 +110,10 @@ public class FF4jSecurityContextFilter implements FF4jWebConstants, ContainerReq
             SecurityContext sc = new FF4jSecurityContext(lap[0], "BASIC", perms);
             containerRequest.setSecurityContext(sc);
             log.info("Client successfully logged with a user/pasword pair ");
-            return containerRequest;
+            return;
         }
 
         handleUnAuthorized("Cannot parse authorisation header attribute, valid are basic and apiKey");
-        return null;
     }
 
     /**
@@ -132,18 +129,5 @@ public class FF4jSecurityContextFilter implements FF4jWebConstants, ContainerReq
         log.error("Authentication error :" + message);
         throw new WebApplicationException(Response.status(Status.UNAUTHORIZED).entity(msg.toString())
                 .type(MediaType.TEXT_HTML_TYPE).build());
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public ContainerRequestFilter getRequestFilter() {
-        return this;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public ContainerResponseFilter getResponseFilter() {
-        // No response filter
-        return null;
     }
 }

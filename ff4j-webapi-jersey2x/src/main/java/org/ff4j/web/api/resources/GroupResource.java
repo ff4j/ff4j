@@ -32,7 +32,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.ff4j.core.Feature;
-import org.ff4j.web.api.FF4jWebConstants;
+import org.ff4j.web.FF4jWebConstants;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

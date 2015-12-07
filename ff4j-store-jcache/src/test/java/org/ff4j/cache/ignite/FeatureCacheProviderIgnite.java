@@ -25,7 +25,8 @@ public class FeatureCacheProviderIgnite extends FF4jJCacheManager {
     /** {@inheritDoc} */
     @Override
     public CachingProvider initCachingProvider(String className) {
-        ignite = Ignition.ignite(); 
+        ignite = Ignition.ignite();
+        //Ignition.start("examples/config/example-cache.xml")
         return null;
     }
     

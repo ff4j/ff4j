@@ -80,7 +80,6 @@
 			</exclusions>
 		</dependency>
 		
-		
 		<dependency>
     		<groupId>org.glassfish.jersey.media</groupId>
     		<artifactId>jersey-media-json-jackson1</artifactId>
@@ -90,7 +89,6 @@
 		<dependency>
  			<groupId>io.swagger</groupId>
   			<artifactId>swagger-jersey-jaxrs</artifactId>
- 			<version>1.5.4</version>
 		</dependency>
 
 		<!-- logs -->
@@ -138,7 +136,6 @@
 			<scope>test</scope>
 		</dependency>
 		
-
 		<!-- test-it -->
 		<dependency>
 			<groupId>com.sun.jersey.jersey-test-framework</groupId>

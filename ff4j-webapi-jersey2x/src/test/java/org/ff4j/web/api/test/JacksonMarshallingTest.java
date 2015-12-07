@@ -25,7 +25,7 @@ import java.io.IOException;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.ff4j.web.api.jersey.FF4jJacksonMapper;
+import org.ff4j.web.api.FF4jJacksonMapper;
 import org.ff4j.web.api.resources.domain.FF4jStatusApiBean;
 import org.junit.BeforeClass;
 import org.junit.Test;

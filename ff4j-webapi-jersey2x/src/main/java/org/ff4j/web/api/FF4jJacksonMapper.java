@@ -1,4 +1,4 @@
-package org.ff4j.web.api.jersey;
+package org.ff4j.web.api;
 
 /*
  * #%L

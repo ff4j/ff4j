@@ -92,9 +92,11 @@
 		<version.taglib>1.1.2</version.taglib>
 		<version.jsr311>1.1.1</version.jsr311>
 		<version.jacoco>0.6.3.201306030806</version.jacoco>
-		<version.jersey>1.19</version.jersey>
+		<version.jersey1x>1.19</version.jersey1x>
 		<version.jersey2x>2.22.1</version.jersey2x>
 		<version.httpclient>4.3.4</version.httpclient>
+		
+		<version.swagger>1.5.4</version.swagger>
 		
 		<version.metrics>3.1.0</version.metrics>		
 		<version.hdldb>2.3.2</version.hdldb>
@@ -131,6 +133,7 @@
 		<module>ff4j-test</module>
 		<module>ff4j-jmx</module>
 		<module>ff4j-web</module>
+		<module>ff4j-webapi-jersey1x</module>
 		<!-- <module>ff4j-metrics</module> -->
 
 		<module>ff4j-utils-json</module>
@@ -141,12 +144,10 @@
 		<module>ff4j-store-springjdbc</module>
 		<module>ff4j-store-mongodb</module>
 		<module>ff4j-store-mongodb-v3</module>
-		<!-- <module>ff4j-store-neo4j</module> -->
-		
-		<!-- Caches -->
 		<module>ff4j-store-jcache</module>
 		<module>ff4j-store-ehcache</module>
 		<module>ff4j-store-redis</module>
+		<!-- <module>ff4j-store-neo4j</module> -->
 		
 	</modules>
 
@@ -267,6 +268,13 @@
 				<artifactId>metrics-core</artifactId>
 				<version>${version.metrics}</version>
 			</dependency>
+			
+			<!-- Swagger -->
+			<dependency>
+	 			<groupId>io.swagger</groupId>
+	  			<artifactId>swagger-jersey-jaxrs</artifactId>
+	 			<version>${version.swagger}</version>
+			</dependency>
 
 			<!-- Tests -->
 			<dependency>
@@ -333,52 +341,57 @@
 				<version>${version.taglib}</version>
 			</dependency>
 
-			<!-- Webservices -->
+			<!-- JERSEY 1X -->
 			<dependency>
 				<groupId>com.sun.jersey</groupId>
 				<artifactId>jersey-client</artifactId>
-				<version>${version.jersey}</version>
+				<version>${version.jersey1x}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.jersey</groupId>
 				<artifactId>jersey-core</artifactId>
-				<version>${version.jersey}</version>
+				<version>${version.jersey1x}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.jersey</groupId>
 				<artifactId>jersey-servlet</artifactId>
-				<version>${version.jersey}</version>
+				<version>${version.jersey1x}</version>
 			</dependency>
 			<dependency>
 				 <groupId>com.sun.jersey.contribs</groupId>
 				<artifactId>jersey-multipart</artifactId>
-				<version>${version.jersey}</version>
+				<version>${version.jersey1x}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.jersey</groupId>
 				<artifactId>jersey-server</artifactId>
-				<version>${version.jersey}</version>
+				<version>${version.jersey1x}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.jersey</groupId>
 				<artifactId>jersey-json</artifactId>
-				<version>${version.jersey}</version>
+				<version>${version.jersey1x}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.jersey.contribs</groupId>
 				<artifactId>jersey-spring</artifactId>
-				<version>${version.jersey}</version>
+				<version>${version.jersey1x}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.jersey.jersey-test-framework</groupId>
 				<artifactId>jersey-test-framework-inmemory</artifactId>
-				<version>${version.jersey}</version>
+				<version>${version.jersey1x}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.jersey.jersey-test-framework</groupId>
 				<artifactId>jersey-test-framework-grizzly2</artifactId>
-				<version>${version.jersey}</version>
+				<version>${version.jersey1x}</version>
 			</dependency>
+			
+			
+			<!-- JERSEY 2X -->
+			
+			
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>

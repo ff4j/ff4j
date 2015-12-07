@@ -28,10 +28,9 @@ import javax.ws.rs.core.UriInfo;
 import org.ff4j.FF4j;
 import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.web.api.FF4jWebConstants;
+import org.ff4j.web.FF4jWebConstants;
 import org.ff4j.web.api.security.FF4jSecurityContext;
-
-import com.sun.jersey.spi.container.ContainerRequest;
+import org.glassfish.jersey.server.ContainerRequest;
 
 /**
  * SuperClass for common injections.

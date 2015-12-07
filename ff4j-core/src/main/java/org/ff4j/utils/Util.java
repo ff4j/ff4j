@@ -75,9 +75,14 @@ public abstract class Util {
      * @param object
      *            target object
      */
-    public static void assertNotNull(Object object) {
-        if (object == null) {
-            throw new IllegalArgumentException("[Assertion failed] - this argument is required; it must not be null");
+    public static void assertNotNull(Object... params) {
+        if (params != null) {
+            for (int idx = 0; idx < params.length ;idx++) {
+                Object currentparam = params[idx];
+                if (null == currentparam) {
+                    throw new IllegalArgumentException("[Assertion failed] - Parameter #" + idx + "(object)  must not be null");
+                }
+            }
         }
     }
 
@@ -87,9 +92,14 @@ public abstract class Util {
      * @param object
      *            target object
      */
-    public static void assertHasLength(String text) {
-        if (null == text || text.isEmpty()) {
-            throw new IllegalArgumentException("[Assertion failed] - Target STRING must not be null nor empty");
+    public static void assertHasLength(String... params) {
+        if (params != null) {
+            for (int idx = 0; idx < params.length ;idx++) {
+                String currentparam = params[idx];
+                if (null == currentparam || currentparam.isEmpty()) {
+                    throw new IllegalArgumentException("[Assertion failed] - Parameter #" + idx + "(string)  must not be null nor empty");
+                }
+            }
         }
     }
     

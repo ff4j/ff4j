@@ -35,7 +35,7 @@ import javax.ws.rs.core.Response;
 
 import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.core.Feature;
-import org.ff4j.web.api.FF4jWebConstants;
+import org.ff4j.web.FF4jWebConstants;
 import org.ff4j.web.api.resources.domain.CacheApiBean;
 import org.ff4j.web.api.resources.domain.EventRepositoryApiBean;
 import org.ff4j.web.api.resources.domain.FeatureApiBean;

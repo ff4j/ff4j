@@ -43,7 +43,7 @@ import javax.ws.rs.core.Response;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureNotFoundException;
-import org.ff4j.web.api.FF4jWebConstants;
+import org.ff4j.web.FF4jWebConstants;
 import org.ff4j.web.api.resources.domain.FeatureApiBean;
 import org.ff4j.web.api.resources.domain.FlippingStrategyApiBean;
 
