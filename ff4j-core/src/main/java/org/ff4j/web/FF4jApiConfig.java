@@ -114,6 +114,17 @@ public class FF4jApiConfig implements FF4JProvider, FF4jWebConstants {
      * @return
      *      reference of current object
      */
+    public FF4jApiConfig documentation(boolean b) {
+        this.enableDocumentation = b;
+        return this;
+    }
+    
+    /**
+     * Fluent helper to work with API settings.
+     *
+     * @return
+     *      reference of current object
+     */
     public FF4jApiConfig disableDocumentation() {
         this.enableDocumentation = false;
         return this;

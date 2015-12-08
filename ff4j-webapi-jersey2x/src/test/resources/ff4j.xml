@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+<features>
+
+	<feature uid="sayHello" description="my first feature" enable="true">
+	</feature>
+
+	<feature uid="sayGoodBye" description="null" enable="false">
+	</feature>
+
+
+	<feature-group name="Groupe1">
+
+		<feature uid="feat1" description="desc1" enable="false">
+		</feature>
+
+		<feature uid="feat2" description="null" enable="false">
+			<security>
+				<role name="Users" />
+			</security>
+		</feature>
+
+	</feature-group>
+
+
+	<feature-group name="strategies">
+
+		<feature uid="feat3" description="exp" enable="true">
+			<flipstrategy class="org.ff4j.strategy.el.ExpressionFlipStrategy">
+				<param name="expression" value="third | second" />
+			</flipstrategy>
+		</feature>
+
+		<feature uid="feat4" description="null" enable="true">
+			<flipstrategy class="org.ff4j.strategy.ReleaseDateFlipStrategy">
+				<param name="releaseDate" value="2013-07-14-14:00" />
+			</flipstrategy>
+		</feature>
+
+		<feature uid="feat5" description="null" enable="true">
+			<flipstrategy class="org.ff4j.strategy.PonderationStrategy">
+				<param name="weight" value="0.5" />
+			</flipstrategy>
+		</feature>
+
+		<feature uid="feat6" description="z" enable="true">
+			<flipstrategy class="org.ff4j.strategy.ClientFilterStrategy">
+				<param name="grantedClients" value="c1,c2" />
+			</flipstrategy>
+		</feature>
+
+		<feature uid="feat7" description="null" enable="true">
+			<flipstrategy class="org.ff4j.strategy.ServerFilterStrategy">
+				<param name="grantedServers" value="s1,s2" />
+			</flipstrategy>
+		</feature>
+
+	</feature-group>
+
+</features>

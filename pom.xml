@@ -134,6 +134,7 @@
 		<module>ff4j-jmx</module>
 		<module>ff4j-web</module>
 		<module>ff4j-webapi-jersey1x</module>
+		<module>ff4j-webapi-jersey2x</module>
 		<!-- <module>ff4j-metrics</module> -->
 
 		<module>ff4j-utils-json</module>

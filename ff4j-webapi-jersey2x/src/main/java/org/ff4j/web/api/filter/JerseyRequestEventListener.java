@@ -18,8 +18,6 @@ public class JerseyRequestEventListener implements RequestEventListener {
 	/** logger. */
     protected Logger logger = LoggerFactory.getLogger(JerseyRequestEventListener.class);
     
-    private String correlationID = null;
-    
     public JerseyRequestEventListener() {
     }
 	
@@ -27,49 +25,53 @@ public class JerseyRequestEventListener implements RequestEventListener {
 	public void onEvent(RequestEvent reqEvt) {
     	switch(reqEvt.getType()) {
     		case MATCHING_START:
-    			logger.info("(1) Matching " + reqEvt.getUriInfo().getPath());
+    			logger.debug(reqEvt.getContainerRequest().getRequestUri() + "[Matching]");
 			break;
     		case REQUEST_MATCHED:
-    			logger.info("(2) Matched");
-			break;
-    		case REQUEST_FILTERED:
-    			logger.info(correlationID + " - " + reqEvt.getType() + ") 3° Filtered");
-			break;
+    		    logger.debug(reqEvt.getContainerRequest().getRequestUri() + "[Matched]");
+            break;
+    	    case REQUEST_FILTERED:
+    	        logger.debug(reqEvt.getContainerRequest().getRequestUri() + "[Filters]");
+            break;
     		case RESOURCE_METHOD_START:
-    			logger.info(correlationID + " - " + reqEvt.getType() + ") 4° Starting");
-			break;
+    		    logger.debug(reqEvt.getContainerRequest().getRequestUri() + "[START]");
+            break;
+    		
     		case RESOURCE_METHOD_FINISHED:
-    			logger.info(correlationID + " - " + reqEvt.getType() + ") 5° Ending");
+    			logger.info(reqEvt.getType() + ") 5° Ending");
 			break;
-    		case RESP_FILTERS_START:
-    			logger.info(correlationID + " - " + reqEvt.getType() + ") 6° Filter Start");
-			break;
-			case RESP_FILTERS_FINISHED:
-				logger.info(correlationID + " - " + reqEvt.getType() + ") 7° Filter End");
-			break;
+    		
 			case EXCEPTION_MAPPING_FINISHED:
-				logger.info(correlationID + " - " + reqEvt.getType() + ") 8° Exception Mapping End");
+				logger.info(reqEvt.getType() + ") 8° Exception Mapping End");
 			break;
+			case RESP_FILTERS_START:
+                logger.info(reqEvt.getType() + ") 6° Filter Start");
+            break;
+            case RESP_FILTERS_FINISHED:
+                logger.info(reqEvt.getType() + ") 7° Filter End");
+            break;
 			case FINISHED:
-				logger.info(correlationID + " - " + reqEvt.getType() + ") 9° Finished");
+				logger.info(reqEvt.getType() + ") 9° Finished");
 			break;
 			case LOCATOR_MATCHED:
-				logger.info(correlationID + " - " + reqEvt.getType() + ") 10° Locator");
+				logger.info(reqEvt.getType() + ") 10° Locator");
 				break;
 			case ON_EXCEPTION:
-				logger.info(correlationID + " - " + reqEvt.getType() + ") 11° ON Exception");
+				logger.error("An error occured when processing " + reqEvt.getContainerRequest().getRequestUri(), reqEvt.getException() );
+				logger.error(" + Type : " + reqEvt.getException().getClass().getCanonicalName());
+				logger.error(" + Message : " + reqEvt.getException().getMessage());
 			break;
 			case EXCEPTION_MAPPER_FOUND:
-				logger.info(correlationID + " - " + reqEvt.getType() + ") 12° Exception Mapper");
+				logger.info(reqEvt.getType() + ") 12° Exception Mapper");
 			break;
 			case START:
-				logger.info(correlationID + " - " + reqEvt.getType() + ") 13° ON Start");
+				logger.info(reqEvt.getType() + ") 13° ON Start");
 			break;
 			case SUBRESOURCE_LOCATED:
-				logger.info(correlationID + " - " + reqEvt.getType() + ") 14° Subresource");
+				logger.info(reqEvt.getType() + ") 14° Subresource");
 				break;
 			default:
-				logger.info(correlationID + " - " + reqEvt.getType() + ") Default");
+				logger.info(reqEvt.getType() + ") Default");
 				break;
 	    	}
 	}

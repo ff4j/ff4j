@@ -1,21 +1,11 @@
 package org.ff4j.web.api;
 
-import java.lang.annotation.Annotation;
-import java.util.Set;
-
-import javax.inject.Inject;
-import javax.ws.rs.core.Application;
-
 import org.ff4j.FF4j;
 import org.ff4j.web.FF4jApiConfig;
 import org.ff4j.web.api.filter.JerseyApplicationEventListener;
 import org.ff4j.web.api.filter.JerseyRequestEventListener;
 import org.ff4j.web.api.resources.FF4jResource;
-import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
-import org.glassfish.jersey.message.filtering.EntityFilteringFeature;
-import org.glassfish.jersey.message.filtering.SecurityAnnotations;
-import org.glassfish.jersey.message.filtering.SecurityEntityFilteringFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,20 +18,29 @@ import io.swagger.jaxrs.config.BeanConfig;
  *
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class FF4jApiApplicationJersey2 extends Application {
+public abstract class AbstractJersey2ApiApplication extends ResourceConfig {
 
     /** logger for this class. */
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
-    private static final FF4j ff4j = null;
-
+    /**
+     * Configuration for this.
+     */
     private FF4jApiConfig apiConfig;
-
-    public static class FF4jBinder extends AbstractBinder {
+    
+    protected abstract FF4jApiConfig getWebApiConfiguration();
+   
+    /**
+     * Injection of FF4J.
+     *
+     * @author Cedrick Lunven (@clunven)</a>
+     */
+    public class FF4jBinder extends AbstractBinder {
         @Override
         protected void configure() {
             // singleton instance binding
-            bind(ff4j).to(FF4j.class);
+            bind(getWebApiConfiguration().getFF4j()).to(FF4j.class);
+            log.info("FF4J is now bound to Jersey Context.");
         }
     }
 
@@ -50,8 +49,7 @@ public class FF4jApiApplicationJersey2 extends Application {
      *
      * @param serviceLocator
      */
-    @Inject
-    public FF4jApiApplicationJersey2(ServiceLocator serviceLocator) {
+    public AbstractJersey2ApiApplication() {
         log.info("  __  __ _  _   _ ");
         log.info(" / _|/ _| || | (_)");
         log.info("| |_| |_| || |_| |");
@@ -60,18 +58,19 @@ public class FF4jApiApplicationJersey2 extends Application {
         log.info("             |__/   WEB API Initialization...");
         log.info(" ");
 
-        ResourceConfig rc = new ResourceConfig();
-        rc.packages(FF4jResource.class.getPackage().getName());
+        apiConfig = getWebApiConfiguration();
+        packages(FF4jResource.class.getPackage().getName());
 
-        rc.register(new FF4jBinder());
-        rc.register(JerseyApplicationEventListener.class);
-        rc.register(JerseyRequestEventListener.class);
+        register(new FF4jBinder());
+        register(JerseyApplicationEventListener.class);
+        register(JerseyRequestEventListener.class);
         
-        rc.property(EntityFilteringFeature.ENTITY_FILTERING_SCOPE,
+        /*property(EntityFilteringFeature.ENTITY_FILTERING_SCOPE,
                 new Annotation[] {SecurityAnnotations.rolesAllowed("manager")});
-
+        */
+        
         // Register the SecurityEntityFilteringFeature.
-        rc.register(SecurityEntityFilteringFeature.class);
+        //register(SecurityEntityFilteringFeature.class);
     
     
         // Swagger configuration
@@ -89,17 +88,9 @@ public class FF4jApiApplicationJersey2 extends Application {
         beanConfig.setScan(true);
         
         ScannerFactory.setScanner(beanConfig);
-        getSingletons().add(io.swagger.jaxrs.listing.ApiListingResource.class);
-        getSingletons().add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
+        register(io.swagger.jaxrs.listing.ApiListingResource.class);
+        register(io.swagger.jaxrs.listing.SwaggerSerializers.class);
+        log.info("Initialisation Swagger   [OK]");
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public Set<Class<?>> getClasses() {
-        Set<Class<?>> classes = super.getClasses();
-        classes.add(io.swagger.jaxrs.listing.ApiListingResource.class);
-        classes.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
-        return classes;
-    }
-
+    
 }

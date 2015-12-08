@@ -102,6 +102,12 @@
 			<artifactId>logback-classic</artifactId>
 			<scope>test</scope>
 		</dependency>
+	<dependency>
+		<groupId>org.fusesource.jansi</groupId>
+		<artifactId>jansi</artifactId>
+		<version>1.11</version>
+	</dependency>
+		
 
 	</dependencies>
 
