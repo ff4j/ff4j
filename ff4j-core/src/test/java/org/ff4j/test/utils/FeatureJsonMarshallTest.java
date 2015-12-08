@@ -22,13 +22,14 @@ package org.ff4j.test.utils;
 
 import java.io.ByteArrayOutputStream;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.test.TestConstantsFF4j;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Test class for JSON producer and consumer : {@link FeatureJsonMarshaller}

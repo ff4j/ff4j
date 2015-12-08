@@ -80,11 +80,7 @@
 			</exclusions>
 		</dependency>
 		
-		<dependency>
-    		<groupId>org.glassfish.jersey.media</groupId>
-    		<artifactId>jersey-media-json-jackson1</artifactId>
-	    	<version>2.14</version>
-		</dependency>
+		
 		
 		<dependency>
  			<groupId>io.swagger</groupId>
@@ -95,11 +91,6 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
 		</dependency>
 		
 		<dependency>

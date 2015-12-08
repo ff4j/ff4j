@@ -22,7 +22,6 @@ package org.ff4j.web.resources.it;
 
 import javax.ws.rs.Path;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.ff4j.FF4j;
 import org.ff4j.test.AssertFf4j;
 import org.ff4j.test.TestsFf4jConstants;
@@ -34,6 +33,7 @@ import org.ff4j.web.api.resources.FF4jResource;
 import org.ff4j.web.store.FeatureStoreHttp;
 import org.junit.Before;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;

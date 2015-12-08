@@ -62,11 +62,6 @@
 			<version>1.11</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-		</dependency>
-
 		<!-- tests -->
 		<dependency>
 			<artifactId>ff4j-test</artifactId>

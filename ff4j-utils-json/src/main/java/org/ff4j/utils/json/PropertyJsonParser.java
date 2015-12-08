@@ -6,10 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.ff4j.core.Feature;
 import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.Property;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Unmarshalling data from JSON with Jackson.

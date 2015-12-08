@@ -23,11 +23,12 @@ package org.ff4j.utils.json;
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class FeatureJsonParserTest {
   

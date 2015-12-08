@@ -87,11 +87,11 @@
 		
 		<version.servlet-api>2.5</version.servlet-api>
 		<version.jsp-api>2.2</version.jsp-api>
-		<version.jackson>1.9.11</version.jackson>
 		<version.jstl>1.2</version.jstl>
 		<version.taglib>1.1.2</version.taglib>
 		<version.jsr311>1.1.1</version.jsr311>
 		<version.jacoco>0.6.3.201306030806</version.jacoco>
+		<version.jackon2x>2.6.4</version.jackon2x>
 		<version.jersey1x>1.19</version.jersey1x>
 		<version.jersey2x>2.22.1</version.jersey2x>
 		<version.httpclient>4.3.4</version.httpclient>
@@ -276,6 +276,11 @@
 	  			<artifactId>swagger-jersey-jaxrs</artifactId>
 	 			<version>${version.swagger}</version>
 			</dependency>
+			<dependency>
+	 			<groupId>io.swagger</groupId>
+	  			<artifactId>swagger-annotations</artifactId>
+	 			<version>${version.swagger}</version>
+			</dependency>
 
 			<!-- Tests -->
 			<dependency>
@@ -321,11 +326,23 @@
 				<artifactId>jsp-api</artifactId>
 				<version>${version.jsp-api}</version>
 			</dependency>
+			
 			<dependency>
-				<groupId>org.codehaus.jackson</groupId>
-				<artifactId>jackson-mapper-asl</artifactId>
-				<version>${version.jackson}</version>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>${version.jackon2x}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-annotations</artifactId>
+				<version>${version.jackon2x}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>${version.jackon2x}</version>
+			</dependency>
+		
 			<dependency>
 				<artifactId>jsr311-api</artifactId>
 				<groupId>javax.ws.rs</groupId>
