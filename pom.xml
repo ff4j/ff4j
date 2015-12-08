@@ -128,15 +128,16 @@
 	<!-- ~ CHILD MODULES            ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<modules>
-		<module>ff4j-aop</module>
 		<module>ff4j-core</module>
+		<module>ff4j-aop</module>
 		<module>ff4j-test</module>
 		<module>ff4j-jmx</module>
+		
 		<module>ff4j-web</module>
+		<module>ff4j-webapi</module>
 		<module>ff4j-webapi-jersey1x</module>
-		<module>ff4j-webapi-jersey2x</module>
-		<!-- <module>ff4j-metrics</module> -->
-
+		<module>ff4j-webapi-jersey2x</module>		
+		
 		<module>ff4j-utils-json</module>
 		<module>ff4j-security-spring</module>
 		<module>ff4j-strategy-drools</module>
@@ -148,6 +149,9 @@
 		<module>ff4j-store-jcache</module>
 		<module>ff4j-store-ehcache</module>
 		<module>ff4j-store-redis</module>
+		
+		<!-- <module>ff4j-shell</module> -->
+		<!-- <module>ff4j-metrics</module> -->
 		<!-- <module>ff4j-store-neo4j</module> -->
 		
 	</modules>

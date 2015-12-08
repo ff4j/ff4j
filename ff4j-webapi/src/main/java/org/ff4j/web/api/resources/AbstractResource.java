@@ -29,7 +29,6 @@ import org.ff4j.FF4j;
 import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.web.FF4jWebConstants;
-import org.ff4j.web.api.security.FF4jSecurityContext;
 
 /**
  * SuperClass for common injections.
@@ -59,10 +58,7 @@ public abstract class AbstractResource implements FF4jWebConstants {
     
     /** Access to event repository. */
     private EventRepository repo;
-    
-    /** Put current security context as threadlocal to be reused by the AuthenticationProvider. */
-    public static final ThreadLocal< FF4jSecurityContext > securityContextHolder = new ThreadLocal<FF4jSecurityContext>();
-    
+     
     /**
      * Getter accessor for attribute 'repo'.
      *
@@ -86,19 +82,6 @@ public abstract class AbstractResource implements FF4jWebConstants {
             store = ff4j.getFeatureStore();
         }
         return store;
-    }
-    
-    /**
-     * Return custom FF4J Security Context.
-     *
-     * @return
-     */
-    public void holdSecurityContext() {
-        if (securityContext != null) {
-            if (securityContext instanceof FF4jSecurityContext) {
-                securityContextHolder.set((FF4jSecurityContext) securityContext);
-            }
-        }
     }
 
 }

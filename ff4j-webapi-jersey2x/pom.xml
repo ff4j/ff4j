@@ -33,8 +33,8 @@
 
 		<!-- core -->
 		<dependency>
-			<artifactId>ff4j-core</artifactId>
 			<groupId>org.ff4j</groupId>
+			<artifactId>ff4j-webapi</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	

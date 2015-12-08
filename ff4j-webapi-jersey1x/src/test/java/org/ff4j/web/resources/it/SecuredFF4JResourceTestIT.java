@@ -303,7 +303,8 @@ public class SecuredFF4JResourceTestIT extends JerseyTest implements TestsFf4jCo
         assertFF4J.assertThatFeatureExist(F1);
         assertFF4J.assertThatFeatureIsEnabled(F1);
         // When
-        ClientResponse resHttp = resourceff4j().path(OPERATION_CHECK).path(F1).//
+        ClientResponse resHttp = 
+                resourceff4j().path(OPERATION_CHECK).path(F1).//
                 type(MediaType.APPLICATION_JSON).//
                 header(HEADER_AUTHORIZATION, FeatureStoreHttp.buildAuthorization4UserName("admin", "admin")). //
                 get(ClientResponse.class);

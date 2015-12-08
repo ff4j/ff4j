@@ -40,6 +40,7 @@ import org.ff4j.security.AuthorizationsManager;
 import org.ff4j.web.FF4jWebConstants;
 import org.ff4j.web.api.resources.domain.AuthorizationsManagerApiBean;
 import org.ff4j.web.api.resources.domain.FF4jStatusApiBean;
+import org.ff4j.web.api.security.FF4JSecurityContextHolder;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -111,7 +112,7 @@ public class FF4jResource extends AbstractResource {
         @ApiResponse(code = 404, message= "feature has not been found")})
     public Response check(@Context HttpHeaders headers, @PathParam("uid") String uid) {
         // HoldSecurity Context
-        holdSecurityContext();
+        FF4JSecurityContextHolder.save(securityContext);
         
         // Expected Custom FlipStrategy (JSON)
         if (!ff4j.getFeatureStore().exist(uid)) {
@@ -137,7 +138,7 @@ public class FF4jResource extends AbstractResource {
     @ApiResponses(@ApiResponse(code = 200, message= "if feature is flipped"))
     public Response checkPOST(@Context HttpHeaders headers, @PathParam("uid") String uid, MultivaluedMap<String, String> formParams) {
         // HoldSecurity Context
-        holdSecurityContext();
+        FF4JSecurityContextHolder.save(securityContext);
         
         if (!ff4j.getFeatureStore().exist(uid)) {
             String errMsg = new FeatureNotFoundException(uid).getMessage();

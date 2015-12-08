@@ -24,8 +24,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.ws.rs.core.SecurityContext;
+
 import org.ff4j.security.AbstractAuthorizationManager;
-import org.ff4j.web.api.resources.FF4jResource;
+
+import com.sun.jersey.spi.container.ContainerRequest;
 
 
 /**
@@ -33,14 +36,17 @@ import org.ff4j.web.api.resources.FF4jResource;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FF4JSecurityContextAuthenticationManager extends AbstractAuthorizationManager{
-
+public class FF4JSecurityContextAuthenticationManager extends AbstractAuthorizationManager {
+    
     /** {@inheritDoc} */
     @Override
     public Set<String> getCurrentUserPermissions() {
-        FF4jSecurityContext secCtx = FF4jResource.securityContextHolder.get();
-        if (secCtx != null) {
-            return secCtx.getUserRoles();
+        SecurityContext wrapper = FF4JSecurityContextHolder.getSecurityContext();
+        if (wrapper instanceof ContainerRequest) {
+            SecurityContext sc = ((ContainerRequest) wrapper).getSecurityContext();
+            if (sc != null && sc instanceof FF4jSecurityContext) {
+                return ((FF4jSecurityContext) sc).getUserRoles();
+            }
         }
         return new HashSet<String>();
     }
