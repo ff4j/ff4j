@@ -1,7 +1,7 @@
 package org.ff4j.web.api;
 
 import org.ff4j.FF4j;
-import org.ff4j.web.FF4jApiConfig;
+import org.ff4j.web.ApiConfig;
 import org.ff4j.web.api.filter.JerseyApplicationEventListener;
 import org.ff4j.web.api.filter.JerseyRequestEventListener;
 import org.ff4j.web.api.resources.FF4jResource;
@@ -18,7 +18,7 @@ import io.swagger.jaxrs.config.BeanConfig;
  *
  * @author Cedrick Lunven (@clunven)</a>
  */
-public abstract class AbstractJersey2ApiApplication extends ResourceConfig {
+public abstract class FF4jApiApplicationJersey2x extends ResourceConfig {
 
     /** logger for this class. */
     protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -26,9 +26,9 @@ public abstract class AbstractJersey2ApiApplication extends ResourceConfig {
     /**
      * Configuration for this.
      */
-    private FF4jApiConfig apiConfig;
+    private ApiConfig apiConfig;
     
-    protected abstract FF4jApiConfig getWebApiConfiguration();
+    protected abstract ApiConfig getWebApiConfiguration();
    
     /**
      * Injection of FF4J.
@@ -49,7 +49,7 @@ public abstract class AbstractJersey2ApiApplication extends ResourceConfig {
      *
      * @param serviceLocator
      */
-    public AbstractJersey2ApiApplication() {
+    public FF4jApiApplicationJersey2x() {
         log.info("  __  __ _  _   _ ");
         log.info(" / _|/ _| || | (_)");
         log.info("| |_| |_| || |_| |");
@@ -74,23 +74,26 @@ public abstract class AbstractJersey2ApiApplication extends ResourceConfig {
     
     
         // Swagger configuration
-        BeanConfig beanConfig = new BeanConfig();
-        beanConfig.setTitle("FF4J (ff4j.org) WebAPI");
-        beanConfig.setDescription("Administrate and operate all tasks on your features through this api");
-        beanConfig.setResourcePackage("org.ff4j.web.api.resources");
-        beanConfig.setContact("@clunven");
-        beanConfig.setLicense("Apache 2.0");
-        beanConfig.setLicenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html");
-        beanConfig.setVersion(apiConfig.getVersionNumber());
-        beanConfig.setSchemes(new String[] {"http"});
-        beanConfig.setHost(apiConfig.getHost() + ":" + apiConfig.getPort());
-        beanConfig.setBasePath("/" + apiConfig.getWebContext() + "/api");
-        beanConfig.setScan(true);
-        
-        ScannerFactory.setScanner(beanConfig);
-        register(io.swagger.jaxrs.listing.ApiListingResource.class);
-        register(io.swagger.jaxrs.listing.SwaggerSerializers.class);
-        log.info("Initialisation Swagger   [OK]");
+        if (apiConfig.isDocumentation()) {
+            BeanConfig beanConfig = new BeanConfig();
+            beanConfig.setTitle("FF4J (ff4j.org) WebAPI");
+            beanConfig.setDescription("Administrate and operate all tasks on your features through this api");
+            beanConfig.setResourcePackage("org.ff4j.web.api.resources");
+            beanConfig.setContact("@clunven");
+            beanConfig.setLicense("Apache 2.0");
+            beanConfig.setLicenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html");
+            beanConfig.setVersion(apiConfig.getVersion());
+            beanConfig.setSchemes(new String[] {"http"});
+            beanConfig.setHost(apiConfig.getHost() + ":" + apiConfig.getPort());
+            beanConfig.setBasePath("/" + apiConfig.getWebContext() + "/api");
+            beanConfig.setScan(true);
+            
+            ScannerFactory.setScanner(beanConfig);
+            register(io.swagger.jaxrs.listing.ApiListingResource.class);
+            register(io.swagger.jaxrs.listing.SwaggerSerializers.class);
+            log.info("Initialisation Swagger [OK]");
+        }
+        log.info("Initialisation WebAPI [OK]");
     }
     
 }

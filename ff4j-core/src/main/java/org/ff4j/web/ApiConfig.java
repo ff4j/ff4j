@@ -36,25 +36,25 @@ import org.ff4j.FF4j;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FF4jApiConfig implements FF4JProvider, FF4jWebConstants {
+public class ApiConfig implements FF4JProvider, FF4jWebConstants {
     
     /** Configuration of ff4j. */
     private FF4j fF4j;
 
     /** Enable authentication for jersey. */
-    private boolean enableAuthentication = false;
+    private boolean authenticate = false;
     
     /** Enable authorization for jersey. */
-    private boolean enableAuthorization = false;
+    private boolean autorize = false;
     
     /** Enable logging filter for jersey. */
-    private boolean enableLogging = false;
+    private boolean log = false;
     
     /** Enable Swagger Documentation. */
-    private boolean enableDocumentation = true;
+    private boolean documentation = true;
     
     /** Number. */
-    private String versionNumber = getClass().getPackage().getImplementationVersion();
+    private String version = getClass().getPackage().getImplementationVersion();
     
     /** User of the API (login/password). */
     private Map<String, String> users = new HashMap<String, String>();
@@ -70,19 +70,16 @@ public class FF4jApiConfig implements FF4JProvider, FF4jWebConstants {
     private int port = 8282;
     
     private String webContext = "ff4j-demo";
-    
-    /** context Path. */
-    private String contextPath = "http://" + host + ":" + port + "/" + webContext + "/api";
    
     /**
      * Default constructor.
      */
-    public FF4jApiConfig() {
+    public ApiConfig() {
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(MANIFEST_FILE);
         if (inputStream != null) {
             try {
                 Manifest mFile = new Manifest(inputStream);
-                versionNumber = (String) mFile.getMainAttributes().get(new Attributes.Name(MANIFEST_VERSION));
+                version = (String) mFile.getMainAttributes().get(new Attributes.Name(MANIFEST_VERSION));
             } catch (IOException ieo) {
                 System.err.println("Cannot read the manifest file " + ieo);
             }
@@ -92,63 +89,10 @@ public class FF4jApiConfig implements FF4JProvider, FF4jWebConstants {
     /**
      * Initialized with a ff4j.
      */
-    public FF4jApiConfig(FF4j ff) {
+    public ApiConfig(FF4j ff) {
         this();
         this.fF4j = ff;
-    }
-
-    /**
-     * Fluent helper to work with API settings.
-     *
-     * @return
-     *      reference of current object
-     */
-    public FF4jApiConfig enableDocumentation() {
-        this.enableDocumentation = true;
-        return this;
-    }
-    
-    /**
-     * Fluent helper to work with API settings.
-     *
-     * @return
-     *      reference of current object
-     */
-    public FF4jApiConfig documentation(boolean b) {
-        this.enableDocumentation = b;
-        return this;
-    }
-    
-    /**
-     * Fluent helper to work with API settings.
-     *
-     * @return
-     *      reference of current object
-     */
-    public FF4jApiConfig disableDocumentation() {
-        this.enableDocumentation = false;
-        return this;
-    }
-    
-    public FF4jApiConfig enableAuthentication() {
-        this.enableAuthentication = true;
-        return this;
-    }
-    
-    public FF4jApiConfig disableAuthentication() {
-        this.enableAuthentication = false;
-        return this;
-    }
-    
-    public FF4jApiConfig disableAuthorization() {
-        this.enableAuthorization = false;
-        return this;
-    }
-    
-    public FF4jApiConfig enableAuthorization() {
-        this.enableAuthorization = true;
-        return this;
-    }
+    }   
     
     /**
      * Helper method to create a user.
@@ -162,7 +106,7 @@ public class FF4jApiConfig implements FF4JProvider, FF4jWebConstants {
      * @param write
      *            role write
      */
-    public FF4jApiConfig createUser(String userName, String password, boolean read, boolean write, Set <String > usrPerm) {
+    public ApiConfig createUser(String userName, String password, boolean read, boolean write, Set <String > usrPerm) {
         users.put(userName, password);
         Set<String> tmpPerm = new HashSet<String>();
         if (read) {
@@ -188,7 +132,7 @@ public class FF4jApiConfig implements FF4JProvider, FF4jWebConstants {
      * @param write
      *            role write
      */
-    public FF4jApiConfig createApiKey(String apiKey, boolean read, boolean write, Set <String > usrPerm) {
+    public ApiConfig createApiKey(String apiKey, boolean read, boolean write, Set <String > usrPerm) {
         apiKeys.add(apiKey);
         Set<String> tmpPerm = new HashSet<String>();
         if (read) {
@@ -218,63 +162,6 @@ public class FF4jApiConfig implements FF4JProvider, FF4jWebConstants {
      */
     public void setFF4j(FF4j fF4j) {
         this.fF4j = fF4j;
-    }
-
-    /**
-     * Getter accessor for attribute 'enableAuthentication'.
-     *
-     * @return current value of 'enableAuthentication'
-     */
-    public boolean isEnableAuthentication() {
-        return enableAuthentication;
-    }
-
-    /**
-     * Setter accessor for attribute 'enableAuthentication'.
-     * 
-     * @param enableAuthentication
-     *            new value for 'enableAuthentication '
-     */
-    public void setEnableAuthentication(boolean enableAuthentication) {
-        this.enableAuthentication = enableAuthentication;
-    }
-
-    /**
-     * Getter accessor for attribute 'enableAuthorization'.
-     *
-     * @return current value of 'enableAuthorization'
-     */
-    public boolean isEnableAuthorization() {
-        return enableAuthorization;
-    }
-
-    /**
-     * Setter accessor for attribute 'enableAuthorization'.
-     * 
-     * @param enableAuthorization
-     *            new value for 'enableAuthorization '
-     */
-    public void setEnableAuthorization(boolean enableAuthorization) {
-        this.enableAuthorization = enableAuthorization;
-    }
-
-    /**
-     * Getter accessor for attribute 'enableLogging'.
-     *
-     * @return current value of 'enableLogging'
-     */
-    public boolean isEnableLogging() {
-        return enableLogging;
-    }
-
-    /**
-     * Setter accessor for attribute 'enableLogging'.
-     * 
-     * @param enableLogging
-     *            new value for 'enableLogging '
-     */
-    public void setEnableLogging(boolean enableLogging) {
-        this.enableLogging = enableLogging;
     }
 
     /**
@@ -335,51 +222,13 @@ public class FF4jApiConfig implements FF4JProvider, FF4jWebConstants {
     }
 
     /**
-     * Getter accessor for attribute 'enableDocumentation'.
-     *
-     * @return
-     *       current value of 'enableDocumentation'
-     */
-    public boolean isEnableDocumentation() {
-        return enableDocumentation;
-    }
-
-    /**
-     * Setter accessor for attribute 'enableDocumentation'.
-     * @param enableDocumentation
-     * 		new value for 'enableDocumentation '
-     */
-    public void setEnableDocumentation(boolean enableDocumentation) {
-        this.enableDocumentation = enableDocumentation;
-    }
-
-    /**
-     * Getter accessor for attribute 'versionNumber'.
-     *
-     * @return
-     *       current value of 'versionNumber'
-     */
-    public String getVersionNumber() {
-        return versionNumber;
-    }
-
-    /**
      * Getter accessor for attribute 'contextPath'.
      *
      * @return
      *       current value of 'contextPath'
      */
     public String getContextPath() {
-        return contextPath;
-    }
-
-    /**
-     * Setter accessor for attribute 'contextPath'.
-     * @param contextPath
-     * 		new value for 'contextPath '
-     */
-    public void setContextPath(String contextPath) {
-        this.contextPath = contextPath;
+        return  "http://" + getHost() + ":" + getPort() + "/" + getWebContext() + "/api";
     }
 
     /**
@@ -437,6 +286,120 @@ public class FF4jApiConfig implements FF4JProvider, FF4jWebConstants {
      */
     public void setWebContext(String webContext) {
         this.webContext = webContext;
+    }
+
+    /**
+     * Getter accessor for attribute 'fF4j'.
+     *
+     * @return
+     *       current value of 'fF4j'
+     */
+    public FF4j getfF4j() {
+        return fF4j;
+    }
+
+    /**
+     * Setter accessor for attribute 'fF4j'.
+     * @param fF4j
+     * 		new value for 'fF4j '
+     */
+    public void setfF4j(FF4j fF4j) {
+        this.fF4j = fF4j;
+    }
+
+    /**
+     * Getter accessor for attribute 'authenticate'.
+     *
+     * @return
+     *       current value of 'authenticate'
+     */
+    public boolean isAuthenticate() {
+        return authenticate;
+    }
+
+    /**
+     * Setter accessor for attribute 'authenticate'.
+     * @param authenticate
+     * 		new value for 'authenticate '
+     */
+    public void setAuthenticate(boolean authenticate) {
+        this.authenticate = authenticate;
+    }
+
+    /**
+     * Getter accessor for attribute 'autorize'.
+     *
+     * @return
+     *       current value of 'autorize'
+     */
+    public boolean isAutorize() {
+        return autorize;
+    }
+
+    /**
+     * Setter accessor for attribute 'autorize'.
+     * @param autorize
+     * 		new value for 'autorize '
+     */
+    public void setAutorize(boolean autorize) {
+        this.autorize = autorize;
+    }
+
+    /**
+     * Getter accessor for attribute 'log'.
+     *
+     * @return
+     *       current value of 'log'
+     */
+    public boolean isLog() {
+        return log;
+    }
+
+    /**
+     * Setter accessor for attribute 'log'.
+     * @param log
+     * 		new value for 'log '
+     */
+    public void setLog(boolean log) {
+        this.log = log;
+    }
+
+    /**
+     * Getter accessor for attribute 'documentation'.
+     *
+     * @return
+     *       current value of 'documentation'
+     */
+    public boolean isDocumentation() {
+        return documentation;
+    }
+
+    /**
+     * Setter accessor for attribute 'documentation'.
+     * @param documentation
+     * 		new value for 'documentation '
+     */
+    public void setDocumentation(boolean documentation) {
+        this.documentation = documentation;
+    }
+
+    /**
+     * Getter accessor for attribute 'version'.
+     *
+     * @return
+     *       current value of 'version'
+     */
+    public String getVersion() {
+        return version;
+    }
+
+    /**
+     * Setter accessor for attribute 'version'.
+     * @param version
+     * 		new value for 'version '
+     */
+    public void setVersion(String version) {
+        this.version = version;
     }
 
 }

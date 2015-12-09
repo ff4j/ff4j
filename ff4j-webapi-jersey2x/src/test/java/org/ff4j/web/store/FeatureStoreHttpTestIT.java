@@ -1,4 +1,6 @@
-package org.ff4j.web;
+package org.ff4j.web.store;
+
+import org.ff4j.web.api.test.it.AbstractWebResourceTestIT;
 
 /*
  * #%L
@@ -20,14 +22,6 @@ package org.ff4j.web;
  * #L%
  */
 
-
-public interface FF4jApiConfigProvider {
-
-    /**
-     * There are 2 ways to secure ap : final user and apiKey
-     * 
-     * @return the security config for this application.
-     */
-    FF4jApiConfig getApiConfig();
+public class FeatureStoreHttpTestIT extends AbstractWebResourceTestIT {
 
 }

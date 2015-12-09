@@ -23,7 +23,7 @@ package org.ff4j.web.api.security;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.ff4j.web.FF4jApiConfig;
+import org.ff4j.web.ApiConfig;
 
 import com.sun.jersey.api.container.filter.RolesAllowedResourceFilterFactory;
 import com.sun.jersey.api.model.AbstractMethod;
@@ -37,7 +37,7 @@ import com.sun.jersey.spi.container.ResourceFilter;
 public class FF4jRolesResourceFilterFactory extends RolesAllowedResourceFilterFactory {
 
     /** Api Config to initialize filters. */
-    public static FF4jApiConfig apiConfig = null;
+    public static ApiConfig apiConfig = null;
 
     /** {@inheritDoc} */
     @Override

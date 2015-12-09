@@ -1,4 +1,4 @@
-package org.ff4j.web.resources.it;
+package org.ff4j.web.api.test.it;
 
 /*
  * #%L
@@ -21,28 +21,26 @@ package org.ff4j.web.resources.it;
  */
 
 import javax.ws.rs.Path;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Application;
 
 import org.ff4j.FF4j;
 import org.ff4j.test.AssertFf4j;
 import org.ff4j.test.TestsFf4jConstants;
-import org.ff4j.web.ApiConfig;
 import org.ff4j.web.FF4jWebConstants;
-import org.ff4j.web.api.FF4JApiApplication;
 import org.ff4j.web.api.FF4jJacksonMapper;
 import org.ff4j.web.api.resources.FF4jResource;
+import org.ff4j.web.api.test.SampleFF4jJersey2Application;
 import org.ff4j.web.store.FeatureStoreHttp;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.test.JerseyTest;
+import org.glassfish.jersey.test.TestProperties;
 import org.junit.Before;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.api.json.JSONConfiguration;
-import com.sun.jersey.spi.container.servlet.WebComponent;
-import com.sun.jersey.test.framework.JerseyTest;
-import com.sun.jersey.test.framework.WebAppDescriptor;
-import com.sun.jersey.test.framework.spi.container.TestContainerFactory;
-import com.sun.jersey.test.framework.spi.container.grizzly2.web.GrizzlyWebTestContainerFactory;
+
+import io.swagger.jaxrs.json.JacksonJsonProvider;
 
 /**
  * Superclass for testing web resources.
@@ -67,11 +65,28 @@ public abstract class AbstractWebResourceTestIT extends JerseyTest implements Te
     @Override
     @Before
     public void setUp() throws Exception {
+        super.setUp();
         if (assertFF4J == null) {
             assertFF4J = new AssertFf4j(ff4j);
         }
+        
     }
-
+    
+    @Override
+    protected Application configure() {
+        // Enable logging.
+        enable(TestProperties.LOG_TRAFFIC);
+        enable(TestProperties.DUMP_ENTITY);
+        
+        // Initialisation of clientss
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.register(JacksonJsonProvider.class);
+        clientConfig.register(FF4jJacksonMapper.class);
+        setClient(ClientBuilder.newClient(clientConfig));
+        
+        return new SampleFF4jJersey2Application();
+    }
+    
     /**
      * Serialize with custom jackson.
      * @param o
@@ -89,45 +104,14 @@ public abstract class AbstractWebResourceTestIT extends JerseyTest implements Te
             throw new IllegalArgumentException("Cannot serialize", e);
         }
     }
-    
-    /**
-     * Utilization of out-of-thr-box jersey configuration.
-     *
-     * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
-     */
-    public static class SimpleFF4jProvider extends FF4JApiApplication {
-
-        /** {@inheritDoc} */
-        @Override
-        public ApiConfig getApiConfig() {
-            return new ApiConfig(ff4j);
-        }
-        
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public WebAppDescriptor configure() {
-        ClientConfig cc = new DefaultClientConfig();
-        cc.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
-        return new WebAppDescriptor.Builder()
-                .initParam(WebComponent.APPLICATION_CONFIG_CLASS, SimpleFF4jProvider.class.getName())//
-                .clientConfig(cc).build();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public TestContainerFactory getTestContainerFactory() {
-        return new GrizzlyWebTestContainerFactory();
-    }
 
     /**
      * Convenient method to get a resource for {@link FF4jResource}
      * 
      * @return web resource
      */
-    protected WebResource resourceff4j() {
-        return resource().path(APIPATH);
+    protected WebTarget resourceff4j() {
+        return target().path(APIPATH);
     }
 
     /**
@@ -135,7 +119,7 @@ public abstract class AbstractWebResourceTestIT extends JerseyTest implements Te
      * 
      * @return web resource
      */
-    protected WebResource resourceStore() {
+    protected WebTarget resourceStore() {
         return resourceff4j().path(RESOURCE_STORE);
     }
 
@@ -144,7 +128,7 @@ public abstract class AbstractWebResourceTestIT extends JerseyTest implements Te
      * 
      * @return web resource
      */
-    protected WebResource resourceFeatures() {
+    protected WebTarget resourceFeatures() {
         return resourceStore().path(RESOURCE_FEATURES);
     }
 
@@ -153,7 +137,7 @@ public abstract class AbstractWebResourceTestIT extends JerseyTest implements Te
      * 
      * @return web resource
      */
-    protected WebResource resourceGroups() {
+    protected WebTarget resourceGroups() {
         return resourceStore().path(RESOURCE_GROUPS);
     }
 

@@ -1,12 +1,13 @@
-package org.ff4j.web.api.test.it;
+package org.ff4j.web.api.test.embedded;
 
 import java.io.IOException;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.client.WebTarget;
 
 import org.ff4j.web.api.FF4jJacksonMapper;
+import org.ff4j.web.api.test.SampleFF4jJersey2Application;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.NetworkListener;
 import org.glassfish.grizzly.servlet.ServletRegistration;
@@ -16,11 +17,10 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 import io.swagger.jaxrs.json.JacksonJsonProvider;
 
-public class SampleIntegrationTest {
+public class AbstractEmbeddedGrizzlyIntegrationTest {
     
     private static final String HOST = "localhost";
     
@@ -56,15 +56,16 @@ public class SampleIntegrationTest {
         
     }
     
+    protected WebTarget target() {
+        return client.target("http://" + HOST + ":" + PORT);
+    }
+    
     @Before
     public void start() throws IOException {
         server.start();
     }
     
-    @Test
-    public void testFF4j() throws IOException {
-        client.target("http://" + HOST + ":" + PORT).path("/ff4j").request(MediaType.APPLICATION_JSON).get();
-    }
+   
     
     @After
     public void stop() {

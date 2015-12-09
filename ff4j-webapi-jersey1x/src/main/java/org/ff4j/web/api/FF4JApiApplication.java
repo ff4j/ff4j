@@ -7,7 +7,7 @@ import javax.ws.rs.core.Context;
 
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.ff4j.FF4j;
-import org.ff4j.web.FF4jApiConfig;
+import org.ff4j.web.ApiConfig;
 import org.ff4j.web.api.resources.FF4jResource;
 import org.ff4j.web.api.security.FF4jRolesResourceFilterFactory;
 import org.ff4j.web.api.security.FF4jSecurityContextFilter;
@@ -40,7 +40,7 @@ public abstract class FF4JApiApplication extends PackagesResourceConfig {
      * 
      * @return
      */
-    protected abstract FF4jApiConfig getApiConfig();
+    protected abstract ApiConfig getApiConfig();
 
     /**
      * Injection of bean ff4j within this static class.
@@ -67,7 +67,7 @@ public abstract class FF4JApiApplication extends PackagesResourceConfig {
         log.info(" ");
         
         // Initialize through configuration
-        FF4jApiConfig conf = getApiConfig();
+        ApiConfig conf = getApiConfig();
         FF4jSecurityContextFilter.securityConfig = conf;
         FF4jRolesResourceFilterFactory.apiConfig = conf;
         
@@ -82,16 +82,16 @@ public abstract class FF4JApiApplication extends PackagesResourceConfig {
         getSingletons().add(new FF4jJacksonMapper());
         
         // Authorization, JSR250
-        if (conf.isEnableAuthorization()) {
+        if (conf.isAutorize()) {
             getProperties().put(ResourceConfig.PROPERTY_RESOURCE_FILTER_FACTORIES,
                     FF4jRolesResourceFilterFactory.class.getCanonicalName());
             log.info("ff4j webApi security has been set up with both authentication and authorization");
 
-        } else if (conf.isEnableAuthentication()) {
+        } else if (conf.isAuthenticate()) {
             // Only Authenticated here
             StringBuilder filters = new StringBuilder();
             filters.append(FF4jSecurityContextFilter.class.getCanonicalName());
-            if (conf.isEnableLogging()) {
+            if (conf.isLog()) {
                 filters.append(";" + LoggingFilter.class.getCanonicalName());
             }
             // Pas authorization
@@ -104,7 +104,7 @@ public abstract class FF4JApiApplication extends PackagesResourceConfig {
         }
         
         // Enable Documentation if required
-        if (conf.isEnableDocumentation()) {
+        if (conf.isDocumentation()) {
            
            BeanConfig beanConfig = new BeanConfig();
            beanConfig.setTitle("FF4J (ff4j.org) WebAPI");
@@ -114,7 +114,7 @@ public abstract class FF4JApiApplication extends PackagesResourceConfig {
            beanConfig.setLicense("Apache 2.0");
            beanConfig.setLicenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html");
            
-           beanConfig.setVersion(getApiConfig().getVersionNumber());
+           beanConfig.setVersion(getApiConfig().getVersion());
            beanConfig.setSchemes(new String[]{"http"});
            beanConfig.setHost(getApiConfig().getHost() + ":" + getApiConfig().getPort());
            beanConfig.setBasePath("/" + getApiConfig().getWebContext() + "/api");

@@ -90,13 +90,24 @@
 			<artifactId>jersey-grizzly-connector</artifactId>
 			<version>${version.jersey2x}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.test-framework</groupId>
+			<artifactId>jersey-test-framework-core</artifactId>
+			<version>${version.jersey2x}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.test-framework.providers</groupId>
+			<artifactId>jersey-test-framework-provider-grizzly2</artifactId>
+			<version>${version.jersey2x}</version>
+		</dependency>
 		
 		<!-- Integration Test with embedded Grizzly2 -->
 		<dependency>
             <groupId>org.glassfish.grizzly</groupId>
             <artifactId>grizzly-http-servlet</artifactId>
-            <version>2.3.11</version>
+            <version>2.3.23</version>
         </dependency>
+        
         <dependency>
     		<groupId>javax.servlet</groupId>
     		<artifactId>javax.servlet-api</artifactId>
@@ -149,6 +160,11 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.fusesource.jansi</groupId>
+			<artifactId>jansi</artifactId>
+			<version>1.11</version>
 		</dependency>
 
 

@@ -29,7 +29,8 @@ import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.test.AssertFf4j;
 import org.ff4j.test.TestsFf4jConstants;
 import org.ff4j.utils.Util;
-import org.ff4j.web.FF4jApiConfig;
+import org.ff4j.web.ApiConfig;
+import org.ff4j.web.ApiConfigBuilder;
 import org.ff4j.web.FF4jWebConstants;
 import org.ff4j.web.api.FF4JApiApplication;
 import org.ff4j.web.api.FF4jJacksonMapper;
@@ -111,13 +112,13 @@ public class SecuredFF4JResourceTestIT extends JerseyTest implements TestsFf4jCo
 
         /** {@inheritDoc} */
         @Override
-        public FF4jApiConfig getApiConfig() {
-            FF4jApiConfig secured = new FF4jApiConfig(ff4j);
-            secured.enableAuthentication().enableAuthorization();
+        public ApiConfig getApiConfig() {
+            ApiConfig secured = new ApiConfigBuilder(ff4j)//
+                    .withAuthentication() //
+                    .withAutorization().build();
             secured.createApiKey("123", true, false, Util.set("ROLE_USER", "ROLE_ADMIN"));
             secured.createApiKey("456", true, true, Util.set("ROLE_USER", "ROLE_ADMIN"));
             secured.createUser("user", "user", true, false, Util.set("ROLE_USER", "ROLE_ADMIN"));
-            // ADMINISTRATOR is the expected role from F4 feature, 
             secured.createUser("admin", "admin", true, true, Util.set("ADMINISTRATOR", "USER"));
             return secured;
         }
