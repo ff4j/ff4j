@@ -84,7 +84,7 @@ public abstract class AbstractWebResourceTestIT extends JerseyTest implements Te
         clientConfig.register(FF4jJacksonMapper.class);
         setClient(ClientBuilder.newClient(clientConfig));
         
-        return new SampleFF4jJersey2Application();
+        return new SampleFF4jJersey2Application(ff4j);
     }
     
     /**

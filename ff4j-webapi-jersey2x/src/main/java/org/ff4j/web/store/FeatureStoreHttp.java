@@ -47,7 +47,6 @@ import org.ff4j.store.AbstractFeatureStore;
 import org.ff4j.utils.Util;
 import org.ff4j.web.api.FF4jJacksonMapper;
 import org.ff4j.web.api.resources.domain.FeatureApiBean;
-import org.ff4j.web.api.resources.domain.GroupDescApiBean;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.internal.util.Base64;
 
@@ -167,7 +166,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements org.ff4j.w
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new FeatureNotFoundException(uid);
         }
-        return parseFeature((String) cRes.getEntity());
+        return parseFeature(cRes.readEntity(String.class));
     }
 
     /** {@inheritDoc} */
@@ -231,7 +230,8 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements org.ff4j.w
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
             throw new FeatureAccessException("Cannot read features, an HTTP error " + cRes.getStatus() + " occured.");
         }
-        String resEntity = (String) cRes.getEntity();
+       
+        String resEntity = (String) cRes.readEntity(String.class);
         Feature[] fArray = parseFeatureArray(resEntity);
         Map<String, Feature> features = new HashMap<String, Feature>();
         for (Feature feature : fArray) {
@@ -367,7 +367,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements org.ff4j.w
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
             throw new FeatureAccessException("Cannot grant role on feature, an HTTP error " + cRes.getStatus() + " occured.");
         }
-        String resEntity = (String) cRes.getEntity();
+        String resEntity = cRes.readEntity(String.class);
         Feature[] fArray = parseFeatureArray(resEntity);
         Map<String, Feature> features = new HashMap<String, Feature>();
         for (Feature feature : fArray) {
@@ -395,13 +395,13 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements org.ff4j.w
     @Override
     public Set<String> readAllGroups() {
         Response cRes = getGroups().request(MediaType.APPLICATION_JSON).get();
-        List<GroupDescApiBean> groupApiBeans = (List<GroupDescApiBean>) cRes.getEntity();
+        List < Map < String, String>> groupList = cRes.readEntity(List.class);
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
             throw new FeatureAccessException("Cannot read groups, an HTTP error " + cRes.getStatus() + " occured.");
         }
         Set < String > groupNames = new HashSet<String>();
-        for (GroupDescApiBean groupApiBean : groupApiBeans) {
-            groupNames.add(groupApiBean.getGroupName());
+        for (Map <String, String > currentGroup : groupList) {
+            groupNames.add(currentGroup.get("groupName"));
         }
         return groupNames;
     }

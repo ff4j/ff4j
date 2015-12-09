@@ -38,7 +38,7 @@ public class JerseyRequestEventListener implements RequestEventListener {
             break;
     		
     		case RESOURCE_METHOD_FINISHED:
-    			logger.info(reqEvt.getType() + ") 5° Ending");
+    		    logger.debug(reqEvt.getContainerRequest().getRequestUri() + "[START]");
 			break;
     		
 			case EXCEPTION_MAPPING_FINISHED:
@@ -71,7 +71,7 @@ public class JerseyRequestEventListener implements RequestEventListener {
 				logger.info(reqEvt.getType() + ") 14° Subresource");
 				break;
 			default:
-				logger.info(reqEvt.getType() + ") Default");
+			    logger.debug(reqEvt.getContainerRequest().getRequestUri() + "[" + reqEvt.getType() + "]");
 				break;
 	    	}
 	}

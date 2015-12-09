@@ -8,6 +8,10 @@ public class SampleFF4jJersey2Application extends FF4jApiApplicationJersey2x {
 
     private FF4j ff4j = new FF4j();
     
+    public SampleFF4jJersey2Application(FF4j ff) {
+        this.ff4j = ff;
+    }
+    
     @Override
     protected ApiConfig getWebApiConfiguration() {
          ApiConfig fac = new ApiConfig(ff4j);
