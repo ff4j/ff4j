@@ -1,5 +1,7 @@
 package org.ff4j.web.api.test.it;
 
+import javax.ws.rs.client.Entity;
+
 /*
  * #%L
  * ff4j-web
@@ -49,7 +51,7 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
         Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
         
         // Then, Entity Object
-        //Assert.assertTrue(resEntity.contains("uptime"));
+        Assert.assertTrue(resHttp.readEntity(String.class).contains("uptime"));
     }
 
     /**
@@ -69,7 +71,7 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
         Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
         Assert.assertNotNull(resEntity);
         Assert.assertFalse(Boolean.valueOf(resEntity));
-    }*/
+    }
     
     /**
      * TDD.
