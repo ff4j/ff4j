@@ -61,17 +61,15 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
         assertFF4J.assertThatFeatureExist(F4);
         assertFF4J.assertThatFeatureNotFlipped(F4);
         // When
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        //formData.add("", F4);
-        Response resHttp = resourceff4j().path(OPERATION_CHECK).path(F4).//
-                type(MediaType.APPLICATION_FORM_URLENCODED).//
-                post(Response.class, formData);
-        String resEntity = resHttp.getEntity(String.class);
+        Response resHttp = resourceff4j().path(OPERATION_CHECK).path(F4)//
+                .request(MediaType.APPLICATION_FORM_URLENCODED)
+                .post(Entity.text(""));
+        String resEntity = resHttp.readEntity(String.class);
         // Then
         Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
         Assert.assertNotNull(resEntity);
         Assert.assertFalse(Boolean.valueOf(resEntity));
-    }
+    }*/
     
     /**
      * TDD.
@@ -85,7 +83,7 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
         // When
         Response resHttp = resourceff4j().path(OPERATION_CHECK).path(F4).//
                 get(Response.class);
-        String resEntity = resHttp.getEntity(String.class);
+        String resEntity = resHttp.readEntity(String.class);
         // Then
         Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
         Assert.assertNotNull(resEntity);
@@ -109,7 +107,7 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
         Response resHttp = resourceff4j().path(OPERATION_CHECK).path(F4).//
                 type(MediaType.APPLICATION_FORM_URLENCODED).//
                 post(Response.class, formData);
-        String resEntity = resHttp.getEntity(String.class);
+        String resEntity = resHttp.readEntity(String.class);
         // Then
         Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
         Assert.assertNotNull(resEntity);
@@ -125,7 +123,7 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
         assertFF4J.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
         // When
         Response resHttp = resourceff4j().path(OPERATION_CHECK).path(F_DOESNOTEXIST).get(Response.class);
-        String resEntity = resHttp.getEntity(String.class);
+        String resEntity = resHttp.readEntity(String.class);
         // Then
         Assert.assertEquals("Expected status is 404", Status.NOT_FOUND.getStatusCode(), resHttp.getStatus());
         Assert.assertNotNull(resEntity);
@@ -146,7 +144,7 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
                 .path(AWESOME) //
                 .type(MediaType.APPLICATION_FORM_URLENCODED).//
                 post(Response.class, formData);
-        String resEntity = resHttp.getEntity(String.class);
+        String resEntity = resHttp.readEntity(String.class);
         // Then
         Assert.assertEquals("Expected status is 400", Status.BAD_REQUEST.getStatusCode(), resHttp.getStatus());
         Assert.assertNotNull(resEntity);
@@ -167,7 +165,7 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
                 .path(AWESOME) //
                 .type(MediaType.APPLICATION_FORM_URLENCODED).//
                 post(Response.class, formData);
-        String resEntity = resHttp.getEntity(String.class);
+        String resEntity = resHttp.readEntity(String.class);
         
         // Then
         Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
