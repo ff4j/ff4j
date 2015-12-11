@@ -23,6 +23,12 @@
    		<required>true</required>
    		<rtexprvalue>true</rtexprvalue>
   	 </attribute>
+  	 <attribute>
+  	 	<description>feature unique identifier</description>
+   		<name>shareHttpSession</name>
+   		<required>false</required>
+   		<rtexprvalue>false</rtexprvalue>
+  	 </attribute>
 	</tag>
 	
 	<!-- Check Feature status -->
@@ -36,6 +42,12 @@
    		<name>featureid</name>
    		<required>true</required>
    		<rtexprvalue>true</rtexprvalue>
+  	 </attribute>
+  	  <attribute>
+  	 	<description>feature unique identifier</description>
+   		<name>shareHttpSession</name>
+   		<required>false</required>
+   		<rtexprvalue>false</rtexprvalue>
   	 </attribute>
 	</tag>
 	

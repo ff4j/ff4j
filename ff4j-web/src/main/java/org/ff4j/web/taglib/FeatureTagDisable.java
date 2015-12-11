@@ -46,20 +46,21 @@ public class FeatureTagDisable extends AbstractFeatureTag {
     @Override
     protected boolean eval(FF4j ff4j, PageContext jspContext) {
         FlippingExecutionContext executionContext = new FlippingExecutionContext();
-        executionContext.putString("LOCALE", pageContext.getRequest().getLocalName());
-        
-        @SuppressWarnings("unchecked")
-        Map < String, String[]> parameters = pageContext.getRequest().getParameterMap();
-        for (String param : parameters.keySet()) {
-            String[] innerParams = parameters.get(param);
-            if (innerParams != null) {
-                StringBuilder sb = new StringBuilder();
-                for (String innerParam : innerParams) {
-                    sb.append(innerParam);
-                    sb.append(",");
+        if (isShareHttpSession()) {
+            executionContext.putString("LOCALE", pageContext.getRequest().getLocalName());
+            @SuppressWarnings("unchecked")
+            Map < String, String[]> parameters = pageContext.getRequest().getParameterMap();
+            for (String param : parameters.keySet()) {
+                String[] innerParams = parameters.get(param);
+                if (innerParams != null) {
+                    StringBuilder sb = new StringBuilder();
+                    for (String innerParam : innerParams) {
+                        sb.append(innerParam);
+                        sb.append(",");
+                    }
+                    String expression = sb.toString();
+                    executionContext.putString(param, expression.substring(0, expression.length() - 1));
                 }
-                String expression = sb.toString();
-                executionContext.putString(param, expression.substring(0, expression.length() - 1));
             }
         }
         return !ff4j.check(getFeatureid(), executionContext);

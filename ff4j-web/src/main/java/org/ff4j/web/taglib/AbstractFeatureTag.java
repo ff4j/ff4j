@@ -47,6 +47,9 @@ public abstract class AbstractFeatureTag extends TagSupport implements ConsoleCo
 
     /** Injected by JSP itSelf. */
     private String featureid = "";
+    
+    /** Share httpSession with Flipping execution context, as consuming keep at minimum. */
+    private boolean shareHttpSession = false;
 
     /** FF4j bean name. */
     private final String ff4jAttributeName = FF4J_SESSIONATTRIBUTE_NAME;
@@ -121,6 +124,25 @@ public abstract class AbstractFeatureTag extends TagSupport implements ConsoleCo
      */
     public String getFf4jAttributeName() {
         return ff4jAttributeName;
+    }
+
+    /**
+     * Getter accessor for attribute 'shareHttpSession'.
+     *
+     * @return
+     *       current value of 'shareHttpSession'
+     */
+    public boolean isShareHttpSession() {
+        return shareHttpSession;
+    }
+
+    /**
+     * Setter accessor for attribute 'shareHttpSession'.
+     * @param shareHttpSession
+     * 		new value for 'shareHttpSession '
+     */
+    public void setShareHttpSession(boolean shareHttpSession) {
+        this.shareHttpSession = shareHttpSession;
     }
 
 }
