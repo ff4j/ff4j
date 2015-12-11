@@ -69,7 +69,6 @@ public abstract class AbstractWebResourceTestIT extends JerseyTest implements Te
         if (assertFF4J == null) {
             assertFF4J = new AssertFf4j(ff4j);
         }
-        
     }
     
     @Override

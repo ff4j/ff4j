@@ -1,6 +1,7 @@
 package org.ff4j.web.api.test.it;
 
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Form;
 
 /*
  * #%L
@@ -35,7 +36,7 @@ import org.junit.Test;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
+public class FF4JResource2TestIT extends AbstractWebResourceTestIT {
 
     /**
      * TDD.
@@ -56,18 +57,24 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
 
     /**
      * TDD.
-     *
+     */
     @Test
     public void testPost_isNotFlipped() {
         // Given
         assertFF4J.assertThatFeatureExist(F4);
         assertFF4J.assertThatFeatureNotFlipped(F4);
+        
         // When
         Response resHttp = resourceff4j().path(OPERATION_CHECK).path(F4)//
-                .request(MediaType.APPLICATION_FORM_URLENCODED)
-                .post(Entity.text(""));
-        String resEntity = resHttp.readEntity(String.class);
+                // content-type
+                .request(MediaType.APPLICATION_FORM_URLENCODED_TYPE)
+                // Accept : Text Plain
+                .accept(MediaType.TEXT_PLAIN_TYPE)
+                // Method and post URL ENCODED
+                .post(Entity.form(new Form()));
+        
         // Then
+        String resEntity = resHttp.readEntity(String.class);
         Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
         Assert.assertNotNull(resEntity);
         Assert.assertFalse(Boolean.valueOf(resEntity));
@@ -75,18 +82,21 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
     
     /**
      * TDD.
-     *
+     */
     @Test
     public void testPost_isNotFlippedGET() {
         // Given
         assertFF4J.assertThatFeatureExist(F4);
         ff4j.disable(F4);
         assertFF4J.assertThatFeatureNotFlipped(F4);
+        
         // When
-        Response resHttp = resourceff4j().path(OPERATION_CHECK).path(F4).//
-                get(Response.class);
-        String resEntity = resHttp.readEntity(String.class);
+        Response resHttp = resourceff4j() //
+                .path(OPERATION_CHECK).path(F4) //
+                .request().get(Response.class);
+        
         // Then
+        String resEntity = resHttp.readEntity(String.class);
         Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
         Assert.assertNotNull(resEntity);
         Assert.assertFalse(Boolean.valueOf(resEntity));
@@ -94,7 +104,7 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
 
     /**
      * TDD.
-     *
+     */
     @Test
     public void testPost_isFlipped() {
         // Given
@@ -104,13 +114,18 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
         ff4j.getFeatureStore().enable(F4);
         assertFF4J.assertThatFeatureFlipped(F4);
         // When
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add(POST_PARAMNAME_FEATURE_UID, F4);
-        Response resHttp = resourceff4j().path(OPERATION_CHECK).path(F4).//
-                type(MediaType.APPLICATION_FORM_URLENCODED).//
-                post(Response.class, formData);
-        String resEntity = resHttp.readEntity(String.class);
+        Form formData = new Form();
+        formData.param(POST_PARAMNAME_FEATURE_UID, F4);
+        Response resHttp = resourceff4j().path(OPERATION_CHECK).path(F4)
+                // content-type
+                .request(MediaType.APPLICATION_FORM_URLENCODED_TYPE)
+                // Accept : Text Plain
+                .accept(MediaType.TEXT_PLAIN_TYPE)
+                // Method and post URL ENCODED
+                .post(Entity.form(new Form()));
+        
         // Then
+        String resEntity = resHttp.readEntity(String.class);
         Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
         Assert.assertNotNull(resEntity);
         Assert.assertTrue(Boolean.valueOf(resEntity));
@@ -118,13 +133,13 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
 
     /**
      * TDD.
-     *
+     */
     @Test
     public void testPost_isFlippedNotFound() {
         // Given
         assertFF4J.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
         // When
-        Response resHttp = resourceff4j().path(OPERATION_CHECK).path(F_DOESNOTEXIST).get(Response.class);
+        Response resHttp = resourceff4j().path(OPERATION_CHECK).path(F_DOESNOTEXIST).request().get(Response.class);
         String resEntity = resHttp.readEntity(String.class);
         // Then
         Assert.assertEquals("Expected status is 404", Status.NOT_FOUND.getStatusCode(), resHttp.getStatus());
@@ -134,18 +149,22 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
 
     /**
      * TDD.
-     *
+     */
     @Test
     public void testPost_isFlippedInvalidParameter() {
         // Given
         assertFF4J.assertThatFeatureExist(AWESOME);
         // When
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add("InvalidParameter", "localhost");
+        Form formData = new Form();
+        formData.param("InvalidParameter", "localhost");
         Response resHttp = resourceff4j().path(OPERATION_CHECK) //
                 .path(AWESOME) //
-                .type(MediaType.APPLICATION_FORM_URLENCODED).//
-                post(Response.class, formData);
+                // content-type
+                .request(MediaType.APPLICATION_FORM_URLENCODED_TYPE)
+                // Accept : Text Plain
+                .accept(MediaType.TEXT_PLAIN_TYPE)
+                // Method and post URL ENCODED
+                .post(Entity.form(new Form()));
         String resEntity = resHttp.readEntity(String.class);
         // Then
         Assert.assertEquals("Expected status is 400", Status.BAD_REQUEST.getStatusCode(), resHttp.getStatus());
@@ -155,24 +174,28 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
 
     /**
      * TDD.
-     *
+     */
     @Test
     public void testPost_isFlippedWithParameters() {
         // Given
         assertFF4J.assertThatFeatureExist(AWESOME);
         // When
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add("clientHostName", "localhost");
+        Form formData = new Form();
+        formData.param("clientHostName", "localhost");
         Response resHttp = resourceff4j().path(OPERATION_CHECK) //
                 .path(AWESOME) //
-                .type(MediaType.APPLICATION_FORM_URLENCODED).//
-                post(Response.class, formData);
+                // content-type
+                .request(MediaType.APPLICATION_FORM_URLENCODED_TYPE)
+                // Accept : Text Plain
+                .accept(MediaType.TEXT_PLAIN_TYPE)
+                // Method and post URL ENCODED
+                .post(Entity.form(formData));
         String resEntity = resHttp.readEntity(String.class);
         
         // Then
         Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
         Assert.assertNotNull(resEntity);
         Assert.assertFalse(Boolean.valueOf(resEntity));
-    }  */  
+    } 
 
 }

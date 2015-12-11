@@ -1,5 +1,7 @@
 package org.ff4j.web.api.resources;
 
+import javax.ws.rs.WebApplicationException;
+
 /*
  * #%L ff4j-web %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -55,6 +57,10 @@ public class RuntimeExceptionMapper implements ExceptionMapper<RuntimeException>
         }
         if (rex instanceof FeatureAccessException) {
             return Status.SERVICE_UNAVAILABLE;
+        }
+        // Propagation of existing code
+        if (rex instanceof WebApplicationException) {
+            return Status.fromStatusCode(((WebApplicationException) rex).getResponse().getStatus());
         }
         return Status.INTERNAL_SERVER_ERROR;
     }

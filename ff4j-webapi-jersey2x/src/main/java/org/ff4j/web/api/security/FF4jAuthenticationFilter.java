@@ -43,13 +43,13 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FF4jSecurityContextFilter implements ContainerRequestFilter, FF4jWebConstants {
+public class FF4jAuthenticationFilter implements ContainerRequestFilter, FF4jWebConstants {
 
     /** logger for this class. */
     private final Logger log = LoggerFactory.getLogger(getClass());
     
     /** security configuration. */
-    public static ApiConfig securityConfig = null;
+    public static ApiConfig apiConfig = null;
     
     /**
      * Apply the filter ozz: check input request, validate or not with user auth
@@ -79,13 +79,13 @@ public class FF4jSecurityContextFilter implements ContainerRequestFilter, FF4jWe
         if (auth.contains(PARAM_AUTHKEY)) {
             auth = auth.replaceFirst(PARAM_AUTHKEY + "=", "");
             // Checking api Key
-            if (!securityConfig.getApiKeys().contains(auth)) {
+            if (!apiConfig.getApiKeys().contains(auth)) {
                 handleUnAuthorized("The api key provided '" + auth + "' is invalid ");
             }
 
             // Positionning Roles
-            Set<String> perms = securityConfig.getPermissions().get(auth);
-            SecurityContext sc = new FF4jSecurityContext(auth, PARAM_AUTHKEY, perms);
+            Set<String> perms = apiConfig.getPermissions().get(auth);
+            SecurityContext sc = new FF4jSecurityContext(auth, FF4jSecurityContext.AUTH_SCHEME_APIKEY, perms);
             containerRequest.setSecurityContext(sc);
             log.info("Client successfully logged with an ApiKey");
             return;
@@ -100,14 +100,15 @@ public class FF4jSecurityContextFilter implements ContainerRequestFilter, FF4jWe
             }
 
             // Validation login/password
-            String expectedPassword = securityConfig.getUsers().get(lap[0]);
+            String expectedPassword = apiConfig.getUsers().get(lap[0]);
             if (expectedPassword == null || !(lap[1].equals(expectedPassword))) {
                 handleUnAuthorized("<p>Invalid username or password.</p>");
             }
             
             // Positionning Roles
-            Set<String> perms = securityConfig.getPermissions().get(lap[0]);
-            SecurityContext sc = new FF4jSecurityContext(lap[0], "BASIC", perms);
+            Set<String> perms = apiConfig.getPermissions().get(lap[0]);
+            System.out.println(perms);
+            SecurityContext sc = new FF4jSecurityContext(lap[0], FF4jSecurityContext.AUTH_SCHEME_BASIC, perms);
             containerRequest.setSecurityContext(sc);
             log.info("Client successfully logged with a user/pasword pair ");
             return;
@@ -115,6 +116,7 @@ public class FF4jSecurityContextFilter implements ContainerRequestFilter, FF4jWe
 
         handleUnAuthorized("Cannot parse authorisation header attribute, valid are basic and apiKey");
     }
+    
 
     /**
      * Dedicated error.

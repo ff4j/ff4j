@@ -33,10 +33,16 @@ import javax.ws.rs.core.SecurityContext;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public class FF4jSecurityContext implements SecurityContext, Serializable {
-
+    
     /** Serial. */
     private static final long serialVersionUID = 9041009506390024931L;
 
+    /** login using user/password. */
+    public static final String AUTH_SCHEME_BASIC = "BASIC";
+    
+    /** login using apiKey. */
+    public static final String AUTH_SCHEME_APIKEY = "APIKEY";
+    
     /** Permissions for user. */
     private Set<String> userRoles = new HashSet<String>();
     
@@ -64,6 +70,7 @@ public class FF4jSecurityContext implements SecurityContext, Serializable {
     /** {@inheritDoc} */
     @Override
     public Principal getUserPrincipal() {
+        System.out.println("PRINCP");
         return new Principal() {
             /** {@inheritDoc} */
             @Override
@@ -76,6 +83,7 @@ public class FF4jSecurityContext implements SecurityContext, Serializable {
     /** {@inheritDoc} */
     @Override
     public boolean isUserInRole(String role) {
+        System.out.println("TEST ROLE " + role + " against " + userRoles);
         return userRoles.contains(role);
     }
 

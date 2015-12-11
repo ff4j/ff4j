@@ -5,6 +5,8 @@ import org.ff4j.web.ApiConfig;
 import org.ff4j.web.api.filter.JerseyApplicationEventListener;
 import org.ff4j.web.api.filter.JerseyRequestEventListener;
 import org.ff4j.web.api.resources.FF4jResource;
+import org.ff4j.web.api.security.FF4jAuthenticationFilter;
+import org.ff4j.web.api.security.FF4jAuthorizationFilter;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.Logger;
@@ -65,13 +67,13 @@ public abstract class FF4jApiApplicationJersey2x extends ResourceConfig {
         register(JerseyApplicationEventListener.class);
         register(JerseyRequestEventListener.class);
         
-        /*property(EntityFilteringFeature.ENTITY_FILTERING_SCOPE,
-                new Annotation[] {SecurityAnnotations.rolesAllowed("manager")});
-        */
-        
-        // Register the SecurityEntityFilteringFeature.
-        //register(SecurityEntityFilteringFeature.class);
-    
+        if (apiConfig.isAutorize()) {
+            enableAuthenticationFilter();
+            enableAuthorizationFilter();
+            
+        } else if (apiConfig.isAuthenticate()) {
+            enableAuthenticationFilter();
+        }
     
         // Swagger configuration
         if (apiConfig.isDocumentation()) {
@@ -94,6 +96,18 @@ public abstract class FF4jApiApplicationJersey2x extends ResourceConfig {
             log.info("Initialisation Swagger [OK]");
         }
         log.info("Initialisation WebAPI [OK]");
+    }
+    
+    private void enableAuthenticationFilter() {
+        FF4jAuthenticationFilter.apiConfig = apiConfig;
+        register(FF4jAuthenticationFilter.class);
+        log.info("WebService Authentication is now enabled");
+    }
+    
+    private void enableAuthorizationFilter() {
+        FF4jAuthorizationFilter.apiConfig = apiConfig;
+        register(FF4jAuthorizationFilter.class);
+        log.info("WebService Authorization is now enabled");
     }
     
 }
