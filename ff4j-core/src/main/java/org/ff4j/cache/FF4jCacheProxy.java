@@ -341,4 +341,22 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
         getCacheManager().evictProperty(name);
     }
 
+    /**
+     * Setter accessor for attribute 'targetFeatureStore'.
+     * @param targetFeatureStore
+     * 		new value for 'targetFeatureStore '
+     */
+    public void setTargetFeatureStore(FeatureStore targetFeatureStore) {
+        this.targetFeatureStore = targetFeatureStore;
+    }
+
+    /**
+     * Setter accessor for attribute 'targetPropertyStore'.
+     * @param targetPropertyStore
+     * 		new value for 'targetPropertyStore '
+     */
+    public void setTargetPropertyStore(PropertyStore targetPropertyStore) {
+        this.targetPropertyStore = targetPropertyStore;
+    }
+
 }

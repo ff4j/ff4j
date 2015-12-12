@@ -20,7 +20,6 @@ import com.sun.jersey.api.core.ResourceConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.spi.inject.SingletonTypeInjectableProvider;
 
-import io.swagger.config.ScannerFactory;
 import io.swagger.jaxrs.config.BeanConfig;
 
 
@@ -106,20 +105,12 @@ public abstract class FF4JApiApplication extends PackagesResourceConfig {
         // Enable Documentation if required
         if (conf.isDocumentation()) {
            
-           BeanConfig beanConfig = new BeanConfig();
-           beanConfig.setTitle("FF4J (ff4j.org) WebAPI");
-           beanConfig.setDescription("Administrate and operate all tasks on your features through this api");
-           beanConfig.setResourcePackage("org.ff4j.web.api.resources");
-           beanConfig.setContact("@clunven");
-           beanConfig.setLicense("Apache 2.0");
-           beanConfig.setLicenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html");
-           
-           beanConfig.setVersion(getApiConfig().getVersion());
-           beanConfig.setSchemes(new String[]{"http"});
-           beanConfig.setHost(getApiConfig().getHost() + ":" + getApiConfig().getPort());
-           beanConfig.setBasePath("/" + getApiConfig().getWebContext() + "/api");
+           BeanConfig beanConfig = FF4jSwaggerConfiguration.getBeanConfig();
+           beanConfig.setVersion(conf.getVersion());
+           beanConfig.setSchemes(new String[] {"http"});
+           beanConfig.setHost(conf.getHost() + ":" + conf.getPort());
+           beanConfig.setBasePath("/" + conf.getWebContext() + "/api");
            beanConfig.setScan(true);
-           ScannerFactory.setScanner(beanConfig);
             
            getSingletons().add(io.swagger.jaxrs.listing.ApiListingResource.class);
            getSingletons().add(io.swagger.jaxrs.listing.SwaggerSerializers.class);

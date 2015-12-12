@@ -159,7 +159,7 @@
 	</modules>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~ DEPENDENCIES ~ -->
+	<!-- ~ DEPENDENCIES             ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<dependencyManagement>
 		<dependencies>
@@ -279,15 +279,25 @@
 			<!-- Swagger -->
 			<dependency>
 				<groupId>io.swagger</groupId>
+				<artifactId>swagger-annotations</artifactId>
+				<version>${version.swagger}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.swagger</groupId>
+				<artifactId>swagger-jaxrs</artifactId>
+				<version>${version.swagger}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.swagger</groupId>
 				<artifactId>swagger-jersey-jaxrs</artifactId>
 				<version>${version.swagger}</version>
 			</dependency>
 			<dependency>
 				<groupId>io.swagger</groupId>
-				<artifactId>swagger-annotations</artifactId>
+				<artifactId>swagger-jersey2-jaxrs</artifactId>
 				<version>${version.swagger}</version>
 			</dependency>
-
+			
 			<!-- Tests -->
 			<dependency>
 				<groupId>junit</groupId>
@@ -304,7 +314,6 @@
 				<artifactId>commons-dbcp</artifactId>
 				<version>${version.commons-dbcp}</version>
 			</dependency>
-
 			<dependency>
 				<groupId>org.mockito</groupId>
 				<artifactId>mockito-all</artifactId>
@@ -333,6 +342,7 @@
 				<version>${version.jsp-api}</version>
 			</dependency>
 
+			<!-- JSON -->
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-databind</artifactId>
@@ -414,7 +424,46 @@
 
 
 			<!-- JERSEY 2X -->
-
+			<dependency>
+				<groupId>org.glassfish.jersey.core</groupId>
+				<artifactId>jersey-client</artifactId>
+				<version>${version.jersey2x}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.jersey.core</groupId>
+				<artifactId>jersey-common</artifactId>
+				<version>${version.jersey2x}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.jersey.core</groupId>
+				<artifactId>jersey-server</artifactId>
+				<version>${version.jersey2x}</version>
+			</dependency>
+			<dependency>
+	    		<groupId>org.glassfish.jersey.media</groupId>
+	    		<artifactId>jersey-media-json-jackson</artifactId>
+		    	<version>${version.jersey2x}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.jersey.containers</groupId>
+				<artifactId>jersey-container-servlet</artifactId>
+				<version>${version.jersey2x}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.jersey.connectors</groupId>
+				<artifactId>jersey-grizzly-connector</artifactId>
+				<version>${version.jersey2x}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.jersey.test-framework</groupId>
+				<artifactId>jersey-test-framework-core</artifactId>
+				<version>${version.jersey2x}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.jersey.test-framework.providers</groupId>
+				<artifactId>jersey-test-framework-provider-grizzly2</artifactId>
+				<version>${version.jersey2x}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
