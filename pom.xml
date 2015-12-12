@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~ COORDONATES ~ -->
@@ -30,7 +31,7 @@
 		<connection>scm:git:git@github.com:clun/ff4j.git</connection>
 		<developerConnection>scm:git:git@github.com:clun/ff4j.git</developerConnection>
 		<url>git@github.com:clun/ff4j.git</url>
-  	  <tag>HEAD</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -70,37 +71,37 @@
 		<!-- Versions -->
 		<version.slf4j>1.7.7</version.slf4j>
 		<version.logback>1.1.2</version.logback>
-		
+
 		<version.junit>4.12</version.junit>
 		<version.powermock>1.5.5</version.powermock>
 		<version.mockito>1.9.5</version.mockito>
-		
+
 		<version.cglib>3.1</version.cglib>
 		<version.aopalliance>1.0</version.aopalliance>
 		<version.spring>4.2.3.RELEASE</version.spring>
 		<version.spring.security>3.2.4.RELEASE</version.spring.security>
-		
+
 		<version.commons-lang>2.6</version.commons-lang>
 		<version.commons-dbcp>1.4</version.commons-dbcp>
 		<version.commons-io>2.4</version.commons-io>
 		<version.commons-fileupload>1.3.1</version.commons-fileupload>
-		
+
 		<version.servlet-api>2.5</version.servlet-api>
 		<version.jsp-api>2.2</version.jsp-api>
 		<version.jstl>1.2</version.jstl>
 		<version.taglib>1.1.2</version.taglib>
 		<version.jsr311>1.1.1</version.jsr311>
-		<version.jacoco>0.6.3.201306030806</version.jacoco>
+		<version.jacoco>0.7.5.201505241946</version.jacoco>
 		<version.jackon2x>2.6.4</version.jackon2x>
 		<version.jersey1x>1.19</version.jersey1x>
 		<version.jersey2x>2.22.1</version.jersey2x>
 		<version.httpclient>4.3.4</version.httpclient>
-		
+
 		<version.swagger>1.5.4</version.swagger>
-		
-		<version.metrics>3.1.0</version.metrics>		
+
+		<version.metrics>3.1.0</version.metrics>
 		<version.hdldb>2.3.2</version.hdldb>
-		
+
 		<version.ehcache>2.10.1</version.ehcache>
 		<version.jedis>2.5.1</version.jedis>
 		<version.neo4j>2.3.1</version.neo4j>
@@ -111,7 +112,7 @@
 		<version.maven.plugin.surefire>2.7.2</version.maven.plugin.surefire>
 		<version.maven.plugin.gpg>1.5</version.maven.plugin.gpg>
 		<version.maven.plugin.graph>1.4</version.maven.plugin.graph>
-		<version.maven.plugin.site>3.0</version.maven.plugin.site>
+		<version.maven.plugin.site>3.4</version.maven.plugin.site>
 		<version.maven.plugin.resources>2.4</version.maven.plugin.resources>
 		<version.maven.plugin.release>2.5.2</version.maven.plugin.release>
 		<version.maven.plugin.sonar>2.2</version.maven.plugin.sonar>
@@ -121,23 +122,24 @@
 		<version.maven.plugin.nexus>1.6.6</version.maven.plugin.nexus>
 		<version.maven.plugin.compiler>3.3</version.maven.plugin.compiler>
 		<version.maven.plugin.jar>2.6</version.maven.plugin.jar>
-		
+		<version.maven.plugin.dependency>2.8</version.maven.plugin.dependency>
+
 	</properties>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~ CHILD MODULES            ~ -->
+	<!-- ~ CHILD MODULES ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<modules>
 		<module>ff4j-core</module>
 		<module>ff4j-aop</module>
 		<module>ff4j-test</module>
 		<module>ff4j-jmx</module>
-		
+
 		<module>ff4j-web</module>
 		<module>ff4j-webapi</module>
 		<module>ff4j-webapi-jersey1x</module>
-		<module>ff4j-webapi-jersey2x</module>		
-		
+		<module>ff4j-webapi-jersey2x</module>
+
 		<module>ff4j-utils-json</module>
 		<module>ff4j-security-spring</module>
 		<module>ff4j-strategy-drools</module>
@@ -149,11 +151,11 @@
 		<module>ff4j-store-jcache</module>
 		<module>ff4j-store-ehcache</module>
 		<module>ff4j-store-redis</module>
-		
+
 		<!-- <module>ff4j-shell</module> -->
 		<!-- <module>ff4j-metrics</module> -->
 		<!-- <module>ff4j-store-neo4j</module> -->
-		
+
 	</modules>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -273,17 +275,17 @@
 				<artifactId>metrics-core</artifactId>
 				<version>${version.metrics}</version>
 			</dependency>
-			
+
 			<!-- Swagger -->
 			<dependency>
-	 			<groupId>io.swagger</groupId>
-	  			<artifactId>swagger-jersey-jaxrs</artifactId>
-	 			<version>${version.swagger}</version>
+				<groupId>io.swagger</groupId>
+				<artifactId>swagger-jersey-jaxrs</artifactId>
+				<version>${version.swagger}</version>
 			</dependency>
 			<dependency>
-	 			<groupId>io.swagger</groupId>
-	  			<artifactId>swagger-annotations</artifactId>
-	 			<version>${version.swagger}</version>
+				<groupId>io.swagger</groupId>
+				<artifactId>swagger-annotations</artifactId>
+				<version>${version.swagger}</version>
 			</dependency>
 
 			<!-- Tests -->
@@ -302,7 +304,7 @@
 				<artifactId>commons-dbcp</artifactId>
 				<version>${version.commons-dbcp}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.mockito</groupId>
 				<artifactId>mockito-all</artifactId>
@@ -330,7 +332,7 @@
 				<artifactId>jsp-api</artifactId>
 				<version>${version.jsp-api}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-databind</artifactId>
@@ -346,7 +348,7 @@
 				<artifactId>jackson-core</artifactId>
 				<version>${version.jackon2x}</version>
 			</dependency>
-		
+
 			<dependency>
 				<artifactId>jsr311-api</artifactId>
 				<groupId>javax.ws.rs</groupId>
@@ -380,7 +382,7 @@
 				<version>${version.jersey1x}</version>
 			</dependency>
 			<dependency>
-				 <groupId>com.sun.jersey.contribs</groupId>
+				<groupId>com.sun.jersey.contribs</groupId>
 				<artifactId>jersey-multipart</artifactId>
 				<version>${version.jersey1x}</version>
 			</dependency>
@@ -409,11 +411,11 @@
 				<artifactId>jersey-test-framework-grizzly2</artifactId>
 				<version>${version.jersey1x}</version>
 			</dependency>
-			
-			
+
+
 			<!-- JERSEY 2X -->
-			
-			
+
+
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
@@ -430,46 +432,25 @@
 
 		<plugins>
 
-			<!-- License 
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>license-maven-plugin</artifactId>
-				<version>${version.maven.plugin.license}</version>
-				<configuration>
-					<verbose>false</verbose>
-					<extraExtensions>
-						<myProprietaryExtension>java</myProprietaryExtension>
-					</extraExtensions>
-				</configuration>
-				<executions>
-					<execution>
-						<id>add-license</id>
-						<goals>
-							<goal>update-file-header</goal>
-						</goals>
-						<phase>process-sources</phase>
-						<configuration>
-							<licenseName>apache_v2</licenseName>
-							<roots>
-								<root>src/main/java</root>
-								<root>src/test</root>
-							</roots>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>-->
+			<!-- License <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>license-maven-plugin</artifactId> 
+				<version>${version.maven.plugin.license}</version> <configuration> <verbose>false</verbose> 
+				<extraExtensions> <myProprietaryExtension>java</myProprietaryExtension> </extraExtensions> 
+				</configuration> <executions> <execution> <id>add-license</id> <goals> <goal>update-file-header</goal> 
+				</goals> <phase>process-sources</phase> <configuration> <licenseName>apache_v2</licenseName> 
+				<roots> <root>src/main/java</root> <root>src/test</root> </roots> </configuration> 
+				</execution> </executions> </plugin> -->
 
 			<!-- Junit -->
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${version.maven.plugin.surefire}</version>
-				
+
 				<configuration>
 					<skip>true</skip>
 				</configuration>
-				
+
 				<executions>
-					
+
 					<execution>
 						<id>unit-test</id>
 						<phase>test</phase>
@@ -484,7 +465,7 @@
 							</excludes>
 						</configuration>
 					</execution>
-					
+
 					<execution>
 						<id>integration-test</id>
 						<phase>integration-test</phase>
@@ -502,6 +483,60 @@
 				</executions>
 			</plugin>
 
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${version.jacoco}</version>
+				<executions>
+					<execution>
+						<id>default-prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>default-prepare-agent-integration</id>
+						<goals>
+							<goal>prepare-agent-integration</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>default-report</id>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>default-report-integration</id>
+						<goals>
+							<goal>report-integration</goal>
+						</goals>
+					</execution>
+					<!-- 
+					<execution>
+						<id>default-check</id>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<rule implementation="org.jacoco.maven.RuleConfiguration">
+									<element>BUNDLE</element>
+									<limits>
+										<limit implementation="org.jacoco.report.check.Limit">
+											<counter>COMPLEXITY</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.60</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+						</configuration>
+					</execution>
+					-->
+				</executions>
+			</plugin>
+
 			<!-- Deploy nexus -->
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
@@ -512,7 +547,7 @@
 					<serverId>ossrh</serverId>
 					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
 					<autoReleaseAfterClose>true</autoReleaseAfterClose>
-				</configuration>								
+				</configuration>
 			</plugin>
 
 		</plugins>
@@ -532,7 +567,13 @@
 						<showWarnings>true</showWarnings>
 					</configuration>
 				</plugin>
-				
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>${version.maven.plugin.dependency}</version>
+				</plugin>
+
 				<!-- Javadoc -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -591,13 +632,6 @@
 					</configuration>
 				</plugin>
 
-				<!-- Sonar -->
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>sonar-maven-plugin</artifactId>
-					<version>${version.maven.plugin.sonar}</version>
-				</plugin>
-
 				<!-- Remove Eclipse Warnings -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
@@ -636,7 +670,7 @@
 									<pluginExecutionFilter>
 										<groupId>org.jacoco</groupId>
 										<artifactId>jacoco-maven-plugin</artifactId>
-										<versionRange>[0.6.0,)</versionRange>
+										<versionRange>[0.7.0,)</versionRange>
 										<goals>
 											<goal>prepare-agent</goal>
 											<goal>report</goal>
@@ -667,100 +701,6 @@
 	</build>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~ Software Quality ~ -->
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<reporting>
-		<plugins>
-
-			<!-- changelog -->
-			<plugin>
-				<artifactId>maven-changes-plugin</artifactId>
-				<version>2.8</version>
-			</plugin>
-
-			<!-- testings -->
-			<plugin>
-				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>2.12.4</version>
-			</plugin>
-
-			<!-- javadoc -->
-			<plugin>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9</version>
-				<configuration>
-					<failOnError>false</failOnError>
-				</configuration>
-			</plugin>
-
-			<!-- readable source code with links -->
-			<plugin>
-				<artifactId>maven-jxr-plugin</artifactId>
-				<version>2.3</version>
-			</plugin>
-
-			<!-- global quality -->
-			<plugin>
-				<artifactId>maven-pmd-plugin</artifactId>
-				<configuration>
-					<linkXRef>true</linkXRef>
-					<targetJdk>1.6</targetJdk>
-				</configuration>
-				<version>2.7.1</version>
-			</plugin>
-
-			<!-- bugs -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>findbugs-maven-plugin</artifactId>
-				<version>2.5.2</version>
-			</plugin>
-
-			<!-- taglist -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>taglist-maven-plugin</artifactId>
-				<configuration>
-					<tags>
-						<tag>TODO</tag>
-						<tag>FIXME</tag>
-						<tag>@todo</tag>
-						<tag>@deprecated</tag>
-					</tags>
-				</configuration>
-				<version>2.4</version>
-			</plugin>
-
-			<!-- Changelog -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-changelog-plugin</artifactId>
-				<version>2.2</version>
-				<reportSets>
-					<reportSet>
-						<id>dual-report</id>
-						<configuration>
-							<type>range</type>
-							<range>30</range>
-						</configuration>
-						<reports>
-							<report>changelog</report>
-							<report>file-activity</report>
-						</reports>
-					</reportSet>
-				</reportSets>
-			</plugin>
-
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>javancss-maven-plugin</artifactId>
-				<version>2.1</version>
-			</plugin>
-
-		</plugins>
-	</reporting>
-
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~ Profiles (tooling) ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<profiles>
@@ -789,6 +729,7 @@
 						<configuration>
 							<templateFile>${basedir}/src/site/ff4j-site.vm</templateFile>
 							<reportPlugins>
+
 								<plugin>
 									<groupId>org.apache.maven.plugins</groupId>
 									<artifactId>maven-javadoc-plugin</artifactId>
@@ -796,6 +737,96 @@
 										<additionalparam>-Xdoclint:none</additionalparam>
 									</configuration>
 								</plugin>
+
+								<plugin>
+									<artifactId>maven-dependency-plugin</artifactId>
+									<reportSets>
+										<reportSet>
+											<reports>
+												<report>analyze-report</report>
+											</reports>
+										</reportSet>
+									</reportSets>
+								</plugin>
+
+								<!-- changelog -->
+								<plugin>
+									<artifactId>maven-changes-plugin</artifactId>
+									<version>2.8</version>
+								</plugin>
+
+								<!-- testings -->
+								<plugin>
+									<artifactId>maven-surefire-report-plugin</artifactId>
+									<version>2.12.4</version>
+								</plugin>
+
+								<!-- readable source code with links -->
+								<plugin>
+									<artifactId>maven-jxr-plugin</artifactId>
+									<version>2.3</version>
+								</plugin>
+
+								<!-- global quality -->
+								<plugin>
+									<artifactId>maven-pmd-plugin</artifactId>
+									<configuration>
+										<linkXRef>true</linkXRef>
+										<targetJdk>1.6</targetJdk>
+									</configuration>
+									<version>2.7.1</version>
+								</plugin>
+
+								<!-- bugs -->
+								<plugin>
+									<groupId>org.codehaus.mojo</groupId>
+									<artifactId>findbugs-maven-plugin</artifactId>
+									<version>3.0.3</version>
+								</plugin>
+
+								<!-- taglist -->
+								<plugin>
+									<groupId>org.codehaus.mojo</groupId>
+									<artifactId>taglist-maven-plugin</artifactId>
+									<configuration>
+										<tags>
+											<tag>TODO</tag>
+											<tag>FIXME</tag>
+											<tag>@todo</tag>
+											<tag>@deprecated</tag>
+										</tags>
+									</configuration>
+									<version>2.4</version>
+								</plugin>
+
+								<!-- Changelog -->
+								<plugin>
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-changelog-plugin</artifactId>
+									<version>2.2</version>
+									<reportSets>
+										<reportSet>
+											<id>dual-report</id>
+											<configuration>
+												<type>range</type>
+												<range>30</range>
+											</configuration>
+											<reports>
+												<report>changelog</report>
+												<report>file-activity</report>
+											</reports>
+										</reportSet>
+									</reportSets>
+								</plugin>
+
+								<plugin>
+									<groupId>org.codehaus.mojo</groupId>
+									<artifactId>javancss-maven-plugin</artifactId>
+									<version>2.1</version>
+								</plugin>
+
+
+
 							</reportPlugins>
 						</configuration>
 					</plugin>
@@ -829,11 +860,11 @@
 		<profile>
 			<id>release</id>
 			<activation>
-	        <property>
-	          <name>performRelease</name>
-	          <value>true</value>
-	        </property>
-	      </activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
 			<build>
 				<plugins>
 					<plugin>
@@ -879,7 +910,7 @@
 				</plugins>
 			</build>
 		</profile>
-		
+
 	</profiles>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -930,7 +961,7 @@
 		</repository>
 		<site>
 			<id>website</id>
-			<url>file:///clunven/workspace-ff4j/mvnsite</url>
+			<url>file://C:/clunven/dev/mvnsite</url>
 		</site>
 	</distributionManagement>
 
