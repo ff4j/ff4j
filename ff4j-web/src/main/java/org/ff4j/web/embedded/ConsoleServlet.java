@@ -73,36 +73,41 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
      */
     @Override
     public void init(ServletConfig servletConfig) throws ServletException {
-        LOGGER.debug("Initializing Embedded Servlet");
-        String className = servletConfig.getInitParameter(PROVIDER_PARAM_NAME);
-        try {
-            Class<?> c = Class.forName(className);
-            Object o = c.newInstance();
-            
-            ff4jProvider = (FF4JProvider) o;
-            LOGGER.info("  __  __ _  _   _ ");
-            LOGGER.info(" / _|/ _| || | (_)");
-            LOGGER.info("| |_| |_| || |_| |");
-            LOGGER.info("|  _|  _|__   _| |");
-            LOGGER.info("|_| |_|    |_|_/ |");
-            LOGGER.info("             |__/   Embedded Console - v" + getClass().getPackage().getImplementationVersion());
-            LOGGER.info(" ");
-            LOGGER.info("ff4j context has been successfully initialized - {} feature(s)", ff4jProvider.getFF4j().getFeatures().size());
-            
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("Cannot load ff4jProvider as " + ff4jProvider, e);
-        } catch (InstantiationException e) {
-            throw new IllegalArgumentException("Cannot instantiate  " + ff4jProvider + " as ff4jProvider", e);
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException("No public constructor for  " + ff4jProvider + " as ff4jProvider", e);
-        } catch (ClassCastException ce) {
-            throw new IllegalArgumentException("ff4jProvider expected instance of " + FF4JProvider.class, ce);
-        }
+        LOGGER.info("  __  __ _  _   _ ");
+        LOGGER.info(" / _|/ _| || | (_)");
+        LOGGER.info("| |_| |_| || |_| |");
+        LOGGER.info("|  _|  _|__   _| |");
+        LOGGER.info("|_| |_|    |_|_/ |");
+        LOGGER.info("             |__/   Embedded Console - v" + getClass().getPackage().getImplementationVersion());
+        LOGGER.info(" ");
+        
+        if (ff4j == null) {
+            String className = servletConfig.getInitParameter(PROVIDER_PARAM_NAME);
+            try {
+                Class<?> c = Class.forName(className);
+                Object o = c.newInstance();
+                
+                ff4jProvider = (FF4JProvider) o;
+               
+                LOGGER.info("ff4j context has been successfully initialized - {} feature(s)", ff4jProvider.getFF4j().getFeatures().size());
+                
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException("Cannot load ff4jProvider as " + ff4jProvider, e);
+            } catch (InstantiationException e) {
+                throw new IllegalArgumentException("Cannot instantiate  " + ff4jProvider + " as ff4jProvider", e);
+            } catch (IllegalAccessException e) {
+                throw new IllegalArgumentException("No public constructor for  " + ff4jProvider + " as ff4jProvider", e);
+            } catch (ClassCastException ce) {
+                throw new IllegalArgumentException("ff4jProvider expected instance of " + FF4JProvider.class, ce);
+            }
 
-        // Put the FF4J in ApplicationScope (useful for tags)
-        ff4j = ff4jProvider.getFF4j();
-        servletConfig.getServletContext().setAttribute(FF4J_SESSIONATTRIBUTE_NAME, ff4j);
-        LOGGER.debug("Servlet has been initialized and ff4j store in session with {} ", ff4j.getFeatures().size());
+            // Put the FF4J in ApplicationScope (useful for tags)
+            ff4j = ff4jProvider.getFF4j();
+            servletConfig.getServletContext().setAttribute(FF4J_SESSIONATTRIBUTE_NAME, ff4j);
+            LOGGER.debug("Servlet has been initialized and ff4j store in session with {} ", ff4j.getFeatures().size());
+        } else {
+            LOGGER.debug("Servlet has been initialized, ff4j was injected");
+        }
     }
 
     /** {@inheritDoc} */
@@ -308,6 +313,15 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
             throw new IllegalStateException("Console Servlet has not been initialized, please set 'load-at-startup' to 1");
         }
         return ff4j;
+    }
+
+    /**
+     * Setter accessor for attribute 'ff4j'.
+     * @param ff4j
+     * 		new value for 'ff4j '
+     */
+    public void setFf4j(FF4j ff4j) {
+        this.ff4j = ff4j;
     }
 
 }

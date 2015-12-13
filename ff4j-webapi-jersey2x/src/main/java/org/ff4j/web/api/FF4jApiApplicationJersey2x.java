@@ -45,13 +45,22 @@ public abstract class FF4jApiApplicationJersey2x extends ResourceConfig {
             log.info("FF4J is now bound to Jersey Context.");
         }
     }
-
+    
     /**
      * Initialisation of Jersey2 application.
      *
      * @param serviceLocator
      */
     public FF4jApiApplicationJersey2x() {
+        init();
+    }
+
+    /**
+     * Initialisation of Jersey2 application.
+     *
+     * @param serviceLocator
+     */
+    public void init() {
         log.info("  __  __ _  _   _ ");
         log.info(" / _|/ _| || | (_)");
         log.info("| |_| |_| || |_| |");
@@ -67,33 +76,35 @@ public abstract class FF4jApiApplicationJersey2x extends ResourceConfig {
         register(JerseyApplicationEventListener.class);
         register(JerseyRequestEventListener.class);
         
-        if (apiConfig.isAutorize()) {
-            enableAuthenticationFilter();
-            enableAuthorizationFilter();
-            
-        } else if (apiConfig.isAuthenticate()) {
-            enableAuthenticationFilter();
-        }
-    
-        // Swagger configuration
-        if (apiConfig.isDocumentation()) {
-            BeanConfig beanConfig = new BeanConfig();
-            beanConfig.setTitle("FF4J (ff4j.org) WebAPI");
-            beanConfig.setDescription("Administrate and operate all tasks on your features through this api");
-            beanConfig.setResourcePackage("org.ff4j.web.api.resources");
-            beanConfig.setContact("@clunven");
-            beanConfig.setLicense("Apache 2.0");
-            beanConfig.setLicenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html");
-            beanConfig.setVersion(apiConfig.getVersion());
-            beanConfig.setSchemes(new String[] {"http"});
-            beanConfig.setHost(apiConfig.getHost() + ":" + apiConfig.getPort());
-            beanConfig.setBasePath("/" + apiConfig.getWebContext() + "/api");
-            beanConfig.setScan(true);
-            
-            ScannerFactory.setScanner(beanConfig);
-            register(io.swagger.jaxrs.listing.ApiListingResource.class);
-            register(io.swagger.jaxrs.listing.SwaggerSerializers.class);
-            log.info("Initialisation Swagger [OK]");
+        if (apiConfig != null) {
+            if (apiConfig.isAutorize()) {
+                enableAuthenticationFilter();
+                enableAuthorizationFilter();
+                
+            } else if (apiConfig.isAuthenticate()) {
+                enableAuthenticationFilter();
+            }
+        
+            // Swagger configuration
+            if (apiConfig.isDocumentation()) {
+                BeanConfig beanConfig = new BeanConfig();
+                beanConfig.setTitle("FF4J (ff4j.org) WebAPI");
+                beanConfig.setDescription("Administrate and operate all tasks on your features through this api");
+                beanConfig.setResourcePackage("org.ff4j.web.api.resources");
+                beanConfig.setContact("@clunven");
+                beanConfig.setLicense("Apache 2.0");
+                beanConfig.setLicenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html");
+                beanConfig.setVersion(apiConfig.getVersion());
+                beanConfig.setSchemes(new String[] {"http"});
+                beanConfig.setHost(apiConfig.getHost() + ":" + apiConfig.getPort());
+                beanConfig.setBasePath("/" + apiConfig.getWebContext() + "/api");
+                beanConfig.setScan(true);
+                
+                ScannerFactory.setScanner(beanConfig);
+                register(io.swagger.jaxrs.listing.ApiListingResource.class);
+                register(io.swagger.jaxrs.listing.SwaggerSerializers.class);
+                log.info("Initialisation Swagger [OK]");
+            }
         }
         log.info("Initialisation WebAPI [OK]");
     }

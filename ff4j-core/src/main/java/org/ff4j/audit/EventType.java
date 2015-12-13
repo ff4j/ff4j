@@ -49,6 +49,15 @@ public enum EventType {
     FEATURE_CHECK_ON,
 
     /** not flipped. */
-    FEATURE_CHECK_OFF
+    FEATURE_CHECK_OFF,
+    
+    /** create new property in the repoitory. */
+    CREATE_PROPERTY,
+
+    /** delete property in the repoitory. */
+    DELETE_PROPERTY,
+    
+    /** update property in the repoitory. */
+    UPDATE_PROPERTY
 
 }

@@ -51,10 +51,10 @@ public class FeatureAdvisorTest {
     @Before
     public void createFeatures() {
         if (!ff4j.exist("language-english")) {
-            ff4j.create("language-english");
+            ff4j.createFeature("language-english");
         }
         if (!ff4j.exist("language-french")) {
-            ff4j.create("language-french");
+            ff4j.createFeature("language-french");
         }
     }
 

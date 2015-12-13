@@ -65,10 +65,10 @@ public class FF4jTest extends AbstractFf4jTest {
         ff4j.getFeature("feature_2");
         ff4j.exist("feature_1");
         ff4j.enable("feature_1");
-        ff4j.create(new Feature("feature_3"));
+        ff4j.createFeature(new Feature("feature_3"));
         
         // Dynamically create feature and add it to the store
-        ff4j.create("sayHello");
+        ff4j.createFeature("sayHello");
         
         System.out.println(f1);
     }
@@ -79,7 +79,7 @@ public class FF4jTest extends AbstractFf4jTest {
         assertEquals(5, ff4j.getFeatures().size());
 
         // Dynamically create feature and add it to the store (tests purpose)
-        ff4j.create("sayHello");
+        ff4j.createFeature("sayHello");
 
         // Enable Feature
         ff4j.enable("sayHello");
@@ -112,7 +112,7 @@ public class FF4jTest extends AbstractFf4jTest {
         FF4j ff4j = new FF4j();
 
         // Dynamically register new features
-        ff4j.create("f1").enable("f1");
+        ff4j.createFeature("f1").enable("f1");
 
         // Assertions
         assertTrue(ff4j.exist("f1"));
@@ -166,7 +166,7 @@ public class FF4jTest extends AbstractFf4jTest {
 
     @Test
     public void testFlipped() {
-        FF4j ff4j = new FF4j().autoCreate(true).create(
+        FF4j ff4j = new FF4j().autoCreate(true).createFeature(
                 new Feature("coco", true, "grp2", "", Arrays.asList(new String[] {"ROLEA"})));
         Assert.assertTrue(ff4j.check("coco"));
         ff4j.setAuthorizationsManager(mockAuthManager);
@@ -185,7 +185,7 @@ public class FF4jTest extends AbstractFf4jTest {
         
         FF4j ff4j = new FF4j("ff4j.xml").
                 autoCreate(false).
-                create(new Feature("MyFeature", false)).
+                createFeature(new Feature("MyFeature", false)).
                 enable("MyFeature");
         
         if (ff4j.check("MyFeature")) {

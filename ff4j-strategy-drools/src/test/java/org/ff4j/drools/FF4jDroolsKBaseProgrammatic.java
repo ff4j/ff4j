@@ -19,7 +19,7 @@ public class FF4jDroolsKBaseProgrammatic {
         // When
         Feature f1 = new Feature("f1", true);
         f1.setFlippingStrategy(new FF4jDroolsFlippingStrategy("ff4jDroolsStrategy"));
-        ff4j.create(f1);
+        ff4j.createFeature(f1);
         Assert.assertTrue(ff4j.exist("f1"));
         // Then
         Assert.assertTrue(ff4j.check("f1"));

@@ -297,19 +297,64 @@ public class FF4j {
         }
         return this;
     }
-
+    
     /**
      * Create new Feature.
      * 
      * @param featureID
      *            unique feature identifier.
      */
-    public FF4j create(Feature fp) {
+    public FF4j createFeature(Feature fp) {
         getFeatureStore().create(fp);
         if (isEnableAudit()) {
             getEventPublisher().publish(fp.getUid(), EventType.CREATE_FEATURE);
         }
         return this;
+    }
+    
+    
+    /**
+     * Create new Property.
+     * 
+     * @param featureID
+     *            unique feature identifier.
+     */
+    public FF4j createProperty(AbstractProperty<?> prop) {
+        getPropertiesStore().createProperty(prop);
+        if (isEnableAudit()) {
+            getEventPublisher().publish(prop.getName(), EventType.CREATE_PROPERTY);
+        }
+        return this;
+    }
+    
+    /**
+     * Create new Feature.
+     * 
+     * @param featureID
+     *            unique feature identifier.
+     */
+    public FF4j createFeature(String featureName, boolean enable, String description) {
+        return createFeature(new Feature(featureName, enable, description));
+    }
+    
+    /**
+     * Create new Feature.
+     * 
+     * @param featureID
+     *            unique feature identifier.
+     */
+    public FF4j createFeature(String featureName, boolean enable) {
+        return createFeature(featureName, enable, "");
+    }
+    
+    /**
+     * Create new Feature.
+     * 
+     * @param featureID
+     *            unique feature identifier.
+     */
+    public FF4j createFeature(String featureName) {
+        return createFeature(featureName, false, "");
     }
 
     /**
@@ -318,6 +363,18 @@ public class FF4j {
      * @param featureID
      *            unique feature identifier.
      */
+    @Deprecated
+    public FF4j create(Feature fp) {
+        return createFeature(fp);
+    }
+    
+    /**
+     * Create new Feature.
+     * 
+     * @param featureID
+     *            unique feature identifier.
+     */
+    @Deprecated
     public FF4j create(String featureName, boolean enable, String description) {
         return create(new Feature(featureName, enable, description));
     }
@@ -328,6 +385,7 @@ public class FF4j {
      * @param featureID
      *            unique feature identifier.
      */
+    @Deprecated
     public FF4j create(String featureName, boolean enable) {
         return create(featureName, enable, "");
     }
@@ -338,6 +396,7 @@ public class FF4j {
      * @param featureID
      *            unique feature identifier.
      */
+    @Deprecated
     public FF4j create(String featureName) {
         return create(featureName, false, "");
     }
@@ -439,6 +498,20 @@ public class FF4j {
         getFeatureStore().delete(fpId);
         if (isEnableAudit()) {
             getEventPublisher().publish(fpId, EventType.DELETE_FEATURE);
+        }
+        return this;
+    }
+    
+    /**
+     * Delete new Property.
+     * 
+     * @param featureID
+     *            unique feature identifier.
+     */
+    public FF4j deleteProperty(String propertyName) {
+        getPropertiesStore().deleteProperty(propertyName);
+        if (isEnableAudit()) {
+            getEventPublisher().publish(propertyName, EventType.DELETE_PROPERTY);
         }
         return this;
     }

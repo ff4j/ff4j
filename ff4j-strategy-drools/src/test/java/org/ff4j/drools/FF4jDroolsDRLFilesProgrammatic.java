@@ -21,7 +21,7 @@ public class FF4jDroolsDRLFilesProgrammatic {
         // When
         Feature f1 = new Feature("f1", true);
         f1.setFlippingStrategy(new FF4jDroolsFlippingStrategy(Util.set("ff4jDroolsSample.drl")));
-        ff4j.create(f1);
+        ff4j.createFeature(f1);
         Assert.assertTrue(ff4j.exist("f1"));
         // Then
         Assert.assertTrue(ff4j.check("f1"));
