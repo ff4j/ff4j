@@ -6,6 +6,13 @@ import java.util.Set;
 
 import org.ff4j.property.AbstractProperty;
 
+/**
+ * 
+ * @author Cedrick Lunven (@clunven)</a>
+ *
+ * @param <T>
+ * @param <M>
+ */
 public class AbstractPropertyMap < T, M extends Map<String, ? extends T>> extends AbstractProperty < M > implements Map< String, T > {
 
     /** serial. */
@@ -18,20 +25,19 @@ public class AbstractPropertyMap < T, M extends Map<String, ? extends T>> extend
 
     @Override
     public boolean isEmpty() {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
+    /** {@inheritDoc} */
     public boolean containsKey(Object key) {
-        // TODO Auto-generated method stub
-        return false;
+        return value.containsKey(key);
     }
 
     @Override
-    public boolean containsValue(Object value) {
-        // TODO Auto-generated method stub
-        return false;
+    /** {@inheritDoc} */
+    public boolean containsValue(Object obj) {
+        return value.containsValue(obj);
     }
 
     @Override
