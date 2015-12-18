@@ -253,7 +253,25 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
         if (repo != null) {
             return repo.value();
         }
+        
+        // There is no annotation on the bean, still be declared in applicationContext.xml
+        try {
+            // Use BeanDefinition names to loop on each bean and fetch target if proxified
+            for(String beanName :  appCtx.getBeanDefinitionNames()) {
+                Object bean = appCtx.getBean(beanName);
+                if (AopUtils.isJdkDynamicProxy(bean)) {
+                   bean = ((Advised) bean).getTargetSource().getTarget();
+                }
+                if (bean != null && bean.getClass().isAssignableFrom(targetClass)) {
+                    return beanName;
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("ff4j-aop: Cannot read bheind proxy target", e);
+            
+        }
         throw new IllegalArgumentException("ff4j-aop: Feature bean must be annotated as a Service or a Component");
+        
     }
 
     private Object callAlterBeanMethod(final MethodInvocation pMInvoc, String alterBean, Logger targetLogger) {
