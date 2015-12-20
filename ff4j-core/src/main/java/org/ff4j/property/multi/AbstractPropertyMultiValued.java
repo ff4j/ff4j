@@ -1,4 +1,4 @@
-package org.ff4j.property.mutli;
+package org.ff4j.property.multi;
 
 /*
  * #%L

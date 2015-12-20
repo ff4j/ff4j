@@ -35,11 +35,11 @@ public class DefaultUnitTesting {
         
         try (Transaction tx = graphDb.beginTx() ) {
             
-            graphDb.schema().constraintFor(FF4jNeo4jLabels.FEATURE)//
+            graphDb.schema().constraintFor(FF4jNeo4jLabels.FF4J_FEATURE)//
                     .assertPropertyIsUnique( "uid" )//
                     .create();
             
-            graphDb.schema().constraintFor(FF4jNeo4jLabels.FEATURE_GROUP)//
+            graphDb.schema().constraintFor(FF4jNeo4jLabels.FF4J_FEATURE_GROUP)//
                     .assertPropertyIsUnique( "groupName" )//
                     .create();
           

@@ -1,4 +1,4 @@
-package org.ff4j.property.mutli;
+package org.ff4j.property.multi;
 
 /*
  * #%L
@@ -21,7 +21,7 @@ package org.ff4j.property.mutli;
  */
 
 
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class PropertyListDate extends AbstractPropertyList < Date > {
+public class PropertyListCalendar extends AbstractPropertyList < Calendar > {
 
     /** Serial. */
     private static final long serialVersionUID = 2044668915134536364L;
@@ -37,7 +37,7 @@ public class PropertyListDate extends AbstractPropertyList < Date > {
     /**
      * Default constructor.
      */
-    public PropertyListDate() {
+    public PropertyListCalendar() {
     }
     
     /**
@@ -46,7 +46,7 @@ public class PropertyListDate extends AbstractPropertyList < Date > {
      * @param name
      *      property name
      */
-    public PropertyListDate(String name) {
+    public PropertyListCalendar(String name) {
         super(name);
     }
     
@@ -58,7 +58,7 @@ public class PropertyListDate extends AbstractPropertyList < Date > {
      * @param lvl
      *      current double value
      */
-    public PropertyListDate(String uid, String value) {
+    public PropertyListCalendar(String uid, String value) {
        super(uid, value);
     }
     
@@ -70,13 +70,13 @@ public class PropertyListDate extends AbstractPropertyList < Date > {
      * @param lvl
      *      current double value
      */
-    public PropertyListDate(String uid, List<Date> value) {
+    public PropertyListCalendar(String uid, List<Calendar> value) {
        super(uid, value);
     }
     
     /** {@inheritDoc} */
     @Override
-    public  List<Date> fromString(String v) {
+    public  List<Calendar> fromString(String v) {
         return super.fromString(v);
     }
     

@@ -1,5 +1,9 @@
 package org.ff4j.store;
 
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+
 /*
  * #%L
  * ff4j-store-neo4j
@@ -25,7 +29,10 @@ import java.util.Set;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.utils.Util;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Transaction;
 
 /**
  * Implementatino of NEO4J Store.
@@ -59,7 +66,35 @@ public class FeatureStoreNeo4J implements FeatureStore {
 
     @Override
     public boolean exist(String featId) {
-        // TODO Auto-generated method stub
+        Util.assertHasLength(featId);
+        
+        Result result = db.execute( "match (n {name: 'my node'}) return n, n.name" ) )
+        {
+            while ( result.hasNext() )
+            {
+                Map<String,Object> row = result.next();
+                for ( Entry<String,Object> column : row.entrySet() )
+                {
+                    rows += column.getKey() + ": " + column.getValue() + "; ";
+                }
+                rows += "\n";
+            }
+            
+        Node n = null;
+        try ( Transaction tx = graphDb.beginTx() ) {
+            graphDb.execute("")
+            tx.success();
+        }       
+
+        // Retrieve a node by using the id of the created node. The id's and
+        // property should match.
+        try ( Transaction tx = graphDb.beginTx() )
+        {
+            Node foundNode = graphDb.getNodeById( n.getId() );
+            assertThat( foundNode.getId(), is( n.getId() ) );
+            assertThat( (String) foundNode.getProperty( "name" ), is( "Nancy" ) );
+        }
+        
         return false;
     }
 

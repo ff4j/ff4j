@@ -40,4 +40,5 @@ public enum FF4jNeo4jLabels implements Label {
     
     /** Node flipipng strategy. */
     FF4J_FLIPPING_STRATEGY;
+    
 }

@@ -1,4 +1,4 @@
-package org.ff4j.property.mutli;
+package org.ff4j.property.multi;
 
 /*
  * #%L
@@ -21,6 +21,7 @@ package org.ff4j.property.mutli;
  */
 
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ import java.util.List;
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class PropertyList extends AbstractPropertyList < String > {
+public class PropertyListDate extends AbstractPropertyList < Date > {
 
     /** Serial. */
     private static final long serialVersionUID = 2044668915134536364L;
@@ -36,7 +37,7 @@ public class PropertyList extends AbstractPropertyList < String > {
     /**
      * Default constructor.
      */
-    public PropertyList() {
+    public PropertyListDate() {
     }
     
     /**
@@ -45,7 +46,7 @@ public class PropertyList extends AbstractPropertyList < String > {
      * @param name
      *      property name
      */
-    public PropertyList(String name) {
+    public PropertyListDate(String name) {
         super(name);
     }
     
@@ -57,7 +58,7 @@ public class PropertyList extends AbstractPropertyList < String > {
      * @param lvl
      *      current double value
      */
-    public PropertyList(String uid, String value) {
+    public PropertyListDate(String uid, String value) {
        super(uid, value);
     }
     
@@ -69,13 +70,13 @@ public class PropertyList extends AbstractPropertyList < String > {
      * @param lvl
      *      current double value
      */
-    public PropertyList(String uid, List<String> value) {
+    public PropertyListDate(String uid, List<Date> value) {
        super(uid, value);
     }
     
     /** {@inheritDoc} */
     @Override
-    public  List<String> fromString(String v) {
+    public  List<Date> fromString(String v) {
         return super.fromString(v);
     }
     
