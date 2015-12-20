@@ -25,13 +25,24 @@ import org.ff4j.neo4j.FF4jNeo4jLabels;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 
+/**
+ * Map Neo4j node from and to {@link Feature} bean.
+ *
+ * @author Cedrick Lunven (@clunven)</a>
+ */
 public class FeatureNeo4jMapper {
     
-    public static String attributeUID = "uid";
+    /** core attribute. */
+    public static String ATT_UID = "uid";
     
-    public static String attributeGroup = "group";
+    /** core attribute. */
+    public static String ATT_ENABLE = "enable";
     
-    public static String attributeValue = "value";
+    /** core attribute. */
+    public static String ATT_ROLES= "roles";
+    
+    /** core attribute. */
+    public static String ATT_DESCRIPTION= "description";
     
     /**
      * Hide default constructor.
@@ -47,11 +58,14 @@ public class FeatureNeo4jMapper {
      * @return
      *      target node
      */
-    static public Node createFeatureNode(GraphDatabaseService graphDb, Feature feature) {
-        Node nodeFeature = graphDb.createNode(FF4jNeo4jLabels.FEATURE);
-        nodeFeature.setProperty(attributeUID, feature.getUid());
-        nodeFeature.setProperty(attributeGroup, feature.getGroup());
-        nodeFeature.setProperty(attributeValue, feature.toJson());
+    static public Node fromFeature2Node(GraphDatabaseService graphDb, Feature feature) {
+        Node nodeFeature = graphDb.createNode(FF4jNeo4jLabels.FF4J_FEATURE);
+        nodeFeature.setProperty(ATT_UID, feature.getUid());
+        nodeFeature.setProperty(ATT_ENABLE, feature.isEnable());
+        nodeFeature.setProperty(ATT_DESCRIPTION, feature.getDescription());
+        if (feature.getPermissions() != null) {
+            nodeFeature.setProperty(ATT_ROLES, feature.getPermissions().toArray(new String[0]));
+        }
         return nodeFeature;
     }
 

@@ -55,8 +55,6 @@ public class FeatureStoreNeo4J implements FeatureStore {
 
     @Override
     public void disable(String fId) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override

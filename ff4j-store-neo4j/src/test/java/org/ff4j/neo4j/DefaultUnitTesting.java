@@ -28,7 +28,7 @@ public class DefaultUnitTesting {
      */
     @Before
     public void prepareTestDatabase() {
-        
+       
         graphDb = new TestGraphDatabaseFactory().newImpermanentDatabaseBuilder()
                 .setConfig(GraphDatabaseSettings.string_block_size, "60")
                 .setConfig(GraphDatabaseSettings.array_block_size, "300").newGraphDatabase();
