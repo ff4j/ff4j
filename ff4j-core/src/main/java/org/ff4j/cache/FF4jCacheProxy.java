@@ -36,7 +36,7 @@ import org.ff4j.property.store.PropertyStore;
  * As applications are distributed, the cache itself could be distributed. The default implement is
  * {@link InMemoryFeatureStoreCacheProxy} but other are provided to use distributed cache system as redis or memcached.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class FF4jCacheProxy implements FeatureStore, PropertyStore {
 

@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * Storage of an node in expression tree.
  * 
- * @author clunven
+ * @author Cedrick Lunven (@clunven)
  */
 public class ExpressionNode {
 

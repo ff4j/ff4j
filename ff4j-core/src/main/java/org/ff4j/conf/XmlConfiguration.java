@@ -29,7 +29,7 @@ import org.ff4j.property.AbstractProperty;
 /**
  * This bean is populated by parsing FF4J XML files.
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class XmlConfiguration {
     

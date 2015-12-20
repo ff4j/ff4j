@@ -28,7 +28,7 @@ import org.ff4j.exception.GroupNotFoundException;
 /**
  * Storing states of feature inmemory with initial values. Could be used mostly for testing purpose.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class InMemoryFeatureStore extends AbstractFeatureStore {
 

@@ -23,7 +23,7 @@ import org.junit.Test;
 /**
  * Testing Bean {@link Feature} initialization.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class FeatureTest {
 

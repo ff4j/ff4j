@@ -31,7 +31,7 @@ import org.ff4j.exception.FeatureAccessException;
 /**
  * Group utilities methods to work with low-level JDBC.
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class JdbcUtils {
     

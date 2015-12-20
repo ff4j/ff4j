@@ -26,7 +26,7 @@ import java.util.HashSet;
 /**
  * Boolean Property.
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class PropertyBoolean extends AbstractProperty< Boolean > {
 

@@ -25,7 +25,7 @@ import java.io.Serializable;
 /**
  * Cache entry with object and inserted Date.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public final class InMemoryCacheEntry<T> implements Serializable {
 

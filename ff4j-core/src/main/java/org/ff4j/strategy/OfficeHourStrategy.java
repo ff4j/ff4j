@@ -39,7 +39,7 @@ import org.ff4j.utils.Util;
  * 
  * Expression { "monday":["08:00-12:00", "13:30-18:00"], "tuesday":[], "wednesday":[], "thursday":[],"friday":[],"saturday":[] }
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class OfficeHourStrategy extends AbstractFlipStrategy {
     

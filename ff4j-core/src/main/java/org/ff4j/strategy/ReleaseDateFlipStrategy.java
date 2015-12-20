@@ -31,7 +31,7 @@ import org.ff4j.core.FlippingExecutionContext;
 /**
  * The feature will be flipped after release date is reached.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class ReleaseDateFlipStrategy extends AbstractFlipStrategy {
     public static final String DATE_PATTERN = "yyyy-MM-dd-HH:mm";

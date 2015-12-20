@@ -23,7 +23,7 @@ package org.ff4j.web;
 /**
  * Constants used in the FF4J RESTFul Api Definition.
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public interface FF4jWebConstants {
 

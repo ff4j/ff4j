@@ -33,7 +33,7 @@ import org.junit.Test;
  * 
  * This test will test FF4J class initializations through different constructor but also with static access.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class FF4jInitializationTest {
 

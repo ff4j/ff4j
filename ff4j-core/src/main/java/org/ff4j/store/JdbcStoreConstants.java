@@ -16,7 +16,7 @@ import org.ff4j.audit.EventType;
 /**
  * Specialization of a Feature store to add sql query.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public interface JdbcStoreConstants {
 

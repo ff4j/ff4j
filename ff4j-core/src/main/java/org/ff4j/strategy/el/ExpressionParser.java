@@ -31,6 +31,8 @@ import java.util.Map.Entry;
  *                             |    /   \                             / \
  *                             B   A     D                           B   D
  * </pre>
+ * 
+ * @author Cedrick Lunven (@clunven)
  */
 public final class ExpressionParser {
 

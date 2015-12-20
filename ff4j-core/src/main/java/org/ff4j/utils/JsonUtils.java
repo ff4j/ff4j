@@ -30,7 +30,7 @@ import org.ff4j.property.AbstractProperty;
 /**
  * Custom implementation of serialization : faster + no jackson dependency
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class JsonUtils {
     

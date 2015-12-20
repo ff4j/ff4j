@@ -26,7 +26,7 @@ import java.util.Date;
 
 /**
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class PropertyDate extends AbstractProperty< Date > {
 

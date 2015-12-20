@@ -23,7 +23,7 @@ package org.ff4j.property;
 /**
  * Représentation of a property double
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class PropertyDouble extends AbstractProperty< Double > {
 

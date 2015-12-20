@@ -25,7 +25,7 @@ import java.util.Set;
 /**
  * Super class implementing util functions such as serialization.
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public abstract class AbstractAuthorizationManager implements AuthorizationsManager {
 

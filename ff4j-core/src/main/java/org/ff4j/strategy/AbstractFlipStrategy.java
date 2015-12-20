@@ -29,7 +29,7 @@ import org.ff4j.utils.ParameterUtils;
 /**
  * Super class for {@link FlippingStrategy} implementation with utilities.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public abstract class AbstractFlipStrategy implements FlippingStrategy {
 

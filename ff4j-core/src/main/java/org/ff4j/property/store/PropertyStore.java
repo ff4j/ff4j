@@ -27,7 +27,7 @@ import org.ff4j.property.AbstractProperty;
 /**
  * CRUD repository to perform operation on properties.
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public interface PropertyStore {
     

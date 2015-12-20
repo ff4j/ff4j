@@ -35,7 +35,7 @@ import org.junit.Test;
 /**
  * Testing class of {@link InMemoryCacheManager} class.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class InMemoryCacheTest extends AbstractStoreTest {
 

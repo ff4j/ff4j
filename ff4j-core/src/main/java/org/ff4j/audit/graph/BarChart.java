@@ -29,7 +29,7 @@ import org.ff4j.utils.Util;
 /**
  * Bean representing a histogram graph.
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class BarChart extends AbstractGraphFF4j {
     

@@ -23,7 +23,7 @@ package org.ff4j.test;
 /**
  * For coherence, each store implementation will be tested with same dataset. Here are the constants contains in this DATASET.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public interface TestConstantsFF4j {
 

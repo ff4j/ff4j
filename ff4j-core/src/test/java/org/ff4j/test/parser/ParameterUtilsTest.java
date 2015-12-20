@@ -25,6 +25,11 @@ import java.lang.reflect.Constructor;
 import org.ff4j.utils.ParameterUtils;
 import org.junit.Test;
 
+/**
+ * Check Constructor
+ *
+ * @author Cedrick Lunven (@clunven)
+ */
 public class ParameterUtilsTest {
 
     @Test

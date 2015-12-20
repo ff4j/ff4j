@@ -1,8 +1,8 @@
-package org.ff4j.web.api.resources;
+package org.ff4j.property.mutli;
 
 /*
  * #%L
- * ff4j-webapi
+ * ff4j-core
  * %%
  * Copyright (C) 2013 - 2015 FF4J
  * %%
@@ -21,6 +21,26 @@ package org.ff4j.web.api.resources;
  */
 
 
-public class PropertyStoreResource {
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * SuperClass for property as lists.
+ *
+ * @author Cedrick Lunven (@clunven)
+ *
+ * @param <T>
+ *      current type
+ */
+public class PropertySet < T > extends AbstractPropertyMultiValued< T, Set <T>> implements Set < T >{
+
+    /** Serial. */
+    private static final long serialVersionUID = 4064427839404299895L;
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<T> fromString(String v) {
+        return new HashSet<T>(super.fromString(v));
+    }
 
 }

@@ -23,7 +23,7 @@ package org.ff4j.strategy;
 /**
  * OPEN ACCES to listed client hostname.
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class WhiteListStrategy extends ClientFilterStrategy {
     

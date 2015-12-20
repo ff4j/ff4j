@@ -29,7 +29,7 @@ import org.junit.Test;
 /**
  * Those code snipplete are used as samples and eventually propose in documentation
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class GettingStartedCode {
 

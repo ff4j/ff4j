@@ -25,7 +25,7 @@ import java.io.Serializable;
 /**
  * Sector of PieChart.
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class PieSector implements Serializable {
     

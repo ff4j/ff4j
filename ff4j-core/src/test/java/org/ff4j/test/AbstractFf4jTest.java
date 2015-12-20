@@ -41,7 +41,7 @@ import org.junit.Test;
 /**
  * Abstract Internal Class to Test FF4J.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public abstract class AbstractFf4jTest implements TestConstantsFF4j {
 

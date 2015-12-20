@@ -53,7 +53,7 @@ import org.xml.sax.SAXParseException;
 /**
  * Allow to parse XML files to load {@link Feature}.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public final class XmlParser {
 

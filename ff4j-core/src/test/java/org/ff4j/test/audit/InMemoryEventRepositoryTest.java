@@ -30,7 +30,7 @@ import org.junit.Test;
 /**
  * Test for publisher and InMemory Event repository.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class InMemoryEventRepositoryTest extends AbstractEventRepositoryTest {
 

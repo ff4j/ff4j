@@ -31,7 +31,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 /**
  * Unit testing of JDBC implementation of {@link EventRepository}.
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class JdbcEventRepositoryTest extends AbstractEventRepositoryTest {
 	

@@ -29,7 +29,7 @@ import org.ff4j.audit.graph.PieChart;
 /**
  * Persistence store for {@link Event} messages.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public interface EventRepository {
 

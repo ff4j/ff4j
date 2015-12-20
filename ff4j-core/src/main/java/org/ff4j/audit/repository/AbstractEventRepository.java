@@ -31,7 +31,7 @@ import org.ff4j.audit.graph.PieSector;
 /**
  * Superclass implementing the custom serialization.
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public abstract class AbstractEventRepository implements EventRepository { 
     

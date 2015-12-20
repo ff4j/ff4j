@@ -33,7 +33,7 @@ import org.ff4j.core.FlippingExecutionContext;
 /**
  * This strategy will check hostName and flipped only if it's contained in expected list.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class ServerFilterStrategy extends AbstractFlipStrategy {
 

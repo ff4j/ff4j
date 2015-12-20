@@ -39,7 +39,7 @@ import org.junit.Test;
 /**
  * SuperClass to test stores within core project
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public abstract class AbstractPropertyStoreJunitTest {
 

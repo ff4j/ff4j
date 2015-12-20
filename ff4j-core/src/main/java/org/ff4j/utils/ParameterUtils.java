@@ -27,7 +27,7 @@ import java.util.Map.Entry;
 /**
  * Utility class to work with parameters.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class ParameterUtils {
 

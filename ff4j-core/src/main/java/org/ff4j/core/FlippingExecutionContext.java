@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * Pojo holding an execution context to perform {@link FlippingStrategy} evaluations.
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class FlippingExecutionContext {
 

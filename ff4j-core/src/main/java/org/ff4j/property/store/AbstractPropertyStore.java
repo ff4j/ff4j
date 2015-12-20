@@ -31,7 +31,7 @@ import org.ff4j.property.AbstractProperty;
 /**
  * Superclass for any property store.
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public abstract class AbstractPropertyStore implements PropertyStore {
     

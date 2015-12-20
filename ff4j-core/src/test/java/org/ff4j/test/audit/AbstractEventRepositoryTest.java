@@ -36,7 +36,7 @@ import org.junit.Test;
 /**
  * Superclass to test {@link EventRepository}.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public abstract class AbstractEventRepositoryTest {
     

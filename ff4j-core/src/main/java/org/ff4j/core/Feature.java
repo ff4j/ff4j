@@ -36,7 +36,7 @@ import org.ff4j.utils.Util;
  * before wide over all your users.
  * </p>
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class Feature implements Serializable {
 

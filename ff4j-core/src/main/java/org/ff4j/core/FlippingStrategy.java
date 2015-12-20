@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * Each feature should implement the flipping strategy. (enabling/disabling will be handle by flipper.
  * 
- * @author clunven
+ * @author Cedrick Lunven (@clunven)
  */
 public interface FlippingStrategy {
 

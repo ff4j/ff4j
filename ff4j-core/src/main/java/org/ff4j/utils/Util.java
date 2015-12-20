@@ -30,7 +30,7 @@ import java.util.Set;
 /**
  * Tips and tricks to be less verbose.
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public abstract class Util {
     

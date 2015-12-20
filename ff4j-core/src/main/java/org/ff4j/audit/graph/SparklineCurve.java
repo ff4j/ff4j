@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * Bean to handle CurveDATA for rendering graph.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class SparklineCurve {
 

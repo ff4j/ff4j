@@ -25,7 +25,7 @@ import java.util.Set;
 /**
  * Default implementation of {@link AbstractProperty} as Simple string property.
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class Property extends AbstractProperty<String>{
     

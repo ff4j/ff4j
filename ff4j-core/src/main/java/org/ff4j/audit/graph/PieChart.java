@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Bean representing a pie chart.
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class PieChart implements Serializable {
     

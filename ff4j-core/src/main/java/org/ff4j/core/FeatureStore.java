@@ -26,7 +26,7 @@ import java.util.Set;
 /**
  * Repository to persist {@link Feature}(s)
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public interface FeatureStore {
 

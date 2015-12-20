@@ -28,7 +28,7 @@ import org.ff4j.property.PropertyLogLevel.LogLevel;
 /**
  * Custom property to code a logLevel.
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class PropertyLogLevel extends AbstractProperty<LogLevel> {
 

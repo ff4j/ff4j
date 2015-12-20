@@ -25,7 +25,7 @@ import org.ff4j.FF4j;
 /**
  * Loader for class ff4j within Embedded Administration Console.
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public interface FF4JProvider {
 

@@ -31,7 +31,7 @@ import org.ff4j.property.Property;
 /**
  * Cache Layer on top of {@link FeatureStore} to enhance performances.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public interface FF4JCacheManager {
 

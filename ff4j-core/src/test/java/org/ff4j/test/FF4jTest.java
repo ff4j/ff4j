@@ -38,7 +38,7 @@ import org.junit.Test;
 /**
  * Test operations over {@link FF4j}
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class FF4jTest extends AbstractFf4jTest {
 

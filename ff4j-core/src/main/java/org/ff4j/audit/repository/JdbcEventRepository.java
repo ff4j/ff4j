@@ -43,7 +43,7 @@ import org.ff4j.utils.Util;
 /**
  * Implementation of in memory {@link EventRepository} with limited events.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class JdbcEventRepository extends AbstractEventRepository implements JdbcStoreConstants {
 

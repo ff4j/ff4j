@@ -30,7 +30,7 @@ import org.ff4j.core.FlippingExecutionContext;
 /**
  * This strategy will flip feature as soon as the release date is reached.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class PonderationStrategy extends AbstractFlipStrategy implements Serializable {
 

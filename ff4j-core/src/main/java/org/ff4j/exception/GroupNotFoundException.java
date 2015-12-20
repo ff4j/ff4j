@@ -23,7 +23,7 @@ package org.ff4j.exception;
 /**
  * Group operations are available only if group exist, toherwise this exception is raised.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class GroupNotFoundException extends RuntimeException {
 

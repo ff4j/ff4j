@@ -26,7 +26,7 @@ import org.ff4j.core.FlippingExecutionContext;
 /**
  * BLOCK acces for defined list of Clients.
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class BlackListStrategy extends ClientFilterStrategy {
 

@@ -39,7 +39,7 @@ import org.ff4j.utils.Util;
 /**
  * Access information related to properties within database.
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStoreConstants {
 

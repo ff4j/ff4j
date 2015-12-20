@@ -478,18 +478,38 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<build>
 
-		<plugins>
+	<plugins>
 
-			<!-- License <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>license-maven-plugin</artifactId> 
-				<version>${version.maven.plugin.license}</version> <configuration> <verbose>false</verbose> 
-				<extraExtensions> <myProprietaryExtension>java</myProprietaryExtension> </extraExtensions> 
-				</configuration> <executions> <execution> <id>add-license</id> <goals> <goal>update-file-header</goal> 
-				</goals> <phase>process-sources</phase> <configuration> <licenseName>apache_v2</licenseName> 
-				<roots> <root>src/main/java</root> <root>src/test</root> </roots> </configuration> 
-				</execution> </executions> </plugin> -->
+		<plugin>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>license-maven-plugin</artifactId>
+			<version>${version.maven.plugin.license}</version>
+			<configuration>
+				<verbose>false</verbose>
+				<extraExtensions>
+					<myProprietaryExtension>java</myProprietaryExtension>
+				</extraExtensions>
+			</configuration>
+			<executions>
+				<execution>
+					<id>add-license</id>
+					<goals>
+						<goal>update-file-header</goal>
+					</goals>
+					<phase>process-sources</phase>
+					<configuration>
+						<licenseName>apache_v2</licenseName>
+						<roots>
+							<root>src/main/java</root>
+							<root>src/test</root>
+						</roots>
+					</configuration>
+				</execution>
+			</executions>
+		</plugin>
 
-			<!-- Junit -->
-			<plugin>
+		<!-- Junit -->
+		<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${version.maven.plugin.surefire}</version>
 

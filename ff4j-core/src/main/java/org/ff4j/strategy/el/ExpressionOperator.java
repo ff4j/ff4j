@@ -23,7 +23,7 @@ package org.ff4j.strategy.el;
 /**
  * Enumeration to list operator handles by engine {@link ExpressionParser}.
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public enum ExpressionOperator {
 

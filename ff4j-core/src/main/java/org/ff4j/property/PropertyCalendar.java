@@ -26,7 +26,7 @@ import java.util.Calendar;
 
 /**
  * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class PropertyCalendar extends AbstractProperty< Calendar > {
 

@@ -33,7 +33,7 @@ import org.ff4j.utils.Util;
 /**
  * Implementation of {@link PropertyStore} to keep properties in memory.
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class InMemoryPropertyStore extends AbstractPropertyStore {
 

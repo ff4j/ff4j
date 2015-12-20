@@ -26,7 +26,7 @@ import org.ff4j.strategy.AbstractFlipStrategy;
 /**
  * Allow to parse target expression.
  * 
- * @author clunven
+ * @author Cedrick Lunven (@clunven)
  */
 public class ExpressionFlipStrategy extends AbstractFlipStrategy implements Serializable {
 

@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Element of the bar series.
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class BarSeries implements Serializable {
 

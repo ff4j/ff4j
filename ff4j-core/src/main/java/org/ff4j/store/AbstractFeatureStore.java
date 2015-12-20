@@ -32,7 +32,7 @@ import org.ff4j.core.FeatureStore;
 /**
  * SuperClass for stores.
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public abstract class AbstractFeatureStore implements FeatureStore {
 
