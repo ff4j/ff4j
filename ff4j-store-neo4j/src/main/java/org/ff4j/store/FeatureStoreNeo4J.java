@@ -1,8 +1,6 @@
 package org.ff4j.store;
 
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import java.util.HashMap;
 
 /*
  * #%L
@@ -29,9 +27,15 @@ import java.util.Set;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.exception.FeatureAlreadyExistException;
+import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.neo4j.FF4jNeo4jConstants;
+import org.ff4j.neo4j.FF4jNeo4jLabels;
+import org.ff4j.neo4j.mapper.FeatureNeo4jMapper;
 import org.ff4j.utils.Util;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
 
 /**
@@ -39,83 +43,134 @@ import org.neo4j.graphdb.Transaction;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreNeo4J implements FeatureStore {
+public class FeatureStoreNeo4J implements FeatureStore, FF4jNeo4jConstants {
 
     /** Persistent storage. */
     private GraphDatabaseService graphDb;
     
+    /**
+     * Default to create instances.
+     */
+    public FeatureStoreNeo4J() {
+    }
+    
+    /**
+     * Initialization of store
+     */
+    public FeatureStoreNeo4J(GraphDatabaseService myDb) {
+        this.graphDb = myDb;
+    }
+    
     /** {@inheritDoc} */
-    @Override
-    public void enable(String featureID) {
-        /*try ( Transaction tx = graphDb.beginTx() ) {
-            Node firstNode = graphDb.createNode();
-            firstNode.setProperty( "message", "Hello, " );
-            Node secondNode = graphDb.createNode();
-            secondNode.setProperty( "message", "World!" );
-            Relationship relationship = firstNode.createRelationshipTo( secondNode, FF4jNeo4jRelationShips.MEMBER_OF);
-            relationship.setProperty( "message", "brave Neo4j " );
-            
-            // Database operations go here
-            tx.success();
-        }*/
-    }
-
-    @Override
-    public void disable(String fId) {
-    }
-
     @Override
     public boolean exist(String featId) {
         Util.assertHasLength(featId);
-        
-        Result result = db.execute( "match (n {name: 'my node'}) return n, n.name" ) )
-        {
-            while ( result.hasNext() )
-            {
-                Map<String,Object> row = result.next();
-                for ( Entry<String,Object> column : row.entrySet() )
-                {
-                    rows += column.getKey() + ": " + column.getValue() + "; ";
-                }
-                rows += "\n";
-            }
-            
-        Node n = null;
-        try ( Transaction tx = graphDb.beginTx() ) {
-            graphDb.execute("")
-            tx.success();
-        }       
-
-        // Retrieve a node by using the id of the created node. The id's and
-        // property should match.
-        try ( Transaction tx = graphDb.beginTx() )
-        {
-            Node foundNode = graphDb.getNodeById( n.getId() );
-            assertThat( foundNode.getId(), is( n.getId() ) );
-            assertThat( (String) foundNode.getProperty( "name" ), is( "Nancy" ) );
+        String queryExist = String.format(FF4jNeo4jConstants.QUERY_CYPHER_EXISTS, featId);
+        Result result = graphDb.execute(queryExist);
+        Object count = null;
+        if (result.hasNext()) {
+            count = result.next().get(QUERY_CYPHER_ALIAS);
         }
-        
-        return false;
+        return (null != count) && (((long) count) > 0);
     }
-
+    
+    /** {@inheritDoc} */
     @Override
     public void create(Feature fp) {
-        // TODO Auto-generated method stub
-        
+        if (fp == null) {
+            throw new IllegalArgumentException("Feature cannot be null nor empty");
+        }
+        if (exist(fp.getUid())) {
+            throw new FeatureAlreadyExistException(fp.getUid());
+        }
+        update(fp);
     }
-
+    
+    /** {@inheritDoc} */
     @Override
-    public Feature read(String featureUid) {
-        // TODO Auto-generated method stub
-        return null;
+    public void enable(String uid) {
+        Util.assertHasLength(uid);
+        if (!exist(uid)) {
+            throw new FeatureNotFoundException(uid);
+        }
+        try (Transaction tx = graphDb.beginTx()) {
+            graphDb.execute(String.format(FF4jNeo4jConstants.QUERY_CYPHER_ENABLE, uid));
+            tx.success();
+        }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void disable(String uid) {
+        Util.assertHasLength(uid);
+        if (!exist(uid)) {
+            throw new FeatureNotFoundException(uid);
+        }
+        try (Transaction tx = graphDb.beginTx()) {
+            graphDb.execute(String.format(FF4jNeo4jConstants.QUERY_CYPHER_DISABLE, uid));
+            tx.success();
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Feature read(String featId) {
+        Util.assertHasLength(featId);
+
+        // Parameters
+        Map < String, Object > queryParameters = new HashMap<>();
+        queryParameters.put("uid", featId);
+        
+        Feature targetFeature = null;
+        try (Transaction tx = graphDb.beginTx()) {
+        
+            Result result = graphDb.execute(QUERY_CYPHER_READ_FEATURE,  queryParameters);
+    
+            // Parsing
+            while (result.hasNext()) {
+                Map < String, Object > response = result.next();
+                // Map feature once
+                if (targetFeature == null) {
+                    Node nodeFeature = (Node) response.get("f");
+                    targetFeature = FeatureNeo4jMapper.fromNode2Feature(nodeFeature);
+                }
+                
+                // Map for 'all'
+                Node   nodeOther = (Node) response.get("all");
+                String nodeLabel = nodeOther.getLabels().iterator().next().toString();
+                FF4jNeo4jLabels lblb = FF4jNeo4jLabels.valueOf(nodeLabel);
+                switch(lblb) {
+                    case FF4J_PROPERTY:
+                        //Map < String, Object > properties = nodeOther.getAllProperties();
+                        //System.out.println(properties);
+                        System.out.println("FF4J_PROPERTY");
+                    break;
+                    case FF4J_FLIPPING_STRATEGY:
+                        System.out.println("FF4J_FLIPPING_STRATEGY");
+                        //nodeOther.getProperty("initParams");
+                        nodeOther.getProperty("clazz");
+                    break;
+                    case FF4J_FEATURE_GROUP:
+                        System.out.println("FF4J_FEATURE_GROUP");
+                        nodeOther.getProperty("name");
+                    break;
+                    default:
+                    break;
+                }
+            }
+            tx.success();
+        }
+        return targetFeature;
+    }
+
+    /** {@inheritDoc} */
     @Override
     public Map<String, Feature> readAll() {
         // TODO Auto-generated method stub
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void delete(String fpId) {
         // TODO Auto-generated method stub

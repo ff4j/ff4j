@@ -1,5 +1,8 @@
 package org.ff4j.neo4j.mapper;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 /*
  * #%L
  * ff4j-store-neo4j
@@ -21,6 +24,7 @@ package org.ff4j.neo4j.mapper;
  */
 
 import org.ff4j.core.Feature;
+import org.ff4j.neo4j.FF4jNeo4jConstants;
 import org.ff4j.neo4j.FF4jNeo4jLabels;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
@@ -30,24 +34,33 @@ import org.neo4j.graphdb.Node;
  *
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class FeatureNeo4jMapper {
-    
-    /** core attribute. */
-    public static String ATT_UID = "uid";
-    
-    /** core attribute. */
-    public static String ATT_ENABLE = "enable";
-    
-    /** core attribute. */
-    public static String ATT_ROLES= "roles";
-    
-    /** core attribute. */
-    public static String ATT_DESCRIPTION= "description";
+public class FeatureNeo4jMapper implements FF4jNeo4jConstants {
     
     /**
      * Hide default constructor.
      */
     private FeatureNeo4jMapper() {
+    }
+    
+    /**
+     * Transform  node FF4J_FEATURE into core Feature.
+     *
+     * @param nodeFeature
+     * @return
+     */
+    public static Feature fromNode2Feature(Node nodeFeature) {
+        String featureID    = (String) nodeFeature.getProperty(NODEFEATURE_ATT_UID);
+        Boolean enable      = (Boolean) nodeFeature.getProperty(NODEFEATURE_ATT_ENABLE);
+        String description  = (String) nodeFeature.getProperty(NODEFEATURE_ATT_DESCRIPTION);
+        String[] roles      = (String[]) nodeFeature.getProperty(NODEFEATURE_ATT_ROLES);
+        Feature feature = new Feature(featureID, enable);
+        if (description != null) {
+            feature.setDescription(description);
+        }
+        if (roles != null) {
+            feature.setPermissions(new HashSet<>(Arrays.asList(roles)));
+        }
+        return feature;
     }
     
     /**
@@ -60,13 +73,15 @@ public class FeatureNeo4jMapper {
      */
     static public Node fromFeature2Node(GraphDatabaseService graphDb, Feature feature) {
         Node nodeFeature = graphDb.createNode(FF4jNeo4jLabels.FF4J_FEATURE);
-        nodeFeature.setProperty(ATT_UID, feature.getUid());
-        nodeFeature.setProperty(ATT_ENABLE, feature.isEnable());
-        nodeFeature.setProperty(ATT_DESCRIPTION, feature.getDescription());
+        nodeFeature.setProperty(NODEFEATURE_ATT_UID, feature.getUid());
+        nodeFeature.setProperty(NODEFEATURE_ATT_ENABLE, feature.isEnable());
+        nodeFeature.setProperty(NODEFEATURE_ATT_DESCRIPTION, feature.getDescription());
         if (feature.getPermissions() != null) {
-            nodeFeature.setProperty(ATT_ROLES, feature.getPermissions().toArray(new String[0]));
+            nodeFeature.setProperty(NODEFEATURE_ATT_ROLES, feature.getPermissions().toArray(new String[0]));
         }
         return nodeFeature;
     }
+    
+    
 
 }

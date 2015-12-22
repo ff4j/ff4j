@@ -23,7 +23,6 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<properties>
 		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-		
 	</properties>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -37,6 +36,13 @@
 			<artifactId>ff4j-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
+		<!-- json -->
+		<dependency>
+			<artifactId>ff4j-utils-json</artifactId>
+			<groupId>org.ff4j</groupId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<!-- Neo4j implementation -->
 		<dependency>
@@ -44,6 +50,8 @@
 			<artifactId>neo4j</artifactId>
 			<version>${version.neo4j}</version>
 		</dependency>
+	
+		<!-- TESTS -->
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j-io</artifactId>
@@ -58,21 +66,17 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
+		 <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <scope>test</scope>
+        </dependency>
 		<dependency>
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-all</artifactId>
 			<version>1.3</version>
 			<scope>test</scope>
 		</dependency>
-
-		<!-- json -->
-		<dependency>
-			<artifactId>ff4j-utils-json</artifactId>
-			<groupId>org.ff4j</groupId>
-			<version>${project.version}</version>
-		</dependency>
-		
-		<!-- tests -->
 		<dependency>
 			<artifactId>ff4j-test</artifactId>
 			<groupId>org.ff4j</groupId>
@@ -134,5 +138,21 @@
 
 		</plugins>
 	</build>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~ REPOSITORIES             ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<repositories>
+		<repository>
+			<id>mvn-neo4j</id>
+			<url>http://m2.neo4j.org/content/groups/everything</url>
+		</repository>
+		<repository>
+			<id>neo4j-release-repository</id>
+			<name>Neo4j Maven 2 release repository</name>
+			<url>http://m2.neo4j.org/releases</url>
+		</repository>
+	</repositories>
+	
 
 </project>
