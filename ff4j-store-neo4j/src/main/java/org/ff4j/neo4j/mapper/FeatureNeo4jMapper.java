@@ -1,7 +1,11 @@
 package org.ff4j.neo4j.mapper;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 /*
  * #%L
@@ -24,8 +28,12 @@ import java.util.HashSet;
  */
 
 import org.ff4j.core.Feature;
+import org.ff4j.core.FlippingStrategy;
 import org.ff4j.neo4j.FF4jNeo4jConstants;
 import org.ff4j.neo4j.FF4jNeo4jLabels;
+import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
+import org.ff4j.utils.json.FeatureJsonParser;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 
@@ -61,6 +69,106 @@ public class FeatureNeo4jMapper implements FF4jNeo4jConstants {
             feature.setPermissions(new HashSet<>(Arrays.asList(roles)));
         }
         return feature;
+    }
+    
+    /**
+     * Mapping from Neo4j node to {@link FlippingStrategy}.
+     * 
+     * @param featureUid
+     *      current feature unique identifier.
+     * @param nodeFlippingStrategy
+     *      current strategy
+     * @return
+     *      target flippingStrategy
+     */
+    static public FlippingStrategy fromNode2FlippingStrategy(String featureUid, Node nodeFlippingStrategy) {
+        Map < String, Object > nodeProperties = nodeFlippingStrategy.getAllProperties();
+        HashMap < String, String > initParams = new HashMap<>();
+        if (nodeProperties.containsKey(NODESTRATEGY_ATT_INITPARAMS)) {
+            String[] initParamsExpression = (String[]) nodeFlippingStrategy.getProperty(NODESTRATEGY_ATT_INITPARAMS);
+            for (String currentExpression : initParamsExpression) {
+                String[] chunks = currentExpression.split("=");
+                if (chunks != null && chunks.length > 1) { 
+                    initParams.put(chunks[0], chunks[1]);
+                }
+            }
+        }
+        String className  = (String) nodeFlippingStrategy.getProperty(NODESTRATEGY_ATT_TYPE);
+        return FeatureJsonParser.parseFlipStrategy(featureUid, className, initParams);       
+    }
+    
+    
+    /**
+     * Mapping from Neo4j node to {@link AbstractProperty}
+     * 
+     * @param featureUid
+     *      unique feature identifier
+     * @param nodeProperty
+     *      node property
+     * @return
+     *      value of node
+     */
+    static public AbstractProperty<?> fromNode2Property(String featureUid, Node nodeProperty) {
+        Map < String, Object > nodeProperties = nodeProperty.getAllProperties();
+        
+        if (!nodeProperties.containsKey(NODEPROPERTY_ATT_NAME)) {
+            throw new IllegalArgumentException(NODEPROPERTY_ATT_NAME + " is a required property");
+        }
+        
+        if (!nodeProperties.containsKey(NODEPROPERTY_ATT_VALUE)) {
+            throw new IllegalArgumentException(NODEPROPERTY_ATT_VALUE + " is a required property");
+        }
+        
+        String propertyName  = (String) nodeProperty.getProperty(NODEPROPERTY_ATT_NAME);
+        String propertyValue = (String) nodeProperty.getProperty(NODEPROPERTY_ATT_VALUE);
+        AbstractProperty<?> ap = new Property(propertyName, propertyValue);
+        
+        // If specific type defined ?
+        if (nodeProperties.containsKey(NODEPROPERTY_ATT_TYPE)) {
+            
+            String optionalType = (String) nodeProperty.getProperty(NODEPROPERTY_ATT_TYPE);
+
+            try {
+                // Construction by dedicated constructor with introspection
+                Constructor<?> constr = Class.forName(optionalType).getConstructor(String.class, String.class);
+                ap = (AbstractProperty<?>) constr.newInstance(propertyName, propertyValue);
+            } catch (InstantiationException e) {
+                throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' check default constructor", e);
+            } catch (IllegalAccessException e) {
+                throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' check visibility", e);
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' not found", e);
+            } catch (InvocationTargetException e) {
+                throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "'  error within constructor", e);
+            } catch (NoSuchMethodException e) {
+                throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' constructor not found", e);
+            } catch (SecurityException e) {
+                throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' check constructor visibility", e);
+            }
+        }
+        
+        if (nodeProperties.containsKey(NODEPROPERTY_ATT_DESCRIPTION)) {
+            ap.setDescription((String) nodeProperty.getProperty(NODEPROPERTY_ATT_DESCRIPTION));
+        }
+        
+        // Is there any fixed Value
+        if (nodeProperties.containsKey(NODEPROPERTY_ATT_FIXEDVALUES)) {
+            String[] listOfValues = (String[]) nodeProperty.getProperty(NODEPROPERTY_ATT_FIXEDVALUES);
+            if (listOfValues != null && listOfValues.length >0) {
+                for (int l = 0; l < listOfValues.length;l++) {
+                    ap.add2FixedValueFromString(listOfValues[l]);
+                }
+            }
+        }
+        
+        // Check fixed value
+        if (ap.getFixedValues() != null && !ap.getFixedValues().contains(ap.getValue())) {
+            throw new IllegalArgumentException("Cannot create property <" + ap.getName() + 
+                    "> invalid value <" + ap.getValue() + 
+                    "> expected one of " + ap.getFixedValues());
+        }
+        
+        return ap;
     }
     
     /**

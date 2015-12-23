@@ -223,6 +223,33 @@ public class FeatureJsonParser {
         }
         return strategy;
     }
+    
+    /**
+     * Initialization of FlipStrategy from elements.
+     * 
+     * @param featureUid
+     *      current feature id
+     * @param classType
+     *      current type of class
+     * @param initparams
+     *      current init parameters
+     * @return
+     *      a flipping strategy
+     */
+    public static FlippingStrategy parseFlipStrategy(String featureUid, String classType, HashMap<String, String> initparams) {
+        FlippingStrategy strategy = null;
+        try {            
+            strategy = (FlippingStrategy) Class.forName(classType).newInstance();
+            strategy.init(featureUid, initparams);
+        } catch (InstantiationException e) {
+            throw new IllegalArgumentException(classType + " does not seems to have a DEFAULT constructor", e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException(classType + " does not seems to have a PUBLIC constructor", e);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException(classType + " has not been found within classpath, check syntax", e);
+        }
+        return strategy;
+    }
 
     /**
      * Parse the json expression as array of {@link Feature}.
