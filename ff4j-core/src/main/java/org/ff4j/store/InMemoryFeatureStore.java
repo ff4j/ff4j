@@ -377,11 +377,11 @@ public class InMemoryFeatureStore extends AbstractFeatureStore {
         json = json.substring(0, json.length() - 1) + ",\"xmlInputFile\":";
         // No filename inputstream, set to true)
         if (null == fileName) {
-            json+= "null";
-        } else  {
+            json += "null";
+        } else {
             json += "\"" + this.fileName + "\"";
         }
-        json+= "}";
+        json += "}";
         return json;
     }
 

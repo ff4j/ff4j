@@ -57,15 +57,15 @@ public class FeatureNeo4jMapper implements FF4jNeo4jConstants {
      * @return
      */
     public static Feature fromNode2Feature(Node nodeFeature) {
+        Map < String, Object > nodeProperties = nodeFeature.getAllProperties();
         String featureID    = (String) nodeFeature.getProperty(NODEFEATURE_ATT_UID);
         Boolean enable      = (Boolean) nodeFeature.getProperty(NODEFEATURE_ATT_ENABLE);
-        String description  = (String) nodeFeature.getProperty(NODEFEATURE_ATT_DESCRIPTION);
-        String[] roles      = (String[]) nodeFeature.getProperty(NODEFEATURE_ATT_ROLES);
         Feature feature = new Feature(featureID, enable);
-        if (description != null) {
-            feature.setDescription(description);
+        if (nodeProperties.containsKey(NODEFEATURE_ATT_DESCRIPTION)) {
+            feature.setDescription((String) nodeFeature.getProperty(NODEFEATURE_ATT_DESCRIPTION));
         }
-        if (roles != null) {
+        if (nodeProperties.containsKey(NODEFEATURE_ATT_ROLES)) {
+            String[] roles = (String[]) nodeFeature.getProperty(NODEFEATURE_ATT_ROLES);
             feature.setPermissions(new HashSet<>(Arrays.asList(roles)));
         }
         return feature;

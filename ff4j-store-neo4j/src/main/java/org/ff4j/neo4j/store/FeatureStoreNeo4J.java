@@ -25,6 +25,7 @@ import static org.ff4j.neo4j.mapper.FeatureNeo4jMapper.fromNode2FlippingStrategy
 import static org.ff4j.neo4j.mapper.FeatureNeo4jMapper.fromNode2Property;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -82,10 +83,7 @@ public class FeatureStoreNeo4J implements FeatureStore, FF4jNeo4jConstants {
     /** {@inheritDoc} */
     @Override
     public void enable(String uid) {
-        Util.assertHasLength(uid);
-        if (!exist(uid)) {
-            throw new FeatureNotFoundException(uid);
-        }
+        assertUID(uid);
         try (Transaction tx = graphDb.beginTx()) {
             Map < String, Object > queryParameters = new HashMap<>();
             queryParameters.put("uid", uid);
@@ -97,14 +95,11 @@ public class FeatureStoreNeo4J implements FeatureStore, FF4jNeo4jConstants {
     /** {@inheritDoc} */
     @Override
     public void disable(String uid) {
-        Util.assertHasLength(uid);
-        if (!exist(uid)) {
-            throw new FeatureNotFoundException(uid);
-        }
+        assertUID(uid);
         try (Transaction tx = graphDb.beginTx()) {
             Map < String, Object > queryParameters = new HashMap<>();
             queryParameters.put("uid", uid);
-            graphDb.execute(QUERY_CYPHER_ENABLE,  queryParameters);
+            graphDb.execute(QUERY_CYPHER_DISABLE,  queryParameters);
             tx.success();
         }
     }
@@ -112,13 +107,17 @@ public class FeatureStoreNeo4J implements FeatureStore, FF4jNeo4jConstants {
     /** {@inheritDoc} */
     @Override
     public Feature read(String featId) {
-        Util.assertHasLength(featId);
+        assertUID(featId);
         Feature targetFeature = null;
         try (Transaction tx = graphDb.beginTx()) {
             // Build Query
             Map < String, Object > queryParameters = new HashMap<>();
             queryParameters.put("uid", featId);
             Result result = graphDb.execute(QUERY_CYPHER_READ_FEATURE,  queryParameters);
+            if (!result.hasNext()) {
+                // Exist but as no relation ship not return by first query
+                result = graphDb.execute(QUERY_CYPHER_NORELATIONSHIPS,  queryParameters);
+            }
             while (result.hasNext()) {
                 Map < String, Object > response = result.next();
                 if (targetFeature == null) {
@@ -126,10 +125,23 @@ public class FeatureStoreNeo4J implements FeatureStore, FF4jNeo4jConstants {
                     targetFeature = fromNode2Feature(nodeFeature);
                 }
                 addNeighBour2Feature(targetFeature, (Node) response.get("all"));
-            }
+            } 
             tx.success();
         }
         return targetFeature;
+    }
+    
+    /**
+     * Validate feature uid.
+     *
+     * @param uid
+     *      target uid
+     */
+    private void assertUID(String uid) {
+        Util.assertHasLength(uid);
+        if (!exist(uid)) {
+            throw new FeatureNotFoundException(uid);
+        }
     }
     
     /** {@inheritDoc} */
@@ -137,22 +149,41 @@ public class FeatureStoreNeo4J implements FeatureStore, FF4jNeo4jConstants {
     public Map<String, Feature> readAll() {
         Map<String, Feature> allFeatures = new HashMap<>();
         try (Transaction tx = graphDb.beginTx()) {
+            // Node with relationships
             Result result = graphDb.execute(QUERY_CYPHER_READ_ALL);
             while (result.hasNext()) {
-                Map < String, Object > response = result.next();
-                Node nodeFeature = (Node) response.get("f");
-                String uid = (String) nodeFeature.getProperty(NODEFEATURE_ATT_UID);
-                System.out.println(uid);
-                // first time meeting this uid, create core Feature object from 'f'
-                if (!allFeatures.containsKey(uid)) {
-                    Feature currentFeature = fromNode2Feature(nodeFeature);
-                    allFeatures.put(currentFeature.getUid(), currentFeature);
-                }
-                addNeighBour2Feature(allFeatures.get(uid), (Node) response.get("all"));
+                addToFeatureList(result.next(), allFeatures);
             }
+            // Single nodes
+            result = graphDb.execute(QUERY_CYPHER_READ_SINGLE);
+            while (result.hasNext()) {
+                addToFeatureList(result.next(), allFeatures);
+            }
+           
             tx.success();
         }          
         return allFeatures;
+    }
+    
+    /**
+     * Common behaviour to add a result to the feature list.
+     * 
+     * @param response
+     *      target response
+     * @param allFeatures
+     *      target feature
+     */
+    private void addToFeatureList(Map < String, Object > response,  Map<String, Feature> allFeatures) {
+        Node nodeFeature = (Node) response.get("f");
+        String uid = (String) nodeFeature.getProperty(NODEFEATURE_ATT_UID);
+        // first time meeting this uid, create core Feature object from 'f'
+        if (!allFeatures.containsKey(uid)) {
+            Feature currentFeature = fromNode2Feature(nodeFeature);
+            allFeatures.put(currentFeature.getUid(), currentFeature);
+        }
+        if (null != response.get("all")) {
+            addNeighBour2Feature(allFeatures.get(uid), (Node) response.get("all"));
+        }
     }
     
     /**
@@ -187,18 +218,6 @@ public class FeatureStoreNeo4J implements FeatureStore, FF4jNeo4jConstants {
                 break;
             }
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void create(Feature fp) {
-        if (fp == null) {
-            throw new IllegalArgumentException("Feature cannot be null nor empty");
-        }
-        if (exist(fp.getUid())) {
-            throw new FeatureAlreadyExistException(fp.getUid());
-        }
-        update(fp);
     }
 
     /** {@inheritDoc} */
@@ -243,83 +262,174 @@ public class FeatureStoreNeo4J implements FeatureStore, FF4jNeo4jConstants {
             tx.success();
         }
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void grantRoleOnFeature(String uid, String roleName) {
+        Util.assertHasLength(roleName);
+        Feature feat = read(uid);
+        if (feat.getPermissions() != null && !feat.getPermissions().contains(roleName)) {
+            try (Transaction tx = graphDb.beginTx()) {
+                Map < String, Object > paramUID = new HashMap<>();
+                paramUID.put("uid", uid);
+                paramUID.put("roleName", roleName);
+                graphDb.execute(QUERY_CYPHER_ADD_ROLE, paramUID);
+                tx.success();
+            }
+        }
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void removeRoleFromFeature(String uid, String roleName) {
+        Util.assertHasLength(roleName);
+        Feature feat = read(uid);
+        if (feat.getPermissions() != null && feat.getPermissions().contains(roleName)) {
+            feat.getPermissions().remove(roleName);
+            String[] roles = feat.getPermissions().toArray(new String[0]);
+            try (Transaction tx = graphDb.beginTx()) {
+                Map < String, Object > paramUID = new HashMap<>();
+                paramUID.put("uid", uid);
+                paramUID.put("roles", roles);
+                graphDb.execute(QUERY_CYPHER_REMOVE_ROLE, paramUID);
+                tx.success();
+            }
+        }
+    }
 
+    /** {@inheritDoc} */
     @Override
     public void update(Feature fp) {
-        // Should create Group only if not exist !
+        // Update CORE description, enable, roles
         
-        
+        // Should create Group only if not exist
+        // Should create properties if not exist
+        // Should create FlippingStrategy if not exist
+        // Should remove flipping stratgy if relevant
     }
 
+    /** {@inheritDoc} */
     @Override
-    public void grantRoleOnFeature(String flipId, String roleName) {
-        // TODO Auto-generated method stub
-        
+    public void create(Feature fp) {
+        if (fp == null) {
+            throw new IllegalArgumentException("Feature cannot be null nor empty");
+        }
+        if (exist(fp.getUid())) {
+            throw new FeatureAlreadyExistException(fp.getUid());
+        }
+       
     }
+    
+    // ---------------- GROUPS -------------------
 
-    @Override
-    public void removeRoleFromFeature(String flipId, String roleName) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void enableGroup(String groupName) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void disableGroup(String groupName) {
-        // TODO Auto-generated method stub
-        
-    }
-
+    /** {@inheritDoc} */
     @Override
     public boolean existGroup(String groupName) {
-        // TODO Auto-generated method stub
-        return false;
+        Util.assertHasLength(groupName);
+        Map < String, Object > queryParameters = new HashMap<>();
+        queryParameters.put("groupName", groupName);
+        Result result = graphDb.execute(QUERY_CYPHER_EXISTS_GROUP,  queryParameters);
+        Object count = null;
+        if (result.hasNext()) {
+            count = result.next().get(QUERY_CYPHER_ALIAS);
+        }
+        return (null != count) && (((long) count) > 0);
     }
-
+    
+    /** {@inheritDoc} */
     @Override
     public Map<String, Feature> readGroup(String groupName) {
-        // TODO Auto-generated method stub
-        return null;
+        Util.assertHasLength(groupName);
+        Map<String, Feature> allFeatures   = readAll();
+        Map<String, Feature> groupFeatures = new HashMap<>();
+        try (Transaction tx = graphDb.beginTx()) {
+            Map < String, Object > paramGroupName = new HashMap<>();
+            paramGroupName.put("groupName", groupName);
+            Result result = graphDb.execute(QUERY_CYPHER_READ_FEATURES_OF_GROUP, paramGroupName);
+            while (result.hasNext()) {
+                String member = (String) result.next().get("UID");
+                groupFeatures.put(member, allFeatures.get(member));
+            }
+            tx.success();
+        }
+        return groupFeatures;
     }
 
+    
+    /** {@inheritDoc} */
     @Override
-    public void addToGroup(String featureId, String groupName) {
-        // TODO Auto-generated method stub
+    public void enableGroup(String groupName) {
+        Util.assertHasLength(groupName);
+        try (Transaction tx = graphDb.beginTx()) {
+            Map < String, Object > paramGroupName = new HashMap<>();
+            paramGroupName.put("groupName", groupName);
+            graphDb.execute(QUERY_CYPHER_ENABLE_GROUP, paramGroupName);
+            tx.success();
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void disableGroup(String groupName) {
+        Util.assertHasLength(groupName);
+        try (Transaction tx = graphDb.beginTx()) {
+            Map < String, Object > paramGroupName = new HashMap<>();
+            paramGroupName.put("groupName", groupName);
+            graphDb.execute(QUERY_CYPHER_DISABLE_GROUP, paramGroupName);
+            tx.success();
+        }
+    }   
+
+   
+    /** {@inheritDoc} */
+    @Override
+    public void addToGroup(String uid, String groupName) {
+        assertUID(uid);
+        Util.assertHasLength(groupName);
+        
+        // Create group if not exist
+        
+        // Create relation ship (work with indexes)
         
     }
 
+    /** {@inheritDoc} */
     @Override
-    public void removeFromGroup(String featureId, String groupName) {
-        // TODO Auto-generated method stub
-        
+    public void removeFromGroup(String uid, String groupName) {
+        assertUID(uid);
+        Util.assertHasLength(groupName);
+        // Break Relationship
+        // Delete node if no more feature on it
     }
 
+    /** {@inheritDoc} */
     @Override
     public Set<String> readAllGroups() {
-        // TODO Auto-generated method stub
-        return null;
+        Result result = graphDb.execute(QUERY_READ_GROUPS);
+        Set < String > response = new HashSet<>();
+        while (result.hasNext()) {
+            response.add((String) result.next().get("GROUPNAME"));
+        }
+        return response;
     }
+    
+    // ---------------------- Only for cache --------------
 
+    /** {@inheritDoc} */
     @Override
     public boolean isCached() {
-        // TODO Auto-generated method stub
         return false;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getCacheProvider() {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getCachedTargetStore() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -341,6 +451,5 @@ public class FeatureStoreNeo4J implements FeatureStore, FF4jNeo4jConstants {
     public void setGraphDb(GraphDatabaseService graphDb) {
         this.graphDb = graphDb;
     }
-    
 
 }

@@ -15,25 +15,51 @@ public interface FF4jNeo4jConstants {
     // -------------------------------------------------------
     
     /** Cypher query. */
-    String QUERY_CYPHER_EXISTS  = "MATCH (f:" + FF4jNeo4jLabels.FF4J_FEATURE + " { uid:  {uid} }) RETURN count(*) AS " + QUERY_CYPHER_ALIAS;
+    String QUERY_CYPHER_EXISTS  = 
+            "MATCH (f:" + FF4jNeo4jLabels.FF4J_FEATURE + " { uid:  {uid} }) " + 
+            "RETURN count(*) AS " + QUERY_CYPHER_ALIAS;
+    
+    String QUERY_CYPHER_EXISTS_GROUP =
+            "MATCH (f:" + FF4jNeo4jLabels.FF4J_FEATURE_GROUP + " { name:  {groupName} }) " + 
+            "RETURN count(*) AS " + QUERY_CYPHER_ALIAS;
+            
+    /** Cypher query. */
+    String QUERY_CYPHER_READ_FEATURE = 
+            "MATCH (f:" + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: {uid} })--(all) RETURN f,all";
     
     /** Cypher query. */
-    String QUERY_CYPHER_READ_FEATURE = "MATCH (f:" + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: {uid} })--(all) RETURN f,all";
+    String QUERY_CYPHER_NORELATIONSHIPS = 
+            "MATCH (f:" + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: {uid} }) RETURN f;";
     
-    /** Query to real All. */
-    String QUERY_CYPHER_READ_ALL = "MATCH (f:FF4J_FEATURE)--(all) RETURN f,all;";
+    /** Cypher query. */
+    String QUERY_CYPHER_READ_ALL = 
+            "MATCH (f:FF4J_FEATURE)--(all) RETURN f,all;";
     
-    // Get group for a Feature
+    /** Cypher query. */
+    String QUERY_CYPHER_READ_SINGLE = "MATCH (f:FF4J_FEATURE) RETURN f;";
+    
+    /** Cypher query. */
     String QUERY_CYPHER_GETGROUPNAME = 
             "MATCH(f:" + FF4jNeo4jLabels.FF4J_FEATURE + "  { uid:  {uid} } ) " + 
              "--(g:" + FF4jNeo4jLabels.FF4J_FEATURE_GROUP + ") " + 
              "RETURN g.name as GROUPNAME;";
     
-    /** Query count feature of the group. */
+    /** Cypher query. */
     String QUERY_CYPHER_COUNT_FEATURE_OF_GROUP = 
             "MATCH (f:" + FF4jNeo4jLabels.FF4J_FEATURE + " ) " + 
             "WHERE (f)-[:MEMBER_OF]-( { name: {groupName} }) " + 
             "RETURN COUNT(*) AS " + QUERY_CYPHER_ALIAS + ";";
+    
+    /** Cypher query. */
+    String QUERY_CYPHER_READ_FEATURES_OF_GROUP = 
+            "MATCH (f:" + FF4jNeo4jLabels.FF4J_FEATURE + " ) " + 
+            "WHERE (f)-[:MEMBER_OF]-( { name: {groupName} }) " + 
+            "RETURN f.uid AS UID;";
+    
+    /** Cypher query. */
+    String QUERY_READ_GROUPS = 
+            "MATCH (g:" +  FF4jNeo4jLabels.FF4J_FEATURE_GROUP + "  ) " + 
+            "RETURN g.name AS GROUPNAME;";
     
     // -------------------------------------------------------
     // --------------------- Delete --------------------------
@@ -59,7 +85,11 @@ public interface FF4jNeo4jConstants {
     String QUERY_CYPHER_DELETE_FEATURE = 
             "MATCH (f:FF4J_FEATURE { uid: {uid}  }) " + 
             "DETACH DELETE f;";
-   
+    
+    String QUERY_CYPHER_REMOVE_ROLE = 
+            "MATCH (f:FF4J_FEATURE { uid: {uid}  }) " + 
+            "SET f.roles = {roles} RETURN f";
+    
     // -------------------------------------------------------
     // --------------------- Update  -------------------------  
     // -------------------------------------------------------
@@ -71,6 +101,23 @@ public interface FF4jNeo4jConstants {
     
     /** Cypher query. */
     String QUERY_CYPHER_DISABLE = "MATCH (f:" + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: {uid} }) " + 
+            "SET f.enable = false RETURN f.enable;";
+    
+    String QUERY_CYPHER_ADD_ROLE = 
+            "MATCH (f:" + FF4jNeo4jLabels.FF4J_FEATURE + "  {uid: {uid} }) " + 
+            "SET f.roles = f.roles + {roleName} return f;";
+    
+    
+    /** Cypher query. */
+    String QUERY_CYPHER_ENABLE_GROUP = 
+            "MATCH (f:" + FF4jNeo4jLabels.FF4J_FEATURE + " ) " + 
+            "WHERE (f)-[:MEMBER_OF]-( { name: {groupName} }) " + 
+            "SET f.enable = true RETURN f.enable;";
+    
+    /** Cypher query. */
+    String QUERY_CYPHER_DISABLE_GROUP = 
+            "MATCH (f:" + FF4jNeo4jLabels.FF4J_FEATURE + " ) " + 
+            "WHERE (f)-[:MEMBER_OF]-( { name: {groupName} }) " + 
             "SET f.enable = false RETURN f.enable;";
     
     // -------------------------------------------------------

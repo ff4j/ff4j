@@ -7,7 +7,6 @@ import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.neo4j.store.FeatureStoreNeo4J;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -82,7 +81,7 @@ public class DefaultUnitTesting implements FF4jNeo4jConstants {
                     + " (forth:FF4J_FEATURE { uid:'forth', enable:true, description:'forth', roles:['ADMINISTRATOR', 'BETA-TESTER'] }),\n"
                     + " (stratforth:FF4J_FLIPPING_STRATEGY { initParams: [ 'expression=third|second' ], type: 'org.ff4j.strategy.el.ExpressionFlipStrategy'}),\n"
                     + " (stratforth)-[:STRATEGY_OF]->forth,\n" 
-                    + " (stratforth)-[:STRATEGY_OF]->first,\n"
+                   // + " (stratforth)-[:STRATEGY_OF]->first,\n"
                     + " (forth)-[:MEMBER_OF]->(GRP1),\n"
 
                     + " (a:FF4J_PROPERTY { name:'a', value:'AMER', fixedValues: ['AMER','EAST','EAST','EAST'] }),\n"
@@ -105,7 +104,6 @@ public class DefaultUnitTesting implements FF4jNeo4jConstants {
     @Test
     public void getFeatureByUId() {
         FeatureStore store = new FeatureStoreNeo4J(graphDb);
-        //System.out.println(store.exist("AwesomeFeature"));
         //System.out.println(store.exist("DOES-NOT-EXIST"));
         
         /*Feature first = store.read("first");
@@ -113,10 +111,13 @@ public class DefaultUnitTesting implements FF4jNeo4jConstants {
         System.out.println(first.getDescription());
         System.out.println(first.getCustomProperties());*/
         
-        System.out.println(store.exist("AwesomeFeature"));
-        Feature aw = store.read("AwesomeFeature");
-        System.out.println(aw.getDescription());
+        Feature aw = store.read("first");
+        System.out.println(aw.isEnable());
        
+        FF4j ff4j = new FF4j();
+        ff4j.setFeatureStore(store);
+        
+        System.out.println(ff4j.check("first"));
         Map < String, Feature > features = store.readAll();
         System.out.println(features.keySet());        
         

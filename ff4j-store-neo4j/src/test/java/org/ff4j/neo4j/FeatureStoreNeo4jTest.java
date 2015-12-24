@@ -3,9 +3,7 @@ package org.ff4j.neo4j;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.neo4j.store.FeatureStoreNeo4J;
 import org.ff4j.test.store.AbstractStoreJUnitTest;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
@@ -80,7 +78,6 @@ public class FeatureStoreNeo4jTest extends AbstractStoreJUnitTest implements FF4
                     + " (forth:FF4J_FEATURE { uid:'forth', enable:true, description:'forth', roles:['ADMINISTRATOR', 'BETA-TESTER'] }),\n"
                     + " (stratforth:FF4J_FLIPPING_STRATEGY { initParams: [ 'expression=third|second' ], type: 'org.ff4j.strategy.el.ExpressionFlipStrategy'}),\n"
                     + " (stratforth)-[:STRATEGY_OF]->forth,\n" 
-                    + " (stratforth)-[:STRATEGY_OF]->first,\n"
                     + " (forth)-[:MEMBER_OF]->(GRP1),\n"
 
                     + " (a:FF4J_PROPERTY { name:'a', value:'AMER', fixedValues: ['AMER','EAST','EAST','EAST'] }),\n"
