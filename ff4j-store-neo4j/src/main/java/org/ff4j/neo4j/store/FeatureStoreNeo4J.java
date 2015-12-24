@@ -34,6 +34,7 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.neo4j.FF4jNeo4jConstants;
 import org.ff4j.neo4j.FF4jNeo4jLabels;
 import org.ff4j.property.AbstractProperty;
@@ -131,19 +132,6 @@ public class FeatureStoreNeo4J implements FeatureStore, FF4jNeo4jConstants {
         return targetFeature;
     }
     
-    /**
-     * Validate feature uid.
-     *
-     * @param uid
-     *      target uid
-     */
-    private void assertUID(String uid) {
-        Util.assertHasLength(uid);
-        if (!exist(uid)) {
-            throw new FeatureNotFoundException(uid);
-        }
-    }
-    
     /** {@inheritDoc} */
     @Override
     public Map<String, Feature> readAll() {
@@ -163,6 +151,403 @@ public class FeatureStoreNeo4J implements FeatureStore, FF4jNeo4jConstants {
             tx.success();
         }          
         return allFeatures;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void delete(String uid) {
+        Util.assertHasLength(uid);
+        if (!exist(uid)) {
+            throw new FeatureNotFoundException(uid);
+        }
+        
+        // Parameter
+        Map < String, Object > paramUID = new HashMap<>();
+        paramUID.put("uid", uid);
+        
+        try (Transaction tx = graphDb.beginTx()) {
+            
+            // Delete Flipping Strategy if it exists
+            graphDb.execute(QUERY_CYPHER_DELETE_STRATEGY_FEATURE,  paramUID);
+            
+            // Delete Related Property if exist
+            graphDb.execute(QUERY_CYPHER_DELETE_PROPERTIES_FEATURE,  paramUID);
+
+            // Check group            
+            Result result = graphDb.execute(QUERY_CYPHER_GETGROUPNAME, paramUID);
+            if (result.hasNext()) {
+                String groupName = (String) result.next().get("GROUPNAME");
+                Map < String, Object > paramGroupName = new HashMap<>();
+                paramGroupName.put("groupName", groupName);
+                result = graphDb.execute(QUERY_CYPHER_COUNT_FEATURE_OF_GROUP, paramGroupName);
+                if (result.hasNext()) {
+                    long nbFeature = (long) result.next().get(QUERY_CYPHER_ALIAS);
+                    if (nbFeature == 1) {
+                        // This is the last feature of this Group => delete the GROUP
+                        graphDb.execute(QUERY_CYPHER_DELETE_GROUP_FEATURE, paramUID );
+                    }
+                }
+            }
+            
+            // Delete feature
+            graphDb.execute(QUERY_CYPHER_DELETE_FEATURE,  paramUID);
+            tx.success();
+        }
+    }
+    
+    
+    
+    /** {@inheritDoc} */
+    @Override
+    public void grantRoleOnFeature(String uid, String roleName) {
+        Util.assertHasLength(roleName);
+        Feature feat = read(uid);
+        if (feat.getPermissions() != null && !feat.getPermissions().contains(roleName)) {
+            try (Transaction tx = graphDb.beginTx()) {
+                Map < String, Object > paramUID = new HashMap<>();
+                paramUID.put("uid", uid);
+                paramUID.put("roleName", roleName);
+                graphDb.execute(QUERY_CYPHER_ADD_ROLE, paramUID);
+                tx.success();
+            }
+        }
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void removeRoleFromFeature(String uid, String roleName) {
+        Util.assertHasLength(roleName);
+        Feature feat = read(uid);
+        if (feat.getPermissions() != null && feat.getPermissions().contains(roleName)) {
+            feat.getPermissions().remove(roleName);
+            String[] roles = feat.getPermissions().toArray(new String[0]);
+            try (Transaction tx = graphDb.beginTx()) {
+                Map < String, Object > paramUID = new HashMap<>();
+                paramUID.put("uid", uid);
+                paramUID.put("roles", roles);
+                graphDb.execute(QUERY_CYPHER_UPDATE_ROLE, paramUID);
+                tx.success();
+            }
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void update(Feature fp) {
+        Util.assertNotNull(fp);
+        Util.assertHasLength(fp.getUid());
+        
+        // Create or update core Feature as a first TX
+        try (Transaction tx = graphDb.beginTx()) {
+            if (!exist(fp.getUid())) {
+                graphDb.execute(createQueryNewCoreFeature(fp));
+            } else {
+                graphDb.execute(createUpdateCoreFeature(fp));
+            }
+            tx.success();
+        }
+        
+        Map < String, Object > queryParameters = new HashMap<>();
+        queryParameters.put("uid", fp.getUid());
+        
+        // Create, update or delete Flipping Strategy
+        try (Transaction tx = graphDb.beginTx()) {
+            // Create or update FlippingStrategy (as provided)
+            if (fp.getFlippingStrategy() !=null) {
+                Result flippingNode = graphDb.execute(QUERY_CYPHER_GET_FLIPPINGSTRATEGY, queryParameters);
+                if (flippingNode.hasNext()) {
+                    graphDb.execute(createUpdateFlippingStrategy(fp));
+                } else {
+                    graphDb.execute(createQueryFlippingStrategy(fp));
+                }
+            } else {
+                // Delete flipping strategy if exist (as null)
+                graphDb.execute(QUERY_CYPHER_DELETE_STRATEGY_FEATURE, queryParameters);
+            }   
+            tx.success();
+        }
+        
+        // Group
+        String oldGroupName = getCurrentGroupName(fp.getUid());
+        if ((oldGroupName != null) && (fp.getGroup() == null)) {
+            removeFromGroup(fp.getUid(), oldGroupName);
+        }
+        if (fp.getGroup() != null && fp.getGroup().length() > 0) {
+            if (oldGroupName != null && !oldGroupName.equalsIgnoreCase(fp.getGroup())) {
+                removeFromGroup(fp.getUid(), oldGroupName);
+                addToGroup(fp.getUid(), fp.getGroup());
+            }
+        }
+        
+        // Properties
+        if (fp.getCustomProperties() != null && fp.getCustomProperties().size() > 0) {
+        }
+         
+    }
+    
+    private String getCurrentGroupName(String uid) {
+        String groupName = null;
+        try (Transaction tx = graphDb.beginTx()) {
+            Map < String, Object > queryParameters = new HashMap<>();
+            queryParameters.put("uid", uid);
+            Result result = graphDb.execute(QUERY_CYPHER_GETGROUPNAME, queryParameters);
+            if (result.hasNext()) {
+                groupName = (String) result.next().get("GROUPNAME");
+            }
+            tx.success();
+        }
+        return groupName;
+    }
+    
+    private String createQueryFlippingStrategy(Feature fp) {
+        String fsCreateQuery = "MATCH  (f:FF4J_FEATURE {uid:'" + fp.getUid() + "'}) ";
+        fsCreateQuery += "CREATE (fs:FF4J_FLIPPING_STRATEGY { type:'";
+        fsCreateQuery += fp.getFlippingStrategy().getClass().getName();
+        fsCreateQuery += "', initParams: [";
+        Map < String, String > initParams = fp.getFlippingStrategy().getInitParams();
+        if (initParams != null && initParams.size() > 0) {
+            boolean first = true;
+            for (String key : initParams.keySet()) {
+                if (!first) {
+                    fsCreateQuery += ",";
+                }
+                fsCreateQuery += "'" + key + "=" + initParams.get(key) + "'";
+                first = false;
+            }
+        }
+        fsCreateQuery += "]})-[:STRATEGY_OF]->(f);";
+        return fsCreateQuery;
+    }
+        
+    private String createQueryNewCoreFeature(Feature fp) {
+        StringBuilder cypherCreate = new StringBuilder("CREATE (");
+        cypherCreate.append(fp.getUid());
+        cypherCreate.append(":" + FF4jNeo4jLabels.FF4J_FEATURE + " { uid :'");
+        cypherCreate.append(fp.getUid());
+        cypherCreate.append("', enable:");
+        cypherCreate.append(fp.isEnable());
+        if (fp.getDescription() != null && fp.getDescription().length() > 0) {
+            cypherCreate.append(", description:'");
+            cypherCreate.append(fp.getDescription());
+            cypherCreate.append("'");
+        }
+        if (fp.getPermissions() != null && fp.getPermissions().size() > 0) {
+            cypherCreate.append(", roles: [");
+            boolean first = true;
+            for(String role : fp.getPermissions()) {
+               if (!first) {
+                   cypherCreate.append(",");
+               }
+               cypherCreate.append("'" + role + "'");
+               first = false;
+            }
+            cypherCreate.append("]");
+        }
+        cypherCreate.append("});");
+        return cypherCreate.toString();
+    }
+    
+    private String createUpdateCoreFeature(Feature fp) {
+        StringBuilder cypherUpdate = new StringBuilder("MATCH (f:" + FF4jNeo4jLabels.FF4J_FEATURE + " { uid:'");
+        cypherUpdate.append(fp.getUid());
+        cypherUpdate.append("' }) ");
+        cypherUpdate.append("SET f.enable = " + fp.isEnable());
+        if (fp.getDescription() != null && fp.getDescription().length() > 0) {
+            cypherUpdate.append(", f.description = '");
+            cypherUpdate.append(fp.getDescription());
+            cypherUpdate.append("'");
+        }
+        if (fp.getPermissions() != null && fp.getPermissions().size() > 0) {
+            cypherUpdate.append(", f.roles = [");
+            boolean first = true;
+            for(String role : fp.getPermissions()) {
+               if (!first) {
+                   cypherUpdate.append(",");
+               }
+               cypherUpdate.append("'" + role + "'");
+               first = false;
+            }
+            cypherUpdate.append("]");
+        }
+        cypherUpdate.append(";");
+        return cypherUpdate.toString();
+    }
+  
+    private String createUpdateFlippingStrategy(Feature fp) {
+        String queryUpdate = "MATCH (f:" + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: '";
+        queryUpdate += fp.getUid() + "' })--(s:FF4J_FLIPPING_STRATEGY) ";
+        queryUpdate += "SET s.type='";
+        queryUpdate += fp.getFlippingStrategy().getClass().getName();
+        queryUpdate += "', initParams: [";
+        Map < String, String > initParams = fp.getFlippingStrategy().getInitParams();
+            if (initParams != null && initParams.size() > 0) {
+            boolean first = true;
+            for (String key : initParams.keySet()) {
+                if (!first) {
+                    queryUpdate += ",";
+                }
+                queryUpdate += "'" + key + "=" + initParams.get(key) + "'";
+                first = false;
+            }
+        }
+        queryUpdate += "];";
+        return queryUpdate;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void create(Feature fp) {
+        if (fp == null) {
+            throw new IllegalArgumentException("Feature cannot be null nor empty");
+        }
+        if (exist(fp.getUid())) {
+            throw new FeatureAlreadyExistException(fp.getUid());
+        }
+        update(fp);
+    }
+    
+    // ---------------- GROUPS -------------------
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean existGroup(String groupName) {
+        Util.assertHasLength(groupName);
+        Map < String, Object > queryParameters = new HashMap<>();
+        queryParameters.put("groupName", groupName);
+        Result result = graphDb.execute(QUERY_CYPHER_EXISTS_GROUP,  queryParameters);
+        Object count = null;
+        if (result.hasNext()) {
+            count = result.next().get(QUERY_CYPHER_ALIAS);
+        }
+        return (null != count) && (((long) count) > 0);
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, Feature> readGroup(String groupName) {
+        assertGroup(groupName);
+        Map<String, Feature> allFeatures   = readAll();
+        Map<String, Feature> groupFeatures = new HashMap<>();
+        try (Transaction tx = graphDb.beginTx()) {
+            Map < String, Object > paramGroupName = new HashMap<>();
+            paramGroupName.put("groupName", groupName);
+            Result result = graphDb.execute(QUERY_CYPHER_READ_FEATURES_OF_GROUP, paramGroupName);
+            while (result.hasNext()) {
+                String member = (String) result.next().get("UID");
+                groupFeatures.put(member, allFeatures.get(member));
+            }
+            tx.success();
+        }
+        return groupFeatures;
+    }
+
+    
+    /** {@inheritDoc} */
+    @Override
+    public void enableGroup(String groupName) {
+        assertGroup(groupName);
+        try (Transaction tx = graphDb.beginTx()) {
+            Map < String, Object > paramGroupName = new HashMap<>();
+            paramGroupName.put("groupName", groupName);
+            graphDb.execute(QUERY_CYPHER_ENABLE_GROUP, paramGroupName);
+            tx.success();
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void disableGroup(String groupName) {
+        assertGroup(groupName);
+        try (Transaction tx = graphDb.beginTx()) {
+            Map < String, Object > paramGroupName = new HashMap<>();
+            paramGroupName.put("groupName", groupName);
+            graphDb.execute(QUERY_CYPHER_DISABLE_GROUP, paramGroupName);
+            tx.success();
+        }
+    }
+   
+    /** {@inheritDoc} */
+    @Override
+    public void addToGroup(String uid, String groupName) {
+        assertUID(uid);
+        Util.assertHasLength(groupName);
+        
+        // Create group if not exist
+        if (!existGroup(groupName)) {
+            try (Transaction tx = graphDb.beginTx()) {
+                String createGroup = "CREATE (" + groupName + ":" + FF4jNeo4jLabels.FF4J_FEATURE_GROUP ;
+                createGroup += " { name:'" + groupName + "' });";
+                graphDb.execute(createGroup);
+                tx.success();
+            }
+        }
+        
+        // Create relation ship (work with indexes)
+        try (Transaction tx = graphDb.beginTx()) {
+            Map < String, Object > params = new HashMap<>();
+            params.put("uid", uid);
+            params.put("groupName", groupName);
+            graphDb.execute(QUERY_CYPHER_ADDTO_GROUP, params);
+            tx.success();
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeFromGroup(String uid, String groupName) {
+        assertUID(uid);
+        assertGroup(groupName);
+        if (!existGroup(groupName)) {
+            throw new GroupNotFoundException(groupName);
+        }
+        
+        // Create relation ship (work with indexes)
+        try (Transaction tx = graphDb.beginTx()) {
+            Map < String, Object > params = new HashMap<>();
+            params.put("uid", uid);
+            graphDb.execute(QUERY_CYPHER_REMOVEFROMGROUP, params);
+            tx.success();
+        }
+        
+        // Delete node group if not more feature on it
+        deleteOrphanGroups();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> readAllGroups() {
+        Result result = graphDb.execute(QUERY_READ_GROUPS);
+        Set < String > response = new HashSet<>();
+        while (result.hasNext()) {
+            response.add((String) result.next().get("GROUPNAME"));
+        }
+        return response;
+    }
+    
+    /**
+     * Validate feature uid.
+     *
+     * @param uid
+     *      target uid
+     */
+    private void assertUID(String uid) {
+        Util.assertHasLength(uid);
+        if (!exist(uid)) {
+            throw new FeatureNotFoundException(uid);
+        }
+    }
+    
+    /**
+     * Validate feature uid.
+     *
+     * @param uid
+     *      target uid
+     */
+    private void assertGroup(String groupName) {
+        Util.assertHasLength(groupName);
+        if (!existGroup(groupName)) {
+            throw new GroupNotFoundException(groupName);
+        }
     }
     
     /**
@@ -196,7 +581,7 @@ public class FeatureStoreNeo4J implements FeatureStore, FF4jNeo4jConstants {
      */
     private void addNeighBour2Feature(Feature targetFeature, Node nodeOther) {
         Util.assertNotNull(targetFeature);
-        if (nodeOther != null) {
+        if (nodeOther != null && nodeOther.getLabels().iterator().hasNext()) {
             String nodeLabel = nodeOther.getLabels().iterator().next().toString();
             FF4jNeo4jLabels lblb = FF4jNeo4jLabels.valueOf(nodeLabel);
             switch(lblb) {
@@ -219,198 +604,25 @@ public class FeatureStoreNeo4J implements FeatureStore, FF4jNeo4jConstants {
             }
         }
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public void delete(String uid) {
-        Util.assertHasLength(uid);
-        if (!exist(uid)) {
-            throw new FeatureNotFoundException(uid);
-        }
-        
-        // Parameter
-        Map < String, Object > paramUID = new HashMap<>();
-        paramUID.put("uid", uid);
-        
-        try (Transaction tx = graphDb.beginTx()) {
-            
-            // Delete Flipping Strategy if it exists
-            graphDb.execute(QUERY_CYPHER_DELETE_STRATEGY_FEATURE,  paramUID);
-            
-            // Delete Related Property if exist
-            graphDb.execute(QUERY_CYPHER_DELETE_PROPERTIES_FEATURE,  paramUID);
-
-            // Check group            
-            Result result = graphDb.execute(QUERY_CYPHER_GETGROUPNAME, paramUID);
+    
+    /**
+     * Delete orphan groups.
+     *
+     */
+    private void deleteOrphanGroups() {
+        Set < String > groupNames = readAllGroups();
+        for (String groupName : groupNames) {
+            Map < String, Object > paramGroupName = new HashMap<>();
+            paramGroupName.put("groupName", groupName);
+            Result result = graphDb.execute(QUERY_CYPHER_COUNT_FEATURE_OF_GROUP, paramGroupName);
             if (result.hasNext()) {
-                String groupName = (String) result.next().get("GROUPNAME");
-                
-                Map < String, Object > paramGroupName = new HashMap<>();
-                paramGroupName.put("groupName", groupName);
-                result = graphDb.execute(QUERY_CYPHER_COUNT_FEATURE_OF_GROUP, paramGroupName);
-                if (result.hasNext()) {
-                    long nbFeature = (long) result.next().get(QUERY_CYPHER_ALIAS);
-                    if (nbFeature == 1) {
-                        // This is the last feature of this Group => delete the GROUP
-                        graphDb.execute(QUERY_CYPHER_DELETE_GROUP_FEATURE, paramUID );
-                    }
+                long nbFeature = (long) result.next().get(QUERY_CYPHER_ALIAS);
+                if (nbFeature == 1) {
+                    // This is the last feature of this Group => delete the GROUP
+                    graphDb.execute(QUERY_CYPHER_DELETE_GROUP, paramGroupName );
                 }
             }
-            
-            // Delete feature
-            graphDb.execute(QUERY_CYPHER_DELETE_FEATURE,  paramUID);
-            tx.success();
         }
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void grantRoleOnFeature(String uid, String roleName) {
-        Util.assertHasLength(roleName);
-        Feature feat = read(uid);
-        if (feat.getPermissions() != null && !feat.getPermissions().contains(roleName)) {
-            try (Transaction tx = graphDb.beginTx()) {
-                Map < String, Object > paramUID = new HashMap<>();
-                paramUID.put("uid", uid);
-                paramUID.put("roleName", roleName);
-                graphDb.execute(QUERY_CYPHER_ADD_ROLE, paramUID);
-                tx.success();
-            }
-        }
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void removeRoleFromFeature(String uid, String roleName) {
-        Util.assertHasLength(roleName);
-        Feature feat = read(uid);
-        if (feat.getPermissions() != null && feat.getPermissions().contains(roleName)) {
-            feat.getPermissions().remove(roleName);
-            String[] roles = feat.getPermissions().toArray(new String[0]);
-            try (Transaction tx = graphDb.beginTx()) {
-                Map < String, Object > paramUID = new HashMap<>();
-                paramUID.put("uid", uid);
-                paramUID.put("roles", roles);
-                graphDb.execute(QUERY_CYPHER_REMOVE_ROLE, paramUID);
-                tx.success();
-            }
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void update(Feature fp) {
-        // Update CORE description, enable, roles
-        
-        // Should create Group only if not exist
-        // Should create properties if not exist
-        // Should create FlippingStrategy if not exist
-        // Should remove flipping stratgy if relevant
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void create(Feature fp) {
-        if (fp == null) {
-            throw new IllegalArgumentException("Feature cannot be null nor empty");
-        }
-        if (exist(fp.getUid())) {
-            throw new FeatureAlreadyExistException(fp.getUid());
-        }
-       
-    }
-    
-    // ---------------- GROUPS -------------------
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean existGroup(String groupName) {
-        Util.assertHasLength(groupName);
-        Map < String, Object > queryParameters = new HashMap<>();
-        queryParameters.put("groupName", groupName);
-        Result result = graphDb.execute(QUERY_CYPHER_EXISTS_GROUP,  queryParameters);
-        Object count = null;
-        if (result.hasNext()) {
-            count = result.next().get(QUERY_CYPHER_ALIAS);
-        }
-        return (null != count) && (((long) count) > 0);
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public Map<String, Feature> readGroup(String groupName) {
-        Util.assertHasLength(groupName);
-        Map<String, Feature> allFeatures   = readAll();
-        Map<String, Feature> groupFeatures = new HashMap<>();
-        try (Transaction tx = graphDb.beginTx()) {
-            Map < String, Object > paramGroupName = new HashMap<>();
-            paramGroupName.put("groupName", groupName);
-            Result result = graphDb.execute(QUERY_CYPHER_READ_FEATURES_OF_GROUP, paramGroupName);
-            while (result.hasNext()) {
-                String member = (String) result.next().get("UID");
-                groupFeatures.put(member, allFeatures.get(member));
-            }
-            tx.success();
-        }
-        return groupFeatures;
-    }
-
-    
-    /** {@inheritDoc} */
-    @Override
-    public void enableGroup(String groupName) {
-        Util.assertHasLength(groupName);
-        try (Transaction tx = graphDb.beginTx()) {
-            Map < String, Object > paramGroupName = new HashMap<>();
-            paramGroupName.put("groupName", groupName);
-            graphDb.execute(QUERY_CYPHER_ENABLE_GROUP, paramGroupName);
-            tx.success();
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void disableGroup(String groupName) {
-        Util.assertHasLength(groupName);
-        try (Transaction tx = graphDb.beginTx()) {
-            Map < String, Object > paramGroupName = new HashMap<>();
-            paramGroupName.put("groupName", groupName);
-            graphDb.execute(QUERY_CYPHER_DISABLE_GROUP, paramGroupName);
-            tx.success();
-        }
-    }   
-
-   
-    /** {@inheritDoc} */
-    @Override
-    public void addToGroup(String uid, String groupName) {
-        assertUID(uid);
-        Util.assertHasLength(groupName);
-        
-        // Create group if not exist
-        
-        // Create relation ship (work with indexes)
-        
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void removeFromGroup(String uid, String groupName) {
-        assertUID(uid);
-        Util.assertHasLength(groupName);
-        // Break Relationship
-        // Delete node if no more feature on it
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Set<String> readAllGroups() {
-        Result result = graphDb.execute(QUERY_READ_GROUPS);
-        Set < String > response = new HashSet<>();
-        while (result.hasNext()) {
-            response.add((String) result.next().get("GROUPNAME"));
-        }
-        return response;
     }
     
     // ---------------------- Only for cache --------------

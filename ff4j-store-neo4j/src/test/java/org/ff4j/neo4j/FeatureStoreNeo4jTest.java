@@ -17,7 +17,6 @@ import org.neo4j.test.TestGraphDatabaseFactory;
  */
 public class FeatureStoreNeo4jTest extends AbstractStoreJUnitTest implements FF4jNeo4jConstants {
 
-
     /** DataBase instance. */
     protected static GraphDatabaseService graphDb;
 

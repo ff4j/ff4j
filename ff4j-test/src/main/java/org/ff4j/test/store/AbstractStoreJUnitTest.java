@@ -376,11 +376,11 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
     public void testGrantRoleToFeatureRoleDoesNotExist() throws Exception {
         // Given
         assertFf4j.assertThatFeatureExist(F1);
-        assertFf4j.assertThatFeatureHasNotRole(F1, ROLE_NEW);
+        assertFf4j.assertThatFeatureHasNotRole(F1, "ROLE_XYZ");
         // When
-        testedStore.grantRoleOnFeature(F1, ROLE_NEW);
+        testedStore.grantRoleOnFeature(F1, "ROLE_XYZ");
         // Then
-        assertFf4j.assertThatFeatureHasRole(F1, ROLE_NEW);
+        assertFf4j.assertThatFeatureHasRole(F1, "ROLE_XYZ");
     }
 
     /**
