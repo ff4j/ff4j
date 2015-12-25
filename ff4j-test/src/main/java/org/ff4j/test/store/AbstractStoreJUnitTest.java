@@ -270,15 +270,15 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
     @Test(expected = FeatureAlreadyExistException.class)
     public void testAddFeatureAlreadyExis() throws Exception {
         // Given
-        assertFf4j.assertThatFeatureDoesNotExist(FEATURE_NEW);
+        assertFf4j.assertThatFeatureDoesNotExist("GOLOGOLO");
         // When (first creation)
-        Feature fp = new Feature(FEATURE_NEW, true, "description2");
+        Feature fp = new Feature("GOLOGOLO", true, "description2");
         testedStore.create(fp);
         // Then (first creation)
-        assertFf4j.assertThatFeatureExist(FEATURE_NEW);
+        assertFf4j.assertThatFeatureExist("GOLOGOLO");
         // When (second creation)
         Set<String> rights = new HashSet<String>(Arrays.asList(new String[] {ROLE_USER}));
-        Feature fp2 = new Feature(FEATURE_NEW, true, G1, "description3", rights);
+        Feature fp2 = new Feature("GOLOGOLO", true, G1, "description3", rights);
         testedStore.create(fp2);
         // Then, expected exception
     }

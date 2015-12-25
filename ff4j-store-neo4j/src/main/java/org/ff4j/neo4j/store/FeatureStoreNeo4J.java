@@ -273,8 +273,12 @@ public class FeatureStoreNeo4J implements FeatureStore, FF4jNeo4jConstants {
             removeFromGroup(fp.getUid(), oldGroupName);
         }
         if (fp.getGroup() != null && fp.getGroup().length() > 0) {
+            // group already existed and has been changed
             if (oldGroupName != null && !oldGroupName.equalsIgnoreCase(fp.getGroup())) {
                 removeFromGroup(fp.getUid(), oldGroupName);
+            }
+            // No group before or a new group, different from before
+            if (oldGroupName == null || !oldGroupName.equalsIgnoreCase(fp.getGroup())) {
                 addToGroup(fp.getUid(), fp.getGroup());
             }
         }
@@ -368,6 +372,9 @@ public class FeatureStoreNeo4J implements FeatureStore, FF4jNeo4jConstants {
                first = false;
             }
             cypherUpdate.append("]");
+        } else {
+            // AS role is null
+            cypherUpdate.append(", f.roles = []");
         }
         cypherUpdate.append(";");
         return cypherUpdate.toString();
@@ -481,6 +488,7 @@ public class FeatureStoreNeo4J implements FeatureStore, FF4jNeo4jConstants {
                 tx.success();
             }
         }
+        
         
         // Create relation ship (work with indexes)
         try (Transaction tx = graphDb.beginTx()) {
@@ -617,7 +625,7 @@ public class FeatureStoreNeo4J implements FeatureStore, FF4jNeo4jConstants {
             Result result = graphDb.execute(QUERY_CYPHER_COUNT_FEATURE_OF_GROUP, paramGroupName);
             if (result.hasNext()) {
                 long nbFeature = (long) result.next().get(QUERY_CYPHER_ALIAS);
-                if (nbFeature == 1) {
+                if (nbFeature == 0) {
                     // This is the last feature of this Group => delete the GROUP
                     graphDb.execute(QUERY_CYPHER_DELETE_GROUP, paramGroupName );
                 }

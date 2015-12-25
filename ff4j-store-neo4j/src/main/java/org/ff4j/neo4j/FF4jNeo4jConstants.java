@@ -17,9 +17,8 @@ public interface FF4jNeo4jConstants {
     /** Cypher query. */
     String QUERY_CYPHER_ADDTO_GROUP = 
             "MATCH (f:" + FF4jNeo4jLabels.FF4J_FEATURE + "  {uid: {uid} } ), " + 
-            "(p:" + FF4jNeo4jLabels.FF4J_FEATURE_GROUP + " {name: {groupName} })" + 
+            "(g:" + FF4jNeo4jLabels.FF4J_FEATURE_GROUP + " {name: {groupName} }) " + 
             "CREATE (f)-[:MEMBER_OF]->(g);";
-   
     
     // -------------------------------------------------------
     // --------------------- Read ----------------------------
@@ -143,11 +142,11 @@ public interface FF4jNeo4jConstants {
     
     /** Cypher query. */
     String QUERY_CYPHER_REMOVEFROMGROUP = 
-            "MATCH (f:" + FF4jNeo4jLabels.FF4J_FEATURE + " {{uid: {uid} })-[a:MEMBER_OF]->() DELETE a;";
+            "MATCH (f:" + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: {uid} })-[a:MEMBER_OF]->() DELETE a;";
     
     /** Cypher query. */
     String QUERY_CYPHER_DELETE_GROUP = 
-            "MATCH (g:" + FF4jNeo4jLabels.FF4J_FEATURE_GROUP + " {{name: {groupName} }) DETACH DELETE g;";
+            "MATCH (g:" + FF4jNeo4jLabels.FF4J_FEATURE_GROUP + " { name: {groupName} }) DETACH DELETE g;";
    
     // -------------------------------------------------------
     // --------------------- Attributes  ---------------------  
