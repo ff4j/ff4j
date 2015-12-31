@@ -64,7 +64,7 @@ public abstract class AbstractWebResourceTestIT extends JerseyTest implements Te
     protected ObjectMapper jacksonMapper;
     
     @BeforeClass
-    public void initFF4J() {
+    public static void initFF4J() {
         FeatureStoreHttpTestIT.ff4j = new FF4j(TEST_FEATURES_FILE);
     }
     
