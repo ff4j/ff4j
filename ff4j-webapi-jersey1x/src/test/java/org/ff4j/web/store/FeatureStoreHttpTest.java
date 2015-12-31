@@ -1,5 +1,7 @@
 package org.ff4j.web.store;
 
+import org.ff4j.FF4j;
+
 /*
  * #%L
  * ff4j-web
@@ -45,10 +47,12 @@ public class FeatureStoreHttpTest extends AbstractStoreJUnitTest {
      */
     @BeforeClass
     public static void initializingInMemory() throws Exception {
+        // Reinit FF4J
+        FeatureStoreHttpTestIT.ff4j = new FF4j(TEST_FEATURES_FILE);
         jt = new FeatureStoreHttpTestIT();
         jt.setUp();
     }
-
+    
     /** {@inheritDoc} */
     @Override
     protected FeatureStore initStore() {

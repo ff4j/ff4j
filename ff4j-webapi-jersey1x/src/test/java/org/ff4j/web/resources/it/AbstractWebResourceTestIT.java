@@ -58,7 +58,7 @@ public abstract class AbstractWebResourceTestIT extends JerseyTest implements Te
     protected static AssertFf4j assertFF4J;
 
     /** Current ff4j. */
-    protected static FF4j ff4j = new FF4j(TEST_FEATURES_FILE);
+    public static FF4j ff4j = new FF4j(TEST_FEATURES_FILE);
     
     /** Jackson serializer. */
     protected ObjectMapper jacksonMapper;

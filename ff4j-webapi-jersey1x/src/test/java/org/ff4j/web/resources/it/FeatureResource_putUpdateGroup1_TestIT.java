@@ -44,12 +44,12 @@ public class FeatureResource_putUpdateGroup1_TestIT extends AbstractWebResourceT
     @Test
     public void testPut_upsertUpdateAddGroup() throws Exception {
         // Given
-        assertFF4J.assertThatFeatureExist(F1);
-        assertFF4J.assertThatFeatureNotInGroup(F1, "g2");
+        assertFF4J.assertThatFeatureExist(AWESOME);
+        assertFF4J.assertThatFeatureNotInGroup(AWESOME, "g2");
         // When
-        Feature f1 = ff4j.getFeature(F1);
+        Feature f1 = ff4j.getFeature(AWESOME);
         f1.setGroup("g2");
-        WebResource webResFeat = resourceFeatures().path(F1);
+        WebResource webResFeat = resourceFeatures().path(AWESOME);
         ClientResponse res = webResFeat.//
                 type(MediaType.APPLICATION_JSON).//
                 put(ClientResponse.class,  toJson(new FeatureApiBean(f1)));
@@ -58,7 +58,7 @@ public class FeatureResource_putUpdateGroup1_TestIT extends AbstractWebResourceT
         Assert.assertEquals(Status.NO_CONTENT.getStatusCode(), res.getStatus());
         // Then Object Entity : null
         // Then
-        assertFF4J.assertThatFeatureIsInGroup(F1, "g2");
+        assertFF4J.assertThatFeatureIsInGroup(AWESOME, "g2");
     }
 
 

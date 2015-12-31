@@ -80,6 +80,9 @@
 					<role name="ADMINISTRATOR" />
 					<role name="BETA-TESTER" />
 				</security>
+				<flipstrategy class="org.ff4j.strategy.el.ExpressionFlipStrategy">
+					<param name="expression" value="third | second" />
+				</flipstrategy>
 			</feature>
 		</feature-group>
 	

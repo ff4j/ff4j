@@ -22,8 +22,6 @@ package org.ff4j.web.resources.it;
 
 import javax.ws.rs.core.Response.Status;
 
-import org.ff4j.core.Feature;
-import org.ff4j.strategy.el.ExpressionFlipStrategy;
 import org.ff4j.web.api.resources.FeatureResource;
 import org.junit.Assert;
 import org.junit.Test;

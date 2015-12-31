@@ -33,10 +33,12 @@ import org.ff4j.web.api.FF4jJacksonMapper;
 import org.ff4j.web.api.resources.FF4jResource;
 import org.ff4j.web.api.test.SampleFF4jJersey2Application;
 import org.ff4j.web.store.FeatureStoreHttp;
+import org.ff4j.web.store.FeatureStoreHttpTestIT;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.Before;
+import org.junit.BeforeClass;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -60,6 +62,11 @@ public abstract class AbstractWebResourceTestIT extends JerseyTest implements Te
     
     /** Jackson serializer. */
     protected ObjectMapper jacksonMapper;
+    
+    @BeforeClass
+    public void initFF4J() {
+        FeatureStoreHttpTestIT.ff4j = new FF4j(TEST_FEATURES_FILE);
+    }
     
     /** {@inheritDoc} */
     @Override

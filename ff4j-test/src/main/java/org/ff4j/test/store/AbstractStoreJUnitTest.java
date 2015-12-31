@@ -40,7 +40,7 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
 
     /** Initialize */
     protected FF4j ff4j = null;
-
+    
     /** Tested Store. */
     protected FeatureStore testedStore;
 
@@ -971,11 +971,14 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
     public void testUpdateRemoveFlippingStrategy() {
         // Given
         assertFf4j.assertThatFeatureExist(F3);
+        Feature myFeature = ff4j.getFeatureStore().read(F3);
+        myFeature.setFlippingStrategy(new PonderationStrategy(0.1));
+        testedStore.update(myFeature);
         assertFf4j.assertThatFeatureHasFlippingStrategy(F3);
         // When
-        Feature myFeature = ff4j.getFeatureStore().read(F3);
-        myFeature.setFlippingStrategy(null);
-        testedStore.update(myFeature);
+        Feature myFeature2 = ff4j.getFeatureStore().read(F3);
+        myFeature2.setFlippingStrategy(null);
+        testedStore.update(myFeature2);
         // Then
         assertFf4j.assertThatFeatureDoesNotHaveFlippingStrategy(F3);
     }
