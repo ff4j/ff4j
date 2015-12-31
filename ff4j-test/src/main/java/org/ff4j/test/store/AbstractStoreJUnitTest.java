@@ -1012,6 +1012,9 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
      */
     @Test
     public void testUpdateAddProperty() {
+        // Given
+        assertFf4j.assertThatFeatureExist(F2);
+        
     }
     
     /**
