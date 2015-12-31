@@ -1,6 +1,7 @@
 package org.ff4j.property.store;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.ff4j.property.AbstractProperty;
 
@@ -94,5 +95,29 @@ public interface PropertyStore {
      *      all properties from store
      */
     Map<String, AbstractProperty<?> > readAllProperties();
-
+    
+    /**
+     * List all property names.
+     *
+     * @return
+     */
+    Set < String > listPropertyNames();
+    
+    /**
+     * Tell if a store is empty
+     * 
+     * @return
+     *      target store
+     */
+    boolean isEmpty();
+    
+    /**
+     * Empty current property store.
+     *
+     */
+    void clear();
+    
+    
+    
+    
 }

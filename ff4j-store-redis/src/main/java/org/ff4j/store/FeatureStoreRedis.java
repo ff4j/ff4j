@@ -295,27 +295,16 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
         groups.remove(null);
         return groups;
     }
-
-    // -------- Overrided in cache proxy --------------
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isCached() {
-        return false;
-    }
+    
 
     /** {@inheritDoc} */
     @Override
-    public String getCacheProvider() {
-        return null;
+    public void clear() {
+        Set < String > myKeys = getJedis().keys(KEY_FEATURE + "*");
+        getJedis().del(myKeys.toArray(new String[0]));
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public String getCachedTargetStore() {
-        return null;
-    }
-
+    
     /**
      * Getter accessor for attribute 'timeToLive'.
      *

@@ -303,63 +303,11 @@ public class FeatureStoreMongoCollection extends AbstractFeatureStore implements
         Document nGroupName = BUILDER.getGroupName("");
         collection.updateOne(target, new Document(MONGO_SET, nGroupName));
     }
-
+    
     /** {@inheritDoc} */
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("{");
-        sb.append("\"type\":\"" + this.getClass().getCanonicalName() + "\"");
-        sb.append("\"mongodb\":\"" + this.collection.getNamespace().getFullName() + "\"");
-        sb.append(",\"cached\":" + this.isCached());
-        if (this.isCached()) {
-            sb.append(",\"cacheProvider\":\"" + this.getCacheProvider() + "\"");
-            sb.append(",\"cacheStore\":\"" + this.getCachedTargetStore() + "\"");
-        }
-        Set<String> myFeatures = readAll().keySet();
-        sb.append(",\"numberOfFeatures\":" + myFeatures.size());
-        sb.append(",\"features\":[");
-        boolean first = true;
-        for (String myFeature : myFeatures) {
-            if (!first) {
-                sb.append(",");
-            }
-            first = false;
-            sb.append("\"" + myFeature + "\"");
-        }
-        Set<String> myGroups = readAllGroups();
-        sb.append("],\"numberOfGroups\":" + myGroups.size());
-        sb.append(",\"groups\":[");
-        first = true;
-        for (String myGroup : myGroups) {
-            if (!first) {
-                sb.append(",");
-            }
-            first = false;
-            sb.append("\"" + myGroup + "\"");
-        }
-        sb.append("]");
-        sb.append("}");
-        return sb.toString();
-    }
-
-    // -------- Overrided in cache proxy --------------
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isCached() {
-        return false;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getCacheProvider() {
-        return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getCachedTargetStore() {
-        return null;
+    public void clear() {
+        collection.deleteMany(new Document());
     }
 
 }

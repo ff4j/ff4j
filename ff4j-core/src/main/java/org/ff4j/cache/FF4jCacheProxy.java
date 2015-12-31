@@ -252,19 +252,16 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
     // ------------ Cache related method --------------------
 
     /** {@inheritDoc} */
-    @Override
     public boolean isCached() {
         return true;
     }
 
     /** {@inheritDoc} */
-    @Override
     public String getCacheProvider() {
         return cacheManager.getCacheProviderName();
     }
 
     /** {@inheritDoc} */
-    @Override
     public String getCachedTargetStore() {
         return getTargetFeatureStore().getClass().getCanonicalName();
     }  
@@ -340,6 +337,32 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
         // even is not present, evict name failed
         getCacheManager().evictProperty(name);
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public boolean isEmpty() {
+        Set < String > pNames = listPropertyNames();
+        return (pNames != null && pNames.size() > 0);
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> listPropertyNames() {
+        
+        return null;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void clear() {
+        // Cache Operations : As modification, flush cache for this
+        getCacheManager().clearProperties();
+        getTargetPropertyStore().clear();
+        
+        // Cache Operations : As modification, flush cache for this
+        getCacheManager().clearFeatures();
+        getTargetFeatureStore().clear();
+    }
 
     /**
      * Setter accessor for attribute 'targetFeatureStore'.
@@ -358,5 +381,7 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
     public void setTargetPropertyStore(PropertyStore targetPropertyStore) {
         this.targetPropertyStore = targetPropertyStore;
     }
+
+    
 
 }

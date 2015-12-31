@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.ff4j.core.FlippingStrategy;
-import org.ff4j.utils.ParameterUtils;
+import org.ff4j.utils.MappingUtil;
 
 /**
  * Super class for {@link FlippingStrategy} implementation with utilities.
@@ -67,7 +67,7 @@ public abstract class AbstractFlipStrategy implements FlippingStrategy {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return this.getType() + "," + ParameterUtils.fromMap(getInitParams());
+        return this.getType() + "," + MappingUtil.fromMap(getInitParams());
     }
 
     /**

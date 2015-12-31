@@ -26,7 +26,7 @@ import java.sql.SQLException;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureAccessException;
-import org.ff4j.utils.ParameterUtils;
+import org.ff4j.utils.MappingUtil;
 
 /**
  * Map resultset into {@link Feature}
@@ -55,7 +55,7 @@ public class JdbcFeatureMapper implements JdbcStoreConstants {
         if (strategy != null && !"".equals(strategy)) {
             try {
                 FlippingStrategy flipStrategy = (FlippingStrategy) Class.forName(strategy).newInstance();
-                flipStrategy.init(featUid, ParameterUtils.toMap(rs.getString(COL_FEAT_EXPRESSION)));
+                flipStrategy.init(featUid, MappingUtil.toMap(rs.getString(COL_FEAT_EXPRESSION)));
                 f.setFlippingStrategy(flipStrategy);
             } catch (InstantiationException ie) {
                 throw new FeatureAccessException("Cannot instantiate Strategy, no default constructor available", ie);

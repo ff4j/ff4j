@@ -22,6 +22,8 @@ package org.ff4j.web.resources.it;
 
 import javax.ws.rs.core.Response.Status;
 
+import org.ff4j.core.Feature;
+import org.ff4j.strategy.el.ExpressionFlipStrategy;
 import org.ff4j.web.api.resources.FeatureResource;
 import org.junit.Assert;
 import org.junit.Test;
@@ -43,6 +45,7 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
     public void testPost_enable() {
         // Given
         assertFF4J.assertThatFeatureExist(F2);
+        ff4j.getFeatureStore().disable(F2);
         assertFF4J.assertThatFeatureIsDisabled(F2);
         // When
         WebResource wResf4 = resourceFeatures().path(F2);
@@ -77,15 +80,15 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
     @Test
     public void testPost_disable() {
         // Given
-        assertFF4J.assertThatFeatureExist(F4);
-        assertFF4J.assertThatFeatureIsEnabled(F4);
+        assertFF4J.assertThatFeatureExist(AWESOME);
+        assertFF4J.assertThatFeatureIsEnabled(AWESOME);
         // When
-        WebResource wResf4 = resourceFeatures().path(F4);
+        WebResource wResf4 = resourceFeatures().path(AWESOME);
         ClientResponse resHttp = wResf4.path(OPERATION_DISABLE).post(ClientResponse.class);
         // Then, HTTPResponse
         Assert.assertEquals("Expected status is 204", Status.NO_CONTENT.getStatusCode(), resHttp.getStatus());
         // Then, Entity Object
-        assertFF4J.assertThatFeatureIsDisabled(F4);
+        assertFF4J.assertThatFeatureIsDisabled(AWESOME);
     }
 
     /**

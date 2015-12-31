@@ -4,8 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -15,7 +17,6 @@ import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.AbstractProperty;
 import org.ff4j.store.JdbcStoreConstants;
 import org.ff4j.utils.Util;
-
 /*
  * #%L
  * ff4j-core
@@ -223,6 +224,41 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
         }
         return properties;
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> listPropertyNames() {
+        Set < String > propertyNames = new HashSet<String>();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = buildStatement(SQL_PROPERTY_READNAMES);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+               propertyNames.add(rs.getString(COL_PROPERTY_ID));
+            }
+        } catch (SQLException sqlEX) {
+            throw new FeatureAccessException("Cannot read properties within database, SQL ERROR", sqlEX);
+        } finally {
+            closeResultSet(rs);
+            closeStatement(ps);
+        }
+        return propertyNames;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void clear() {
+        PreparedStatement ps = null;
+        try {
+            ps = buildStatement(SQL_PROPERTY_DELETE_ALL);
+            ps.executeUpdate();
+        } catch (SQLException sqlEX) {
+            throw new FeatureAccessException("Cannot clear properties table, SQL ERROR", sqlEX);
+        } finally {
+            closeStatement(ps);
+        }
+    }
 
     /**
      * Getter accessor for attribute 'dataSource'.
@@ -299,5 +335,6 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
             throw new FeatureAccessException("An error occur when closing statement", e);
         }
     }
+
 
 }

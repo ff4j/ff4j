@@ -33,8 +33,8 @@
 			
 			<custom-properties>
 			  <property name="ppint" 	  type="org.ff4j.property.PropertyInt" value="12"   />
-			  <property name="ppdouble"   value="12.5" />
-			  <property name="ppboolean"  value="true" />
+			  <property name="ppdouble"   type="double"  value="12.5" />
+			  <property name="ppboolean"  type="boolean" value="true" />
 			  <property name="ppstring"   value="hello" />
 			  <property name="ppListInt"  value="12,13,14" />
 			  <property name="myLogLevel" value="DEBUG" type="org.ff4j.property.PropertyLogLevel" />

@@ -46,6 +46,11 @@ public class ExpressionFlipStrategy extends AbstractFlipStrategy implements Seri
      * Default constructor using introspection.
      */
     public ExpressionFlipStrategy() {}
+    
+    public ExpressionFlipStrategy(String featureName, String expression) {
+        getInitParams().put(PARAM_EXPRESSION, expression);
+        mapOfValue.put(featureName, expression);
+    }
 
     /** {@inheritDoc} */
     @Override

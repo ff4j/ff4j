@@ -1,10 +1,14 @@
-package org.ff4j.jmx.store;
+package org.ff4j.jmx.gateway;
 
 import java.util.Map;
 import java.util.Set;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jmx.export.annotation.ManagedOperation;
+import org.springframework.jmx.export.annotation.ManagedOperationParameter;
+import org.springframework.jmx.export.annotation.ManagedOperationParameters;
 
 /*
  * #%L
@@ -26,55 +30,69 @@ import org.ff4j.core.FeatureStore;
  * #L%
  */
 
-public class FeatureStoreJmx implements FeatureStore {
+/**
+ * Allow to process features logic through JMX.
+ *
+ * @author Cedrick Lunven (@clunven)</a>
+ */
+//@Component
+//@ManagedResource(objectName = "org.ff4j.jmx:type=FeatureStoreJmx")
+public class FeatureStoreJmxGateway implements FeatureStore {
 
+    @Autowired
+    private FeatureStore internalStore;
+    
+    /** {@inheritDoc} */
     @Override
-    public void enable(String featureID) {
-        // TODO Auto-generated method stub
-        
+    @ManagedOperation(description = "Enable feature from its identifier")
+    @ManagedOperationParameters({@ManagedOperationParameter(name = "feature_UID", description = "Identifier of feature to enable")})
+    public void enable(String feature_UID) {
+        internalStore.enable(feature_UID);
     }
 
+    /** {@inheritDoc} */
     @Override
-    public void disable(String fId) {
-        // TODO Auto-generated method stub
-        
+    @ManagedOperation(description = "Disable feature from its identifier")
+    @ManagedOperationParameters({@ManagedOperationParameter(name = "feature_UID", description = "Identifier of feature to disable")})
+    public void disable(String feature_UID) {
+        internalStore.disable(feature_UID);
     }
 
+    /** {@inheritDoc} */
     @Override
-    public boolean exist(String featId) {
-        // TODO Auto-generated method stub
-        return false;
+    @ManagedOperation(description = "Test if a feature exists based on its identifier")
+    @ManagedOperationParameters({@ManagedOperationParameter(name = "feature_UID", description = "Identifier of feature to test")})
+    public boolean exist(String feature_UID) {
+        return internalStore.exist(feature_UID);
     }
 
+    /** {@inheritDoc} */
     @Override
+    @ManagedOperation(description = "Create Feature")
+    @ManagedOperationParameters({@ManagedOperationParameter(name = "feature_UID", description = "Identifier of feature to enable")})
     public void create(Feature fp) {
-        // TODO Auto-generated method stub
-        
+        internalStore.create(fp);
     }
 
+    /** {@inheritDoc} */
     @Override
-    public Feature read(String featureUid) {
-        // TODO Auto-generated method stub
-        return null;
+    @ManagedOperation(description = "Disable feature from its identifier")
+    @ManagedOperationParameters({@ManagedOperationParameter(name = "feature_UID", description = "Unique Identifier of feature")})
+    public Feature read(String feature_UID) {
+        return internalStore.read(feature_UID);
     }
 
     @Override
     public Map<String, Feature> readAll() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void delete(String fpId) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
-    public void update(Feature fp) {
-        // TODO Auto-generated method stub
-        
-    }
+    public void update(Feature fp) {    }
 
     @Override
     public void grantRoleOnFeature(String flipId, String roleName) {
@@ -131,23 +149,8 @@ public class FeatureStoreJmx implements FeatureStore {
     }
 
     @Override
-    public boolean isCached() {
+    public void clear() {
         // TODO Auto-generated method stub
-        return false;
+        
     }
-
-    @Override
-    public String getCacheProvider() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String getCachedTargetStore() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    // Todo publish a store as Jmx MBEAN to operate remotely
-
 }

@@ -129,6 +129,9 @@ public class AssertFf4j {
      * @return current object
      */
     public AssertFf4j assertThatStoreHasSize(int expectedNumber) {
+        if (ff4j.getFeatureStore().readAll().size() != expectedNumber) {
+            System.out.println(ff4j.getFeatureStore().readAll().keySet());
+        }
         Assert.assertEquals(expectedNumber, ff4j.getFeatureStore().readAll().size());
         return this;
     }

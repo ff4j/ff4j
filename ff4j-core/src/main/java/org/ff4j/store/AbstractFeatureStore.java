@@ -24,10 +24,11 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Set;
 
-import org.ff4j.conf.XmlConfiguration;
+import org.ff4j.conf.XmlConfig;
 import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.utils.JsonUtils;
 
 /**
  * SuperClass for stores.
@@ -53,7 +54,7 @@ public abstract class AbstractFeatureStore implements FeatureStore {
             throw new IllegalArgumentException("File " + xmlConfFile + " could not be read, please check path and rights");
         }
         // Use the Feature Parser
-        XmlConfiguration conf = new XmlParser().parseConfigurationFile(xmlIS);
+        XmlConfig conf = new XmlParser().parseConfigurationFile(xmlIS);
         Map < String, Feature > features = conf.getFeatures();
 
         // Override existing configuration within database
@@ -71,12 +72,7 @@ public abstract class AbstractFeatureStore implements FeatureStore {
     public String toJson() {
         StringBuilder sb = new StringBuilder("{");
         sb.append("\"type\":\"" + this.getClass().getCanonicalName() + "\"");
-        sb.append(",\"cached\":" + this.isCached());
-        if (this.isCached()) {
-            sb.append(",\"cacheProvider\":\"" + this.getCacheProvider() + "\"");
-            sb.append(",\"cacheStore\":\"" + this.getCachedTargetStore() + "\"");
-        }
-
+        sb.append(JsonUtils.cacheJson(this));
         Set<String> myFeatures = readAll().keySet();
         sb.append(",\"numberOfFeatures\":" + myFeatures.size());
         sb.append(",\"features\":[");
@@ -102,6 +98,12 @@ public abstract class AbstractFeatureStore implements FeatureStore {
         sb.append("]");
         sb.append("}");
         return sb.toString();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return toJson();
     }
     
 }

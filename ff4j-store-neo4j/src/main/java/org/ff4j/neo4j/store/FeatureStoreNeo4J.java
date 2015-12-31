@@ -633,24 +633,10 @@ public class FeatureStoreNeo4J implements FeatureStore, FF4jNeo4jConstants {
         }
     }
     
-    // ---------------------- Only for cache --------------
-
     /** {@inheritDoc} */
     @Override
-    public boolean isCached() {
-        return false;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getCacheProvider() {
-        return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getCachedTargetStore() {
-        return null;
+    public void clear() {
+        // Remove each feature one by one to remove all
     }
 
     /**

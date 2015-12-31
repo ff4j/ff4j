@@ -524,13 +524,15 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
     @Test
     public void testUpdateFlipLessAutorisation() {
         // Given
-        assertFf4j.assertThatFeatureExist(F1);
-        assertFf4j.assertThatFeatureHasRole(F1, ROLE_USER);
+        assertFf4j.assertThatFeatureExist(F2);
+        assertFf4j.assertThatFeatureHasRole(F2, ROLE_USER);
         // When
-        testedStore.update(new Feature(F1, false, null));
+        testedStore.update(new Feature(F2, false, null));
         // Then
-        assertFf4j.assertThatFeatureHasNotRole(F1, ROLE_USER);
+        assertFf4j.assertThatFeatureHasNotRole(F2, ROLE_USER);
     }
+    
+   
 
     /**
      * TDD.
@@ -945,6 +947,92 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
         Assert.assertEquals(2, groups.size());
         Assert.assertTrue(groups.contains(G0));
         Assert.assertTrue(groups.contains(G1));
+    }
+    
+    /**
+     * TDD.
+     */
+    @Test
+    public void testUpdateEditFlippingStrategy() {
+        // Given
+        assertFf4j.assertThatFeatureExist(F3);
+        // When
+        Feature myFeature = ff4j.getFeatureStore().read(F3);
+        myFeature.setFlippingStrategy(new PonderationStrategy(0.1));
+        testedStore.update(myFeature);
+        // Then
+        assertFf4j.assertThatFeatureHasFlippingStrategy(F3);
+    }
+    
+    /**
+     * TDD.
+     */
+    @Test
+    public void testUpdateRemoveFlippingStrategy() {
+        // Given
+        assertFf4j.assertThatFeatureExist(F3);
+        assertFf4j.assertThatFeatureHasFlippingStrategy(F3);
+        // When
+        Feature myFeature = ff4j.getFeatureStore().read(F3);
+        myFeature.setFlippingStrategy(null);
+        testedStore.update(myFeature);
+        // Then
+        assertFf4j.assertThatFeatureDoesNotHaveFlippingStrategy(F3);
+    }
+    
+    /**
+     * TDD.
+     */
+    @Test
+    public void testUpdateAddFlippingStrategy() {
+        // Given
+        assertFf4j.assertThatFeatureExist(F2);
+        assertFf4j.assertThatFeatureDoesNotHaveFlippingStrategy(F2);
+        // When
+        Feature myFeature = ff4j.getFeatureStore().read(F2);
+        myFeature.setFlippingStrategy(new PonderationStrategy(0.1));
+        testedStore.update(myFeature);
+        // Then
+        assertFf4j.assertThatFeatureHasFlippingStrategy(F2);
+    }
+    
+    /**
+     * TDD.
+     */
+    @Test
+    public void testUpdateRemoveProperty() {
+        
+    }
+    
+    /**
+     * TDD.
+     */
+    @Test
+    public void testUpdateAddProperty() {
+    }
+    
+    /**
+     * TDD.
+     */
+    @Test
+    public void testUpdateEditPropertyValue() {
+        
+    }
+    
+    /**
+     * TDD.
+     */
+    @Test
+    public void testUpdateEditPropertyAddFixedValues() {
+        
+    }
+    
+    /**
+     * TDD.
+     */
+    @Test
+    public void testUpdateEditPropertyRemoveFixedValues() {
+        
     }
 
 }

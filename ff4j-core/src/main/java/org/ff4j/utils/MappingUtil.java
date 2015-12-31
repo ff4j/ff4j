@@ -1,5 +1,7 @@
 package org.ff4j.utils;
 
+import java.util.HashMap;
+
 /*
  * #%L
  * ff4j-core
@@ -24,12 +26,26 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.ff4j.property.Property;
+import org.ff4j.property.PropertyBigDecimal;
+import org.ff4j.property.PropertyBigInteger;
+import org.ff4j.property.PropertyBoolean;
+import org.ff4j.property.PropertyByte;
+import org.ff4j.property.PropertyCalendar;
+import org.ff4j.property.PropertyDate;
+import org.ff4j.property.PropertyDouble;
+import org.ff4j.property.PropertyFloat;
+import org.ff4j.property.PropertyInt;
+import org.ff4j.property.PropertyLogLevel;
+import org.ff4j.property.PropertyLong;
+import org.ff4j.property.PropertyShort;
+
 /**
  * Utility class to work with parameters.
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class ParameterUtils {
+public class MappingUtil {
 
     /** Separator to propose parameters. */
     private static final String SEPARATOR = "&";
@@ -37,7 +53,44 @@ public class ParameterUtils {
     /**
      * Hiding default constructor for utility class.
      */
-    private ParameterUtils() {}
+    private MappingUtil() {}
+    
+    /** Substitution in XML or any store. */
+    private static Map < String, String > PROPERTY_TYPES;
+    
+    /**
+     * Initialisation of substitution types
+     */
+    static {
+        PROPERTY_TYPES = new HashMap<String, String >();
+        PROPERTY_TYPES.put("byte",       PropertyByte.class.getName());
+        PROPERTY_TYPES.put("boolean",    PropertyBoolean.class.getName());
+        PROPERTY_TYPES.put("bigdecimal", PropertyBigDecimal.class.getName());
+        PROPERTY_TYPES.put("biginteger", PropertyBigInteger.class.getName());
+        PROPERTY_TYPES.put("calendar",   PropertyCalendar.class.getName());
+        PROPERTY_TYPES.put("date",       PropertyDate.class.getName());
+        PROPERTY_TYPES.put("double",     PropertyDouble.class.getName());
+        PROPERTY_TYPES.put("float",      PropertyFloat.class.getName());
+        PROPERTY_TYPES.put("int",        PropertyInt.class.getName());
+        PROPERTY_TYPES.put("loglevel",   PropertyLogLevel.class.getName());
+        PROPERTY_TYPES.put("short",      PropertyShort.class.getName());
+        PROPERTY_TYPES.put("long",       PropertyLong.class.getName());
+        PROPERTY_TYPES.put("string",     Property.class.getName());
+    }
+    
+    /**
+     * Substitution of primitive into PropertyXXX.
+     * Allows to TODO
+     * @param pType
+     * @return
+     */
+    public static String mapPropertyType(String pType) {
+        if (pType == null) return null;
+        if (PROPERTY_TYPES.containsKey(pType.toLowerCase())) {
+           return PROPERTY_TYPES.get(pType.toLowerCase());
+        }
+        return pType;
+    }
 
     /**
      * Utility Method to convert Parameter Map into String.

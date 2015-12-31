@@ -27,7 +27,7 @@ import org.bson.Document;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureAccessException;
-import org.ff4j.utils.ParameterUtils;
+import org.ff4j.utils.MappingUtil;
 
 /**
  * MApping from Mongo document to Feature.
@@ -67,7 +67,7 @@ public final class FeatureDocumentMapper implements FeatureStoreMongoConstants {
         String expressionColumn = null;
         if (feature.getFlippingStrategy() != null) {
             strategyColumn = feature.getFlippingStrategy().getClass().getCanonicalName();
-            expressionColumn = ParameterUtils.fromMap(feature.getFlippingStrategy().getInitParams());
+            expressionColumn = MappingUtil.fromMap(feature.getFlippingStrategy().getInitParams());
         }
         return new FeatureDocumentBuilder().addFeatUid(feature.getUid()).//
                 addEnable(feature.isEnable()).//
@@ -108,7 +108,7 @@ public final class FeatureDocumentMapper implements FeatureStoreMongoConstants {
         if (strategy != null && !"".equals(strategy)) {
             try {
                 FlippingStrategy flipStrategy = (FlippingStrategy) Class.forName(strategy).newInstance();
-                flipStrategy.init(featUid, ParameterUtils.toMap( document.getString(EXPRESSION)));
+                flipStrategy.init(featUid, MappingUtil.toMap( document.getString(EXPRESSION)));
                 return flipStrategy;
             } catch (InstantiationException ie) {
                 throw new FeatureAccessException("Cannot instantiate Strategy, no default constructor available", ie);

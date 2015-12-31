@@ -46,7 +46,8 @@ import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.store.JdbcPropertyMapper;
-import org.ff4j.utils.ParameterUtils;
+import org.ff4j.utils.JsonUtils;
+import org.ff4j.utils.MappingUtil;
 import org.ff4j.utils.Util;
 
 ;/**
@@ -224,7 +225,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
             String expressionColumn = null;
             if (fp.getFlippingStrategy() != null) {
                 strategyColumn   = fp.getFlippingStrategy().getClass().getCanonicalName();
-                expressionColumn = ParameterUtils.fromMap(fp.getFlippingStrategy().getInitParams());
+                expressionColumn = MappingUtil.fromMap(fp.getFlippingStrategy().getInitParams());
             }
             ps.setString(4, strategyColumn);
             ps.setString(5, expressionColumn);
@@ -437,7 +438,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
         String fExpression = null;
         if (fp.getFlippingStrategy() != null) {
             fStrategy = fp.getFlippingStrategy().getClass().getCanonicalName();
-            fExpression = ParameterUtils.fromMap(fp.getFlippingStrategy().getInitParams());
+            fExpression = MappingUtil.fromMap(fp.getFlippingStrategy().getInitParams());
         }
         update(SQL_UPDATE, enable, fp.getDescription(), fStrategy, fExpression, fp.getGroup(), fp.getUid());
 
@@ -480,6 +481,31 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
         if (fp.getCustomProperties() != null && !fp.getCustomProperties().isEmpty()) {
             createCustomProperties(fp.getUid(), fp.getCustomProperties().values());
         }   
+    }
+
+    @Override
+    public void clear() {
+        Connection sqlConn = null;
+        PreparedStatement ps = null;
+        try {
+            
+            sqlConn = dataSource.getConnection();
+            
+            ps = sqlConn.prepareStatement(SQL_DELETE_ALL_CUSTOMPROPERTIES);
+            ps.executeUpdate();
+            
+            ps = sqlConn.prepareStatement(SQL_DELETE_ALL_ROLES);
+            ps.executeUpdate();
+            
+            ps = sqlConn.prepareStatement(SQL_DELETE_ALL_FEATURES);
+            ps.executeUpdate();
+            
+        } catch (SQLException sqlEX) {
+            throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
+        } finally {
+            closeStatement(ps);
+            closeConnection(sqlConn);
+        }
     }
     
     /**
@@ -668,11 +694,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
         StringBuilder sb = new StringBuilder("{");
         sb.append("\"type\":\"" + this.getClass().getCanonicalName() + "\"");
         sb.append("\"datasource\":\"" + this.dataSource.getClass() + "\"");
-        sb.append(",\"cached\":" + this.isCached());
-        if (this.isCached()) {
-            sb.append(",\"cacheProvider\":\"" + this.getCacheProvider() + "\"");
-            sb.append(",\"cacheStore\":\"" + this.getCachedTargetStore() + "\"");
-        }
+        sb.append(JsonUtils.cacheJson(this));
         Set<String> myFeatures = readAll().keySet();
         sb.append(",\"numberOfFeatures\":" + myFeatures.size());
         sb.append(",\"features\":[");
@@ -698,26 +720,6 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
         sb.append("]");
         sb.append("}");
         return sb.toString();
-    }
-
-    // -------- Overrided in cache proxy --------------
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isCached() {
-        return false;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getCacheProvider() {
-        return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getCachedTargetStore() {
-        return null;
     }
 
     /**

@@ -31,7 +31,7 @@ import org.ff4j.property.AbstractProperty;
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class XmlConfiguration {
+public class XmlConfig {
     
     /** Dedicated Parsing. */
     private Map <String, Feature > features = new LinkedHashMap<String, Feature>();

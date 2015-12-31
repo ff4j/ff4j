@@ -257,25 +257,13 @@ public class FeatureStoreJCache extends AbstractFeatureStore {
         groups.remove(null);
         return groups;
     }
-
+    
     /** {@inheritDoc} */
     @Override
-    public boolean isCached() {
-        return true;
+    public void clear() {
+        getCacheManager().getFeaturesCache().removeAll();
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getCacheProvider() {
-        return getCacheManager().getCacheProviderName();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getCachedTargetStore() {
-        return getClass().getName();
-    }
-
+    
     /**
      * Getter accessor for attribute 'cacheManager'.
      *
@@ -294,5 +282,5 @@ public class FeatureStoreJCache extends AbstractFeatureStore {
     public void setCacheManager(FF4jJCacheManager cacheManager) {
         this.cacheManager = cacheManager;
     }
-    
+   
 }

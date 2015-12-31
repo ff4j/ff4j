@@ -43,7 +43,7 @@ public abstract class AbstractPropertyMultiValued < T, C extends Collection< T>>
     private static final long serialVersionUID = 1L;
     
     /** required if should be splip. */
-    public String separator = ",";
+    public String listDelimiter = ",";
     
     /**
      * Default constructor.
@@ -91,7 +91,7 @@ public abstract class AbstractPropertyMultiValued < T, C extends Collection< T>>
     @Override
     public C fromString(String v) {
         if (v == null) return null;
-        String[] items = v.split(getSeparator());
+        String[] items = v.split(getListDelimiter());
         return (C) Arrays.asList(items);
     }
     
@@ -111,11 +111,11 @@ public abstract class AbstractPropertyMultiValued < T, C extends Collection< T>>
      * @return
      *       current value of 'separator'
      */
-    public String getSeparator() {
-        if (null == separator) {
-            separator = ",";
+    public String getListDelimiter() {
+        if (null == listDelimiter) {
+            listDelimiter = ",";
         }
-        return separator;
+        return listDelimiter;
     }
 
     /**
@@ -123,8 +123,8 @@ public abstract class AbstractPropertyMultiValued < T, C extends Collection< T>>
      * @param separator
      * 		new value for 'separator '
      */
-    public void setSeparator(String separator) {
-        this.separator = separator;
+    public void setListDelimiter(String separator) {
+        this.listDelimiter = separator;
     }
 
     /** {@inheritDoc} */

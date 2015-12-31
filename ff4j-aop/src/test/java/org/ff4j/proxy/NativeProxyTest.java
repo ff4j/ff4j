@@ -1,10 +1,10 @@
-package org.ff4j.test.parser;
+package org.ff4j.proxy;
 
 /*
  * #%L
- * ff4j-core
+ * ff4j-aop
  * %%
- * Copyright (C) 2013 Ff4J
+ * Copyright (C) 2013 - 2015 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,23 +20,20 @@ package org.ff4j.test.parser;
  * #L%
  */
 
-import java.lang.reflect.Constructor;
 
-import org.ff4j.utils.MappingUtil;
+import java.lang.reflect.Proxy;
+
+import org.junit.Ignore;
 import org.junit.Test;
 
-/**
- * Check Constructor
- *
- * @author Cedrick Lunven (@clunven)
- */
-public class ParameterUtilsTest {
-
+public class NativeProxyTest {
+    
     @Test
-    public void testConstructorParameterUtils() throws Exception {
-        Constructor<MappingUtil> ce = MappingUtil.class.getDeclaredConstructor();
-        ce.setAccessible(true);
-        ce.newInstance();
+    @Ignore
+    public void testDynamicProxy1() {
+        HiInvocationHandler hiInvocHandlr = new HiInvocationHandler();
+        HiService proxy = (HiService) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[] { HiService.class }, hiInvocHandlr);
+        proxy.hi();
     }
 
 }

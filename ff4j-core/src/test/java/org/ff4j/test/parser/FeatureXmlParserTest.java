@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-import org.ff4j.conf.XmlConfiguration;
+import org.ff4j.conf.XmlConfig;
 import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.property.AbstractProperty;
@@ -130,13 +130,13 @@ public class FeatureXmlParserTest {
         // Given
         XmlParser parser = new XmlParser();
         InputStream in = getClass().getClassLoader().getResourceAsStream("ff4j-parser-all.xml");
-        XmlConfiguration conf = parser.parseConfigurationFile(in);
+        XmlConfig conf = parser.parseConfigurationFile(in);
         Assert.assertNotNull(conf.getFeatures());
         Assert.assertNotNull(conf.getProperties());
         // When
         InputStream in3 = parser.exportAll(conf);
         // Then
-        XmlConfiguration conf2 = parser.parseConfigurationFile(in3);
+        XmlConfig conf2 = parser.parseConfigurationFile(in3);
         Assert.assertNotNull(conf2.getFeatures());
         Assert.assertNotNull(conf2.getProperties());
     }
@@ -148,7 +148,7 @@ public class FeatureXmlParserTest {
         InputStream in = getClass().getClassLoader().getResourceAsStream("ff4j.xml");
         
         // When
-        XmlConfiguration conf = parser.parseConfigurationFile(in);
+        XmlConfig conf = parser.parseConfigurationFile(in);
         // Then
         Map<String, Feature> features = conf.getFeatures();
         Assert.assertNotNull(features);
@@ -178,7 +178,7 @@ public class FeatureXmlParserTest {
         XmlParser parser = new XmlParser();
         InputStream in = getClass().getClassLoader().getResourceAsStream("ff4j-parser-all.xml");
         // When
-        XmlConfiguration conf = parser.parseConfigurationFile(in);
+        XmlConfig conf = parser.parseConfigurationFile(in);
         // Then
         Map<String, Feature> features = conf.getFeatures();
         Assert.assertNotNull(features);
@@ -193,7 +193,7 @@ public class FeatureXmlParserTest {
         XmlParser parser = new XmlParser();
         InputStream in = getClass().getClassLoader().getResourceAsStream("ff4j-parser-features.xml");
         // When
-        XmlConfiguration conf = parser.parseConfigurationFile(in);
+        XmlConfig conf = parser.parseConfigurationFile(in);
         // Then
         Map<String, Feature> features = conf.getFeatures();
         Assert.assertNotNull(features);
@@ -209,7 +209,7 @@ public class FeatureXmlParserTest {
         XmlParser parser = new XmlParser();
         InputStream in = getClass().getClassLoader().getResourceAsStream("ff4j-parser-properties.xml");
         // When
-        XmlConfiguration conf = parser.parseConfigurationFile(in);
+        XmlConfig conf = parser.parseConfigurationFile(in);
         // Then
         Map<String, Feature> features = conf.getFeatures();
         Assert.assertNotNull(features);

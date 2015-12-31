@@ -1,5 +1,8 @@
 package org.ff4j.store;
 
+import java.util.HashMap;
+import java.util.HashSet;
+
 /*
  * #%L
  * ff4j-store-ehcache
@@ -22,6 +25,7 @@ package org.ff4j.store;
 
 
 import java.util.Map;
+import java.util.Set;
 
 import org.ff4j.ehcache.FF4jEhCacheWrapper;
 import org.ff4j.exception.PropertyAlreadyExistException;
@@ -121,9 +125,35 @@ public class PropertyStoreEhCache extends AbstractPropertyStore {
         wrapper.getCacheProperties().remove(name);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Map<String, AbstractProperty<?>> readAllProperties() {
-        // TODO Auto-generated method stub
-        return null;
+        Map<String, AbstractProperty<?>> myMap = new HashMap<String, AbstractProperty<?>>();
+        if (wrapper.getCacheProperties().getKeys() != null) {
+            for (Object key : wrapper.getCacheProperties().getKeys()) {
+                Element element = wrapper.getCacheProperties().get(key);
+                if (element != null) {
+                    AbstractProperty<?> p = (AbstractProperty<?>) wrapper.getCacheProperties().get(key).getObjectValue();
+                    myMap.put((String) key, p);
+                }
+            }
+        }
+        return myMap;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> listPropertyNames() {
+        Set < String > propertyNames = new HashSet<String>();
+        for (Object key : wrapper.getCacheProperties().getKeys()) {
+            propertyNames.add((String) key);
+        }
+        return propertyNames;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void clear() {
+        wrapper.getCacheProperties().removeAll();
     }
 }

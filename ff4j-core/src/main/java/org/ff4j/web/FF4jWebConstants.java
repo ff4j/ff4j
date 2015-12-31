@@ -74,6 +74,9 @@ public interface FF4jWebConstants {
     
     /** relative path for cache. */
     String RESOURCE_CACHE = "cache";
+    
+    /** relative path for cache. */
+    String STORE_CLEAR = "clear";
 
     /** relative path. */
     String RESOURCE_FF4J = "ff4j";

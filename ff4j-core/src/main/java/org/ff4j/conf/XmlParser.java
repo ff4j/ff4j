@@ -42,6 +42,7 @@ import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.Property;
+import org.ff4j.utils.MappingUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -172,7 +173,7 @@ public final class XmlParser {
     
     /** XML Generation constants. */
     private static final String END_FF4J = "</ff4j>\n\n";
-
+    
     /** Document Builder use to parse XML. */
     private static DocumentBuilder builder = null;
    
@@ -184,11 +185,11 @@ public final class XmlParser {
      * @return
      *      features and properties find within file
      */
-    public XmlConfiguration parseConfigurationFile(InputStream in) {
+    public XmlConfig parseConfigurationFile(InputStream in) {
         try {
             
             // Object to be build by parsing
-            XmlConfiguration xmlConf = new XmlConfiguration();
+            XmlConfig xmlConf = new XmlConfig();
                 
             // Load XML as a Document
             Document ff4jDocument = getDocumentBuilder().parse(in);
@@ -346,11 +347,16 @@ public final class XmlParser {
             String name  = attMap.getNamedItem(PROPERTY_PARAMNAME).getNodeValue();
             String value = attMap.getNamedItem(PROPERTY_PARAMVALUE).getNodeValue();
             AbstractProperty<?> ap = new Property(name, value);
+            
             // If specific type defined ?
             if (null != attMap.getNamedItem(PROPERTY_PARAMTYPE)) {
                 String optionalType = attMap.getNamedItem(PROPERTY_PARAMTYPE).getNodeValue();
+               
+                // Substitution if relevant (e.g. 'int' -> 'org.ff4j.property.PropertyInt')
+                optionalType = MappingUtil.mapPropertyType(optionalType);
+                
                 try {
-                    // Construction by dedicated constructor with introspection
+                    // Constructor (String, String) is mandatory in Property interface
                     Constructor<?> constr = Class.forName(optionalType).getConstructor(String.class, String.class);
                     ap = (AbstractProperty<?>) constr.newInstance(name, value);
                 } catch (InstantiationException e) {
@@ -565,7 +571,7 @@ public final class XmlParser {
      * @throws IOException
      *      error during marshalling
      */
-    public InputStream exportAll(XmlConfiguration conf) throws IOException {
+    public InputStream exportAll(XmlConfig conf) throws IOException {
         return exportAll(conf.getFeatures(), conf.getProperties());
     }
     

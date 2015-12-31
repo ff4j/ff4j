@@ -20,12 +20,6 @@ _This document is currently in progress and is changed very often_
 
 ## Getting Started
 
-1 - [Hello World](#hello-world)
-<br/>2 - [Integration with Spring Framework](#spring)
-<br/>3 - [Feature Flipping through AOP](#aop)
-<br/>4 - [Externalize features in JDBC store](#store-jdbc)
-
-<a id="hello-world" name="hello-world"/>
 ### 1 - Hello world
 
 In this part, we guide you to create a working example from scratch

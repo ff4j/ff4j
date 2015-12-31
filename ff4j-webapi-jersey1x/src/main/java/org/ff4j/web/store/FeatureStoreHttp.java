@@ -455,63 +455,18 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebCon
         }
         return groupNames;
     }
-
+    
     /** {@inheritDoc} */
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("{");
-        sb.append("\"type\":\"" + this.getClass().getCanonicalName() + "\"");
-        sb.append("\"target\":\"" + this.url + "\"");
-        sb.append(",\"cached\":" + this.isCached());
-        if (this.isCached()) {
-            sb.append(",\"cacheProvider\":\"" + this.getCacheProvider() + "\"");
-            sb.append(",\"cacheStore\":\"" + this.getCachedTargetStore() + "\"");
+    public void clear() {
+        WebResource wr = client.resource(url).path(RESOURCE_STORE).path(STORE_CLEAR);
+        if (null != authorization) {
+            groupsWebRsc.header(HEADER_AUTHORIZATION, authorization);
         }
-        Set<String> myFeatures = readAll().keySet();
-        sb.append(",\"numberOfFeatures\":" + myFeatures.size());
-        sb.append(",\"features\":[");
-        boolean first = true;
-        for (String myFeature : myFeatures) {
-            if (!first) {
-                sb.append(",");
-            }
-            first = false;
-            sb.append("\"" + myFeature + "\"");
+        ClientResponse cRes = wr.post(ClientResponse.class);
+        if (Status.OK.getStatusCode() != cRes.getStatus()) {
+            throw new FeatureAccessException("Cannot clear feature store - " + cRes.getStatus());
         }
-        Set<String> myGroups = readAllGroups();
-        sb.append("],\"numberOfGroups\":" + myGroups.size());
-        sb.append(",\"groups\":[");
-        first = true;
-        for (String myGroup : myGroups) {
-            if (!first) {
-                sb.append(",");
-            }
-            first = false;
-            sb.append("\"" + myGroup + "\"");
-        }
-        sb.append("]");
-        sb.append("}");
-        return sb.toString();
-    }
-
-    // -------- Overrided in cache proxy --------------
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isCached() {
-        return false;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getCacheProvider() {
-        return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getCachedTargetStore() {
-        return null;
     }
     
     // ------- Static for authentication -------
@@ -558,5 +513,6 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebCon
     public void setUrl(String url) {
         this.url = url;
     }
+
 
 }

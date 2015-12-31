@@ -63,10 +63,11 @@ public class CacheApiBean {
      *      cuurent fature store
      */
     public CacheApiBean(FeatureStore featureStore) {
-        if (featureStore.isCached()) {
-            cacheStore    = featureStore.getCachedTargetStore();
-            cacheProvider = featureStore.getCacheProvider();
-            featureNames  = ((FF4jCacheProxy) featureStore).getCacheManager().listCachedFeatureNames();
+        if (featureStore instanceof FF4jCacheProxy) {
+            FF4jCacheProxy cacheProxy = (FF4jCacheProxy) featureStore;
+            cacheStore    = cacheProxy.getCachedTargetStore();
+            cacheProvider = cacheProxy.getCacheProvider();
+            featureNames  = cacheProxy.getCacheManager().listCachedFeatureNames();
         }
     }
     

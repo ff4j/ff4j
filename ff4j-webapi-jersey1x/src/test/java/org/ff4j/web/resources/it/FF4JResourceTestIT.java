@@ -106,6 +106,7 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
         assertFF4J.assertThatFeatureExist(F4);
         ff4j.getFeatureStore().enable(F4);
         assertFF4J.assertThatFeatureFlipped(F4);
+        
         // When
         MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
         formData.add(POST_PARAMNAME_FEATURE_UID, F4);

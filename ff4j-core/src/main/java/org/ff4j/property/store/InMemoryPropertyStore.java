@@ -23,6 +23,7 @@ package org.ff4j.property.store;
 import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.ff4j.conf.XmlParser;
 import org.ff4j.exception.PropertyAlreadyExistException;
@@ -175,6 +176,23 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
     
     /** {@inheritDoc} */
     @Override
+    public Set<String> listPropertyNames() {
+        if (properties == null) {
+             return null;
+        }
+        return properties.keySet();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void clear() {
+        if (properties != null) {
+            properties.clear();
+        }
+    }
+    
+    /** {@inheritDoc} */
+    @Override
     public Map<String, AbstractProperty<?>> readAllProperties() {
        return properties;
     }
@@ -216,6 +234,8 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
+
+   
 
     
 

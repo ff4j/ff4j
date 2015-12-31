@@ -125,6 +125,16 @@ public class FeatureStoreResource extends AbstractResource {
         return new ArrayList<GroupDescApiBean>(groups.values());
     }
     
+    @POST
+    @Path("/" + STORE_CLEAR)
+    @ApiOperation(value= "Delete all <b>Features</b> in store")
+    @ApiResponses(@ApiResponse(code = 200, message= "status of current ff4j bean", response=FeatureStoreApiBean.class))
+    @Produces(MediaType.APPLICATION_JSON)
+    public FeatureStoreApiBean clearFeatures() {
+        getFeatureStore().clear();
+        return new FeatureStoreApiBean(ff4j.getFeatureStore());
+    }
+    
     /**
      * Allows to retrieve feature by its id.
      * 
@@ -139,10 +149,10 @@ public class FeatureStoreResource extends AbstractResource {
     @ApiResponses({ @ApiResponse(code = 200, message= "status of current ff4j monitoring bean", response=CacheApiBean.class),
                     @ApiResponse(code = 404, message= "no cache content provided") })
     public Response getStatus() {
-        if (!getFeatureStore().isCached()) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Current Store is not cached").build();
+        if (getFeatureStore() instanceof FF4jCacheProxy) {
+            return Response.ok(new CacheApiBean(getFeatureStore())).build();
         }
-        return Response.ok(new CacheApiBean(getFeatureStore())).build();
+        return Response.status(Response.Status.NOT_FOUND).entity("Current Store is not cached").build();
     }
     
     /**
@@ -155,11 +165,11 @@ public class FeatureStoreResource extends AbstractResource {
     @ApiResponses({ @ApiResponse(code = 200, message= "cache is cleard"),
                     @ApiResponse(code = 404, message= "no cache content provided") })
     public Response clear() {
-        if (!getFeatureStore().isCached()) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Current Store is not cached").build();
+        if (getFeatureStore() instanceof FF4jCacheProxy) {
+            ((FF4jCacheProxy) getFeatureStore()).getCacheManager().clearFeatures();
+            return Response.ok("Cache has been cleared").build();
         }
-        ((FF4jCacheProxy) getFeatureStore()).getCacheManager().clearFeatures();
-        return Response.ok("Cache has been cleared").build();
+        return Response.status(Response.Status.NOT_FOUND).entity("Current Store is not cached").build();
     }
 
 }

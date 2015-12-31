@@ -23,6 +23,7 @@ package org.ff4j.web.api.resources.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.core.FeatureStore;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -82,7 +83,7 @@ public class FeatureStoreApiBean {
      */
     public FeatureStoreApiBean(FeatureStore featureStore) {
         type = featureStore.getClass().getCanonicalName();
-        if (featureStore.isCached()) {
+        if (featureStore instanceof FF4jCacheProxy) {
             cache = new CacheApiBean(featureStore);
         }
         features = new ArrayList<String>(featureStore.readAll().keySet());

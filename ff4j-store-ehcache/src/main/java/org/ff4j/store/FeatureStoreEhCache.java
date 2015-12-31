@@ -275,24 +275,12 @@ public class FeatureStoreEhCache extends AbstractFeatureStore implements FF4JEhC
      */
     private Cache getCache() {
         return wrapper.getCacheFeatures();
-    } 
-   
-    /** {@inheritDoc} */
-    @Override
-    public boolean isCached() {
-        return true;
     }
 
     /** {@inheritDoc} */
     @Override
-    public String getCacheProvider() {
-        return "ehCache";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getCachedTargetStore() {
-        return getClass().getName();
+    public void clear() {
+        wrapper.getCacheFeatures().removeAll();
     }
     
 }

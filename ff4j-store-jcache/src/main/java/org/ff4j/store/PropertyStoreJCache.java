@@ -22,7 +22,9 @@ package org.ff4j.store;
 
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.ff4j.cache.FF4jJCacheManager;
 import org.ff4j.exception.PropertyAlreadyExistException;
@@ -129,6 +131,20 @@ public class PropertyStoreJCache extends AbstractPropertyStore {
         Map<String, AbstractProperty<?>> myMap = new HashMap<String, AbstractProperty<?>>();
         getCacheManager().getPropertiesCache().forEach(e->myMap.put(e.getKey(), e.getValue()));
         return myMap;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> listPropertyNames() {
+        Set<String> setOfPropertyNames = new HashSet<>();
+        getCacheManager().getPropertiesCache().forEach(e->setOfPropertyNames.add(e.getKey()));
+        return setOfPropertyNames;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void clear() {
+        getCacheManager().getPropertiesCache().removeAll();
     }
     
     /**

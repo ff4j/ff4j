@@ -28,7 +28,7 @@ import org.ff4j.property.AbstractProperty;
 import org.ff4j.store.rowmapper.CustomPropertyRowMapper;
 import org.ff4j.store.rowmapper.FeatureRowMapper;
 import org.ff4j.store.rowmapper.RoleRowMapper;
-import org.ff4j.utils.ParameterUtils;
+import org.ff4j.utils.MappingUtil;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
@@ -125,7 +125,7 @@ public class FeatureStoreSpringJDBC extends AbstractFeatureStore implements Jdbc
         String expressionColumn = null;
         if (fp.getFlippingStrategy() != null) {
             strategyColumn = fp.getFlippingStrategy().getClass().getCanonicalName();
-            expressionColumn = ParameterUtils.fromMap(fp.getFlippingStrategy().getInitParams());
+            expressionColumn = MappingUtil.fromMap(fp.getFlippingStrategy().getInitParams());
         }
         getJdbcTemplate().update(SQL_CREATE, fp.getUid(), fp.isEnable() ? 1 : 0, fp.getDescription(), strategyColumn,
                 expressionColumn, fp.getGroup());
@@ -328,7 +328,7 @@ public class FeatureStoreSpringJDBC extends AbstractFeatureStore implements Jdbc
         String fExpression = null;
         if (fp.getFlippingStrategy() != null) {
             fStrategy = fp.getFlippingStrategy().getClass().getCanonicalName();
-            fExpression = ParameterUtils.fromMap(fp.getFlippingStrategy().getInitParams());
+            fExpression = MappingUtil.fromMap(fp.getFlippingStrategy().getInitParams());
         }
         String enable = "0";
         if (fp.isEnable()) {
@@ -370,43 +370,13 @@ public class FeatureStoreSpringJDBC extends AbstractFeatureStore implements Jdbc
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
-
+    
     /** {@inheritDoc} */
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("{");
-        sb.append("\"type\":\"" + this.getClass().getCanonicalName() + "\"");
-        sb.append("\"datasource\":\"" + this.dataSource.getClass() + "\"");
-        Set<String> myFeatures = readAll().keySet();
-        sb.append(",\"numberOfFeatures\":" + myFeatures.size());
-        sb.append(",\"cached\":" + this.isCached());
-        if (this.isCached()) {
-            sb.append(",\"cacheProvider\":\"" + this.getCacheProvider() + "\"");
-            sb.append(",\"cacheStore\":\"" + this.getCachedTargetStore() + "\"");
-        }
-        sb.append(",\"features\":[");
-        boolean first = true;
-        for (String myFeature : myFeatures) {
-            if (!first) {
-                sb.append(",");
-            }
-            first = false;
-            sb.append("\"" + myFeature + "\"");
-        }
-        Set<String> myGroups = readAllGroups();
-        sb.append("],\"numberOfGroups\":" + myGroups.size());
-        sb.append(",\"groups\":[");
-        first = true;
-        for (String myGroup : myGroups) {
-            if (!first) {
-                sb.append(",");
-            }
-            first = false;
-            sb.append("\"" + myGroup + "\"");
-        }
-        sb.append("]");
-        sb.append("}");
-        return sb.toString();
+    public void clear() {
+        getJdbcTemplate().update(SQL_DELETE_ALL_ROLES);
+        getJdbcTemplate().update(SQL_DELETE_ALL_CUSTOMPROPERTIES);
+        getJdbcTemplate().update(SQL_DELETE_ALL_FEATURES);
     }
 
     /**
@@ -424,24 +394,5 @@ public class FeatureStoreSpringJDBC extends AbstractFeatureStore implements Jdbc
         return jdbcTemplate;
     }
 
-    // -------- Overrided in cache proxy --------------
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isCached() {
-        return false;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getCacheProvider() {
-        return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getCachedTargetStore() {
-        return null;
-    }
-
+   
 }

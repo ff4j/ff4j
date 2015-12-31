@@ -356,6 +356,14 @@ public class InMemoryFeatureStore extends AbstractFeatureStore {
         feat.setGroup("");
         update(feat);
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void clear() {
+       if (featuresMap != null) {
+           featuresMap.clear();
+       }
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -403,24 +411,5 @@ public class InMemoryFeatureStore extends AbstractFeatureStore {
     public String getFileName() {
         return fileName;
     }
-
-    // -------- Overrided in cache proxy --------------
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isCached() {
-        return false;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getCacheProvider() {
-        return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getCachedTargetStore() {
-        return null;
-    }
+   
 }

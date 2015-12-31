@@ -4,7 +4,7 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Set;
 
-import org.ff4j.conf.XmlConfiguration;
+import org.ff4j.conf.XmlConfig;
 import org.ff4j.conf.XmlParser;
 import org.ff4j.property.AbstractProperty;
 
@@ -52,7 +52,7 @@ public abstract class AbstractPropertyStore implements PropertyStore {
             throw new IllegalArgumentException("File " + xmlConfFile + " could not be read, please check path and rights");
         }
         // Use the Feature Parser
-        XmlConfiguration conf = new XmlParser().parseConfigurationFile(xmlIS);
+        XmlConfig conf = new XmlParser().parseConfigurationFile(xmlIS);
         Map<String, AbstractProperty<?>> properties = conf.getProperties();
 
         // Override existing configuration within database
@@ -63,6 +63,12 @@ public abstract class AbstractPropertyStore implements PropertyStore {
             createProperty(properties.get(featureName));
         }
         return properties;
+    }
+    
+    /** {@inheritDoc} */
+    public boolean isEmpty() {
+        Set < String > pNames = listPropertyNames();
+        return (pNames != null && pNames.size() > 0);
     }
     
     /** {@inheritDoc} */

@@ -26,6 +26,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.ff4j.utils.Util;
+
 /**
  * Create {@link AbstractProperty} from name type and value.
  *
@@ -38,6 +40,30 @@ public class PropertyFactory {
      */
     private PropertyFactory() {}
 
+    /**
+     * Factory method to create property.
+     *
+     * @param pName
+     *            property name.
+     * @param pType
+     *            property type
+     * @param pValue
+     *            property value
+     * @return
+     */
+    public static AbstractProperty<?> createProperty(String pName, Object value) {
+        Util.assertHasLength(pName);
+        Util.assertNotNull(value);
+        if (value instanceof Integer) {
+            return PropertyFactory.createProperty(pName, PropertyInt.class.getName(), String.valueOf(value), null, null);
+        }
+        if (value instanceof Long) {
+            return PropertyFactory.createProperty(pName, PropertyInt.class.getName(), String.valueOf(value), null, null);
+        }
+        
+        throw new IllegalArgumentException("Cannot create property with input type "  + value.getClass());
+    }
+    
     /**
      * Factory method to create property.
      *
