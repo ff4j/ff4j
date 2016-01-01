@@ -35,10 +35,6 @@ import org.ff4j.exception.FeatureAccessException;
  */
 public class JdbcUtils {
     
-    /** Hide publie. */
-    private  JdbcUtils() {
-    }
-    
     /**
      * Build {@link PreparedStatement} from parameters
      * 

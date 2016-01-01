@@ -1,23 +1,14 @@
 package org.ff4j.cache;
 
 /*
- * #%L
- * ff4j-core
- * %%
- * Copyright (C) 2013 Ff4J
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * #%L ff4j-core %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. #L%
  */
 
 import java.util.Map;
@@ -42,7 +33,7 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
 
     /** Target feature store to be proxified to cache features. */
     private FeatureStore targetFeatureStore;
-    
+
     /** Target property store to be proxified to cache properties. */
     private PropertyStore targetPropertyStore;
 
@@ -62,7 +53,7 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
      * @param cache
      *            cache manager to limit overhead of store
      */
-    public FF4jCacheProxy(FeatureStore fStore, PropertyStore pStore, FF4JCacheManager cache) {        
+    public FF4jCacheProxy(FeatureStore fStore, PropertyStore pStore, FF4JCacheManager cache) {
         this.cacheManager = cache;
         this.targetFeatureStore = fStore;
         this.targetPropertyStore = pStore;
@@ -258,13 +249,17 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
 
     /** {@inheritDoc} */
     public String getCacheProvider() {
-        return cacheManager.getCacheProviderName();
+        if (cacheManager != null) {
+            return cacheManager.getCacheProviderName();
+        } else {
+            return null;
+        }
     }
 
     /** {@inheritDoc} */
     public String getCachedTargetStore() {
         return getTargetFeatureStore().getClass().getCanonicalName();
-    }  
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -275,7 +270,7 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
     /** {@inheritDoc} */
     @Override
     public boolean existProperty(String propertyName) {
-           // not in cache but maybe created from last access
+        // not in cache but maybe created from last access
         if (getCacheManager().getProperty(propertyName) == null) {
             return getTargetPropertyStore().existProperty(propertyName);
         }
@@ -298,7 +293,7 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
             fp = getTargetPropertyStore().readProperty(name);
             getCacheManager().putProperty(fp);
         }
-        return fp;        
+        return fp;
     }
 
     /** {@inheritDoc} */
@@ -307,7 +302,7 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
         // Retrieve the full object from its name
         AbstractProperty<?> fp = getTargetPropertyStore().readProperty(name);
         if (null == fp) {
-            throw new PropertyNotFoundException("Cannot found the property by its name");            
+            throw new PropertyNotFoundException("Cannot found the property by its name");
         }
         fp.setValueFromString(newValue);
         // Update value in target store
@@ -318,7 +313,7 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
         getCacheManager().putProperty(fp);
     }
 
-    /** {@inheritDoc} */    
+    /** {@inheritDoc} */
     @Override
     public <T> void updateProperty(AbstractProperty<T> propertyValue) {
         // Update the property
@@ -337,28 +332,28 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
         // even is not present, evict name failed
         getCacheManager().evictProperty(name);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean isEmpty() {
-        Set < String > pNames = listPropertyNames();
+        Set<String> pNames = listPropertyNames();
         return (pNames != null && pNames.size() > 0);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public Set<String> listPropertyNames() {
-        
+
         return null;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void clear() {
         // Cache Operations : As modification, flush cache for this
         getCacheManager().clearProperties();
         getTargetPropertyStore().clear();
-        
+
         // Cache Operations : As modification, flush cache for this
         getCacheManager().clearFeatures();
         getTargetFeatureStore().clear();
@@ -366,8 +361,9 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
 
     /**
      * Setter accessor for attribute 'targetFeatureStore'.
+     * 
      * @param targetFeatureStore
-     * 		new value for 'targetFeatureStore '
+     *            new value for 'targetFeatureStore '
      */
     public void setTargetFeatureStore(FeatureStore targetFeatureStore) {
         this.targetFeatureStore = targetFeatureStore;
@@ -375,13 +371,12 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
 
     /**
      * Setter accessor for attribute 'targetPropertyStore'.
+     * 
      * @param targetPropertyStore
-     * 		new value for 'targetPropertyStore '
+     *            new value for 'targetPropertyStore '
      */
     public void setTargetPropertyStore(PropertyStore targetPropertyStore) {
         this.targetPropertyStore = targetPropertyStore;
     }
-
-    
 
 }

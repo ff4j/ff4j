@@ -1,10 +1,4 @@
-/**
- * Provide audit and monitoring capabilities.
- *
- * @author Cedrick Lunven (@clunven)</a>
- * @version 1.2
- */
-package org.ff4j.audit;
+package org.ff4j.test;
 
 /*
  * #%L
@@ -25,3 +19,28 @@ package org.ff4j.audit;
  * limitations under the License.
  * #L%
  */
+
+
+import java.util.HashSet;
+import java.util.Set;
+
+import org.ff4j.security.AbstractAuthorizationManager;
+
+public class AlwaysTrueSecurityManager extends AbstractAuthorizationManager {
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> getCurrentUserPermissions() {
+        Set<String> ss = new HashSet<String>();
+        ss.add("1");
+        ss.add("2");
+        return new HashSet<String>();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> listAllPermissions() {
+        return getCurrentUserPermissions();
+    }
+
+}

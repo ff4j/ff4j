@@ -28,10 +28,16 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.ff4j.FF4j;
+import org.ff4j.audit.Event;
+import org.ff4j.audit.EventPublisher;
+import org.ff4j.audit.EventType;
+import org.ff4j.audit.repository.InMemoryEventRepository;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.property.Property;
 import org.ff4j.store.InMemoryFeatureStore;
+import org.ff4j.strategy.el.ExpressionFlipStrategy;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -47,30 +53,130 @@ public class FF4jTest extends AbstractFf4jTest {
         return new FF4j("ff4j.xml");
     }
     
-    public void helloWorld() {
-        
+    @Test(expected = FeatureNotFoundException.class)
+    public void readFeatureNotFound() {
+        // Given
+        FF4j ff4j = new FF4j();
+        // When
+        ff4j.getFeature("i-dont-exist");
+        // Then
+        // expect error...
+    }
+    
+    @Test
+    public void testDeleteFeature() {
         FF4j ff4j = new FF4j("ff4j.xml");
+        ff4j.audit();
+        Assert.assertTrue(ff4j.exist(F1));
+        ff4j.delete(F1);
+        Assert.assertFalse(ff4j.exist(F1));
+    }
+    
+    @Test
+    public void testDisableWithAudit() {
+        // Given
+        FF4j ff4j = new FF4j(getClass().getClassLoader().getResourceAsStream("ff4j.xml"));
+        ff4j.audit();
+        Assert.assertTrue(ff4j.exist(F1));
+        Assert.assertTrue(ff4j.getFeature(F1).isEnable());
+        // When
+        ff4j.disable(F1);
+        // Then
+        Assert.assertFalse(ff4j.getFeature(F1).isEnable());
+    }
+    
+    @Test
+    public void createDeleteProperty() {
+        FF4j ff4j = new FF4j();
+        ff4j.createProperty(new Property("p1", "v1"));
+        ff4j.audit();
+        ff4j.createProperty(new Property("p2", "v2"));
+        Assert.assertTrue(ff4j.getPropertiesStore().existProperty("p1"));
+        ff4j.deleteProperty("p1");
+        Assert.assertFalse(ff4j.getPropertiesStore().existProperty("p1"));
+    }
+    
+    @Test
+    public void monitoringAudit() {
+        // Given
+        FF4j ff4j = new FF4j();
+        ff4j.setEventPublisher(new EventPublisher());
+        ff4j.setEventRepository(new InMemoryEventRepository());
+        ff4j.removeCurrentContext();
+        ff4j.getCurrentContext();
+        // When
+        ff4j.stop();
         
-        if (ff4j.check("feature_1")) {
-            System.out.println("Feature_1 is toggle ON !");
-        }
+        // When
+        ff4j.setEventPublisher(null);
+        ff4j.getEventPublisher();
+        ff4j.stop();
         
+        // When
+        Event evt = new Event("f1", EventType.CREATE_FEATURE, System.currentTimeMillis());
+        Assert.assertNotNull(evt.toCSV());
+        Assert.assertNotNull(evt.toJson());
+        Assert.assertNotNull(evt.toString());
+        evt.setFeatureName("f2");
         
-        // Feature Store is crud
-        Feature f1 = ff4j.getFeatureStore().read("feature_1");
-        ff4j.getFeatureStore().create(new Feature("feature_3"));
-        ff4j.getFeatureStore().delete("feature_3");
+        // When
+        EventPublisher ep = new EventPublisher();
+        new EventPublisher(ep.getRepository(), null);
+        ep.setRepository(new InMemoryEventRepository());
+        // Then
+        Assert.assertNotNull(ep.getRepository());
+    }
+    
+    @SuppressWarnings("deprecation")
+    @Test
+    public void enableDisableGroups() {
+        // Given
+        FF4j ff4j = new FF4j();
+        ff4j.audit();
+        ff4j.setStore(new InMemoryFeatureStore());
+        ff4j.create("f1", true);
+        ff4j.create("f2");
+        ff4j.getFeatureStore().addToGroup("f1", "g1");
+        ff4j.getFeatureStore().addToGroup("f2", "g1");
         
-        // Syntax sugar
-        ff4j.getFeature("feature_2");
-        ff4j.exist("feature_1");
-        ff4j.enable("feature_1");
-        ff4j.createFeature(new Feature("feature_3"));
+        // When
+        ff4j.disableGroup("g1");
+        // Then
+        Assert.assertFalse(ff4j.getFeature("f1").isEnable());
+        Assert.assertFalse(ff4j.getFeature("f2").isEnable());
         
-        // Dynamically create feature and add it to the store
-        ff4j.createFeature("sayHello");
+        // When
+        ff4j.enableGroup("g1");
+        // Then
+        Assert.assertTrue(ff4j.getFeature("f1").isEnable());
+        Assert.assertTrue(ff4j.getFeature("f2").isEnable());
         
-        System.out.println(f1);
+        // When
+        ff4j.enable("f1");
+        ff4j.setFileName(null);
+        // Then
+        Assert.assertTrue(ff4j.getFeature("f1").isEnable());
+    }
+    
+    @Test
+    public void testReadCoreMetadata() {
+        FF4j ff4j = new FF4j();
+        ff4j.getVersion();
+        Assert.assertNotNull(ff4j.getStartTime());
+        Assert.assertNotNull(ff4j.getPropertiesStore());
+        Assert.assertNotNull(ff4j.getCurrentContext());
+        Assert.assertNotNull(ff4j.getProperties());
+    }
+    
+    @SuppressWarnings("deprecation")
+    @Test
+    public void testToString() {
+        FF4j ff4j = new FF4j("ff4j.xml");
+        ff4j.toString();
+        Assert.assertNotNull(ff4j.getStore());
+        ff4j.setFeatureStore(null);
+        ff4j.setPropertiesStore(null);
+        ff4j.toString();
     }
 
     @Test
@@ -95,7 +201,7 @@ public class FF4jTest extends AbstractFf4jTest {
 
         // Default : store = inMemory, load features from ff4j.xml file
         FF4j ff4j = new FF4j("ff4j.xml");
-        ff4j.setAutocreate(true);
+        ff4j.autoCreate();
         assertFalse(ff4j.exist("autoCreatedFeature"));
 
         // Auto creation by testing its value
@@ -177,32 +283,23 @@ public class FF4jTest extends AbstractFf4jTest {
         Assert.assertTrue(ff4j.checkOveridingStrategy("coco", mockFlipStrategy));
         Assert.assertTrue(ff4j.checkOveridingStrategy("coco", null, null));
         Assert.assertFalse(ff4j.checkOveridingStrategy("cocorico", mockFlipStrategy));
-        
-        
     }
     
-    public void test() {
+    @SuppressWarnings("deprecation")
+    @Test
+    public void testOverrideStrategy() {
+        FF4j ff4j = new FF4j();
+        ff4j.audit();
+        ff4j.createFeature("N1", true, "description NEWS");
+        ff4j.create("N2", false, "description NEWS");
+        Assert.assertTrue(ff4j.check("N1"));
         
-        FF4j ff4j = new FF4j("ff4j.xml").
-                autoCreate(false).
-                createFeature(new Feature("MyFeature", false)).
-                enable("MyFeature");
+        Assert.assertFalse(ff4j.checkOveridingStrategy("N1", new ExpressionFlipStrategy("N1", "N1 & N2")));
         
-        if (ff4j.check("MyFeature")) {
-            
-        }
-        
-        ff4j.disable("MyFeature");
-        
-        Feature f = ff4j.getFeatureStore().read("MyFeature");
-        
-        
-        System.out.println(f);
     }
-    
         
     @Test
-    public void testToString() {
+    public void testToString2() {
         Assert.assertTrue(ff4j.toString().contains(InMemoryFeatureStore.class.getCanonicalName()));
     }
 
@@ -211,6 +308,14 @@ public class FF4jTest extends AbstractFf4jTest {
         Assert.assertNotNull(ff4j.exportFeatures());
     }
 
+    @Test
+    public void authorisationManager() {
+        FF4j ff4j = new FF4j();
+        ff4j.setAuthorizationsManager(new AlwaysTrueSecurityManager());
+        ff4j.getAuthorizationsManager().toString();
+        ff4j.createFeature("f1");
+        ff4j.check("f1");
+    }
 
 
 }

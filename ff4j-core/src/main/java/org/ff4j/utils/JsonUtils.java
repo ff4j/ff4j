@@ -34,13 +34,7 @@ import org.ff4j.property.AbstractProperty;
  * @author Cedrick Lunven (@clunven)
  */
 public class JsonUtils {
-    
-    /**
-     * Hide constructor.
-     */
-    private JsonUtils() {
-    }
-    
+ 
     /**
      * Cache JSON expression for a store.
      *

@@ -487,6 +487,29 @@ public class FF4j {
     public FF4j autoCreate() {
         return autoCreate(true);
     }
+    
+    /**
+     * Enable auditing of features when not found.
+     * 
+     * @param flag
+     *            target value for autocreate flag
+     * @return current instance
+     */
+    public FF4j audit() {
+        return audit(true);
+    }
+            
+    /**
+     * Enable auditing of features when not found.
+     * 
+     * @param flag
+     *            target value for autocreate flag
+     * @return current instance
+     */
+    public FF4j audit(boolean val) {
+         setEnableAudit(true);
+         return this;
+    }
 
     /**
      * Delete feature name.

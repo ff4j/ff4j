@@ -641,7 +641,7 @@
 					<configuration>
 						<source>${maven.compiler.source}</source>
 						<target>${maven.compiler.target}</target>
-						<showWarnings>true</showWarnings>
+						<showWarnings>false</showWarnings>
 					</configuration>
 				</plugin>
 

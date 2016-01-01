@@ -68,16 +68,7 @@ public class JdbcEventRepositoryTest extends AbstractEventRepositoryTest {
                  addScript("classpath:ff-store.sql").//
                  build();
         return new JdbcEventRepository(db);
-    } 
-    
-    /** {@inheritDoc}
-    @Override
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        JdbcTestHelper.initDBSchema(sqlDataSource, dropTable);
-        dropTable = true;
-    }*/
+    }
 
 }
 //

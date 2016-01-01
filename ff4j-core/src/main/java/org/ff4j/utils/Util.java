@@ -32,7 +32,7 @@ import java.util.Set;
  *
  * @author Cedrick Lunven (@clunven)
  */
-public abstract class Util {
+public class Util {
     
     /** Start Color. */
     private static final String START_COLOR = "00AB8B";
@@ -40,12 +40,7 @@ public abstract class Util {
     /** End Color. */
     private static final String END_COLOR = "EEFFEE";
 
-    /**
-     * Remove default constructor.
-     */
-    private Util() {}
-
-    /**
+   /**
      * Check that expression is true.
      * 
      * @param expression

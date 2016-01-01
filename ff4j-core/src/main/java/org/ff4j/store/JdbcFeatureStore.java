@@ -46,6 +46,7 @@ import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.store.JdbcPropertyMapper;
+import org.ff4j.utils.JdbcUtils;
 import org.ff4j.utils.JsonUtils;
 import org.ff4j.utils.MappingUtil;
 import org.ff4j.utils.Util;
@@ -128,8 +129,11 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
             sqlConn = getDataSource().getConnection();
             
             // Query Exist
-            ps = sqlConn.prepareStatement(SQL_EXIST);
-            ps.setString(1, uid);
+            ps = JdbcUtils.buildStatement(sqlConn, SQL_EXIST, uid);
+            /*
+             * ps = sqlConn.prepareStatement(SQL_EXIST);
+             * ps.setString(1, uid);
+             */
             
             // Execute
             rs = ps.executeQuery();
