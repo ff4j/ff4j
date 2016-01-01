@@ -23,6 +23,7 @@ import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
+import org.ff4j.property.Property;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.PonderationStrategy;
 import org.ff4j.test.AssertFf4j;
@@ -1014,7 +1015,14 @@ public abstract class AbstractStoreJUnitTest implements TestsFf4jConstants {
     public void testUpdateAddProperty() {
         // Given
         assertFf4j.assertThatFeatureExist(F2);
-        
+        assertFf4j.assertThatFeatureHasNotProperty(F2, "p1");
+        // When
+        Feature myFeature = ff4j.getFeatureStore().read(F2);
+        Property p1 = new Property("p1", "v1");
+        myFeature.getCustomProperties().put(p1.getName(), p1);
+        testedStore.update(myFeature);
+        // Then
+        assertFf4j.assertThatFeatureHasProperty(F2, "p1");
     }
     
     /**
