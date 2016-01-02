@@ -1,18 +1,20 @@
 
+<p align="center">
 [<img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/ff4j.png?raw=true" alt="functions" height="50px"/>](http://ff4j.org)
+## Feature Flipping for Java 
+</p>
 
-## Feature Flipping for Java [![Build Status](https://travis-ci.org/clun/ff4j.svg?branch=master)](https://travis-ci.org/clun/ff4j)
-
-FF4J, standing as Feature Flipping for Java, implements the [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html) agile development practice. It allows you to enable and disable features through configuration at runtime with dedicated consoles and services.
+[![Build Status](https://travis-ci.org/clun/ff4j.svg?branch=master)](https://travis-ci.org/clun/ff4j)
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.ff4j/ff4j-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.ff4j/ff4j-core/) 
-
 [![Hex.pm](https://img.shields.io/hexpm/l/plug.svg)]()
-
 [![Coverage Status](https://coveralls.io/repos/clun/ff4j/badge.svg?branch=master&service=github)](https://coveralls.io/github/clun/ff4j?branch=master)
+[![Live Demo](https://img.shields.io/badge/ff4jdemo-online-green.svg)](http://cannys.com/ff4j-demo/)
 
-[![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](http://cannys.com/ff4j-demo/)
 
+FF4J is a proposition of [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html) implementation. 
+You can enable and disable features through configuration at runtime with dedicated consoles and services but also monitor features usage. By extension you can also define defin any property and change its value at runtime through 
+the exact same web console.
 
 <p align="center">
   <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/stack2.png?raw=true" alt="functions"/>
