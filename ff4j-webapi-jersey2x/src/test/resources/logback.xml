@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
   #%L
-  ff4j-aop
+  logback.xml (ff4j-security-spring) by Cedrick LUNVEN
   %%
   Copyright (C) 2013 Ff4J
   %%
@@ -27,10 +27,10 @@
       <pattern>%d{HH:mm:ss.SSS} %-5level %class{0} - %msg%n</pattern>
     </encoder>
   </appender>
-  
-  <logger name="ch.qos.logback" level="ERROR" 	/>
-   
-  <root level="INFO">
+
+  <logger name="org.springframework" level="WARN" />
+
+  <root level="WARN">
     <appender-ref ref="STDOUT" />
   </root>
 

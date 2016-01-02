@@ -20,9 +20,7 @@
   -->
 <!DOCTYPE configuration>
 <configuration >
-
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-   <withJansi>true</withJansi>
     <encoder>
       <pattern>%d{HH:mm:ss.SSS} %-5level %class{0} - %msg%n</pattern>
     </encoder>
@@ -30,7 +28,7 @@
 
   <logger name="org.springframework" level="WARN" />
 
-  <root level="debug">
+  <root level="WARN">
     <appender-ref ref="STDOUT" />
   </root>
 

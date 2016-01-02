@@ -30,7 +30,7 @@
 
   <logger name="org.springframework" level="WARN" />
 
-  <root level="debug">
+  <root level="WARN">
     <appender-ref ref="STDOUT" />
   </root>
 

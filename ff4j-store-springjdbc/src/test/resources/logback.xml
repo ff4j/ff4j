@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
   #%L
-  ff4j-store-jdbc
+  logback.xml (ff4j-security-spring) by Cedrick LUNVEN
   %%
   Copyright (C) 2013 Ff4J
   %%
@@ -23,7 +23,6 @@
 <configuration >
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-   <withJansi>true</withJansi>
     <encoder>
       <pattern>%d{HH:mm:ss.SSS} %-5level %class{0} - %msg%n</pattern>
     </encoder>
@@ -31,7 +30,7 @@
 
   <logger name="org.springframework" level="WARN" />
 
-  <root level="debug">
+  <root level="WARN">
     <appender-ref ref="STDOUT" />
   </root>
 
