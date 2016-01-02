@@ -26,6 +26,7 @@ import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.store.mongodb.FeatureDocumentBuilder;
 import org.ff4j.store.mongodb.FeatureDocumentMapper;
 import org.ff4j.store.mongodb.FeatureStoreMongoConstants;
+import org.ff4j.utils.Util;
 
 /**
  * Implementation of {@link FeatureStore} to work with MongoDB.
@@ -100,6 +101,7 @@ public class FeatureStoreMongoCollection extends AbstractFeatureStore implements
     /** {@inheritDoc} */
     @Override
     public boolean exist(String featId) {
+        Util.assertHasLength(featId);
         return 1 == collection.count(BUILDER.getFeatUid(featId));
     }
 

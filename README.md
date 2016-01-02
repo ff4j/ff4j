@@ -5,8 +5,12 @@
 
 FF4J, standing as Feature Flipping for Java, implements the [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html) agile development practice. It allows you to enable and disable features through configuration at runtime with dedicated consoles and services.
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.ff4j/ff4j-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.ff4j/ff4j-core/) ![License Apache2](https://go-shields.herokuapp.com/license-apache2-blue.png)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.ff4j/ff4j-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.ff4j/ff4j-core/) 
+
+[![Hex.pm](https://img.shields.io/hexpm/l/plug.svg)]()
+
 [![Coverage Status](https://coveralls.io/repos/clun/ff4j/badge.svg?branch=master&service=github)](https://coveralls.io/github/clun/ff4j?branch=master)
+
 [![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](http://cannys.com/ff4j-demo/)
 
 
