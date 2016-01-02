@@ -24,8 +24,6 @@ import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.property.Property;
-import org.ff4j.property.PropertyInt;
-import org.ff4j.property.PropertyLogLevel;
 import org.ff4j.strategy.PonderationStrategy;
 import org.ff4j.test.AssertFf4j;
 import org.ff4j.test.TestConstantsFF4j;
@@ -42,13 +40,13 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
 
     /** Initialize */
     protected FF4j ff4j = null;
-
+    
     /** Tested Store. */
     protected FeatureStore testedStore;
 
     /** Test Values */
     protected AssertFf4j assertFf4j;
-
+    
     /** {@inheritDoc} */
     @Before
     public void setUp() throws Exception {
@@ -66,7 +64,7 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      *             error during building feature store
      */
     protected abstract FeatureStore initStore();
-
+    
     /**
      * TDD.
      */
@@ -136,6 +134,7 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         assertFf4j.assertThatFeatureHasRole(F4, ROLE_ADMIN);
         assertFf4j.assertThatFeatureIsInGroup(F4, G1);
     }
+
 
     /**
      * TDD.
@@ -252,10 +251,6 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         // When
         Set<String> rights = new HashSet<String>(Arrays.asList(new String[] {ROLE_USER}));
         Feature fp = new Feature(FEATURE_NEW, true, "description", G1, rights);
-        fp.getCustomProperties().put("TEST", new Property("word", "hello", new HashSet<String>(Arrays.asList("hello","hi"))));
-        fp.getCustomProperties().put("loglevel", new PropertyLogLevel("loglevel", PropertyLogLevel.LogLevel.DEBUG));
-        
-        
         testedStore.create(fp);
         // Then
         assertFf4j.assertThatStoreHasSize(EXPECTED_FEATURES_NUMBERS + 1);
@@ -272,15 +267,15 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
     @Test(expected = FeatureAlreadyExistException.class)
     public void testAddFeatureAlreadyExis() throws Exception {
         // Given
-        assertFf4j.assertThatFeatureDoesNotExist(FEATURE_NEW);
+        assertFf4j.assertThatFeatureDoesNotExist("GOLOGOLO");
         // When (first creation)
-        Feature fp = new Feature(FEATURE_NEW, true, "description2");
+        Feature fp = new Feature("GOLOGOLO", true, "description2");
         testedStore.create(fp);
         // Then (first creation)
-        assertFf4j.assertThatFeatureExist(FEATURE_NEW);
+        assertFf4j.assertThatFeatureExist("GOLOGOLO");
         // When (second creation)
         Set<String> rights = new HashSet<String>(Arrays.asList(new String[] {ROLE_USER}));
-        Feature fp2 = new Feature(FEATURE_NEW, true, G1, "description3", rights);
+        Feature fp2 = new Feature("GOLOGOLO", true, G1, "description3", rights);
         testedStore.create(fp2);
         // Then, expected exception
     }
@@ -378,11 +373,11 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
     public void testGrantRoleToFeatureRoleDoesNotExist() throws Exception {
         // Given
         assertFf4j.assertThatFeatureExist(F1);
-        assertFf4j.assertThatFeatureHasNotRole(F1, ROLE_NEW);
+        assertFf4j.assertThatFeatureHasNotRole(F1, "ROLE_XYZ");
         // When
-        testedStore.grantRoleOnFeature(F1, ROLE_NEW);
+        testedStore.grantRoleOnFeature(F1, "ROLE_XYZ");
         // Then
-        assertFf4j.assertThatFeatureHasRole(F1, ROLE_NEW);
+        assertFf4j.assertThatFeatureHasRole(F1, "ROLE_XYZ");
     }
 
     /**
@@ -497,6 +492,7 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         // Then
         Feature updatedFeature = testedStore.read(F1);
         Assert.assertTrue(newDescription.equals(updatedFeature.getDescription()));
+        Assert.assertNotNull(updatedFeature.getFlippingStrategy());
         Assert.assertEquals(newStrategy.toString(), updatedFeature.getFlippingStrategy().toString());
     }
 
@@ -525,67 +521,15 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
     @Test
     public void testUpdateFlipLessAutorisation() {
         // Given
-        assertFf4j.assertThatFeatureExist(F1);
-        assertFf4j.assertThatFeatureHasRole(F1, ROLE_USER);
+        assertFf4j.assertThatFeatureExist(F2);
+        assertFf4j.assertThatFeatureHasRole(F2, ROLE_USER);
         // When
-        testedStore.update(new Feature(F1, false, null));
+        testedStore.update(new Feature(F2, false, null));
         // Then
-        assertFf4j.assertThatFeatureHasNotRole(F1, ROLE_USER);
+        assertFf4j.assertThatFeatureHasNotRole(F2, ROLE_USER);
     }
     
-    /**
-     * TDD.
-     */
-    @Test
-    public void testUpdateAddNewCustomProperty() {
-        // Given
-        assertFf4j.assertThatFeatureExist(F1);
-        Feature fpBis = testedStore.read(F1);
-        Assert.assertFalse(fpBis.getCustomProperties().containsKey("PPP"));
-        // When
-        fpBis.getCustomProperties().put("PPP",new Property("PPP", "hello"));
-        testedStore.update(fpBis);
-        // Then
-        fpBis = testedStore.read(F1);
-        Assert.assertTrue(fpBis.getCustomProperties().containsKey("PPP"));
-    }
-    
-    /**
-     * TDD.
-     */
-    @Test
-    public void testUpdateUpdateProperty() {
-        // Given
-        assertFf4j.assertThatFeatureExist(F1);
-        Feature fpBis = testedStore.read(F1);
-        Assert.assertTrue(fpBis.getCustomProperties().containsKey("ppint"));
-        PropertyInt p = (PropertyInt) fpBis.getCustomProperties().get("ppint");
-        Assert.assertEquals("12", p.asString());
-        // When
-        fpBis.getCustomProperties().put("ppint", new PropertyInt("ppint", 14));
-        testedStore.update(fpBis);
-        // Then
-        fpBis = testedStore.read(F1);
-        p = (PropertyInt) fpBis.getCustomProperties().get("ppint");
-        Assert.assertEquals("14", p.asString());
-    }
-    
-    /**
-     * TDD.
-     */
-    @Test
-    public void testUpdateRemoveCustomProperty() {
-     // Given
-        assertFf4j.assertThatFeatureExist(F1);
-        Feature fpBis = testedStore.read(F1);
-        Assert.assertTrue(fpBis.getCustomProperties().containsKey("ppint"));
-        // When
-        fpBis.getCustomProperties().remove("ppint");
-        testedStore.update(fpBis);
-        // Then
-        fpBis = testedStore.read(F1);
-        Assert.assertFalse(fpBis.getCustomProperties().containsKey("ppint"));
-    }
+   
 
     /**
      * TDD.
@@ -603,6 +547,16 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         assertFf4j.assertThatFeatureHasRole(F1, ROLE_NEW);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testExistNull() {
+        ff4j.getFeatureStore().exist(null);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testExistEmpty() {
+        ff4j.getFeatureStore().exist("");
+    }
+    
     /**
      * TDD.
      */
@@ -666,6 +620,8 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
     @Test
     public void testEnableGroup() {
         // Given
+        testedStore.disable(F2);
+        testedStore.addToGroup(F2, G0);
         assertFf4j.assertThatFeatureIsDisabled(F2);
         assertFf4j.assertThatFeatureIsInGroup(F2, G0);
         // When
@@ -770,6 +726,8 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         assertFf4j.assertThatGroupExist(G1);
         assertFf4j.assertThatFeatureExist(F3);
         assertFf4j.assertThatFeatureExist(F4);
+        testedStore.addToGroup(F3, G1);
+        testedStore.addToGroup(F4, G1);
         assertFf4j.assertThatFeatureIsInGroup(F3, G1);
         assertFf4j.assertThatFeatureIsInGroup(F4, G1);
         // When
@@ -984,6 +942,8 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      */
     @Test
     public void testReadAllGroup() {
+        // Reinit
+        testedStore.addToGroup(F2, G0);
         // Given
         assertFf4j.assertThatStoreHasNumberOfGroups(2);
         assertFf4j.assertThatGroupExist(G0);
@@ -994,6 +954,105 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         Assert.assertEquals(2, groups.size());
         Assert.assertTrue(groups.contains(G0));
         Assert.assertTrue(groups.contains(G1));
+    }
+    
+    /**
+     * TDD.
+     */
+    @Test
+    public void testUpdateEditFlippingStrategy() {
+        // Given
+        assertFf4j.assertThatFeatureExist(F3);
+        // When
+        Feature myFeature = ff4j.getFeatureStore().read(F3);
+        myFeature.setFlippingStrategy(new PonderationStrategy(0.1));
+        testedStore.update(myFeature);
+        // Then
+        assertFf4j.assertThatFeatureHasFlippingStrategy(F3);
+    }
+    
+    /**
+     * TDD.
+     */
+    @Test
+    public void testUpdateRemoveFlippingStrategy() {
+        // Given
+        assertFf4j.assertThatFeatureExist(F3);
+        Feature myFeature = ff4j.getFeatureStore().read(F3);
+        myFeature.setFlippingStrategy(new PonderationStrategy(0.1));
+        testedStore.update(myFeature);
+        assertFf4j.assertThatFeatureHasFlippingStrategy(F3);
+        // When
+        Feature myFeature2 = ff4j.getFeatureStore().read(F3);
+        myFeature2.setFlippingStrategy(null);
+        testedStore.update(myFeature2);
+        // Then
+        assertFf4j.assertThatFeatureDoesNotHaveFlippingStrategy(F3);
+    }
+    
+    /**
+     * TDD.
+     */
+    @Test
+    public void testUpdateAddFlippingStrategy() {
+        // Given
+        assertFf4j.assertThatFeatureExist(F2);
+        assertFf4j.assertThatFeatureDoesNotHaveFlippingStrategy(F2);
+        // When
+        Feature myFeature = ff4j.getFeatureStore().read(F2);
+        myFeature.setFlippingStrategy(new PonderationStrategy(0.1));
+        testedStore.update(myFeature);
+        // Then
+        assertFf4j.assertThatFeatureHasFlippingStrategy(F2);
+    }
+    
+    /**
+     * TDD.
+     */
+    @Test
+    public void testUpdateRemoveProperty() {
+        
+    }
+    
+    /**
+     * TDD.
+     */
+    @Test
+    public void testUpdateAddProperty() {
+        // Given
+        assertFf4j.assertThatFeatureExist(F2);
+        assertFf4j.assertThatFeatureHasNotProperty(F2, "p1");
+        // When
+        Feature myFeature = ff4j.getFeatureStore().read(F2);
+        Property p1 = new Property("p1", "v1");
+        myFeature.getCustomProperties().put(p1.getName(), p1);
+        testedStore.update(myFeature);
+        // Then
+        assertFf4j.assertThatFeatureHasProperty(F2, "p1");
+    }
+    
+    /**
+     * TDD.
+     */
+    @Test
+    public void testUpdateEditPropertyValue() {
+        
+    }
+    
+    /**
+     * TDD.
+     */
+    @Test
+    public void testUpdateEditPropertyAddFixedValues() {
+        
+    }
+    
+    /**
+     * TDD.
+     */
+    @Test
+    public void testUpdateEditPropertyRemoveFixedValues() {
+        
     }
 
 
