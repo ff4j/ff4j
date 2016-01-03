@@ -34,7 +34,7 @@ public class PropertyCalendar extends AbstractProperty< Calendar > {
     private static final long serialVersionUID = -134543098672660987L;
     
     /** expected expression. */
-    private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    public  static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     /**
      * Default constructor.

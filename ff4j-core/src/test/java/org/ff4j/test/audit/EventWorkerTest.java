@@ -19,7 +19,7 @@ package org.ff4j.test.audit;
  * limitations under the License.
  * #L%
  */
-import static org.mockito.Matchers.any;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

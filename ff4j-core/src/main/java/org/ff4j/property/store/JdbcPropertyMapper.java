@@ -23,6 +23,9 @@ package org.ff4j.property.store;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.Property;
@@ -50,7 +53,11 @@ public class JdbcPropertyMapper implements JdbcStoreConstants {
         String propertyType  = rs.getString(COL_PROPERTY_TYPE);
         String description   = rs.getString(COL_PROPERTY_DESCRIPTION);
         String fixedValues   = rs.getString(COL_PROPERTY_FIXED);
-        return PropertyFactory.createProperty(propertyName, propertyType, propertyValue, description, fixedValues);
+        Set < String > value = null;
+        if (fixedValues != null) {
+            value = new HashSet<String>(Arrays.asList(fixedValues.split(",")));
+        }
+        return PropertyFactory.createProperty(propertyName, propertyType, propertyValue, description, value);
     }
     
 }

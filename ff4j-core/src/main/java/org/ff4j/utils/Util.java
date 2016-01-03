@@ -134,6 +134,17 @@ public class Util {
 	public static <T> Set<T> set(T... els) {
         return new HashSet<T>(Arrays.asList(els));
     }
+	
+	/**
+     * Create an HashSet.
+     *
+     * @param els
+     *            enumeration of elements
+     * @return
+     */
+    public static <T> List<T> list(T... els) {
+        return new ArrayList<T>(Arrays.asList(els));
+    }
     
     /**
      * This code build the color gradient between 2 colors with defined step.
