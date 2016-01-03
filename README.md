@@ -25,3 +25,7 @@ More information at [ff4j.org](http://ff4j.org) or [reference guide](https://git
   <br/><i>FF4j at a Glance</i>
 </p>
 
+<p>
+<iframe src="//www.slideshare.net/slideshow/embed_code/key/3sZJ9jPsndQGm" width="595" height="485" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="//www.slideshare.net/CdrickLunven/introduction-to-feature-toggle-and-ff4" title="Introduction to Feature Toggle and FF4J" target="_blank">Introduction to Feature Toggle and FF4J</a> </strong> from <strong><a href="//www.slideshare.net/CdrickLunven" target="_blank">Cédrick Lunven</a></strong> </div>
+
+</p>
