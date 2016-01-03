@@ -34,7 +34,7 @@ import org.ff4j.property.AbstractProperty;
  * @param <T>
  * @param <M>
  */
-public class AbstractPropertyMap < T, M extends Map<String, ? extends T>> extends AbstractProperty < M > implements Map< String, T > {
+public abstract class AbstractPropertyMap < T, M extends Map<String, ? extends T>> extends AbstractProperty < M > implements Map< String, T > {
 
     /** serial. */
     private static final long serialVersionUID = 2612494170643655559L;

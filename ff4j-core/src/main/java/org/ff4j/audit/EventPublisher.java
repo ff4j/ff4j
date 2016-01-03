@@ -28,7 +28,6 @@ import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.audit.repository.InMemoryEventRepository;
@@ -87,48 +86,13 @@ public class EventPublisher {
     public EventPublisher(int queueCapacity, int poolSize, EventRepository er, long submitTimeout) {
         // Initializing queue
         final BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(queueCapacity);
-
         // Executor with worker to process threads
-        RejectedExecutionHandler rej = (new RejectedExecutionHandler() {
-            @Override
-            public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                // try once again
-                executor.execute(r);
-            }
-        });
-        
-         class CustomThreadFactory implements ThreadFactory {
-            final AtomicInteger poolNumber = new AtomicInteger(1);
-            final ThreadGroup group;
-            final AtomicInteger threadNumber = new AtomicInteger(1);
-            final String namePrefix;
-     
-            CustomThreadFactory() {
-                SecurityManager s = System.getSecurityManager();
-                group = (s != null)? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
-                namePrefix = "ff4j-monitoring-pool-" + poolNumber.getAndIncrement() +  "-thread-";
-            }
-     
-            public Thread newThread(Runnable r) {
-                Thread t = new Thread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
-                if (t.isDaemon())
-                    t.setDaemon(false);
-                if (t.getPriority() != Thread.NORM_PRIORITY)
-                    t.setPriority(Thread.NORM_PRIORITY);
-                return t;
-            }
-        }
-
-        executor = new ThreadPoolExecutor(poolSize, poolSize, 0L, TimeUnit.MILLISECONDS, queue, new CustomThreadFactory() , rej);
-
+        RejectedExecutionHandler rej = new EventRejectedExecutionHandler();
+        ThreadFactory tFactorty = new PublisherThreadFactory();
+        this.executor = 
+                new ThreadPoolExecutor(poolSize, poolSize, 0L, TimeUnit.MILLISECONDS, queue, tFactorty, rej);
         // Override repository
-        repository = er;
-
+        this.repository = er;
         this.submitTimeout = submitTimeout;
         this.shutdownExecutor = true;
     }
@@ -160,14 +124,14 @@ public class EventPublisher {
      *            event.
      */
     public void publish(Event e) {
-        final Future<Boolean> check = executor.submit(new EventWorker(e, repository));
         try {
             if (submitTimeout != 0) {
+                EventWorker ew = new EventWorker(e, repository);
+                final Future<Boolean> check = executor.submit(ew);
                 check.get(submitTimeout, TimeUnit.MILLISECONDS);
             }
         } catch (Exception e1) {
-            e1.printStackTrace();
-            System.err.println("Cannot push event into monitoring");
+            System.err.println("Cannot publish event " + e1.getMessage());
         }
     }
 
@@ -204,11 +168,9 @@ public class EventPublisher {
      * be shutdown here.
      */
     public void stop() {
-        if (!this.shutdownExecutor) {
-            return;
+        if (this.shutdownExecutor) {
+            this.executor.shutdownNow();
         }
-
-        this.executor.shutdownNow();
     }
 
     /**

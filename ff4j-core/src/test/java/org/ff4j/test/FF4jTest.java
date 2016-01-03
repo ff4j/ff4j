@@ -26,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
 
 import org.ff4j.FF4j;
 import org.ff4j.audit.Event;
@@ -38,6 +39,7 @@ import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.property.Property;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.el.ExpressionFlipStrategy;
+import org.ff4j.utils.Util;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -311,10 +313,16 @@ public class FF4jTest extends AbstractFf4jTest {
     @Test
     public void authorisationManager() {
         FF4j ff4j = new FF4j();
-        ff4j.setAuthorizationsManager(new AlwaysTrueSecurityManager());
+        ff4j.setAuthorizationsManager(new DefinedPermissionSecurityManager(null));
         ff4j.getAuthorizationsManager().toString();
         ff4j.createFeature("f1");
         ff4j.check("f1");
+        
+        ff4j.setAuthorizationsManager(new DefinedPermissionSecurityManager(new HashSet<String>()));
+        ff4j.getAuthorizationsManager().toString();
+        
+        ff4j.setAuthorizationsManager(new DefinedPermissionSecurityManager(Util.set("S1", "S2")));
+        ff4j.getAuthorizationsManager().toString();
     }
 
 

@@ -64,7 +64,8 @@ public abstract class AbstractFf4jTest implements TestConstantsFF4j {
         mockAuthManager = mock(AuthorizationsManager.class);
         when(mockAuthManager.getCurrentUserPermissions()).thenReturn(new HashSet<String>(Arrays.asList(new String[] {"ROLEA"})));
         when(mockAuthManager.listAllPermissions()).thenReturn(new HashSet<String>(Arrays.asList(new String[] {"ROLEA","ROLEB"})));
-
+        when(mockAuthManager.toJson()).thenReturn("{ value : 1 }");
+        
         // Create MOCK
         mockFlipStrategy = mock(FlippingStrategy.class);
         when(mockFlipStrategy.evaluate(any(String.class), any(FeatureStore.class), any(FlippingExecutionContext.class)))

@@ -1,4 +1,11 @@
-package org.ff4j.test;
+/**
+ * Provide the custom unchecked exceptions raised.
+ * <p>
+ *
+ * @author Cedrick Lunven (@clunven)</a>
+ * @version 1.0
+ */
+package org.ff4j.exception;
 
 /*
  * #%L
@@ -19,28 +26,3 @@ package org.ff4j.test;
  * limitations under the License.
  * #L%
  */
-
-
-import java.util.HashSet;
-import java.util.Set;
-
-import org.ff4j.security.AbstractAuthorizationManager;
-
-public class AlwaysTrueSecurityManager extends AbstractAuthorizationManager {
-
-    /** {@inheritDoc} */
-    @Override
-    public Set<String> getCurrentUserPermissions() {
-        Set<String> ss = new HashSet<String>();
-        ss.add("1");
-        ss.add("2");
-        return new HashSet<String>();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Set<String> listAllPermissions() {
-        return getCurrentUserPermissions();
-    }
-
-}

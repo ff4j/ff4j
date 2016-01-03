@@ -1,10 +1,17 @@
-package org.ff4j.property.multi;
+/**
+ * Provide a repository for metrics and events
+ * <p>
+ *
+ * @author Cedrick Lunven (@clunven)</a>
+ * @version 1.2
+ */
+package org.ff4j.audit.repository;
 
 /*
  * #%L
  * ff4j-core
  * %%
- * Copyright (C) 2013 - 2015 FF4J
+ * Copyright (C) 2013 - 2016 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,28 +26,3 @@ package org.ff4j.property.multi;
  * limitations under the License.
  * #L%
  */
-
-
-import java.util.HashSet;
-import java.util.Set;
-
-/**
- * SuperClass for property as lists.
- *
- * @author Cedrick Lunven (@clunven)
- *
- * @param <T>
- *      current type
- */
-public class PropertySet < T > extends AbstractPropertyMultiValued< T, Set <T>> implements Set < T >{
-
-    /** Serial. */
-    private static final long serialVersionUID = 4064427839404299895L;
-
-    /** {@inheritDoc} */
-    @Override
-    public Set<T> fromString(String v) {
-        return new HashSet<T>(super.fromString(v));
-    }
-
-}

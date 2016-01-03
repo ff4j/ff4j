@@ -34,7 +34,7 @@ import java.util.ListIterator;
  * @param <T>
  *      current type
  */
-public class AbstractPropertyList < T > extends AbstractPropertyMultiValued< T, List <T>> implements List<T>{
+public abstract class AbstractPropertyList < T > extends AbstractPropertyMultiValued< T, List <T>> implements List<T> {
 
     /** Serial. */
     private static final long serialVersionUID = 4064427839404299895L;
