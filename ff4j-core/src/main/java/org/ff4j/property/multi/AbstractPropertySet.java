@@ -37,6 +37,46 @@ public abstract class AbstractPropertySet < T > extends AbstractPropertyMultiVal
     /** Serial. */
     private static final long serialVersionUID = 4064427839404299895L;
 
+    /**
+     * Default constructor.
+     */
+    public AbstractPropertySet() {
+    }
+    
+    /**
+     * Constructor by property name.
+     *
+     * @param name
+     *      property name
+     */
+    public AbstractPropertySet(String name) {
+        super(name);
+    }
+    
+    /**
+     * Constructor by string expression.
+     *
+     * @param uid
+     *      unique name
+     * @param lvl
+     *      current double value
+     */
+    public AbstractPropertySet(String uid, Set <T> value) {
+       super(uid, value);
+    }
+    
+    /**
+     * Constructor by string expression.
+     *
+     * @param uid
+     *      unique name
+     * @param lvl
+     *      current double value
+     */
+    public AbstractPropertySet(String uid, String value) {
+       super(uid, value);
+    }
+    
     /** {@inheritDoc} */
     @Override
     public Set<T> fromString(String v) {

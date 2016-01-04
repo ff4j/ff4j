@@ -4,7 +4,7 @@ package org.ff4j.property.multi;
  * #%L
  * ff4j-core
  * %%
- * Copyright (C) 2013 - 2015 FF4J
+ * Copyright (C) 2013 - 2016 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,7 @@ package org.ff4j.property.multi;
  * #L%
  */
 
-
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,87 +31,96 @@ import org.ff4j.property.AbstractProperty;
  * @author Cedrick Lunven (@clunven)</a>
  *
  * @param <T>
+ *      myultliva
  * @param <M>
  */
 public abstract class AbstractPropertyMap < T, M extends Map<String, ? extends T>> extends AbstractProperty < M > implements Map< String, T > {
 
     /** serial. */
     private static final long serialVersionUID = 2612494170643655559L;
+    
+    /**
+     * Default constructor.
+     */
+    public AbstractPropertyMap() {
+    }
+    
+    /**
+     * Constructor by property name.
+     *
+     * @param name
+     *      property name
+     */
+    @SuppressWarnings("unchecked")
+    public AbstractPropertyMap(String name) {
+        super(name);
+        value = (M) new HashMap<String, T>();
+    }
+   
+    /**
+     * Constructor by T expression.
+     *
+     * @param uid
+     *      unique name
+     * @param lvl
+     *      current double value
+     */
+    @SuppressWarnings("unchecked")
+    public AbstractPropertyMap(String uid, M value) {
+        super(uid, value);
+    }
+
+    /**
+     * Access Internal value.
+     *
+     * @return
+     *      target value.
+     */
+    protected M value() {
+        if (value == null) {
+            throw new IllegalStateException("Value should not be null nor empty");
+        }
+        return value;
+    }
 
     /** {@inheritDoc} */
     public int size() {
-        return (null == getValue()) ? -1 : getValue().size();
+        return value().size();
     }
 
-    @Override
+    /** {@inheritDoc} */
     public boolean isEmpty() {
-        return false;
+        return value().isEmpty();
     }
 
-    @Override
     /** {@inheritDoc} */
     public boolean containsKey(Object key) {
-        return value.containsKey(key);
+        return value().containsKey(key);
     }
 
-    @Override
     /** {@inheritDoc} */
     public boolean containsValue(Object obj) {
-        return value.containsValue(obj);
+        return value().containsValue(obj);
     }
 
-    @Override
+    /** {@inheritDoc} */
     public T get(Object key) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+        return value().get(key);
+    }   
 
-    @Override
-    public T put(String key, T value) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
+    /** {@inheritDoc} */
     public T remove(Object key) {
-        // TODO Auto-generated method stub
-        return null;
+        return value().remove(key);
     }
 
-    @Override
-    public void putAll(Map<? extends String, ? extends T> m) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
+    /** {@inheritDoc} */
     public void clear() {
-        // TODO Auto-generated method stub
-        
+        value().clear();
     }
 
-    @Override
+    /** {@inheritDoc} */
     public Set<String> keySet() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Collection<T> values() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Set<java.util.Map.Entry<String, T>> entrySet() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public M fromString(String v) {
-        // TODO Auto-generated method stub
-        return null;
+        return  value().keySet();
     }
 
 }

@@ -29,12 +29,15 @@ import java.util.Map;
 
 import org.ff4j.conf.XmlConfig;
 import org.ff4j.conf.XmlParser;
+import org.ff4j.conf.XmlParserErrorHandler;
 import org.ff4j.core.Feature;
 import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.PropertyLogLevel;
 import org.ff4j.property.PropertyLogLevel.LogLevel;
 import org.junit.Assert;
 import org.junit.Test;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * Unit Testing
@@ -218,6 +221,18 @@ public class FeatureXmlParserTest {
         Assert.assertNotNull(properties);
     }
     
+    @Test(expected = SAXParseException.class)
+    public void testErrorHandler() throws SAXException {
+        XmlParserErrorHandler eh = new XmlParserErrorHandler();
+        eh.warning(null);
+        eh.fatalError(new SAXParseException("", null));
+    }
     
+    @Test(expected = SAXParseException.class)
+    public void testErrorHandler2() throws SAXException {
+        XmlParserErrorHandler eh = new XmlParserErrorHandler();
+        eh.warning(null);
+        eh.error(new SAXParseException("", null));
+    }
 
 }

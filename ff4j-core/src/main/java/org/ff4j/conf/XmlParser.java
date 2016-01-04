@@ -24,7 +24,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,9 +46,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 /**
  * Allow to parse XML files to load {@link Feature}.
@@ -212,12 +208,8 @@ public final class XmlParser {
             
             return xmlConf;
             
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new IllegalArgumentException("Cannot parse XML data, please check file access ", e);
-        } catch (ParserConfigurationException e1) {
-            throw new IllegalArgumentException("Error during initialization of parser ", e1);
-        } catch (SAXException e2) {
-            throw new IllegalArgumentException("Cannot parse XML, invalid format ", e2);
         }
     }
     
@@ -359,18 +351,8 @@ public final class XmlParser {
                     // Constructor (String, String) is mandatory in Property interface
                     Constructor<?> constr = Class.forName(optionalType).getConstructor(String.class, String.class);
                     ap = (AbstractProperty<?>) constr.newInstance(name, value);
-                } catch (InstantiationException e) {
+                } catch (Exception e) {
                     throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' check default constructor", e);
-                } catch (IllegalAccessException e) {
-                    throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' check visibility", e);
-                } catch (ClassNotFoundException e) {
-                    throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' not found", e);
-                } catch (InvocationTargetException e) {
-                    throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "'  error within constructor", e);
-                } catch (NoSuchMethodException e) {
-                    throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' constructor not found", e);
-                } catch (SecurityException e) {
-                    throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' check constructor visibility", e);
                 }
             }
             
@@ -496,23 +478,7 @@ public final class XmlParser {
     public DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {
         if (builder == null) {
             builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            builder.setErrorHandler(new ErrorHandler() {
-                /** {@inheritDoc} */
-                @Override
-                public void warning(SAXParseException e) throws SAXException {}
-
-                /** {@inheritDoc} */
-                @Override
-                public void fatalError(SAXParseException e) throws SAXException {
-                    throw e;
-                }
-
-                /** {@inheritDoc} */
-                @Override
-                public void error(SAXParseException e) throws SAXException {
-                    throw e;
-                }
-            });
+            builder.setErrorHandler(new XmlParserErrorHandler());
         }
         return builder;
     }
