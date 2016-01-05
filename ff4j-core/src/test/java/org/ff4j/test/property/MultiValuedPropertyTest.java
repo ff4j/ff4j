@@ -95,7 +95,7 @@ public class MultiValuedPropertyTest {
         ds.setListDelimiter(",");
         ds.fromString(vals);
         
-        // List methods by inheritance
+        // Enhance coverage, do not assert on existing JDK methods through
         ds.add("val");
         ds.add(0, "val2");
         ds.addAll(0, Util.list("val3", "val4"));
@@ -108,7 +108,6 @@ public class MultiValuedPropertyTest {
         ds.lastIndexOf("val");
         ds.listIterator();
         ds.listIterator(0);
-        
         ds.setValue(null);
         ds.set(1, "val2");
         ds.setValue(null);
@@ -121,9 +120,38 @@ public class MultiValuedPropertyTest {
         ds.remove(0);
         ds.setValue(null);
         ds.lastIndexOf("val");
+        ds.setValue(null);
+        ds.add(0, "");
+        ds.setValue(null);
+        ds.addAll(0, Util.list("val3", "val4"));
         ds.listIterator();
         ds.listIterator(0);
-        
+        ds.clear();
+        ds.toArray();
+        ds.toArray(new String[0]);
+        ds.fromString(null);
+        ds.setValue(null);
+        ds.remove("val3");
+        ds.addAll(0, Util.list("val3", "val4"));
+        ds.remove("val3");
+        ds.clear();
+        ds.setValue(null);
+        ds.containsAll(Util.list("val3", "val4"));
+        ds.remove("val3");
+        ds.retainAll(Util.list("val3", "val4"));
+        ds.size();
+        ds.iterator();
+        ds.toArray();
+        ds.addAll(Util.list("val3", "val4"));
+        ds.removeAll(Util.list("val3"));
+        ds.containsAll(Util.list("val3", "val4"));
+        ds.toArray();
+        ds.setValue(null);
+        ds.removeAll(Util.list("val3"));
+        ds.contains("val");
+        ds.addAll(Util.list("val3", "val4"));
+        ds.remove("val3");
+        ds.clear();
     }
     
     @Test
