@@ -63,7 +63,7 @@
 			</flipstrategy>
 		</feature>
 		<feature uid="feat4" description="desc_feat" enable="true">
-			<flipstrategy class="org.ff4j.strategy.ReleaseDateFlipStrategy">
+			<flipstrategy class="org.ff4j.strategy.time.ReleaseDateFlipStrategy">
 				<param name="releaseDate" value="2013-07-14-14:00" />
 			</flipstrategy>
 		</feature>
@@ -90,7 +90,7 @@
 
 	<!-- No Expression -->
 	<feature uid="first" enable="true" description="some desc">
-		<flipstrategy class="org.ff4j.strategy.OfficeHourStrategy">
+		<flipstrategy class="org.ff4j.strategy.time.OfficeHourStrategy">
 			<param name="monday" value="08:00-12:00,13:30-18:00" />
 			<param name="tuesday" value="08:00-12:00,13:30-18:00" />
 			<param name="wednesday" value="08:00-12:00,13:30-18:00" />
