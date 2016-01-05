@@ -1,4 +1,4 @@
-package org.ff4j.strategy;
+package org.ff4j.strategy.time;
 
 /*
  * #%L
@@ -25,14 +25,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FlippingExecutionContext;
-import org.ff4j.utils.Util;
+import org.ff4j.strategy.AbstractFlipStrategy;
 
 /**
  * Implemenetation of an office hour strategy.
@@ -42,9 +41,6 @@ import org.ff4j.utils.Util;
  * @author Cedrick Lunven (@clunven)
  */
 public class OfficeHourStrategy extends AbstractFlipStrategy {
-    
-    /** Parsing expression. */
-    private static final DateFormat SDF_HOUR = new SimpleDateFormat("HH:mm");
     
     /** Parsing date expression. */
     private static final DateFormat SDF_DATE = new SimpleDateFormat("yyyy-MM-dd");
@@ -87,166 +83,6 @@ public class OfficeHourStrategy extends AbstractFlipStrategy {
     
     /** public holiday. */
     private List < String > publicHolidays = new ArrayList<String>();
-    
-    /**
-     * Date Interval.
-     *
-     * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
-     */
-    public static final class HourInterval {
-        
-        /** Lower bound of interval. */
-        private Calendar from = Calendar.getInstance();
-        
-        /** Upper bound of interval. */
-        private Calendar to = Calendar.getInstance();
-        
-        /**
-         * Default.
-         */
-        protected HourInterval() {
-        }
-        
-        /**
-         * Initialization through init param structure : HH:MM-HH:MM
-         * 
-         * @param expression
-         *      expression to be parsed
-         */
-        protected HourInterval(String expression) {
-            Util.assertHasLength(expression);
-            String[] bounds = expression.split("-");
-            if (bounds.length != 2) {
-                throw new IllegalArgumentException("Invalid syntax, expected HH:mm-HH:MM " + expression);
-            }
-            init(bounds[0], bounds[1]);
-        }
-        
-        /**
-         * Constructor by string expressions
-         * @param f
-         *      from date as HH:MM
-         * @param t
-         *      to date as HH:MM
-         */
-        protected HourInterval(String f, String t) {
-           init(f, t);
-        }
-        
-        /**
-         * Initialization by dates
-         *
-         * @param from
-         *      lower bound
-         * @param to
-         *      uppoer bound
-         */
-        protected void init(String f, String t) {
-            try {
-                from.setTime(SDF_HOUR.parse(f));
-                to.setTime(SDF_HOUR.parse(t));
-                // Exchang bound if required
-                if (!from.before(to)) {
-                    Calendar cal = to;
-                    to = from;
-                    from = cal;
-                }
-            } catch (ParseException e) {
-                throw new IllegalArgumentException("Cannot parse incoming expressions <" + f + ">, <" + t + ">", e);
-            }
-        }
-        
-        /**
-         * Initialize component.
-         *
-         * @param froms
-         *      from date
-         * @param tos
-         *      to date
-         */
-        public HourInterval(Date froms, Date tos) {
-            if (froms.before(tos)) {
-                from.setTime(froms);
-                to.setTime(tos);
-            } else {
-                from.setTime(tos);
-                to.setTime(froms);
-            }
-        }
-        
-        /**
-         * Initialize component.
-         *
-         * @param froms
-         *      from calendar
-         * @param tos
-         *      to calendar
-         */
-        public HourInterval(Calendar froms, Calendar tos) {
-            this(froms.getTime(), tos.getTime());
-        }
-        
-        /**
-         * Check bounds against current date
-         * @return
-         */
-        public boolean matches() {
-            return matches(Calendar.getInstance());
-        }
-        
-        /**
-         * Check bounds against defined date.
-         *
-         * @return
-         */
-        public boolean matches(Calendar cal) {
-            // Align date, compare only hours here
-            from.set(Calendar.YEAR, cal.get(Calendar.YEAR));
-            from.set(Calendar.DAY_OF_YEAR, cal.get(Calendar.DAY_OF_YEAR));
-            to.set(Calendar.YEAR, cal.get(Calendar.YEAR));
-            to.set(Calendar.DAY_OF_YEAR, cal.get(Calendar.DAY_OF_YEAR));
-            return from.before(cal) && to.after(cal);
-        }
-
-        /**
-         * Getter accessor for attribute 'from'.
-         *
-         * @return
-         *       current value of 'from'
-         */
-        public Calendar getFrom() {
-            return from;
-        }
-
-        /**
-         * Setter accessor for attribute 'from'.
-         * @param from
-         * 		new value for 'from '
-         */
-        public void setFrom(Calendar from) {
-            this.from = from;
-        }
-
-        /**
-         * Getter accessor for attribute 'to'.
-         *
-         * @return
-         *       current value of 'to'
-         */
-        public Calendar getTo() {
-            return to;
-        }
-
-        /**
-         * Setter accessor for attribute 'to'.
-         * @param to
-         * 		new value for 'to '
-         */
-        public void setTo(Calendar to) {
-            this.to = to;
-        }
-        
-    }
     
     /** {@inheritDoc} */
     @Override

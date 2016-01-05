@@ -208,7 +208,7 @@ public class Feature implements Serializable {
     /**
      * Toggle target feature (from enable to disable and vice versa)
      */
-    public void toggle() {
+    public void toggle() {         
         this.enable = !this.enable;
     }
 

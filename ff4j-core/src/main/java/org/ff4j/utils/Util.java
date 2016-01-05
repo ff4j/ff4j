@@ -40,6 +40,9 @@ public class Util {
     /** End Color. */
     private static final String END_COLOR = "EEFFEE";
 
+    private Util() {
+    }
+    
    /**
      * Check that expression is true.
      * 

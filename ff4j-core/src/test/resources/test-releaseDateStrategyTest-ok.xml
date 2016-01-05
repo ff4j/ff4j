@@ -25,13 +25,13 @@
 
 	<!-- No Expression -->
 	<feature uid="past1" enable="true" description="some desc">
-		<flipstrategy class="org.ff4j.strategy.ReleaseDateFlipStrategy" >
+		<flipstrategy class="org.ff4j.strategy.time.ReleaseDateFlipStrategy" >
 			<param name="releaseDate" value="2013-07-14-14:00" />
 		</flipstrategy>
 	</feature>
 			 
 	<feature uid="future1" enable="true" description="some desc"> 
-		<flipstrategy class="org.ff4j.strategy.ReleaseDateFlipStrategy" >
+		<flipstrategy class="org.ff4j.strategy.time.ReleaseDateFlipStrategy" >
 			<param name="releaseDate" value="3013-07-14-14:00" />
 		</flipstrategy>
 	</feature>

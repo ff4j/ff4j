@@ -81,6 +81,7 @@ public class GraphChartTest {
         sc = new SparklineCurve("title2", System.currentTimeMillis(), (System.currentTimeMillis()+5), 5);
         sc.setInterval(1);sc.getInterval();
         sc.setNbRecords(3);sc.getNbRecords();
+        sc.setLineColor("red");sc.getLineColor();
         sc.setTitle("Ttitle");sc.getTitle();
         sc.incrCount(1);
         List < SparklinePoint > lPoints = new ArrayList<SparklinePoint>();

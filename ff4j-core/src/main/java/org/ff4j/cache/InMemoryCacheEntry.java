@@ -59,6 +59,18 @@ public final class InMemoryCacheEntry<T> implements Serializable {
     }
     
     /**
+     * Parameterized contructor with target cached object.
+     * 
+     * @param entry
+     *            cached object
+     */
+    public InMemoryCacheEntry(T entry, long timeToLive) {
+        this.entry = entry;
+        this.insertedDate = System.currentTimeMillis();
+        this.timeToLive = timeToLive;
+    }
+    
+    /**
      * Compute the timeout property.
      *
      * @return

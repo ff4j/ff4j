@@ -57,7 +57,7 @@ public abstract class AbstractFlipStrategy implements FlippingStrategy {
      * @param paramName
      *            target parameter name
      */
-    protected void assertRequiredParameter(String paramName) {
+    public void assertRequiredParameter(String paramName) {
         if (!initParams.containsKey(paramName)) {
             String msg = String.format("Parameter '%s' is required for this FlippingStrategy", paramName);
             throw new IllegalArgumentException(msg);

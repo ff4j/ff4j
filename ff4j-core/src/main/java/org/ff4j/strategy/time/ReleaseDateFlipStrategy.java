@@ -1,4 +1,4 @@
-package org.ff4j.strategy;
+package org.ff4j.strategy.time;
 
 /*
  * #%L
@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FlippingExecutionContext;
+import org.ff4j.strategy.AbstractFlipStrategy;
 
 /**
  * The feature will be flipped after release date is reached.

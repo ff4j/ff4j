@@ -2,9 +2,9 @@ package org.ff4j.web;
 
 /*
  * #%L
- * ff4j-web
+ * ff4j-core
  * %%
- * Copyright (C) 2013 - 2014 Ff4J
+ * Copyright (C) 2013 - 2016 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,11 @@ package org.ff4j.web;
  * #L%
  */
 
-import java.io.IOException;
-import java.io.InputStream;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
 
 import org.ff4j.FF4j;
 
@@ -39,7 +36,7 @@ import org.ff4j.FF4j;
 public class ApiConfig implements FF4JProvider, FF4jWebConstants {
     
     /** Configuration of ff4j. */
-    private FF4j fF4j;
+    private FF4j ff4j;
 
     /** Enable authentication for jersey. */
     private boolean authenticate = false;
@@ -75,23 +72,15 @@ public class ApiConfig implements FF4JProvider, FF4jWebConstants {
      * Default constructor.
      */
     public ApiConfig() {
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(MANIFEST_FILE);
-        if (inputStream != null) {
-            try {
-                Manifest mFile = new Manifest(inputStream);
-                version = (String) mFile.getMainAttributes().get(new Attributes.Name(MANIFEST_VERSION));
-            } catch (IOException ieo) {
-                System.err.println("Cannot read the manifest file " + ieo);
-            }
-        }
+        version = getClass().getPackage().getImplementationVersion();
     }
-
+    
     /**
      * Initialized with a ff4j.
      */
     public ApiConfig(FF4j ff) {
         this();
-        this.fF4j = ff;
+        this.ff4j = ff;
     }   
     
     /**
@@ -151,7 +140,7 @@ public class ApiConfig implements FF4JProvider, FF4jWebConstants {
     /** {@inheritDoc} */
     @Override
     public FF4j getFF4j() {
-        return fF4j;
+        return ff4j;
     }
 
     /**
@@ -161,7 +150,7 @@ public class ApiConfig implements FF4JProvider, FF4jWebConstants {
      *            new value for 'fF4j '
      */
     public void setFF4j(FF4j fF4j) {
-        this.fF4j = fF4j;
+        this.ff4j = fF4j;
     }
 
     /**
@@ -286,25 +275,6 @@ public class ApiConfig implements FF4JProvider, FF4jWebConstants {
      */
     public void setWebContext(String webContext) {
         this.webContext = webContext;
-    }
-
-    /**
-     * Getter accessor for attribute 'fF4j'.
-     *
-     * @return
-     *       current value of 'fF4j'
-     */
-    public FF4j getfF4j() {
-        return fF4j;
-    }
-
-    /**
-     * Setter accessor for attribute 'fF4j'.
-     * @param fF4j
-     * 		new value for 'fF4j '
-     */
-    public void setfF4j(FF4j fF4j) {
-        this.fF4j = fF4j;
     }
 
     /**

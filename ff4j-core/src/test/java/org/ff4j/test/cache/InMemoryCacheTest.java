@@ -1,5 +1,14 @@
 package org.ff4j.test.cache;
 
+import org.ff4j.cache.FF4jCacheProxy;
+import org.ff4j.cache.InMemoryCacheManager;
+import org.ff4j.core.Feature;
+import org.ff4j.core.FeatureStore;
+import org.ff4j.property.Property;
+import org.ff4j.property.store.InMemoryPropertyStore;
+import org.ff4j.store.InMemoryFeatureStore;
+import org.ff4j.test.store.AbstractStoreTest;
+
 /*
  * #%L
  * ff4j-core
@@ -21,15 +30,6 @@ package org.ff4j.test.cache;
  */
 
 import org.junit.Assert;
-
-import org.ff4j.cache.FF4jCacheProxy;
-import org.ff4j.cache.InMemoryCacheManager;
-import org.ff4j.core.Feature;
-import org.ff4j.core.FeatureStore;
-import org.ff4j.property.Property;
-import org.ff4j.property.store.InMemoryPropertyStore;
-import org.ff4j.store.InMemoryFeatureStore;
-import org.ff4j.test.store.AbstractStoreTest;
 import org.junit.Test;
 
 /**
@@ -108,6 +108,64 @@ public class InMemoryCacheTest extends AbstractStoreTest {
         Assert.assertFalse(fscp.exist("toto"));
         Assert.assertTrue(fscp.exist("first"));
         Assert.assertTrue(fscp.exist("first"));
+    }
+    
+    @Test
+    public void testClear() {
+        // Given
+        InMemoryCacheManager imcm = new InMemoryCacheManager();
+        imcm.putProperty(new Property("p1"));
+        Assert.assertFalse(imcm.listCachedPropertyNames().isEmpty());
+        // When
+        imcm.clearProperties();
+        // Then
+        Assert.assertTrue(imcm.listCachedPropertyNames().isEmpty());
+    }
+    
+    @Test
+    public void testEvictProperty1() {
+        // Given
+        InMemoryCacheManager imcm = new InMemoryCacheManager();
+        imcm.putProperty(new Property("p1"));
+        Assert.assertFalse(imcm.listCachedPropertyNames().isEmpty());
+        // When
+        imcm.evictProperty("p1");
+        // Then
+        Assert.assertTrue(imcm.listCachedPropertyNames().isEmpty());
+    }
+    
+    @Test
+    public void testEvictProperty2() {
+        // Given
+        InMemoryCacheManager imcm = new InMemoryCacheManager();
+        imcm.putProperty(new Property("p2"));
+        Assert.assertFalse(imcm.listCachedPropertyNames().isEmpty());
+        // When
+        imcm.evictProperty("p1");
+        // Then
+        Assert.assertFalse(imcm.listCachedPropertyNames().isEmpty());
+    }
+    
+    @Test
+    public void testReadFeature() {
+        // Given
+        InMemoryCacheManager imcm = new InMemoryCacheManager();
+        imcm.putFeature(new Feature("f1"), 100);
+        // When
+        Feature f = imcm.getFeature("f1");
+        // Then
+        Assert.assertNotNull(f);
+        // When
+        imcm.putFeature(new Feature("f1"), 1);
+        
+    }
+    
+    @Test
+    public void testAccessors() {
+        InMemoryCacheManager imcm = new InMemoryCacheManager();
+        Assert.assertNotNull(imcm.getCacheProviderName());
+        Assert.assertTrue(imcm.listCachedFeatureNames().isEmpty());
+        Assert.assertTrue(imcm.listCachedPropertyNames().isEmpty());
     }
 
 }

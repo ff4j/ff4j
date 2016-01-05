@@ -67,8 +67,6 @@ public class JdbcFeatureDataSourceTest extends AbstractStoreTest implements Jdbc
         Connection          sqlConn = null;
         PreparedStatement   ps = null;
         try {
-            new JdbcUtils();
-            
             // Pick connection
             sqlConn = sqlDataSource.getConnection();
             
@@ -89,7 +87,6 @@ public class JdbcFeatureDataSourceTest extends AbstractStoreTest implements Jdbc
         PreparedStatement   ps = null;
         ResultSet           rs = null;
         try {
-            new JdbcUtils();
             
             // Pick connection
             sqlConn = sqlDataSource.getConnection();

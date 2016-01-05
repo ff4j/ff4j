@@ -172,5 +172,12 @@ public class ExpressionParserTest extends TestCase {
             fail();
         }
     }
+    
+    @Test
+    public void testValuesOf() {
+        ExpressionOperator eo = ExpressionOperator.valueOf("OR");
+        Assert.assertNotNull(eo);
+        Assert.assertTrue(ExpressionOperator.values().length > 0);
+    }
 
 }

@@ -12,10 +12,16 @@ package org.ff4j.test;
  */
 
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.ff4j.core.Feature;
+import org.ff4j.core.FlippingExecutionContext;
+import org.ff4j.exception.PropertyNotFoundException;
+import org.ff4j.property.Property;
 import org.ff4j.strategy.PonderationStrategy;
 import org.junit.Assert;
 import org.junit.Test;
@@ -88,5 +94,94 @@ public class FeatureTest {
         // To String with a whole object
         Assert.assertTrue(empty.toString().contains("OK"));
     }
+    
+    @Test
+    public void testProperty() {
+        Feature f = new Feature("f1");
+        f.toggle();
+        f.toggle();
+        f.getCustomProperties().put("p1", new Property("p1","v1"));
+        f.getProperty("p1");
+    }
+    
+    @Test(expected = PropertyNotFoundException.class)
+    public void testPropertyNotFound() {
+        Feature f = new Feature("f1");
+        f.getProperty("p1");
+    }
+    
+    @Test
+    public void testFlipExecContext() {
+        Map < String, Object > parameters = new HashMap<String, Object>();
+        parameters.put("a", new Double(1D));        
+        parameters.put("b", new Integer(1));        
+        parameters.put("c", new Boolean(true));        
+        parameters.put("d", new Date());        
+        
+        FlippingExecutionContext fec = new FlippingExecutionContext(parameters);
+        fec.getDouble("a");
+        fec.getInt("b");
+        fec.getBoolean("c");
+        fec.getDate("d");
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testFlipExecContext2() {
+        Map < String, Object > parameters = new HashMap<String, Object>();
+        FlippingExecutionContext fec = new FlippingExecutionContext();
+        parameters.put("b", new Double(1));        
+        fec.getInt("b");
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testFlipExecContext3() {
+        Map < String, Object > parameters = new HashMap<String, Object>();
+        FlippingExecutionContext fec = new FlippingExecutionContext();
+        parameters.put("b", new Integer(1));        
+        fec.getDouble("b");
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testFlipExecContext4() {
+        Map < String, Object > parameters = new HashMap<String, Object>();
+        FlippingExecutionContext fec = new FlippingExecutionContext();
+        parameters.put("b", new Integer(1));        
+        fec.getDate("b");
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testFlipExecContext5() {
+        Map < String, Object > parameters = new HashMap<String, Object>();
+        FlippingExecutionContext fec = new FlippingExecutionContext();
+        parameters.put("b", new Integer(1));        
+        fec.getBoolean("b");
+        
+        fec.getValue("DONOT", true);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testFlipExecContext6() {
+        FlippingExecutionContext fec = new FlippingExecutionContext();
+        fec.getValue("DONOT", true);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testFlipExecContext7() {
+        Map < String, Object > parameters = new HashMap<String, Object>();
+        FlippingExecutionContext fec = new FlippingExecutionContext();
+        parameters.put("b", new Integer(1));        
+        fec.getString("b");
+    }
+    
+    @Test
+    public void testFlipExecContext8() {        
+        FlippingExecutionContext fec = new FlippingExecutionContext();
+        fec.putBoolean("a", new Boolean(true));
+        fec.putDate("b", new Date());
+        fec.putDate("c", new Date());
+        fec.putInt("d", new Integer(1));
+        fec.putDouble("e", new Double(1D));
+    }
 
 }
+

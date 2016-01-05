@@ -21,14 +21,19 @@ package org.ff4j.test.strategy;
  */
 
 import java.text.ParseException;
-
-import org.junit.Assert;
+import java.util.HashMap;
 
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingExecutionContext;
+import org.ff4j.core.FlippingStrategy;
+import org.ff4j.store.InMemoryFeatureStore;
+import org.ff4j.strategy.BlackListStrategy;
 import org.ff4j.strategy.ClientFilterStrategy;
+import org.ff4j.strategy.ServerFilterStrategy;
+import org.ff4j.strategy.WhiteListStrategy;
 import org.ff4j.test.AbstractFf4jTest;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -112,6 +117,38 @@ public class ClientFilterStrategyTest extends AbstractFf4jTest {
 
         // Then
         ff4j.check(F1, fex);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testInitialisationProgram2() {
+        ClientFilterStrategy fs = new ClientFilterStrategy("Pierre, Paul, Jacques");
+        fs.init("f1", null);
+        fs.init("f1", new HashMap<String, String>());
+        fs.assertRequiredParameter("f2");
+    }
+    
+    @Test
+    public void testInitialisationProgram() {
+        FlippingStrategy fs = new ClientFilterStrategy("Pierre, Paul, Jacques");
+        fs.init("f1", null);
+        fs.init("f1", new HashMap<String, String>());        
+        new WhiteListStrategy();
+        new WhiteListStrategy("Pierre");
+        
+        new BlackListStrategy();
+        FlippingStrategy bl2 = new BlackListStrategy("Pierre");
+        FlippingExecutionContext context = new FlippingExecutionContext();
+        context.putString("clientHostName", "localhost");
+        bl2.evaluate("f1", new InMemoryFeatureStore(), context);
+    }
+    
+    @Test
+    public void testInitialisationProgramServer() {
+        FlippingStrategy fs = new ServerFilterStrategy("serv1,serv2");
+        fs.init("f1", null);
+        fs.init("f1", new HashMap<String, String>());
+        FlippingExecutionContext context = new FlippingExecutionContext();
+        fs.evaluate("f1", new InMemoryFeatureStore(), context);
     }
 
 }

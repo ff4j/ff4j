@@ -21,10 +21,12 @@ package org.ff4j.test.strategy;
  */
 
 import java.util.Calendar;
+import java.util.Date;
 
 import org.ff4j.FF4j;
 import org.ff4j.core.FlippingExecutionContext;
-import org.ff4j.strategy.OfficeHourStrategy;
+import org.ff4j.strategy.time.HourInterval;
+import org.ff4j.strategy.time.OfficeHourStrategy;
 import org.ff4j.test.AbstractFf4jTest;
 import org.junit.Assert;
 import org.junit.Before;
@@ -121,4 +123,38 @@ public class OfficeHourStrategyTest extends AbstractFf4jTest {
         assertTrue(2015, Calendar.JANUARY, 2, 11);
         assertFalse(2015, Calendar.JANUARY, 2, 14);
     }
+    
+     @Test
+    public void testInterval() throws InterruptedException {
+         new HourInterval();
+         new HourInterval("08:00-12:00");
+         new HourInterval(Calendar.getInstance(), Calendar.getInstance());
+         Date d1 = new Date();
+         Thread.sleep(2000);
+         Date d2 = new Date();
+         new HourInterval(d1, d2);
+         new HourInterval(d2, d1);
+         HourInterval h1 = new HourInterval("09:00", "12:00");
+         h1.setFrom(Calendar.getInstance());h1.getFrom();
+         h1.setTo(Calendar.getInstance());h1.getTo();
+         h1.matches();
+    }
+     
+     @Test
+     public void testInterval2() {
+         new HourInterval("18:00-12:00");
+     }
+     
+     @Test(expected = IllegalArgumentException.class)
+     public void testIntervalError() {
+         new HourInterval("ksqjhdsqkjhdlh");
+     }
+     
+     @Test(expected = IllegalArgumentException.class)
+     public void testIntervalError2() {
+         new HourInterval("10000", "1000");
+     }
+     
+     
 }
+

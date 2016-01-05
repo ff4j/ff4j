@@ -101,7 +101,7 @@ public class FlippingExecutionContext {
     public String getString(String key, boolean required) {
         Object o = getValue(key, required);
         if (!(o instanceof String)) {
-            throw new IllegalArgumentException("Cannot convert parameter to String it's " + o.getClass());
+            throw new IllegalArgumentException("Cannot convert parameter to String");
         }
         return (String) o;
     }
@@ -129,7 +129,7 @@ public class FlippingExecutionContext {
     public Boolean getBoolean(String key, boolean required) {
         Object o = getValue(key, required);
         if (!(o instanceof Boolean)) {
-            throw new IllegalArgumentException("Cannot convert parameter to Boolean it's " + o.getClass());
+            throw new IllegalArgumentException("Cannot convert parameter to Boolean");
         }
         return (Boolean) o;
     }
@@ -158,7 +158,7 @@ public class FlippingExecutionContext {
     public Integer getInt(String key, boolean required) {
         Object o = getValue(key, required);
         if (!(o instanceof Integer)) {
-            throw new IllegalArgumentException("Cannot convert parameter to Integer it's " + o.getClass());
+            throw new IllegalArgumentException("Cannot convert parameter to Integer it");
         }
         return (Integer) o;
     }
@@ -186,7 +186,7 @@ public class FlippingExecutionContext {
     public Double getDouble(String key, boolean required) {
         Object o = getValue(key, required);
         if (!(o instanceof Double)) {
-            throw new IllegalArgumentException("Cannot convert parameter to Double it's " + o.getClass());
+            throw new IllegalArgumentException("Cannot convert parameter to Double");
         }
         return (Double) o;
     }
@@ -214,7 +214,7 @@ public class FlippingExecutionContext {
     public Date getDate(String key, boolean required) {
         Object o = getValue(key, required);
         if (!(o instanceof Date)) {
-            throw new IllegalArgumentException("Cannot convert parameter to Date it's " + o.getClass());
+            throw new IllegalArgumentException("Cannot convert parameter to Date");
         }
         return (Date) o;
     }

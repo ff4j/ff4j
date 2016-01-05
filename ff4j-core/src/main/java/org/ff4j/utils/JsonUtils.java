@@ -35,6 +35,9 @@ import org.ff4j.property.AbstractProperty;
  */
 public class JsonUtils {
  
+    private JsonUtils() {
+    }
+    
     /**
      * Cache JSON expression for a store.
      *

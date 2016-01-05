@@ -4,7 +4,7 @@ import java.text.ParseException;
 
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
-import org.ff4j.strategy.ReleaseDateFlipStrategy;
+import org.ff4j.strategy.time.ReleaseDateFlipStrategy;
 import org.ff4j.test.AbstractFf4jTest;
 import org.junit.Assert;
 import org.junit.Test;

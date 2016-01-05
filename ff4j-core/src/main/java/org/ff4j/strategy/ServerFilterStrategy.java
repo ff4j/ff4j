@@ -1,7 +1,5 @@
 package org.ff4j.strategy;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
@@ -9,6 +7,7 @@ import java.util.Set;
 
 import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FlippingExecutionContext;
+import org.ff4j.utils.IOUtil;
 
 /*
  * #%L
@@ -83,16 +82,11 @@ public class ServerFilterStrategy extends AbstractFlipStrategy {
 
     /** {@inheritDoc} */
     @Override
-    public boolean evaluate(String featureName, FeatureStore store, FlippingExecutionContext executionContext) {
-        if (null == executionContext || !executionContext.containsKey(SERVER_HOSTNAME)) {
-            // Since 1.2.1 : Try to find the hostname from JVM
-            try {
-                return setOfTargetServer.contains(InetAddress.getLocalHost().getHostName());
-            } catch (UnknownHostException e) {
-                throw new IllegalArgumentException("Cannot find the target host by itself", e);
-            }
+    public boolean evaluate(String featureName, FeatureStore store, FlippingExecutionContext ctx) {
+        if (null != ctx && ctx.containsKey(SERVER_HOSTNAME)) {
+            return setOfTargetServer.contains(ctx.getString(SERVER_HOSTNAME));
         }
-        return setOfTargetServer.contains(executionContext.getString(SERVER_HOSTNAME));
+        return setOfTargetServer.contains(IOUtil.resolveHostName());
     }
 
 }

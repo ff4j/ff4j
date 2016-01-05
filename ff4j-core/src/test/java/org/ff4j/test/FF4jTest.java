@@ -178,7 +178,13 @@ public class FF4jTest extends AbstractFf4jTest {
         Assert.assertNotNull(ff4j.getStore());
         ff4j.setFeatureStore(null);
         ff4j.setPropertiesStore(null);
+        ff4j.setEventRepository(null);
+        ff4j.setEventPublisher(null);
+        ff4j.setAuthorizationsManager(new DefinedPermissionSecurityManager(Util.set("val1")));
         ff4j.toString();
+        
+        ff4j.removeCurrentContext();
+        ff4j.getCurrentContext();
     }
 
     @Test
@@ -323,6 +329,18 @@ public class FF4jTest extends AbstractFf4jTest {
         
         ff4j.setAuthorizationsManager(new DefinedPermissionSecurityManager(Util.set("S1", "S2")));
         ff4j.getAuthorizationsManager().toString();
+    }
+    
+    @Test
+    public void testAllowed() {
+        FF4j ff4j = new FF4j();
+        ff4j.setAuthorizationsManager(new DefinedPermissionSecurityManager(Util.set("USER")));
+        Feature f1 = new Feature("f1", true, null, null, Util.set("USER"));
+        ff4j.createFeature(f1);
+        
+        ff4j.check(f1.getUid());
+        ff4j.isAllowed(f1);
+        
     }
 
 

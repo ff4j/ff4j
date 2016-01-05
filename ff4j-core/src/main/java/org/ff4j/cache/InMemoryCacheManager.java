@@ -99,6 +99,17 @@ public class InMemoryCacheManager implements FF4JCacheManager {
         }
         getFeaturesCache().put(feat.getUid(), new InMemoryCacheEntry<Feature>(feat));
     }
+    
+    /** {@inheritDoc} */
+    public void putFeature(Feature feat, long timeToLive) {
+        if (feat == null) {
+            throw new IllegalArgumentException("ff4j-core: Cannot insert null feature into cache");
+        }
+        if (feat.getUid() == null || feat.getUid().isEmpty()) {
+            throw new IllegalArgumentException("ff4j-core: Cannot insert feature with null identifier into cache");
+        }
+        getFeaturesCache().put(feat.getUid(), new InMemoryCacheEntry<Feature>(feat, timeToLive));
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -145,7 +156,7 @@ public class InMemoryCacheManager implements FF4JCacheManager {
     /** {@inheritDoc} */
     @Override
     public Set<String> listCachedPropertyNames() {
-        return null;
+        return propertyCache.keySet();
     }
 
     /** {@inheritDoc} */

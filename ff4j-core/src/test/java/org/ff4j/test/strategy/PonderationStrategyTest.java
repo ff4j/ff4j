@@ -1,5 +1,11 @@
 package org.ff4j.test.strategy;
 
+import org.ff4j.FF4j;
+import org.ff4j.core.Feature;
+import org.ff4j.strategy.DarkLaunchStrategy;
+import org.ff4j.strategy.PonderationStrategy;
+import org.ff4j.test.AbstractFf4jTest;
+
 /*
  * #%L ff4j-core $Id:$ $HeadURL:$ %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -12,11 +18,6 @@ package org.ff4j.test.strategy;
  */
 
 import org.junit.Assert;
-
-import org.ff4j.FF4j;
-import org.ff4j.core.Feature;
-import org.ff4j.strategy.PonderationStrategy;
-import org.ff4j.test.AbstractFf4jTest;
 import org.junit.Test;
 
 /**
@@ -90,5 +91,14 @@ public class PonderationStrategyTest extends AbstractFf4jTest {
         PonderationStrategy pfs = new PonderationStrategy();
         pfs.setWeight(0.5);
     }
+    
+    @Test
+    public void testInitializations() {
+        PonderationStrategy pfs = new DarkLaunchStrategy();
+        pfs.setWeight(0.5);
+        new DarkLaunchStrategy(0.5);
+    }
+    
+    
 
 }
