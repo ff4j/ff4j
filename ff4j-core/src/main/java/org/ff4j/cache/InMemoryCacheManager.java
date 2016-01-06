@@ -122,6 +122,17 @@ public class InMemoryCacheManager implements FF4JCacheManager {
         }
         getPropertyCache().put(prop.getName(), new InMemoryCacheEntry<AbstractProperty<?>>(prop));
     }
+    
+    /** {@inheritDoc} */
+    public void putProperty(AbstractProperty<?> prop, long timeToLive) {
+        if (prop == null) {
+            throw new IllegalArgumentException("ff4j-core: Cannot insert null property into cache");
+        }
+        if (prop.getName() == null || prop.getName().isEmpty()) {
+            throw new IllegalArgumentException("ff4j-core: Cannot insert property with null identifier into cache");
+        }
+        getPropertyCache().put(prop.getName(), new InMemoryCacheEntry<AbstractProperty<?>>(prop, timeToLive));
+    }
 
     /** {@inheritDoc} */
     @Override

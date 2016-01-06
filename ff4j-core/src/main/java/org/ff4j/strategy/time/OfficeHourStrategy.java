@@ -101,19 +101,17 @@ public class OfficeHourStrategy extends AbstractFlipStrategy {
         // Update publiholidays
         if (initParam.containsKey(PUBLICHOLIDAY)) {
             String[] days = initParam.get(PUBLICHOLIDAY).split(",");
-            if (days != null) {
-                for (String day : days) {
-                    try {
-                        Calendar c = Calendar.getInstance();
-                        c.setTime(SDF_DATE.parse(day.trim()));
-                        c.set(Calendar.MILLISECOND, 0);
-                        c.set(Calendar.SECOND, 0);
-                        c.set(Calendar.MINUTE, 0);
-                        c.set(Calendar.HOUR_OF_DAY, 0);
-                        publicHolidays.add(SDF_DATE.format(c.getTime()));
-                    } catch (ParseException e) {
-                        throw new IllegalArgumentException("Invalid Syntax for <" + day + "> expected 'yyyy-MM-dd'", e);
-                    }
+            for (String day : days) {
+               try {
+                   Calendar c = Calendar.getInstance();
+                   c.setTime(SDF_DATE.parse(day.trim()));
+                   c.set(Calendar.MILLISECOND, 0);
+                   c.set(Calendar.SECOND, 0);
+                   c.set(Calendar.MINUTE, 0);
+                   c.set(Calendar.HOUR_OF_DAY, 0);
+                   publicHolidays.add(SDF_DATE.format(c.getTime()));
+                } catch (ParseException e) {
+                   throw new IllegalArgumentException("Invalid Syntax for <" + day + "> expected 'yyyy-MM-dd'", e);
                 }
             }
         }
@@ -121,25 +119,23 @@ public class OfficeHourStrategy extends AbstractFlipStrategy {
         // Update exclusive openings
         if (initParam.containsKey(SPECIAL_OPENINGS)) {
             String[] days = initParam.get(SPECIAL_OPENINGS).split(";");
-            if (days != null) {
-                for (String day : days) {
-                    String[] partDay = day.split("@");
-                    if (partDay.length != 2) {
-                        throw new IllegalArgumentException("Invalid Syntax");
-                    }
+            for (String day : days) {
+              String[] partDay = day.split("@");
+              if (partDay.length != 2) {
+                  throw new IllegalArgumentException("Invalid Syntax");
+              }
                     
-                    // Check format at loading
-                    String dateExpression = partDay[1].trim();
-                    try {
-                        SDF_DATE.parse(dateExpression);
-                        String inter = partDay[0].trim();
-                        String extractIntervals = inter.substring(1, inter.length() -1);
-                        specialTimeTable.put(dateExpression,  parseIntervalsExpression(extractIntervals));
-                    } catch (ParseException e) {
-                        throw new IllegalArgumentException("Invalid Syntax for '" + dateExpression + "' expected 'yyyy-MM-dd'", e);
-                    }
-                }
-            }
+              // Check format at loading
+              String dateExpression = partDay[1].trim();
+              try {
+                  SDF_DATE.parse(dateExpression);
+                  String inter = partDay[0].trim();
+                  String extractIntervals = inter.substring(1, inter.length() -1);
+                  specialTimeTable.put(dateExpression,  parseIntervalsExpression(extractIntervals));
+               } catch (ParseException e) {
+                   throw new IllegalArgumentException("Invalid Syntax for '" + dateExpression + "' expected 'yyyy-MM-dd'", e);
+               }
+           }
         }
     }
     
@@ -151,16 +147,14 @@ public class OfficeHourStrategy extends AbstractFlipStrategy {
      * @return
      *      list of hour interval
      */
-    private List < HourInterval > parseIntervalsExpression(String expression) {
+    public List < HourInterval > parseIntervalsExpression(String expression) {
         // Always close
         List < HourInterval > lhi = new ArrayList<HourInterval>();
         if (expression != null && !"".equals(expression)) {
             String[] chunks = expression.split(",");
-            if (chunks != null) {
-                for (String chunk : chunks) {
-                    lhi.add(new HourInterval(chunk));
-                }
-            }
+           for (String chunk : chunks) {
+               lhi.add(new HourInterval(chunk));
+           }
         }
         return lhi;
        
@@ -174,7 +168,7 @@ public class OfficeHourStrategy extends AbstractFlipStrategy {
      * @return
      *      if one of the interval matches
      */
-    private boolean matches(Calendar cal, List < HourInterval > listOfHI) {
+    public boolean matches(Calendar cal, List < HourInterval > listOfHI) {
         if (listOfHI == null) return false;
         int idx = 0;
         boolean found = false;

@@ -167,5 +167,53 @@ public class InMemoryCacheTest extends AbstractStoreTest {
         Assert.assertTrue(imcm.listCachedFeatureNames().isEmpty());
         Assert.assertTrue(imcm.listCachedPropertyNames().isEmpty());
     }
+    
+    @Test
+    public void testGetProperty() throws InterruptedException {
+        InMemoryCacheManager imcm = new InMemoryCacheManager();
+        imcm.putProperty(new Property("p1"));
+        Assert.assertNull(imcm.getProperty("p2"));
+        Assert.assertNotNull(imcm.getProperty("p1"));
+    }
 
+    @Test
+    public void testGetFeatureTimeout() throws InterruptedException {
+        InMemoryCacheManager imcm = new InMemoryCacheManager();
+        imcm.putFeature(new Feature("f2"), 1);
+        Thread.sleep(1100);
+        Assert.assertNull(imcm.getFeature("f2"));
+    }
+    
+    @Test
+    public void testGetPropertyTimeout() throws InterruptedException {
+        InMemoryCacheManager imcm = new InMemoryCacheManager();
+        imcm.putProperty(new Property("p1"), 1);
+        imcm.putProperty(new Property("p2"), 10);
+        Thread.sleep(1100);
+        Assert.assertNull(imcm.getProperty("p1"));
+        Assert.assertNotNull(imcm.getProperty("p2"));
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetProperty2()  {
+        InMemoryCacheManager imcm = new InMemoryCacheManager();
+        imcm.putProperty(null, 1);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetProperty3()  {
+        InMemoryCacheManager imcm = new InMemoryCacheManager();
+        Property p1 = new Property("p1");
+        p1.setName(null);
+        imcm.putProperty(p1, 1);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetProperty4()  {
+        InMemoryCacheManager imcm = new InMemoryCacheManager();
+        Property p1 = new Property("p1");
+        p1.setName("");
+        imcm.putProperty(p1, 1);
+    }
+   
 }

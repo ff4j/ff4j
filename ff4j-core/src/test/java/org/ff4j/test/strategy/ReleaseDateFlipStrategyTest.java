@@ -1,6 +1,9 @@
 package org.ff4j.test.strategy;
 
 import java.text.ParseException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
@@ -54,6 +57,26 @@ public class ReleaseDateFlipStrategyTest extends AbstractFf4jTest {
         Feature f = ff4j.getFeature("future1");
         ReleaseDateFlipStrategy rds = (ReleaseDateFlipStrategy) f.getFlippingStrategy();
         Assert.assertFalse(rds.evaluate("future1", null, null));
+    }
+    
+    @Test
+    public void testInitProgrammatically() {
+        new ReleaseDateFlipStrategy("2016-01-01-12:00");
+        ReleaseDateFlipStrategy rds2 = new ReleaseDateFlipStrategy(new Date());
+        rds2.setReleaseDate(new Date());
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testInitInvalidDate() {
+        new ReleaseDateFlipStrategy("invalid");
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidDate() {
+        ReleaseDateFlipStrategy rds2 = new ReleaseDateFlipStrategy(new Date());
+        Map < String, String > params = new HashMap<String, String>();
+        params.put("releaseDate", "invalid");
+        rds2.init("f1", params);
     }
 
 }
