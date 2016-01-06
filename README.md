@@ -17,7 +17,8 @@ You can enable and disable features through configuration at runtime with dedica
 the exact same web console.
 
 
-Test it yourself [![Live Demo](https://img.shields.io/badge/ff4jdemo-online-green.svg)](http://cannys.com/ff4j-demo/)
+Test it yourself 
+[![Live Demo](https://img.shields.io/badge/ff4jdemo-online-green.svg)](http://cannys.com/ff4j-demo/)
 
 
 More information at [ff4j.org](http://ff4j.org) or [reference guide](https://github.com/clun/ff4j-extra/raw/master/ff4j-reference-guide-1.3.pdf).

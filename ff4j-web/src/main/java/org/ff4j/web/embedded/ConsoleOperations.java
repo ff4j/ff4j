@@ -34,12 +34,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.ff4j.FF4j;
+import org.ff4j.conf.XmlConfig;
 import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.PropertyFactory;
+import org.ff4j.property.store.PropertyStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -272,8 +274,10 @@ public class ConsoleOperations implements ConsoleConstants {
      */
     public static void importFile(FF4j ff4j, InputStream in) 
     throws IOException {
+        
         FeatureStore store = ff4j.getFeatureStore();
-        Map<String, Feature> mapsOfFeat = new XmlParser().parseConfigurationFile(in).getFeatures();
+        XmlConfig xmlConfig = new XmlParser().parseConfigurationFile(in);
+        Map<String, Feature> mapsOfFeat = xmlConfig.getFeatures();
         for (Entry<String, Feature> feature : mapsOfFeat.entrySet()) {
             if (store.exist(feature.getKey())) {
                 store.update(feature.getValue());
@@ -282,6 +286,17 @@ public class ConsoleOperations implements ConsoleConstants {
             }
         }
         LOGGER.info(mapsOfFeat.size() + " features have been imported.");
+        
+        PropertyStore pstore = ff4j.getPropertiesStore();
+        Map<String, AbstractProperty<?>> mapsOfProperties = xmlConfig.getProperties();
+        for (Entry<String, AbstractProperty<?>> p : mapsOfProperties.entrySet()) {
+            if (pstore.existProperty(p.getKey())) {
+                pstore.updateProperty(p.getValue());
+            } else {
+                pstore.createProperty(p.getValue());
+            }
+        }
+        LOGGER.info(mapsOfProperties.size() + " features have been imported.");
     }
     
     /**

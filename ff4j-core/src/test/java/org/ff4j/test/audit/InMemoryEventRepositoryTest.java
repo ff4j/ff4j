@@ -61,6 +61,17 @@ public class InMemoryEventRepositoryTest extends AbstractEventRepositoryTest {
     }
     
     @Test
+    public void testInMemoryTest() {
+        InMemoryEventRepository repo1 = new InMemoryEventRepository(limit);
+        repo1.saveEvent(new Event("aer", EventType.FEATURE_CHECK_ON));
+        repo1.saveEvent(new Event("aer", EventType.FEATURE_CHECK_ON));
+        repo1.getHitsPieChart((System.currentTimeMillis() - 10000), (System.currentTimeMillis() + 10000));
+        
+        repo1.saveEvent(new Event("aer", EventType.ENABLE_FEATURE));
+        repo1.getFeatureHitsPie("aer", (System.currentTimeMillis() - 100000), (System.currentTimeMillis() + 100000));
+    }
+    
+    @Test
     public void testNotExceedLimit2() throws InterruptedException {
         InMemoryEventRepository repo1 = new InMemoryEventRepository(limit);
         repo1.toString();

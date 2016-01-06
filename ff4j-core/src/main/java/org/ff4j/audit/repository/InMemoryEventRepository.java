@@ -116,24 +116,22 @@ public class InMemoryEventRepository extends AbstractEventRepository {
         int nbDisable = 0;
         int nbFlip = 0;
         int notFlip = 0;
-        if (null != qEvents) {
-            for (Event evt : qEvents) {
-                if (evt.getTimestamp() > startTime && evt.getTimestamp() < endTime) {
-                    switch (evt.getType()) {
-                        case FEATURE_CHECK_ON:
-                            nbFlip++;
-                        break;
-                        case FEATURE_CHECK_OFF:
-                            notFlip++;
-                        break;
-                        case ENABLE_FEATURE:
-                            nbEnable++;
-                        break;
-                        case DISABLE_FEATURE:
-                            nbDisable++;
-                        default:
-                        break;
-                    }
+        for (Event evt : qEvents) {
+            if (evt.getTimestamp() > startTime && evt.getTimestamp() < endTime) {
+                switch (evt.getType()) {
+                    case FEATURE_CHECK_ON:
+                        nbFlip++;
+                    break;
+                    case FEATURE_CHECK_OFF:
+                        notFlip++;
+                    break;
+                    case ENABLE_FEATURE:
+                        nbEnable++;
+                    break;
+                    case DISABLE_FEATURE:
+                        nbDisable++;
+                    default:
+                    break;
                 }
             }
         }

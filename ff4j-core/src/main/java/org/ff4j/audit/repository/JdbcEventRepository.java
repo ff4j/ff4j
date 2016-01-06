@@ -66,24 +66,23 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
         Connection        sqlConn = null;
         PreparedStatement stmt = null;
         ResultSet         rs = null;
+        int totalEvent = 0;
         try {
             // Get collection from Pool
             sqlConn = dataSource.getConnection();
             stmt = sqlConn.prepareStatement(SQL_AUDIT_COUNT);
             rs = stmt.executeQuery();
             if (rs.next()) {
-                return rs.getInt(1);
+                totalEvent =  rs.getInt(1);
             }
-         
         } catch(Exception exc) {
             throw new AuditAccessException("Cannot read audit information from database ", exc);
-            
         } finally {
            closeResultSet(rs);
            closeStatement(stmt);
            closeConnection(sqlConn);
         }
-        return 0;
+        return totalEvent;
     }
 
     /** {@inheritDoc} */
@@ -112,7 +111,7 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
             sqlConn.commit();
             
         } catch(Exception exc) {
-            throw new RuntimeException("Cannot insert event into DB", exc);
+            throw new AuditAccessException("Cannot insert event into DB", exc);
             
         } finally {
            closeStatement(stmt);
