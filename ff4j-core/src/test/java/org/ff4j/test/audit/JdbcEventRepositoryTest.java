@@ -1,5 +1,8 @@
 package org.ff4j.test.audit;
 
+import org.ff4j.audit.Event;
+import org.ff4j.audit.EventType;
+
 /*
  * #%L
  * ff4j-core
@@ -24,6 +27,7 @@ import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.audit.repository.JdbcEventRepository;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -68,6 +72,17 @@ public class JdbcEventRepositoryTest extends AbstractEventRepositoryTest {
                  addScript("classpath:ff-store.sql").//
                  build();
         return new JdbcEventRepository(db);
+    }
+    
+    @Test
+    public void testJdbcSpec() {
+        JdbcEventRepository jrepo = (JdbcEventRepository) repo;
+        jrepo.getDataSource();
+        jrepo.saveEvent(new Event("aer", EventType.FEATURE_CHECK_ON));
+        jrepo.saveEvent(new Event("aer", EventType.FEATURE_CHECK_OFF));
+        jrepo.saveEvent(new Event("aer", EventType.ENABLE_FEATURE));
+        jrepo.getHitsPieChart((System.currentTimeMillis() - 10000), (System.currentTimeMillis() + 10000));
+        jrepo.setDataSource(null); 
     }
 
 }

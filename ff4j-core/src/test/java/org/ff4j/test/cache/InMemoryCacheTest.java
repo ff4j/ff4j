@@ -59,6 +59,11 @@ public class InMemoryCacheTest extends AbstractStoreTest {
     public void testPutNullisIlegal() {
         new InMemoryCacheManager().putFeature(null);
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testPutNullisIlegal2() {
+        new InMemoryCacheManager().putFeature(null, 1);
+    }
     
     @Test(expected = IllegalArgumentException.class)
     public void testPutNullPropertyisIlegal() {
@@ -70,6 +75,13 @@ public class InMemoryCacheTest extends AbstractStoreTest {
         Feature f = new Feature("a");
         f.setUid(null);
         new InMemoryCacheManager().putFeature(f);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testPutNullFeatureId1() {
+        Feature f = new Feature("a");
+        f.setUid(null);
+        new InMemoryCacheManager().putFeature(f,1);
     }
     
     @Test(expected = IllegalArgumentException.class)

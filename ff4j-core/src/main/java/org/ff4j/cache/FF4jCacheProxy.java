@@ -16,7 +16,6 @@ import java.util.Set;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.store.PropertyStore;
 
@@ -301,9 +300,6 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
     public void updateProperty(String name, String newValue) {
         // Retrieve the full object from its name
         AbstractProperty<?> fp = getTargetPropertyStore().readProperty(name);
-        if (null == fp) {
-            throw new PropertyNotFoundException("Cannot found the property by its name");
-        }
         fp.setValueFromString(newValue);
         // Update value in target store
         getTargetPropertyStore().updateProperty(fp);
@@ -343,8 +339,7 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
     /** {@inheritDoc} */
     @Override
     public Set<String> listPropertyNames() {
-
-        return null;
+        return getTargetPropertyStore().listPropertyNames();
     }
 
     /** {@inheritDoc} */

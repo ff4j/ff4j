@@ -1,6 +1,8 @@
 package org.ff4j.test.property;
 
+import java.io.InputStream;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.ff4j.FF4j;
 import org.ff4j.property.AbstractProperty;
@@ -70,6 +72,21 @@ public class InMemoryPropertiesStoreTest extends AbstractPropertyStoreJunitTest 
         pDate.setValue(new Date());
         ff4j.getPropertiesStore().updateProperty(pDate);
         ff4j.getPropertiesStore().deleteProperty("property_3");
+    }
+    
+    @Test
+    public void testInheritMethods() {
+        InMemoryPropertyStore ip = new InMemoryPropertyStore();
+        ip.importPropertiesFromXmlFile("ff4j.xml");
+        Assert.assertNotNull(ip.toJson());
+        ip.isEmpty();
+    }
+    
+    @Test
+    public void testInitStores() {
+        new InMemoryPropertyStore(new HashMap<String, AbstractProperty<?>>());
+        InputStream in =  getClass().getClassLoader().getResourceAsStream("ff4j.xml");
+        new InMemoryPropertyStore(in);
     }
     
    

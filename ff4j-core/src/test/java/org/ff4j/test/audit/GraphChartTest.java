@@ -72,6 +72,10 @@ public class GraphChartTest {
         sectors.add(ps1);
         sectors.add(ps1);
         pc.setSectors(sectors);
+        pc.getSectors().add(ps1);
+        
+        PieSector ps2 = new PieSector("b", 1d);
+        pc.getSectors().add(ps2);
         pc.toString();
     }
     
