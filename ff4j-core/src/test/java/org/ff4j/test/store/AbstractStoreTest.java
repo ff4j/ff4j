@@ -1006,6 +1006,22 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         assertFf4j.assertThatFeatureHasFlippingStrategy(F2);
     }
     
+    @Test(expected = IllegalArgumentException.class)
+    public void testDonotUpdateNullFeature() {
+        testedStore.update(null);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testDonotDeleteNull() {
+        testedStore.delete(null);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testDonotDeleteEmpty() {
+        testedStore.delete("");
+    }
+    
+    
     /**
      * TDD.
      */

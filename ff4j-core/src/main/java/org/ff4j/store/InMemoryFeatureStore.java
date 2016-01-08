@@ -126,9 +126,6 @@ public class InMemoryFeatureStore extends AbstractFeatureStore {
      *            Target feature to update
      */
     private void updateFeature(Feature fp) {
-        if (fp == null) {
-            throw new IllegalArgumentException("Feature cannot be null nor empty");
-        }
         featuresMap.put(fp.getUid(), fp);
         buildGroupsFromFeatures();
     }
@@ -360,21 +357,13 @@ public class InMemoryFeatureStore extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public void clear() {
-       if (featuresMap != null) {
-           featuresMap.clear();
-       }
+       featuresMap.clear();
     }
 
     /** {@inheritDoc} */
     @Override
     public Map<String, Feature> readAll() {
         return featuresMap;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String toString() {
-        return toJson();
     }
 
     /** {@inheritDoc} */

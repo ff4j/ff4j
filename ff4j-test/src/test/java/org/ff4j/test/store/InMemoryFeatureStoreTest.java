@@ -37,5 +37,17 @@ public class InMemoryFeatureStoreTest extends AbstractStoreJUnitTest {
         // 'invalid.xml' file does not exist.
         new InMemoryFeatureStore("invalid.xml");
     }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testWithInvalidFileFailed() {
+        new InMemoryFeatureStore("");
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testWithInvalidFileFailed2() {
+        new InMemoryFeatureStore((String) null);
+    }
+    
+   
 
 }

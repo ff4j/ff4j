@@ -53,19 +53,27 @@ public class JdbcFeatureMapper implements JdbcStoreConstants {
         // Strategy
         String strategy = rs.getString(COL_FEAT_STRATEGY);
         if (strategy != null && !"".equals(strategy)) {
-            try {
-                FlippingStrategy flipStrategy = (FlippingStrategy) Class.forName(strategy).newInstance();
-                flipStrategy.init(featUid, MappingUtil.toMap(rs.getString(COL_FEAT_EXPRESSION)));
-                f.setFlippingStrategy(flipStrategy);
-            } catch (InstantiationException ie) {
-                throw new FeatureAccessException("Cannot instantiate Strategy, no default constructor available", ie);
-            } catch (IllegalAccessException iae) {
-                throw new FeatureAccessException("Cannot instantiate Strategy, no visible constructor", iae);
-            } catch (ClassNotFoundException e) {
-                throw new FeatureAccessException("Cannot instantiate Strategy, classNotFound", e);
-            }
+            FlippingStrategy flipStrategy = instanciate(strategy);
+            flipStrategy.init(featUid, MappingUtil.toMap(rs.getString(COL_FEAT_EXPRESSION)));
+            f.setFlippingStrategy(flipStrategy);
         }
         return f;
+    }
+    
+    /**
+     * Instanciate flipping strategy from its class name.
+     *
+     * @param className
+     *      current class name
+     * @return
+     *      the flipping strategy
+     */
+    public FlippingStrategy instanciate(String className) {
+        try {
+            return (FlippingStrategy) Class.forName(className).newInstance();
+        } catch (Exception ie) {
+            throw new FeatureAccessException("Cannot instantiate Strategy, no default constructor available", ie);
+        } 
     }
 
 

@@ -143,10 +143,8 @@ public class JdbcFeatureDataSourceTest extends AbstractStoreTest implements Jdbc
     public void testDS() throws SQLException {
         DataSource test = Mockito.mock(DataSource.class);
         doThrow(new SQLException()).when(test).getConnection();
-        
         ff4j.getFeatureStore().exist("I-DONT-EXIST");
     }
-    
     
 
 }
