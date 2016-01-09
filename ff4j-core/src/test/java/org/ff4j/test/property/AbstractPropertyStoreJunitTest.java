@@ -252,6 +252,17 @@ public abstract class AbstractPropertyStoreJunitTest {
     }
     
     /** TDD. */
+    @Test(expected = PropertyNotFoundException.class)
+    public void updateKO_doesnotExist2() {
+        // Given
+        Assert.assertFalse(testedStore.existProperty("invalid"));
+        // When
+        testedStore.updateProperty(new Property("invalid", "abc"));
+        // Expected error
+        Assert.fail();
+    }
+    
+    /** TDD. */
     @Test(expected = IllegalArgumentException.class)
     public void updateKO_null() {
         // When

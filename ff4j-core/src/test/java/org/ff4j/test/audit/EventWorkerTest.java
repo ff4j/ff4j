@@ -1,5 +1,7 @@
 package org.ff4j.test.audit;
 
+import static org.mockito.Mockito.doThrow;
+
 /*
  * #%L
  * ff4j-core
@@ -24,6 +26,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.ff4j.audit.Event;
+import org.ff4j.audit.EventPublisher;
 import org.ff4j.audit.EventType;
 import org.ff4j.audit.EventWorker;
 import org.ff4j.audit.repository.EventRepository;
@@ -55,6 +58,17 @@ public class EventWorkerTest {
         EventWorker ew = new EventWorker(evt, er);
         // When
         ew.call();
+    }
+    
+    @Test
+    public void testErrorOnSubmitEventPublisher() {
+        // Given
+        EventRepository er = mock(EventRepository.class);
+        Event evt = new Event("F1", EventType.FEATURE_CHECK_OFF);
+        doThrow(new RuntimeException("Erreur")).when(er).saveEvent(evt);
+        EventPublisher evtPublisher = new EventPublisher(er);
+        evtPublisher.publish(evt);
+        Assert.assertNotNull(evt);
     }
 
 }

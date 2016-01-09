@@ -72,9 +72,9 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
             sqlConn = dataSource.getConnection();
             stmt = sqlConn.prepareStatement(SQL_AUDIT_COUNT);
             rs = stmt.executeQuery();
-            if (rs.next()) {
-                totalEvent =  rs.getInt(1);
-            }
+            // Should be ok
+            rs.next();
+            totalEvent =  rs.getInt(1);
         } catch(Exception exc) {
             throw new AuditAccessException("Cannot read audit information from database ", exc);
         } finally {
@@ -149,17 +149,15 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
     @Override
     public PieChart getHitsPieChart(long startTime, long endTime) {
         PieChart pieGraph = new PieChart(TITLE_PIE_HITCOUNT);
-        Set < String > features = getFeatureNames();
-        List < String > colors  = Util.getColorsGradient(features.size());
-        
         Connection sqlConn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             // Returns features
             sqlConn = dataSource.getConnection();
-            
             int idx = 0;
+            Set < String > features = getFeatureNames();
+            List < String > colors  = Util.getColorsGradient(features.size());
             for (String featName : features) {
                 int counter = 0;
                 ps = sqlConn.prepareStatement(SQL_AUDIT_COUNTFEATURE);
@@ -167,13 +165,12 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
                 ps.setTimestamp(2, new Timestamp(startTime));
                 ps.setTimestamp(3, new Timestamp(endTime));
                 rs = ps.executeQuery();
-                if (rs.next()) {
-                    counter = rs.getInt(1);
-                }
+                rs.next();
+                counter = rs.getInt(1);
                 pieGraph.getSectors().add(new PieSector(featName, counter, colors.get(idx)));
             }
         } catch (SQLException sqlEX) {
-            throw new AuditAccessException("Cannot build PieChart from repository, ", sqlEX);
+            throw new FeatureAccessException("Cannot build PieChart from repository, ", sqlEX);
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
@@ -252,7 +249,9 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
             int nbFlip = 0;
             int notFlip = 0;
             while (rs.next()) {
-                switch (EventType.valueOf(rs.getString(COL_EVENT_TYPE))) {
+                String eventTypeString = rs.getString(COL_EVENT_TYPE);
+                EventType eventType = EventType.valueOf(eventTypeString);
+                switch (eventType) {
                     case FEATURE_CHECK_ON:
                         nbFlip++;
                     break;

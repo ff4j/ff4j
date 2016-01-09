@@ -11,7 +11,7 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
-import org.ff4j.exception.FeatureAccessException;
+import org.ff4j.exception.PropertyAccessException;
 import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.AbstractProperty;
@@ -80,12 +80,10 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
         try {
             ps = buildStatement(SQL_PROPERTY_EXIST, name);
             rs = ps.executeQuery();
-            if (rs.next()) {
-                return 1 == rs.getInt(1);
-            }
-            return false;
+            rs.next();
+            return 1 == rs.getInt(1);
         } catch (SQLException sqlEX) {
-            throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
+            throw new PropertyAccessException("Cannot check feature existence, error related to database", sqlEX);
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
@@ -117,7 +115,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
             }
             ps.executeUpdate();
         } catch (SQLException sqlEX) {
-            throw new FeatureAccessException("Cannot update properties database, SQL ERROR", sqlEX);
+            throw new PropertyAccessException("Cannot update properties database, SQL ERROR", sqlEX);
         } finally {
             // Connection is closed alse here within clos statement
             closeStatement(ps);
@@ -141,7 +139,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
                 throw new PropertyNotFoundException(name);
             }
         } catch (SQLException sqlEX) {
-            throw new FeatureAccessException("Cannot check property existence, error related to database", sqlEX);
+            throw new PropertyAccessException("Cannot check property existence, error related to database", sqlEX);
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
@@ -164,7 +162,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
             ps = buildStatement(SQL_PROPERTY_UPDATE, newValue, name);
             ps.executeUpdate();
         } catch (SQLException sqlEX) {
-            throw new FeatureAccessException("Cannot update property database, SQL ERROR", sqlEX);
+            throw new PropertyAccessException("Cannot update property database, SQL ERROR", sqlEX);
         } finally {
             closeStatement(ps);
         }
@@ -196,7 +194,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
             ps = buildStatement(SQL_PROPERTY_DELETE,name);
             ps.executeUpdate();
         } catch (SQLException sqlEX) {
-            throw new FeatureAccessException("Cannot delete property database, SQL ERROR", sqlEX);
+            throw new PropertyAccessException("Cannot delete property database, SQL ERROR", sqlEX);
         } finally {
             closeStatement(ps);
         }
@@ -217,7 +215,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
             }
             ps.executeUpdate();
         } catch (SQLException sqlEX) {
-            throw new FeatureAccessException("Cannot read properties within database, SQL ERROR", sqlEX);
+            throw new PropertyAccessException("Cannot read properties within database, SQL ERROR", sqlEX);
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
@@ -238,7 +236,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
                propertyNames.add(rs.getString(COL_PROPERTY_ID));
             }
         } catch (SQLException sqlEX) {
-            throw new FeatureAccessException("Cannot read properties within database, SQL ERROR", sqlEX);
+            throw new PropertyAccessException("Cannot read properties within database, SQL ERROR", sqlEX);
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
@@ -254,7 +252,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
             ps = buildStatement(SQL_PROPERTY_DELETE_ALL);
             ps.executeUpdate();
         } catch (SQLException sqlEX) {
-            throw new FeatureAccessException("Cannot clear properties table, SQL ERROR", sqlEX);
+            throw new PropertyAccessException("Cannot clear properties table, SQL ERROR", sqlEX);
         } finally {
             closeStatement(ps);
         }
@@ -313,7 +311,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
                 rs.close();
             }
         } catch (SQLException e) {
-            throw new FeatureAccessException("An error occur when closing resultset", e);
+            throw new PropertyAccessException("An error occur when closing resultset", e);
         }
     }
 
@@ -332,7 +330,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
                  ps.close();
             }
         } catch (SQLException e) {
-            throw new FeatureAccessException("An error occur when closing statement", e);
+            throw new PropertyAccessException("An error occur when closing statement", e);
         }
     }
 

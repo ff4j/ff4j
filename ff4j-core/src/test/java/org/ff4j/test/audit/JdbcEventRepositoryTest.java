@@ -85,7 +85,26 @@ public class JdbcEventRepositoryTest extends AbstractEventRepositoryTest {
     }
     
     @Test
-    public void testJdbcSpec() {
+    public void testFeatureHitsPie() {
+        JdbcEventRepository jrepo = (JdbcEventRepository) repo;
+        jrepo.getDataSource();
+        jrepo.saveEvent(new Event("aer", EventType.FEATURE_CHECK_ON));
+        jrepo.saveEvent(new Event("aer", EventType.FEATURE_CHECK_OFF));
+        jrepo.saveEvent(new Event("aer", EventType.ENABLE_FEATURE));
+        jrepo.saveEvent(new Event("aer", EventType.DISABLE_FEATURE));
+        jrepo.getFeatureHitsPie("aer", (System.currentTimeMillis() - 10000), (System.currentTimeMillis() + 10000));
+    }
+    
+    @Test
+    public void testFeatureHitsPie2() {
+        JdbcEventRepository jrepo = (JdbcEventRepository) repo;
+        jrepo.getDataSource();
+        jrepo.saveEvent(new Event("aer", EventType.DISABLE_FEATUREGROUP));
+        jrepo.getFeatureHitsPie("aer", (System.currentTimeMillis() - 10000), (System.currentTimeMillis() + 10000));
+    }
+    
+    @Test
+    public void testJdbcHItPie() {
         JdbcEventRepository jrepo = (JdbcEventRepository) repo;
         jrepo.getDataSource();
         jrepo.saveEvent(new Event("aer", EventType.FEATURE_CHECK_ON));

@@ -1,5 +1,13 @@
 package org.ff4j.test.property;
 
+import static org.mockito.Mockito.doThrow;
+
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
+import org.ff4j.exception.PropertyAccessException;
+
 /*
  * #%L
  * ff4j-core
@@ -22,8 +30,12 @@ package org.ff4j.test.property;
 
 import org.ff4j.property.store.JdbcPropertyStore;
 import org.ff4j.property.store.PropertyStore;
+import org.ff4j.test.utils.JdbcTestHelper;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.mockito.Mockito;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -69,5 +81,22 @@ public class JdbcPropertyStoreTest  extends AbstractPropertyStoreJunitTest {
         db.shutdown();
     }
     
+    @Test(expected = PropertyAccessException.class)
+    @Ignore
+    public void testgetFeatureHitsPieKo()  throws SQLException {
+        JdbcPropertyStore jrepo = (JdbcPropertyStore) testedStore;
+        DataSource mockDS = Mockito.mock(DataSource.class);
+        doThrow(new SQLException()).when(mockDS).getConnection();
+        jrepo.setDataSource(mockDS);
+        jrepo.existProperty("xx");
+    }
+    
+    @Test
+    public void InitInMemoryPropertyStore() {
+        EmbeddedDatabaseBuilder b2 = new EmbeddedDatabaseBuilder();
+        EmbeddedDatabase db2 = b2.setType(EmbeddedDatabaseType.HSQL).//
+                build();
+        new JdbcPropertyStore(db2, "ff4j.xml");
+    }
 
 }

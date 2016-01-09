@@ -31,6 +31,9 @@ import java.net.UnknownHostException;
  */
 public class IOUtil {
 
+    /** Would like to use the Inet Component. */
+    public static boolean useInetAddress = true;
+    
     /**
      * Static
      */
@@ -45,7 +48,10 @@ public class IOUtil {
      */
     public static String resolveHostName() {
         try {
-            return InetAddress.getLocalHost().getHostName();
+            if (useInetAddress) {
+                return InetAddress.getLocalHost().getHostName();
+            }
+            throw new UnknownHostException("Do not use the Inet Adress");
         } catch (UnknownHostException e) {
             throw new IllegalArgumentException("Cannot find the target host by itself", e);
         }

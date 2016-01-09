@@ -125,11 +125,9 @@ public class EventPublisher {
      */
     public void publish(Event e) {
         try {
-            if (submitTimeout != 0) {
-                EventWorker ew = new EventWorker(e, repository);
-                final Future<Boolean> check = executor.submit(ew);
-                check.get(submitTimeout, TimeUnit.MILLISECONDS);
-            }
+            EventWorker ew = new EventWorker(e, repository);
+            final Future<Boolean> check = executor.submit(ew);
+            check.get(submitTimeout, TimeUnit.MILLISECONDS);
         } catch (Exception e1) {
             System.err.println("Cannot publish event " + e1.getMessage());
         }

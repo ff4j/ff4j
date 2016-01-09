@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import org.ff4j.FF4j;
 import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 import org.ff4j.property.PropertyDate;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.store.PropertyStore;
@@ -89,6 +90,71 @@ public class InMemoryPropertiesStoreTest extends AbstractPropertyStoreJunitTest 
         new InMemoryPropertyStore(in);
     }
     
-   
+    @Test(expected = IllegalArgumentException.class)
+    public void testWithInvalidFileFailed() {
+        new InMemoryPropertyStore("");
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testWithInvalidFileFailed2() {
+        new InMemoryPropertyStore((String) null);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidXML() {
+        new InMemoryPropertyStore(new HashMap<String, AbstractProperty<?>>());
+        InputStream in =  getClass().getClassLoader().getResourceAsStream("invalid.xml");
+        new InMemoryPropertyStore(in);
+    }
+
+    @Test
+    public void testListProperties() {
+        InMemoryPropertyStore ips = new InMemoryPropertyStore();
+        ips.setProperties(null);
+        Assert.assertNull(ips.listPropertyNames());
+    }
+    
+    @Test
+    public void testGetters() {
+        InMemoryPropertyStore ips = new InMemoryPropertyStore();
+        ips.setLocation("ff4j.xml");
+        ips.setFileName("invalid.xml");
+        Assert.assertEquals("invalid.xml", ips.getFileName());
+    }
+    
+    @Test
+    public void testEmpty() {
+        // Given
+        InMemoryPropertyStore ips = new InMemoryPropertyStore();
+        System.out.println(ips.listPropertyNames());
+        Assert.assertTrue(ips.isEmpty());
+        ips.setProperties(null);
+        Assert.assertTrue(ips.isEmpty());
+        ips.setProperties(new HashMap<String, AbstractProperty<?>>());
+        ips.createProperty(new Property("P1", "v1"));
+        Assert.assertFalse(ips.isEmpty());
+    }
+    
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testDonotImportNull() {
+        InMemoryPropertyStore f = new InMemoryPropertyStore();
+        f.importPropertiesFromXmlFile(null);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testDonotImportInvalid() {
+        InMemoryPropertyStore f = new InMemoryPropertyStore();
+        f.importPropertiesFromXmlFile("invalid.xml");
+    }
+    
+    @Test
+    public void testImportTwice() {
+        InMemoryPropertyStore f = new InMemoryPropertyStore();
+        f.importPropertiesFromXmlFile("ff4j.xml");
+        f.importPropertiesFromXmlFile("ff4j.xml");
+    }
+    
+    
 
 }

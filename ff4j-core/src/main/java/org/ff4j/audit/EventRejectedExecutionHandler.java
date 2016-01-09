@@ -31,16 +31,19 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public class EventRejectedExecutionHandler implements RejectedExecutionHandler {
 
+    /** Simulate Interrupted. */
+    public static boolean mock = false;
+    
     /** {@inheritDoc} */
     @Override
     public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
         try {
             this.waitInSeconds(1);
+            // try once again
+            executor.execute(r);
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+            System.err.println("Event reject has been interrupted");
         }
-        // try once again
-        executor.execute(r);
     }
     
     /**
@@ -52,6 +55,7 @@ public class EventRejectedExecutionHandler implements RejectedExecutionHandler {
      *      interupted
      */
     public void waitInSeconds(int nbSecond) throws InterruptedException {
+        if (mock) throw new InterruptedException();
         Thread.sleep(1000 * nbSecond);
     }
 

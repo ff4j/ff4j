@@ -1,8 +1,5 @@
 package org.ff4j.test.utils;
 
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
@@ -36,6 +33,7 @@ import org.ff4j.audit.PublisherThreadFactory;
 
 import org.ff4j.exception.AuditAccessException;
 import org.ff4j.exception.FeatureAccessException;
+import org.ff4j.exception.PropertyAccessException;
 import org.junit.Test;
 
 /**
@@ -48,6 +46,16 @@ public class ExceptionsTest {
     @Test(expected = FeatureAccessException.class)
     public void testFeatureAccessException() {
         throw new FeatureAccessException("Can be triggered with single message");
+    }
+    
+    @Test(expected = PropertyAccessException.class)
+    public void testPropertyAccessException() {
+        throw new PropertyAccessException("Can be triggered with single message");
+    }
+    
+    @Test(expected = PropertyAccessException.class)
+    public void testPropertyAccessException2() {
+        throw new PropertyAccessException("Can be triggered with single message", new IllegalArgumentException());
     }
     
     @Test(expected = AuditAccessException.class)
@@ -75,9 +83,9 @@ public class ExceptionsTest {
     
     @Test
     public void testExceptionHandlerInterrupted() throws InterruptedException {
-        EventRejectedExecutionHandler ereh = mock(EventRejectedExecutionHandler.class);
-        doThrow(new InterruptedException()).when(ereh).waitInSeconds(1);
+        EventRejectedExecutionHandler.mock = true;
+        EventRejectedExecutionHandler ereh = new EventRejectedExecutionHandler();
         ereh.rejectedExecution(new Thread(), null);
+        EventRejectedExecutionHandler.mock = false;
     }
-
 }

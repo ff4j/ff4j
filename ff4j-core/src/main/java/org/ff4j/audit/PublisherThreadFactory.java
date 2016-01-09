@@ -47,8 +47,7 @@ public class PublisherThreadFactory implements ThreadFactory {
      * Default Constructor.
      */
     public PublisherThreadFactory() {
-        SecurityManager s = System.getSecurityManager();
-        group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+        group = Thread.currentThread().getThreadGroup();
         namePrefix = "ff4j-monitoring-pool-" + poolNumber.getAndIncrement() + "-thread-";
     }
 

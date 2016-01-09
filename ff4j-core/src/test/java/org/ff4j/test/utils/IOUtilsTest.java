@@ -24,6 +24,7 @@ package org.ff4j.test.utils;
 import java.lang.reflect.Constructor;
 
 import org.ff4j.utils.IOUtil;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class IOUtilsTest {
@@ -37,14 +38,16 @@ public class IOUtilsTest {
     
     @Test
     public void testResolveOK() throws Exception {
+        IOUtil.useInetAddress = true;
         IOUtil.resolveHostName();
     }
     
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testResolveKO() throws Exception {
-        
+        IOUtil.useInetAddress = false;
         IOUtil.resolveHostName();
+        IOUtil.useInetAddress = true;
+        Assert.fail();
     }
-    
 
 }

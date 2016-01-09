@@ -68,7 +68,7 @@ public abstract class AbstractPropertyStore implements PropertyStore {
     /** {@inheritDoc} */
     public boolean isEmpty() {
         Set < String > pNames = listPropertyNames();
-        return (pNames != null && pNames.size() > 0);
+        return (pNames == null || pNames.size() == 0);
     }
     
     /** {@inheritDoc} */
