@@ -1,6 +1,8 @@
 package org.ff4j.test.property;
 
 import java.util.Date;
+import java.util.Map;
+import java.util.Set;
 
 /*
  * #%L
@@ -282,14 +284,20 @@ public abstract class AbstractPropertyStoreJunitTest {
     
     /** TDD. */
     @Test(expected = IllegalArgumentException.class)
+    public void updateKoPropertyNull() {
+        // When
+        testedStore.updateProperty(null);
+        // Expected error
+        Assert.fail();
+    }
+    
+    /** TDD. */
+    @Test(expected = IllegalArgumentException.class)
     public void updateKO_InvalidValue() {
         // Given
         testedStore.createProperty(new PropertyLogLevel("log", LogLevel.ERROR));
         // When
         testedStore.updateProperty("log", "KO");
-        // Expected error
-        Assert.fail();
-        
     }
     
     /** TDD. */
@@ -299,6 +307,18 @@ public abstract class AbstractPropertyStoreJunitTest {
         testedStore.createProperty(new PropertyLogLevel("log", LogLevel.ERROR));
         // When
         testedStore.updateProperty("log", "INFO");
+        // Then
+        Assert.assertEquals(LogLevel.INFO, testedStore.readProperty("log").getValue());
+    }
+    
+    /** TDD. */
+    @Test
+    public void updateOKProperties() {
+        // Given
+        testedStore.createProperty(new PropertyLogLevel("log", LogLevel.ERROR));
+        // When
+        PropertyLogLevel pll = new PropertyLogLevel("log", LogLevel.INFO);
+        testedStore.updateProperty(pll);
         // Then
         Assert.assertEquals(LogLevel.INFO, testedStore.readProperty("log").getValue());
     }
@@ -359,6 +379,28 @@ public abstract class AbstractPropertyStoreJunitTest {
         Assert.assertTrue(testedStore.existProperty("a"));
         Assert.assertEquals("AMER", testedStore.readProperty("a").getValue());
     }
-
+    
+    /** TDD. */
+    @Test
+    public void listPropertyNames() {
+        // Given, When
+        Set< String > proNames = testedStore.listPropertyNames();
+        // Then
+       Assert.assertTrue(proNames.contains("a"));
+    }
+    
+    /** TDD. */
+    @Test
+    public void readAllProperties() {
+        // Given
+        Assert.assertNotNull(testedStore);
+        // When
+        Map <String, AbstractProperty<?>> mapsOf = testedStore.readAllProperties();
+        // When
+        Assert.assertTrue(mapsOf.containsKey("a"));
+        Assert.assertTrue(mapsOf.containsKey("b"));
+    }
+    
+    
     
 }

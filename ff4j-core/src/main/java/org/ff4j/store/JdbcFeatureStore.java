@@ -128,19 +128,10 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
             // Pick connection
             sqlConn = getDataSource().getConnection();
             
-            // Query Exist
             ps = JdbcUtils.buildStatement(sqlConn, SQL_EXIST, uid);
-            /*
-             * ps = sqlConn.prepareStatement(SQL_EXIST);
-             * ps.setString(1, uid);
-             */
-            
-            // Execute
             rs = ps.executeQuery();
-            if (rs.next()) {
-                return 1 == rs.getInt(1);
-            }
-            return false;
+            rs.next();
+            return 1 == rs.getInt(1);
         } catch (SQLException sqlEX) {
             throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
         } finally {

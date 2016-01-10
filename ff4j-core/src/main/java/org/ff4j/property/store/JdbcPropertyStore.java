@@ -1,5 +1,7 @@
 package org.ff4j.property.store;
 
+import static org.ff4j.utils.JdbcUtils.closeConnection;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -75,33 +77,35 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
     @Override
     public boolean existProperty(String name) {
         Util.assertHasLength(name);
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        PreparedStatement  ps = null;
+        ResultSet          rs = null;
+        Connection         sqlConn = null;
         try {
-            ps = buildStatement(SQL_PROPERTY_EXIST, name);
-            rs = ps.executeQuery();
-            rs.next();
-            return 1 == rs.getInt(1);
+           sqlConn = getDataSource().getConnection();
+           ps = buildStatement(sqlConn, SQL_PROPERTY_EXIST, name);
+           rs = ps.executeQuery();
+           rs.next();
+           return 1 == rs.getInt(1);
         } catch (SQLException sqlEX) {
-            throw new PropertyAccessException("Cannot check feature existence, error related to database", sqlEX);
+           throw new PropertyAccessException("Cannot check feature existence, error related to database", sqlEX);
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
+            closeConnection(sqlConn);
         }
     }
 
     /** {@inheritDoc} */
     @Override
     public <T> void createProperty(AbstractProperty<T> ap) {
-        if (ap == null) {
-            throw new IllegalArgumentException("Property cannot be null nor empty");
-        }
-        if (existProperty(ap.getName())) {
-            throw new PropertyAlreadyExistException(ap.getName());
-        }
+        Util.assertNotNull(ap);
+        Connection sqlConn = null;
         PreparedStatement ps = null;
         try {
-            Connection sqlConn = getDataSource().getConnection();
+            sqlConn = getDataSource().getConnection();
+            if (existProperty(ap.getName())) {
+                throw new PropertyAlreadyExistException(ap.getName());
+            }
             ps = sqlConn.prepareStatement(SQL_PROPERTY_CREATE);
             ps.setString(1, ap.getName());
             ps.setString(2, ap.getType());
@@ -119,30 +123,33 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
         } finally {
             // Connection is closed alse here within clos statement
             closeStatement(ps);
+            closeConnection(sqlConn);
         }
     }
 
     /** {@inheritDoc} */
     @Override
     public AbstractProperty<?> readProperty(String name) {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         Util.assertHasLength(name);
-        
+        Connection   sqlConn = null;
+        PreparedStatement ps = null;
+        ResultSet         rs = null;
         try {
-            // Returns features
-            ps = buildStatement(SQL_PROPERTY_READ, name);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                return JDBC_MAPPER.map(rs);
-            } else {
+            sqlConn = getDataSource().getConnection();
+            if (!existProperty(name)) {
                 throw new PropertyNotFoundException(name);
             }
+            // Returns features
+            ps = buildStatement(sqlConn, SQL_PROPERTY_READ, name);
+            rs = ps.executeQuery();
+            rs.next();
+            return JDBC_MAPPER.map(rs);
         } catch (SQLException sqlEX) {
             throw new PropertyAccessException("Cannot check property existence, error related to database", sqlEX);
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
+            closeConnection(sqlConn);
         }
     }
 
@@ -150,21 +157,23 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
     @Override
     public void updateProperty(String name, String newValue) {
         Util.assertHasLength(name);
-        if (!existProperty(name)) {
-            throw new PropertyNotFoundException(name);
-        }
-        // Update
-        AbstractProperty<?> current = readProperty(name);
-        current.setValueFromString(newValue);
-        //
+        Connection   sqlConn = null;
         PreparedStatement ps = null;
         try {
-            ps = buildStatement(SQL_PROPERTY_UPDATE, newValue, name);
+            sqlConn = getDataSource().getConnection();
+            
+            // Check existence
+            AbstractProperty<?> ab = readProperty(name);
+            // Check new value validity
+            ab.fromString(newValue);
+            
+            ps = buildStatement(sqlConn, SQL_PROPERTY_UPDATE, newValue, name);
             ps.executeUpdate();
         } catch (SQLException sqlEX) {
             throw new PropertyAccessException("Cannot update property database, SQL ERROR", sqlEX);
         } finally {
             closeStatement(ps);
+            closeConnection(sqlConn);
         }
     }
 
@@ -179,24 +188,25 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
         // Create
         createProperty(prop);
     }
-
+   
     /** {@inheritDoc} */
     @Override
     public void deleteProperty(String name) {
-        if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("Property identifier (param#0) cannot be null nor empty");
-        }
-        if (!existProperty(name)) {
-            throw new PropertyNotFoundException(name);
-        }
+        Util.assertHasLength(name);
+        Connection   sqlConn = null;
         PreparedStatement ps = null;
         try {
-            ps = buildStatement(SQL_PROPERTY_DELETE,name);
+            sqlConn = getDataSource().getConnection();
+            if (!existProperty(name)) {
+                throw new PropertyNotFoundException(name);
+            }
+            ps = buildStatement(sqlConn, SQL_PROPERTY_DELETE,name);
             ps.executeUpdate();
         } catch (SQLException sqlEX) {
             throw new PropertyAccessException("Cannot delete property database, SQL ERROR", sqlEX);
         } finally {
             closeStatement(ps);
+            closeConnection(sqlConn);
         }
     }
     
@@ -204,21 +214,23 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
     @Override
     public Map<String, AbstractProperty<?>> readAllProperties() {
         Map<String, AbstractProperty<?>> properties = new LinkedHashMap<String, AbstractProperty<?>>();
+        Connection   sqlConn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = buildStatement(SQL_PROPERTY_READ);
+            sqlConn = getDataSource().getConnection();
+            ps = buildStatement(sqlConn, SQL_PROPERTY_READALL);
             rs = ps.executeQuery();
             while (rs.next()) {
                 AbstractProperty<?> ap = JDBC_MAPPER.map(rs);
                 properties.put(ap.getName(),ap);
             }
-            ps.executeUpdate();
         } catch (SQLException sqlEX) {
             throw new PropertyAccessException("Cannot read properties within database, SQL ERROR", sqlEX);
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
+            closeConnection(sqlConn);
         }
         return properties;
     }
@@ -228,9 +240,11 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
     public Set<String> listPropertyNames() {
         Set < String > propertyNames = new HashSet<String>();
         PreparedStatement ps = null;
+        Connection   sqlConn = null;
         ResultSet rs = null;
         try {
-            ps = buildStatement(SQL_PROPERTY_READNAMES);
+            sqlConn = getDataSource().getConnection();
+            ps = buildStatement(sqlConn, SQL_PROPERTY_READNAMES);
             rs = ps.executeQuery();
             while (rs.next()) {
                propertyNames.add(rs.getString(COL_PROPERTY_ID));
@@ -240,6 +254,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
+            closeConnection(sqlConn);
         }
         return propertyNames;
     }
@@ -248,13 +263,16 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
     @Override
     public void clear() {
         PreparedStatement ps = null;
+        Connection   sqlConn = null;
         try {
-            ps = buildStatement(SQL_PROPERTY_DELETE_ALL);
+            sqlConn = getDataSource().getConnection();
+            ps = buildStatement(sqlConn, SQL_PROPERTY_DELETE_ALL);
             ps.executeUpdate();
         } catch (SQLException sqlEX) {
             throw new PropertyAccessException("Cannot clear properties table, SQL ERROR", sqlEX);
         } finally {
             closeStatement(ps);
+            closeConnection(sqlConn);
         }
     }
 
@@ -288,8 +306,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
      * @throws SQLException
      *             sql error when working with statement
      */
-    public PreparedStatement buildStatement(String query, String... params) throws SQLException {
-        Connection sqlConn = getDataSource().getConnection();
+    public PreparedStatement buildStatement(Connection sqlConn, String query, String... params) throws SQLException {
         PreparedStatement ps = sqlConn.prepareStatement(query);
         if (params != null && params.length > 0) {
             for (int i = 0; i < params.length; i++) {
