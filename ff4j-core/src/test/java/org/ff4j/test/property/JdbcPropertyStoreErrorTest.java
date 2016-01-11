@@ -28,7 +28,6 @@ import javax.sql.DataSource;
 import org.ff4j.exception.PropertyAccessException;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.JdbcPropertyStore;
-import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -106,9 +105,13 @@ public class JdbcPropertyStoreErrorTest {
         jrepo.listPropertyNames();
     }
     
-    @Test
-    public void testClear()  throws SQLException {
-        Assert.assertNotNull(new JdbcPropertyStore(null));
+    @Test(expected = PropertyAccessException.class)
+    public void testClearKO()  throws SQLException {
+        DataSource mockDS = Mockito.mock(DataSource.class);
+        doThrow(new SQLException()).when(mockDS).getConnection();
+        JdbcPropertyStore jrepo = new JdbcPropertyStore(mockDS);
+        jrepo.setDataSource(mockDS);
+        jrepo.clear();
     }
 
 }

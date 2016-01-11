@@ -1,5 +1,7 @@
 package org.ff4j.store;
 
+import static org.ff4j.utils.JdbcUtils.buildStatement;
+
 /*
  * #%L
  * ff4j-core
@@ -19,7 +21,6 @@ package org.ff4j.store;
  * limitations under the License.
  * #L%
  */
-
 
 import static org.ff4j.utils.JdbcUtils.closeConnection;
 import static org.ff4j.utils.JdbcUtils.closeResultSet;
@@ -47,7 +48,6 @@ import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.store.JdbcPropertyMapper;
 import org.ff4j.utils.JdbcUtils;
-import org.ff4j.utils.JsonUtils;
 import org.ff4j.utils.MappingUtil;
 import org.ff4j.utils.Util;
 
@@ -198,15 +198,16 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
         if (fp == null) {
             throw new IllegalArgumentException("Feature cannot be null nor empty");
         }
-        if (exist(fp.getUid())) {
-            throw new FeatureAlreadyExistException(fp.getUid());
-        }
+       
         Connection sqlConn = null;
         PreparedStatement ps = null;
         try {
 
             // Create connection
             sqlConn = getDataSource().getConnection();
+            if (exist(fp.getUid())) {
+                throw new FeatureAlreadyExistException(fp.getUid());
+            }
             
             // Begin TX
             sqlConn.setAutoCommit(false);
@@ -270,20 +271,18 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
     /** {@inheritDoc} */
     @Override
     public void delete(String uid) {
-        if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
-        }
-        if (!exist(uid)) {
-            throw new FeatureNotFoundException(uid);
-        }
+        Util.assertHasLength(uid);
         Connection sqlConn = null;
         PreparedStatement ps = null;
         try {
-            Feature fp = read(uid);
-
             // Create connection
             sqlConn = getDataSource().getConnection();
             sqlConn.setAutoCommit(false);
+            
+            if (!exist(uid)) {
+                throw new FeatureNotFoundException(uid);
+            }
+            Feature fp = read(uid);
             
             // Delete Properties
             if (fp.getCustomProperties() != null && !fp.getCustomProperties().isEmpty()) {
@@ -417,65 +416,62 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
     /** {@inheritDoc} */
     @Override
     public void update(Feature fp) {
-        /**
-         * TODO : THIS OPERATION IS NOT PERFORMED IN A SINGLE TX but leverage on sub method
-         * Create a single Connect and COMMIT at end
-         */
-        if (fp == null) {
-            throw new IllegalArgumentException("Feature cannot be null nor empty");
-        }
-        Feature fpExist = read(fp.getUid());
-        String enable = "0";
-        if (fp.isEnable()) {
-            enable = "1";
-        }
-        String fStrategy = null;
-        String fExpression = null;
-        if (fp.getFlippingStrategy() != null) {
-            fStrategy = fp.getFlippingStrategy().getClass().getCanonicalName();
-            fExpression = MappingUtil.fromMap(fp.getFlippingStrategy().getInitParams());
-        }
-        update(SQL_UPDATE, enable, fp.getDescription(), fStrategy, fExpression, fp.getGroup(), fp.getUid());
-
-        // ROLES
+        Util.assertNotNull(fp);
+        Connection sqlConn = null;
+        PreparedStatement ps = null;
         
-        // To be deleted (not in new value but was at first)
-        Set<String> toBeDeleted = new HashSet<String>();
-        toBeDeleted.addAll(fpExist.getPermissions());
-        toBeDeleted.removeAll(fp.getPermissions());
-        for (String roleToBeDelete : toBeDeleted) {
-            removeRoleFromFeature(fpExist.getUid(), roleToBeDelete);
-        }
-
-        // To be created : in second but not in first
-        Set<String> toBeAdded = new HashSet<String>();
-        toBeAdded.addAll(fp.getPermissions());
-        toBeAdded.removeAll(fpExist.getPermissions());
-        for (String addee : toBeAdded) {
-            grantRoleOnFeature(fpExist.getUid(), addee);
-        }
-        
-        // REMOVE EXISTING CUSTOM PROPERTIES
-        if (fpExist.getCustomProperties() != null && !fpExist.getCustomProperties().isEmpty()) {
-            Connection sqlConn = null;
-            PreparedStatement ps = null;
-            try {
-                sqlConn = dataSource.getConnection();
+        try {
+            sqlConn = dataSource.getConnection();
+            
+            Feature fpExist = read(fp.getUid());
+            String enable = "0";
+            if (fp.isEnable()) {
+                enable = "1";
+            }
+            String fStrategy = null;
+            String fExpression = null;
+            if (fp.getFlippingStrategy() != null) {
+                fStrategy = fp.getFlippingStrategy().getClass().getCanonicalName();
+                fExpression = MappingUtil.fromMap(fp.getFlippingStrategy().getInitParams());
+            }
+            update(SQL_UPDATE, enable, fp.getDescription(), fStrategy, fExpression, fp.getGroup(), fp.getUid());
+    
+            // ROLES
+            
+            // To be deleted (not in new value but was at first)
+            Set<String> toBeDeleted = new HashSet<String>();
+            toBeDeleted.addAll(fpExist.getPermissions());
+            toBeDeleted.removeAll(fp.getPermissions());
+            for (String roleToBeDelete : toBeDeleted) {
+                removeRoleFromFeature(fpExist.getUid(), roleToBeDelete);
+            }
+    
+            // To be created : in second but not in first
+            Set<String> toBeAdded = new HashSet<String>();
+            toBeAdded.addAll(fp.getPermissions());
+            toBeAdded.removeAll(fpExist.getPermissions());
+            for (String addee : toBeAdded) {
+                grantRoleOnFeature(fpExist.getUid(), addee);
+            }
+            
+            // REMOVE EXISTING CUSTOM PROPERTIES
+            if (fpExist.getCustomProperties() != null && !fpExist.getCustomProperties().isEmpty()) {
                 ps = sqlConn.prepareStatement(SQL_DELETE_CUSTOMPROPERTIES);
                 ps.setString(1, fpExist.getUid());
                 ps.executeUpdate();
+            }
+            
+            // CREATE PROPERTIES
+            if (fp.getCustomProperties() != null && !fp.getCustomProperties().isEmpty()) {
+                createCustomProperties(fp.getUid(), fp.getCustomProperties().values());
+            } 
             } catch (SQLException sqlEX) {
                 throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
             } finally {
                 closeStatement(ps);
                 closeConnection(sqlConn);
             }
-        }
-        
-        // CREATE PROPERTIES
-        if (fp.getCustomProperties() != null && !fp.getCustomProperties().isEmpty()) {
-            createCustomProperties(fp.getUid(), fp.getCustomProperties().values());
-        }   
+         
     }
 
     @Override
@@ -511,7 +507,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
      * @param props
      *      target properties.
      */
-    private void createCustomProperties(String uid, Collection <AbstractProperty<?> > props) {
+    public void createCustomProperties(String uid, Collection <AbstractProperty<?> > props) {
         Util.assertNotNull(uid);
         if (props == null | props.isEmpty()) return;
        
@@ -565,10 +561,8 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
             ps = sqlConn.prepareStatement(SQL_EXIST_GROUP);
             ps.setString(1, groupName);
             rs = ps.executeQuery();
-            if (rs.next()) {
-                return (rs.getInt(1) > 0);
-            }
-            return false;
+            rs.next(); 
+            return (rs.getInt(1) > 0);
         } catch (SQLException sqlEX) {
             throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
         } finally {
@@ -608,9 +602,6 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
         if (groupName == null || groupName.isEmpty()) {
             throw new IllegalArgumentException("Groupname cannot be null nor empty");
         }
-        if (!existGroup(groupName)) {
-            throw new GroupNotFoundException(groupName);
-        }
         LinkedHashMap<String, Feature> mapFP = new LinkedHashMap<String, Feature>();
         Connection sqlConn = null;
         PreparedStatement ps = null;
@@ -618,6 +609,9 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
         try {
             // Returns features
             sqlConn = dataSource.getConnection();
+            if (!existGroup(groupName)) {
+                throw new GroupNotFoundException(groupName);
+            }
             ps = sqlConn.prepareStatement(SQLQUERY_GET_FEATURE_GROUP);
             ps.setString(1, groupName);
             rs = ps.executeQuery();
@@ -681,61 +675,6 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
             throw new IllegalArgumentException("'" + uid + "' is not in group '" + groupName + "'");
         }
         update(SQL_ADD_TO_GROUP, "", uid);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("{");
-        sb.append("\"type\":\"" + this.getClass().getCanonicalName() + "\"");
-        sb.append("\"datasource\":\"" + this.dataSource.getClass() + "\"");
-        sb.append(JsonUtils.cacheJson(this));
-        Set<String> myFeatures = readAll().keySet();
-        sb.append(",\"numberOfFeatures\":" + myFeatures.size());
-        sb.append(",\"features\":[");
-        boolean first = true;
-        for (String myFeature : myFeatures) {
-            if (!first) {
-                sb.append(",");
-            }
-            first = false;
-            sb.append("\"" + myFeature + "\"");
-        }
-        Set<String> myGroups = readAllGroups();
-        sb.append("],\"numberOfGroups\":" + myGroups.size());
-        sb.append(",\"groups\":[");
-        first = true;
-        for (String myGroup : myGroups) {
-            if (!first) {
-                sb.append(",");
-            }
-            first = false;
-            sb.append("\"" + myGroup + "\"");
-        }
-        sb.append("]");
-        sb.append("}");
-        return sb.toString();
-    }
-
-    /**
-     * Build {@link PreparedStatement} from parameters
-     * 
-     * @param query
-     *            query template
-     * @param params
-     *            current parameters
-     * @return working {@link PreparedStatement}
-     * @throws SQLException
-     *             sql error when working with statement
-     */
-    private PreparedStatement buildStatement(Connection sqlConn, String query, String... params) throws SQLException {
-        PreparedStatement ps = sqlConn.prepareStatement(query);
-        if (params != null && params.length > 0) {
-            for (int i = 0; i < params.length; i++) {
-                ps.setString(i + 1, params[i]);
-            }
-        }
-        return ps;
     }
     
     /**

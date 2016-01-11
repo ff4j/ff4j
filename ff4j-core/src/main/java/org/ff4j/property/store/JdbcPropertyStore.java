@@ -1,6 +1,9 @@
 package org.ff4j.property.store;
 
 import static org.ff4j.utils.JdbcUtils.closeConnection;
+import static org.ff4j.utils.JdbcUtils.closeResultSet;
+import static org.ff4j.utils.JdbcUtils.closeStatement;
+import static org.ff4j.utils.JdbcUtils.buildStatement;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,6 +22,7 @@ import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.AbstractProperty;
 import org.ff4j.store.JdbcStoreConstants;
 import org.ff4j.utils.Util;
+
 /*
  * #%L
  * ff4j-core
@@ -295,61 +299,4 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
         this.dataSource = dataSource;
     }
     
-    /**
-     * Build {@link PreparedStatement} from parameters
-     * 
-     * @param query
-     *            query template
-     * @param params
-     *            current parameters
-     * @return working {@link PreparedStatement}
-     * @throws SQLException
-     *             sql error when working with statement
-     */
-    public PreparedStatement buildStatement(Connection sqlConn, String query, String... params) throws SQLException {
-        PreparedStatement ps = sqlConn.prepareStatement(query);
-        if (params != null && params.length > 0) {
-            for (int i = 0; i < params.length; i++) {
-                ps.setString(i + 1, params[i]);
-            }
-        }
-        return ps;
-    }
-    
-    /**
-     * Close resultset.
-     * 
-     * @param rs
-     *            target resultset
-     */
-    private void closeResultSet(ResultSet rs) {
-        try {
-            if (rs != null) {
-                rs.close();
-            }
-        } catch (SQLException e) {
-            throw new PropertyAccessException("An error occur when closing resultset", e);
-        }
-    }
-
-    /**
-     * Utility method to close statement properly.
-     * 
-     * @param ps
-     * 
-     */
-    private void closeStatement(PreparedStatement ps) {
-        try {
-            if (ps != null && !ps.isClosed()) {
-                 if (ps.getConnection() != null && !ps.getConnection().isClosed()) {
-                     ps.getConnection().close();
-                 }
-                 ps.close();
-            }
-        } catch (SQLException e) {
-            throw new PropertyAccessException("An error occur when closing statement", e);
-        }
-    }
-
-
 }

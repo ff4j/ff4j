@@ -401,6 +401,24 @@ public abstract class AbstractPropertyStoreJunitTest {
         Assert.assertTrue(mapsOf.containsKey("b"));
     }
     
+    /** TDD. */
+    @Test
+    public void clear() {
+        // Given
+        Assert.assertNotNull(testedStore);
+        Map <String, AbstractProperty<?>> before = testedStore.readAllProperties();
+        Assert.assertFalse(before.isEmpty());
+        // When
+        testedStore.clear();
+        // Then
+        Assert.assertTrue(testedStore.readAllProperties().isEmpty());
+        
+        /// Reinit
+        for (String pName : before.keySet()) {
+            testedStore.createProperty(before.get(pName));
+        }
+    }
+    
     
     
 }

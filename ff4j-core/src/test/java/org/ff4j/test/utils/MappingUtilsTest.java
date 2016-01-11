@@ -31,6 +31,7 @@ import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.property.AbstractProperty;
 import org.ff4j.store.InMemoryFeatureStore;
+import org.ff4j.utils.JdbcUtils;
 import org.ff4j.utils.JsonUtils;
 import org.ff4j.utils.MappingUtil;
 import org.ff4j.utils.Util;
@@ -103,8 +104,9 @@ public class MappingUtilsTest {
         Util.assertNotEmpty(new ArrayList<String>());
     }
     
-    
-    
-    
+    @Test
+    public void testRollbackingWithNull() {
+        JdbcUtils.rollback(null);
+    }
 
 }

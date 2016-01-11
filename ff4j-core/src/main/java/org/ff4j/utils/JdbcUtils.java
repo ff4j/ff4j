@@ -115,7 +115,7 @@ public class JdbcUtils {
      */
     public static void rollback(Connection sqlConn) {
         try {
-            if (!sqlConn.isClosed()) {
+            if (sqlConn != null && !sqlConn.isClosed()) {
                 sqlConn.rollback();
             }
         } catch (SQLException e) {

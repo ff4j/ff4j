@@ -134,7 +134,13 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         assertFf4j.assertThatFeatureHasRole(F4, ROLE_ADMIN);
         assertFf4j.assertThatFeatureIsInGroup(F4, G1);
     }
-
+    
+    @Test(expected = FeatureNotFoundException.class)
+    public void testReadDoesNotExist() {
+        // Given
+        assertFf4j.assertThatFeatureDoesNotExist("INVALID");
+        testedStore.read("INVALID");
+    }
 
     /**
      * TDD.
@@ -1021,13 +1027,20 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         testedStore.delete("");
     }
     
-    
-    /**
-     * TDD.
-     */
     @Test
-    public void testUpdateRemoveProperty() {
-        
+    public void testClear() {
+        // Given
+        Assert.assertNotNull(testedStore);
+        Map <String, Feature> before = testedStore.readAll();
+        Assert.assertFalse(before.isEmpty());
+        // When
+        testedStore.clear();
+        // Then
+        Assert.assertTrue(testedStore.readAll().isEmpty());
+        /// Reinit
+        for (String pName : before.keySet()) {
+            testedStore.create(before.get(pName));
+        }
     }
     
     /**
@@ -1045,6 +1058,14 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         testedStore.update(myFeature);
         // Then
         assertFf4j.assertThatFeatureHasProperty(F2, "p1");
+    }
+    
+    /**
+     * TDD.
+     */
+    @Test
+    public void testUpdateRemoveProperty() {
+        
     }
     
     /**
