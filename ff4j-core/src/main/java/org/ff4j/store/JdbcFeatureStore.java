@@ -658,12 +658,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
     /** {@inheritDoc} */
     @Override
     public void removeFromGroup(String uid, String groupName) {
-        if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
-        }
-        if (groupName == null || groupName.isEmpty()) {
-            throw new IllegalArgumentException("Groupname cannot be null nor empty");
-        }
+        Util.assertHasLength(uid, groupName);
         if (!exist(uid)) {
             throw new FeatureNotFoundException(uid);
         }
@@ -685,7 +680,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
      * @param params
      *            sql query params
      */
-    private void update(String query, String... params) {
+    public void update(String query, String... params) {
         Connection sqlConnection = null;
         PreparedStatement ps = null;
         try {

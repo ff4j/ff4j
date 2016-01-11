@@ -76,7 +76,11 @@ public class AutowiredFF4JBeanPostProcessor implements BeanPostProcessor {
     private void autoWiredFeature(Object bean, Field field) {
         // Find the required and name parameters
         AutowiredFF4JFeature annFeature = field.getAnnotation(AutowiredFF4JFeature.class);
-        String featureName = StringUtils.hasLength(annFeature.value()) ? annFeature.value() : field.getName();
+        String annValue = annFeature.value();
+        String featureName = field.getName();
+        if (annValue != null && !"".equals(annValue)) {
+            featureName = annValue;
+        }
         Feature feature = readFeature(field, featureName, annFeature.required());
         if (feature != null) {
             if (Feature.class.isAssignableFrom(field.getType())) {

@@ -15,6 +15,7 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.store.JdbcFeatureStore;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -55,5 +56,10 @@ public class JdbcFeatureStoreCoreTest extends AbstractStoreTest {
     @After
     public void tearDown() throws Exception {
         db.shutdown();
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveFromGroupInvalidGroup() {
+        testedStore.removeFromGroup(F4, G0);
     }
 }

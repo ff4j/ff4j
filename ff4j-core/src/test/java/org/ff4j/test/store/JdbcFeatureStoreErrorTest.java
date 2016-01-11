@@ -32,6 +32,7 @@ import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.Property;
 import org.ff4j.store.JdbcFeatureStore;
+import org.ff4j.store.JdbcStoreConstants;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -143,6 +144,15 @@ public class JdbcFeatureStoreErrorTest {
     public void testJetDataSourceKO()  throws SQLException {
         JdbcFeatureStore jrepo = new JdbcFeatureStore(null);
         jrepo.getDataSource();
+    }
+    
+    @Test(expected = FeatureAccessException.class)
+    public void testUpdate2O()  throws SQLException {
+        DataSource mockDS = Mockito.mock(DataSource.class);
+        doThrow(new SQLException()).when(mockDS).getConnection();
+        JdbcFeatureStore jrepo = new JdbcFeatureStore(mockDS);
+        jrepo.setDataSource(mockDS);
+        jrepo.update(JdbcStoreConstants.SQL_DISABLE, "F4");
     }
 
 
