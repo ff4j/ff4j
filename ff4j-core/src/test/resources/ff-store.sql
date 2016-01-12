@@ -35,7 +35,7 @@ INSERT INTO FF4J_CUSTOM_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES
 VALUES('ppboolean', 'org.ff4j.property.PropertyBoolean', 'true', NULL, 'first');;
 
 INSERT INTO FF4J_CUSTOM_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES, FEAT_UID) 
-VALUES('ppString', 'org.ff4j.property.Property', 'hello', NULL, 'first');;
+VALUES('ppstring', 'org.ff4j.property.Property', 'hello', NULL, 'first');;
 
 INSERT INTO FF4J_CUSTOM_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES, FEAT_UID) 
 VALUES('ppListInt', 'org.ff4j.property.PropertyInt','12' , '12,13,14', 'first');
@@ -51,7 +51,6 @@ VALUES('myLogLevel', 'org.ff4j.property.PropertyLogLevel', 'DEBUG', 'FATAL,WARN,
 
 INSERT INTO FF4J_CUSTOM_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES, FEAT_UID) 
 VALUES('date', 'org.ff4j.property.PropertyDate', '2015-08-15 12:00', NULL, 'AwesomeFeature');
-
 
 -- Second
 INSERT INTO FF4J_FEATURES(FEAT_UID, ENABLE, DESCRIPTION, GROUPNAME) VALUES('second', 0, 'description', 'GRP0');

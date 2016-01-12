@@ -156,7 +156,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
             sqlConn = getDataSource().getConnection();
             
             // Read a feature by its ID (tables FEATURES)
-            ps = sqlConn.prepareStatement(SQLQUERY_GET_FEATURE_BY_ID);
+            ps = sqlConn.prepareStatement(SQL_GETFEATUREBYID);
             ps.setString(1, uid);
             rs = ps.executeQuery();
             Feature f = null;
@@ -175,7 +175,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
             }
             
             // Enrich with properties 3d request to get custom properties by uid
-            ps = sqlConn.prepareStatement(SQL_GET_CUSTOMPROPERTIES_BYFEATUREID);
+            ps = sqlConn.prepareStatement(SQL_GETREFPROPERTIESBYID);
             ps.setString(1, uid);
             rs = ps.executeQuery();
             while (rs.next()) {

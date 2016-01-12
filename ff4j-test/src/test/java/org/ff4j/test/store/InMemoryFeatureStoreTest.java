@@ -20,7 +20,7 @@ import org.junit.Test;
  * 
  * @author clunven
  */
-public class InMemoryFeatureStoreTest extends AbstractStoreJUnitTest {
+public class InMemoryFeatureStoreTest extends FeatureStoreTestSupport {
 
     /** {@inheritDoc} */
     @Override

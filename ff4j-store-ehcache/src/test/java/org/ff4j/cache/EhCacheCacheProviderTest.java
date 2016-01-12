@@ -26,7 +26,7 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.store.InMemoryFeatureStore;
-import org.ff4j.test.store.AbstractStoreJUnitTest;
+import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.After;
 
 /**
@@ -34,7 +34,7 @@ import org.junit.After;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class EhCacheCacheProviderTest extends AbstractStoreJUnitTest {
+public class EhCacheCacheProviderTest extends FeatureStoreTestSupport {
 
     /** Cache Manager. */
     private final FF4JCacheManager cache = new FeatureCacheProviderEhCache();

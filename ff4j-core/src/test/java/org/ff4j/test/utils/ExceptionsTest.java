@@ -33,6 +33,7 @@ import org.ff4j.audit.PublisherThreadFactory;
 
 import org.ff4j.exception.AuditAccessException;
 import org.ff4j.exception.FeatureAccessException;
+import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.PropertyAccessException;
 import org.junit.Test;
 
@@ -66,6 +67,11 @@ public class ExceptionsTest {
     @Test(expected = AuditAccessException.class)
     public void testAuditAccessException2() {
         throw new AuditAccessException("Can be triggered with single message", new IllegalArgumentException());
+    }
+
+    @Test(expected = FeatureNotFoundException.class)
+    public void testFeatureNotFound() {
+        throw new FeatureNotFoundException("Can be triggered with single message", new IllegalArgumentException());
     }
     
     @Test

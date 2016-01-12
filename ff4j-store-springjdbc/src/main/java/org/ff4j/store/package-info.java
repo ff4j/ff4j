@@ -1,10 +1,17 @@
+/**
+ * Implementation of FeatureStore to persist data into RDBMS through JDBC
+ * <p>
+ *
+ * @author Cedrick Lunven (@clunven)</a>
+ * @version 1.3
+ */
 package org.ff4j.store;
 
 /*
  * #%L
- * ff4j-store-ehcache
+ * ff4j-core
  * %%
- * Copyright (C) 2013 - 2015 FF4J
+ * Copyright (C) 2013 - 2016 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,25 +26,3 @@ package org.ff4j.store;
  * limitations under the License.
  * #L%
  */
-
-
-import org.ff4j.property.store.PropertyStore;
-import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-
-/**
- * Work with properties
- * 
- * @author Cedrick Lunven (@clunven)</a>
- */
-
-public class PropertyStoreEhCacheTest extends PropertyStoreTestSupport {
-
-    /** {@inheritDoc} */
-    @Override
-    protected PropertyStore initPropertyStore() {
-        PropertyStoreEhCache ehcachePStore = new PropertyStoreEhCache();
-        ehcachePStore.importPropertiesFromXmlFile("ff4j-properties.xml");
-        return ehcachePStore;
-    }
-
-}

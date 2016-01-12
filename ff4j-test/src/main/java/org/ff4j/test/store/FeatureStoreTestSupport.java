@@ -24,9 +24,12 @@ import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.property.Property;
+import org.ff4j.property.PropertyInt;
+import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.PonderationStrategy;
 import org.ff4j.test.AssertFf4j;
-import org.ff4j.test.TestConstantsFF4j;
+import org.ff4j.test.TestsFf4jConstants;
+import org.ff4j.utils.Util;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +39,7 @@ import org.junit.Test;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public abstract class AbstractStoreTest implements TestConstantsFF4j {
+public abstract class FeatureStoreTestSupport implements TestsFf4jConstants {
 
     /** Initialize */
     protected FF4j ff4j = null;
@@ -46,7 +49,10 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
 
     /** Test Values */
     protected AssertFf4j assertFf4j;
-    
+
+    /** Default InMemoryStore for test purposes. */
+    protected FeatureStore defaultStore = new InMemoryFeatureStore(TEST_FEATURES_FILE);
+
     /** {@inheritDoc} */
     @Before
     public void setUp() throws Exception {
@@ -134,13 +140,7 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
         assertFf4j.assertThatFeatureHasRole(F4, ROLE_ADMIN);
         assertFf4j.assertThatFeatureIsInGroup(F4, G1);
     }
-    
-    @Test(expected = FeatureNotFoundException.class)
-    public void testReadDoesNotExist() {
-        // Given
-        assertFf4j.assertThatFeatureDoesNotExist("INVALID");
-        testedStore.read("INVALID");
-    }
+
 
     /**
      * TDD.
@@ -1065,7 +1065,15 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      */
     @Test
     public void testUpdateRemoveProperty() {
-        
+        // Given
+        assertFf4j.assertThatFeatureExist(F1);
+        //assertFf4j.assertThatFeatureHasProperty(F1, "ppint");
+        // When
+        Feature myFeature = ff4j.getFeatureStore().read(F1);
+        myFeature.getCustomProperties().remove("ppint");
+        testedStore.update(myFeature);
+        // Then
+        assertFf4j.assertThatFeatureHasNotProperty(F1, "p1");
     }
     
     /**
@@ -1073,24 +1081,95 @@ public abstract class AbstractStoreTest implements TestConstantsFF4j {
      */
     @Test
     public void testUpdateEditPropertyValue() {
+        // Given
+        assertFf4j.assertThatFeatureExist(F1);
+        Feature myFeature = ff4j.getFeatureStore().read(F1);
+        if (myFeature.getCustomProperties().isEmpty()) {
+            Property p1 = new Property("ppstring");
+            p1.setValue("hello");
+            myFeature.getCustomProperties().put(p1.getName(), p1);
+            testedStore.update(myFeature);
+        }
+        assertFf4j.assertThatFeatureHasProperty(F1, "ppstring");
+        Assert.assertEquals("hello", 
+                ff4j.getFeatureStore().read(F1)//
+                    .getCustomProperties().get("ppstring")//
+                    .asString());
+        // When
+        myFeature = ff4j.getFeatureStore().read(F1);
+        Property p1 = new Property("ppstring", "goodbye");
+        myFeature.getCustomProperties().put(p1.getName(), p1);
+        testedStore.update(myFeature);
         
+        // Then
+        Assert.assertEquals("goodbye", 
+                ff4j.getFeatureStore().read(F1)//
+                    .getCustomProperties().get("ppstring")//
+                    .asString());
     }
     
     /**
      * TDD.
      */
     @Test
+    @SuppressWarnings("unchecked")
     public void testUpdateEditPropertyAddFixedValues() {
+        // Given
+        assertFf4j.assertThatFeatureExist(F1);
+        Feature myFeature = ff4j.getFeatureStore().read(F1);
+        myFeature = ff4j.getFeatureStore().read(F1);
+        assertFf4j.assertThatFeatureHasProperty(F1, "digitValue");
         
+        Set < Integer > fixValues = (Set<Integer>) ff4j
+                .getFeatureStore().read(F1)//
+                .getCustomProperties().get("digitValue")
+                .getFixedValues();
+        Assert.assertEquals(4, fixValues.size()); 
+                
+        // When
+        PropertyInt p1 = new PropertyInt("digitValue");
+        p1.setFixedValues(Util.set(0,1,2,3,4));
+        p1.setValue(4);
+        myFeature.getCustomProperties().put(p1.getName(), p1);
+        testedStore.update(myFeature);
+        
+        // Then
+        Set < Integer > fixValues2 = (Set<Integer>) ff4j
+                .getFeatureStore().read(F1)//
+                .getCustomProperties().get("digitValue")
+                .getFixedValues();
+        Assert.assertEquals(5, fixValues2.size());
     }
     
     /**
      * TDD.
      */
     @Test
+    @SuppressWarnings("unchecked")
     public void testUpdateEditPropertyRemoveFixedValues() {
+     // Given
+        assertFf4j.assertThatFeatureExist(F1);
+        assertFf4j.assertThatFeatureHasProperty(F1, "regionIdentifier");
+        Set < String > fixValues = (Set<String>) ff4j
+                .getFeatureStore().read(F1)//
+                .getCustomProperties().get("regionIdentifier")
+                .getFixedValues();
+        Assert.assertEquals(3, fixValues.size()); 
+                
+        // When
+        Feature myFeature = ff4j.getFeatureStore().read(F1);
+        Property p1 = new Property("regionIdentifier");
+        p1.setValue("AMER");
+        p1.setFixedValues(Util.set("AMER", "SSSS"));
+        myFeature.getCustomProperties().put(p1.getName(), p1);
+        testedStore.update(myFeature);
         
+        // Then
+        Set < Integer > fixValues2 = (Set<Integer>) ff4j
+                .getFeatureStore().read(F1)//
+                .getCustomProperties().get("regionIdentifier")
+                .getFixedValues();
+        Assert.assertEquals(2, fixValues2.size());
     }
-
 
 }

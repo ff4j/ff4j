@@ -25,7 +25,7 @@ import java.util.Map;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.FeatureStoreRedis;
-import org.ff4j.test.store.AbstractStoreJUnitTest;
+import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.After;
 import org.junit.Ignore;
 
@@ -35,7 +35,7 @@ import org.junit.Ignore;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 @Ignore
-public class FeatureStoreRedisTestIT extends AbstractStoreJUnitTest {
+public class FeatureStoreRedisTestIT extends FeatureStoreTestSupport {
    
     /** {@inheritDoc} */
     @Override

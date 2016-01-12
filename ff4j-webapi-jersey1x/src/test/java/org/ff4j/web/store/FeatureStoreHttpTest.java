@@ -24,7 +24,7 @@ import org.ff4j.FF4j;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.test.store.AbstractStoreJUnitTest;
+import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -37,7 +37,7 @@ import com.sun.jersey.test.framework.JerseyTest;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreHttpTest extends AbstractStoreJUnitTest {
+public class FeatureStoreHttpTest extends FeatureStoreTestSupport {
 
     /** Jersy Test */
     private static JerseyTest jt = null;

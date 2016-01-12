@@ -7,7 +7,7 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.store.InMemoryFeatureStore;
-import org.ff4j.test.store.AbstractStoreTest;
+import org.ff4j.test.store.AbstractFeatureStoreTestCore;
 
 /*
  * #%L
@@ -37,7 +37,7 @@ import org.junit.Test;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class InMemoryCacheTest extends AbstractStoreTest {
+public class InMemoryCacheTest extends AbstractFeatureStoreTestCore {
 
     /** {@inheritDoc} */
     @Override

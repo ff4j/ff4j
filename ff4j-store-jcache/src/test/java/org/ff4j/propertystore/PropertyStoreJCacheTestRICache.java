@@ -23,7 +23,7 @@ package org.ff4j.propertystore;
 
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.store.PropertyStoreJCache;
-import org.ff4j.test.propertystore.AbstractPropertyStoreJunitTest;
+import org.ff4j.test.propertystore.PropertyStoreTestSupport;
 import org.jsr107.ri.spi.RICachingProvider;
 
 /**
@@ -31,7 +31,7 @@ import org.jsr107.ri.spi.RICachingProvider;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class PropertyStoreJCacheTestRICache extends AbstractPropertyStoreJunitTest {
+public class PropertyStoreJCacheTestRICache extends PropertyStoreTestSupport {
    
     /** {@inheritDoc} */
     @Override

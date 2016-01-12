@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.test.store.AbstractStoreJUnitTest;
+import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.After;
 
 /**
@@ -32,7 +32,7 @@ import org.junit.After;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreEhCacheTest extends AbstractStoreJUnitTest {
+public class FeatureStoreEhCacheTest extends FeatureStoreTestSupport {
    
     /** {@inheritDoc} */
     @Override

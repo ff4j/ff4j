@@ -29,7 +29,9 @@ import org.ff4j.store.rowmapper.CustomPropertyRowMapper;
 import org.ff4j.store.rowmapper.FeatureRowMapper;
 import org.ff4j.store.rowmapper.RoleRowMapper;
 import org.ff4j.utils.MappingUtil;
+import org.ff4j.utils.Util;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.stereotype.Repository;
@@ -41,13 +43,13 @@ import org.springframework.transaction.annotation.Transactional;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 @Repository
-public class FeatureStoreSpringJDBC extends AbstractFeatureStore implements JdbcStoreConstants {
+public class FeatureStoreSpringJdbc extends AbstractFeatureStore implements JdbcStoreConstants {
 
     /** Row Mapper for FlipPoint. */
-    private static final FeatureRowMapper MAPPER = new FeatureRowMapper();
+    private static final FeatureRowMapper FMAPPER = new FeatureRowMapper();
 
     /** Mapper for custom properties. */
-    private static final CustomPropertyRowMapper JDBC_PROPERTY_MAPPER = new CustomPropertyRowMapper();
+    private static final CustomPropertyRowMapper PMAPPER = new CustomPropertyRowMapper();
 
     /** SQL DataSource. */
     private DataSource dataSource;
@@ -56,11 +58,8 @@ public class FeatureStoreSpringJDBC extends AbstractFeatureStore implements Jdbc
     private JdbcTemplate jdbcTemplate;
 
     /** {@inheritDoc} */
-    @Override
     public void enable(String uid) {
-        if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
-        }
+        Util.assertHasLength(uid);
         if (!exist(uid)) {
             throw new FeatureNotFoundException(uid);
         }
@@ -68,11 +67,8 @@ public class FeatureStoreSpringJDBC extends AbstractFeatureStore implements Jdbc
     }
 
     /** {@inheritDoc} */
-    @Override
     public void disable(String uid) {
-        if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
-        }
+        Util.assertHasLength(uid);
         if (!exist(uid)) {
             throw new FeatureNotFoundException(uid);
         }
@@ -80,82 +76,148 @@ public class FeatureStoreSpringJDBC extends AbstractFeatureStore implements Jdbc
     }
 
     /** {@inheritDoc} */
-    @Override
     public boolean exist(String uid) {
-        if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
-        }
-        int count = getJdbcTemplate().queryForObject(SQL_EXIST, Integer.class, uid);
-        return 1 == count;
+        Util.assertHasLength(uid);
+        return 1 == getJdbcTemplate().queryForObject(SQL_EXIST, Integer.class, uid);
     }
 
     /** {@inheritDoc} */
-    @Override
     public Feature read(String uid) {
-        if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
+        Util.assertHasLength(uid);
+        try {
+            Feature feature = getJdbcTemplate().queryForObject(SQL_GETFEATUREBYID, FMAPPER, uid);
+            readProperties(feature);
+            readPermissions(feature);
+            return feature;
+        } catch(EmptyResultDataAccessException ex) { 
+            throw new FeatureNotFoundException(uid, ex);
         }
-        List<Feature> dbFlips = getJdbcTemplate().query(SQLQUERY_GET_FEATURE_BY_ID, MAPPER, uid);
-        if (dbFlips.isEmpty()) {
-            throw new FeatureNotFoundException(uid);
-        }
-        Feature fp = dbFlips.get(0);
-
-        List<AbstractProperty<?>> customProperties = getJdbcTemplate().query(SQL_GET_CUSTOMPROPERTIES_BYFEATUREID, JDBC_PROPERTY_MAPPER, uid);
-        for (AbstractProperty<?> ap : customProperties) {
+    }
+    
+    /**
+     * Query children properties.
+     *
+     * @param fp
+     */
+    private void readProperties(Feature fp) {
+        List<AbstractProperty<?>> listOfProps = getJdbcTemplate().query(SQL_GETREFPROPERTIESBYID, PMAPPER, fp.getUid());
+        for (AbstractProperty<?> ap : listOfProps) {
             fp.getCustomProperties().put(ap.getName(), ap);
         }
-        List<String> auths = getJdbcTemplate().query(SQL_GET_ROLES, new SingleColumnRowMapper<String>(), uid);
-        fp.getPermissions().addAll(auths);
-        return fp;
+    }
+    
+    /**
+     * Query children roles.
+     *
+     * @param fp
+     */
+    private void readPermissions(Feature fp) {
+        fp.getPermissions().addAll(
+                getJdbcTemplate().query(SQL_GET_ROLES, 
+                        new SingleColumnRowMapper<String>(), fp.getUid()));
     }
 
     /** {@inheritDoc} */
     @Override
     @Transactional
     public void create(Feature fp) {
-        if (fp == null) {
-            throw new IllegalArgumentException("Feature cannot be null nor empty");
-        }
+        Util.assertNotNull(fp);
         if (exist(fp.getUid())) {
             throw new FeatureAlreadyExistException(fp.getUid());
         }
+        createCoreFeature(fp);
+        createPermissions(fp);
+        createProperties(fp);
+    }
+    
+    private void createCoreFeature(Feature fp) {
         // Transaction wraps the method, could pipe several sql queries
-        String strategyColumn = null;
+        String strategyColumn   = null;
         String expressionColumn = null;
         if (fp.getFlippingStrategy() != null) {
             strategyColumn = fp.getFlippingStrategy().getClass().getCanonicalName();
             expressionColumn = MappingUtil.fromMap(fp.getFlippingStrategy().getInitParams());
         }
-        getJdbcTemplate().update(SQL_CREATE, fp.getUid(), fp.isEnable() ? 1 : 0, fp.getDescription(), strategyColumn,
+        getJdbcTemplate().update(SQL_CREATE, 
+                fp.getUid(), fp.isEnable() ? 1 : 0, 
+                fp.getDescription(), strategyColumn,
                 expressionColumn, fp.getGroup());
+    }
+    
+    /**
+     * Remove all existing permissions and create new.
+     *
+     * @param fp
+     */
+    private void createPermissions(Feature fp) {
         if (fp.getPermissions() != null) {
+            getJdbcTemplate().update(SQL_DELETE_ROLES, fp.getUid());
             for (String role : fp.getPermissions()) {
                 getJdbcTemplate().update(SQL_ADD_ROLE, fp.getUid(), role);
             }
         }
+    }
+    
+    /**
+     * Remove all existing permissions and create new.
+     *
+     * @param fp
+     */
+    private void createProperties(Feature fp) {
+        if (fp.getCustomProperties() != null) {
+            getJdbcTemplate().update(SQL_DELETE_CUSTOMPROPERTIES, fp.getUid());
+            for (String propertyName : fp.getCustomProperties().keySet()) {
+                AbstractProperty<?> ap = fp.getCustomProperties().get(propertyName);
+                String fixedValues = null;
+                if (ap.getFixedValues() != null && ap.getFixedValues().size() > 0) {
+                    fixedValues = ap.getFixedValues().toString();
+                    fixedValues = fixedValues.substring(1, fixedValues.length() - 1);
+                }
+                getJdbcTemplate().update(SQL_CREATE_CUSTOMPROPERTY, 
+                        ap.getName(), ap.getType(), ap.asString(), 
+                        ap.getDescription(), fixedValues, fp.getUid());
+            }
+        } 
     }
 
     /** {@inheritDoc} */
     @Override
     @Transactional
     public void delete(String uid) {
-        if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
-        }
-        if (!exist(uid)) {
-            throw new FeatureNotFoundException(uid);
-        }
-        Feature fp = read(uid);
-        if (fp.getPermissions() != null) {
-            for (String role : fp.getPermissions()) {
-                getJdbcTemplate().update(SQL_DELETE_ROLE, fp.getUid(), role);
-            }
-        }
-        if (fp.getCustomProperties() != null) {
-            getJdbcTemplate().update(SQL_DELETE_CUSTOMPROPERTIES, fp.getUid());
-        }
-        getJdbcTemplate().update(SQL_DELETE, fp.getUid());
+        if (!exist(uid)) throw new FeatureNotFoundException(uid);
+        deletePermissions(uid);
+        deleteProperties(uid);
+        deleteCoreFeature(uid);
+    }
+    
+    /**
+     * Delete permissions related to a feature.
+     *
+     * @param featureId
+     *      current feature uid
+     */
+    private void deletePermissions(String featureId) {
+        getJdbcTemplate().update(SQL_DELETE_ROLES, featureId);
+    }
+    
+    /**
+     * Delete properties related to a feature.
+     *
+     * @param featureId
+     *      current feature uid
+     */
+    private void deleteProperties(String featureId) {
+        getJdbcTemplate().update(SQL_DELETE_CUSTOMPROPERTIES, featureId);
+    }
+    
+    /**
+     * Delete core feature.
+     *
+     * @param featureId
+     *      current feature uid
+     */
+    private void deleteCoreFeature(String featureId) {
+        getJdbcTemplate().update(SQL_DELETE, featureId);
     }
 
     /** {@inheritDoc} */
@@ -236,7 +298,7 @@ public class FeatureStoreSpringJDBC extends AbstractFeatureStore implements Jdbc
             throw new GroupNotFoundException(groupName);
         }
         LinkedHashMap<String, Feature> mapFP = new LinkedHashMap<String, Feature>();
-        List<Feature> lFp = getJdbcTemplate().query(SQLQUERY_GET_FEATURE_GROUP, MAPPER, groupName);
+        List<Feature> lFp = getJdbcTemplate().query(SQLQUERY_GET_FEATURE_GROUP, FMAPPER, groupName);
         for (Feature flipPoint : lFp) {
             mapFP.put(flipPoint.getUid(), flipPoint);
         }
@@ -275,12 +337,6 @@ public class FeatureStoreSpringJDBC extends AbstractFeatureStore implements Jdbc
         if (!existGroup(groupName)) {
             throw new GroupNotFoundException(groupName);
         }
-        // ---> Feature not in Group : should not raise error
-        // Feature feat = read(featureId);
-        // if (feat.getGroup() != null && !feat.getGroup().equals(groupName)) {
-        // throw new IllegalArgumentException("'" + featureId + "' is not in group '" + groupName + "'");
-        // }
-        // <----
         getJdbcTemplate().update(SQL_ADD_TO_GROUP, "", uid);
     }
 
@@ -288,7 +344,7 @@ public class FeatureStoreSpringJDBC extends AbstractFeatureStore implements Jdbc
     @Override
     public Map<String, Feature> readAll() {
         LinkedHashMap<String, Feature> mapFP = new LinkedHashMap<String, Feature>();
-        List<Feature> lFp = getJdbcTemplate().query(SQLQUERY_ALLFEATURES, MAPPER);
+        List<Feature> lFp = getJdbcTemplate().query(SQLQUERY_ALLFEATURES, FMAPPER);
         for (Feature flipPoint : lFp) {
             mapFP.put(flipPoint.getUid(), flipPoint);
         }
@@ -315,51 +371,19 @@ public class FeatureStoreSpringJDBC extends AbstractFeatureStore implements Jdbc
     }
 
     /** {@inheritDoc} */
-    @Override
     @Transactional
-    public void update(Feature fp) {
-        if (fp == null) {
-            throw new IllegalArgumentException("Feature cannot be null nor empty");
-        }
-        Feature fpExist = read(fp.getUid());
-
-        // Update core Flip POINT
-        String fStrategy = null;
-        String fExpression = null;
-        if (fp.getFlippingStrategy() != null) {
-            fStrategy = fp.getFlippingStrategy().getClass().getCanonicalName();
-            fExpression = MappingUtil.fromMap(fp.getFlippingStrategy().getInitParams());
-        }
-        String enable = "0";
-        if (fp.isEnable()) {
-            enable = "1";
-        }
-        getJdbcTemplate().update(SQL_UPDATE, enable, fp.getDescription(), fStrategy, fExpression, fp.getGroup(), fp.getUid());
-
-        // To be deleted : not in second but in first
-        Set<String> toBeDeleted = new HashSet<String>();
-        toBeDeleted.addAll(fpExist.getPermissions());
-        toBeDeleted.removeAll(fp.getPermissions());
-        for (String roleToBeDelete : toBeDeleted) {
-            removeRoleFromFeature(fpExist.getUid(), roleToBeDelete);
-        }
-
-        // To be created : in second but not in first
-        Set<String> toBeAdded = new HashSet<String>();
-        toBeAdded.addAll(fp.getPermissions());
-        toBeAdded.removeAll(fpExist.getPermissions());
-        for (String addee : toBeAdded) {
-            grantRoleOnFeature(fpExist.getUid(), addee);
-        }
-
-        // enable/disable
-        if (fp.isEnable() != fpExist.isEnable()) {
-            if (fp.isEnable()) {
-                enable(fp.getUid());
-            } else {
-                disable(fp.getUid());
-            }
-        }
+    public void update(Feature newFeature) {
+        Util.assertNotNull(newFeature);
+        delete(newFeature.getUid());
+        create(newFeature);
+    }
+    
+    /** {@inheritDoc} */
+    @Transactional
+    public void clear() {
+        getJdbcTemplate().update(SQL_DELETE_ALL_ROLES);
+        getJdbcTemplate().update(SQL_DELETE_ALL_CUSTOMPROPERTIES);
+        getJdbcTemplate().update(SQL_DELETE_ALL_FEATURES);
     }
 
     /**
@@ -369,14 +393,6 @@ public class FeatureStoreSpringJDBC extends AbstractFeatureStore implements Jdbc
     @Required
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void clear() {
-        getJdbcTemplate().update(SQL_DELETE_ALL_ROLES);
-        getJdbcTemplate().update(SQL_DELETE_ALL_CUSTOMPROPERTIES);
-        getJdbcTemplate().update(SQL_DELETE_ALL_FEATURES);
     }
 
     /**
@@ -393,6 +409,5 @@ public class FeatureStoreSpringJDBC extends AbstractFeatureStore implements Jdbc
         }
         return jdbcTemplate;
     }
-
    
 }

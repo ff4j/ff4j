@@ -34,7 +34,7 @@ import com.mongodb.client.MongoCollection;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreMongoCollectionCore1Test extends AbstractStoreJUnitTest {
+public class FeatureStoreMongoCollectionCore1Test extends FeatureStoreTestSupport {
 
     /**
      * DataBase.

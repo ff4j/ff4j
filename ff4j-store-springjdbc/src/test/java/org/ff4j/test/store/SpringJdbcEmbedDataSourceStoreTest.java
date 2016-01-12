@@ -1,23 +1,30 @@
 package org.ff4j.test.store;
 
 /*
- * #%L ff4j-store-jdbc %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of the License at
+ * #%L
+ * ff4j-store-springjdbc
+ * %%
+ * Copyright (C) 2013 - 2016 FF4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  * 
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
- * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License. #L%
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
  */
 
-import org.ff4j.core.Feature;
+
 import org.ff4j.core.FeatureStore;
-import org.ff4j.store.FeatureStoreSpringJDBC;
+import org.ff4j.store.FeatureStoreSpringJdbc;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -26,7 +33,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class SpringJdbcEmbedDataSourceStoreTest extends AbstractStoreJUnitTest {
+public class SpringJdbcEmbedDataSourceStoreTest extends FeatureStoreTestSupport {
 
     /** DataBase. */
     private EmbeddedDatabase db;
@@ -38,9 +45,11 @@ public class SpringJdbcEmbedDataSourceStoreTest extends AbstractStoreJUnitTest {
     @Override
     protected FeatureStore initStore() {
         builder = new EmbeddedDatabaseBuilder();
-        db = builder.setType(EmbeddedDatabaseType.HSQL).addScript("classpath:schema-ddl.sql").addScript("classpath:ff-store.sql")
+        db = builder.setType(EmbeddedDatabaseType.HSQL)//
+                .addScript("classpath:schema-ddl.sql")//
+                .addScript("classpath:ff-store.sql")//
                 .build();
-        FeatureStoreSpringJDBC jdbcStore = new FeatureStoreSpringJDBC();
+        FeatureStoreSpringJdbc jdbcStore = new FeatureStoreSpringJdbc();
         jdbcStore.setDataSource(db);
         jdbcStore.getJdbcTemplate();
         return jdbcStore;
@@ -61,15 +70,6 @@ public class SpringJdbcEmbedDataSourceStoreTest extends AbstractStoreJUnitTest {
     @After
     public void tearDown() throws Exception {
         db.shutdown();
-    }
-
-    /**
-     * TDD.
-     */
-    @Test
-    public void testReadCustomProperties() {
-        Feature f = testedStore.read(F1);
-        Assert.assertNotNull(f.getCustomProperties().get(CUSTOM_PROPERTY));
     }
 
 }

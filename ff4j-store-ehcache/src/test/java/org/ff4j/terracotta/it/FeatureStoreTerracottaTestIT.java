@@ -17,7 +17,7 @@ import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.ehcache.FF4jEhCacheWrapper;
 import org.ff4j.store.FeatureStoreEhCache;
-import org.ff4j.test.store.AbstractStoreJUnitTest;
+import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.After;
 
 import net.sf.ehcache.config.CacheConfiguration;
@@ -31,7 +31,7 @@ import net.sf.ehcache.config.TerracottaConfiguration;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreTerracottaTestIT extends AbstractStoreJUnitTest {
+public class FeatureStoreTerracottaTestIT extends FeatureStoreTestSupport {
 
     /** Terracotta URL. */
     private static final String TERRACOTTA_URL = "localhost:9510";

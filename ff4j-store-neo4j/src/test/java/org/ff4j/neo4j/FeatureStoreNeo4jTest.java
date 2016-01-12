@@ -2,7 +2,7 @@ package org.ff4j.neo4j;
 
 import org.ff4j.core.FeatureStore;
 import org.ff4j.neo4j.store.FeatureStoreNeo4J;
-import org.ff4j.test.store.AbstractStoreJUnitTest;
+import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -15,7 +15,7 @@ import org.neo4j.test.TestGraphDatabaseFactory;
  * 
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class FeatureStoreNeo4jTest extends AbstractStoreJUnitTest implements FF4jNeo4jConstants {
+public class FeatureStoreNeo4jTest extends FeatureStoreTestSupport implements FF4jNeo4jConstants {
 
     /** DataBase instance. */
     protected static GraphDatabaseService graphDb;

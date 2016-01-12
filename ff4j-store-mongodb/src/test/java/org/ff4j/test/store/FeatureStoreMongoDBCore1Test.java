@@ -32,7 +32,7 @@ import com.mongodb.ServerAddress;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreMongoDBCore1Test extends AbstractStoreJUnitTest {
+public class FeatureStoreMongoDBCore1Test extends FeatureStoreTestSupport {
 
     /**
      * DataBase.

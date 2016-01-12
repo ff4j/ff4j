@@ -41,7 +41,7 @@ import org.junit.Test;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public abstract class AbstractPropertyStoreJunitTest {
+public abstract class PropertyStoreTestSupport {
 
     /** Tested Store. */
     protected PropertyStore testedStore;
@@ -63,7 +63,6 @@ public abstract class AbstractPropertyStoreJunitTest {
      *             error during building feature store
      */
     protected abstract PropertyStore initPropertyStore();
-    
     
     // --------------- exist -----------
     

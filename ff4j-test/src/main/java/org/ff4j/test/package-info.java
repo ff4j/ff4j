@@ -1,10 +1,17 @@
-package org.ff4j.web.store;
+/**
+ * Provide utilities tes.
+ * <p>
+ *
+ * @author Cedrick Lunven (@clunven)</a>
+ * @version 1.3
+ */
+package org.ff4j.test;
 
 /*
  * #%L
- * ff4j-web
+ * ff4j-core
  * %%
- * Copyright (C) 2013 - 2014 Ff4J
+ * Copyright (C) 2013 - 2016 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,21 +26,3 @@ package org.ff4j.web.store;
  * limitations under the License.
  * #L%
  */
-
-import org.ff4j.core.FeatureStore;
-import org.ff4j.test.store.FeatureStoreTestSupport;
-
-/**
- * Test that sotre informations are correct.
- * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
- */
-public class FeatureStoreValuesTest extends FeatureStoreTestSupport {
-
-    /** {@inheritDoc} */
-    @Override
-    protected FeatureStore initStore() {
-        return defaultStore;
-    }
-
-}

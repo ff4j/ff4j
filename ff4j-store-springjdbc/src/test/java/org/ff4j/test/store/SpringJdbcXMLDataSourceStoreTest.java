@@ -16,6 +16,9 @@ import java.util.Set;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.property.Property;
+import org.ff4j.property.PropertyInt;
+import org.ff4j.utils.Util;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,7 +33,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:*applicationContext-jdbc-test.xml")
-public class SpringJdbcXMLDataSourceStoreTest extends AbstractStoreJUnitTest {
+public class SpringJdbcXMLDataSourceStoreTest extends FeatureStoreTestSupport {
    
     @Autowired
     private FeatureStore store;
@@ -111,5 +114,71 @@ public class SpringJdbcXMLDataSourceStoreTest extends AbstractStoreJUnitTest {
         testedStore.grantRoleOnFeature(F1, ROLE_NEW);
         // Then
         assertFf4j.assertThatFeatureHasRole(F1, ROLE_NEW);
+    }
+    
+    /**
+     * TDD.
+     */
+    @Test
+    @Override
+    @SuppressWarnings("unchecked")
+    public void testUpdateEditPropertyAddFixedValues() {
+        // Given
+        assertFf4j.assertThatFeatureExist(F1);
+        Feature myFeature = ff4j.getFeatureStore().read(F1);
+        myFeature = ff4j.getFeatureStore().read(F1);
+        assertFf4j.assertThatFeatureHasProperty(F1, "digitValue");
+        
+        Set < Integer > fixValues = (Set<Integer>) ff4j
+                .getFeatureStore().read(F1)//
+                .getCustomProperties().get("digitValue")
+                .getFixedValues();
+        Assert.assertEquals(4, fixValues.size()); 
+                
+        // When
+        PropertyInt p1 = new PropertyInt("digitValue");
+        p1.setFixedValues(Util.set(0,1,2,3,4));
+        p1.setValue(4);
+        myFeature.getCustomProperties().put(p1.getName(), p1);
+        testedStore.update(myFeature);
+        
+        // Then
+        Set < Integer > fixValues2 = (Set<Integer>) ff4j
+                .getFeatureStore().read(F1)//
+                .getCustomProperties().get("digitValue")
+                .getFixedValues();
+        Assert.assertEquals(5, fixValues2.size());
+    }
+    
+    /**
+     * TDD.
+     */
+    @Test
+    @Override
+    @SuppressWarnings("unchecked")
+    public void testUpdateEditPropertyRemoveFixedValues() {
+     // Given
+        assertFf4j.assertThatFeatureExist(F1);
+        assertFf4j.assertThatFeatureHasProperty(F1, "regionIdentifier");
+        Set < String > fixValues = (Set<String>) ff4j
+                .getFeatureStore().read(F1)//
+                .getCustomProperties().get("regionIdentifier")
+                .getFixedValues();
+        Assert.assertEquals(3, fixValues.size()); 
+                
+        // When
+        Feature myFeature = ff4j.getFeatureStore().read(F1);
+        Property p1 = new Property("regionIdentifier");
+        p1.setValue("AMER");
+        p1.setFixedValues(Util.set("AMER", "SSSS"));
+        myFeature.getCustomProperties().put(p1.getName(), p1);
+        testedStore.update(myFeature);
+        
+        // Then
+        Set < Integer > fixValues2 = (Set<Integer>) ff4j
+                .getFeatureStore().read(F1)//
+                .getCustomProperties().get("regionIdentifier")
+                .getFixedValues();
+        Assert.assertEquals(2, fixValues2.size());
     }
 }
