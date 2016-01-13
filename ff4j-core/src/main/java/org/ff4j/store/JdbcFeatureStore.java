@@ -241,18 +241,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
             // Create customproperties
             if (fp.getCustomProperties() != null && !fp.getCustomProperties().isEmpty()) {
                 for (AbstractProperty<?> pp : fp.getCustomProperties().values()) {
-                    ps = sqlConn.prepareStatement(SQL_CREATE_CUSTOMPROPERTY);
-                    ps.setString(1, pp.getName());
-                    ps.setString(2, pp.getType());
-                    ps.setString(3, pp.asString());
-                    if (pp.getFixedValues() != null && pp.getFixedValues().size() > 0) {
-                        String fixedValues = pp.getFixedValues().toString();
-                        ps.setString(4, fixedValues.substring(1, fixedValues.length() - 1));
-                    } else {
-                        ps.setString(4, null);
-                    }
-                    ps.setString(5, fp.getUid());
-                    ps.executeUpdate();
+                    ps = createCustomProperty(sqlConn, fp.getUid(), pp);
                 }
             }
 
@@ -522,18 +511,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
             
             // Queries
             for (AbstractProperty<?> pp : props) {
-                ps = sqlConn.prepareStatement(SQL_CREATE_CUSTOMPROPERTY);
-                ps.setString(1, pp.getName());
-                ps.setString(2, pp.getType());
-                ps.setString(3, pp.asString());
-                if (pp.getFixedValues() != null && pp.getFixedValues().size() > 0) {
-                    String fixedValues = pp.getFixedValues().toString();
-                    ps.setString(4, fixedValues.substring(1, fixedValues.length() - 1));
-                } else {
-                    ps.setString(4, null);
-                }
-                ps.setString(5, uid);
-                ps.executeUpdate();
+                ps = createCustomProperty(sqlConn, uid, pp);
             }
             
             // End TX
@@ -545,6 +523,24 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
             closeStatement(ps);
             closeConnection(sqlConn);
         }
+    }
+    
+    private PreparedStatement createCustomProperty(Connection sqlConn, String featureId, AbstractProperty<?> pp)
+    throws SQLException {
+        PreparedStatement ps = sqlConn.prepareStatement(SQL_CREATE_CUSTOMPROPERTY);
+        ps.setString(1, pp.getName());
+        ps.setString(2, pp.getType());
+        ps.setString(3, pp.asString());
+        ps.setString(4, pp.getDescription());
+        if (pp.getFixedValues() != null && pp.getFixedValues().size() > 0) {
+            String fixedValues = pp.getFixedValues().toString();
+            ps.setString(5, fixedValues.substring(1, fixedValues.length() - 1));
+        } else {
+            ps.setString(5, null);
+        }
+        ps.setString(6, featureId);
+        ps.executeUpdate();
+        return ps;
     }
 
     /** {@inheritDoc} */

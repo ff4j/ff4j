@@ -109,8 +109,8 @@ public interface JdbcStoreConstants {
     
     /** sql query expression */
     String SQL_CREATE_CUSTOMPROPERTY = 
-            "INSERT INTO FF4J_CUSTOM_PROPERTIES(" + 
-             "PROPERTY_ID, CLAZZ, CURRENTVALUE, DESCRIPTION, FIXEDVALUES, FEAT_UID) " + 
+            "INSERT INTO FF4J_CUSTOM_PROPERTIES (" + 
+            "PROPERTY_ID, CLAZZ, CURRENTVALUE, DESCRIPTION, FIXEDVALUES, FEAT_UID) " + 
             "VALUES(?, ?, ?, ?, ?, ?)";
     
     /** Create property. */
