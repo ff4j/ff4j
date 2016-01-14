@@ -344,6 +344,18 @@ public class Feature implements Serializable {
     }
 
     /**
+     * Utility to add a property.
+     * 
+     * @param props
+     */
+    public <T> void addProperty(AbstractProperty< T > props) {
+        Util.assertNotNull(props);
+        if (customProperties != null) {
+            customProperties.put(props.getName(), props);
+        }
+    }
+    
+    /**
      * Getter accessor for attribute 'customProperties'.
      *
      * @return

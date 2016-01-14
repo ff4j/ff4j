@@ -1118,6 +1118,8 @@ public abstract class FeatureStoreTestSupport implements TestsFf4jConstants {
         assertFf4j.assertThatFeatureExist(F1);
         Feature myFeature = ff4j.getFeatureStore().read(F1);
         myFeature = ff4j.getFeatureStore().read(F1);
+        myFeature.addProperty(new PropertyInt("digitValue", 2, Util.set(0,1,2,3)));
+        ff4j.getFeatureStore().update(myFeature);
         assertFf4j.assertThatFeatureHasProperty(F1, "digitValue");
         
         Set < Integer > fixValues = (Set<Integer>) ff4j

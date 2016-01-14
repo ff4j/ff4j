@@ -7,8 +7,6 @@ import java.util.Map;
 
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
-import org.ff4j.exception.FeatureAccessException;
-import org.ff4j.store.JdbcFeatureMapper;
 import org.ff4j.strategy.time.ReleaseDateFlipStrategy;
 import org.ff4j.test.AbstractFf4jTest;
 import org.junit.Assert;
@@ -79,12 +77,6 @@ public class ReleaseDateFlipStrategyTest extends AbstractFf4jTest {
         Map < String, String > params = new HashMap<String, String>();
         params.put("releaseDate", "invalid");
         rds2.init("f1", params);
-    }
-    
-    @Test(expected = FeatureAccessException.class)
-    public void testInvalidFlipClass() {
-        JdbcFeatureMapper m = new JdbcFeatureMapper();
-        m.instanciate("com.lang.InvalidClass");
     }
 
 }

@@ -80,10 +80,10 @@ public class FeatureJsonParser {
         // flipping strategy
         f.setFlippingStrategy(parseFlipStrategy(f.getUid(), (LinkedHashMap<String, Object>) fMap.get("flippingStrategy")));
         // custom properties
-        f.setCustomProperties(parseCustomProperties(f.getUid(), (LinkedHashMap<String, Object>) fMap.get("customProperties")));
+        Map <String, Object > propertyMap = (Map < String, Object >) fMap.get("customProperties");
+        f.setCustomProperties(parseCustomProperties(f.getUid(), propertyMap));
         return f;
-    }
-    
+    }    
     
     /**
      * Parse the "customproperties" JSOn attribute.
@@ -96,12 +96,12 @@ public class FeatureJsonParser {
      *      target map of properties
      */
     @SuppressWarnings("unchecked")
-    private static Map < String, AbstractProperty<?>> parseCustomProperties(String uid, LinkedHashMap<String, Object> customPTag) {
+    private static Map < String, AbstractProperty<?>> parseCustomProperties(String uid, Map <String, Object > customPTag) {
         Map < String, AbstractProperty<?>> myProperties = new LinkedHashMap<String, AbstractProperty<?>>();
         if (null != customPTag && !customPTag.isEmpty()) {
             // Loop over properties
-            for (Map.Entry<String, Object> property : customPTag.entrySet()) {
-                HashMap<String, Object> propertyJson = (HashMap<String, Object>) property.getValue();
+            for (Object property : customPTag.values()) {
+                HashMap<String, Object> propertyJson = (HashMap<String, Object>) property;
                 String propertyName = (String) propertyJson.get("name");
                 String propertyVal  = String.valueOf(propertyJson.get("value"));
                 AbstractProperty<?> ap = new Property(propertyName, propertyVal);

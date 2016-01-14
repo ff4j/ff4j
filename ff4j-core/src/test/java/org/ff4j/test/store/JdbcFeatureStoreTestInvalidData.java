@@ -1,5 +1,7 @@
 package org.ff4j.test.store;
 
+import java.util.HashMap;
+
 /*
  * #%L
  * ff4j-core
@@ -22,9 +24,9 @@ package org.ff4j.test.store;
 
 
 import org.ff4j.exception.FeatureAccessException;
-import org.ff4j.store.JdbcFeatureMapper;
 import org.ff4j.store.JdbcFeatureStore;
 import org.ff4j.store.JdbcStoreConstants;
+import org.ff4j.utils.MappingUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,7 +69,7 @@ public class JdbcFeatureStoreTestInvalidData implements JdbcStoreConstants {
     
     @Test(expected = FeatureAccessException.class)
     public void testInvalidStrategy() {
-        new JdbcFeatureMapper().instanciate("com.KO");
+        MappingUtil.instanceFlippingStrategy("ID", "com.KO", new HashMap<String, String>());
     }
     
     /** {@inheritDoc} */

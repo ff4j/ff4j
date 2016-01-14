@@ -39,6 +39,7 @@ import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.store.AbstractFeatureStore;
+import org.ff4j.utils.Util;
 import org.ff4j.web.FF4jWebConstants;
 import org.ff4j.web.api.FF4jJacksonMapper;
 import org.ff4j.web.api.resources.domain.FeatureApiBean;
@@ -272,9 +273,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebCon
     /** {@inheritDoc} */
     @Override
     public void update(Feature fp) {
-        if (fp == null) {
-            throw new IllegalArgumentException("Feature cannot be null nor empty");
-        }
+        Util.assertNotNull(fp);
         if (!exist(fp.getUid())) {
             throw new FeatureNotFoundException(fp.getUid());
         }

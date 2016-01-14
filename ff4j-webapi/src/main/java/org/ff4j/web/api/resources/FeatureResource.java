@@ -41,11 +41,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.ff4j.core.Feature;
-import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.utils.MappingUtil;
 import org.ff4j.web.FF4jWebConstants;
 import org.ff4j.web.api.resources.domain.FeatureApiBean;
 import org.ff4j.web.api.resources.domain.FlippingStrategyApiBean;
+import org.ff4j.web.api.resources.domain.PropertyApiBean;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -114,30 +115,27 @@ public class FeatureResource extends AbstractResource {
             return Response.status(Response.Status.BAD_REQUEST).entity(errMsg).build();
         }
         
-        // Building feature
         Feature feat = new Feature(id);
         feat.setDescription(fApiBean.getDescription());
         feat.setEnable(fApiBean.isEnable());
         feat.setGroup(fApiBean.getGroup());
         feat.setPermissions(new HashSet<String>(fApiBean.getPermissions()));
+        // Flipping Strategy
         FlippingStrategyApiBean flipApiBean = fApiBean.getFlippingStrategy();
-            if (flipApiBean != null) {
-            FlippingStrategy strategy = null;
+        if (flipApiBean != null) {
             try {
-                strategy = (FlippingStrategy) Class.forName(flipApiBean.getType()).newInstance();
                 Map<String, String> initparams = flipApiBean.getInitParams();
-                strategy.init(id, initparams);
-            } catch (InstantiationException e) {
+                feat.setFlippingStrategy(MappingUtil.instanceFlippingStrategy(id, flipApiBean.getType(), initparams));
+            } catch (Exception e) {
                 String errMsg = "Cannot read Flipping Strategy, does not seems to have a DEFAULT constructor, " + e.getMessage();
                 return Response.status(Response.Status.BAD_REQUEST).entity(errMsg).build();
-            } catch (IllegalAccessException e) {
-                String errMsg = "Cannot read Flipping Strategy,does not seems to have a PUBLIC constructor, " + e.getMessage();
-                return Response.status(Response.Status.BAD_REQUEST).entity(errMsg).build();
-            } catch (ClassNotFoundException e) {
-                String errMsg = "Cannot read Flipping Strategy, className has not been found within classpath, check syntax, " + e.getMessage();
-                return Response.status(Response.Status.BAD_REQUEST).entity(errMsg).build();
             }
-            feat.setFlippingStrategy(strategy);
+        }
+        // Properties
+        if (fApiBean.getCustomProperties() != null) {
+            for(PropertyApiBean propertyBean : fApiBean.getCustomProperties().values()) {
+                feat.addProperty(propertyBean.asProperty());
+            }       
         }
         
         // Update or create ? 

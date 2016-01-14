@@ -83,6 +83,23 @@ public abstract class AbstractProperty < T > implements Serializable {
         this.value = fromString(value);
     }
     
+	/**
+     * Constructor with name , value and target available values
+     *
+     * @param name
+     *      current name
+     * @param value
+     *      current value
+     */    
+    protected AbstractProperty(String name, T value, Set < T > fixed) {
+        this(name);
+        this.value = value;
+        this.fixedValues = fixed;
+        if (fixedValues != null &&  !fixedValues.isEmpty() && !fixedValues.contains(value)) {
+            throw new IllegalArgumentException("Invalid value corrects are " + fixedValues);
+        }
+    }
+    
     /**
      * Constructor with name , value and target available values
      *
@@ -91,13 +108,8 @@ public abstract class AbstractProperty < T > implements Serializable {
      * @param value
      *      current value
      */    
-	protected AbstractProperty(String name, T value, T... fixed) {
-        this(name);
-        this.value = value;
-        this.fixedValues = new HashSet<T>(Arrays.asList(fixed));
-        if (fixedValues != null &&  !fixedValues.isEmpty() && !fixedValues.contains(value)) {
-            throw new IllegalArgumentException("Invalid value corrects are " + fixedValues);
-        }
+    protected AbstractProperty(String name, T value, T... fixed) {
+        this(name, value, new HashSet<T>(Arrays.asList(fixed)));
     }
     
     /**

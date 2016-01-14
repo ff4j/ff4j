@@ -1,5 +1,7 @@
 package org.ff4j.property;
 
+import java.util.Set;
+
 /*
  * #%L
  * ff4j-core
@@ -75,6 +77,18 @@ public class PropertyInt extends AbstractProperty< Integer > {
      */
     public PropertyInt(String uid, Integer value) {
        super(uid, value);
+    }
+
+    /**
+     * Constructor by string expression.
+     *
+     * @param uid
+     *      unique name
+     * @param lvl
+     *      current log level
+     */
+    public PropertyInt(String uid, Integer value, Set <Integer> fixValues) {
+       super(uid, value, fixValues);
     }
     
     /** {@inheritDoc} */

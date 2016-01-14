@@ -21,9 +21,12 @@ package org.ff4j.web.api.resources.domain;
  */
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.ff4j.core.Feature;
+import org.ff4j.property.AbstractProperty;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -68,6 +71,10 @@ public class FeatureApiBean {
     @ApiModelProperty( value = "Flipping strategy if exist", required = false )
     private FlippingStrategyApiBean flippingStrategy = null;
     
+    @JsonProperty("customProperties")
+    @ApiModelProperty( value = "Custom properties if they exist", required = false )
+    private Map < String, PropertyApiBean > customProperties = new HashMap< String, PropertyApiBean >();
+    
     /**
      * Default Constructor.
      */
@@ -89,6 +96,11 @@ public class FeatureApiBean {
         this.permissions = new ArrayList<String>(f.getPermissions());
         if (f.getFlippingStrategy() != null) {
             this.flippingStrategy = new FlippingStrategyApiBean(f.getFlippingStrategy());
+        }
+        if (f.getCustomProperties() != null) {
+            for (AbstractProperty<?> ap1 : f.getCustomProperties().values()) {
+                customProperties.put(ap1.getName(), new PropertyApiBean(ap1));
+            }
         }
     }
 
@@ -205,5 +217,23 @@ public class FeatureApiBean {
     public void setFlippingStrategy(FlippingStrategyApiBean flippingStrategy) {
         this.flippingStrategy = flippingStrategy;
     }
-  
+
+    /**
+     * Getter accessor for attribute 'customProperties'.
+     *
+     * @return
+     *       current value of 'customProperties'
+     */
+    public Map<String, PropertyApiBean> getCustomProperties() {
+        return customProperties;
+    }
+
+    /**
+     * Setter accessor for attribute 'customProperties'.
+     * @param customProperties
+     * 		new value for 'customProperties '
+     */
+    public void setCustomProperties(Map<String, PropertyApiBean> customProperties) {
+        this.customProperties = customProperties;
+    }
 }

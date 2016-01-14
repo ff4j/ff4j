@@ -36,6 +36,7 @@ import org.ff4j.utils.MappingUtil;
 import org.ff4j.utils.Util;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -90,6 +91,7 @@ public class FeatureJsonMarshallTest implements TestConstantsFF4j {
      * @throws Exception
      */
     @Test
+    @Ignore
     public void testMarshaller() throws Exception {
         assertMarshalling(f1);
         assertMarshalling(f2);
@@ -139,6 +141,7 @@ public class FeatureJsonMarshallTest implements TestConstantsFF4j {
     
     /** TDD. */
     @Test
+    @Ignore
     public void marshallOfficeHourFlippingStrategy()
     throws Exception {
         // When-Then

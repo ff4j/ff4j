@@ -100,13 +100,13 @@ public class FeatureCacheProviderEhCache implements FF4JCacheManager, FF4JEhCach
     /** {@inheritDoc} */
     @Override
     public void clearFeatures() {
-        cacheFeatures.flush();
+        getCacheFeatures().flush();
     }
 
     /** {@inheritDoc} */
     @Override
     public void clearProperties() {
-      cacheProperties.flush();
+        getCacheProperties().flush();
         
     }
 

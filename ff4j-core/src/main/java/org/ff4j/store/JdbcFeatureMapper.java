@@ -19,14 +19,14 @@ package org.ff4j.store;
  * limitations under the License.
  * #L%
  */
+import static org.ff4j.utils.MappingUtil.instanceFlippingStrategy;
+import static org.ff4j.utils.MappingUtil.toMap;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 
 import org.ff4j.core.Feature;
-import org.ff4j.core.FlippingStrategy;
-import org.ff4j.exception.FeatureAccessException;
-import org.ff4j.utils.MappingUtil;
 
 /**
  * Map resultset into {@link Feature}
@@ -53,28 +53,10 @@ public class JdbcFeatureMapper implements JdbcStoreConstants {
         // Strategy
         String strategy = rs.getString(COL_FEAT_STRATEGY);
         if (strategy != null && !"".equals(strategy)) {
-            FlippingStrategy flipStrategy = instanciate(strategy);
-            flipStrategy.init(featUid, MappingUtil.toMap(rs.getString(COL_FEAT_EXPRESSION)));
-            f.setFlippingStrategy(flipStrategy);
+            Map < String, String > initParams = toMap(rs.getString(COL_FEAT_EXPRESSION));
+            f.setFlippingStrategy(instanceFlippingStrategy(featUid, strategy, initParams));
         }
         return f;
     }
-    
-    /**
-     * Instanciate flipping strategy from its class name.
-     *
-     * @param className
-     *      current class name
-     * @return
-     *      the flipping strategy
-     */
-    public FlippingStrategy instanciate(String className) {
-        try {
-            return (FlippingStrategy) Class.forName(className).newInstance();
-        } catch (Exception ie) {
-            throw new FeatureAccessException("Cannot instantiate Strategy, no default constructor available", ie);
-        } 
-    }
-
 
 }
