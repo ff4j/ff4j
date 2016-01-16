@@ -132,11 +132,13 @@ public class FeatureResource extends AbstractResource {
             }
         }
         // Properties
-        if (fApiBean.getCustomProperties() != null) {
-            for(PropertyApiBean propertyBean : fApiBean.getCustomProperties().values()) {
+        Map<String, PropertyApiBean> mapProperties = fApiBean.getCustomProperties();
+        if (mapProperties != null) {
+            for(PropertyApiBean propertyBean : mapProperties.values()) {
                 feat.addProperty(propertyBean.asProperty());
             }       
         }
+        System.out.println("ok properties");
         
         // Update or create ? 
         if (!getFeatureStore().exist(feat.getUid())) {

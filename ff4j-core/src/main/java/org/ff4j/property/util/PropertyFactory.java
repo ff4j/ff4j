@@ -1,4 +1,4 @@
-package org.ff4j.property;
+package org.ff4j.property.util;
 
 /*
  * #%L
@@ -28,6 +28,19 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Set;
 
+import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
+import org.ff4j.property.PropertyBigDecimal;
+import org.ff4j.property.PropertyBigInteger;
+import org.ff4j.property.PropertyBoolean;
+import org.ff4j.property.PropertyByte;
+import org.ff4j.property.PropertyCalendar;
+import org.ff4j.property.PropertyDate;
+import org.ff4j.property.PropertyDouble;
+import org.ff4j.property.PropertyFloat;
+import org.ff4j.property.PropertyInt;
+import org.ff4j.property.PropertyLogLevel;
+import org.ff4j.property.PropertyShort;
 import org.ff4j.utils.Util;
 
 /**
@@ -143,8 +156,8 @@ public class PropertyFactory {
                 for (String v : fixedValues) {
                     ap.add2FixedValueFromString(v.trim());
                 }
-                // Check fixed value
-                if (ap.getFixedValues() != null && !ap.getFixedValues().contains(ap.getValue())) {
+                // Should be filled before test
+                if (!ap.getFixedValues().contains(ap.getValue())) {
                     throw new IllegalArgumentException("Cannot create property <" + ap.getName() + "> invalid value <"
                                 + ap.getValue() + "> expected one of " + ap.getFixedValues());
                 }

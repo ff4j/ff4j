@@ -29,7 +29,7 @@ import java.util.Set;
 
 import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.Property;
-import org.ff4j.property.PropertyFactory;
+import org.ff4j.property.util.PropertyFactory;
 import org.ff4j.store.JdbcStoreConstants;
 
 /**

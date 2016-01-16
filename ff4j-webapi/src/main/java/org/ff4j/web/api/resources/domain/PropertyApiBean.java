@@ -25,7 +25,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.ff4j.property.AbstractProperty;
-import org.ff4j.property.PropertyFactory;
+import org.ff4j.property.util.PropertyFactory;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;

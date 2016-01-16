@@ -40,8 +40,8 @@ import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.property.AbstractProperty;
-import org.ff4j.property.PropertyFactory;
 import org.ff4j.property.store.PropertyStore;
+import org.ff4j.property.util.PropertyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

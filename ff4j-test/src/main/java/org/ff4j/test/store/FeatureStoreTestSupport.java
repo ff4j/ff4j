@@ -1126,9 +1126,10 @@ public abstract class FeatureStoreTestSupport implements TestsFf4jConstants {
                 .getFeatureStore().read(F1)//
                 .getCustomProperties().get("digitValue")
                 .getFixedValues();
-        Assert.assertEquals(4, fixValues.size()); 
+        Assert.assertEquals(4, fixValues.size());
                 
         // When
+        myFeature = ff4j.getFeatureStore().read(F1);
         PropertyInt p1 = new PropertyInt("digitValue");
         p1.setFixedValues(Util.set(0,1,2,3,4));
         p1.setValue(4);
@@ -1137,7 +1138,7 @@ public abstract class FeatureStoreTestSupport implements TestsFf4jConstants {
         
         // Then
         Set < Integer > fixValues2 = (Set<Integer>) ff4j
-                .getFeatureStore().read(F1)//
+                .getFeatureStore().read(F1) //
                 .getCustomProperties().get("digitValue")
                 .getFixedValues();
         Assert.assertEquals(5, fixValues2.size());
@@ -1151,6 +1152,9 @@ public abstract class FeatureStoreTestSupport implements TestsFf4jConstants {
     public void testUpdateEditPropertyRemoveFixedValues() {
      // Given
         assertFf4j.assertThatFeatureExist(F1);
+        Feature myFeature = ff4j.getFeatureStore().read(F1);
+        myFeature.addProperty(new Property("regionIdentifier", "AMER", Util.set("AMER","SSSS","EAST")));
+        testedStore.update(myFeature);
         assertFf4j.assertThatFeatureHasProperty(F1, "regionIdentifier");
         Set < String > fixValues = (Set<String>) ff4j
                 .getFeatureStore().read(F1)//
@@ -1159,7 +1163,7 @@ public abstract class FeatureStoreTestSupport implements TestsFf4jConstants {
         Assert.assertEquals(3, fixValues.size()); 
                 
         // When
-        Feature myFeature = ff4j.getFeatureStore().read(F1);
+        myFeature = ff4j.getFeatureStore().read(F1);
         Property p1 = new Property("regionIdentifier");
         p1.setValue("AMER");
         p1.setFixedValues(Util.set("AMER", "SSSS"));
