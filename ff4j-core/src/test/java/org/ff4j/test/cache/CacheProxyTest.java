@@ -3,8 +3,8 @@ package org.ff4j.test.cache;
 import org.ff4j.cache.FF4JCacheManager;
 import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.cache.InMemoryCacheManager;
-import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.Property;
+import org.ff4j.property.PropertyString;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.junit.Assert;
@@ -56,7 +56,7 @@ public class CacheProxyTest {
         Assert.assertNotNull(proxy.getCacheProvider());
         proxy.setTargetPropertyStore(new InMemoryPropertyStore());
         Assert.assertEquals(0, proxy.readAllProperties().size());
-        proxy.createProperty(new Property("p1", "v1"));
+        proxy.createProperty(new PropertyString("p1", "v1"));
         Assert.assertTrue(proxy.existProperty("p1"));
         Assert.assertFalse(proxy.existProperty("p2"));
     }
@@ -67,11 +67,11 @@ public class CacheProxyTest {
         proxy.setTargetPropertyStore(new InMemoryPropertyStore());
         proxy.setTargetFeatureStore(new InMemoryFeatureStore());
         proxy.setCacheManager(new InMemoryCacheManager());
-        proxy.createProperty(new Property("p1", "v1"));
+        proxy.createProperty(new PropertyString("p1", "v1"));
        
-        AbstractProperty<?> p1 = proxy.readProperty("p1");
+        Property<?> p1 = proxy.readProperty("p1");
         proxy.readProperty("p1");
-        proxy.getTargetPropertyStore().createProperty(new Property("p2"));
+        proxy.getTargetPropertyStore().createProperty(new PropertyString("p2"));
         proxy.readProperty("p2");
         
         

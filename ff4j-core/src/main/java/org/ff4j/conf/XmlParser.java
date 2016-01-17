@@ -39,8 +39,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingStrategy;
-import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.Property;
+import org.ff4j.property.PropertyString;
 import org.ff4j.utils.MappingUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -322,8 +322,8 @@ public final class XmlParser {
      * @return
      *      properties map
      */
-    private Map < String , AbstractProperty<?>> parsePropertiesTag(Element propertiesTag) {
-        Map< String , AbstractProperty<?>> properties = new HashMap<String, AbstractProperty<?>>(); 
+    private Map < String , Property<?>> parsePropertiesTag(Element propertiesTag) {
+        Map< String , Property<?>> properties = new HashMap<String, Property<?>>(); 
         // <properties>
         NodeList lisOfProperties = propertiesTag.getElementsByTagName(PROPERTY_TAG);
         for (int k = 0; k < lisOfProperties.getLength(); k++) {
@@ -338,7 +338,7 @@ public final class XmlParser {
             }
             String name  = attMap.getNamedItem(PROPERTY_PARAMNAME).getNodeValue();
             String value = attMap.getNamedItem(PROPERTY_PARAMVALUE).getNodeValue();
-            AbstractProperty<?> ap = new Property(name, value);
+            Property<?> ap = new PropertyString(name, value);
             
             // If specific type defined ?
             if (null != attMap.getNamedItem(PROPERTY_PARAMTYPE)) {
@@ -350,7 +350,7 @@ public final class XmlParser {
                 try {
                     // Constructor (String, String) is mandatory in Property interface
                     Constructor<?> constr = Class.forName(optionalType).getConstructor(String.class, String.class);
-                    ap = (AbstractProperty<?>) constr.newInstance(name, value);
+                    ap = (Property<?>) constr.newInstance(name, value);
                 } catch (Exception e) {
                     throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' check default constructor", e);
                 }
@@ -497,7 +497,7 @@ public final class XmlParser {
     }
     
     /**
-     * Create XML output stream from a map of {@link Property}.
+     * Create XML output stream from a map of {@link PropertyString}.
      * 
      * @param mapOfProperties
      *            map of properties
@@ -505,12 +505,12 @@ public final class XmlParser {
      * @throws IOException
      *             error occurs when generating output
      */
-    public InputStream exportProperties(Map < String, AbstractProperty<?>> mapOfProperties) throws IOException {   
+    public InputStream exportProperties(Map < String, Property<?>> mapOfProperties) throws IOException {   
         return new ByteArrayInputStream(exportPropertiesPart(mapOfProperties).getBytes(ENCODING));
     }
     
     /**
-     * Create XML output stream with both {@link Feature} and {@link Property}.
+     * Create XML output stream with both {@link Feature} and {@link PropertyString}.
      * 
      * @param f
      *            map of features
@@ -518,7 +518,7 @@ public final class XmlParser {
      * @throws IOException
      *             error occurs when generating output
      */
-    public InputStream exportAll(Map<String, Feature> mapOfFeatures, Map < String, AbstractProperty<?>> mapOfProperties) throws IOException {   
+    public InputStream exportAll(Map<String, Feature> mapOfFeatures, Map < String, Property<?>> mapOfProperties) throws IOException {   
         // Create output
         StringBuilder sb = new StringBuilder(XML_HEADER);
         sb.append(exportFeaturesPart(mapOfFeatures));
@@ -549,7 +549,7 @@ public final class XmlParser {
      * @return
      *      XML Flow     
      */
-    private String exportPropertiesPart(Map < String, AbstractProperty<?>> mapOfProperties) {
+    private String exportPropertiesPart(Map < String, Property<?>> mapOfProperties) {
         // Create <features>
         StringBuilder sb = new StringBuilder(BEGIN_PROPERTIES);
         if (mapOfProperties != null && !mapOfProperties.isEmpty()) {
@@ -617,7 +617,7 @@ public final class XmlParser {
                     sb.append("   </" + FLIPSTRATEGY_TAG + ">\n");
                 }
                 // <custom-properties>
-                Map < String, AbstractProperty<?>> props = feat.getCustomProperties();
+                Map < String, Property<?>> props = feat.getCustomProperties();
                 if (props != null && !props.isEmpty()) {
                     sb.append(BEGIN_CUSTOMPROPERTIES);
                     sb.append(buildPropertiesPart(feat.getCustomProperties()));
@@ -641,14 +641,14 @@ public final class XmlParser {
      *      properties elements.
      * @return
      */
-    private String buildPropertiesPart(Map < String, AbstractProperty<?>> props) {
+    private String buildPropertiesPart(Map < String, Property<?>> props) {
         StringBuilder sb = new StringBuilder();
         if (props != null && !props.isEmpty()) {
             // Loop over property
-            for (AbstractProperty<?> property : props.values()) {
+            for (Property<?> property : props.values()) {
                 sb.append("    <" + PROPERTY_TAG + " " + PROPERTY_PARAMNAME + "=\"" + property.getName() + "\" ");
                 sb.append(PROPERTY_PARAMVALUE + "=\"" + property.asString() + "\" ");
-                if (!(property instanceof Property)) {
+                if (!(property instanceof PropertyString)) {
                     sb.append(PROPERTY_PARAMTYPE  + "=\"" + property.getClass().getCanonicalName()  + "\"");
                 }
                 // Processing fixedValue is present

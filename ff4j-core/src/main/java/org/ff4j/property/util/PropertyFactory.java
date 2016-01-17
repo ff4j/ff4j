@@ -28,8 +28,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Set;
 
-import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.Property;
+import org.ff4j.property.PropertyString;
 import org.ff4j.property.PropertyBigDecimal;
 import org.ff4j.property.PropertyBigInteger;
 import org.ff4j.property.PropertyBoolean;
@@ -44,7 +44,7 @@ import org.ff4j.property.PropertyShort;
 import org.ff4j.utils.Util;
 
 /**
- * Create {@link AbstractProperty} from name type and value.
+ * Create {@link Property} from name type and value.
  *
  * @author Cedrick Lunven (@clunven)
  */
@@ -66,7 +66,7 @@ public class PropertyFactory {
      *            property value
      * @return
      */
-    public static AbstractProperty<?> createProperty(String pName, Object value) {
+    public static Property<?> createProperty(String pName, Object value) {
         Util.assertHasLength(pName);
         Util.assertNotNull(value);
         if (value instanceof Byte) {
@@ -97,7 +97,7 @@ public class PropertyFactory {
             return PropertyFactory.createProperty(pName, PropertyBigDecimal.class.getName(), String.valueOf(value), null, null);
         }
         if (value instanceof String) {
-            return PropertyFactory.createProperty(pName, Property.class.getName(), String.valueOf(value), null, null);
+            return PropertyFactory.createProperty(pName, PropertyString.class.getName(), String.valueOf(value), null, null);
         }
         if (value instanceof PropertyLogLevel.LogLevel) {
             return PropertyFactory.createProperty(pName, PropertyLogLevel.class.getName(), String.valueOf(value), null, null);
@@ -111,8 +111,8 @@ public class PropertyFactory {
                     PropertyCalendar.class.getName(),
                     PropertyCalendar.SDF.format(valueDate), null, null);
         }
-        if (value instanceof AbstractProperty<?>) {
-            return (AbstractProperty<?>) value;
+        if (value instanceof Property<?>) {
+            return (Property<?>) value;
         }
         throw new IllegalArgumentException("Cannot create property with input type "  + value.getClass());
     }
@@ -128,8 +128,22 @@ public class PropertyFactory {
      *            property value
      * @return
      */
-    public static AbstractProperty<?> createProperty(String pName, String pType, String pValue) {
+    public static Property<?> createProperty(String pName, String pType, String pValue) {
         return PropertyFactory.createProperty(pName, pType, pValue, null, null);
+    }
+
+    /**
+     * Create Property from generic bean.
+     *
+     * @param pgb
+     *           generic bean
+     * @return
+     */
+    public static Property<?> createProperty(PropertyJsonBean pgb) {
+        return PropertyFactory.createProperty(
+                pgb.getName(), pgb.getType(), 
+                pgb.getValue(), pgb.getDescription(), 
+                pgb.getFixedValues());
     }
 
     /**
@@ -143,13 +157,13 @@ public class PropertyFactory {
      *            property value
      * @return
      */
-    public static AbstractProperty<?> createProperty(String pName, String pType, String pValue, String desc, Set < String > fixedValues) {
+    public static Property<?> createProperty(String pName, String pType, String pValue, String desc, Set < String > fixedValues) {
         Util.assertNotNull(pName);
         Util.assertNotNull(pType);
-        AbstractProperty<?> ap = null;
+        Property<?> ap = null;
         try {
             Constructor<?> constr = Class.forName(pType).getConstructor(String.class, String.class);
-            ap = (AbstractProperty<?>) constr.newInstance(pName, pValue);
+            ap = (Property<?>) constr.newInstance(pName, pValue);
             ap.setDescription(desc);
             // Is there any fixed Value ?
             if (fixedValues != null && !fixedValues.isEmpty()) {

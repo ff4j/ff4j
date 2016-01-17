@@ -24,7 +24,7 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 import org.ff4j.store.rowmapper.CustomPropertyRowMapper;
 import org.ff4j.store.rowmapper.FeatureRowMapper;
 import org.ff4j.store.rowmapper.RoleRowMapper;
@@ -100,8 +100,8 @@ public class FeatureStoreSpringJdbc extends AbstractFeatureStore implements Jdbc
      * @param fp
      */
     private void readProperties(Feature fp) {
-        List<AbstractProperty<?>> listOfProps = getJdbcTemplate().query(SQL_GETREFPROPERTIESBYID, PMAPPER, fp.getUid());
-        for (AbstractProperty<?> ap : listOfProps) {
+        List<Property<?>> listOfProps = getJdbcTemplate().query(SQL_GETREFPROPERTIESBYID, PMAPPER, fp.getUid());
+        for (Property<?> ap : listOfProps) {
             fp.getCustomProperties().put(ap.getName(), ap);
         }
     }
@@ -167,7 +167,7 @@ public class FeatureStoreSpringJdbc extends AbstractFeatureStore implements Jdbc
         if (fp.getCustomProperties() != null) {
             getJdbcTemplate().update(SQL_DELETE_CUSTOMPROPERTIES, fp.getUid());
             for (String propertyName : fp.getCustomProperties().keySet()) {
-                AbstractProperty<?> ap = fp.getCustomProperties().get(propertyName);
+                Property<?> ap = fp.getCustomProperties().get(propertyName);
                 String fixedValues = null;
                 if (ap.getFixedValues() != null && ap.getFixedValues().size() > 0) {
                     fixedValues = ap.getFixedValues().toString();

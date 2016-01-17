@@ -30,7 +30,7 @@ import org.ff4j.property.PropertyLogLevel.LogLevel;
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class PropertyLogLevel extends AbstractProperty<LogLevel> {
+public class PropertyLogLevel extends Property<LogLevel> {
 
     /** Serial. */
     private static final long serialVersionUID = 1792311055570779010L;

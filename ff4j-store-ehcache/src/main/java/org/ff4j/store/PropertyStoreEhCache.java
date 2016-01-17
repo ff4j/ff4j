@@ -30,7 +30,7 @@ import java.util.Set;
 import org.ff4j.ehcache.FF4jEhCacheWrapper;
 import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.exception.PropertyNotFoundException;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 import org.ff4j.property.store.AbstractPropertyStore;
 import org.ff4j.utils.Util;
 
@@ -38,7 +38,7 @@ import net.sf.ehcache.Element;
 import net.sf.ehcache.config.Configuration;
 
 /**
- * Store {@link AbstractProperty} into EHCache.
+ * Store {@link Property} into EHCache.
  * 
  * @author Cedrick Lunven (@clunven)</a>
  */
@@ -77,7 +77,7 @@ public class PropertyStoreEhCache extends AbstractPropertyStore {
 
     /** {@inheritDoc} */
     @Override
-    public <T> void createProperty(AbstractProperty<T> property) {
+    public <T> void createProperty(Property<T> property) {
         if (property == null) {
             throw new IllegalArgumentException("Property cannot be null nor empty");
         }
@@ -89,24 +89,24 @@ public class PropertyStoreEhCache extends AbstractPropertyStore {
 
     /** {@inheritDoc} */
     @Override
-    public AbstractProperty<?> readProperty(String name) {
+    public Property<?> readProperty(String name) {
         if (!existProperty(name)) {
             throw new PropertyNotFoundException(name);
         }
-        return  (AbstractProperty<?>) wrapper.getCacheProperties().get(name).getObjectValue();
+        return  (Property<?>) wrapper.getCacheProperties().get(name).getObjectValue();
     }
 
     /** {@inheritDoc} */
     @Override
     public void updateProperty(String name, String newValue) {
-        AbstractProperty<?> fp = readProperty(name);
+        Property<?> fp = readProperty(name);
         fp.setValueFromString(newValue);
         updateProperty(fp);
     }
 
     /** {@inheritDoc} */
     @Override
-    public <T> void updateProperty(AbstractProperty<T> property) {
+    public <T> void updateProperty(Property<T> property) {
         if (property == null) {
             throw new IllegalArgumentException("Property cannot be null");
         }
@@ -127,13 +127,13 @@ public class PropertyStoreEhCache extends AbstractPropertyStore {
 
     /** {@inheritDoc} */
     @Override
-    public Map<String, AbstractProperty<?>> readAllProperties() {
-        Map<String, AbstractProperty<?>> myMap = new HashMap<String, AbstractProperty<?>>();
+    public Map<String, Property<?>> readAllProperties() {
+        Map<String, Property<?>> myMap = new HashMap<String, Property<?>>();
         if (wrapper.getCacheProperties().getKeys() != null) {
             for (Object key : wrapper.getCacheProperties().getKeys()) {
                 Element element = wrapper.getCacheProperties().get(key);
                 if (element != null) {
-                    AbstractProperty<?> p = (AbstractProperty<?>) wrapper.getCacheProperties().get(key).getObjectValue();
+                    Property<?> p = (Property<?>) wrapper.getCacheProperties().get(key).getObjectValue();
                     myMap.put((String) key, p);
                 }
             }

@@ -26,7 +26,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 
 import org.ff4j.conf.XmlParser;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -103,7 +103,7 @@ public class XmlParserTest {
     @Test
     public void testNullValues() throws IOException {
         new XmlParser().escapeXML(null);
-        new XmlParser().exportProperties(new HashMap<String, AbstractProperty<?>>());
+        new XmlParser().exportProperties(new HashMap<String, Property<?>>());
     }
 
 }

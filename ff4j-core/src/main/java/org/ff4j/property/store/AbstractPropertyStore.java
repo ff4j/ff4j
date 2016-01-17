@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.ff4j.conf.XmlConfig;
 import org.ff4j.conf.XmlParser;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 
 /*
  * #%L
@@ -41,7 +41,7 @@ public abstract class AbstractPropertyStore implements PropertyStore {
      * @param xmlConfFile
      *      xml configuration file
      */
-    public  Map<String, AbstractProperty<?>> importPropertiesFromXmlFile(String xmlConfFile) {
+    public  Map<String, Property<?>> importPropertiesFromXmlFile(String xmlConfFile) {
         // Argument validation
         if (xmlConfFile == null || xmlConfFile.isEmpty()) {
             throw new IllegalArgumentException("Configuration filename cannot be null nor empty");
@@ -53,7 +53,7 @@ public abstract class AbstractPropertyStore implements PropertyStore {
         }
         // Use the Feature Parser
         XmlConfig conf = new XmlParser().parseConfigurationFile(xmlIS);
-        Map<String, AbstractProperty<?>> properties = conf.getProperties();
+        Map<String, Property<?>> properties = conf.getProperties();
 
         // Override existing configuration within database
         for (String featureName : properties.keySet()) {

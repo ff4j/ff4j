@@ -16,7 +16,7 @@ import java.util.Set;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 import org.ff4j.property.store.PropertyStore;
 
 /**
@@ -262,7 +262,7 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
 
     /** {@inheritDoc} */
     @Override
-    public Map<String, AbstractProperty<?>> readAllProperties() {
+    public Map<String, Property<?>> readAllProperties() {
         return getTargetPropertyStore().readAllProperties();
     }
 
@@ -278,15 +278,15 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
 
     /** {@inheritDoc} */
     @Override
-    public <T> void createProperty(AbstractProperty<T> property) {
+    public <T> void createProperty(Property<T> property) {
         getTargetPropertyStore().createProperty(property);
         getCacheManager().putProperty(property);
     }
 
     /** {@inheritDoc} */
     @Override
-    public AbstractProperty<?> readProperty(String name) {
-        AbstractProperty<?> fp = getCacheManager().getProperty(name);
+    public Property<?> readProperty(String name) {
+        Property<?> fp = getCacheManager().getProperty(name);
         // not in cache but may has been created from now
         if (null == fp) {
             fp = getTargetPropertyStore().readProperty(name);
@@ -299,7 +299,7 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
     @Override
     public void updateProperty(String name, String newValue) {
         // Retrieve the full object from its name
-        AbstractProperty<?> fp = getTargetPropertyStore().readProperty(name);
+        Property<?> fp = getTargetPropertyStore().readProperty(name);
         fp.setValueFromString(newValue);
         // Update value in target store
         getTargetPropertyStore().updateProperty(fp);
@@ -311,7 +311,7 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
 
     /** {@inheritDoc} */
     @Override
-    public <T> void updateProperty(AbstractProperty<T> propertyValue) {
+    public <T> void updateProperty(Property<T> propertyValue) {
         // Update the property
         getTargetPropertyStore().updateProperty(propertyValue);
         // Update the cache accordirly

@@ -23,7 +23,7 @@ import java.util.Map;
  */
 
 import org.ff4j.FF4j;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 import org.junit.Assert;
 
 /**
@@ -316,7 +316,7 @@ public class AssertFf4j {
      */
     public final AssertFf4j assertThatFeatureHasProperties(String featureName) {
         assertThatFeatureExist(featureName);
-        Map < String, AbstractProperty<?>> properties = ff4j.getFeature(featureName).getCustomProperties();
+        Map < String, Property<?>> properties = ff4j.getFeature(featureName).getCustomProperties();
         Assert.assertTrue("Properties are required",  (properties != null) && (properties.size() > 0) );
         return this;
     }
@@ -330,7 +330,7 @@ public class AssertFf4j {
      */
     public final AssertFf4j assertThatFeatureDoesNotHaveProperties(String featureName) {
         assertThatFeatureExist(featureName);
-        Map < String, AbstractProperty<?>> properties = ff4j.getFeature(featureName).getCustomProperties();
+        Map < String, Property<?>> properties = ff4j.getFeature(featureName).getCustomProperties();
         Assert.assertTrue("Properties are required",  (properties == null) || properties.isEmpty());
         return this;
     }
@@ -344,7 +344,7 @@ public class AssertFf4j {
      */
     public final AssertFf4j assertThatFeatureHasProperty(String featureName, String propertyName) {
         assertThatFeatureHasProperties(featureName);
-        Map < String, AbstractProperty<?>> properties = ff4j.getFeature(featureName).getCustomProperties();
+        Map < String, Property<?>> properties = ff4j.getFeature(featureName).getCustomProperties();
         Assert.assertTrue("Feature must contain property " + propertyName, properties.containsKey(propertyName));
         return this;
     }
@@ -358,7 +358,7 @@ public class AssertFf4j {
      */
     public final AssertFf4j assertThatFeatureHasNotProperty(String featureName, String propertyName) {
         assertThatFeatureExist(featureName);
-        Map < String, AbstractProperty<?>> properties = ff4j.getFeature(featureName).getCustomProperties();
+        Map < String, Property<?>> properties = ff4j.getFeature(featureName).getCustomProperties();
         Assert.assertTrue("Feature must contain property " + propertyName, (properties == null) || !properties.containsKey(propertyName));
         return this;
     }

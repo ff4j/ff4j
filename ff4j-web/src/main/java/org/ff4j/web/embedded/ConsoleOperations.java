@@ -39,7 +39,7 @@ import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FlippingStrategy;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.property.util.PropertyFactory;
 import org.slf4j.Logger;
@@ -137,7 +137,7 @@ public class ConsoleOperations implements ConsoleConstants {
         String value        = req.getParameter("pValue");
         String uid          = req.getParameter("uid");
         
-        AbstractProperty<?> ap = null;
+        Property<?> ap = null;
         if (ff4j.getPropertiesStore().existProperty(uid)) {
             // Do not change name, just and update
             if (uid.equalsIgnoreCase(name)) {
@@ -181,7 +181,7 @@ public class ConsoleOperations implements ConsoleConstants {
         String type         = req.getParameter("pType");
         String description  = req.getParameter("desc");
         String value        = req.getParameter("pValue");
-        AbstractProperty<?> ap = PropertyFactory.createProperty(name, type, value);
+        Property<?> ap = PropertyFactory.createProperty(name, type, value);
         ap.setDescription(description);
         ff4j.getPropertiesStore().createProperty(ap);
     }
@@ -288,8 +288,8 @@ public class ConsoleOperations implements ConsoleConstants {
         LOGGER.info(mapsOfFeat.size() + " features have been imported.");
         
         PropertyStore pstore = ff4j.getPropertiesStore();
-        Map<String, AbstractProperty<?>> mapsOfProperties = xmlConfig.getProperties();
-        for (Entry<String, AbstractProperty<?>> p : mapsOfProperties.entrySet()) {
+        Map<String, Property<?>> mapsOfProperties = xmlConfig.getProperties();
+        for (Entry<String, Property<?>> p : mapsOfProperties.entrySet()) {
             if (pstore.existProperty(p.getKey())) {
                 pstore.updateProperty(p.getValue());
             } else {

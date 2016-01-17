@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.ff4j.core.Feature;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -98,7 +98,7 @@ public class FeatureApiBean {
             this.flippingStrategy = new FlippingStrategyApiBean(f.getFlippingStrategy());
         }
         if (f.getCustomProperties() != null) {
-            for (AbstractProperty<?> ap1 : f.getCustomProperties().values()) {
+            for (Property<?> ap1 : f.getCustomProperties().values()) {
                 customProperties.put(ap1.getName(), new PropertyApiBean(ap1));
             }
         }

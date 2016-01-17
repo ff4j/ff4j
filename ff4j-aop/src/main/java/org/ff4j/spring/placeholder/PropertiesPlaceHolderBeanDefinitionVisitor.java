@@ -30,7 +30,7 @@ import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.PropertyNotFoundException;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -48,7 +48,7 @@ public class PropertiesPlaceHolderBeanDefinitionVisitor extends BeanDefinitionVi
     private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesPlaceHolderBeanDefinitionVisitor.class);
     
     /** Properties Map from store **/
-    private Map<String, AbstractProperty<?>> propertiesMap = new HashMap<String, AbstractProperty<?>>();
+    private Map<String, Property<?>> propertiesMap = new HashMap<String, Property<?>>();
     
     /** Properties Map from store **/
     private Map<String, Feature > featuresMap = new HashMap<String, Feature >();
@@ -88,7 +88,7 @@ public class PropertiesPlaceHolderBeanDefinitionVisitor extends BeanDefinitionVi
      * @return
      * @throws BeanDefinitionStoreException
      */
-    protected String parseStringValue(String strVal, Map<String, AbstractProperty<?>> propertiesMap, Map<String, Feature> featureMap, Set<String> visitedPlaceholders) 
+    protected String parseStringValue(String strVal, Map<String, Property<?>> propertiesMap, Map<String, Feature> featureMap, Set<String> visitedPlaceholders) 
     throws BeanDefinitionStoreException {
         StringBuffer buf = new StringBuffer(strVal);
         

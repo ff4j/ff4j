@@ -25,7 +25,7 @@ package org.ff4j.property;
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class PropertyFloat extends AbstractProperty< Float > {
+public class PropertyFloat extends Property< Float > {
 
     /** serial. */
     private static final long serialVersionUID = -134543098672660987L;

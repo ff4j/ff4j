@@ -21,9 +21,9 @@ package org.ff4j.placeholder;
  */
 
 
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 
-public class PropertyExotic extends AbstractProperty<String> {
+public class PropertyExotic extends Property<String> {
 
     /** Serial. */
     private static final long serialVersionUID = -1741889080500746125L;

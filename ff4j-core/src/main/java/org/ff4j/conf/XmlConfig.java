@@ -24,7 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.ff4j.core.Feature;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 
 /**
  * This bean is populated by parsing FF4J XML files.
@@ -37,7 +37,7 @@ public class XmlConfig {
     private Map <String, Feature > features = new LinkedHashMap<String, Feature>();
     
     /** InMemory Feature Map */
-    private Map<String, AbstractProperty<?>> properties = new LinkedHashMap<String, AbstractProperty<?>>();
+    private Map<String, Property<?>> properties = new LinkedHashMap<String, Property<?>>();
 
     /**
      * Getter accessor for attribute 'features'.
@@ -64,7 +64,7 @@ public class XmlConfig {
      * @return
      *       current value of 'properties'
      */
-    public Map<String, AbstractProperty<?>> getProperties() {
+    public Map<String, Property<?>> getProperties() {
         return properties;
     }
 
@@ -73,7 +73,7 @@ public class XmlConfig {
      * @param properties
      * 		new value for 'properties '
      */
-    public void setProperties(Map<String, AbstractProperty<?>> properties) {
+    public void setProperties(Map<String, Property<?>> properties) {
         this.properties = properties;
     }
 

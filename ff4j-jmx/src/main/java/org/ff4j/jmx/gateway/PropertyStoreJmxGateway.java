@@ -24,7 +24,7 @@ package org.ff4j.jmx.gateway;
 import java.util.Map;
 import java.util.Set;
 
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 import org.ff4j.property.store.PropertyStore;
 
 /**
@@ -41,11 +41,11 @@ public class PropertyStoreJmxGateway implements PropertyStore {
     }
 
     @Override
-    public <T> void createProperty(AbstractProperty<T> value) {
+    public <T> void createProperty(Property<T> value) {
     }
 
     @Override
-    public AbstractProperty<?> readProperty(String name) {
+    public Property<?> readProperty(String name) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -57,7 +57,7 @@ public class PropertyStoreJmxGateway implements PropertyStore {
     }
 
     @Override
-    public <T> void updateProperty(AbstractProperty<T> fixedValue) {
+    public <T> void updateProperty(Property<T> fixedValue) {
         // TODO Auto-generated method stub
         
     }
@@ -69,7 +69,7 @@ public class PropertyStoreJmxGateway implements PropertyStore {
     }
 
     @Override
-    public Map<String, AbstractProperty<?>> readAllProperties() {
+    public Map<String, Property<?>> readAllProperties() {
         // TODO Auto-generated method stub
         return null;
     }

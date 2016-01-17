@@ -27,8 +27,8 @@ import java.util.Set;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.exception.PropertyNotFoundException;
-import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.Property;
+import org.ff4j.property.PropertyString;
 import org.ff4j.property.PropertyDate;
 import org.ff4j.property.PropertyLogLevel;
 import org.ff4j.property.PropertyLogLevel.LogLevel;
@@ -101,7 +101,7 @@ public abstract class AbstractPropertyStoreJunitTest {
         // Given
         Assert.assertFalse(testedStore.existProperty("toto"));
         // When
-        testedStore.createProperty(new Property("toto", "ff4j"));
+        testedStore.createProperty(new PropertyString("toto", "ff4j"));
         // Then
         Assert.assertTrue(testedStore.existProperty("toto"));
     }
@@ -151,7 +151,7 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test(expected = IllegalArgumentException.class)
     public void addPropertyKO_NullName() {
         // Given
-        testedStore.createProperty(new Property(null, ""));
+        testedStore.createProperty(new PropertyString(null, ""));
         // Then expect to fail
     }
     
@@ -159,7 +159,7 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test(expected = IllegalArgumentException.class)
     public void addPropertyKO_EmptyName() {
         // Given
-        testedStore.createProperty(new Property("", ""));
+        testedStore.createProperty(new PropertyString("", ""));
         // Then expect to fail
     }
     
@@ -167,7 +167,7 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test(expected = IllegalArgumentException.class)
     public void addPropertyKO_NullValue() {
         // Given
-        testedStore.createProperty(new Property("hi", null));
+        testedStore.createProperty(new PropertyString("hi", null));
         // Then No error
     }
     
@@ -185,9 +185,9 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test
     public void readOK() {
         // Given
-        testedStore.createProperty(new Property("toto", "ff4j"));
+        testedStore.createProperty(new PropertyString("toto", "ff4j"));
         // When
-        AbstractProperty<?> ap = testedStore.readProperty("toto");
+        Property<?> ap = testedStore.readProperty("toto");
         // Then
         Assert.assertNotNull(ap);
         Assert.assertNotNull(ap.getName());
@@ -203,7 +203,7 @@ public abstract class AbstractPropertyStoreJunitTest {
         // Given
         testedStore.createProperty(new PropertyLogLevel("log", LogLevel.ERROR));
         // When
-        AbstractProperty<?> log = testedStore.readProperty("log");
+        Property<?> log = testedStore.readProperty("log");
         // Then
         Assert.assertNotNull(log);
         Assert.assertNotNull(log.getName());
@@ -259,7 +259,7 @@ public abstract class AbstractPropertyStoreJunitTest {
         // Given
         Assert.assertFalse(testedStore.existProperty("invalid"));
         // When
-        testedStore.updateProperty(new Property("invalid", "abc"));
+        testedStore.updateProperty(new PropertyString("invalid", "abc"));
         // Expected error
         Assert.fail();
     }
@@ -358,7 +358,7 @@ public abstract class AbstractPropertyStoreJunitTest {
     @Test
     public void deleteOK() {
         // Given
-        testedStore.createProperty(new Property("toto", "ff4j"));
+        testedStore.createProperty(new PropertyString("toto", "ff4j"));
         Assert.assertTrue(testedStore.existProperty("toto"));
         // When
         testedStore.deleteProperty("toto");
@@ -395,7 +395,7 @@ public abstract class AbstractPropertyStoreJunitTest {
         // Given
         Assert.assertNotNull(testedStore);
         // When
-        Map <String, AbstractProperty<?>> mapsOf = testedStore.readAllProperties();
+        Map <String, Property<?>> mapsOf = testedStore.readAllProperties();
         // When
         Assert.assertTrue(mapsOf.containsKey("a"));
         Assert.assertTrue(mapsOf.containsKey("b"));
@@ -406,7 +406,7 @@ public abstract class AbstractPropertyStoreJunitTest {
     public void clear() {
         // Given
         Assert.assertNotNull(testedStore);
-        Map <String, AbstractProperty<?>> before = testedStore.readAllProperties();
+        Map <String, Property<?>> before = testedStore.readAllProperties();
         Assert.assertFalse(before.isEmpty());
         // When
         testedStore.clear();

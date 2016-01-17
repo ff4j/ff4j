@@ -16,7 +16,7 @@ import java.util.Set;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureNotFoundException;
-import org.ff4j.property.Property;
+import org.ff4j.property.PropertyString;
 import org.ff4j.property.PropertyInt;
 import org.ff4j.utils.Util;
 import org.junit.Assert;
@@ -168,7 +168,7 @@ public class SpringJdbcXMLDataSourceStoreTest extends FeatureStoreTestSupport {
                 
         // When
         Feature myFeature = ff4j.getFeatureStore().read(F1);
-        Property p1 = new Property("regionIdentifier");
+        PropertyString p1 = new PropertyString("regionIdentifier");
         p1.setValue("AMER");
         p1.setFixedValues(Util.set("AMER", "SSSS"));
         myFeature.getCustomProperties().put(p1.getName(), p1);

@@ -29,7 +29,7 @@ import java.util.Set;
 
 import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.utils.JdbcUtils;
 import org.ff4j.utils.JsonUtils;
@@ -57,7 +57,7 @@ public class MappingUtilsTest {
     public void testJsonMapping() {
         JsonUtils.permissionsAsJson(null);
         JsonUtils.customPropertiesAsJson(null);
-        JsonUtils.customPropertiesAsJson( new HashMap<String, AbstractProperty<?>>());
+        JsonUtils.customPropertiesAsJson( new HashMap<String, Property<?>>());
         
         FeatureStore store1 = new InMemoryFeatureStore();
         FF4jCacheProxy proxy = new FF4jCacheProxy(store1, null, null);

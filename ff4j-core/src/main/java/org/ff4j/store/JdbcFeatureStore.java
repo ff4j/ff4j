@@ -45,7 +45,7 @@ import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 import org.ff4j.property.store.JdbcPropertyMapper;
 import org.ff4j.utils.JdbcUtils;
 import org.ff4j.utils.MappingUtil;
@@ -179,7 +179,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
             ps.setString(1, uid);
             rs = ps.executeQuery();
             while (rs.next()) {
-                AbstractProperty<?> ap = JDBC_PROPERTY_MAPPER.map(rs);
+                Property<?> ap = JDBC_PROPERTY_MAPPER.map(rs);
                 f.getCustomProperties().put(ap.getName(), ap);
             }
             return f;
@@ -240,7 +240,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
             
             // Create customproperties
             if (fp.getCustomProperties() != null && !fp.getCustomProperties().isEmpty()) {
-                for (AbstractProperty<?> pp : fp.getCustomProperties().values()) {
+                for (Property<?> pp : fp.getCustomProperties().values()) {
                     ps = createCustomProperty(sqlConn, fp.getUid(), pp);
                 }
             }
@@ -496,7 +496,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
      * @param props
      *      target properties.
      */
-    public void createCustomProperties(String uid, Collection <AbstractProperty<?> > props) {
+    public void createCustomProperties(String uid, Collection <Property<?> > props) {
         Util.assertNotNull(uid);
         if (props == null | props.isEmpty()) return;
        
@@ -510,7 +510,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
             sqlConn.setAutoCommit(false);
             
             // Queries
-            for (AbstractProperty<?> pp : props) {
+            for (Property<?> pp : props) {
                 ps = createCustomProperty(sqlConn, uid, pp);
             }
             
@@ -525,7 +525,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
         }
     }
     
-    private PreparedStatement createCustomProperty(Connection sqlConn, String featureId, AbstractProperty<?> pp)
+    private PreparedStatement createCustomProperty(Connection sqlConn, String featureId, Property<?> pp)
     throws SQLException {
         PreparedStatement ps = sqlConn.prepareStatement(SQL_CREATE_CUSTOMPROPERTY);
         ps.setString(1, pp.getName());

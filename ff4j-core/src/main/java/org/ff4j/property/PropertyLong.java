@@ -25,7 +25,7 @@ package org.ff4j.property;
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class PropertyLong extends AbstractProperty< Long > {
+public class PropertyLong extends Property< Long > {
 
     /** serial. */
     private static final long serialVersionUID = -134543098672660987L;

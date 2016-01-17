@@ -27,7 +27,7 @@ import java.math.BigInteger;
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class PropertyBigInteger extends AbstractProperty< BigInteger > {
+public class PropertyBigInteger extends Property< BigInteger > {
 
     /** serial. */
     private static final long serialVersionUID = -134543098672660987L;

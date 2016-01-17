@@ -3,7 +3,7 @@ package org.ff4j.property.store;
 import java.util.Map;
 import java.util.Set;
 
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 
 /*
  * #%L
@@ -48,7 +48,7 @@ public interface PropertyStore {
      * @param value
      *      target value
      */
-    <T> void createProperty(AbstractProperty<T> value);
+    <T> void createProperty(Property<T> value);
     
     /**
      * Read property value.
@@ -58,7 +58,7 @@ public interface PropertyStore {
      * @return
      *      property of exist
      */
-    AbstractProperty<?> readProperty(String name);
+    Property<?> readProperty(String name);
     
     /**
      * Update existing property.
@@ -78,7 +78,7 @@ public interface PropertyStore {
      * @param newValue
      *      new value
      */
-    <T> void updateProperty(AbstractProperty<T> fixedValue);
+    <T> void updateProperty(Property<T> fixedValue);
     
     /**
      * Delete current property.
@@ -94,7 +94,7 @@ public interface PropertyStore {
      * @return
      *      all properties from store
      */
-    Map<String, AbstractProperty<?> > readAllProperties();
+    Map<String, Property<?> > readAllProperties();
     
     /**
      * List all property names.

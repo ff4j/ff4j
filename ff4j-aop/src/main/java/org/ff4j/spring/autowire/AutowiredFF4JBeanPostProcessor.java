@@ -27,7 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
@@ -101,10 +101,10 @@ public class AutowiredFF4JBeanPostProcessor implements BeanPostProcessor {
         // Find the required and name parameters
         AutowiredFF4JProperty annProperty = field.getAnnotation(AutowiredFF4JProperty.class);
         String propertyName = StringUtils.hasLength(annProperty.value()) ? annProperty.value() : field.getName();
-        AbstractProperty<?> property = readProperty(field, propertyName, annProperty.required());
+        Property<?> property = readProperty(field, propertyName, annProperty.required());
         // if not available in store
         if (property != null) {
-            if (AbstractProperty.class.isAssignableFrom(field.getType())) {
+            if (Property.class.isAssignableFrom(field.getType())) {
                 injectValue(field, bean, propertyName, property);
             } else if (property.parameterizedType().isAssignableFrom(field.getType())) {
                 injectValue(field, bean, propertyName, property.getValue());
@@ -170,7 +170,7 @@ public class AutowiredFF4JBeanPostProcessor implements BeanPostProcessor {
         return ff4j.getFeatureStore().read(featureName);
     }
 
-    private AbstractProperty<?> readProperty(Field field, String propertyName, boolean required) {
+    private Property<?> readProperty(Field field, String propertyName, boolean required) {
         if (!ff4j.getPropertiesStore().existProperty(propertyName)) {
             if (required) {
                 throw new IllegalArgumentException("Cannot autowiring field '" + field.getName() + "' with FF4J property as"

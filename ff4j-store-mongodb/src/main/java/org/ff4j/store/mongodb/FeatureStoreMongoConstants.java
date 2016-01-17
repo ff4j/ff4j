@@ -44,6 +44,9 @@ public interface FeatureStoreMongoConstants {
 
     /** GroupName. */
     String GROUPNAME = "groupname";
+    
+    /** Custom Properties. */
+    String CUSTOMPROPERTIES = "customProperties";
 
     /** Roles. */
     String ROLES = "roles";

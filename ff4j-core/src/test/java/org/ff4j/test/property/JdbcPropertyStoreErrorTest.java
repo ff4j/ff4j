@@ -26,7 +26,7 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import org.ff4j.exception.PropertyAccessException;
-import org.ff4j.property.Property;
+import org.ff4j.property.PropertyString;
 import org.ff4j.property.store.JdbcPropertyStore;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -57,7 +57,7 @@ public class JdbcPropertyStoreErrorTest {
         doThrow(new SQLException()).when(mockDS).getConnection();
         JdbcPropertyStore jrepo = new JdbcPropertyStore(mockDS);
         jrepo.setDataSource(mockDS);
-        jrepo.createProperty(new Property("p1","v1"));
+        jrepo.createProperty(new PropertyString("p1","v1"));
     }
     
     @Test(expected = PropertyAccessException.class)

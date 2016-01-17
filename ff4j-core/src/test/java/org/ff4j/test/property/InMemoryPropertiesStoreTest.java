@@ -5,8 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 
 import org.ff4j.FF4j;
-import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.Property;
+import org.ff4j.property.PropertyString;
 import org.ff4j.property.PropertyDate;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.store.PropertyStore;
@@ -68,7 +68,7 @@ public class InMemoryPropertiesStoreTest extends AbstractPropertyStoreJunitTest 
         
         ff4j.getPropertiesStore().createProperty(new PropertyDate("property_3", new Date()));
        
-        AbstractProperty<?> ap = ff4j.getPropertiesStore().readProperty("property_3");
+        Property<?> ap = ff4j.getPropertiesStore().readProperty("property_3");
         PropertyDate pDate = (PropertyDate) ap;
         pDate.setValue(new Date());
         ff4j.getPropertiesStore().updateProperty(pDate);
@@ -85,7 +85,7 @@ public class InMemoryPropertiesStoreTest extends AbstractPropertyStoreJunitTest 
     
     @Test
     public void testInitStores() {
-        new InMemoryPropertyStore(new HashMap<String, AbstractProperty<?>>());
+        new InMemoryPropertyStore(new HashMap<String, Property<?>>());
         InputStream in =  getClass().getClassLoader().getResourceAsStream("ff4j.xml");
         new InMemoryPropertyStore(in);
     }
@@ -102,7 +102,7 @@ public class InMemoryPropertiesStoreTest extends AbstractPropertyStoreJunitTest 
     
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidXML() {
-        new InMemoryPropertyStore(new HashMap<String, AbstractProperty<?>>());
+        new InMemoryPropertyStore(new HashMap<String, Property<?>>());
         InputStream in =  getClass().getClassLoader().getResourceAsStream("invalid.xml");
         new InMemoryPropertyStore(in);
     }
@@ -141,7 +141,7 @@ public class InMemoryPropertiesStoreTest extends AbstractPropertyStoreJunitTest 
     public void testEmpty3() {
         // Given
         InMemoryPropertyStore ips = new InMemoryPropertyStore();
-        ips.createProperty(new Property("P1", "v1"));
+        ips.createProperty(new PropertyString("P1", "v1"));
         Assert.assertFalse(ips.isEmpty());
     }
     

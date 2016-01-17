@@ -1,5 +1,7 @@
 package org.ff4j.store.mongodb;
 
+import java.util.HashMap;
+
 /*
  * #%L
  * ff4j-store-mongodb
@@ -21,14 +23,21 @@ package org.ff4j.store.mongodb;
  */
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureAccessException;
+import org.ff4j.property.Property;
+import org.ff4j.property.util.PropertyJsonBean;
+import org.ff4j.utils.JsonUtils;
 import org.ff4j.utils.MappingUtil;
 
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
 
 /**
  * MApping from Mongo document to Feature.
@@ -53,6 +62,7 @@ public final class FeatureDBObjectMapper implements FeatureStoreMongoConstants {
         f.setGroup((String) dbObject.get(GROUPNAME));
         f.setPermissions(mapAuthorization(dbObject));
         f.setFlippingStrategy(mapStrategy(featUid, dbObject));
+        f.setCustomProperties(mapCustomProperties(dbObject));
         return f;
     }
 
@@ -70,12 +80,17 @@ public final class FeatureDBObjectMapper implements FeatureStoreMongoConstants {
             strategyColumn = feature.getFlippingStrategy().getClass().getCanonicalName();
             expressionColumn = MappingUtil.fromMap(feature.getFlippingStrategy().getInitParams());
         }
+        String customProperties = null;
+        if (feature.getCustomProperties() != null) {
+            customProperties = JsonUtils.customPropertiesAsJson(feature.getCustomProperties());
+        }
         return new FeatureDBObjectBuilder().addFeatUid(feature.getUid()).//
                 addEnable(feature.isEnable()).//
                 addDescription(feature.getDescription()).//
                 addGroupName(feature.getGroup()).//
                 addStrategy(strategyColumn).//
                 addExpression(expressionColumn).//
+                addCustomProperties(customProperties).
                 addRoles(feature.getPermissions()).build();
     }
 
@@ -120,6 +135,52 @@ public final class FeatureDBObjectMapper implements FeatureStoreMongoConstants {
             }
         }
         return (FlippingStrategy) dbObject.get(STRATEGY);
+    }
+    
+    /**
+     * Custom Properties.
+     *
+     * @param dbObject
+     *      db object
+     * @return
+     *      list of property
+     */
+    @SuppressWarnings("unchecked")
+    private Map < String, Property<?> > mapCustomProperties(DBObject dbObject) {
+        Map < String, Property<?> > mapOfCustomProperties = new HashMap<String, Property<?>>();
+        if (dbObject.containsField(CUSTOMPROPERTIES)) {
+            String properties = (String) dbObject.get(CUSTOMPROPERTIES);
+            Map < String, BasicDBObject > values = (Map<String, BasicDBObject>) JSON.parse(properties);
+            for (String key : values.keySet()) {
+                mapOfCustomProperties.put(key, mapProperty(values.get(key)));
+            }
+        }
+        return mapOfCustomProperties;
+    }
+    
+    /**
+     * Map a property.
+     *
+     * @param dbObject
+     *      db object
+     * @return
+     *      list of property
+     */
+    private Property< ? > mapProperty(DBObject dbObject) {
+        PropertyJsonBean pf = new PropertyJsonBean();
+        pf.setName((String) dbObject.get("name"));
+        pf.setDescription(((String) dbObject.get("description")));
+        pf.setType(((String) dbObject.get("type")));
+        pf.setValue(((String) dbObject.get("value")));
+        if (dbObject.containsField("fixedValues")) {
+            BasicDBList dbList = (BasicDBList) dbObject.get("fixedValues");
+            if (dbList != null) {
+                for(Object item : dbList) {
+                    pf.addFixedValue((String) item);
+                }
+            }
+        }
+        return pf.asProperty();
     }
 
 }

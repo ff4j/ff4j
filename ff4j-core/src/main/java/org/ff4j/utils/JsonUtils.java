@@ -26,7 +26,7 @@ import java.util.Map.Entry;
 
 import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.core.FlippingStrategy;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 
 /**
  * Custom implementation of serialization : faster + no jackson dependency
@@ -120,13 +120,13 @@ public class JsonUtils {
      * @return
      *      target json expression
      */
-    public static final String customPropertiesAsJson(final Map<String, ? extends AbstractProperty<?>> customProperties) {
+    public static final String customPropertiesAsJson(final Map<String, ? extends Property<?>> customProperties) {
         StringBuilder json = new StringBuilder("{");
         if (null != customProperties && !customProperties.isEmpty()) {
             boolean first = true;
             for (String key : customProperties.keySet()) {
                 json.append(first ? "" : ",");
-                json.append("\"" + key + "\":" + customProperties.get(key).toString());
+                json.append("\"" + key + "\":" + customProperties.get(key).toJson());
                 first = false;
             }
         }

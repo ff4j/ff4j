@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 
 /**
  * Super class to work with multivalued properties.
@@ -37,7 +37,7 @@ import org.ff4j.property.AbstractProperty;
  * @param <C>
  *      current collection type
  */
-public abstract class AbstractPropertyMultiValued < T, C extends Collection< T>> extends AbstractProperty < C > implements Collection< T > {
+public abstract class AbstractPropertyMultiValued < T, C extends Collection< T>> extends Property < C > implements Collection< T > {
 
     /** Serial. */
     private static final long serialVersionUID = 1L;

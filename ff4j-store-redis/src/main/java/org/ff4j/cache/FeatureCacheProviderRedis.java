@@ -23,7 +23,7 @@ package org.ff4j.cache;
 import java.util.Set;
 
 import org.ff4j.core.Feature;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 import org.ff4j.redis.RedisConnection;
 import org.ff4j.utils.json.FeatureJsonParser;
 import org.ff4j.utils.json.PropertyJsonParser;
@@ -112,7 +112,7 @@ public class FeatureCacheProviderRedis implements FF4JCacheManager {
     }
 
     @Override
-    public void putProperty(AbstractProperty<?> property) {
+    public void putProperty(Property<?> property) {
         if (property == null) {
             throw new IllegalArgumentException("Feature cannot be null nor empty");
         }
@@ -135,7 +135,7 @@ public class FeatureCacheProviderRedis implements FF4JCacheManager {
 
     /** {@inheritDoc} */
     @Override
-    public AbstractProperty<?> getProperty(String propertyName) {
+    public Property<?> getProperty(String propertyName) {
         if (propertyName == null || propertyName.isEmpty()) {
             throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
         }

@@ -35,7 +35,7 @@ INSERT INTO FF4J_CUSTOM_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES
 VALUES('ppboolean', 'org.ff4j.property.PropertyBoolean', 'true', NULL, 'first');;
 
 INSERT INTO FF4J_CUSTOM_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES, FEAT_UID) 
-VALUES('ppstring', 'org.ff4j.property.Property', 'hello', NULL, 'first');;
+VALUES('ppstring', 'org.ff4j.property.PropertyString', 'hello', NULL, 'first');;
 
 INSERT INTO FF4J_CUSTOM_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES, FEAT_UID) 
 VALUES('ppListInt', 'org.ff4j.property.PropertyInt','12' , '12,13,14', 'first');
@@ -44,7 +44,7 @@ INSERT INTO FF4J_CUSTOM_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES
 VALUES('digitValue', 'org.ff4j.property.PropertyInt', '1', '0,1,2,3', 'first');
 
 INSERT INTO FF4J_CUSTOM_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES, FEAT_UID) 
-VALUES('regionIdentifier', 'org.ff4j.property.Property', 'AMER', 'AMER,EAST,SSSS', 'first');
+VALUES('regionIdentifier', 'org.ff4j.property.PropertyString', 'AMER', 'AMER,EAST,SSSS', 'first');
 
 INSERT INTO FF4J_CUSTOM_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES, FEAT_UID) 
 VALUES('myLogLevel', 'org.ff4j.property.PropertyLogLevel', 'DEBUG', 'FATAL,WARN,TRACE,ERROR,INFO,DEBUG', 'first');
@@ -72,7 +72,7 @@ INSERT INTO FF4J_ROLES(FEAT_UID, ROLE_NAME)  VALUES('forth', 'BETA-TESTER');
 -- *********************************
 
 INSERT INTO FF4J_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES) 
-VALUES('a', 'org.ff4j.property.Property', 'AMER', 'AMER,EAST');
+VALUES('a', 'org.ff4j.property.PropertyString', 'AMER', 'AMER,EAST');
 
 INSERT INTO FF4J_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES) 
 VALUES('b', 'org.ff4j.property.PropertyInt', '12', NULL);
@@ -84,7 +84,7 @@ INSERT INTO FF4J_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES)
 VALUES('d', 'org.ff4j.property.PropertyBoolean', 'true', 'true,false');
 
 INSERT INTO FF4J_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES) 
-VALUES('e', 'org.ff4j.property.Property', '12,13,14', NULL);
+VALUES('e', 'org.ff4j.property.PropertyString', '12,13,14', NULL);
 
 INSERT INTO FF4J_PROPERTIES(PROPERTY_ID, CLAZZ, CURRENTVALUE, FIXEDVALUES) 
 VALUES('g', 'org.ff4j.property.PropertyLogLevel', 'DEBUG', 'FATAL,WARN,TRACE,ERROR,INFO,DEBUG');

@@ -26,7 +26,7 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 import org.ff4j.property.store.AbstractPropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.utils.Util;
@@ -55,13 +55,13 @@ public class PropertyStoreSpringJdbc extends AbstractPropertyStore implements Jd
     }
 
     @Override
-    public <T> void createProperty(AbstractProperty<T> value) {
+    public <T> void createProperty(Property<T> value) {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public AbstractProperty<?> readProperty(String name) {
+    public Property<?> readProperty(String name) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -73,7 +73,7 @@ public class PropertyStoreSpringJdbc extends AbstractPropertyStore implements Jd
     }
 
     @Override
-    public <T> void updateProperty(AbstractProperty<T> fixedValue) {
+    public <T> void updateProperty(Property<T> fixedValue) {
         // TODO Auto-generated method stub
         
     }
@@ -85,7 +85,7 @@ public class PropertyStoreSpringJdbc extends AbstractPropertyStore implements Jd
     }
 
     @Override
-    public Map<String, AbstractProperty<?>> readAllProperties() {
+    public Map<String, Property<?>> readAllProperties() {
         // TODO Auto-generated method stub
         return null;
     }

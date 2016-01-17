@@ -21,10 +21,13 @@ package org.ff4j.utils.json;
  */
 
 import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
+import org.ff4j.property.Property;
+import org.ff4j.property.util.PropertyJsonBean;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -77,6 +80,21 @@ public class FeatureJsonParserTest {
         mapper.writeValue(baos, f);
         return new StringBuilder().append(baos).toString();
     }
+    
+    /**
+     * Check cutom (fast) serialization against Jackson.
+     * 
+     * @param f
+     *            current feature
+     * @return feature serialized as JSON
+     * @throws Exception
+     *             error occured
+     */
+    private String marshallWithJackson(PropertyJsonBean f) throws Exception {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        mapper.writeValue(baos, f);
+        return new StringBuilder().append(baos).toString();
+    }
 
     /**
      * Check cutom (fast) serialization against Jackson.
@@ -102,8 +120,17 @@ public class FeatureJsonParserTest {
      *            feature
      **/
     private void assertMarshalling(Feature feat) throws Exception {
+        Map < String, Property<?>> props = feat.getCustomProperties();
+        if (props != null && !props.isEmpty()) {
+            // Custom properties are unforce to PropertyJsonBean
+            for (String pName : props.keySet()) {
+                PropertyJsonBean pjb = new PropertyJsonBean(props.get(pName));
+                Assert.assertEquals(marshallWithJackson(pjb), pjb.asJson());
+            }
+            feat.setCustomProperties(new HashMap<String, Property<?>>());
+        } 
         Assert.assertEquals(marshallWithJackson(feat), feat.toJson());
-        Assert.assertEquals(ff4j.getFeatures().get(feat.getUid()).toJson(), feat.toJson());
+        feat.setCustomProperties(props);
     }   
 
 }

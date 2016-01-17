@@ -28,7 +28,7 @@ import java.util.Set;
 import org.ff4j.conf.XmlParser;
 import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.exception.PropertyNotFoundException;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 import org.ff4j.utils.Util;
 
 /**
@@ -39,7 +39,7 @@ import org.ff4j.utils.Util;
 public class InMemoryPropertyStore extends AbstractPropertyStore {
 
     /** InMemory Feature Map */
-    private Map<String, AbstractProperty<?>> properties = new LinkedHashMap<String, AbstractProperty<?>>();
+    private Map<String, Property<?>> properties = new LinkedHashMap<String, Property<?>>();
 
     /** FileName used to retrieve properties. */
     private String fileName;
@@ -79,7 +79,7 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
      * 
      * @param maps
      */
-    public InMemoryPropertyStore(Map<String, AbstractProperty<?>> maps) {
+    public InMemoryPropertyStore(Map<String, Property<?>> maps) {
         this.properties = maps;
     }
     
@@ -116,7 +116,7 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
     
     /** {@inheritDoc} */
     @Override
-    public <T> void createProperty(AbstractProperty<T> value) {
+    public <T> void createProperty(Property<T> value) {
         // Check Params
         Util.assertNotNull(value);
         Util.assertHasLength(value.getName());
@@ -130,7 +130,7 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
 
     /** {@inheritDoc} */
     @Override
-    public AbstractProperty<?> readProperty(String name) {
+    public Property<?> readProperty(String name) {
         Util.assertHasLength(name);
         if (!properties.containsKey(name)) {
             throw new PropertyNotFoundException(name);
@@ -140,7 +140,7 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
 
     /** {@inheritDoc} */
     @Override
-    public <T> void updateProperty(AbstractProperty<T> newValue) {
+    public <T> void updateProperty(Property<T> newValue) {
         Util.assertNotNull(newValue);
         Util.assertHasLength(newValue.getName());
         if (!existProperty(newValue.getName())) {
@@ -159,7 +159,7 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
             throw new PropertyNotFoundException(name);
         }
         // Update
-        AbstractProperty<?> current = readProperty(name);
+        Property<?> current = readProperty(name);
         current.setValueFromString(newValue);
     } 
     
@@ -193,7 +193,7 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
     
     /** {@inheritDoc} */
     @Override
-    public Map<String, AbstractProperty<?>> readAllProperties() {
+    public Map<String, Property<?>> readAllProperties() {
        return properties;
     }
 
@@ -202,7 +202,7 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
      * @param properties
      * 		new value for 'properties '
      */
-    public void setProperties(Map<String, AbstractProperty<?>> properties) {
+    public void setProperties(Map<String, Property<?>> properties) {
         this.properties = properties;
     }
     

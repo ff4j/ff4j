@@ -27,7 +27,7 @@ import javax.cache.configuration.MutableConfiguration;
 import javax.cache.spi.CachingProvider;
 
 import org.ff4j.core.Feature;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 
 public class FF4jJCacheProvider {
     
@@ -115,9 +115,9 @@ public class FF4jJCacheProvider {
      *      cache default configuration
      */
     @SuppressWarnings("rawtypes")
-    protected MutableConfiguration< String, AbstractProperty> getPropertyCacheConfiguration() {
-        MutableConfiguration<String, AbstractProperty> propertiesCacheConfig = new MutableConfiguration<String, AbstractProperty>();        
-        propertiesCacheConfig.setTypes(String.class, AbstractProperty.class);
+    protected MutableConfiguration< String, Property> getPropertyCacheConfiguration() {
+        MutableConfiguration<String, Property> propertiesCacheConfig = new MutableConfiguration<String, Property>();        
+        propertiesCacheConfig.setTypes(String.class, Property.class);
         propertiesCacheConfig.setStoreByValue(true);
         propertiesCacheConfig.setStatisticsEnabled(false);
         return propertiesCacheConfig;

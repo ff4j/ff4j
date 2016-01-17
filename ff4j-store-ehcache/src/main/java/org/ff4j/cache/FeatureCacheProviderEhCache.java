@@ -16,7 +16,7 @@ import java.util.Set;
 
 import org.ff4j.core.Feature;
 import org.ff4j.ehcache.FF4JEhCacheConstants;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -130,7 +130,7 @@ public class FeatureCacheProviderEhCache implements FF4JCacheManager, FF4JEhCach
 
     /** {@inheritDoc} */
     @Override
-    public void putProperty(AbstractProperty<?> property) {
+    public void putProperty(Property<?> property) {
         getCacheProperties().put(new Element(property.getName(), property));
     }
 
@@ -146,10 +146,10 @@ public class FeatureCacheProviderEhCache implements FF4JCacheManager, FF4JEhCach
 
     /** {@inheritDoc} */
     @Override
-    public AbstractProperty<?> getProperty(String featureId) {
+    public Property<?> getProperty(String featureId) {
         Element e = getCacheProperties().get(featureId);
         if (e != null) {
-            return (AbstractProperty<?>) e.getObjectValue();
+            return (Property<?>) e.getObjectValue();
         }
         return null;
     }

@@ -26,7 +26,7 @@ import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.ff4j.property.Property;
+import org.ff4j.property.PropertyString;
 import org.ff4j.property.PropertyBigDecimal;
 import org.ff4j.property.PropertyBigInteger;
 import org.ff4j.property.PropertyBoolean;
@@ -45,7 +45,7 @@ import org.junit.Test;
 import org.springframework.util.Assert;
 
 /**
- * Basic testing of {@link Property}.
+ * Basic testing of {@link PropertyString}.
  *
  * @author Cedrick Lunven (@clunven)</a>
  */
@@ -53,9 +53,9 @@ public class PropertyTest {
     
     @Test
     public void tesInitPropertyString() {
-        new Property();
-        Property p1 = new Property("p1");
-        Property p2 = new Property("p2", "EAST", Util.set("EAST","WEST","SOUTH","NORTH"));
+        new PropertyString();
+        PropertyString p1 = new PropertyString("p1");
+        PropertyString p2 = new PropertyString("p2", "EAST", Util.set("EAST","WEST","SOUTH","NORTH"));
         Assert.notNull(p1.getName());
         Assert.notNull(p2.getFixedValues());
     }
@@ -191,7 +191,7 @@ public class PropertyTest {
     
     @Test(expected = IllegalArgumentException.class)
     public void testPropertyString() {
-        new Property("p1", "v1", Util.set("v0", "v2"));
+        new PropertyString("p1", "v1", Util.set("v0", "v2"));
     }
     
     @Test
@@ -245,7 +245,7 @@ public class PropertyTest {
         PropertyFactory.createProperty("p1", new BigInteger("1"));
         PropertyFactory.createProperty("p1", new Byte("2"));
         PropertyFactory.createProperty("p1", PropertyLogLevel.LogLevel.DEBUG);
-        PropertyFactory.createProperty("p1", new Property("tata"));
+        PropertyFactory.createProperty("p1", new PropertyString("tata"));
         PropertyFactory.createProperty("p1", new Date());
         PropertyFactory.createProperty("p1", "sample");
         PropertyFactory.createProperty("p1", Calendar.getInstance());
@@ -278,17 +278,17 @@ public class PropertyTest {
     
     @Test
     public void testPropertyFactory7() {
-        PropertyFactory.createProperty("p1", Property.class.getName(), "PPPP");
+        PropertyFactory.createProperty("p1", PropertyString.class.getName(), "PPPP");
     }
     
     @Test
     public void testPropertyFactory8() {
-        PropertyFactory.createProperty("p1", Property.class.getName(), "s1", "desc", null);
+        PropertyFactory.createProperty("p1", PropertyString.class.getName(), "s1", "desc", null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testPropertyFactory9() {
-        PropertyFactory.createProperty("p1", Property.class.getName(), "s1", "desc", Util.set("s3", "s2"));
+        PropertyFactory.createProperty("p1", PropertyString.class.getName(), "s1", "desc", Util.set("s3", "s2"));
     }
         
     

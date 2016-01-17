@@ -28,7 +28,7 @@ import java.util.HashSet;
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class PropertyBoolean extends AbstractProperty< Boolean > {
+public class PropertyBoolean extends Property< Boolean > {
 
     /**
      * represent a boolean propertu.

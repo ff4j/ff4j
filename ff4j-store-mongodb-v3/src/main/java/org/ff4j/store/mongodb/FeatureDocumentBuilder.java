@@ -32,6 +32,9 @@ import org.bson.Document;
  */
 public final class FeatureDocumentBuilder implements FeatureStoreMongoConstants {
 
+    /**
+     * Mongo v3 document builder.
+     */
     private final Document builder = new Document();
 
     /**
@@ -196,6 +199,18 @@ public final class FeatureDocumentBuilder implements FeatureStoreMongoConstants 
      */
     public FeatureDocumentBuilder addRoles(Set<String> auths) {
         builder.append(ROLES, new ArrayList<String>(auths));
+        return this;
+    }
+    
+    /**
+     * Chain add to build object.
+     * 
+     * @param value
+     *            target value
+     * @return
+     */
+    public FeatureDocumentBuilder addCustomProperties(String value) {
+        builder.append(CUSTOMPROPERTIES, value);
         return this;
     }
 

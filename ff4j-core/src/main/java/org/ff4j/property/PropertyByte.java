@@ -26,7 +26,7 @@ package org.ff4j.property;
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class PropertyByte extends AbstractProperty< Byte > {
+public class PropertyByte extends Property< Byte > {
 
     /**
      * represent a boolean propertu.

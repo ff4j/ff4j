@@ -31,8 +31,8 @@ import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.neo4j.FF4jNeo4jConstants;
 import org.ff4j.neo4j.FF4jNeo4jLabels;
-import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.Property;
+import org.ff4j.property.PropertyString;
 import org.ff4j.utils.json.FeatureJsonParser;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
@@ -99,7 +99,7 @@ public class FeatureNeo4jMapper implements FF4jNeo4jConstants {
     
     
     /**
-     * Mapping from Neo4j node to {@link AbstractProperty}
+     * Mapping from Neo4j node to {@link Property}
      * 
      * @param featureUid
      *      unique feature identifier
@@ -108,7 +108,7 @@ public class FeatureNeo4jMapper implements FF4jNeo4jConstants {
      * @return
      *      value of node
      */
-    static public AbstractProperty<?> fromNode2Property(String featureUid, Node nodeProperty) {
+    static public Property<?> fromNode2Property(String featureUid, Node nodeProperty) {
         Map < String, Object > nodeProperties = nodeProperty.getAllProperties();
         
         if (!nodeProperties.containsKey(NODEPROPERTY_ATT_NAME)) {
@@ -121,7 +121,7 @@ public class FeatureNeo4jMapper implements FF4jNeo4jConstants {
         
         String propertyName  = (String) nodeProperty.getProperty(NODEPROPERTY_ATT_NAME);
         String propertyValue = (String) nodeProperty.getProperty(NODEPROPERTY_ATT_VALUE);
-        AbstractProperty<?> ap = new Property(propertyName, propertyValue);
+        Property<?> ap = new PropertyString(propertyName, propertyValue);
         
         // If specific type defined ?
         if (nodeProperties.containsKey(NODEPROPERTY_ATT_TYPE)) {
@@ -131,7 +131,7 @@ public class FeatureNeo4jMapper implements FF4jNeo4jConstants {
             try {
                 // Construction by dedicated constructor with introspection
                 Constructor<?> constr = Class.forName(optionalType).getConstructor(String.class, String.class);
-                ap = (AbstractProperty<?>) constr.newInstance(propertyName, propertyValue);
+                ap = (Property<?>) constr.newInstance(propertyName, propertyValue);
             } catch (InstantiationException e) {
                 throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' check default constructor", e);
             } catch (IllegalAccessException e) {

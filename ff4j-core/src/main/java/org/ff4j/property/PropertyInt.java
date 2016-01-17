@@ -27,7 +27,7 @@ import java.util.Set;
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class PropertyInt extends AbstractProperty< Integer > {
+public class PropertyInt extends Property< Integer > {
 
     /** serial. */
     private static final long serialVersionUID = -134543098672660987L;

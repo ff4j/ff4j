@@ -4,7 +4,7 @@ import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.cache.InMemoryCacheManager;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.property.Property;
+import org.ff4j.property.PropertyString;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.test.store.AbstractFeatureStoreTestCore;
@@ -86,7 +86,7 @@ public class InMemoryCacheTest extends AbstractFeatureStoreTestCore {
     
     @Test(expected = IllegalArgumentException.class)
     public void testPutNullPropertyName() {
-        Property p = new Property();
+        PropertyString p = new PropertyString();
         p.setName(null);
         new InMemoryCacheManager().putProperty(p);
     }
@@ -101,7 +101,7 @@ public class InMemoryCacheTest extends AbstractFeatureStoreTestCore {
     
     @Test(expected = IllegalArgumentException.class)
     public void testPutEmptyPropertyName() {
-        Property p = new Property();
+        PropertyString p = new PropertyString();
         p.setName("");
         new InMemoryCacheManager().putProperty(p);
     }
@@ -126,7 +126,7 @@ public class InMemoryCacheTest extends AbstractFeatureStoreTestCore {
     public void testClear() {
         // Given
         InMemoryCacheManager imcm = new InMemoryCacheManager();
-        imcm.putProperty(new Property("p1"));
+        imcm.putProperty(new PropertyString("p1"));
         Assert.assertFalse(imcm.listCachedPropertyNames().isEmpty());
         // When
         imcm.clearProperties();
@@ -138,7 +138,7 @@ public class InMemoryCacheTest extends AbstractFeatureStoreTestCore {
     public void testEvictProperty1() {
         // Given
         InMemoryCacheManager imcm = new InMemoryCacheManager();
-        imcm.putProperty(new Property("p1"));
+        imcm.putProperty(new PropertyString("p1"));
         Assert.assertFalse(imcm.listCachedPropertyNames().isEmpty());
         // When
         imcm.evictProperty("p1");
@@ -150,7 +150,7 @@ public class InMemoryCacheTest extends AbstractFeatureStoreTestCore {
     public void testEvictProperty2() {
         // Given
         InMemoryCacheManager imcm = new InMemoryCacheManager();
-        imcm.putProperty(new Property("p2"));
+        imcm.putProperty(new PropertyString("p2"));
         Assert.assertFalse(imcm.listCachedPropertyNames().isEmpty());
         // When
         imcm.evictProperty("p1");
@@ -183,7 +183,7 @@ public class InMemoryCacheTest extends AbstractFeatureStoreTestCore {
     @Test
     public void testGetProperty() throws InterruptedException {
         InMemoryCacheManager imcm = new InMemoryCacheManager();
-        imcm.putProperty(new Property("p1"));
+        imcm.putProperty(new PropertyString("p1"));
         Assert.assertNull(imcm.getProperty("p2"));
         Assert.assertNotNull(imcm.getProperty("p1"));
     }
@@ -199,8 +199,8 @@ public class InMemoryCacheTest extends AbstractFeatureStoreTestCore {
     @Test
     public void testGetPropertyTimeout() throws InterruptedException {
         InMemoryCacheManager imcm = new InMemoryCacheManager();
-        imcm.putProperty(new Property("p1"), 1);
-        imcm.putProperty(new Property("p2"), 10);
+        imcm.putProperty(new PropertyString("p1"), 1);
+        imcm.putProperty(new PropertyString("p2"), 10);
         Thread.sleep(1100);
         Assert.assertNull(imcm.getProperty("p1"));
         Assert.assertNotNull(imcm.getProperty("p2"));
@@ -215,7 +215,7 @@ public class InMemoryCacheTest extends AbstractFeatureStoreTestCore {
     @Test(expected = IllegalArgumentException.class)
     public void testGetProperty3()  {
         InMemoryCacheManager imcm = new InMemoryCacheManager();
-        Property p1 = new Property("p1");
+        PropertyString p1 = new PropertyString("p1");
         p1.setName(null);
         imcm.putProperty(p1, 1);
     }
@@ -223,7 +223,7 @@ public class InMemoryCacheTest extends AbstractFeatureStoreTestCore {
     @Test(expected = IllegalArgumentException.class)
     public void testGetProperty4()  {
         InMemoryCacheManager imcm = new InMemoryCacheManager();
-        Property p1 = new Property("p1");
+        PropertyString p1 = new PropertyString("p1");
         p1.setName("");
         imcm.putProperty(p1, 1);
     }

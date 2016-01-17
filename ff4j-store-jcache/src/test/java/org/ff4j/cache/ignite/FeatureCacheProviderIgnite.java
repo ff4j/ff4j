@@ -31,7 +31,7 @@ import org.apache.ignite.cache.CacheAtomicityMode;
 import org.apache.ignite.configuration.CacheConfiguration;
 import org.ff4j.cache.FF4jJCacheManager;
 import org.ff4j.core.Feature;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 
 /**
  * Proposition of specialization of {@link FF4jJCacheManager} for Apache Ignite.
@@ -69,8 +69,8 @@ public class FeatureCacheProviderIgnite extends FF4jJCacheManager {
     /** {@inheritDoc} */
     @Override
     @SuppressWarnings("rawtypes")
-    protected Cache<String, AbstractProperty> createCacheForProperties() {
-        CacheConfiguration<String, AbstractProperty> cfg = new CacheConfiguration<String, AbstractProperty>();
+    protected Cache<String, Property> createCacheForProperties() {
+        CacheConfiguration<String, Property> cfg = new CacheConfiguration<String, Property>();
         cfg.setName(CACHENAME_PROPERTIES);
         cfg.setAtomicityMode(CacheAtomicityMode.TRANSACTIONAL);
         return ignite.getOrCreateCache(cfg);

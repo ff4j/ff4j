@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.ff4j.core.Feature;
-import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.Property;
+import org.ff4j.property.PropertyString;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -51,7 +51,7 @@ public class PropertyJsonParser {
      * @return feature object
      */
     @SuppressWarnings("unchecked")
-    public static AbstractProperty<?> parseProperty(String json) {
+    public static Property<?> parseProperty(String json) {
         Map<String, Object> propertyJson;
         try {
             propertyJson = objectMapper.readValue(json, HashMap.class);
@@ -60,7 +60,7 @@ public class PropertyJsonParser {
         }
         String propertyName = (String) propertyJson.get("name");
         String propertyVal  = String.valueOf(propertyJson.get("value"));
-        AbstractProperty<?> ap = new Property(propertyName, propertyVal);
+        Property<?> ap = new PropertyString(propertyName, propertyVal);
         
         // Dedicated Type
         String propertyType = (String) propertyJson.get("type");
@@ -68,7 +68,7 @@ public class PropertyJsonParser {
             try {
                 // Construction by dedicated constructor with introspection
                 Constructor<?> constr = Class.forName(propertyType).getConstructor(String.class, String.class);
-                ap = (AbstractProperty<?>) constr.newInstance(propertyName, propertyVal);
+                ap = (Property<?>) constr.newInstance(propertyName, propertyVal);
             } catch (InstantiationException e) {
                 throw new IllegalArgumentException("Cannot instantiate '" + propertyType + "' check default constructor", e);
             } catch (IllegalAccessException e) {

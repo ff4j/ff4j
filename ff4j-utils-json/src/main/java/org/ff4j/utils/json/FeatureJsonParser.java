@@ -32,8 +32,8 @@ import java.util.Map;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingStrategy;
-import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.Property;
+import org.ff4j.property.PropertyString;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -96,15 +96,15 @@ public class FeatureJsonParser {
      *      target map of properties
      */
     @SuppressWarnings("unchecked")
-    private static Map < String, AbstractProperty<?>> parseCustomProperties(String uid, Map <String, Object > customPTag) {
-        Map < String, AbstractProperty<?>> myProperties = new LinkedHashMap<String, AbstractProperty<?>>();
+    private static Map < String, Property<?>> parseCustomProperties(String uid, Map <String, Object > customPTag) {
+        Map < String, Property<?>> myProperties = new LinkedHashMap<String, Property<?>>();
         if (null != customPTag && !customPTag.isEmpty()) {
             // Loop over properties
             for (Object property : customPTag.values()) {
                 HashMap<String, Object> propertyJson = (HashMap<String, Object>) property;
                 String propertyName = (String) propertyJson.get("name");
                 String propertyVal  = String.valueOf(propertyJson.get("value"));
-                AbstractProperty<?> ap = new Property(propertyName, propertyVal);
+                Property<?> ap = new PropertyString(propertyName, propertyVal);
                 
                 // Dedicated Type
                 String propertyType = (String) propertyJson.get("type");
@@ -112,7 +112,7 @@ public class FeatureJsonParser {
                     try {
                         // Construction by dedicated constructor with introspection
                         Constructor<?> constr = Class.forName(propertyType).getConstructor(String.class, String.class);
-                        ap = (AbstractProperty<?>) constr.newInstance(propertyName, propertyVal);
+                        ap = (Property<?>) constr.newInstance(propertyName, propertyVal);
                     } catch (InstantiationException e) {
                         throw new IllegalArgumentException("Cannot instantiate '" + propertyType + "' check default constructor", e);
                     } catch (IllegalAccessException e) {

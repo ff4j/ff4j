@@ -25,7 +25,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import org.ff4j.core.Feature;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 
 /**
  * Proposition of inmemory cache implementation.
@@ -45,8 +45,8 @@ public class InMemoryCacheManager implements FF4JCacheManager {
             new WeakHashMap<String, InMemoryCacheEntry<Feature>>();
     
     /** Cached Property Map */
-    private final Map<String, InMemoryCacheEntry<AbstractProperty<?>>> propertyCache = 
-            new WeakHashMap<String, InMemoryCacheEntry<AbstractProperty<?>>>();
+    private final Map<String, InMemoryCacheEntry<Property<?>>> propertyCache = 
+            new WeakHashMap<String, InMemoryCacheEntry<Property<?>>>();
        
     /** {@inheritDoc} */
     @Override
@@ -113,25 +113,25 @@ public class InMemoryCacheManager implements FF4JCacheManager {
 
     /** {@inheritDoc} */
     @Override
-    public void putProperty(AbstractProperty<?> prop) {
+    public void putProperty(Property<?> prop) {
         if (prop == null) {
             throw new IllegalArgumentException("ff4j-core: Cannot insert null property into cache");
         }
         if (prop.getName() == null || prop.getName().isEmpty()) {
             throw new IllegalArgumentException("ff4j-core: Cannot insert property with null identifier into cache");
         }
-        getPropertyCache().put(prop.getName(), new InMemoryCacheEntry<AbstractProperty<?>>(prop));
+        getPropertyCache().put(prop.getName(), new InMemoryCacheEntry<Property<?>>(prop));
     }
     
     /** {@inheritDoc} */
-    public void putProperty(AbstractProperty<?> prop, long timeToLive) {
+    public void putProperty(Property<?> prop, long timeToLive) {
         if (prop == null) {
             throw new IllegalArgumentException("ff4j-core: Cannot insert null property into cache");
         }
         if (prop.getName() == null || prop.getName().isEmpty()) {
             throw new IllegalArgumentException("ff4j-core: Cannot insert property with null identifier into cache");
         }
-        getPropertyCache().put(prop.getName(), new InMemoryCacheEntry<AbstractProperty<?>>(prop, timeToLive));
+        getPropertyCache().put(prop.getName(), new InMemoryCacheEntry<Property<?>>(prop, timeToLive));
     }
 
     /** {@inheritDoc} */
@@ -151,8 +151,8 @@ public class InMemoryCacheManager implements FF4JCacheManager {
 
     /** {@inheritDoc} */
     @Override
-    public AbstractProperty<?> getProperty(String pName) {
-        InMemoryCacheEntry<AbstractProperty<?>> cacheEntry = getPropertyCache().get(pName);
+    public Property<?> getProperty(String pName) {
+        InMemoryCacheEntry<Property<?>> cacheEntry = getPropertyCache().get(pName);
         if (cacheEntry != null) {
             if (cacheEntry.hasReachTimeToLive()) {
                 evictProperty(pName);
@@ -198,7 +198,7 @@ public class InMemoryCacheManager implements FF4JCacheManager {
      * @return
      *       current value of 'propertyCache'
      */
-    public Map<String, InMemoryCacheEntry<AbstractProperty<?>>> getPropertyCache() {
+    public Map<String, InMemoryCacheEntry<Property<?>>> getPropertyCache() {
         return propertyCache;
     }   
 

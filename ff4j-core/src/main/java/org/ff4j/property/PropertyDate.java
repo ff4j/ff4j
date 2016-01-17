@@ -28,7 +28,7 @@ import java.util.Date;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class PropertyDate extends AbstractProperty< Date > {
+public class PropertyDate extends Property< Date > {
 
     /** serial. */
     private static final long serialVersionUID = -134543098672660987L;

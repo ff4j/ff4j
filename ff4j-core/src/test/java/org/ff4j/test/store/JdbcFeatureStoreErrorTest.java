@@ -29,8 +29,8 @@ import javax.sql.DataSource;
 
 import org.ff4j.core.Feature;
 import org.ff4j.exception.FeatureAccessException;
-import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.Property;
+import org.ff4j.property.PropertyString;
 import org.ff4j.store.JdbcFeatureStore;
 import org.ff4j.store.JdbcStoreConstants;
 import org.junit.Test;
@@ -134,9 +134,9 @@ public class JdbcFeatureStoreErrorTest {
         doThrow(new SQLException()).when(mockDS).getConnection();
         JdbcFeatureStore jrepo = new JdbcFeatureStore(mockDS);
         jrepo.setDataSource(mockDS);
-        List < AbstractProperty<?>> lp = new ArrayList<AbstractProperty<?>>();
-        lp.add(new Property("p1", "v1"));
-        lp.add(new Property("p2", "v2"));
+        List < Property<?>> lp = new ArrayList<Property<?>>();
+        lp.add(new PropertyString("p1", "v1"));
+        lp.add(new PropertyString("p2", "v2"));
         jrepo.createCustomProperties("F1", lp);
     }
     

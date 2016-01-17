@@ -28,7 +28,7 @@ import java.util.Map.Entry;
 
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureAccessException;
-import org.ff4j.property.Property;
+import org.ff4j.property.PropertyString;
 import org.ff4j.property.PropertyBigDecimal;
 import org.ff4j.property.PropertyBigInteger;
 import org.ff4j.property.PropertyBoolean;
@@ -77,7 +77,7 @@ public class MappingUtil {
         PROPERTY_TYPES.put("loglevel",   PropertyLogLevel.class.getName());
         PROPERTY_TYPES.put("short",      PropertyShort.class.getName());
         PROPERTY_TYPES.put("long",       PropertyLong.class.getName());
-        PROPERTY_TYPES.put("string",     Property.class.getName());
+        PROPERTY_TYPES.put("string",     PropertyString.class.getName());
     }
     
     /**

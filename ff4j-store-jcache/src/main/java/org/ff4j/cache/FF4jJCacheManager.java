@@ -27,7 +27,7 @@ import java.util.Set;
 import javax.cache.Cache;
 
 import org.ff4j.core.Feature;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 
 /**
  * Implementation of {@link FF4JCacheManager} with reference interface JCache {@link Cache}.
@@ -47,7 +47,7 @@ public class FF4jJCacheManager extends FF4jJCacheProvider implements FF4JCacheMa
     
     /** Implementing a JCache CacheProvider. */
     @SuppressWarnings("rawtypes")
-    protected Cache<String, AbstractProperty> propertiesCache; 
+    protected Cache<String, Property> propertiesCache; 
     
     /**
      * Initialisation of internal caches.
@@ -91,14 +91,14 @@ public class FF4jJCacheManager extends FF4jJCacheProvider implements FF4JCacheMa
      * @return
      */
     @SuppressWarnings("rawtypes")
-    protected Cache<String, AbstractProperty> createCacheForProperties() {
+    protected Cache<String, Property> createCacheForProperties() {
         if (null == getCacheManager()) {
             throw new IllegalArgumentException("Cannot initialize Cache without the Cache manager");
         }
-        if (null == getCacheManager().getCache(CACHENAME_PROPERTIES, String.class, AbstractProperty.class)) {
+        if (null == getCacheManager().getCache(CACHENAME_PROPERTIES, String.class, Property.class)) {
             getCacheManager().createCache(CACHENAME_PROPERTIES, getPropertyCacheConfiguration());
         }
-        return getCacheManager().getCache(CACHENAME_PROPERTIES, String.class, AbstractProperty.class);
+        return getCacheManager().getCache(CACHENAME_PROPERTIES, String.class, Property.class);
     }
 
 
@@ -161,7 +161,7 @@ public class FF4jJCacheManager extends FF4jJCacheProvider implements FF4JCacheMa
 
     /** {@inheritDoc} */
     @Override
-    public void putProperty(AbstractProperty<?> feat) {
+    public void putProperty(Property<?> feat) {
         getPropertiesCache().put(feat.getName(), feat);
     }
 
@@ -173,7 +173,7 @@ public class FF4jJCacheManager extends FF4jJCacheProvider implements FF4JCacheMa
 
     /** {@inheritDoc} */
     @Override
-    public AbstractProperty<?> getProperty(String name) {
+    public Property<?> getProperty(String name) {
         return getPropertiesCache().get(name);
     }
 
@@ -224,7 +224,7 @@ public class FF4jJCacheManager extends FF4jJCacheProvider implements FF4JCacheMa
      *       current value of 'propertiesCache'
      */
     @SuppressWarnings("rawtypes")
-    public Cache<String, AbstractProperty> getPropertiesCache() {
+    public Cache<String, Property> getPropertiesCache() {
         return propertiesCache;
     }
 

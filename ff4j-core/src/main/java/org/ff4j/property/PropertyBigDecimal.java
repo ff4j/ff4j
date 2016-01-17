@@ -27,7 +27,7 @@ import java.math.BigDecimal;
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class PropertyBigDecimal extends AbstractProperty< BigDecimal > {
+public class PropertyBigDecimal extends Property< BigDecimal > {
 
     /** serial. */
     private static final long serialVersionUID = -134543098672660987L;

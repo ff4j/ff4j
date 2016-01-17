@@ -19,7 +19,7 @@ import javax.sql.DataSource;
 import org.ff4j.exception.PropertyAccessException;
 import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.exception.PropertyNotFoundException;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 import org.ff4j.store.JdbcStoreConstants;
 import org.ff4j.utils.Util;
 
@@ -101,7 +101,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
 
     /** {@inheritDoc} */
     @Override
-    public <T> void createProperty(AbstractProperty<T> ap) {
+    public <T> void createProperty(Property<T> ap) {
         Util.assertNotNull(ap);
         Connection sqlConn = null;
         PreparedStatement ps = null;
@@ -133,7 +133,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
 
     /** {@inheritDoc} */
     @Override
-    public AbstractProperty<?> readProperty(String name) {
+    public Property<?> readProperty(String name) {
         Util.assertHasLength(name);
         Connection   sqlConn = null;
         PreparedStatement ps = null;
@@ -167,7 +167,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
             sqlConn = getDataSource().getConnection();
             
             // Check existence
-            AbstractProperty<?> ab = readProperty(name);
+            Property<?> ab = readProperty(name);
             // Check new value validity
             ab.fromString(newValue);
             
@@ -183,7 +183,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
 
     /** {@inheritDoc} */
     @Override
-    public <T> void updateProperty(AbstractProperty<T> prop) {
+    public <T> void updateProperty(Property<T> prop) {
         if (prop == null || prop.getName() == null) {
             throw new IllegalArgumentException("Cannot update property, please provide property name");
         }
@@ -216,8 +216,8 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
     
     /** {@inheritDoc} */
     @Override
-    public Map<String, AbstractProperty<?>> readAllProperties() {
-        Map<String, AbstractProperty<?>> properties = new LinkedHashMap<String, AbstractProperty<?>>();
+    public Map<String, Property<?>> readAllProperties() {
+        Map<String, Property<?>> properties = new LinkedHashMap<String, Property<?>>();
         Connection   sqlConn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -226,7 +226,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
             ps = buildStatement(sqlConn, SQL_PROPERTY_READALL);
             rs = ps.executeQuery();
             while (rs.next()) {
-                AbstractProperty<?> ap = JDBC_MAPPER.map(rs);
+                Property<?> ap = JDBC_MAPPER.map(rs);
                 properties.put(ap.getName(),ap);
             }
         } catch (SQLException sqlEX) {

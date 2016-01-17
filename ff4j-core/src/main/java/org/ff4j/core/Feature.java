@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.ff4j.exception.PropertyNotFoundException;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 import org.ff4j.utils.JsonUtils;
 import org.ff4j.utils.Util;
 
@@ -62,7 +62,7 @@ public class Feature implements Serializable {
     private FlippingStrategy flippingStrategy;
     
     /** Add you own attributes to a feature. */
-    private Map < String, AbstractProperty<?> > customProperties = new LinkedHashMap<String, AbstractProperty<?>>();
+    private Map < String, Property<?> > customProperties = new LinkedHashMap<String, Property<?>>();
 
     /**
      * Simplest constructor initializing feature to disable.
@@ -335,10 +335,10 @@ public class Feature implements Serializable {
      *         property value (if exist)
      */
     @SuppressWarnings("unchecked")
-    public <T> AbstractProperty<T> getProperty(String propId) {
+    public <T> Property<T> getProperty(String propId) {
         Util.assertNotNull(propId);
         if (customProperties != null && customProperties.containsKey(propId)) {
-          return (AbstractProperty<T>) customProperties.get(propId);
+          return (Property<T>) customProperties.get(propId);
         }
         throw new PropertyNotFoundException(propId);
     }
@@ -348,7 +348,7 @@ public class Feature implements Serializable {
      * 
      * @param props
      */
-    public <T> void addProperty(AbstractProperty< T > props) {
+    public <T> void addProperty(Property< T > props) {
         Util.assertNotNull(props);
         if (customProperties != null) {
             customProperties.put(props.getName(), props);
@@ -361,7 +361,7 @@ public class Feature implements Serializable {
      * @return
      *       current value of 'customProperties'
      */
-    public Map<String, AbstractProperty<?>> getCustomProperties() {
+    public Map<String, Property<?>> getCustomProperties() {
         return customProperties;
     }
 
@@ -370,7 +370,7 @@ public class Feature implements Serializable {
      * @param customProperties
      * 		new value for 'customProperties '
      */
-    public void setCustomProperties(Map<String, AbstractProperty<?>> customProperties) {
+    public void setCustomProperties(Map<String, Property<?>> customProperties) {
         this.customProperties = customProperties;
     }
     

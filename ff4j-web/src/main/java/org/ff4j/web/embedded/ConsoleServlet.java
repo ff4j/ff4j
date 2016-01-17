@@ -39,7 +39,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 import org.ff4j.web.FF4JProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -182,7 +182,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                         }
                         
                         if (OP_READ_PROPERTY.equalsIgnoreCase(operation)) {
-                            AbstractProperty<?> ap = getFf4j().getPropertiesStore().readProperty(featureId);
+                            Property<?> ap = getFf4j().getPropertiesStore().readProperty(featureId);
                             res.setContentType(CONTENT_TYPE_JSON);
                             res.getWriter().println(ap.toString());
                             return;
@@ -190,7 +190,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                         
                         if (OP_DELETE_FIXEDVALUE.equalsIgnoreCase(operation)) {
                             String fixedValue = req.getParameter(PARAM_FIXEDVALUE);
-                            AbstractProperty<?> ap = getFf4j().getPropertiesStore().readProperty(featureId);
+                            Property<?> ap = getFf4j().getPropertiesStore().readProperty(featureId);
                             ap.getFixedValues().remove(fixedValue);
                             getFf4j().getPropertiesStore().updateProperty(ap);
                             return;
@@ -198,7 +198,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                         
                         if (OP_ADD_FIXEDVALUE.equalsIgnoreCase(operation)) {
                             String fixedValue = req.getParameter(PARAM_FIXEDVALUE);
-                            AbstractProperty<?> ap = getFf4j().getPropertiesStore().readProperty(featureId);
+                            Property<?> ap = getFf4j().getPropertiesStore().readProperty(featureId);
                             ap.add2FixedValueFromString(fixedValue);
                             getFf4j().getPropertiesStore().updateProperty(ap);
                             return;

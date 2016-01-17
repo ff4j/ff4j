@@ -37,7 +37,7 @@ import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.neo4j.FF4jNeo4jConstants;
 import org.ff4j.neo4j.FF4jNeo4jLabels;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 import org.ff4j.utils.Util;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
@@ -599,7 +599,7 @@ public class FeatureStoreNeo4J implements FeatureStore, FF4jNeo4jConstants {
                 break;
                 
                 case FF4J_PROPERTY:
-                    AbstractProperty<?> ap = fromNode2Property(targetFeature.getUid(), nodeOther);
+                    Property<?> ap = fromNode2Property(targetFeature.getUid(), nodeOther);
                     targetFeature.getCustomProperties().put(ap.getName(), ap);
                 break;
                 

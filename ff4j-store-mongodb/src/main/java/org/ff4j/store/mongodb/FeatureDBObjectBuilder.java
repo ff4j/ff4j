@@ -135,6 +135,30 @@ public final class FeatureDBObjectBuilder implements FeatureStoreMongoConstants 
     }
     
     /**
+     * Mongo internal object representing attribute 'strategy'.
+     *
+     * @param value
+     *      target value
+     * @return
+     *      internal mong object
+     */
+    public DBObject getCustomProperties(String value) {
+        return new BasicDBObjectBuilder().add(CUSTOMPROPERTIES, value).get();
+    }
+
+    /**
+     * Chain add to build object.
+     * 
+     * @param value
+     *            target value
+     * @return
+     */
+    public FeatureDBObjectBuilder addCustomProperties(String value) {
+        builder.add(CUSTOMPROPERTIES, value);
+        return this;
+    }
+    
+    /**
      * Mongo internal object representing attribute 'expression'.
      * 
      * @param value

@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingStrategy;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 
 /**
  * Used to build GUI Interface for feature flip servlet. It contains gui component render and parmeters
@@ -185,9 +185,9 @@ public final class ConsoleRenderer implements ConsoleConstants {
     
     static final String renderPropertiesRows(FF4j ff4j, HttpServletRequest req) {
         StringBuilder sb = new StringBuilder();
-        final Map < String, AbstractProperty<?>> mapOfProperties = ff4j.getProperties();
+        final Map < String, Property<?>> mapOfProperties = ff4j.getProperties();
         for(String uid : mapOfProperties.keySet()) {
-            AbstractProperty<?> currentProperty = mapOfProperties.get(uid);
+            Property<?> currentProperty = mapOfProperties.get(uid);
             sb.append("<tr>" + END_OF_LINE);
             
             // Column with uid and description as tooltip

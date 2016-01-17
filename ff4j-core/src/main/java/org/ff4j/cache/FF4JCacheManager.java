@@ -25,8 +25,8 @@ import java.util.Set;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureNotFoundException;
-import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.Property;
+import org.ff4j.property.PropertyString;
 
 /**
  * Cache Layer on top of {@link FeatureStore} to enhance performances.
@@ -77,7 +77,7 @@ public interface FF4JCacheManager {
      * @param feat
      *            target property to be cached
      */
-    void putProperty(AbstractProperty<?> feat);
+    void putProperty(Property<?> feat);
 
     /**
      * Return {@link Feature} stored in cache.
@@ -89,13 +89,13 @@ public interface FF4JCacheManager {
     Feature getFeature(String featureId);
     
     /**
-     * Return {@link Property} stored in cache.
+     * Return {@link PropertyString} stored in cache.
      * 
      * @param featureId
      *            target feature identifier
      * @return target feature if exist (could raise {@link FeatureNotFoundException} as FeatureStore).
      */
-    AbstractProperty<?> getProperty(String featureId);
+    Property<?> getProperty(String featureId);
     
     /**
      * List feature names in cache.

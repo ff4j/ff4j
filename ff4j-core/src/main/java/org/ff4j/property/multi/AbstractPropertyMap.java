@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 
 /**
  * 
@@ -34,7 +34,7 @@ import org.ff4j.property.AbstractProperty;
  *      myultliva
  * @param <M>
  */
-public abstract class AbstractPropertyMap < T, M extends Map<String, ? extends T>> extends AbstractProperty < M > implements Map< String, T > {
+public abstract class AbstractPropertyMap < T, M extends Map<String, ? extends T>> extends Property < M > implements Map< String, T > {
 
     /** serial. */
     private static final long serialVersionUID = 2612494170643655559L;

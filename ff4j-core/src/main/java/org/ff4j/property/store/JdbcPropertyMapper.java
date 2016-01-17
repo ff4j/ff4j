@@ -27,13 +27,13 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.ff4j.property.AbstractProperty;
 import org.ff4j.property.Property;
+import org.ff4j.property.PropertyString;
 import org.ff4j.property.util.PropertyFactory;
 import org.ff4j.store.JdbcStoreConstants;
 
 /**
- * Convert resultset into {@link Property}.
+ * Convert resultset into {@link PropertyString}.
  *
  * @author Cedrick Lunven (@clunven)
  */
@@ -47,7 +47,7 @@ public class JdbcPropertyMapper implements JdbcStoreConstants {
      *      target property
      * @throws SQLException
      */
-    public AbstractProperty<?> map(ResultSet rs) throws SQLException {
+    public Property<?> map(ResultSet rs) throws SQLException {
         String propertyName  = rs.getString(COL_PROPERTY_ID);
         String propertyValue = rs.getString(COL_PROPERTY_VALUE);
         String propertyType  = rs.getString(COL_PROPERTY_TYPE);

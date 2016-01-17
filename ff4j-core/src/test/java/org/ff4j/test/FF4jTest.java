@@ -36,7 +36,7 @@ import org.ff4j.audit.repository.InMemoryEventRepository;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.exception.FeatureNotFoundException;
-import org.ff4j.property.Property;
+import org.ff4j.property.PropertyString;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.el.ExpressionFlipStrategy;
 import org.ff4j.utils.Util;
@@ -90,9 +90,9 @@ public class FF4jTest extends AbstractFf4jTest {
     @Test
     public void createDeleteProperty() {
         FF4j ff4j = new FF4j();
-        ff4j.createProperty(new Property("p1", "v1"));
+        ff4j.createProperty(new PropertyString("p1", "v1"));
         ff4j.audit();
-        ff4j.createProperty(new Property("p2", "v2"));
+        ff4j.createProperty(new PropertyString("p2", "v2"));
         Assert.assertTrue(ff4j.getPropertiesStore().existProperty("p1"));
         ff4j.deleteProperty("p1");
         Assert.assertFalse(ff4j.getPropertiesStore().existProperty("p1"));

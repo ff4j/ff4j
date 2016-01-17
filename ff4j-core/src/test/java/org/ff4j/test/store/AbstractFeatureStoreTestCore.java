@@ -23,7 +23,7 @@ import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
-import org.ff4j.property.Property;
+import org.ff4j.property.PropertyString;
 import org.ff4j.property.PropertyInt;
 import org.ff4j.strategy.PonderationStrategy;
 import org.ff4j.test.AssertFf4j;
@@ -1055,7 +1055,7 @@ public abstract class AbstractFeatureStoreTestCore implements TestConstantsFF4j 
         assertFf4j.assertThatFeatureHasNotProperty(F2, "p1");
         // When
         Feature myFeature = ff4j.getFeatureStore().read(F2);
-        Property p1 = new Property("p1", "v1");
+        PropertyString p1 = new PropertyString("p1", "v1");
         myFeature.getCustomProperties().put(p1.getName(), p1);
         testedStore.update(myFeature);
         // Then
@@ -1092,7 +1092,7 @@ public abstract class AbstractFeatureStoreTestCore implements TestConstantsFF4j 
                     .asString());
         // When
         Feature myFeature = ff4j.getFeatureStore().read(F1);
-        Property p1 = new Property("ppstring", "goodbye");
+        PropertyString p1 = new PropertyString("ppstring", "goodbye");
         myFeature.getCustomProperties().put(p1.getName(), p1);
         testedStore.update(myFeature);
         
@@ -1151,7 +1151,7 @@ public abstract class AbstractFeatureStoreTestCore implements TestConstantsFF4j 
                 
         // When
         Feature myFeature = ff4j.getFeatureStore().read(F1);
-        Property p1 = new Property("regionIdentifier");
+        PropertyString p1 = new PropertyString("regionIdentifier");
         p1.setValue("AMER");
         p1.setFixedValues(Util.set("AMER", "SSSS"));
         myFeature.getCustomProperties().put(p1.getName(), p1);

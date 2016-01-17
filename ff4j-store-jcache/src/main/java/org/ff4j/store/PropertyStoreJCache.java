@@ -29,7 +29,7 @@ import java.util.Set;
 import org.ff4j.cache.FF4jJCacheManager;
 import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.exception.PropertyNotFoundException;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 import org.ff4j.property.store.AbstractPropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.utils.Util;
@@ -77,7 +77,7 @@ public class PropertyStoreJCache extends AbstractPropertyStore {
 
     /** {@inheritDoc} */
     @Override
-    public <T> void createProperty(AbstractProperty<T> property) {
+    public <T> void createProperty(Property<T> property) {
         if (property == null) {
             throw new IllegalArgumentException("Property cannot be null nor empty");
         }
@@ -89,7 +89,7 @@ public class PropertyStoreJCache extends AbstractPropertyStore {
 
     /** {@inheritDoc} */
     @Override
-    public AbstractProperty<?> readProperty(String name) {
+    public Property<?> readProperty(String name) {
         if (!existProperty(name)) {
             throw new PropertyNotFoundException(name);
         }
@@ -99,14 +99,14 @@ public class PropertyStoreJCache extends AbstractPropertyStore {
     /** {@inheritDoc} */
     @Override
     public void updateProperty(String name, String newValue) {
-        AbstractProperty<?> fp = readProperty(name);
+        Property<?> fp = readProperty(name);
         fp.setValueFromString(newValue);
         updateProperty(fp);
     }
 
     /** {@inheritDoc} */
     @Override
-    public <T> void updateProperty(AbstractProperty<T> property) {
+    public <T> void updateProperty(Property<T> property) {
         if (property == null) {
             throw new IllegalArgumentException("Property cannot be null");
         }
@@ -127,8 +127,8 @@ public class PropertyStoreJCache extends AbstractPropertyStore {
 
     /** {@inheritDoc} */
     @Override
-    public Map<String, AbstractProperty<?>> readAllProperties() {
-        Map<String, AbstractProperty<?>> myMap = new HashMap<String, AbstractProperty<?>>();
+    public Map<String, Property<?>> readAllProperties() {
+        Map<String, Property<?>> myMap = new HashMap<String, Property<?>>();
         getCacheManager().getPropertiesCache().forEach(e->myMap.put(e.getKey(), e.getValue()));
         return myMap;
     }

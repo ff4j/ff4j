@@ -1,8 +1,8 @@
-package org.ff4j.web.api.resources.domain;
+package org.ff4j.property.util;
 
 /*
  * #%L
- * ff4j-webapi
+ * ff4j-core
  * %%
  * Copyright (C) 2013 - 2016 FF4J
  * %%
@@ -21,26 +21,21 @@ package org.ff4j.web.api.resources.domain;
  */
 
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.ff4j.property.Property;
-import org.ff4j.property.util.PropertyFactory;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
-import io.swagger.annotations.ApiModel;
 
 /**
- * Abstract representation of {@link Property} as webbean.
- *
+ * JSON Expression.
  * @author Cedrick Lunven (@clunven)</a>
  */
-@ApiModel(value = "propertyApiBean", description = "ff4j property representation" )
-@JsonInclude(Include.NON_NULL)
-public class PropertyApiBean {
+public class PropertyJsonBean implements Serializable {
     
+    /** Serial number.*/
+    private static final long serialVersionUID = 7249710480883717637L;
+
     /** unique identifier for the property. */
     private String name;
     
@@ -54,12 +49,12 @@ public class PropertyApiBean {
     private String value;
     
     /** Fixed values as String. */
-    private Set < String > fixedValues = new HashSet<String>();
+    private Set < String > fixedValues = null;
 
     /**
      * Default constructor for instrospection.
      */
-    public PropertyApiBean() {
+    public PropertyJsonBean() {
     }
     
     /**
@@ -68,13 +63,14 @@ public class PropertyApiBean {
      * @param property
      *      target property
      */
-    public PropertyApiBean(Property<?> property) {
+    public PropertyJsonBean(Property<?> property) {
         if (property != null) {
             this.name        = property.getName();
             this.description = property.getDescription();
             this.type        = property.getType();
             this.value       = property.asString();
             if (property.getFixedValues() != null) {
+                fixedValues = new HashSet<String>();
                 for (Object fv : property.getFixedValues()) {
                     fixedValues.add(fv.toString());
                 }
@@ -82,8 +78,59 @@ public class PropertyApiBean {
         }
     }
     
+    /**
+     * Work with properties.
+     *
+     * @param value
+     *      add a fixed value to the set
+     * @return
+     */
+    public PropertyJsonBean addFixedValue(String value) {
+        if (fixedValues == null) {
+            fixedValues = new HashSet<String>();
+        }
+        fixedValues.add(value);
+        return this;
+    }
+    
     public Property< ? > asProperty() {
-        return PropertyFactory.createProperty(name, type, value, description, fixedValues);
+        return PropertyFactory.createProperty(this);
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return asJson();
+    }
+    
+    /**
+     * Format the property as a Json Expression.
+     * 
+     * @return
+     *      target Json
+     */
+    public String asJson() {
+        StringBuilder jsonExpression = new StringBuilder("{");
+        jsonExpression.append("\"name\":\"" + name + "\"");
+        jsonExpression.append(",\"description\":");
+        jsonExpression.append((null == description) ? "null" : "\"" + description + "\"");
+        jsonExpression.append(",\"type\":\"" + type + "\"");
+        jsonExpression.append(",\"value\":");
+        jsonExpression.append((null == value) ? "null" : "\"" + value + "\"");
+        if (fixedValues ==null) {
+            jsonExpression.append(",\"fixedValues\":null");
+        } else {
+            jsonExpression.append(",\"fixedValues\":[");
+            boolean first = true;
+            for (String auth : fixedValues) {
+                jsonExpression.append(first ? "" : ",");
+                jsonExpression.append("\"" + auth + "\"");
+                first = false;
+            }
+            jsonExpression.append("]");
+        }
+        jsonExpression.append("}");
+        return jsonExpression.toString();
     }
 
     /**
@@ -99,7 +146,7 @@ public class PropertyApiBean {
     /**
      * Setter accessor for attribute 'name'.
      * @param name
-     * 		new value for 'name '
+     *      new value for 'name '
      */
     public void setName(String name) {
         this.name = name;
@@ -118,7 +165,7 @@ public class PropertyApiBean {
     /**
      * Setter accessor for attribute 'description'.
      * @param description
-     * 		new value for 'description '
+     *      new value for 'description '
      */
     public void setDescription(String description) {
         this.description = description;
@@ -137,7 +184,7 @@ public class PropertyApiBean {
     /**
      * Setter accessor for attribute 'type'.
      * @param type
-     * 		new value for 'type '
+     *      new value for 'type '
      */
     public void setType(String type) {
         this.type = type;
@@ -156,7 +203,7 @@ public class PropertyApiBean {
     /**
      * Setter accessor for attribute 'value'.
      * @param value
-     * 		new value for 'value '
+     *      new value for 'value '
      */
     public void setValue(String value) {
         this.value = value;
@@ -175,10 +222,10 @@ public class PropertyApiBean {
     /**
      * Setter accessor for attribute 'fixedValues'.
      * @param fixedValues
-     * 		new value for 'fixedValues '
+     *      new value for 'fixedValues '
      */
     public void setFixedValues(Set<String> fixedValues) {
         this.fixedValues = fixedValues;
     }
-    
+
 }

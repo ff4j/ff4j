@@ -41,6 +41,7 @@ public class FeatureRowMapper implements RowMapper<Feature>, JdbcStoreConstants 
     @Override
     public Feature mapRow(ResultSet rs, int rowNum) throws SQLException {
         String featUid = rs.getString(COL_FEAT_UID);
+        
         Feature f = new Feature(featUid, rs.getInt(COL_FEAT_ENABLE) > 0);
         f.setDescription(rs.getString(COL_FEAT_DESCRIPTION));
         f.setGroup(rs.getString(COL_FEAT_GROUPNAME));

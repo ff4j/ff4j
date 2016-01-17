@@ -31,7 +31,7 @@ import org.ff4j.conf.XmlConfig;
 import org.ff4j.conf.XmlParser;
 import org.ff4j.conf.XmlParserErrorHandler;
 import org.ff4j.core.Feature;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 import org.ff4j.property.PropertyLogLevel;
 import org.ff4j.property.PropertyLogLevel.LogLevel;
 import org.junit.Assert;
@@ -171,7 +171,7 @@ public class FeatureXmlParserTest {
         Assert.assertEquals(pll.getValue(), LogLevel.DEBUG);
         
         // Then
-        Map < String, AbstractProperty<?>> properties = conf.getProperties();
+        Map < String, Property<?>> properties = conf.getProperties();
         Assert.assertNotNull(properties);
     }
     
@@ -186,7 +186,7 @@ public class FeatureXmlParserTest {
         Map<String, Feature> features = conf.getFeatures();
         Assert.assertNotNull(features);
         // Then
-        Map < String, AbstractProperty<?>> properties = conf.getProperties();
+        Map < String, Property<?>> properties = conf.getProperties();
         Assert.assertNotNull(properties);
     }
     
@@ -201,7 +201,7 @@ public class FeatureXmlParserTest {
         Map<String, Feature> features = conf.getFeatures();
         Assert.assertNotNull(features);
         // Then
-        Map < String, AbstractProperty<?>> properties = conf.getProperties();
+        Map < String, Property<?>> properties = conf.getProperties();
         Assert.assertNotNull(properties);
     }
     
@@ -217,7 +217,7 @@ public class FeatureXmlParserTest {
         Map<String, Feature> features = conf.getFeatures();
         Assert.assertNotNull(features);
         // Then
-        Map < String, AbstractProperty<?>> properties = conf.getProperties();
+        Map < String, Property<?>> properties = conf.getProperties();
         Assert.assertNotNull(properties);
     }
     

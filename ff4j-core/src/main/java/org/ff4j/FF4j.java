@@ -35,7 +35,7 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureNotFoundException;
-import org.ff4j.property.AbstractProperty;
+import org.ff4j.property.Property;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.security.AuthorizationsManager;
@@ -243,7 +243,7 @@ public class FF4j {
      * @return
      * 		target property store.
      */
-    public Map < String, AbstractProperty<?>> getProperties() {
+    public Map < String, Property<?>> getProperties() {
     	return getPropertiesStore().readAllProperties();
     }
 
@@ -319,7 +319,7 @@ public class FF4j {
      * @param featureID
      *            unique feature identifier.
      */
-    public FF4j createProperty(AbstractProperty<?> prop) {
+    public FF4j createProperty(Property<?> prop) {
         getPropertiesStore().createProperty(prop);
         if (isEnableAudit()) {
             getEventPublisher().publish(prop.getName(), EventType.CREATE_PROPERTY);

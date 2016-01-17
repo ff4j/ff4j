@@ -21,7 +21,7 @@ import java.util.Map;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.exception.PropertyNotFoundException;
-import org.ff4j.property.Property;
+import org.ff4j.property.PropertyString;
 import org.ff4j.strategy.PonderationStrategy;
 import org.junit.Assert;
 import org.junit.Test;
@@ -100,7 +100,7 @@ public class FeatureTest {
         Feature f = new Feature("f1");
         f.toggle();
         f.toggle();
-        f.getCustomProperties().put("p1", new Property("p1","v1"));
+        f.getCustomProperties().put("p1", new PropertyString("p1","v1"));
         f.getProperty("p1");
     }
     
