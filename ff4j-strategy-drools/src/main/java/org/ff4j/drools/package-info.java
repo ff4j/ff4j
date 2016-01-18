@@ -1,11 +1,10 @@
 /**
- * Provide utilities for tests.
+ * Proposition of FlippingStrategy delegating the evaluation of feature toggling to JBoss Drools..
  * <p>
  *
  * @author Cedrick Lunven (@clunven)</a>
- * @version 1.3
  */
-package org.ff4j.test;
+package org.ff4j.drools;
 
 /*
  * #%L

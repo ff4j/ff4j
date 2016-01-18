@@ -1,11 +1,11 @@
 /**
- * Provide utilities for tests.
+ * Parser to help parsing features into JSON.
  * <p>
  *
  * @author Cedrick Lunven (@clunven)</a>
  * @version 1.3
  */
-package org.ff4j.test;
+package org.ff4j.utils.json;
 
 /*
  * #%L

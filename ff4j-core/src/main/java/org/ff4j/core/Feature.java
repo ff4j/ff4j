@@ -350,9 +350,10 @@ public class Feature implements Serializable {
      */
     public <T> void addProperty(Property< T > props) {
         Util.assertNotNull(props);
-        if (customProperties != null) {
-            customProperties.put(props.getName(), props);
+        if (customProperties == null) {
+            customProperties = new LinkedHashMap<String, Property<?>>();
         }
+        customProperties.put(props.getName(), props);
     }
     
     /**

@@ -782,6 +782,7 @@ public class FF4j {
      *      target name
      */
     public void setFileName(String fname) { }
+    public void setAuthManager(String mnger) { }
 
     /**
      * Shuts down the event publisher if we actually started it (As opposed to

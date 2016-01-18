@@ -1,17 +1,10 @@
-/**
- * Provide utilities for tests.
- * <p>
- *
- * @author Cedrick Lunven (@clunven)</a>
- * @version 1.3
- */
-package org.ff4j.test;
+package org.ff4j.aop.test.greeting;
 
 /*
  * #%L
- * ff4j-core
+ * ff4j-aop
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 Ff4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,3 +19,17 @@ package org.ff4j.test;
  * limitations under the License.
  * #L%
  */
+
+import org.springframework.stereotype.Component;
+
+@Component("greeting.english")
+public class GreetingServiceEnglishImpl implements GreetingService {
+    @Override
+	public String sayHello(String name) {return "Hello " + name;}
+
+	@Override
+	public String sayHelloWithClass(String name) {
+		return "Hi " + name;
+	}
+
+}

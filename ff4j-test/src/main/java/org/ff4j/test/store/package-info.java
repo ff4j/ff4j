@@ -1,11 +1,11 @@
 /**
- * Provide utilities for tests.
+ * SuperClasses to test features stores.
  * <p>
  *
  * @author Cedrick Lunven (@clunven)</a>
  * @version 1.3
  */
-package org.ff4j.test;
+package org.ff4j.test.store;
 
 /*
  * #%L

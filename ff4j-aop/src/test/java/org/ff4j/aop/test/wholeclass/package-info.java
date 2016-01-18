@@ -1,15 +1,17 @@
 /**
- * Provide utilities for tests.
- * <p>
+ * 
+ */
+/**
+ * Class to TODO
  *
  * @author Cedrick Lunven (@clunven)</a>
- * @version 1.3
+ *
  */
-package org.ff4j.test;
+package org.ff4j.aop.test.wholeclass;
 
 /*
  * #%L
- * ff4j-core
+ * ff4j-aop
  * %%
  * Copyright (C) 2013 - 2016 FF4J
  * %%

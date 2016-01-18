@@ -432,11 +432,13 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=${outputEncoding}" />
 		<title>$title - $project.name</title>
-		<link rel="stylesheet" href="$relativePath/css/bootstrap.min.css" type="text/css" />
+		
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css" type="text/css" />
 		<link rel="stylesheet" href="$relativePath/css/site.css" type="text/css" />
-		<script type="text/javascript" src="$relativePath/js/jquery.min.js"></script>
-		<script type="text/javascript" src="$relativePath/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="$relativePath/js/prettify.min.js"></script>
+		
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
 		<script type="text/javascript" src="$relativePath/js/site.js"></script>
 #foreach( $author in $authors )
 			<meta name="author" content="$author" />

@@ -1,11 +1,11 @@
 /**
- * Provide utilities for tests.
+ * SuperClasses to test CacheManager with AdHoc tests
  * <p>
  *
  * @author Cedrick Lunven (@clunven)</a>
  * @version 1.3
  */
-package org.ff4j.test;
+package org.ff4j.test.cache;
 
 /*
  * #%L

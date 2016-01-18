@@ -29,7 +29,9 @@ import java.util.Set;
 
 import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.property.Property;
+import org.ff4j.property.PropertyString;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.utils.JdbcUtils;
 import org.ff4j.utils.JsonUtils;
@@ -71,7 +73,11 @@ public class MappingUtilsTest {
         Assert.assertNotNull(ss);
         Util.assertTrue(true);
         Util.assertNull(null);
-        
+    }
+    
+    @Test(expected = FeatureAccessException.class)
+    public void testIntanciateInvalidFlippingStrategy() {
+       MappingUtil.instanceFlippingStrategy("f1", "com.class.invalid", new HashMap<String, String>());
     }
     
     @Test(expected = IllegalArgumentException.class)
@@ -107,6 +113,18 @@ public class MappingUtilsTest {
     @Test
     public void testRollbackingWithNull() {
         JdbcUtils.rollback(null);
+    }
+    
+    @Test
+    public void testJsonCustomProperties() {
+        // Given
+        Map < String , Property<?> > props = new HashMap<String, Property<?>>();
+        props.put("f1", new PropertyString("f1","v1"));
+        props.put("f2", new PropertyString("f2","v2"));
+        // When
+        String expression = JsonUtils.customPropertiesAsJson(props);
+        // Then
+        Assert.assertNotNull(expression);
     }
 
 }

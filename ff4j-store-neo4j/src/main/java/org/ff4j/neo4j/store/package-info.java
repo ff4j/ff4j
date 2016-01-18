@@ -1,11 +1,10 @@
 /**
- * Provide utilities for tests.
+ * Implementation of FeatureStore to persist data into Neo4j.
  * <p>
  *
  * @author Cedrick Lunven (@clunven)</a>
- * @version 1.3
  */
-package org.ff4j.test;
+package org.ff4j.neo4j.store;
 
 /*
  * #%L

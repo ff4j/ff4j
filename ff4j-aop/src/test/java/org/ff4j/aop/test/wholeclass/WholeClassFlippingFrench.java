@@ -1,17 +1,10 @@
-/**
- * Provide utilities for tests.
- * <p>
- *
- * @author Cedrick Lunven (@clunven)</a>
- * @version 1.3
- */
-package org.ff4j.test;
+package org.ff4j.aop.test.wholeclass;
 
 /*
  * #%L
- * ff4j-core
+ * ff4j-aop
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2015 Ff4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,3 +19,20 @@ package org.ff4j.test;
  * limitations under the License.
  * #L%
  */
+
+import org.springframework.stereotype.Component;
+
+@Component("whole.french")
+public class WholeClassFlippingFrench implements WholeClassFlipping {
+
+    @Override
+    public String hello1() {
+        return "Francais";
+    }
+
+    @Override
+    public String hello2() {
+        return "Tour eiffel";        
+    }
+
+}

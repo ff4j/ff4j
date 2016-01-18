@@ -23,6 +23,8 @@ package org.ff4j.aop;
 import org.junit.Assert;
 
 import org.ff4j.FF4j;
+import org.ff4j.aop.test.goodbye.GoodbyeService;
+import org.ff4j.aop.test.greeting.GreetingService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;

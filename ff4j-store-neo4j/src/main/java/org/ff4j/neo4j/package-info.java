@@ -1,11 +1,10 @@
 /**
- * Provide utilities for tests.
+ * Constants and utilities relative to store implementations.
  * <p>
  *
  * @author Cedrick Lunven (@clunven)</a>
- * @version 1.3
  */
-package org.ff4j.test;
+package org.ff4j.neo4j;
 
 /*
  * #%L

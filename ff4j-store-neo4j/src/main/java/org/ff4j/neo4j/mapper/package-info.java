@@ -1,11 +1,10 @@
 /**
- * Provide utilities for tests.
+ * Mapping of Neo4j nodes and vertices into Features.
  * <p>
  *
  * @author Cedrick Lunven (@clunven)</a>
- * @version 1.3
  */
-package org.ff4j.test;
+package org.ff4j.neo4j.mapper;
 
 /*
  * #%L

@@ -1,11 +1,10 @@
 /**
- * Provide utilities for tests.
+ * Implementation of a cache proxy using REDIS.
  * <p>
  *
  * @author Cedrick Lunven (@clunven)</a>
- * @version 1.3
  */
-package org.ff4j.test;
+package org.ff4j.cache;
 
 /*
  * #%L

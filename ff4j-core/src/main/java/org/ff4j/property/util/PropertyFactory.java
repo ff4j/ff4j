@@ -140,6 +140,7 @@ public class PropertyFactory {
      * @return
      */
     public static Property<?> createProperty(PropertyJsonBean pgb) {
+        if (pgb == null) return null;
         return PropertyFactory.createProperty(
                 pgb.getName(), pgb.getType(), 
                 pgb.getValue(), pgb.getDescription(), 

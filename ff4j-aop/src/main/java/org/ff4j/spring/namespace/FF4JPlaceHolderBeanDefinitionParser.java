@@ -51,13 +51,13 @@ public class FF4JPlaceHolderBeanDefinitionParser implements BeanDefinitionParser
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition();
         builder.getRawBeanDefinition().setBeanClass(FF4jPropertiesPlaceHolderConfigurer.class);
         builder.getRawBeanDefinition().setSource(parserContext.extractSource(element));
-        if (parserContext.isNested()) {
-            builder.setScope(parserContext.getContainingBeanDefinition().getScope());
-        }
-        // Default-lazy-init applies to custom bean definitions as well.
-        if (parserContext.isDefaultLazyInit()) {
-            builder.setLazyInit(true);
-        }
+//        if (parserContext.isNested()) {
+//            builder.setScope(parserContext.getContainingBeanDefinition().getScope());
+//        }
+//        // Default-lazy-init applies to custom bean definitions as well.
+//        if (parserContext.isDefaultLazyInit()) {
+//            builder.setLazyInit(true);
+//        }
 
         // Reference to FF4J bean
         RuntimeBeanReference refFF4j = new RuntimeBeanReference("ff4j");

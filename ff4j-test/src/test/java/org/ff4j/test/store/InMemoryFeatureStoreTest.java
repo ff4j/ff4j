@@ -25,7 +25,7 @@ public class InMemoryFeatureStoreTest extends FeatureStoreTestSupport {
     /** {@inheritDoc} */
     @Override
     public FeatureStore initStore() {
-        return defaultStore;
+        return  new InMemoryFeatureStore("test-ff4j-features.xml");
     }
 
     /**
@@ -47,7 +47,5 @@ public class InMemoryFeatureStoreTest extends FeatureStoreTestSupport {
     public void testWithInvalidFileFailed2() {
         new InMemoryFeatureStore((String) null);
     }
-    
-   
 
 }

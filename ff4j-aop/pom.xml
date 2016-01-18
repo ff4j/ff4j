@@ -47,32 +47,16 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 		</dependency>
-		
-		<!-- test : junit -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		
-		<!-- test : logger implementation -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<scope>test</scope>
-		</dependency>
-		
-		<!-- test : logger logback -->
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<scope>test</scope>
-		</dependency>
-		
-		<!--  test : spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<artifactId>ff4j-test</artifactId>
+			<groupId>org.ff4j</groupId>
+			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
 		

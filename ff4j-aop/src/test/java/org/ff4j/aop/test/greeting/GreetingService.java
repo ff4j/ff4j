@@ -1,17 +1,12 @@
-/**
- * Provide utilities for tests.
- * <p>
- *
- * @author Cedrick Lunven (@clunven)</a>
- * @version 1.3
- */
-package org.ff4j.test;
+package org.ff4j.aop.test.greeting;
+
+import org.ff4j.aop.Flip;
 
 /*
  * #%L
- * ff4j-core
+ * ff4j-aop
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 Ff4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,3 +21,13 @@ package org.ff4j.test;
  * limitations under the License.
  * #L%
  */
+
+public interface GreetingService {
+
+	@Flip(name = "language-french", alterBean = "greeting.french")
+	String sayHello(String name);
+
+	@Flip(name = "language-french", alterClazz = GreetingServiceFrenchImpl.class)
+	String sayHelloWithClass(String name);
+
+}

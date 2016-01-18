@@ -1,17 +1,10 @@
-/**
- * Provide utilities for tests.
- * <p>
- *
- * @author Cedrick Lunven (@clunven)</a>
- * @version 1.3
- */
-package org.ff4j.test;
+package org.ff4j.aop.test.goodbye;
 
 /*
  * #%L
- * ff4j-core
+ * ff4j-aop
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 Ff4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,3 +19,19 @@ package org.ff4j.test;
  * limitations under the License.
  * #L%
  */
+
+import org.springframework.stereotype.Component;
+
+@Component("goodbye.english")
+public class GoodbyeServiceEnglishImpl implements GoodbyeService {
+
+	@Override
+	public String sayGoodbye(String name) {
+		return "Goodbye " + name;
+	}
+
+	@Override
+	public String sayGoodbyeWithClass(String name) {
+		return "See you " + name;
+	}
+}

@@ -182,6 +182,36 @@ public class FeatureTest {
         fec.putInt("d", new Integer(1));
         fec.putDouble("e", new Double(1D));
     }
-
+    
+    @Test
+    public void testAddPropertyShouldAdd() {
+        // Given
+        Feature feat = new Feature("abc", true);
+        Assert.assertFalse(feat.getCustomProperties().containsKey("p1"));
+        // When
+        feat.addProperty(new PropertyString("p1", "v1"));
+        // Then
+        Assert.assertTrue(feat.getCustomProperties().containsKey("p1"));
+    }
+    
+    @Test
+    public void testAddPropertyWithNullCustomPropertiesIsOK() {
+        // Given
+        Feature feat = new Feature("abc", true);
+        feat.setCustomProperties(null);
+        // When
+        feat.addProperty(new PropertyString("p1", "v1"));
+        // Then
+        Assert.assertTrue(feat.getCustomProperties().containsKey("p1"));
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddPropetyNullRaiseException() {
+     // Given
+        Feature feat = new Feature("abc", true);
+        Assert.assertFalse(feat.getCustomProperties().containsKey("p1"));
+        // When
+        feat.addProperty(null);
+    }
 }
 

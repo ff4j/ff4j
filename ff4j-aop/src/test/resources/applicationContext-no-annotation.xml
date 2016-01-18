@@ -33,11 +33,11 @@
      </bean>
      
      <bean id="greeting.noannotation.english" name="greeting.noannotation.english"
-     		class="org.ff4j.aop.noannotation.GreetingServiceEnglishImpl2" >
+     		class="org.ff4j.aop.test.noannotation.GreetingServiceEnglishImpl2" >
      </bean>
      
      <bean id="greeting.noannotation.french" name="greeting.noannotation.french"
-     		class="org.ff4j.aop.noannotation.GreetingServiceFrenchImpl2" >
+     		class="org.ff4j.aop.test.noannotation.GreetingServiceFrenchImpl2" >
      </bean>
      
      <bean id="ff.advisor" class="org.ff4j.aop.FeatureAdvisor" />
