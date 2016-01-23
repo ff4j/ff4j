@@ -26,6 +26,10 @@ import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.After;
+import org.junit.Assert;
+import org.junit.Test;
+
+import net.sf.ehcache.config.Configuration;
 
 /**
  * Test to work with Redis as a store.
@@ -52,5 +56,20 @@ public class FeatureStoreEhCacheTest extends FeatureStoreTestSupport {
             testedStore.delete(key);
         }
     }
+    
+    @Test
+    public void initWithConfig() {
+        Configuration managerConfiguration = new Configuration();
+        managerConfiguration.name("config");
+        FeatureStoreEhCache storeEHcache = new FeatureStoreEhCache(managerConfiguration);
+        Assert.assertNotNull(storeEHcache);
+    }
+    
+    @Test
+    public void initWithXmlFile() {
+        FeatureStoreEhCache storeEHcache = new FeatureStoreEhCache("ehcache.xml");
+        Assert.assertNotNull(storeEHcache);
+    }
+    
 
 }

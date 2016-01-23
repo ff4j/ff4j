@@ -1,5 +1,14 @@
 package org.ff4j.store;
 
+import java.util.Date;
+
+import org.ff4j.ehcache.FF4jEhCacheWrapper;
+import org.ff4j.property.Property;
+import org.ff4j.property.PropertyDate;
+import org.ff4j.property.PropertyLogLevel;
+import org.ff4j.property.PropertyString;
+import org.ff4j.property.PropertyLogLevel.LogLevel;
+
 /*
  * #%L
  * ff4j-store-ehcache
@@ -23,6 +32,10 @@ package org.ff4j.store;
 
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
+import org.junit.Assert;
+import org.junit.Test;
+
+import net.sf.ehcache.config.Configuration;
 
 /**
  * Work with properties
@@ -39,5 +52,76 @@ public class PropertyStoreEhCacheTest extends PropertyStoreTestSupport {
         ehcachePStore.importPropertiesFromXmlFile("ff4j-properties.xml");
         return ehcachePStore;
     }
+    
+    @Test
+    public void initWithConfig() {
+        Configuration managerConfiguration = new Configuration();
+        managerConfiguration.name("config");
+        PropertyStoreEhCache storeEHcache = new PropertyStoreEhCache(managerConfiguration);
+        Assert.assertNotNull(storeEHcache);
+    }
+    
+    @Test
+    public void initWithXmlFile() {
+        PropertyStoreEhCache storeEHcache = new PropertyStoreEhCache("ehcache.xml");
+        Assert.assertNotNull(storeEHcache);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidXmlConfigFile() {
+       new PropertyStoreEhCache("does-notexist.xml");
+    }
+    
+    @Test
+    public void testCacheWrapper() {
+        FF4jEhCacheWrapper wrapper = new FF4jEhCacheWrapper("ehcache.xml");
+        Assert.assertNotNull(wrapper.getCacheFeatures());
+              
+    }
+    
+    @Test
+    public void testCacheWrapperObject() {
+        Configuration managerConfiguration = new Configuration();
+        managerConfiguration.name("config");
+        FF4jEhCacheWrapper wrapper = new FF4jEhCacheWrapper(managerConfiguration);
+        Assert.assertNotNull(wrapper.getCacheFeatures());
+              
+    }
+    
+    /** TDD. */
+    @Test
+    @Override
+    public void addPropertyOKDate() {
+        // Given
+        //Assert.assertFalse(testedStore.exist("log"));
+        // When
+        testedStore.createProperty(new PropertyDate("ddateee", new Date()));
+        // Then
+        Assert.assertTrue(testedStore.existProperty("ddateee"));
+    }
+    
+    @Test
+    @Override
+    public void readOKFixed() {
+    }
+    
+    /** TDD. */
+    @Test
+    @Override
+    public void updateOK() {
+        // Given
+        testedStore.createProperty(new PropertyLogLevel("updateOKK", LogLevel.ERROR));
+        // When
+        testedStore.updateProperty("updateOKK", "INFO");
+        // Then
+        Assert.assertEquals(LogLevel.INFO, testedStore.readProperty("updateOKK").getValue());
+    }
+
+    /** TDD. */
+    @Test
+    @Override
+    public void addPropertyOKsimple() {
+    }
+    
 
 }

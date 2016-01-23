@@ -72,7 +72,7 @@ public final class FF4jEhCacheWrapper {
      * Default Constructor.
      */
     public FF4jEhCacheWrapper(String xmlEhCacheConfig) {
-        this.cacheConfigurationFile = getClass().getResourceAsStream(xmlEhCacheConfig);
+        this.cacheConfigurationFile = getClass().getClassLoader().getResourceAsStream(xmlEhCacheConfig);
         if (cacheConfigurationFile == null) {
             throw new IllegalArgumentException("Cannot find resource '" + xmlEhCacheConfig + "' in classpath, please check path");
         }

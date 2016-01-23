@@ -477,6 +477,18 @@ public abstract class FeatureStoreTestSupport implements TestsFf4jConstants {
         testedStore.update(null);
         // Then, expected error...
     }
+    
+    /**
+     * TDD.
+     */
+    @Test(expected = FeatureNotFoundException.class)
+    public void testFeatureDoesNotExit() {
+        // Given
+        assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
+        // When
+        testedStore.update(new Feature(F_DOESNOTEXIST));
+        // Then, expect error
+    }
 
     /**
      * TDD.

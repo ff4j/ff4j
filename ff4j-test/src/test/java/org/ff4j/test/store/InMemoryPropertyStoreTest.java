@@ -47,7 +47,7 @@ public class InMemoryPropertyStoreTest extends PropertyStoreTestSupport {
     /** TDD. */
     @Test
     @Override
-    public void exist_filled() {
+    public void existfilled() {
         // When-Then
         Assert.assertTrue(testedStore.existProperty("a"));
         Assert.assertFalse(testedStore.existProperty("koala"));

@@ -4,7 +4,7 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.store.InMemoryFeatureStore;
-import org.ff4j.test.store.FeatureStoreTestSupport;
+import org.ff4j.test.propertystore.PropertyStoreTestSupport;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,15 +30,13 @@ import org.junit.Test;
  */
 
 import net.sf.ehcache.Cache;
-import net.sf.ehcache.config.CacheConfiguration;
-import net.sf.ehcache.config.Configuration;
 
 /**
  * Class to test the EHCache {@link FeatureCacheProviderEhCache}.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class EhCacheCacheProviderTest extends FeatureStoreTestSupport {
+public class EhCacheCacheProviderBisTest extends PropertyStoreTestSupport {
 
     /** Cache Manager. */
     private final FF4JCacheManager cache = new FeatureCacheProviderEhCache();
@@ -47,13 +45,11 @@ public class EhCacheCacheProviderTest extends FeatureStoreTestSupport {
     
     private PropertyStore pstore = new InMemoryPropertyStore("test-ehcacheProvider.xml");
 
-    /** {@inheritDoc} */
     @Override
-    public FeatureStore initStore() {
-       
+    protected PropertyStore initPropertyStore() {
         return new FF4jCacheProxy(store, pstore,  cache);
     }
-
+    
     /**
      * Clear all elements
      */
@@ -61,19 +57,12 @@ public class EhCacheCacheProviderTest extends FeatureStoreTestSupport {
     public void tearDown() {
         ((Cache) cache.getFeatureNativeCache()).removeAll();
     }
-
+    
     @Test
-    public void initCacheProvider() {
-        Configuration managerConfiguration = new Configuration();
-        managerConfiguration.name("config");
-        managerConfiguration.setDefaultCacheConfiguration(new CacheConfiguration("toto", 1000));
-        
-        FeatureCacheProviderEhCache fcec = new FeatureCacheProviderEhCache(managerConfiguration);
-        Assert.assertNotNull(fcec.getCacheProviderName());
-        fcec.setCacheFeatures(fcec.getCacheFeatures());
-        fcec.setCacheProperties(fcec.getCacheProperties());
-        fcec.setCacheConfiguration(fcec.getCacheConfiguration());
-        fcec.setCacheManager(fcec.getCacheManager());
+    public void listCache() {
+        Assert.assertNotNull(cache.listCachedPropertyNames());
+        Assert.assertNotNull(cache.getPropertyNativeCache());
     }
+        
 
 }
