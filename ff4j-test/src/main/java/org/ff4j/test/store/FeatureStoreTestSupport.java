@@ -23,8 +23,8 @@ import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
-import org.ff4j.property.PropertyString;
 import org.ff4j.property.PropertyInt;
+import org.ff4j.property.PropertyString;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.PonderationStrategy;
 import org.ff4j.test.AssertFf4j;
@@ -121,6 +121,17 @@ public abstract class FeatureStoreTestSupport implements TestsFf4jConstants {
         // Given
         // When
         testedStore.read("");
+        // Then, expected error...
+    }
+    
+    /**
+     * TDD.
+     */
+    @Test(expected = FeatureNotFoundException.class)
+    public void testReadNotExist() {
+        // Given
+        // When
+        testedStore.read("I-DONT-EXIST");
         // Then, expected error...
     }
 

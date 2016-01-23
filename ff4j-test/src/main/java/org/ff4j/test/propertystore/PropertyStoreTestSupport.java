@@ -1,6 +1,8 @@
 package org.ff4j.test.propertystore;
 
 import java.util.Date;
+import java.util.Map;
+import java.util.Set;
 
 /*
  * #%L
@@ -291,6 +293,18 @@ public abstract class PropertyStoreTestSupport {
         Assert.assertEquals(LogLevel.INFO, testedStore.readProperty("updateOK").getValue());
     }
     
+    /** TDD. */
+    @Test
+    public void updateOKProperties() {
+        // Given
+        testedStore.createProperty(new PropertyLogLevel("log", LogLevel.ERROR));
+        // When
+        PropertyLogLevel pll = new PropertyLogLevel("log", LogLevel.INFO);
+        testedStore.updateProperty(pll);
+        // Then
+        Assert.assertEquals(LogLevel.INFO, testedStore.readProperty("log").getValue());
+    }
+    
     // ------------------ delete -------------------- 
 
     /** TDD. */
@@ -338,7 +352,7 @@ public abstract class PropertyStoreTestSupport {
     public void exist_filled() {
         // When-Then
         Assert.assertTrue(testedStore.existProperty("a"));
-        Assert.assertFalse(testedStore.existProperty("k"));
+        Assert.assertFalse(testedStore.existProperty("koala"));
     }
     
     @Test
@@ -347,6 +361,46 @@ public abstract class PropertyStoreTestSupport {
         Assert.assertTrue(testedStore.existProperty("a"));
         Assert.assertEquals("AMER", testedStore.readProperty("a").getValue());
     }
+    
+    /** TDD. */
+    @Test
+    public void listPropertyNames() {
+        // Given, When
+        Set< String > proNames = testedStore.listPropertyNames();
+        // Then
+       Assert.assertTrue(proNames.contains("a"));
+    }
+    
+    /** TDD. */
+    @Test
+    public void readAllProperties() {
+        // Given
+        Assert.assertNotNull(testedStore);
+        // When
+        Map <String, Property<?>> mapsOf = testedStore.readAllProperties();
+        // When
+        Assert.assertTrue(mapsOf.containsKey("a"));
+        Assert.assertTrue(mapsOf.containsKey("b"));
+    }
+    
+    /** TDD. */
+    @Test
+    public void clear() {
+        // Given
+        Assert.assertNotNull(testedStore);
+        Map <String, Property<?>> before = testedStore.readAllProperties();
+        Assert.assertFalse(before.isEmpty());
+        // When
+        testedStore.clear();
+        // Then
+        Assert.assertTrue(testedStore.readAllProperties().isEmpty());
+        
+        /// Reinit
+        for (String pName : before.keySet()) {
+            testedStore.createProperty(before.get(pName));
+        }
+    }
+    
 
     
 }

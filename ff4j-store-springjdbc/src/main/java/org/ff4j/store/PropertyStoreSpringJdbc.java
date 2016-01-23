@@ -1,5 +1,9 @@
 package org.ff4j.store;
 
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+
 /*
  * #%L
  * ff4j-store-springjdbc
@@ -26,12 +30,16 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
+import org.ff4j.exception.PropertyAlreadyExistException;
+import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.AbstractPropertyStore;
 import org.ff4j.property.store.PropertyStore;
+import org.ff4j.store.rowmapper.CustomPropertyRowMapper;
 import org.ff4j.utils.Util;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -42,6 +50,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class PropertyStoreSpringJdbc extends AbstractPropertyStore implements JdbcStoreConstants {
 
+    /** target mapper. */
+    private static CustomPropertyRowMapper PMAPPER = new CustomPropertyRowMapper();
+    
     /** SQL DataSource. */
     private DataSource dataSource;
 
@@ -54,52 +65,81 @@ public class PropertyStoreSpringJdbc extends AbstractPropertyStore implements Jd
         return 1 == getJdbcTemplate().queryForObject(SQL_PROPERTY_EXIST, Integer.class, name);
     }
 
-    @Override
-    public <T> void createProperty(Property<T> value) {
-        // TODO Auto-generated method stub
-        
+    /** {@inheritDoc} */
+    public <T> void createProperty(Property<T> ap) {
+        Util.assertNotNull(ap);
+        Util.assertHasLength(ap.getName());
+        if (existProperty(ap.getName())) {
+            throw new PropertyAlreadyExistException(ap.getName());
+        }
+        String fixedValues = null;
+        if (ap.getFixedValues() != null && ap.getFixedValues().size() > 0) {
+            fixedValues = ap.getFixedValues().toString();
+            fixedValues = fixedValues.substring(1, fixedValues.length() - 1);
+        }
+        getJdbcTemplate().update(SQL_PROPERTY_CREATE, 
+                ap.getName(), ap.getType(), ap.asString(), 
+                ap.getDescription(), fixedValues);
     }
 
-    @Override
+    /** {@inheritDoc} */
     public Property<?> readProperty(String name) {
-        // TODO Auto-generated method stub
-        return null;
+        Util.assertNotNull(name);
+        if (!existProperty(name)) {
+            throw new PropertyNotFoundException(name);
+        }
+        return getJdbcTemplate().queryForObject(SQL_PROPERTY_READ, PMAPPER, name);
     }
 
-    @Override
+    /** {@inheritDoc} */
     public void updateProperty(String name, String newValue) {
-        // TODO Auto-generated method stub
-        
+        Util.assertHasLength(name);
+        if (!existProperty(name)) {
+            throw new PropertyNotFoundException(name);
+        }
+        // Check new value validity
+        readProperty(name).fromString(newValue);
+        getJdbcTemplate().update(SQL_PROPERTY_UPDATE, newValue, name);
     }
 
-    @Override
-    public <T> void updateProperty(Property<T> fixedValue) {
-        // TODO Auto-generated method stub
-        
+    /** {@inheritDoc} */
+    public <T> void updateProperty(Property<T> prop) {
+        Util.assertNotNull(prop);
+        // Delete
+        deleteProperty(prop.getName());
+        // Create
+        createProperty(prop);
     }
 
-    @Override
+    /** {@inheritDoc} */
     public void deleteProperty(String name) {
-        // TODO Auto-generated method stub
-        
+        Util.assertHasLength(name);
+        if (!existProperty(name)) {
+            throw new PropertyNotFoundException(name);
+        }
+        getJdbcTemplate().update(SQL_PROPERTY_DELETE, name);
     }
 
-    @Override
+    /** {@inheritDoc} */
     public Map<String, Property<?>> readAllProperties() {
-        // TODO Auto-generated method stub
-        return null;
+        Map<String, Property<?>> properties = new LinkedHashMap<String, Property<?>>();
+        List<Property<?>> listOfProps = getJdbcTemplate().query(SQL_PROPERTY_READALL, PMAPPER);
+        for(Property<?> p : listOfProps) {
+            properties.put(p.getName(),  p);
+        }
+        return properties;
     }
 
-    @Override
+    /** {@inheritDoc} */
     public Set<String> listPropertyNames() {
-        // TODO Auto-generated method stub
-        return null;
+        return new HashSet<String>(
+                getJdbcTemplate().query(SQL_PROPERTY_READNAMES, 
+                        new SingleColumnRowMapper<String>()));
     }
 
-    @Override
+    /** {@inheritDoc} */
     public void clear() {
-        // TODO Auto-generated method stub
-        
+        getJdbcTemplate().update(SQL_PROPERTY_DELETE_ALL);
     }
     
     /**
