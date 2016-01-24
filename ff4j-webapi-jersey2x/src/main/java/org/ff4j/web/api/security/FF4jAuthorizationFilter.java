@@ -101,18 +101,15 @@ public class FF4jAuthorizationFilter implements ContainerRequestFilter, FF4jWebC
     }
     
     private boolean isPermitAll() {
-        return (info.getResourceClass().getAnnotation(PermitAll.class) != null) ||  
-               (info.getResourceMethod().getAnnotation(PermitAll.class) != null);
+        return (info.getResourceMethod().getAnnotation(PermitAll.class) != null);
     }
     
     private boolean isDenyAll() {
-        return (info.getResourceClass().getAnnotation(DenyAll.class) != null) ||  
-               (info.getResourceMethod().getAnnotation(DenyAll.class) != null);
+        return (info.getResourceMethod().getAnnotation(DenyAll.class) != null);
     }
     
     private boolean isRolesAllowed() {
-        return (info.getResourceClass().getAnnotation(RolesAllowed.class) != null) ||  
-               (info.getResourceMethod().getAnnotation(RolesAllowed.class) != null);
+        return (info.getResourceMethod().getAnnotation(RolesAllowed.class) != null);
     }
     
     private Set < String > getRoles() {
@@ -133,6 +130,44 @@ public class FF4jAuthorizationFilter implements ContainerRequestFilter, FF4jWebC
         throw new WebApplicationException(Response.status(Status.FORBIDDEN) //
                 .entity("Cannot reach ressource, forbidden check @RoleAllowed, @DenyAll") //
                 .type(MediaType.TEXT_HTML_TYPE).build());
+    }
+
+    /**
+     * Getter accessor for attribute 'apiConfig'.
+     *
+     * @return
+     *       current value of 'apiConfig'
+     */
+    public static ApiConfig getApiConfig() {
+        return apiConfig;
+    }
+
+    /**
+     * Setter accessor for attribute 'apiConfig'.
+     * @param apiConfig
+     * 		new value for 'apiConfig '
+     */
+    public static void setApiConfig(ApiConfig apiConfig) {
+        FF4jAuthorizationFilter.apiConfig = apiConfig;
+    }
+
+    /**
+     * Getter accessor for attribute 'info'.
+     *
+     * @return
+     *       current value of 'info'
+     */
+    public ResourceInfo getInfo() {
+        return info;
+    }
+
+    /**
+     * Setter accessor for attribute 'info'.
+     * @param info
+     * 		new value for 'info '
+     */
+    public void setInfo(ResourceInfo info) {
+        this.info = info;
     }
     
     

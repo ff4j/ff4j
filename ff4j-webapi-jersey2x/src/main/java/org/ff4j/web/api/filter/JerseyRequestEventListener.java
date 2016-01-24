@@ -48,17 +48,13 @@ public class JerseyRequestEventListener implements RequestEventListener {
     /** {@inheritDoc} */
     @Override
 	public void onEvent(RequestEvent reqEvt) {
-    	switch(reqEvt.getType()) {
-    	    // Exact Log of error within backend invocation
-    		case ON_EXCEPTION:
-				logger.error("An error occured when processing " + reqEvt.getContainerRequest().getRequestUri(), reqEvt.getException() );
-				logger.error(" + Type : " + reqEvt.getException().getClass().getCanonicalName());
-				logger.error(" + Message : " + reqEvt.getException().getMessage());
-			break;
-			default:
-			    logger.debug(reqEvt.getContainerRequest().getRequestUri() + "[" + reqEvt.getType() + "]");
-				break;
-	    	}
+        if (RequestEvent.Type.ON_EXCEPTION.equals(reqEvt.getType())) {
+            logger.error("An error occured when processing " + reqEvt.getContainerRequest().getRequestUri(), reqEvt.getException() );
+            logger.error(" + Type : " + reqEvt.getException().getClass().getCanonicalName());
+            logger.error(" + Message : " + reqEvt.getException().getMessage());
+        } else {
+            logger.debug(reqEvt.getContainerRequest().getRequestUri() + "[" + reqEvt.getType() + "]");
+        }
 	}
 
 }

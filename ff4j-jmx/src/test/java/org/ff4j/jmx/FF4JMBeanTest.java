@@ -141,6 +141,13 @@ public class FF4JMBeanTest {
         should_add_auth_role_to_feature();
         should_remove_auth_role_from_feature();
     }
+    
+    @Test
+    public void defaultInitialisation() {
+        FF4JMBean sampleBean = new FF4JMBean();
+        sampleBean.setFf4j(ff4j);
+        Assert.assertNotNull(sampleBean);
+    }
 
     public void should_add_auth_role_to_feature() throws Exception {
         ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);

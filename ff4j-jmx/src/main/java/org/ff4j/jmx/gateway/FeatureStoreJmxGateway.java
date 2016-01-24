@@ -1,15 +1,5 @@
 package org.ff4j.jmx.gateway;
 
-import java.util.Map;
-import java.util.Set;
-
-import org.ff4j.core.Feature;
-import org.ff4j.core.FeatureStore;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jmx.export.annotation.ManagedOperation;
-import org.springframework.jmx.export.annotation.ManagedOperationParameter;
-import org.springframework.jmx.export.annotation.ManagedOperationParameters;
-
 /*
  * #%L
  * ff4j-jmx
@@ -37,12 +27,12 @@ import org.springframework.jmx.export.annotation.ManagedOperationParameters;
  */
 //@Component
 //@ManagedResource(objectName = "org.ff4j.jmx:type=FeatureStoreJmx")
-public class FeatureStoreJmxGateway implements FeatureStore {
+public class FeatureStoreJmxGateway {
 
+    /*
     @Autowired
     private FeatureStore internalStore;
     
-    /** {@inheritDoc} */
     @Override
     @ManagedOperation(description = "Enable feature from its identifier")
     @ManagedOperationParameters({@ManagedOperationParameter(name = "feature_UID", description = "Identifier of feature to enable")})
@@ -50,7 +40,6 @@ public class FeatureStoreJmxGateway implements FeatureStore {
         internalStore.enable(feature_UID);
     }
 
-    /** {@inheritDoc} */
     @Override
     @ManagedOperation(description = "Disable feature from its identifier")
     @ManagedOperationParameters({@ManagedOperationParameter(name = "feature_UID", description = "Identifier of feature to disable")})
@@ -58,7 +47,6 @@ public class FeatureStoreJmxGateway implements FeatureStore {
         internalStore.disable(feature_UID);
     }
 
-    /** {@inheritDoc} */
     @Override
     @ManagedOperation(description = "Test if a feature exists based on its identifier")
     @ManagedOperationParameters({@ManagedOperationParameter(name = "feature_UID", description = "Identifier of feature to test")})
@@ -66,7 +54,6 @@ public class FeatureStoreJmxGateway implements FeatureStore {
         return internalStore.exist(feature_UID);
     }
 
-    /** {@inheritDoc} */
     @Override
     @ManagedOperation(description = "Create Feature")
     @ManagedOperationParameters({@ManagedOperationParameter(name = "feature_UID", description = "Identifier of feature to enable")})
@@ -74,7 +61,6 @@ public class FeatureStoreJmxGateway implements FeatureStore {
         internalStore.create(fp);
     }
 
-    /** {@inheritDoc} */
     @Override
     @ManagedOperation(description = "Disable feature from its identifier")
     @ManagedOperationParameters({@ManagedOperationParameter(name = "feature_UID", description = "Unique Identifier of feature")})
@@ -152,5 +138,5 @@ public class FeatureStoreJmxGateway implements FeatureStore {
     public void clear() {
         // TODO Auto-generated method stub
         
-    }
+    }*/
 }

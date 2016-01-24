@@ -53,12 +53,8 @@ public class JerseyApplicationEventListener implements ApplicationEventListener 
 			case INITIALIZATION_APP_FINISHED:
 				logger.info("Application is initialized");
 			break;
-			case DESTROY_FINISHED:
-			break;
-			case RELOAD_FINISHED:
-				break;
 			default:
-				break;
+			break;
 		}
 	}
 

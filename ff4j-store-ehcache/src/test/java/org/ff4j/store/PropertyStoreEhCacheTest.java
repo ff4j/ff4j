@@ -3,10 +3,8 @@ package org.ff4j.store;
 import java.util.Date;
 
 import org.ff4j.ehcache.FF4jEhCacheWrapper;
-import org.ff4j.property.Property;
 import org.ff4j.property.PropertyDate;
 import org.ff4j.property.PropertyLogLevel;
-import org.ff4j.property.PropertyString;
 import org.ff4j.property.PropertyLogLevel.LogLevel;
 
 /*
