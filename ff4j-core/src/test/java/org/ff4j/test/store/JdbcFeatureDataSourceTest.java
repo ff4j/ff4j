@@ -38,7 +38,7 @@ import org.mockito.Mockito;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class JdbcFeatureDataSourceTest extends AbstractFeatureStoreTestCore implements JdbcStoreConstants {
+public class JdbcFeatureDataSourceTest extends FStoreTestSupport implements JdbcStoreConstants {
 
     /** SQL DataSource. */
     private DataSource sqlDataSource;

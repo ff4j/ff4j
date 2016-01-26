@@ -32,6 +32,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.ff4j.utils.Util;
 import org.ff4j.web.ApiConfig;
+import org.ff4j.web.api.security.FF4JSecurityContextAuthenticationManager;
 import org.ff4j.web.api.security.FF4jAuthenticationFilter;
 import org.junit.Test;
 
@@ -92,6 +93,20 @@ public class SecurityAuthenticationFilterTest {
         // When
         faf.filter(mockRequest);
     }
+    
+    @Test(expected = WebApplicationException.class)
+    public void testNoAuthorizationAttributeInHeader() throws IOException {
+        // Given
+        FF4jAuthenticationFilter faf = new FF4jAuthenticationFilter();
+        ContainerRequestContext mockRequest = mock(ContainerRequestContext.class);
+        when(mockRequest.getHeaderString("Authorization")).thenReturn(null);
+        
+        when(mockRequest.getMethod()).thenReturn("GET");
+        UriInfo mockUriInfo = mock(UriInfo.class);
+        when(mockUriInfo.getPath()).thenReturn("someURL");
+        when(mockRequest.getUriInfo()).thenReturn(mockUriInfo);
+        faf.filter(mockRequest);
+    }
 
     
     @Test
@@ -110,6 +125,14 @@ public class SecurityAuthenticationFilterTest {
         
         // When
         faf.filter(mockRequest);
+    }
+    
+    
+    @Test
+    public void testAuthenticationManager() {
+        FF4JSecurityContextAuthenticationManager mnger = new FF4JSecurityContextAuthenticationManager();
+        mnger.listAllPermissions();
+        mnger.getCurrentUserPermissions();
     }
 
 }

@@ -38,7 +38,7 @@ import org.junit.Test;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public abstract class AbstractFeatureStoreTestCore implements TestConstantsFF4j {
+public abstract class FStoreTestSupport implements TestConstantsFF4j {
 
     /** Initialize */
     protected FF4j ff4j = null;

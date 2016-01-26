@@ -73,7 +73,7 @@ public class JdbcPropertyStoreTest  extends AbstractPropertyStoreJunitTest {
     }
     
     @Test
-    public void InitJdbcPropertyStore() {
+    public void initJdbcPropertyStore() {
         EmbeddedDatabaseBuilder b2 = new EmbeddedDatabaseBuilder();
         EmbeddedDatabase db2 = b2.setType(EmbeddedDatabaseType.HSQL).//
                 build();

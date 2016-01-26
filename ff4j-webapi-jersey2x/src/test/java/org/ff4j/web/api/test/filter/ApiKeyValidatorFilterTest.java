@@ -1,5 +1,8 @@
 package org.ff4j.web.api.test.filter;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 /*
  * #%L
  * ff4j-webapi-jersey2x
@@ -25,6 +28,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
+
 import org.ff4j.web.api.filter.ApiKey;
 import org.ff4j.web.api.filter.ApiKeyValidatorFilter;
 import org.junit.Assert;
@@ -33,21 +41,98 @@ import org.junit.Test;
 public class ApiKeyValidatorFilterTest {
     
     @Test
-    public void testApiKeyValidato() {
-        ApiKeyValidatorFilter f1 = new ApiKeyValidatorFilter();
-        
+    public void testApiKeyValidaton() throws Exception {
         Map < String, ApiKey > initMap = new HashMap<>();
         ApiKey ak1 = new ApiKey();
         ak1.setUserId("user1");
         ak1.setValue("key1");
         ak1.setExpirationTime(new Date(System.currentTimeMillis() + 20000));
-        initMap.put(ak1.getUserId(), ak1);
-        f1 = new ApiKeyValidatorFilter(initMap);
-        
-        Assert.assertTrue(ApiKeyValidatorFilter.getValidApiKeysMap().containsKey("user1"));
-        
-        
-        
+        initMap.put(ak1.getValue(), ak1);
+        new ApiKeyValidatorFilter(initMap);
+        Assert.assertTrue(ApiKeyValidatorFilter.getValidApiKeysMap().containsKey("key1"));
+        ApiKeyValidatorFilter.setValidApiKeysMap(initMap);
     }
+    
+    @Test(expected = WebApplicationException.class)
+    public void testFilterNondeader() throws Exception {
+        ContainerRequestContext mockRequest = mock(ContainerRequestContext.class);
+        MultivaluedMap<String, String > mvm = new MultivaluedHashMap<>();
+        when(mockRequest.getHeaders()).thenReturn(mvm);
+        ApiKeyValidatorFilter f1 = new ApiKeyValidatorFilter();
+        f1.filter(mockRequest);
+    }
+    
+    @Test(expected = WebApplicationException.class)
+    public void testFilterInvalid() throws Exception {
+        ContainerRequestContext mockRequest = mock(ContainerRequestContext.class);
+        MultivaluedMap<String, String > mvm = new MultivaluedHashMap<>();
+        mvm.putSingle(ApiKeyValidatorFilter.HEADER_APIKEY, "12");
+        when(mockRequest.getHeaders()).thenReturn(mvm);
+        ApiKeyValidatorFilter f1 = new ApiKeyValidatorFilter();
+        f1.filter(mockRequest);
+    }
+    
+    
+    @Test(expected = WebApplicationException.class)
+    public void testFilterApiKeyNotFound() throws Exception {
+        ContainerRequestContext mockRequest = mock(ContainerRequestContext.class);
+        MultivaluedMap<String, String > mvm = new MultivaluedHashMap<>();
+        mvm.putSingle(ApiKeyValidatorFilter.HEADER_APIKEY, "12");
+        when(mockRequest.getHeaders()).thenReturn(mvm);
+        
+        // create valid KEY to test against
+        Map < String, ApiKey > initMap = new HashMap<>();
+        ApiKey ak1 = new ApiKey();
+        ak1.setUserId("user1");
+        ak1.setValue("13");
+        ak1.setExpirationTime(new Date(System.currentTimeMillis() + 100000));
+        initMap.put(ak1.getValue(), ak1);
+        ApiKeyValidatorFilter.setValidApiKeysMap(initMap);
+        
+        ApiKeyValidatorFilter f1 = new ApiKeyValidatorFilter();
+        f1.filter(mockRequest);
+    }
+    
+    @Test(expected = WebApplicationException.class)
+    public void testFilterApiKeyExpired() throws Exception {
+        ContainerRequestContext mockRequest = mock(ContainerRequestContext.class);
+        MultivaluedMap<String, String > mvm = new MultivaluedHashMap<>();
+        mvm.putSingle(ApiKeyValidatorFilter.HEADER_APIKEY, "12");
+        when(mockRequest.getHeaders()).thenReturn(mvm);
+        
+        // create valid KEY to test against
+        Map < String, ApiKey > initMap = new HashMap<>();
+        ApiKey ak1 = new ApiKey();
+        ak1.setUserId("user1");
+        ak1.setValue("12");
+        ak1.setExpirationTime(new Date(System.currentTimeMillis() - 100000));
+        initMap.put(ak1.getValue(), ak1);
+        ApiKeyValidatorFilter.setValidApiKeysMap(initMap);
+        
+        ApiKeyValidatorFilter f1 = new ApiKeyValidatorFilter();
+        f1.filter(mockRequest);
+    }
+    
+    @Test
+    public void testFilterOK() throws Exception {
+        ContainerRequestContext mockRequest = mock(ContainerRequestContext.class);
+        MultivaluedMap<String, String > mvm = new MultivaluedHashMap<>();
+        mvm.putSingle(ApiKeyValidatorFilter.HEADER_APIKEY, "12");
+        when(mockRequest.getHeaders()).thenReturn(mvm);
+        
+        // create valid KEY to test against
+        Map < String, ApiKey > initMap = new HashMap<>();
+        ApiKey ak1 = new ApiKey();
+        ak1.setUserId("user1");
+        ak1.setValue("12");
+        ak1.setExpirationTime(new Date(System.currentTimeMillis() + 100000));
+        initMap.put(ak1.getValue(), ak1);
+        ApiKeyValidatorFilter.setValidApiKeysMap(initMap);
+        
+        ApiKeyValidatorFilter f1 = new ApiKeyValidatorFilter();
+        f1.filter(mockRequest);
+    }
+    
+    
 
 }

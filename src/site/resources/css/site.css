@@ -47,7 +47,7 @@ dt { margin: 15px 0 5px 0; font-size: 1.2em }
 .nav-list li.collapsed > a { background-image: url(../images/collapsed.gif) }
 .nav-list li.expanded > a { background-image: url(../images/expanded.gif) }
 
-.nav-list li.expanded ul { list-style: none; margin-left: 0px; }
+.nav-list li.expanded ul { list-style: none; margin-left: 0; }
 .nav-list li.expanded li a { display: block; padding: 3px 15px 3px 45px; margin-left: -15px; margin-right: -15px; }
 .nav-list li.expanded li a:hover { text-decoration: none; background-color: #eeeeee; }
 .nav-list li.expanded li.active a { background-color: #08C; color: white }
@@ -55,7 +55,7 @@ dt { margin: 15px 0 5px 0; font-size: 1.2em }
 .nav.nav-tabs { margin-bottom: 8px; }
 
 .content .section { margin-top: 20px; }
-.content .section:first-child { margin-top: 0px; }
+.content .section:first-child { margin-top: 0; }
 .section h2 { margin-bottom: 10px; }
 .section h3 { margin-bottom: 10px; }
 .section h4 { margin-bottom: 10px; }

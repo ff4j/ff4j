@@ -22,6 +22,7 @@ package org.ff4j.web.api.filter;
 
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
 
 import javax.ws.rs.WebApplicationException;
@@ -41,7 +42,7 @@ import org.slf4j.LoggerFactory;
 public class ApiKeyValidatorFilter implements ContainerRequestFilter {
     
     /** Expected Header params. */
-    private static final String HEADER_APIKEY = "X-FF4J-APIKEY";
+    public static final String HEADER_APIKEY = "X-FF4J-APIKEY";
     
     /** logger. */
     protected Logger logger = LoggerFactory.getLogger(getClass());
@@ -71,13 +72,25 @@ public class ApiKeyValidatorFilter implements ContainerRequestFilter {
      */
 	@Override
 	public void filter(ContainerRequestContext reqCtx) throws IOException {
+	    // Do not contains any API KEY
 	    if (!reqCtx.getHeaders().containsKey(HEADER_APIKEY)) {
 	        throw new WebApplicationException("API key (" + HEADER_APIKEY + ") is required for this API", Status.UNAUTHORIZED);
 	    }
+	    
+	    // Contains the header but invalid valid
 	    String apiKey = reqCtx.getHeaders().getFirst(HEADER_APIKEY);
 	    if (!validApiKeysMap.containsKey(apiKey)) {
-	        
+	        throw new WebApplicationException("Invalid API Key - not recognized", Status.UNAUTHORIZED);
 	    }
+	    
+	    // Does the API reach its expiration Date ?
+	    ApiKey currentKey = validApiKeysMap.get(apiKey);
+	    if (currentKey.getExpirationTime().before(new Date())) {
+	        throw new WebApplicationException("API key has expired ", Status.UNAUTHORIZED);
+	    }
+	    
+	    // from here : nothing to do, contains the header AND correct value AND still valid
+	    
 	}
 
     /**

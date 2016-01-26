@@ -26,10 +26,11 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.ff4j.property.Property;
-import org.ff4j.property.PropertyString;
 import org.ff4j.property.PropertyBigDecimal;
 import org.ff4j.property.PropertyBigInteger;
 import org.ff4j.property.PropertyBoolean;
@@ -40,7 +41,9 @@ import org.ff4j.property.PropertyDouble;
 import org.ff4j.property.PropertyFloat;
 import org.ff4j.property.PropertyInt;
 import org.ff4j.property.PropertyLogLevel;
+import org.ff4j.property.PropertyLong;
 import org.ff4j.property.PropertyShort;
+import org.ff4j.property.PropertyString;
 import org.ff4j.utils.Util;
 
 /**
@@ -54,6 +57,26 @@ public class PropertyFactory {
      * Hide constructor as util class.
      */
     public PropertyFactory() {}
+    
+    private static Map < Class<?> , Class<?> > validPropertyPrimitives = new HashMap<Class<?>, Class<?> >();
+    
+    /**
+     * Initialized Primitive to work with Properties.
+     */
+    static {
+        validPropertyPrimitives.put(Byte.class, PropertyByte.class);
+        validPropertyPrimitives.put(Short.class, PropertyShort.class);
+        validPropertyPrimitives.put(Integer.class, PropertyInt.class);
+        validPropertyPrimitives.put(Long.class, PropertyLong.class);
+        validPropertyPrimitives.put(Double.class, PropertyDouble.class);
+        validPropertyPrimitives.put(Boolean.class, PropertyBoolean.class);
+        validPropertyPrimitives.put(Float.class, PropertyFloat.class);
+        validPropertyPrimitives.put(BigInteger.class, PropertyBigInteger.class);
+        validPropertyPrimitives.put(BigDecimal.class, PropertyBigDecimal.class);
+        validPropertyPrimitives.put(PropertyLogLevel.LogLevel.class, PropertyLogLevel.class);
+        validPropertyPrimitives.put(BigInteger.class, PropertyBigInteger.class);
+        validPropertyPrimitives.put(String.class, PropertyString.class);
+    }
 
     /**
      * Factory method to create property.
@@ -69,38 +92,10 @@ public class PropertyFactory {
     public static Property<?> createProperty(String pName, Object value) {
         Util.assertHasLength(pName);
         Util.assertNotNull(value);
-        if (value instanceof Byte) {
-            return PropertyFactory.createProperty(pName, PropertyByte.class.getName(), String.valueOf(value), null, null);
-        }
-        if (value instanceof Short) {
-            return PropertyFactory.createProperty(pName, PropertyShort.class.getName(), String.valueOf(value), null, null);
-        }
-        if (value instanceof Integer) {
-            return PropertyFactory.createProperty(pName, PropertyInt.class.getName(), String.valueOf(value), null, null);
-        }
-        if (value instanceof Long) {
-            return PropertyFactory.createProperty(pName, PropertyInt.class.getName(), String.valueOf(value), null, null);
-        }
-        if (value instanceof Double) {
-            return PropertyFactory.createProperty(pName, PropertyDouble.class.getName(), String.valueOf(value), null, null);
-        }
-        if (value instanceof Boolean) {
-            return PropertyFactory.createProperty(pName, PropertyBoolean.class.getName(), String.valueOf(value), null, null);
-        }
-        if (value instanceof Float) {
-            return PropertyFactory.createProperty(pName, PropertyFloat.class.getName(), String.valueOf(value), null, null);
-        }
-        if (value instanceof BigInteger) {
-            return PropertyFactory.createProperty(pName, PropertyBigInteger.class.getName(), String.valueOf(value), null, null);
-        }
-        if (value instanceof BigDecimal) {
-            return PropertyFactory.createProperty(pName, PropertyBigDecimal.class.getName(), String.valueOf(value), null, null);
-        }
-        if (value instanceof String) {
-            return PropertyFactory.createProperty(pName, PropertyString.class.getName(), String.valueOf(value), null, null);
-        }
-        if (value instanceof PropertyLogLevel.LogLevel) {
-            return PropertyFactory.createProperty(pName, PropertyLogLevel.class.getName(), String.valueOf(value), null, null);
+        if (validPropertyPrimitives.containsKey(value.getClass())) {
+            return PropertyFactory.createProperty(pName, 
+                    validPropertyPrimitives.get(value.getClass()).getName(), 
+                    String.valueOf(value), null, null);
         }
         if (value instanceof Date) {
             return PropertyFactory.createProperty(pName, PropertyDate.class.getName(), PropertyDate.SDF.format(value), null, null);
@@ -114,6 +109,7 @@ public class PropertyFactory {
         if (value instanceof Property<?>) {
             return (Property<?>) value;
         }
+        
         throw new IllegalArgumentException("Cannot create property with input type "  + value.getClass());
     }
     

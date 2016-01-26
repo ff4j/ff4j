@@ -272,12 +272,6 @@ public class FF4jTest extends AbstractFf4jTest {
         Assert.assertEquals(5, ff4j.getFeatures().size());
     }
 
-    public void testGetFeature() {}
-
-    public void testGetFeature_DoesNotExist() {}
-
-    public void testGetFeature_DoesNotExistAutoCreate() {}
-
     @Test
     public void testFlipped() {
         FF4j ff4j = new FF4j().autoCreate(true).createFeature(

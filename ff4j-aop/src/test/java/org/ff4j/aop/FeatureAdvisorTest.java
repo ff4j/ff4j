@@ -67,7 +67,7 @@ public class FeatureAdvisorTest {
     }
 
     @Test
-    public void testAnnotatedFlipping_with_alterBean() {
+    public void testAnnotatedFlippingwithalterBean() {
         ff4j.disable("language-french");
         Assert.assertTrue(greeting.sayHello("CLU").startsWith("Hello"));
 
@@ -77,14 +77,14 @@ public class FeatureAdvisorTest {
 
     @Test
     @Ignore
-    public void testAnnotatedFlipping_with_alterClazz() {
+    public void testAnnotatedFlippingwithalterClazz() {
         Assert.assertTrue(greeting.sayHelloWithClass("CLU").startsWith("Hi"));
         ff4j.enable("language-french");
         Assert.assertTrue("Service did not flipped", greeting.sayHelloWithClass("CLU").startsWith("Salut"));
     }
 
     @Test
-    public void testAnnotatedFlipping_if_qualified_implementation_is_not_the_first_class_qualified_name_in_natural_ordering() {
+    public void testAnnotatedFlippingifqualifiedimplementationisnotthefirstclassqualifiednameinnaturalordering() {
         Assert.assertTrue(goodbye.sayGoodbye("CLU").startsWith("Au revoir"));
 
         ff4j.enable("language-english");
@@ -93,7 +93,7 @@ public class FeatureAdvisorTest {
 
     @Test
     @Ignore
-    public void testAnnotatedFlipping_with_alterClazz_if_qualified_implementation_is_not_the_first_class_qualified_name_in_natural_ordering() {
+    public void testAnnotatedFlippingwithalterClazzifqualifiedimplementationisnotthefirstclassqualifiednameinnaturalordering() {
         Assert.assertTrue(goodbye.sayGoodbyeWithClass("CLU").startsWith("A plus"));
 
         ff4j.enable("language-english");

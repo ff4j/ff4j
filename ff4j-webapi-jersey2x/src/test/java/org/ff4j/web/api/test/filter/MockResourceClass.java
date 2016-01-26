@@ -39,4 +39,6 @@ public class MockResourceClass< T > {
     @RolesAllowed("USER")
     public void user() {}
     
+    public void nothing() {}
+    
 }

@@ -95,10 +95,10 @@ public class InMemoryEventRepository extends AbstractEventRepository {
             Queue< Event > qEvents = mapOfEvents.get(features.get(idx));
             int counter = 0;
             for (Event evt : qEvents) {
-                if (evt.getTimestamp() > startTime && evt.getTimestamp() < endTime) {
-                    if (EventType.FEATURE_CHECK_ON.equals(evt.getType())) {
-                        counter++;
-                    }
+                if ((evt.getTimestamp() > startTime) && 
+                    (evt.getTimestamp() < endTime)   && 
+                    EventType.FEATURE_CHECK_ON.equals(evt.getType())) {
+                    counter++;
                 }
             }
             pieGraph.getSectors().add(new PieSector(features.get(idx), counter, colors.get(idx)));

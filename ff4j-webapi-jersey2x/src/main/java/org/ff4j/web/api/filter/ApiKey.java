@@ -38,6 +38,20 @@ public class ApiKey {
     
     /** expiration Date. */
     private Date expirationTime;
+    
+    /**
+     * Default constructor.
+     */
+    public ApiKey() {
+    }
+    
+    /**
+     * Default constructor.
+     */
+    public ApiKey(String userId, String value) {
+        this.userId = userId;
+        this.value  = value;
+    }
 
     /**
      * Getter accessor for attribute 'userId'.
