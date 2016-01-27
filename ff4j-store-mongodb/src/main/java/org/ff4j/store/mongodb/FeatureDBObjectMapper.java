@@ -28,7 +28,6 @@ import java.util.Set;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingStrategy;
-import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.property.Property;
 import org.ff4j.property.util.PropertyJsonBean;
 import org.ff4j.utils.JsonUtils;
@@ -121,20 +120,11 @@ public final class FeatureDBObjectMapper implements FeatureStoreMongoConstants {
      */
     private FlippingStrategy mapStrategy(String featUid, DBObject dbObject) {
         String strategy = (String) dbObject.get(STRATEGY);
+        Map < String, String > initParams = MappingUtil.toMap((String) dbObject.get(EXPRESSION));
         if (strategy != null && !"".equals(strategy)) {
-            try {
-                FlippingStrategy flipStrategy = (FlippingStrategy) Class.forName(strategy).newInstance();
-                flipStrategy.init(featUid, MappingUtil.toMap((String) dbObject.get(EXPRESSION)));
-                return flipStrategy;
-            } catch (InstantiationException ie) {
-                throw new FeatureAccessException("Cannot instantiate Strategy, no default constructor available", ie);
-            } catch (IllegalAccessException iae) {
-                throw new FeatureAccessException("Cannot instantiate Strategy, no visible constructor", iae);
-            } catch (ClassNotFoundException e) {
-                throw new FeatureAccessException("Cannot instantiate Strategy, classNotFound", e);
-            }
+            return MappingUtil.instanceFlippingStrategy(featUid, strategy, initParams);
         }
-        return (FlippingStrategy) dbObject.get(STRATEGY);
+        return null;
     }
     
     /**

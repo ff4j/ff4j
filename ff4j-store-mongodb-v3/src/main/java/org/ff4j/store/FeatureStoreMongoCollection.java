@@ -62,7 +62,7 @@ public class FeatureStoreMongoCollection extends AbstractFeatureStore implements
      *            the collection to set
      */
     public FeatureStoreMongoCollection(MongoCollection<Document> collection, String xmlConfFile) {
-        this.collection = collection;
+        this(collection);
         importFeaturesFromXmlFile(xmlConfFile);
     }
 
@@ -189,16 +189,8 @@ public class FeatureStoreMongoCollection extends AbstractFeatureStore implements
         if (fp == null) {
             throw new IllegalArgumentException("Feature cannot be null nor empty");
         }
-        Feature fpExist = read(fp.getUid());
+        read(fp.getUid());
         collection.updateOne(BUILDER.getFeatUid(fp.getUid()), new Document(MONGO_SET, MAPPER.toDocument(fp)));
-        // enable/disable
-        if (fp.isEnable() != fpExist.isEnable()) {
-            if (fp.isEnable()) {
-                enable(fp.getUid());
-            } else {
-                disable(fp.getUid());
-            }
-        }
     }
 
     /** {@inheritDoc} */

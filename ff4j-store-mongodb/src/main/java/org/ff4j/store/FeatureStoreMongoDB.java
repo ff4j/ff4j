@@ -65,7 +65,7 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore implements Feature
      *            the collection to set
      */
     public FeatureStoreMongoDB(DBCollection collection, String xmlConfFile) {
-        this.collection = collection;
+        this(collection);
         importFeaturesFromXmlFile(xmlConfFile);
     }
 
@@ -192,16 +192,8 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore implements Feature
         if (fp == null) {
             throw new IllegalArgumentException("Feature cannot be null nor empty");
         }
-        Feature fpExist = read(fp.getUid());
+        read(fp.getUid());
         collection.save(MAPPER.toDBObject(fp));
-        // enable/disable
-        if (fp.isEnable() != fpExist.isEnable()) {
-            if (fp.isEnable()) {
-                enable(fp.getUid());
-            } else {
-                disable(fp.getUid());
-            }
-        }
     }
 
     /** {@inheritDoc} */

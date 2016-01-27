@@ -1,5 +1,9 @@
 package org.ff4j.cache.it;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 /*
  * #%L
  * ff4j-cache-redis
@@ -23,7 +27,9 @@ package org.ff4j.cache.it;
 import org.ff4j.cache.FF4JCacheManager;
 import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.cache.FeatureCacheProviderRedis;
+import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.store.FeatureStoreTestSupport;
@@ -35,7 +41,6 @@ import org.junit.Test;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-@Ignore
 public class FeatureStoreWithRedisCacheTestIT extends FeatureStoreTestSupport {
 
     /** Initial feature number. */
@@ -93,5 +98,66 @@ public class FeatureStoreWithRedisCacheTestIT extends FeatureStoreTestSupport {
     @Test
     @Override
     public void testUpdateFeatureCoreData() {}
+    
+    /**
+     * TDD.
+     */
+    @Test
+    @Override
+    @Ignore
+    public void testEnableGroup() {
+        // Given
+        testedStore.disable(F2);
+        testedStore.addToGroup(F2, G0);
+        assertFf4j.assertThatFeatureIsDisabled(F2);
+        assertFf4j.assertThatFeatureIsInGroup(F2, G0);
+        // When
+        testedStore.enableGroup(G0);
+        // Then
+        assertFf4j.assertThatFeatureIsEnabled(F2);
+        // Reinit
+        testedStore.disable(F2);
+    }
+
+    /**
+     * TDD.
+     */
+    @Test
+    @Override
+    @Ignore
+    public void testDisableGroup() {
+        // Given
+        testedStore.enable(F4);
+        assertFf4j.assertThatFeatureIsEnabled(F4);
+        assertFf4j.assertThatFeatureIsInGroup(F4, G1);
+        // When
+        testedStore.disableGroup(G1);
+        // Then
+        assertFf4j.assertThatFeatureIsDisabled(F4);
+        // Rollback modifications
+        testedStore.enable(F4);
+        assertFf4j.assertThatFeatureIsEnabled(F4);
+    }
+    
+
+    /**
+     * TDD.
+     */
+    @Test(expected = FeatureAlreadyExistException.class)
+    @Ignore
+    public void testAddFeatureAlreadyExis() throws Exception {
+        // Given
+        assertFf4j.assertThatFeatureDoesNotExist("GOLOGOLO");
+        // When (first creation)
+        Feature fp = new Feature("GOLOGOLO", true, "description2");
+        testedStore.create(fp);
+        // Then (first creation)
+        assertFf4j.assertThatFeatureExist("GOLOGOLO");
+        // When (second creation)
+        Set<String> rights = new HashSet<String>(Arrays.asList(new String[] {ROLE_USER}));
+        Feature fp2 = new Feature("GOLOGOLO", true, G1, "description3", rights);
+        testedStore.create(fp2);
+        // Then, expected exception
+    }
 
 }

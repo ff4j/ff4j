@@ -29,7 +29,6 @@ import java.util.Set;
 import org.bson.Document;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingStrategy;
-import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.property.Property;
 import org.ff4j.property.util.PropertyJsonBean;
 import org.ff4j.utils.JsonUtils;
@@ -113,26 +112,17 @@ public final class FeatureDocumentMapper implements FeatureStoreMongoConstants {
     }
 
     /**
-     * Map from {@link Document} to strategy.
-     *
-     * @param document
+     * Map from {@link DBObject} to strategy.
+     * 
+     * @param dbObject
      *            target
      * @return
      */
     private FlippingStrategy mapStrategy(String featUid, Document document) {
-        String strategy =  document.getString(STRATEGY);
+        String strategy = (String) document.get(STRATEGY);
+        Map < String, String > initParams = MappingUtil.toMap((String) document.get(EXPRESSION));
         if (strategy != null && !"".equals(strategy)) {
-            try {
-                FlippingStrategy flipStrategy = (FlippingStrategy) Class.forName(strategy).newInstance();
-                flipStrategy.init(featUid, MappingUtil.toMap( document.getString(EXPRESSION)));
-                return flipStrategy;
-            } catch (InstantiationException ie) {
-                throw new FeatureAccessException("Cannot instantiate Strategy, no default constructor available", ie);
-            } catch (IllegalAccessException iae) {
-                throw new FeatureAccessException("Cannot instantiate Strategy, no visible constructor", iae);
-            } catch (ClassNotFoundException e) {
-                throw new FeatureAccessException("Cannot instantiate Strategy, classNotFound", e);
-            }
+            return MappingUtil.instanceFlippingStrategy(featUid, strategy, initParams);
         }
         return document.get(STRATEGY, FlippingStrategy.class);
     }
