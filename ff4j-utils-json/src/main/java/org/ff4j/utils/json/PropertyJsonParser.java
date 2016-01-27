@@ -21,6 +21,7 @@ package org.ff4j.utils.json;
  */
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.ff4j.core.Feature;
@@ -58,7 +59,22 @@ public class PropertyJsonParser {
         String propertyName = String.valueOf(propertyJson.get("name"));
         String propertyVal  = String.valueOf(propertyJson.get("value"));
         String propertyType = String.valueOf(propertyJson.get("type"));
-        return PropertyFactory.createProperty(propertyName, propertyType, propertyVal);
+        Property < ?> ap = PropertyFactory.createProperty(propertyName, propertyType, propertyVal);
+        
+        // FixedValued
+        List <Object> listOfFixedValue = (List<Object>) propertyJson.get("fixedValues");
+        if (listOfFixedValue != null) {
+            for (Object v : listOfFixedValue) {
+                ap.add2FixedValueFromString(String.valueOf(v));
+            }
+            // Check fixed value
+            if (ap.getFixedValues() != null && !ap.getFixedValues().contains(ap.getValue())) {
+                throw new IllegalArgumentException("Cannot create property <" + ap.getName() + 
+                        "> invalid value <" + ap.getValue() + 
+                        "> expected one of " + ap.getFixedValues());
+            }
+        }
+       return ap;
    }
 
 }

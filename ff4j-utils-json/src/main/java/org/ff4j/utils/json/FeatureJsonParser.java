@@ -108,7 +108,21 @@ public class FeatureJsonParser {
                 String propertyName = (String) propertyJson.get("name");
                 String propertyVal  = String.valueOf(propertyJson.get("value"));
                 String propertyType = (String) propertyJson.get("type");
-                myProperties.put(propertyName, PropertyFactory.createProperty(propertyName, propertyType, propertyVal));
+                Property<?> ap = PropertyFactory.createProperty(propertyName, propertyType, propertyVal);
+                // FixedValued
+                List <Object> listOfFixedValue = (List<Object>) propertyJson.get("fixedValues");
+                if (listOfFixedValue != null) {
+                    for (Object v : listOfFixedValue) {
+                        ap.add2FixedValueFromString(String.valueOf(v));
+                    }
+                    // Check fixed value
+                    if (ap.getFixedValues() != null && !ap.getFixedValues().contains(ap.getValue())) {
+                        throw new IllegalArgumentException("Cannot create property <" + ap.getName() + 
+                                "> invalid value <" + ap.getValue() + 
+                                "> expected one of " + ap.getFixedValues());
+                    }
+                }
+                myProperties.put(ap.getName(), ap);
             }
         }
         return myProperties;
