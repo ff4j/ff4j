@@ -1,5 +1,7 @@
 package org.ff4j.utils;
 
+import java.lang.reflect.Constructor;
+
 /*
  * #%L
  * ff4j-core
@@ -189,6 +191,21 @@ public class Util {
      */
     public static List < String > getColorsGradient(int nbsectors) {
         return getColorGradient(START_COLOR, END_COLOR, nbsectors);
+    }
+    
+    /**
+     * Allow to instanciate utility class.
+     *
+     * @param utilityClass
+     *      current utility
+     * @return
+     *      instance
+     * @throws Exception
+     */
+    public static <T> T instanciatePrivate(Class<T> utilityClass) throws Exception {
+        Constructor<T> ce = utilityClass.getDeclaredConstructor();
+        ce.setAccessible(true);
+        return ce.newInstance();
     }
 
 }

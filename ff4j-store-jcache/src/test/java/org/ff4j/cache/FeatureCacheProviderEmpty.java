@@ -1,8 +1,11 @@
-package org.ff4j.test.utils;
+package org.ff4j.cache;
+
+import org.jsr107.ri.spi.RICachingProvider;
+import org.junit.Assert;
 
 /*
  * #%L
- * ff4j-core
+ * ff4j-store-jcache
  * %%
  * Copyright (C) 2013 - 2016 FF4J
  * %%
@@ -20,30 +23,25 @@ package org.ff4j.test.utils;
  * #L%
  */
 
-import org.ff4j.utils.IOUtil;
-import org.ff4j.utils.Util;
-import org.junit.Assert;
+
 import org.junit.Test;
 
-public class IOUtilsTest {
-    
-    @Test
-    public void testInit() throws Exception {
-        Assert.assertNotNull(Util.instanciatePrivate(IOUtil.class));
-    }
-    
-    @Test
-    public void testResolveOK() throws Exception {
-        IOUtil.useInetAddress = true;
-        IOUtil.resolveHostName();
+public class FeatureCacheProviderEmpty {
+
+    @Test(expected = IllegalArgumentException.class)
+    public void initCacheManager() {
+        new FF4jJCacheManager(null);
     }
     
     @Test(expected = IllegalArgumentException.class)
-    public void testResolveKO() throws Exception {
-        IOUtil.useInetAddress = false;
-        IOUtil.resolveHostName();
-        IOUtil.useInetAddress = true;
-        Assert.fail();
+    public void initCacheProvider() {
+        new FF4jJCacheProvider(null);
     }
-
+    
+    @Test
+    public void initCacheProviderBis() {
+        FF4jJCacheProvider fcp = new FF4jJCacheProvider(RICachingProvider.class.getName());
+        Assert.assertNull(fcp.initCachingProvider(null));
+    }
+    
 }

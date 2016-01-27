@@ -1,4 +1,4 @@
-package org.ff4j.store;
+package org.ff4j.cache.store;
 
 /*
  * #%L
@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.store.FeatureStoreJCache;
 import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.jsr107.ri.spi.RICachingProvider;
 import org.junit.After;

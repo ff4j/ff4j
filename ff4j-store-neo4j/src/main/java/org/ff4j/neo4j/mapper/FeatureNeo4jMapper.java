@@ -33,7 +33,7 @@ import org.ff4j.neo4j.FF4jNeo4jConstants;
 import org.ff4j.neo4j.FF4jNeo4jLabels;
 import org.ff4j.property.Property;
 import org.ff4j.property.PropertyString;
-import org.ff4j.utils.json.FeatureJsonParser;
+import org.ff4j.utils.MappingUtil;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 
@@ -94,7 +94,7 @@ public class FeatureNeo4jMapper implements FF4jNeo4jConstants {
             }
         }
         String className  = (String) nodeFlippingStrategy.getProperty(NODESTRATEGY_ATT_TYPE);
-        return FeatureJsonParser.parseFlipStrategy(featureUid, className, initParams);       
+        return MappingUtil.instanceFlippingStrategy(featureUid, className, initParams);       
     }
     
     

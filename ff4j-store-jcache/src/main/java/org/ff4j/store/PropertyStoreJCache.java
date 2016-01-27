@@ -45,18 +45,10 @@ public class PropertyStoreJCache extends AbstractPropertyStore {
     private FF4jJCacheManager cacheManager;
     
     /**
-     * Initialisaiton of CacheManager.
-     */
-    public PropertyStoreJCache() {
-        cacheManager = new FF4jJCacheManager();
-    }
-    
-    /**
      * Default Constructor.
      */
     public PropertyStoreJCache(String cachingProviderClassName) {
-        // Initialisation of CACHE
-        cacheManager = new FF4jJCacheManager(cachingProviderClassName);
+        this(new FF4jJCacheManager(cachingProviderClassName));
     }
     
     /**

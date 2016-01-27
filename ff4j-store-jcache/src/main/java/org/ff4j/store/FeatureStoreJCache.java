@@ -44,21 +44,6 @@ public class FeatureStoreJCache extends AbstractFeatureStore {
     private FF4jJCacheManager cacheManager;
     
     /**
-     * Initialisaiton of CacheManager.
-     */
-    public FeatureStoreJCache() {
-        cacheManager = new FF4jJCacheManager();
-    }
-    
-    /**
-     * Default Constructor.
-     */
-    public FeatureStoreJCache(String cachingProviderClassName) {
-        // Initialisation of CACHE
-        cacheManager = new FF4jJCacheManager(cachingProviderClassName);
-    }
-    
-    /**
      * Initialization with cache manager.
      *
      * @param cacheManager
@@ -67,6 +52,12 @@ public class FeatureStoreJCache extends AbstractFeatureStore {
         this.cacheManager = cacheManager;
     }
     
+    /**
+     * Default Constructor.
+     */
+    public FeatureStoreJCache(String cachingProviderClassName) {
+       this(new FF4jJCacheManager(cachingProviderClassName));
+    } 
     
     /** {@inheritDoc} */
     @Override

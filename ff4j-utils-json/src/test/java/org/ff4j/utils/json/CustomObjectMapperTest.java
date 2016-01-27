@@ -1,8 +1,8 @@
-package org.ff4j.test.utils;
+package org.ff4j.utils.json;
 
 /*
  * #%L
- * ff4j-core
+ * ff4j-utils-json
  * %%
  * Copyright (C) 2013 - 2016 FF4J
  * %%
@@ -20,30 +20,15 @@ package org.ff4j.test.utils;
  * #L%
  */
 
-import org.ff4j.utils.IOUtil;
-import org.ff4j.utils.Util;
+
 import org.junit.Assert;
 import org.junit.Test;
 
-public class IOUtilsTest {
+public class CustomObjectMapperTest {
     
     @Test
-    public void testInit() throws Exception {
-        Assert.assertNotNull(Util.instanciatePrivate(IOUtil.class));
-    }
-    
-    @Test
-    public void testResolveOK() throws Exception {
-        IOUtil.useInetAddress = true;
-        IOUtil.resolveHostName();
-    }
-    
-    @Test(expected = IllegalArgumentException.class)
-    public void testResolveKO() throws Exception {
-        IOUtil.useInetAddress = false;
-        IOUtil.resolveHostName();
-        IOUtil.useInetAddress = true;
-        Assert.fail();
+    public void init() {
+        Assert.assertNotNull(new FF4jCustomObjectMapper ()); 
     }
 
 }

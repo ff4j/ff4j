@@ -1,4 +1,4 @@
-package org.ff4j.store;
+package org.ff4j.cache.store;
 
 /*
  * #%L
@@ -22,9 +22,10 @@ package org.ff4j.store;
 
 import java.util.Map;
 
-import org.ehcache.jsr107.EhcacheCachingProvider;
+import org.ff4j.cache.hazelcast.FeatureCacheProviderHazelCast;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.store.FeatureStoreJCache;
 import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.After;
 
@@ -33,14 +34,15 @@ import org.junit.After;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreJCacheTestEhCache extends FeatureStoreTestSupport {
+public class FeatureStoreJCacheTestHazelCast extends FeatureStoreTestSupport {
    
     /** {@inheritDoc} */
     @Override
     protected FeatureStore initStore() {
-        FeatureStoreJCache ehcacheStore = new FeatureStoreJCache(EhcacheCachingProvider.class.getName());
-        ehcacheStore.importFeaturesFromXmlFile("ff4j.xml");
-        return ehcacheStore;
+        FeatureStoreJCache hazelCastStore = 
+                new FeatureStoreJCache(new FeatureCacheProviderHazelCast());
+        hazelCastStore.importFeaturesFromXmlFile("ff4j.xml");
+        return hazelCastStore;
     }
     
     /**
@@ -48,9 +50,11 @@ public class FeatureStoreJCacheTestEhCache extends FeatureStoreTestSupport {
      */
     @After
     public void cleanStore() {
-        Map < String, Feature > f = testedStore.readAll();
-        for (String key : f.keySet()) {
-            testedStore.delete(key);
+        if (testedStore != null) {
+            Map < String, Feature > f = testedStore.readAll();
+            for (String key : f.keySet()) {
+                testedStore.delete(key);
+            }
         }
     }
 

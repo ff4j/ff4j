@@ -76,9 +76,6 @@ public class FF4jJCacheManager extends FF4jJCacheProvider implements FF4JCacheMa
      * @return
      */
     protected Cache<String, Feature> createCacheForFeatures() {
-        if (null == getCacheManager()) {
-            throw new IllegalArgumentException("Cannot initialize Cache without the Cache manager");
-        }
         if (null == getCacheManager().getCache(CACHENAME_FEATURES, String.class, Feature.class)) {
             getCacheManager().createCache(CACHENAME_FEATURES, getFeatureCacheConfiguration());
         }
@@ -92,9 +89,6 @@ public class FF4jJCacheManager extends FF4jJCacheProvider implements FF4JCacheMa
      */
     @SuppressWarnings("rawtypes")
     protected Cache<String, Property> createCacheForProperties() {
-        if (null == getCacheManager()) {
-            throw new IllegalArgumentException("Cannot initialize Cache without the Cache manager");
-        }
         if (null == getCacheManager().getCache(CACHENAME_PROPERTIES, String.class, Property.class)) {
             getCacheManager().createCache(CACHENAME_PROPERTIES, getPropertyCacheConfiguration());
         }
@@ -112,15 +106,11 @@ public class FF4jJCacheManager extends FF4jJCacheProvider implements FF4JCacheMa
     
     /** {@inheritDoc} */
     public Object getNativeCache() {
-        if (featuresCache == null) {
-            throw new IllegalStateException("Cache has not been initialized, please check");
-        }
         return featuresCache;
     }
 
     /** {@inheritDoc} */
     public String getCacheProviderName() {
-        if (featuresCache == null) return null;
         return "jCache:" + featuresCache.getName() + 
                 ":" + featuresCache.getCacheManager().getCachingProvider().toString();
     }   
