@@ -1,6 +1,6 @@
 
 <p align="center">
-<img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/ff4j-logo.png?raw=true" alt="functions" height="100px" />
+<img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/ff4j-logo.png?raw=true" alt="functions" height="300px" />
 </p>
 
 ## Feature Flipping for Java
@@ -17,19 +17,17 @@ FF4J is a proposition of [Feature Toggle](http://martinfowler.com/bliki/FeatureT
 You can enable and disable features through configuration at runtime with dedicated consoles or Web API but also __monitor__ features usage. You can also define any __Property__ and change its value at runtime with 
 the exact same web console.
 
-
-Test it yourself 
-<p align="center">
-<img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/ff4j-console.png?raw=true" />
-</p>
-
-[![Live Demo](https://img.shields.io/badge/ff4jdemo-online-green.svg)](http://cannys.com/ff4j-demo/)
-
+Try it your self by clicking on the image below : 
+  <a href="http://cannys.com/ff4j-demo/">
+ <p align="center">
+  <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/ff4j-console.png?raw=true" />
+ </p>
+</a>
 
 More information at [ff4j.org](http://ff4j.org) or [reference guide](https://github.com/clun/ff4j-extra/raw/master/ff4j-reference-guide-1.3.pdf).
 
 <p align="center">
-  <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/stack3.png?raw=true" />
+  <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/stack3.png?raw=true" width="200px"/>
   <br/><i>capabilities</i>
 </p>
 
