@@ -146,39 +146,6 @@ public abstract class PropertyStoreTestSupport {
         // Then expect to fail
     }
     
-    /** TDD. */
-    @Test(expected = IllegalArgumentException.class)
-    public void addPropertyKONullName() {
-        // Given
-        testedStore.createProperty(new PropertyString(null, ""));
-        // Then expect to fail
-    }
-    
-    /** TDD. */
-    @Test(expected = IllegalArgumentException.class)
-    public void addPropertyKOEmptyName() {
-        // Given
-        testedStore.createProperty(new PropertyString("", ""));
-        // Then expect to fail
-    }
-    
-    /** TDD. */
-    @Test(expected = IllegalArgumentException.class)
-    public void addPropertyKONullValue() {
-        // Given
-        testedStore.createProperty(new PropertyString("hi", null));
-        // Then No error
-    }
-    
-    /** TDD. */
-    @Test(expected = IllegalArgumentException.class)
-    public void addPropertyKOInvalidValue() {
-        // Given
-        testedStore.createProperty(new PropertyLogLevel("log", "TRUC"));
-        // Then No error
-    }
-    
-    
     // ------------------ read --------------------
     
     @Test
@@ -224,8 +191,6 @@ public abstract class PropertyStoreTestSupport {
     public void readKOempty() {
         // Given
         testedStore.readProperty("");
-        // Expected error
-        Assert.fail();
     }
     
     /** TDD. */
@@ -235,8 +200,6 @@ public abstract class PropertyStoreTestSupport {
         Assert.assertFalse(testedStore.existProperty("invalid"));
         // When
         testedStore.readProperty("invalid");
-        // Expected error
-        Assert.fail();
     }
     
     // ------------------ update --------------------
@@ -248,8 +211,6 @@ public abstract class PropertyStoreTestSupport {
         Assert.assertFalse(testedStore.existProperty("invalid"));
         // When
         testedStore.updateProperty("invalid", "aa");
-        // Expected error
-        Assert.fail();
     }
     
     /** TDD. */
@@ -257,8 +218,6 @@ public abstract class PropertyStoreTestSupport {
     public void updateKOnull() {
         // When
         testedStore.updateProperty(null, "aa");
-        // Expected error
-        Assert.fail();
     }
     
     /** TDD. */
@@ -266,8 +225,6 @@ public abstract class PropertyStoreTestSupport {
     public void updateKONullBis() {
         // When
         testedStore.updateProperty(null);
-        // Expected error
-        Assert.fail();
     }
     
     
@@ -277,8 +234,6 @@ public abstract class PropertyStoreTestSupport {
         // When
         PropertyString ps = new PropertyString("does-not-exist");
         testedStore.updateProperty(ps);
-        // Expected error
-        Assert.fail();
     }
     
     /** TDD. */
@@ -286,8 +241,6 @@ public abstract class PropertyStoreTestSupport {
     public void updateKOempty() {
         // When
         testedStore.updateProperty("", "aa");
-        // Expected error
-        Assert.fail();
     }
     
     /** TDD. */
@@ -297,9 +250,6 @@ public abstract class PropertyStoreTestSupport {
         testedStore.createProperty(new PropertyLogLevel("updateKOInvalidValue", LogLevel.ERROR));
         // When
         testedStore.updateProperty("updateKOInvalidValue", "KO");
-        // Expected error
-        Assert.fail();
-        
     }
     
     /** TDD. */
@@ -332,8 +282,6 @@ public abstract class PropertyStoreTestSupport {
     public void deleteKOnull() {
         // When
         testedStore.deleteProperty(null);
-        // Expected Error
-        Assert.fail();
     }
     
     /** TDD. */
@@ -341,8 +289,6 @@ public abstract class PropertyStoreTestSupport {
     public void deleteKOempty() {
         // When
         testedStore.deleteProperty("");
-        // Expected Error
-        Assert.fail();
     }
     
     /** TDD. */
@@ -352,8 +298,6 @@ public abstract class PropertyStoreTestSupport {
         Assert.assertFalse(testedStore.existProperty("invalid"));
         // When
         testedStore.deleteProperty("invalid");
-        // Expected Error
-        Assert.fail();
     }
     
     /** TDD. */

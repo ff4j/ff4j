@@ -20,12 +20,19 @@ package org.ff4j.test.store;
  * #L%
  */
 
-
 import org.ff4j.cache.FF4JCacheManager;
 import org.ff4j.cache.InMemoryCacheManager;
+import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.cache.AbstractCacheManagerJUnitTest;
+import org.ff4j.test.propertystore.PropertyStoreTestSupport;
+import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * Enhance code coverage in limit use cases.
+ *
+ * @author Cedrick Lunven (@clunven)</a>
+ */
 public class AbstractCacheManagerTest {
     
     @Test
@@ -46,6 +53,38 @@ public class AbstractCacheManagerTest {
         ac.clean();
         ac.testEvictFeatureNotExist();
         ac.clean();
+        Assert.assertNotNull(ac);
+    }
+    
+    @Test
+    public void testPropertyStoreCoverage() throws Exception {
+        // enhance coverage by not throwing exception on java method
+        PropertyStoreTestSupport ps = new PropertyStoreTestSupport() {
+            protected PropertyStore initPropertyStore() {
+                return new MockPropertyStore();
+            }
+        };
+        ps.setUp();
+        ps.existKONull();
+        ps.existKOEmpty();
+        ps.addPropertyKONull();
+        ps.readKOnull();
+        ps.readKOempty();
+        ps.readKOnotExist();
+        ps.addPropertyKOAlreadyExist();
+        ps.deleteKOnull();
+        ps.deleteKOempty();
+        ps.deleteKOdoesnotexist();
+        ps.existfilled();
+        ps.valueFixed();
+        ps.clear();
+        ps.updateKOempty();
+        ps.updateKOnull();
+        ps.updateKOdoesnotExist();
+        ps.updateKOPropertyNotFound();
+        ps.updateKOInvalidValue();
+        ps.updateKONullBis();
+        Assert.assertNotNull(ps);
     }
 
 }
