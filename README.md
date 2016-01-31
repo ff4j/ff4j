@@ -1,6 +1,6 @@
 
 <p align="center">
-<img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/ff4j-logo.png?raw=true" alt="functions" height="300px" />
+<img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/ff4j-logo.png?raw=true" alt="functions" height="120px" />
 </p>
 
 ## Feature Flipping for Java
@@ -27,7 +27,7 @@ Try it your self by clicking on the image below :
 More information at [ff4j.org](http://ff4j.org) or [reference guide](https://github.com/clun/ff4j-extra/raw/master/ff4j-reference-guide-1.3.pdf).
 
 <p align="center">
-  <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/stack3.png?raw=true" width="200px"/>
+  <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/stack3.png?raw=true" />
   <br/><i>capabilities</i>
 </p>
 
