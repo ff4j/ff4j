@@ -1,8 +1,6 @@
-
 <p align="center">
-<img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/ff4j-logo.png?raw=true" alt="functions" height="120px" />
+<img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/ff4j-logo.png?raw=true" alt="functions" height="180px" />
 </p>
-
 ## Feature Flipping for Java
 
 [![Build Status](https://travis-ci.org/clun/ff4j.svg?branch=master)](https://travis-ci.org/clun/ff4j)
@@ -17,21 +15,20 @@ FF4J is a proposition of [Feature Toggle](http://martinfowler.com/bliki/FeatureT
 You can enable and disable features through configuration at runtime with dedicated consoles or Web API but also __monitor__ features usage. You can also define any __Property__ and change its value at runtime with 
 the exact same web console.
 
-Try it your self by clicking on the image below : 
-  <a href="http://cannys.com/ff4j-demo/">
+More information at [ff4j.org](http://ff4j.org) or [reference guide](https://github.com/clun/ff4j-extra/raw/master/ff4j-reference-guide-1.3.pdf).
+
+To access a demo click the following image
+  <a href="http://cannys.com/ff4j-demo" style="border:1px solid #888888">
  <p align="center">
   <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/ff4j-console.png?raw=true" />
  </p>
 </a>
 
-More information at [ff4j.org](http://ff4j.org) or [reference guide](https://github.com/clun/ff4j-extra/raw/master/ff4j-reference-guide-1.3.pdf).
 
 <p align="center">
   <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/stack3.png?raw=true" />
   <br/><i>capabilities</i>
 </p>
 
-<p>
-<iframe src="//www.slideshare.net/slideshow/embed_code/key/3sZJ9jPsndQGm" width="595" height="485" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="//www.slideshare.net/CdrickLunven/introduction-to-feature-toggle-and-ff4" title="Introduction to Feature Toggle and FF4J" target="_blank">Introduction to Feature Toggle and FF4J</a> </strong> from <strong><a href="//www.slideshare.net/CdrickLunven" target="_blank">Cédrick Lunven</a></strong> </div>
 
 </p>
