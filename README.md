@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/ff4j-logo.png?raw=true" alt="functions" height="180px" />
+<img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/ff4j-logo.png?raw=true" alt="functions" height="120px" />
 </p>
 ## Feature Flipping for Java
 
@@ -17,17 +17,11 @@ the exact same web console.
 
 More information at [ff4j.org](http://ff4j.org) or [reference guide](https://github.com/clun/ff4j-extra/raw/master/ff4j-reference-guide-1.3.pdf).
 
-To access a demo click the following image
-  <a href="http://cannys.com/ff4j-demo" style="border:1px solid #888888">
+To access a demo please click [here] (http://cannys.com/ff4j-demo)
  <p align="center">
   <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/ff4j-console.png?raw=true" />
- </p>
-</a>
-
-
-<p align="center">
+  <br>
   <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/stack3.png?raw=true" />
-  <br/><i>capabilities</i>
 </p>
 
 
