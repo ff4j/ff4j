@@ -100,6 +100,19 @@ public class FeatureStoreHttpTest extends FeatureStoreTestSupport {
         // Then
         Assert.assertTrue(testedStore.read(F1).getPermissions().isEmpty());
     }
+    
+    
+    /**
+     * TDD.
+     */
+    @Test
+    public void testInitClient() {
+        FeatureStoreHttp httpStore = new FeatureStoreHttp();
+        httpStore.setUrl(null);
+        Assert.assertNull(httpStore.getUrl());
+        httpStore = new FeatureStoreHttp("a", "b", "c");
+        httpStore = new FeatureStoreHttp(null, "Key");
+    }
 
     /**
      * Start Server Grizzly before tests on FeatureStore

@@ -22,6 +22,7 @@ package org.ff4j.test.store;
 
 import org.ff4j.cache.FF4JCacheManager;
 import org.ff4j.cache.InMemoryCacheManager;
+import org.ff4j.core.FeatureStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.cache.AbstractCacheManagerJUnitTest;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
@@ -86,5 +87,80 @@ public class AbstractCacheManagerTest {
         ps.updateKONullBis();
         Assert.assertNotNull(ps);
     }
-
+    
+    @Test
+    public void testFeatureStoreCoverage() throws Exception {
+        // enhance coverage by not throwing exception on java method
+        FeatureStoreTestSupport ps = new FeatureStoreTestSupport() {
+            protected FeatureStore initStore() {
+                return new MockFeatureStore();
+            }
+        };
+        ps.setUp();
+        
+        ps.testDonotDeleteEmpty();
+        ps.testDonotDeleteNull();
+        ps.testDonotUpdateNullFeature();
+        ps.testRemoveToGroupEmpty();
+        ps.testRemoveToGroupNull();
+        ps.testRemoveToGroupFeatureNull();
+        ps.testAddToGroupFeatureDoeNotExist();
+        ps.testDeleteNull();
+        ps.testDeteleFeatureDoesnotExist();
+        ps.testGrantRoleNullFeature();
+        ps.testGrantRoleEmptyFeature();
+        ps.testGrantRoleNullRole();
+        ps.testGrantRoleEmptyRole();
+        ps.testGrantRoleToFeatureFeatureDoesNotExist();
+        ps.testRemoveRoleNullFeature();
+        ps.testRemoveRoleEmptyFeature();
+        ps.testRemoveRoleNullRole();
+        ps.testRemoveRoleEmptyRole();
+        ps.testUpdateNull();
+        ps.testFeatureDoesNotExit();
+        ps.testDeleteRoleFeatureDoesNotExit();
+        ps.testReadNull();
+        ps.testReadEmpty();
+        ps.testReadNotExist();
+        ps.testEnableNull();
+        ps.testEnableEmpty();
+        ps.testEnableFeatureDoesNotExist();
+        ps.testDisableNull();
+        ps.testDisableEmpty();
+        ps.testDisableFeatureDoesNotExist();
+        ps.testCreateNull();
+        ps.testExistNull();
+        ps.testExistEmpty();
+        ps.testExistGroupNull();
+        ps.testExistGroupEmpty();
+        ps.testEnableGroupNull();
+        ps.testEnableGroupEmpty();
+        ps.testEnableGroupDoesNotExist();
+        ps.testDisableGroupNull();
+        ps.testDisableGroupEmpty();
+        ps.testDisableGroupDoesNotExist();
+        ps.testReadGroupNull();
+        ps.testReadGroupEmpty();
+        ps.testReadGroupDoesnotExist();
+        ps.testAddToGroupFeatureNull();
+        ps.testAddToGroupFeatureEmpty();
+        ps.testAddToGroupNull();
+        ps.testAddToGroupEmpty();
+        ps.testRemoveToGroupFeatureEmpty();
+        ps.testRemoveFromGroupDoesNotExist();
+        ps.testRemoveFromGroupFeatureDoeNotExist();
+        ps.testClear();
+        Assert.assertNotNull(ps);
+    }
+    
+    @Test(expected = AssertionError.class)
+    public void testError() throws Exception {
+        FeatureStoreTestSupport ps = new FeatureStoreTestSupport() {
+            protected FeatureStore initStore() {
+                return new MockFeatureStore();
+            }
+        };
+        ps.setUp();
+        ps.testUpdateEditPropertyValue();
+    }
 }

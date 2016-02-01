@@ -138,7 +138,6 @@ public class FeatureResource extends AbstractResource {
                 feat.addProperty(propertyBean.asProperty());
             }       
         }
-        System.out.println("ok properties");
         
         // Update or create ? 
         if (!getFeatureStore().exist(feat.getUid())) {

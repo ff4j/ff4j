@@ -33,6 +33,7 @@ import org.ff4j.property.store.PropertyStore;
 public class MockPropertyStore implements PropertyStore {
 
     private boolean empty = false;
+    
     @Override
     public boolean existProperty(String name) {
         if ("log".equals(name) || "a".equals(name)) return true;
