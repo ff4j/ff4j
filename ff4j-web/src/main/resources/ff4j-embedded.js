@@ -585,5 +585,3 @@ function ff4j_getPathFromUrl(url) {
 }
 
 
-
-

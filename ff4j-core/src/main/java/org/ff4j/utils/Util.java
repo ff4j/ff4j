@@ -27,6 +27,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -206,6 +208,45 @@ public class Util {
         Constructor<T> ce = utilityClass.getDeclaredConstructor();
         ce.setAccessible(true);
         return ce.newInstance();
+    }
+    
+    /**
+     * Get key listfrom value.
+     *
+     * @param map
+     *      current MAP
+     * @param value
+     *      value of MAP
+     * @return
+     */
+    public static <T, E> Set<T> getKeysByValue(Map<T, E> map, E value) {
+        if (map == null) return null;
+        Set<T> keys = new HashSet<T>();
+        for (Entry<T, E> entry : map.entrySet()) {
+            if (value != null && value.equals(entry.getValue())) {
+                keys.add(entry.getKey());
+            }
+        }
+        return keys;
+    }
+    
+    /**
+     * Get a first key matching from value.
+     *
+     * @param map
+     *      current MAP
+     * @param value
+     *      value of MAP
+     * @return
+     */
+    public static <T, E> T getFirstKeyByValue(Map<T, E> map, E value) {
+        if (map == null) return null;
+        for (Entry<T, E> entry : map.entrySet()) {
+            if (value != null && value.equals(entry.getValue())) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
 }

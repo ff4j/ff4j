@@ -16,6 +16,9 @@ import java.io.IOException;
 
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
@@ -27,6 +30,18 @@ import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.property.Property;
+import org.ff4j.property.PropertyBigDecimal;
+import org.ff4j.property.PropertyBigInteger;
+import org.ff4j.property.PropertyBoolean;
+import org.ff4j.property.PropertyByte;
+import org.ff4j.property.PropertyDouble;
+import org.ff4j.property.PropertyFloat;
+import org.ff4j.property.PropertyInt;
+import org.ff4j.property.PropertyLogLevel;
+import org.ff4j.property.PropertyLong;
+import org.ff4j.property.PropertyShort;
+import org.ff4j.property.PropertyString;
+import org.ff4j.utils.Util;
 
 /**
  * Used to build GUI Interface for feature flip servlet. It contains gui component render and parmeters
@@ -52,6 +67,26 @@ public final class ConsoleRenderer implements ConsoleConstants {
 
     /** Get version of the component. */
     static final String FF4J_VERSION = ConsoleRenderer.class.getPackage().getImplementationVersion();
+    
+    /** Mapping from simple 'String' <=> 'org.ff4j.property.PropertyString'. */
+    private static Map < String , String > uxTypes = new HashMap< String , String>();
+    
+    /**
+     * Initialized Primitive to work with Properties.
+     */
+    static {
+        uxTypes.put(Byte.class.getSimpleName(), PropertyByte.class.getName());
+        uxTypes.put(Short.class.getSimpleName(), PropertyShort.class.getName());
+        uxTypes.put(Integer.class.getSimpleName(), PropertyInt.class.getName());
+        uxTypes.put(Long.class.getSimpleName(), PropertyLong.class.getName());
+        uxTypes.put(Double.class.getSimpleName(), PropertyDouble.class.getName());
+        uxTypes.put(Boolean.class.getSimpleName(), PropertyBoolean.class.getName());
+        uxTypes.put(Float.class.getSimpleName(), PropertyFloat.class.getName());
+        uxTypes.put(BigInteger.class.getSimpleName(), PropertyBigInteger.class.getName());
+        uxTypes.put(BigDecimal.class.getSimpleName(), PropertyBigDecimal.class.getName());
+        uxTypes.put("LogLevel", PropertyLogLevel.class.getName());
+        uxTypes.put(String.class.getSimpleName(), PropertyString.class.getName());
+    }
 
     /**
      * Render the ff4f console webpage through different block.
@@ -211,7 +246,11 @@ public final class ConsoleRenderer implements ConsoleConstants {
             
             // Colonne Type
             sb.append("</td><td>");
-            sb.append(currentProperty.getType());
+            if (uxTypes.containsValue(currentProperty.getType())) {
+                sb.append(Util.getFirstKeyByValue(uxTypes, currentProperty.getType()));
+            } else {
+                sb.append(currentProperty.getType());
+            }
             
             // Colonne Fixed Value
             sb.append("</td><td>");
@@ -384,7 +423,7 @@ public final class ConsoleRenderer implements ConsoleConstants {
         StringBuilder sb = new StringBuilder();
         if (null != ff4j.getFeatureStore().readAllGroups()) {
             for (String group : ff4j.getFeatureStore().readAllGroups()) {
-                sb.append("<li><a href=\"javascript:\\$('\\#" + modalId + " \\#groupName').val('");
+                sb.append("<li><a href=\"#\" onclick=\"\\$('\\#" + modalId + " \\#groupName').val('");
                 sb.append(group);
                 sb.append("');\">");
                 sb.append(group);

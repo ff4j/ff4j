@@ -74,7 +74,6 @@ public class PropertyFactory {
         validPropertyPrimitives.put(BigInteger.class, PropertyBigInteger.class);
         validPropertyPrimitives.put(BigDecimal.class, PropertyBigDecimal.class);
         validPropertyPrimitives.put(PropertyLogLevel.LogLevel.class, PropertyLogLevel.class);
-        validPropertyPrimitives.put(BigInteger.class, PropertyBigInteger.class);
         validPropertyPrimitives.put(String.class, PropertyString.class);
     }
 

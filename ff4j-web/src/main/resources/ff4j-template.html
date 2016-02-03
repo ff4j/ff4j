@@ -182,7 +182,7 @@
             <ul class="dropdown-menu" role="menu" style="width:250px;font-style:normal;color:#696969">
               {FEATURE_GRPS_CREATE}
               <li class="divider"></li>
-              <li><a href="javascript:$('#groupName').val('');">None</a></li>
+              <li><a href="#" onclick="javascript:$('#groupName').val('');">None</a></li>
             </ul>
           </div> <!-- btn-group -->     
         </div> <!-- controls -->
@@ -199,29 +199,36 @@
               <span class="sr-only"><i class="icon-cog icon-white" ></i></span>
             </button>
             <ul class="dropdown-menu" role="menu" style="width:250px;">
-               <li><a href="javascript:
+               <li><a href="#" onclick="javascript:
                 	$('#modalCreate #strategy').val('org.ff4j.strategy.el.ExpressionFlipStrategy');
                 	$('#modalCreate #stratlist').show();
-                	$('#modalCreate #initParams').val('expression=dummy OR foo')">Expression</a>
-                </li>
-              <li><a href="javascript:
+                	$('#modalCreate #initParams').val('expression=dummy OR foo')">Expression</a></li>
+              <li><a href="#" onclick="javascript:
               		$('#modalCreate #strategy').val('org.ff4j.strategy.PonderationStrategy');
               		$('#modalCreate #stratlist').show();
               		$('#modalCreate #initParams').val('weight=0.5')">Ponderation</a></li>
-               <li><a href="javascript:
-               		$('#modalCreate #strategy').val('org.ff4j.strategy.ReleaseDateFlipStrategy');
+               <li><a href="#" onclick="javascript:
+               		$('#modalCreate #strategy').val('org.ff4j.strategy.time.ReleaseDateFlipStrategy');
                		$('#modalCreate #stratlist').show();
                		$('#modalCreate #initParams').val('releaseDate=2013-07-14-14:00')">ReleaseDate</a></li>
-              <li><a href="javascript:
+              <li><a href="#" onclick="javascript:
               		$('#modalCreate #strategy').val('org.ff4j.strategy.ClientFilterStrategy');
               		$('#modalCreate #stratlist').show();
               		$('#modalCreate #initParams').val('grantedClients=c1,c2,c3')">ClientFilter</a></li>
-              <li><a href="javascript:
+              <li><a href="#" onclick="javascript:
+              		$('#modalCreate #strategy').val('org.ff4j.strategy.BlackListStrategy');
+              		$('#modalCreate #stratlist').show();
+              		$('#modalCreate #initParams').val('grantedClients=c1,c2,c3')">BlackList</a></li>
+               <li><a href="#" onclick="javascript:
+              		$('#modalCreate #strategy').val('org.ff4j.strategy.DarkLaunchStrategy');
+              		$('#modalCreate #stratlist').show();
+              		$('#modalCreate #initParams').val('weight=0.2')">Darklaunch</a></li>
+              <li><a href="#" onclick="javascript:
               		$('#modalCreate #strategy').val('org.ff4j.strategy.ServerFilterStrategy');
               		$('#modalCreate #stratlist').show();
               		$('#modalCreate #initParams').val('grantedServers=s1,s2,s3')">ServerFilter</a></li>
               <li class="divider"></li>
-              <li><a href="javascript:
+              <li><a href="#" onclick="javascript:
               		$('#modalCreate #strategy').val('');
               		$('#modalCreate #stratlist').hide();
               		$('#modalCreate #startparam').val('')">None</a></li>
@@ -245,8 +252,8 @@
               <span class="sr-only"><i class="icon-user icon-white" ></i></span>
             </button>
             <ul class="dropdown-menu" role="menu" style="width:250px;font-style:normal">
-                <li><a href="javascript:$('#permission').val('Public');$('#permlist').hide();"><i class="icon-flag" ></i>&nbsp;Public</a></li>
-                <li><a href="javascript:$('#permission').val('Restricted');$('#permlist').show();"><i class="icon-lock" ></i>&nbsp;Restricted</a></li>
+                <li><a href="#" onclick="javascript:$('#permission').val('Public');$('#permlist').hide();"><i class="icon-flag" ></i>&nbsp;Public</a></li>
+                <li><a href="#" onclick="javascript:$('#permission').val('Restricted');$('#permlist').show();"><i class="icon-lock" ></i>&nbsp;Restricted</a></li>
             </ul>
         </div>
       </div>
@@ -300,7 +307,7 @@
             <ul class="dropdown-menu" role="menu" style="width:250px;font-style:normal;color:#696969">
              	{FEATURE_GRPS_TOGGLE}
               <li class="divider"></li>
-              <li><a href="javascript:$('#modalToggle #groupName').val('');">None</a></li>
+              <li><a href="#" onclick="javascript:$('#modalToggle #groupName').val('');">None</a></li>
             </ul>
           </div> <!-- btn-group -->     
         </div> <!-- controls -->
@@ -316,8 +323,8 @@
               <span class="sr-only"><i class="icon-cog icon-white" ></i></span>
             </button>
             <ul class="dropdown-menu" role="menu" style="width:250px;">
-                <li><a href="javascript:$('#modalToggle #ope').val('enable');">enable</a></li>
-                <li><a href="javascript:$('#modalToggle #ope').val('disable');">disable</a></li>
+                <li><a href="#" onclick="javascript:$('#modalToggle #ope').val('enable');">enable</a></li>
+                <li><a href="#" onclick="javascript:$('#modalToggle #ope').val('disable');">disable</a></li>
             </ul>
           </div>
         </div>
@@ -405,7 +412,7 @@
             <ul class="dropdown-menu" role="menu" style="width:250px;font-style:normal;color:#696969">
               {FEATURE_GRPS_EDIT}
               <li class="divider"></li>
-              <li><a href="javascript:$('#groupName').val('');">None</a></li>
+              <li><a href="#" onclick="javascript:$('#groupName').val('');">None</a></li>
             </ul>
           </div> <!-- btn-group -->     
         </div> <!-- controls -->
@@ -422,29 +429,29 @@
               <span class="sr-only"><i class="icon-cog icon-white" ></i></span>
             </button>
             <ul class="dropdown-menu" role="menu" style="width:250px;">
-                <li><a href="javascript:
+                <li><a href="#" onclick="javascript:
                 	$('#modalEdit #strategy').val('org.ff4j.strategy.el.ExpressionFlipStrategy');
                 	$('#modalEdit #stratlist').show();
                 	$('#modalEdit #initParams').val('expression=dummy OR foo')">Expression</a>
                 </li>
-              <li><a href="javascript:
+              <li><a href="#" onclick="javascript:
               		$('#modalEdit #strategy').val('org.ff4j.strategy.PonderationStrategy');
               		$('#modalEdit #stratlist').show();
               		$('#modalEdit #initParams').val('weight=0.5')">Ponderation</a></li>
-                <li><a href="javascript:
-               		$('#modalEdit #strategy').val('org.ff4j.strategy.ReleaseDateFlipStrategy');
+                <li><a href="#" onclick="javascript:
+               		$('#modalEdit #strategy').val('org.ff4j.strategy.time.ReleaseDateFlipStrategy');
                		$('#modalEdit #stratlist').show();
                		$('#modalEdit #initParams').val('releaseDate=2013-07-14-14:00')">ReleaseDate</a></li>
-              <li><a href="javascript:
+              <li><a href="#" onclick="javascript:
               		$('#modalEdit #strategy').val('org.ff4j.strategy.ClientFilterStrategy');
               		$('#modalEdit #stratlist').show();
               		$('#modalEdit #initParams').val('grantedClients=c1,c2,c3')">ClientFilter</a></li>
-              <li><a href="javascript:
+              <li><a href="#" onclick="javascript:
               		$('#modalEdit #strategy').val('org.ff4j.strategy.ServerFilterStrategy');
               		$('#modalEdit #stratlist').show();
               		$('#modalEdit #initParams').val('grantedServers=s1,s2,s3')">ServerFilter</a></li>
               <li class="divider"></li>
-              <li><a href="javascript:
+              <li><a href="#" onclick="javascript:
               		$('#modalEdit #strategy').val('');
               		$('#modalEdit #stratlist').hide();
               		$('#modalEdit #startparam').val('')">None</a></li>
@@ -468,8 +475,8 @@
               <span class="sr-only"><i class="icon-user icon-white" ></i></span>
             </button>
             <ul class="dropdown-menu" role="menu" style="width:250px;font-style:normal">
-                <li><a href="javascript:$('#modalEdit #permission').val('Public');$('#modalEdit #permlist').hide();"><i class="icon-flag" ></i>&nbsp;Public</a></li>
-                <li><a href="javascript:$('#modalEdit #permission').val('Restricted');$('#modalEdit #permlist').show();"><i class="icon-lock" ></i>&nbsp;Restricted</a></li>
+                <li><a href="#" onclick="javascript:$('#modalEdit #permission').val('Public');$('#modalEdit #permlist').hide();"><i class="icon-flag" ></i>&nbsp;Public</a></li>
+                <li><a href="#" onclick="javascript:$('#modalEdit #permission').val('Restricted');$('#modalEdit #permlist').show();"><i class="icon-lock" ></i>&nbsp;Restricted</a></li>
             </ul>
         </div>
       </div>
@@ -580,13 +587,16 @@
 	              <span class="sr-only"><i class="icon-cog icon-white" ></i></span>
 	            </button>
 	            <ul class="dropdown-menu" role="menu" style="width:250px;">
-	            	<li><a href="javascript:$('#modalCreateProperty #pType').val('org.ff4j.property.PropertyBoolean');javascript:$('#modalCreateProperty #pValue').val('true');">boolean</a></li>
-	                <li><a href="javascript:$('#modalCreateProperty #pType').val('org.ff4j.property.PropertyInt');javascript:$('#modalCreateProperty #pValue').val('0')">int</a></li>
-	                <li><a href="javascript:$('#modalCreateProperty #pType').val('org.ff4j.property.PropertyDouble');javascript:$('#modalCreateProperty #pValue').val('0.0')">double</a></li>
-	                <li><a href="javascript:$('#modalCreateProperty #pType').val('org.ff4j.property.PropertyDate');javascript:$('#modalCreateProperty #pValue').val('2015-07-31 23:59')">date</a></li>
-	                <li><a href="javascript:$('#modalCreateProperty #pType').val('org.ff4j.property.PropertyCalendar');javascript:$('#modalCreateProperty #pValue').val('2015-07-31 23:59')">calendar</a></li>
-	                <li><a href="javascript:$('#modalCreateProperty #pType').val('org.ff4j.property.PropertyLogLevel');javascript:$('#modalCreateProperty #pValue').val('DEBUG')">loglevel</a></li>
-	                <li><a href="javascript:$('#modalCreateProperty #pType').val('type_your_className');">other</a></li>
+	            	<li><a href="#" onclick="javascript:$('#modalCreateProperty #pType').val('org.ff4j.property.PropertyString');javascript:$('#modalCreateProperty #pValue').val('abc');">String</a></li>
+	                <li><a href="#" onclick="javascript:$('#modalCreateProperty #pType').val('org.ff4j.property.PropertyBoolean');javascript:$('#modalCreateProperty #pValue').val('true');">boolean</a></li>
+	                <li><a href="#" onclick="javascript:$('#modalCreateProperty #pType').val('org.ff4j.property.PropertyInt');javascript:$('#modalCreateProperty #pValue').val('0')">int</a></li>
+	                <li><a href="#" onclick="javascript:$('#modalCreateProperty #pType').val('org.ff4j.property.PropertyDouble');javascript:$('#modalCreateProperty #pValue').val('0.0')">double</a></li>
+	                <li><a href="#" onclick="javascript:$('#modalCreateProperty #pType').val('org.ff4j.property.PropertyDate');javascript:$('#modalCreateProperty #pValue').val('2015-07-31 23:59')">date</a></li>
+	                <li><a href="#" onclick="javascript:$('#modalCreateProperty #pType').val('org.ff4j.property.PropertyCalendar');javascript:$('#modalCreateProperty #pValue').val('2015-07-31 23:59')">calendar</a></li>
+	                <li><a href="#" onclick="javascript:$('#modalCreateProperty #pType').val('org.ff4j.property.PropertyLogLevel');javascript:$('#modalCreateProperty #pValue').val('DEBUG')">loglevel</a></li>
+	                <li><a href="#" onclick="javascript:$('#modalCreateProperty #pType').val('org.ff4j.property.PropertyBigInteger');javascript:$('#modalCreateProperty #pValue').val('10000000');">BigInteger</a></li>
+	                <li><a href="#" onclick="javascript:$('#modalCreateProperty #pType').val('org.ff4j.property.PropertyBigDecimal');javascript:$('#modalCreateProperty #pValue').val('10000000');">BigDecimal</a></li>
+	                <li><a href="#" onclick="javascript:$('#modalCreateProperty #pType').val('foo.bar.YourClassProperty');">other</a></li>
 	            </ul>
 	        </div>
 	   </div>
@@ -742,9 +752,9 @@
      		var htmlForFixedValueList = '';
      		for (fixed in myProperty.fixedValues) {
      			htmlForFixedValueList+= '<tr><td>' + myProperty.fixedValues[fixed] + '</td><td>';
-     			htmlForFixedValueList+= '<a href="javascript:ff4j_deleteFixedValue(\'' + myProperty.name + '\',\'' +  myProperty.fixedValues[fixed] + '\')" style="width:6px;" class="btn">';
+     			htmlForFixedValueList+= '<a href="#" onclick="javascript:ff4j_deleteFixedValue(\'' + myProperty.name + '\',\'' +  myProperty.fixedValues[fixed] + '\')" style="width:6px;" class="btn">';
      			htmlForFixedValueList+= '<i class="icon-trash" style="margin-left:-5px;"></i></a></td></tr>';
-     			htmlForValues+= '<li><a href="javascript:$(\'#modalEditProperty #pValue\').val(\'' + myProperty.fixedValues[fixed] + '\');">' + myProperty.fixedValues[fixed] + '</a></li>';
+     			htmlForValues+= '<li><a href="#" onclick="javascript:$(\'#modalEditProperty #pValue\').val(\'' + myProperty.fixedValues[fixed] + '\');">' + myProperty.fixedValues[fixed] + '</a></li>';
      		}
      		htmlForValues+= '</ul></div> </div>';
      		$("#div-value-property").html(htmlForValues);
@@ -758,7 +768,7 @@
      	}
      	
      	htmlForFixedValueList+= '<tr><td><input type="text" id="nnfix" name="nnfix"  style="width:250px;height:30px;"/></td>';
- 		htmlForFixedValueList+= '    <td><a href="javascript:ff4j_createFixedValue(\'' + myProperty.name + '\', $(\'#modalEditProperty #nnfix\').val())"';
+ 		htmlForFixedValueList+= '    <td><a href="#" onclick="javascript:ff4j_createFixedValue(\'' + myProperty.name + '\', $(\'#modalEditProperty #nnfix\').val())"';
  		htmlForFixedValueList+= ' style="width:6px;" class="btn"><i class="icon-plus" style="margin-left:-5px;"></i></a></td></tr>';
  		$("#modalEditPropertyFixedValues").html(htmlForFixedValueList);
  		
