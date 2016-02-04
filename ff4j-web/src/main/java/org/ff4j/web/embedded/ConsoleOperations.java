@@ -137,7 +137,7 @@ public class ConsoleOperations implements ConsoleConstants {
         String value        = req.getParameter("pValue");
         String uid          = req.getParameter("uid");
         
-        Property<?> ap = null;
+        Property<?> ap;
         if (ff4j.getPropertiesStore().existProperty(uid)) {
             // Do not change name, just and update
             if (uid.equalsIgnoreCase(name)) {

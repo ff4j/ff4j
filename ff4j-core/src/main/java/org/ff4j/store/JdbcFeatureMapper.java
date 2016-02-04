@@ -46,7 +46,7 @@ public class JdbcFeatureMapper implements JdbcStoreConstants {
      */
     public Feature mapFeature(ResultSet rs) throws SQLException {
         // Feature
-        Feature f = null;
+        Feature f;
         boolean enabled = rs.getInt(COL_FEAT_ENABLE) > 0;
         String featUid = rs.getString(COL_FEAT_UID);
         f = new Feature(featUid, enabled, rs.getString(COL_FEAT_DESCRIPTION), rs.getString(COL_FEAT_GROUPNAME));

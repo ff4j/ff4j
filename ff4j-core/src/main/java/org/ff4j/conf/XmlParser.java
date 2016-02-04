@@ -250,7 +250,7 @@ public final class XmlParser {
      */
     private Map<String, Feature> parseFeatureGroupTag(Element featGroupTag) {
         NamedNodeMap nnm = featGroupTag.getAttributes();
-        String groupName = null;
+        String groupName;
         if (nnm.getNamedItem(FEATUREGROUP_ATTNAME) == null) {
             throw new IllegalArgumentException("Error syntax in configuration featuregroup : must have 'name' attribute");
         }
@@ -277,7 +277,7 @@ public final class XmlParser {
     private Feature parseFeatureTag(Element featXmlTag) {
         NamedNodeMap nnm = featXmlTag.getAttributes();
         // Identifier
-        String uid = null;
+        String uid;
         if (nnm.getNamedItem(FEATURE_ATT_UID) == null) {
             throw new IllegalArgumentException("Error syntax in configuration file : " + "'uid' is required for each feature");
         }
@@ -394,7 +394,7 @@ public final class XmlParser {
      */
     private FlippingStrategy parseFlipStrategy(Element flipStrategyTag, String uid) {
         NamedNodeMap nnm = flipStrategyTag.getAttributes();
-        FlippingStrategy flipStrategy = null;
+        FlippingStrategy flipStrategy;
         if (nnm.getNamedItem(FLIPSTRATEGY_ATTCLASS) == null) {
             throw new IllegalArgumentException("Error syntax in configuration file : '" + FLIPSTRATEGY_ATTCLASS
                     + "' is required for each flipstrategy (feature=" + uid + ")");
@@ -412,7 +412,7 @@ public final class XmlParser {
                 Element param = (Element) initparamsNodes.item(k);
                 NamedNodeMap nnmap = param.getAttributes();
                 // Check for required attribute name
-                String currentParamName = null;
+                String currentParamName;
                 if (nnmap.getNamedItem(FLIPSTRATEGY_PARAMNAME) == null) {
                     throw new IllegalArgumentException("Error syntax in configuration file : "
                             + "'name' is required for each param in flipstrategy(check " + uid + ")");

@@ -139,7 +139,7 @@ public final class ExpressionParser {
      *            expression.
      */
     public static ExpressionNode parseExpression(String expressionInput) {
-        ExpressionNode returnednode = null;
+        ExpressionNode returnednode;
         String expression = expressionInput.replaceAll(" ", "");
 
         // Only use opetator priorities to build.
@@ -328,7 +328,7 @@ public final class ExpressionParser {
             // First priority to & then to |
             String[] orOperArray = expr.split("\\" + OR);
             // current
-            ExpressionNode currentNode = null;
+            ExpressionNode currentNode;
             // less priority operator is OR
             if (orOperArray.length > 1) {
                 // LOG.debug("NoBracket [" + expr + "] : Operator OR");
