@@ -124,7 +124,7 @@ public class FeatureStoreJCache extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public Map<String, Feature> readAll() {
-        Map<String, Feature> myMap = new HashMap<String, Feature>();
+        Map<String, Feature> myMap = new HashMap<>();
         getCacheManager().getFeaturesCache().forEach(e->myMap.put(e.getKey(), e.getValue()));
         return myMap;
     }
@@ -166,7 +166,7 @@ public class FeatureStoreJCache extends AbstractFeatureStore {
     public Map<String, Feature> readGroup(String groupName) {
         Util.assertParamNotNull(groupName, "groupName");
         Map < String, Feature > features = readAll();
-        Map < String, Feature > group = new HashMap<String, Feature>();
+        Map < String, Feature > group = new HashMap<>();
         for (String uid : features.keySet()) {
             if (groupName.equals(features.get(uid).getGroup())) {
                 group.put(uid, features.get(uid));
@@ -183,7 +183,7 @@ public class FeatureStoreJCache extends AbstractFeatureStore {
     public boolean existGroup(String groupName) {
         Util.assertParamNotNull(groupName, "groupName");
         Map < String, Feature > features = readAll();
-        Map < String, Feature > group = new HashMap<String, Feature>();
+        Map < String, Feature > group = new HashMap<>();
         for (String uid : features.keySet()) {
             if (groupName.equals(features.get(uid).getGroup())) {
                 group.put(uid, features.get(uid));
@@ -241,7 +241,7 @@ public class FeatureStoreJCache extends AbstractFeatureStore {
     @Override
     public Set<String> readAllGroups() {
         Map < String, Feature > features = readAll();
-        Set < String > groups = new HashSet<String>();
+        Set < String > groups = new HashSet<>();
         for (String uid : features.keySet()) {
             groups.add(features.get(uid).getGroup());
         }

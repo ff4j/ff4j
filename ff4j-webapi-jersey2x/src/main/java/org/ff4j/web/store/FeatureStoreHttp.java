@@ -233,7 +233,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements org.ff4j.w
        
         String resEntity = (String) cRes.readEntity(String.class);
         Feature[] fArray = parseFeatureArray(resEntity);
-        Map<String, Feature> features = new HashMap<String, Feature>();
+        Map<String, Feature> features = new HashMap<>();
         for (Feature feature : fArray) {
             features.put(feature.getUid(), feature);
         }
@@ -369,7 +369,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements org.ff4j.w
         }
         String resEntity = cRes.readEntity(String.class);
         Feature[] fArray = parseFeatureArray(resEntity);
-        Map<String, Feature> features = new HashMap<String, Feature>();
+        Map<String, Feature> features = new HashMap<>();
         for (Feature feature : fArray) {
             features.put(feature.getUid(), feature);
         }
@@ -399,7 +399,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements org.ff4j.w
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
             throw new FeatureAccessException("Cannot read groups, an HTTP error " + cRes.getStatus() + " occured.");
         }
-        Set < String > groupNames = new HashSet<String>();
+        Set < String > groupNames = new HashSet<>();
         for (Map <String, String > currentGroup : groupList) {
             groupNames.add(currentGroup.get("groupName"));
         }

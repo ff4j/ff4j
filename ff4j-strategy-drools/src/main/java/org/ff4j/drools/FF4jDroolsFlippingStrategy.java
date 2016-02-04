@@ -158,7 +158,7 @@ public class FF4jDroolsFlippingStrategy extends AbstractFlipStrategy {
             
             } else if (initParams.containsKey(KEY_RULES_FILES)) {
                 String exp = initParams.get(KEY_RULES_FILES);
-                this.ruleFiles = new HashSet <String > (Arrays.asList(exp.split(",")));
+                this.ruleFiles = new HashSet <> (Arrays.asList(exp.split(",")));
                 FF4jDroolsService.initFromRulesFiles(ruleFiles);
             
             } else {
