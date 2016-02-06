@@ -100,7 +100,7 @@ public class FF4jJCacheProvider {
      *      cache default configuration
      */
     protected MutableConfiguration< String, Feature> getFeatureCacheConfiguration() {
-        MutableConfiguration<String, Feature> featuresCacheConfig = new MutableConfiguration<String, Feature>();        
+        MutableConfiguration<String, Feature> featuresCacheConfig = new MutableConfiguration<>();        
         featuresCacheConfig.setTypes(String.class, Feature.class);
         featuresCacheConfig.setStoreByValue(true);
         featuresCacheConfig.setStatisticsEnabled(false);
@@ -116,7 +116,7 @@ public class FF4jJCacheProvider {
      */
     @SuppressWarnings("rawtypes")
     protected MutableConfiguration< String, Property> getPropertyCacheConfiguration() {
-        MutableConfiguration<String, Property> propertiesCacheConfig = new MutableConfiguration<String, Property>();        
+        MutableConfiguration<String, Property> propertiesCacheConfig = new MutableConfiguration<>();        
         propertiesCacheConfig.setTypes(String.class, Property.class);
         propertiesCacheConfig.setStoreByValue(true);
         propertiesCacheConfig.setStatisticsEnabled(false);

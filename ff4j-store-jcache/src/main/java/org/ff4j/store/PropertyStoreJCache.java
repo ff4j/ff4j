@@ -120,7 +120,7 @@ public class PropertyStoreJCache extends AbstractPropertyStore {
     /** {@inheritDoc} */
     @Override
     public Map<String, Property<?>> readAllProperties() {
-        Map<String, Property<?>> myMap = new HashMap<String, Property<?>>();
+        Map<String, Property<?>> myMap = new HashMap<>();
         getCacheManager().getPropertiesCache().forEach(e->myMap.put(e.getKey(), e.getValue()));
         return myMap;
     }
