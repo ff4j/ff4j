@@ -152,11 +152,10 @@
 		<module>ff4j-store-jcache</module>
 		<module>ff4j-store-ehcache</module>
 		<module>ff4j-store-redis</module>
-
+		<module>ff4j-store-neo4j</module>
 		<!-- <module>ff4j-shell</module> -->
 		<!-- <module>ff4j-metrics</module> -->
-		<!-- <module>ff4j-store-neo4j</module> -->
-
+		
 	</modules>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->

@@ -6,7 +6,9 @@ import java.util.Set;
 
 import org.ff4j.conf.XmlConfig;
 import org.ff4j.conf.XmlParser;
+import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.Property;
+import org.ff4j.utils.Util;
 
 /*
  * #%L
@@ -89,5 +91,19 @@ public abstract class AbstractPropertyStore implements PropertyStore {
         sb.append("]}");
         return sb.toString();
     }
+    
+    /**
+     * Validate property name and existence
+     *
+     * @param uid
+     *      target uid
+     */
+    protected void assertPropertyName(String name) {
+        Util.assertHasLength(name);
+        if (!existProperty(name)) {
+            throw new PropertyNotFoundException(name);
+        }
+    }
+
     
 }

@@ -1,11 +1,10 @@
 package org.ff4j.neo4j.mapper;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /*
  * #%L
@@ -30,11 +29,10 @@ import java.util.Map;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.neo4j.FF4jNeo4jConstants;
-import org.ff4j.neo4j.FF4jNeo4jLabels;
 import org.ff4j.property.Property;
 import org.ff4j.property.PropertyString;
+import org.ff4j.property.util.PropertyFactory;
 import org.ff4j.utils.MappingUtil;
-import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 
 /**
@@ -42,12 +40,12 @@ import org.neo4j.graphdb.Node;
  *
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class FeatureNeo4jMapper implements FF4jNeo4jConstants {
+public class Neo4jMapper implements FF4jNeo4jConstants {
     
     /**
      * Hide default constructor.
      */
-    private FeatureNeo4jMapper() {
+    private Neo4jMapper() {
     }
     
     /**
@@ -108,88 +106,33 @@ public class FeatureNeo4jMapper implements FF4jNeo4jConstants {
      * @return
      *      value of node
      */
-    static public Property<?> fromNode2Property(String featureUid, Node nodeProperty) {
+    static public Property<?> fromNode2Property(Node nodeProperty) {
         Map < String, Object > nodeProperties = nodeProperty.getAllProperties();
-        
         if (!nodeProperties.containsKey(NODEPROPERTY_ATT_NAME)) {
             throw new IllegalArgumentException(NODEPROPERTY_ATT_NAME + " is a required property");
         }
-        
-        if (!nodeProperties.containsKey(NODEPROPERTY_ATT_VALUE)) {
-            throw new IllegalArgumentException(NODEPROPERTY_ATT_VALUE + " is a required property");
-        }
-        
         String propertyName  = (String) nodeProperty.getProperty(NODEPROPERTY_ATT_NAME);
+        if (!nodeProperties.containsKey(NODEPROPERTY_ATT_VALUE)) {
+            throw new IllegalArgumentException(NODEPROPERTY_ATT_VALUE + " is a required property id=" + propertyName);
+        }
         String propertyValue = (String) nodeProperty.getProperty(NODEPROPERTY_ATT_VALUE);
-        Property<?> ap = new PropertyString(propertyName, propertyValue);
-        
-        // If specific type defined ?
+        String propertyType  = PropertyString.class.getName();
         if (nodeProperties.containsKey(NODEPROPERTY_ATT_TYPE)) {
-            
-            String optionalType = (String) nodeProperty.getProperty(NODEPROPERTY_ATT_TYPE);
-
-            try {
-                // Construction by dedicated constructor with introspection
-                Constructor<?> constr = Class.forName(optionalType).getConstructor(String.class, String.class);
-                ap = (Property<?>) constr.newInstance(propertyName, propertyValue);
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' check default constructor", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' check visibility", e);
-            } catch (ClassNotFoundException e) {
-                throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' not found", e);
-            } catch (InvocationTargetException e) {
-                throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "'  error within constructor", e);
-            } catch (NoSuchMethodException e) {
-                throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' constructor not found", e);
-            } catch (SecurityException e) {
-                throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' check constructor visibility", e);
-            }
+            propertyType = (String) nodeProperty.getProperty(NODEPROPERTY_ATT_TYPE);
         }
-        
+        String propertyDescription = null;
         if (nodeProperties.containsKey(NODEPROPERTY_ATT_DESCRIPTION)) {
-            ap.setDescription((String) nodeProperty.getProperty(NODEPROPERTY_ATT_DESCRIPTION));
+            propertyDescription = (String) nodeProperty.getProperty(NODEPROPERTY_ATT_DESCRIPTION);
         }
-        
-        // Is there any fixed Value
         if (nodeProperties.containsKey(NODEPROPERTY_ATT_FIXEDVALUES)) {
             String[] listOfValues = (String[]) nodeProperty.getProperty(NODEPROPERTY_ATT_FIXEDVALUES);
-            if (listOfValues != null && listOfValues.length >0) {
-                for (int l = 0; l < listOfValues.length;l++) {
-                    ap.add2FixedValueFromString(listOfValues[l]);
-                }
-            }
+            Set < String > fixedValues = new HashSet<String>(Arrays.asList(listOfValues));
+            return PropertyFactory.createProperty(propertyName, propertyType, propertyValue ,propertyDescription, fixedValues);
+        } else {
+            Property<?> ap = PropertyFactory.createProperty(propertyName, propertyType, propertyValue);
+            ap.setDescription(propertyDescription);
+            return ap;
         }
-        
-        // Check fixed value
-        if (ap.getFixedValues() != null && !ap.getFixedValues().contains(ap.getValue())) {
-            throw new IllegalArgumentException("Cannot create property <" + ap.getName() + 
-                    "> invalid value <" + ap.getValue() + 
-                    "> expected one of " + ap.getFixedValues());
-        }
-        
-        return ap;
     }
-    
-    /**
-     * Create Node from Feature.
-     *
-     * @param feature
-     *      target feature
-     * @return
-     *      target node
-     */
-    static public Node fromFeature2Node(GraphDatabaseService graphDb, Feature feature) {
-        Node nodeFeature = graphDb.createNode(FF4jNeo4jLabels.FF4J_FEATURE);
-        nodeFeature.setProperty(NODEFEATURE_ATT_UID, feature.getUid());
-        nodeFeature.setProperty(NODEFEATURE_ATT_ENABLE, feature.isEnable());
-        nodeFeature.setProperty(NODEFEATURE_ATT_DESCRIPTION, feature.getDescription());
-        if (feature.getPermissions() != null) {
-            nodeFeature.setProperty(NODEFEATURE_ATT_ROLES, feature.getPermissions().toArray(new String[0]));
-        }
-        return nodeFeature;
-    }
-    
-    
 
 }

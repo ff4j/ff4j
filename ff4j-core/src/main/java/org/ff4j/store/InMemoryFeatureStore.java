@@ -163,12 +163,7 @@ public class InMemoryFeatureStore extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public void delete(String uid) {
-        if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
-        }
-        if (!exist(uid)) {
-            throw new FeatureNotFoundException(uid);
-        }
+        assertUID(uid);
         featuresMap.remove(uid);
         buildGroupsFromFeatures();
     }
@@ -176,14 +171,9 @@ public class InMemoryFeatureStore extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public void grantRoleOnFeature(String uid, String roleName) {
-        if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
-        }
+        assertUID(uid);
         if (roleName == null || roleName.isEmpty()) {
             throw new IllegalArgumentException("roleName cannot be null nor empty");
-        }
-        if (!exist(uid)) {
-            throw new FeatureNotFoundException(uid);
         }
         featuresMap.get(uid).getPermissions().add(roleName);
     }
@@ -191,14 +181,9 @@ public class InMemoryFeatureStore extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public void removeRoleFromFeature(String uid, String roleName) {
-        if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
-        }
+        assertUID(uid);
         if (roleName == null || roleName.isEmpty()) {
             throw new IllegalArgumentException("roleName cannot be null nor empty");
-        }
-        if (!exist(uid)) {
-            throw new FeatureNotFoundException(uid);
         }
         featuresMap.get(uid).getPermissions().remove(roleName);
     }

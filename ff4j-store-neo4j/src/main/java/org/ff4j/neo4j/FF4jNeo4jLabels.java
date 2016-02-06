@@ -35,8 +35,11 @@ public enum FF4jNeo4jLabels implements Label {
     /** Node Group. */
     FF4J_FEATURE_GROUP,
     
-    /** Node Property. */
+    /** StandAlone Property. */
     FF4J_PROPERTY,
+    
+    /** Properties of feature. */
+    FF4J_FEATURE_PROPERTY,
     
     /** Node flipipng strategy. */
     FF4J_FLIPPING_STRATEGY;

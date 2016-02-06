@@ -28,7 +28,10 @@ import org.ff4j.conf.XmlConfig;
 import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.utils.JsonUtils;
+import org.ff4j.utils.Util;
 
 /**
  * SuperClass for stores.
@@ -104,6 +107,32 @@ public abstract class AbstractFeatureStore implements FeatureStore {
     @Override
     public String toString() {
         return toJson();
+    }
+    
+    /**
+     * Validate feature uid.
+     *
+     * @param uid
+     *      target uid
+     */
+    protected void assertUID(String uid) {
+        Util.assertHasLength(uid);
+        if (!exist(uid)) {
+            throw new FeatureNotFoundException(uid);
+        }
+    }
+    
+    /**
+     * Validate feature uid.
+     *
+     * @param uid
+     *      target uid
+     */
+    protected void assertGroup(String groupName) {
+        Util.assertHasLength(groupName);
+        if (!existGroup(groupName)) {
+            throw new GroupNotFoundException(groupName);
+        }
     }
     
 }

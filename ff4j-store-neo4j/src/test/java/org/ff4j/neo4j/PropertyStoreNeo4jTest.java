@@ -21,22 +21,24 @@ package org.ff4j.neo4j;
  */
 
 
-import org.ff4j.core.FeatureStore;
-import org.ff4j.neo4j.store.FeatureStoreNeo4J;
-import org.ff4j.test.store.FeatureStoreTestSupport;
+import org.ff4j.neo4j.store.PropertyStoreNeo4j;
+import org.ff4j.property.store.PropertyStore;
+import org.ff4j.test.propertystore.PropertyStoreTestSupport;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseSettings;
 import org.neo4j.test.TestGraphDatabaseFactory;
 
 /**
- * Unit Testing for Neo4j store.
- * 
+ * Unit testing of property with Neo4j.
+ *
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class FeatureStoreNeo4jTest extends FeatureStoreTestSupport implements FF4jNeo4jConstants {
+public class PropertyStoreNeo4jTest extends PropertyStoreTestSupport implements FF4jNeo4jConstants {
 
     /** DataBase instance. */
     protected static GraphDatabaseService graphDb;
@@ -66,7 +68,7 @@ public class FeatureStoreNeo4jTest extends FeatureStoreTestSupport implements FF
             tx.success();
         }
         
-        // Create Data in a second Transaction
+     // Create Data in a second Transaction
         try (Transaction tx2= graphDb.beginTx() ) {
         
             graphDb.execute("CREATE (AwesomeFeature:FF4J_FEATURE { uid:'AwesomeFeature', enable:true, description:'some desc' }),\n"
@@ -105,12 +107,19 @@ public class FeatureStoreNeo4jTest extends FeatureStoreTestSupport implements FF
                     + " (b:FF4J_PROPERTY { name:'b', value:'12' }),\n" 
                     + " (c:FF4J_PROPERTY { name:'c', value:'12.5' }),\n"
                     + " (d:FF4J_PROPERTY { name:'d', value:'true' }),\n" 
-                    + " (e:FF4J_PROPERTY { name:'e', value:'hello' }),\n"
+                    + " (e:FF4J_PROPERTY { name:'e', value:'hello', description:'sample' }),\n"
                     + " (f:FF4J_PROPERTY { name:'f', value:'12,13,14' }),\n"
                     + " (g:FF4J_PROPERTY { name:'g', value:'DEBUG', type:'org.ff4j.property.PropertyLogLevel'  });");
             
             tx2.success();
         }
+    }
+    
+    @Test
+    public void testDefaultInit() {
+        Assert.assertNotNull(new PropertyStoreNeo4j());
+        PropertyStoreNeo4j ps = new PropertyStoreNeo4j();
+        ps.setGraphDb(ps.getGraphDb());
     }
    
     @AfterClass
@@ -118,10 +127,11 @@ public class FeatureStoreNeo4jTest extends FeatureStoreTestSupport implements FF
         graphDb.shutdown();
     }
     
+   
     /** {@inheritDoc} */
     @Override
-    protected FeatureStore initStore() {
-        return new FeatureStoreNeo4J(graphDb);
+    protected PropertyStore initPropertyStore() {
+        return new PropertyStoreNeo4j(graphDb);
     }
 
 }

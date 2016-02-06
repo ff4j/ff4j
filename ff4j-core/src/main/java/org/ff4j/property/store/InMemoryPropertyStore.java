@@ -27,7 +27,6 @@ import java.util.Set;
 
 import org.ff4j.conf.XmlParser;
 import org.ff4j.exception.PropertyAlreadyExistException;
-import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.Property;
 import org.ff4j.utils.Util;
 
@@ -131,10 +130,7 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
     /** {@inheritDoc} */
     @Override
     public Property<?> readProperty(String name) {
-        Util.assertHasLength(name);
-        if (!properties.containsKey(name)) {
-            throw new PropertyNotFoundException(name);
-        }
+        assertPropertyName(name);
         return properties.get(name);
     }
 
@@ -142,10 +138,7 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
     @Override
     public <T> void updateProperty(Property<T> newValue) {
         Util.assertNotNull(newValue);
-        Util.assertHasLength(newValue.getName());
-        if (!existProperty(newValue.getName())) {
-            throw new PropertyNotFoundException(newValue.getName());
-        }
+        assertPropertyName(newValue.getName());
         // Update
         properties.put(newValue.getName(), newValue);
     }
@@ -154,10 +147,7 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
     @Override
     public void updateProperty(String name, String newValue) {
         Util.assertHasLength(name);
-        Util.assertHasLength(newValue);
-        if (!existProperty(name)) {
-            throw new PropertyNotFoundException(name);
-        }
+        assertPropertyName(name);
         // Update
         Property<?> current = readProperty(name);
         current.setValueFromString(newValue);
@@ -166,10 +156,7 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
     /** {@inheritDoc} */
     @Override
     public void deleteProperty(String name) {
-        Util.assertHasLength(name);
-        if (!properties.containsKey(name)) {
-            throw new PropertyNotFoundException(name);
-        }
+        assertPropertyName(name);
         // Delete
         properties.remove(name);
     }
@@ -234,11 +221,5 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
-
-   
-
-    
-
-      
 
 }
