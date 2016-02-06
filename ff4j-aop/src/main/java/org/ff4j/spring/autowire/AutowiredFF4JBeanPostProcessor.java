@@ -111,35 +111,35 @@ public class AutowiredFF4JBeanPostProcessor implements BeanPostProcessor {
             } else if (property.parameterizedType().equals(Integer.class) 
                     && field.getType().equals(int.class) && (null != property.getValue())) {
                 // Autoboxing Integer -> Int
-                injectValue(field, bean, propertyName, ((Integer) property.getValue()).intValue());
+                injectValue(field, bean, propertyName, property.getValue());
             } else if (property.parameterizedType().equals(Long.class) 
                     && field.getType().equals(long.class) && (null != property.getValue())) {
                 // Autoboxing Long -> long
-                injectValue(field, bean, propertyName, ((Long) property.getValue()).longValue());
+                injectValue(field, bean, propertyName, property.getValue());
             } else if (property.parameterizedType().equals(Double.class) 
                     && field.getType().equals(double.class) && (null != property.getValue())) {
                 // Autoboxing Double -> double
-                injectValue(field, bean, propertyName, ((Double) property.getValue()).doubleValue());
+                injectValue(field, bean, propertyName, property.getValue());
             } else if (property.parameterizedType().equals(Byte.class) 
                     && field.getType().equals(byte.class) && (null != property.getValue())) {
                 // Autoboxing Byte -> byte
-                injectValue(field, bean, propertyName, ((Byte) property.getValue()).byteValue());
+                injectValue(field, bean, propertyName, property.getValue());
             } else if (property.parameterizedType().equals(Boolean.class) 
                     && field.getType().equals(boolean.class) && (null != property.getValue())) {
                 // Autoboxing Boolean -> boolean
-                injectValue(field, bean, propertyName, ((Boolean) property.getValue()).booleanValue());
+                injectValue(field, bean, propertyName, property.getValue());
             } else if (property.parameterizedType().equals(Short.class) 
                     && field.getType().equals(short.class) && (null != property.getValue())) {
                 // Autoboxing Short -> short
-                injectValue(field, bean, propertyName, ((Short) property.getValue()).shortValue());
+                injectValue(field, bean, propertyName, property.getValue());
             } else if (property.parameterizedType().equals(Character.class) 
                     && field.getType().equals(char.class) && (null != property.getValue())) {
                 // Autoboxing Character -> char
-                injectValue(field, bean, propertyName,((Character) property.getValue()).charValue());
+                injectValue(field, bean, propertyName, property.getValue());
             } else if (property.parameterizedType().equals(Float.class) 
                     && field.getType().equals(float.class) && (null != property.getValue())) {
                 // Autoboxing Float -> float
-                injectValue(field, bean, propertyName, ((Float) property.getValue()).floatValue());
+                injectValue(field, bean, propertyName, property.getValue());
             } else {
                 throw new IllegalArgumentException("Field annotated with @AutowiredFF4JProperty"
                             + " must inherit from org.ff4j.property.AbstractProperty or be of type " + 
