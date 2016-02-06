@@ -128,7 +128,7 @@ public class ExpressionNode {
      * @return state of target key is present
      */
     private boolean evaluateOperatorOr(Map<String, Boolean> stateMap) {
-        boolean status = true;
+        boolean status;
         int idx = 0;
         // No ternaire expression, simplier
         status = false;
@@ -146,7 +146,7 @@ public class ExpressionNode {
             return value;
         } else {
             StringBuilder strBuilder = new StringBuilder("");
-            boolean first = true;
+            boolean first;
             if (ExpressionOperator.NOT.equals(operator)) {
                 strBuilder.append("!");
             }

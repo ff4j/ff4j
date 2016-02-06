@@ -180,7 +180,7 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
      * @return if flippinf should be considere
      */
     private boolean shouldFlip(Flip ff, FlippingExecutionContext context) {
-        boolean shouldFlip = false;
+        boolean shouldFlip;
         if (ff.strategy() != NullType.class) {
             // Does this strategy has already be invoked ?
             String strategyClassName = ff.strategy().getCanonicalName();

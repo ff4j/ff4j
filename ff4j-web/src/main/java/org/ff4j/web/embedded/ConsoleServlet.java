@@ -132,7 +132,6 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                 // operation which do not required features
                 if (OP_EXPORT.equalsIgnoreCase(operation)) {
                     exportFile(ff4j, res);
-                    message = "Feature have been success fully exported";
                     return;
                 }                
                 
