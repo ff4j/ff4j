@@ -55,7 +55,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
     private static final long serialVersionUID = -3982043895954284269L;
 
     /** Logger for this class. */
-    public Logger LOGGER = LoggerFactory.getLogger(getClass());
+    public static final Logger LOGGER = LoggerFactory.getLogger(ConsoleServlet.class);
 
     /** instance of ff4j. */
     private FF4j ff4j = null;
