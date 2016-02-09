@@ -101,15 +101,15 @@ public class FF4jAuthorizationFilter implements ContainerRequestFilter, FF4jWebC
     }
     
     private boolean isPermitAll() {
-        return (info.getResourceMethod().getAnnotation(PermitAll.class) != null);
+        return info.getResourceMethod().getAnnotation(PermitAll.class) != null;
     }
     
     private boolean isDenyAll() {
-        return (info.getResourceMethod().getAnnotation(DenyAll.class) != null);
+        return info.getResourceMethod().getAnnotation(DenyAll.class) != null;
     }
     
     private boolean isRolesAllowed() {
-        return (info.getResourceMethod().getAnnotation(RolesAllowed.class) != null);
+        return info.getResourceMethod().getAnnotation(RolesAllowed.class) != null;
     }
     
     private Set < String > getRoles() {

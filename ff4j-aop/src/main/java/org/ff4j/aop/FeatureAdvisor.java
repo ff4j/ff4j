@@ -126,8 +126,8 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
      * @return is param are correct
      */
     private boolean assertRequiredParams(Flip ff) {
-        boolean alterBeanPresent = (ff.alterBean() != null && !ff.alterBean().isEmpty());
-        boolean alterClazPresent = ((ff.alterClazz() != null) && (ff.alterClazz() != NullType.class));
+        boolean alterBeanPresent = ff.alterBean() != null && !ff.alterBean().isEmpty();
+        boolean alterClazPresent = (ff.alterClazz() != null) && (ff.alterClazz() != NullType.class);
         return alterBeanPresent || alterClazPresent;
     }
 
@@ -237,7 +237,7 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
     }
 
     private String currentBeanName(MethodInvocation pMInvoc) {
-        Class<?> targetClass = (pMInvoc.getThis() != null ? AopUtils.getTargetClass(pMInvoc.getThis()) : null);       
+        Class<?> targetClass = pMInvoc.getThis() != null ? AopUtils.getTargetClass(pMInvoc.getThis()) : null;
         if (targetClass == null) {
             throw new IllegalArgumentException("ff4j-aop: Static methods cannot be feature flipped");
         }

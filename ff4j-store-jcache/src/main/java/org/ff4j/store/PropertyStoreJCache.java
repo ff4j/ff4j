@@ -64,7 +64,7 @@ public class PropertyStoreJCache extends AbstractPropertyStore {
     @Override
     public boolean existProperty(String name) {
         Util.assertParamNotNull(name, "Property name");
-        return (getCacheManager().getProperty(name) != null);
+        return getCacheManager().getProperty(name) != null;
     }
 
     /** {@inheritDoc} */

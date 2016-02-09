@@ -77,7 +77,7 @@ public final class InMemoryCacheEntry<T> implements Serializable {
      *      time to live
      */
     public boolean hasReachTimeToLive() {
-        return ((System.currentTimeMillis() - getInsertedDate()) >= (TO_MILLIS * timeToLive));
+        return (System.currentTimeMillis() - getInsertedDate()) >= (TO_MILLIS * timeToLive);
     }
 
     /**

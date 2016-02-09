@@ -100,7 +100,7 @@ public class PropertiesPlaceHolderBeanDefinitionVisitor extends BeanDefinitionVi
                 if (!visitedPlaceholders.add(placeholder)) {
                     throw new BeanDefinitionStoreException("Circular placeholder reference '" + placeholder + "' in property definitions");
                 }
-                if (propertiesMap==null || !propertiesMap.containsKey((placeholder))) {
+                if (propertiesMap==null || !propertiesMap.containsKey(placeholder)) {
                     throw new PropertyNotFoundException(
                             PLACEHOLDER_PROPERTY_PREFIX + ": Cannot perform placeholding on " + placeholder);
                 }
@@ -129,7 +129,7 @@ public class PropertiesPlaceHolderBeanDefinitionVisitor extends BeanDefinitionVi
                 if (!visitedPlaceholders.add(placeholder)) {
                     throw new BeanDefinitionStoreException("Circular placeholder reference '" + placeholder + "' in property definitions");
                 }
-                if (featureMap==null || !featureMap.containsKey((placeholder))) {
+                if (featureMap==null || !featureMap.containsKey(placeholder)) {
                     throw new FeatureNotFoundException(
                             PLACEHOLDER_FEATURE_PREFIX + ": Cannot perform placeholding on " + placeholder);
                 }

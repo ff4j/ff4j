@@ -558,7 +558,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
             ps.setString(1, groupName);
             rs = ps.executeQuery();
             rs.next(); 
-            return (rs.getInt(1) > 0);
+            return rs.getInt(1) > 0;
         } catch (SQLException sqlEX) {
             throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
         } finally {
