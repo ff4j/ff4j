@@ -156,7 +156,7 @@ public abstract class Property < T > implements Serializable {
      */
     @SuppressWarnings({ "unchecked" })
     public Class<T> parameterizedType() {
-        ParameterizedType pt = ((ParameterizedType) getClass().getGenericSuperclass());
+        ParameterizedType pt = (ParameterizedType) getClass().getGenericSuperclass();
         return  (Class<T>) pt.getActualTypeArguments()[0];
     }
     

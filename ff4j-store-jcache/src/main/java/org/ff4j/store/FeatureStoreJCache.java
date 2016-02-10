@@ -63,7 +63,7 @@ public class FeatureStoreJCache extends AbstractFeatureStore {
     @Override
     public boolean exist(String uid) {
         Util.assertParamNotNull(uid, "Feature identifier");
-        return (getCacheManager().getFeature(uid) != null);
+        return getCacheManager().getFeature(uid) != null;
     }
     
     /** {@inheritDoc} */

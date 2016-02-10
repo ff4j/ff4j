@@ -72,7 +72,7 @@ public class PropertyStoreEhCache extends AbstractPropertyStore {
     @Override
     public boolean existProperty(String name) {
         Util.assertParamNotNull(name, "Property name");
-        return  (wrapper.getCacheProperties().get(name) != null);
+        return wrapper.getCacheProperties().get(name) != null;
     }
 
     /** {@inheritDoc} */
