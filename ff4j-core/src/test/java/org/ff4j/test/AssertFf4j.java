@@ -57,6 +57,18 @@ public class AssertFf4j {
         Assert.assertTrue("Feature '" + featureName + "' is mandatory", ff4j.exist(featureName));
         return this;
     }
+    
+    /**
+     * Check existence of the traget property
+     * 
+     * @param featureName
+     *            targte featurename
+     * @return current object
+     */
+    public final AssertFf4j assertThatPropertyExist(String propertyName) {
+        Assert.assertTrue("Property '" + propertyName + "' is mandatory", ff4j.getPropertiesStore().existProperty(propertyName));
+        return this;
+    }
 
     /**
      * Check inexistence of the traget feature
@@ -67,6 +79,18 @@ public class AssertFf4j {
      */
     public final AssertFf4j assertThatFeatureDoesNotExist(String featureName) {
         Assert.assertFalse("Feature '" + featureName + "' must not exist", ff4j.exist(featureName));
+        return this;
+    }
+    
+    /**
+     * Check existence of the traget property
+     * 
+     * @param featureName
+     *            targte featurename
+     * @return current object
+     */
+    public final AssertFf4j assertThatPropertyDoesNotExist(String propertyName) {
+        Assert.assertFalse("Property '" + propertyName + "' is mandatory", ff4j.getPropertiesStore().existProperty(propertyName));
         return this;
     }
 

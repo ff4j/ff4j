@@ -1,5 +1,6 @@
 package org.ff4j.store.mongodb;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /*
@@ -63,6 +64,32 @@ public final class FeatureDocumentMapper implements FeatureStoreMongoConstants {
         f.setFlippingStrategy(mapStrategy(featUid, document));
         f.setCustomProperties(mapCustomProperties(document));
         return f;
+    }
+    
+    /**
+     * Map a property.
+     *
+     * @param dbObject
+     *      db object
+     * @return
+     *      list of property
+     */
+    @SuppressWarnings("unchecked")
+    public Property< ? > mapProperty(Document dbObject) {
+        PropertyJsonBean pf = new PropertyJsonBean();
+        pf.setName((String) dbObject.get(PROPERTY_NAME));
+        pf.setDescription(((String) dbObject.get(PROPERTY_DESCRIPTION)));
+        pf.setType(((String) dbObject.get(PROPERTY_TYPE)));
+        pf.setValue(((String) dbObject.get(PROPERTY_VALUE)));
+        if (dbObject.containsKey(PROPERTY_FIXEDVALUES)) {
+            ArrayList<String> dbList = (ArrayList<String>) dbObject.get(PROPERTY_FIXEDVALUES);
+            if (dbList != null) {
+                for(Object item : dbList) {
+                    pf.addFixedValue((String) item);
+                }
+            }
+        }
+        return pf.asProperty();
     }
 
     /**
@@ -148,6 +175,16 @@ public final class FeatureDocumentMapper implements FeatureStoreMongoConstants {
         return mapOfCustomProperties;
     }
     
+    public Document fromProperty2DBObject(Property<?> property) {
+        PropertyJsonBean pjb = new PropertyJsonBean(property);
+        return new PropertyDocumentBuilder().//
+                addName(pjb.getName()). //
+                addType(pjb.getType()). //
+                addValue(pjb.getValue()). //
+                addDescription(pjb.getDescription()). //
+                addFixedValues(pjb.getFixedValues()).build();
+    }
+    
     /**
      * Map a property.
      *
@@ -156,14 +193,14 @@ public final class FeatureDocumentMapper implements FeatureStoreMongoConstants {
      * @return
      *      list of property
      */
-    private Property< ? > mapProperty(DBObject dbObject) {
+    public Property< ? > mapProperty(DBObject dbObject) {
         PropertyJsonBean pf = new PropertyJsonBean();
-        pf.setName((String) dbObject.get("name"));
-        pf.setDescription(((String) dbObject.get("description")));
-        pf.setType(((String) dbObject.get("type")));
-        pf.setValue(((String) dbObject.get("value")));
-        if (dbObject.containsField("fixedValues")) {
-            BasicDBList dbList = (BasicDBList) dbObject.get("fixedValues");
+        pf.setName((String) dbObject.get(PROPERTY_NAME));
+        pf.setDescription(((String) dbObject.get(PROPERTY_DESCRIPTION)));
+        pf.setType(((String) dbObject.get(PROPERTY_TYPE)));
+        pf.setValue(((String) dbObject.get(PROPERTY_VALUE)));
+        if (dbObject.containsField(PROPERTY_FIXEDVALUES)) {
+            BasicDBList dbList = (BasicDBList) dbObject.get(PROPERTY_FIXEDVALUES);
             if (dbList != null) {
                 for(Object item : dbList) {
                     pf.addFixedValue((String) item);
@@ -172,5 +209,4 @@ public final class FeatureDocumentMapper implements FeatureStoreMongoConstants {
         }
         return pf.asProperty();
     }
-
 }

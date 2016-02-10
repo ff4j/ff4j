@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.property.store.PropertyStore;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -55,6 +56,10 @@ public class CacheApiBean {
     @JsonProperty("featureNames")
     @ApiModelProperty( value = "list of features within cache", required = false )
     private Set < String > featureNames = new HashSet<String>();
+    
+    @JsonProperty("propertyNames")
+    @ApiModelProperty( value = "list of properties within cache", required = false )
+    private Set < String > propertyNames = new HashSet<String>();
 
     /**
      * Constructor from its feature store.
@@ -68,6 +73,21 @@ public class CacheApiBean {
             cacheStore    = cacheProxy.getCachedTargetStore();
             cacheProvider = cacheProxy.getCacheProvider();
             featureNames  = cacheProxy.getCacheManager().listCachedFeatureNames();
+        }
+    }
+    
+    /**
+     * Constructor from its feature store.
+     *
+     * @param featureStore
+     *      cuurent fature store
+     */
+    public CacheApiBean(PropertyStore featureStore) {
+        if (featureStore instanceof FF4jCacheProxy) {
+            FF4jCacheProxy cacheProxy = (FF4jCacheProxy) featureStore;
+            cacheStore    = cacheProxy.getCachedTargetStore();
+            cacheProvider = cacheProxy.getCacheProvider();
+            propertyNames  = cacheProxy.getCacheManager().listCachedPropertyNames();
         }
     }
     
@@ -126,6 +146,25 @@ public class CacheApiBean {
      */
     public void setFeatureNames(Set<String> featureNames) {
         this.featureNames = featureNames;
+    }
+
+    /**
+     * Getter accessor for attribute 'propertyNames'.
+     *
+     * @return
+     *       current value of 'propertyNames'
+     */
+    public Set<String> getPropertyNames() {
+        return propertyNames;
+    }
+
+    /**
+     * Setter accessor for attribute 'propertyNames'.
+     * @param propertyNames
+     * 		new value for 'propertyNames '
+     */
+    public void setPropertyNames(Set<String> propertyNames) {
+        this.propertyNames = propertyNames;
     }
 
 }

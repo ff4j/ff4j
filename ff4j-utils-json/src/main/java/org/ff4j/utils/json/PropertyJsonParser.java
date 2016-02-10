@@ -1,5 +1,7 @@
 package org.ff4j.utils.json;
 
+import java.util.ArrayList;
+
 /*
  * #%L
  * ff4j-utils-json
@@ -21,12 +23,14 @@ package org.ff4j.utils.json;
  */
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
 import org.ff4j.property.util.PropertyFactory;
+import org.ff4j.property.util.PropertyJsonBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -76,5 +80,55 @@ public class PropertyJsonParser {
         }
        return ap;
    }
+    
+    /**
+     * Parse the json expression as array of {@link Feature}.
+     *
+     * @param json
+     *      json expression
+     * @return
+     *      array of feature
+     */
+    @SuppressWarnings("unchecked")
+    public static Property<?>[] parsePropertyArray(String json) {
+        if (null == json || "".equals(json)) return null;
+        try {
+            List<LinkedHashMap<String, Object>> flipMap = objectMapper.readValue(json, List.class);
+            Property<?>[] fArray = new Property<?>[flipMap.size()];
+            int idx = 0;
+            for (LinkedHashMap<String, Object> ll : flipMap) {
+                fArray[idx++] = parsePropertyMap(ll);
+            }
+            return fArray;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Cannot parse JSON " + json, e);
+        }
+    }
+    
+    /**
+     * Map of property.
+     *
+     * @param fMap
+     *      map of properties
+     * @return
+     *      property
+     */
+    @SuppressWarnings("unchecked")
+    public static Property<?> parsePropertyMap(Map<String, Object> fMap) {
+        PropertyJsonBean pf = new PropertyJsonBean();
+        pf.setName((String) fMap.get("name"));
+        pf.setDescription(((String) fMap.get("description")));
+        pf.setType(((String) fMap.get("type")));
+        pf.setValue(((String) fMap.get("value")));
+        if (fMap.containsKey("fixedValues")) {
+            List < String > dbList = (ArrayList<String>) fMap.get("fixedValues");
+            if (dbList != null) {
+                for(Object item : dbList) {
+                    pf.addFixedValue((String) item);
+                }
+            }
+        }
+        return pf.asProperty();
+    }    
 
 }

@@ -28,7 +28,9 @@ import java.util.Map;
 import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -39,6 +41,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 @ApiModel( value = "featureApiBean", description = "Representation of a feature" )
+@JsonInclude(Include.NON_NULL)
 public class FeatureApiBean {
     
     /** unique feature identifier. */

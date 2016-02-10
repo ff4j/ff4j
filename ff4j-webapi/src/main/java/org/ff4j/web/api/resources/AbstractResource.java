@@ -28,6 +28,7 @@ import javax.ws.rs.core.UriInfo;
 import org.ff4j.FF4j;
 import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.property.store.PropertyStore;
 import org.ff4j.web.FF4jWebConstants;
 
 /**
@@ -56,6 +57,9 @@ public abstract class AbstractResource implements FF4jWebConstants {
     /** Access to Features through store. */
     private FeatureStore store;
     
+    /** Access to Features through store. */
+    private PropertyStore propertyStore;
+    
     /** Access to event repository. */
     private EventRepository repo;
      
@@ -82,6 +86,28 @@ public abstract class AbstractResource implements FF4jWebConstants {
             store = ff4j.getFeatureStore();
         }
         return store;
+    }
+
+    /**
+     * Getter accessor for attribute 'propertyStore'.
+     *
+     * @return
+     *       current value of 'propertyStore'
+     */
+    public PropertyStore getPropertyStore() {
+        if (propertyStore == null) {
+            propertyStore = ff4j.getPropertiesStore();
+        }
+        return propertyStore;
+    }
+
+    /**
+     * Setter accessor for attribute 'propertyStore'.
+     * @param propertyStore
+     * 		new value for 'propertyStore '
+     */
+    public void setPropertyStore(PropertyStore propertyStore) {
+        this.propertyStore = propertyStore;
     }
 
 }

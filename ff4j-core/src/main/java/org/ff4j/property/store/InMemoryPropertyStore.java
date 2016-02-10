@@ -133,25 +133,6 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
         assertPropertyName(name);
         return properties.get(name);
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public <T> void updateProperty(Property<T> newValue) {
-        Util.assertNotNull(newValue);
-        assertPropertyName(newValue.getName());
-        // Update
-        properties.put(newValue.getName(), newValue);
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void updateProperty(String name, String newValue) {
-        Util.assertHasLength(name);
-        assertPropertyName(name);
-        // Update
-        Property<?> current = readProperty(name);
-        current.setValueFromString(newValue);
-    } 
     
     /** {@inheritDoc} */
     @Override

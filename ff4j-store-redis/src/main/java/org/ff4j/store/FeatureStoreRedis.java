@@ -46,9 +46,6 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
     /** prefix of keys. */
     public static String KEY_FEATURE = "FF4J_FEATURE_";
     
-    /** prefix of keys. */
-    public static String KEY_PROPERTY = "FF4J_PROPERTY_";
-    
     /** default ttl. */
     private static int DEFAULT_TTL = 900000000;
     

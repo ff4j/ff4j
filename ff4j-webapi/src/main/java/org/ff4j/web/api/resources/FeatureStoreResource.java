@@ -37,7 +37,6 @@ import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.core.Feature;
 import org.ff4j.web.FF4jWebConstants;
 import org.ff4j.web.api.resources.domain.CacheApiBean;
-import org.ff4j.web.api.resources.domain.EventRepositoryApiBean;
 import org.ff4j.web.api.resources.domain.FeatureApiBean;
 import org.ff4j.web.api.resources.domain.FeatureStoreApiBean;
 import org.ff4j.web.api.resources.domain.GroupDescApiBean;
@@ -85,7 +84,7 @@ public class FeatureStoreResource extends AbstractResource {
     @GET
     @Path("/" + RESOURCE_FEATURES)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value= "Display information regarding <b>Features</b>", response=EventRepositoryApiBean.class)
+    @ApiOperation(value= "Display information regarding <b>Features</b>", response=FeatureApiBean.class)
     @ApiResponses(@ApiResponse(code = 200, message= "get all features"))
     public List < FeatureApiBean> readFeatures() {
         Feature[] storeContent = getFeatureStore().readAll().values().toArray(new Feature[0]);

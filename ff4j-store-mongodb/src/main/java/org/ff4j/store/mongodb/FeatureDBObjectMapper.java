@@ -55,7 +55,6 @@ public final class FeatureDBObjectMapper implements FeatureStoreMongoConstants {
     public Feature mapFeature(DBObject dbObject) {
         String featUid = (String) dbObject.get(UUID);
         boolean status = (Boolean) dbObject.get(ENABLE);
-
         Feature f = new Feature(featUid, status);
         f.setDescription((String) dbObject.get(DESCRIPTION));
         f.setGroup((String) dbObject.get(GROUPNAME));
@@ -63,6 +62,31 @@ public final class FeatureDBObjectMapper implements FeatureStoreMongoConstants {
         f.setFlippingStrategy(mapStrategy(featUid, dbObject));
         f.setCustomProperties(mapCustomProperties(dbObject));
         return f;
+    }
+    
+    /**
+     * Map a property.
+     *
+     * @param dbObject
+     *      db object
+     * @return
+     *      list of property
+     */
+    public Property< ? > mapProperty(DBObject dbObject) {
+        PropertyJsonBean pf = new PropertyJsonBean();
+        pf.setName((String) dbObject.get(PROPERTY_NAME));
+        pf.setDescription(((String) dbObject.get(PROPERTY_DESCRIPTION)));
+        pf.setType(((String) dbObject.get(PROPERTY_TYPE)));
+        pf.setValue(((String) dbObject.get(PROPERTY_VALUE)));
+        if (dbObject.containsField(PROPERTY_FIXEDVALUES)) {
+            BasicDBList dbList = (BasicDBList) dbObject.get(PROPERTY_FIXEDVALUES);
+            if (dbList != null) {
+                for(Object item : dbList) {
+                    pf.addFixedValue((String) item);
+                }
+            }
+        }
+        return pf.asProperty();
     }
 
     /**
@@ -76,7 +100,7 @@ public final class FeatureDBObjectMapper implements FeatureStoreMongoConstants {
         String strategyColumn = null;
         String expressionColumn = null;
         if (feature.getFlippingStrategy() != null) {
-            strategyColumn = feature.getFlippingStrategy().getClass().getCanonicalName();
+            strategyColumn   = feature.getFlippingStrategy().getClass().getCanonicalName();
             expressionColumn = MappingUtil.fromMap(feature.getFlippingStrategy().getInitParams());
         }
         String customProperties = null;
@@ -91,6 +115,16 @@ public final class FeatureDBObjectMapper implements FeatureStoreMongoConstants {
                 addExpression(expressionColumn).//
                 addCustomProperties(customProperties).
                 addRoles(feature.getPermissions()).build();
+    }
+    
+    public DBObject fromProperty2DBObject(Property<?> property) {
+        PropertyJsonBean pjb = new PropertyJsonBean(property);
+        return new PropertyDBObjectBuilder().//
+                addName(pjb.getName()). //
+                addType(pjb.getType()). //
+                addValue(pjb.getValue()). //
+                addDescription(pjb.getDescription()). //
+                addFixedValues(pjb.getFixedValues()).build();
     }
 
     /**
@@ -148,29 +182,6 @@ public final class FeatureDBObjectMapper implements FeatureStoreMongoConstants {
         return mapOfCustomProperties;
     }
     
-    /**
-     * Map a property.
-     *
-     * @param dbObject
-     *      db object
-     * @return
-     *      list of property
-     */
-    private Property< ? > mapProperty(DBObject dbObject) {
-        PropertyJsonBean pf = new PropertyJsonBean();
-        pf.setName((String) dbObject.get("name"));
-        pf.setDescription(((String) dbObject.get("description")));
-        pf.setType(((String) dbObject.get("type")));
-        pf.setValue(((String) dbObject.get("value")));
-        if (dbObject.containsField("fixedValues")) {
-            BasicDBList dbList = (BasicDBList) dbObject.get("fixedValues");
-            if (dbList != null) {
-                for(Object item : dbList) {
-                    pf.addFixedValue((String) item);
-                }
-            }
-        }
-        return pf.asProperty();
-    }
+   
 
 }

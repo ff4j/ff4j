@@ -53,4 +53,19 @@ public interface FeatureStoreMongoConstants {
 
     /** Custom Properties. */
     String MONGO_SET = "$set";
+    
+    /** Property collection attribute. */
+    String PROPERTY_NAME = "name";
+    
+    /** Property collection attribute. */
+    String PROPERTY_DESCRIPTION = "description";
+    
+    /** Property collection attribute. */
+    String PROPERTY_FIXEDVALUES = "fixedValues";
+    
+    /** Property collection attribute. */
+    String PROPERTY_TYPE = "type";
+    
+    /** Property collection attribute. */
+    String PROPERTY_VALUE = "value";
 }

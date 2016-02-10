@@ -57,14 +57,23 @@ public interface FF4jWebConstants {
     /** Custom operation on resource. */
     String OPERATION_REMOVEGROUP = "removeGroup";
 
+    /** Custom operation on resource. */
+    String OPERATION_UPDATE = "update";
+    
     /** relative path. */
     String RESOURCE_FEATURES = "features";
+    
+    /** relative path. */
+    String RESOURCE_PROPERTIES = "properties";
 
     /** relative path. */
     String RESOURCE_GROUPS = "groups";
 
     /** relative path. */
     String RESOURCE_STORE = "store";
+    
+    /** relative path. */
+    String RESOURCE_PROPERTYSTORE = "propertyStore";
 
     /** relative path. */
     String RESOURCE_MONITORING = "monitoring";

@@ -22,6 +22,9 @@ import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
+import org.ff4j.exception.PropertyAccessException;
+import org.ff4j.exception.PropertyAlreadyExistException;
+import org.ff4j.exception.PropertyNotFoundException;
 
 /**
  * Encapsulation of exception during {@link FeatureWebService} accesses.
@@ -40,7 +43,10 @@ public class RuntimeExceptionMapper implements ExceptionMapper<RuntimeException>
     /** {@inheritdoc} */
     @Override
     public Response toResponse(RuntimeException rex) {
-        return Response.status(getStatus(rex)).entity(rex.getMessage()).type(CONTENT_TYPE).build();
+        Status myStatus = getStatus(rex);
+        return Response.status(myStatus).//
+                entity(rex.getMessage()). //
+                type(CONTENT_TYPE).build();
     }
 
     /**
@@ -49,13 +55,17 @@ public class RuntimeExceptionMapper implements ExceptionMapper<RuntimeException>
      * @return http error code
      */
     public Status getStatus(RuntimeException rex) {
-        if ((rex instanceof FeatureNotFoundException) || (rex instanceof GroupNotFoundException)) {
+        if ((rex instanceof FeatureNotFoundException) || 
+            (rex instanceof GroupNotFoundException) ||
+            (rex instanceof PropertyNotFoundException)) {
             return Status.NOT_FOUND;
         }
-        if (rex instanceof FeatureAlreadyExistException) {
+        if ((rex instanceof FeatureAlreadyExistException) || 
+            (rex instanceof PropertyAlreadyExistException)) {
             return Status.CONFLICT;
         }
-        if (rex instanceof FeatureAccessException) {
+        if ((rex instanceof FeatureAccessException) ||
+            (rex instanceof PropertyAccessException)) {
             return Status.SERVICE_UNAVAILABLE;
         }
         // Propagation of existing code

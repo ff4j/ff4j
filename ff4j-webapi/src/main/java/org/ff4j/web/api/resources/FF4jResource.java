@@ -109,6 +109,7 @@ public class FF4jResource extends AbstractResource {
     @ApiOperation(value= "<b>Simple check</b> feature toggle", response=Boolean.class)
     @ApiResponses({
         @ApiResponse(code = 200, message= "if feature is flipped"),
+        @ApiResponse(code = 400, message= "Invalid parameter"),
         @ApiResponse(code = 404, message= "feature has not been found")})
     public Response check(@Context HttpHeaders headers, @PathParam("uid") String uid) {
         // HoldSecurity Context
@@ -135,11 +136,12 @@ public class FF4jResource extends AbstractResource {
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @ApiOperation(value= "<b>Advanced check</b> feature toggle (parameterized)", response=Boolean.class)
-    @ApiResponses(@ApiResponse(code = 200, message= "if feature is flipped"))
+    @ApiResponses({
+        @ApiResponse(code = 200, message= "if feature is flipped"),
+        @ApiResponse(code = 400, message= "Invalid parameter")})
     public Response checkPOST(@Context HttpHeaders headers, @PathParam("uid") String uid, MultivaluedMap<String, String> formParams) {
         // HoldSecurity Context
         FF4JSecurityContextHolder.save(securityContext);
-        
         if (!ff4j.getFeatureStore().exist(uid)) {
             String errMsg = new FeatureNotFoundException(uid).getMessage();
             return Response.status(Response.Status.NOT_FOUND).entity(errMsg).build();

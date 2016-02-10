@@ -104,6 +104,25 @@ public abstract class AbstractPropertyStore implements PropertyStore {
             throw new PropertyNotFoundException(name);
         }
     }
+    
+    /** {@inheritDoc} */
+    public <T> void updateProperty(Property<T> prop) {
+        Util.assertNotNull(prop);
+        // Delete
+        deleteProperty(prop.getName());
+        // Create
+        createProperty(prop);
+    }
+    
+    /** {@inheritDoc} */
+    public void updateProperty(String name, String newValue) {
+        // Read from redis, feature not found if no present
+        Property<?> p = readProperty(name);
+        // Update within Object
+        p.setValueFromString(newValue);
+        // Serialization and update key, update TTL
+        updateProperty(p);
+    }
 
     
 }

@@ -28,9 +28,11 @@ import org.ff4j.property.Property;
 import org.ff4j.property.util.PropertyFactory;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Abstract representation of {@link Property} as webbean.
@@ -42,18 +44,28 @@ import io.swagger.annotations.ApiModel;
 public class PropertyApiBean {
     
     /** unique identifier for the property. */
+    @JsonProperty("name")
+    @ApiModelProperty( value = "unique property name", required = true )
     private String name;
     
     /** property description if exist. */
+    @JsonProperty("description")
+    @ApiModelProperty( value = "property description", required = false )
     private String description;
     
     /** nature of the property (classname). */
+    @JsonProperty("type")
+    @ApiModelProperty( value = "classname of implementation", required = true )
     private String type;
     
     /** Value as String. */
+    @JsonProperty("value")
+    @ApiModelProperty( value = "value", required = true )
     private String value;
     
     /** Fixed values as String. */
+    @JsonProperty("fixedValues")
+    @ApiModelProperty( value = "fixedValues", required = false )
     private Set < String > fixedValues = new HashSet<String>();
 
     /**

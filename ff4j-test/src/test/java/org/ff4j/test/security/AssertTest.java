@@ -52,6 +52,13 @@ public class AssertTest {
     }
     
     @Test
+    public void testExistProperty() {
+        assertFF4j.assertThatPropertyExist("c");
+        assertFF4j.assertThatPropertyDoesNotExist("toto");
+        assertFF4j.assertThatPropertyStoreHasSize(12);
+    }
+    
+    @Test
     public void testUserAllowed() {
         assertFF4j.assertThatCurrentUserIsAllowedOnFeature("AwesomeFeature");
     }

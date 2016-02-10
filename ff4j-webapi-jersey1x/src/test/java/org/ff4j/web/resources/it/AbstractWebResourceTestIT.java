@@ -138,6 +138,24 @@ public abstract class AbstractWebResourceTestIT extends JerseyTest implements Te
     protected WebResource resourceStore() {
         return resourceff4j().path(RESOURCE_STORE);
     }
+    
+    /**
+     * Convenient method to get a resource for {@link FeatureStoreHttp}
+     * 
+     * @return web resource
+     */
+    protected WebResource rscPropertyStore() {
+        return resourceff4j().path(RESOURCE_PROPERTYSTORE);
+    }
+    
+    /**
+     * Convenient method to get a resource for {@link FeatureStoreHttp}
+     * 
+     * @return web resource
+     */
+    protected WebResource rscProperties() {
+        return rscPropertyStore().path(RESOURCE_PROPERTIES);
+    }
 
     /**
      * Convenient method to get a resource for {@link FeaturesResource}

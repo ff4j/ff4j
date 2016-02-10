@@ -460,7 +460,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebCon
     public void clear() {
         WebResource wr = client.resource(url).path(RESOURCE_STORE).path(STORE_CLEAR);
         if (null != authorization) {
-            groupsWebRsc.header(HEADER_AUTHORIZATION, authorization);
+            wr.header(HEADER_AUTHORIZATION, authorization);
         }
         ClientResponse cRes = wr.post(ClientResponse.class);
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
