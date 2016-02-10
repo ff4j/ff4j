@@ -130,6 +130,7 @@ public class InMemoryEventRepository extends AbstractEventRepository {
                     break;
                     case DISABLE_FEATURE:
                         nbDisable++;
+                    break;
                     default:
                     break;
                 }

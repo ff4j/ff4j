@@ -187,8 +187,9 @@ public final class FF4jDroolsService implements Serializable {
      *      file content as string
      */
     private final static String loadResourceAsString(final String resourceName) {
+        InputStream rin = null;
         try {
-            InputStream rin = ClassLoader.getSystemResourceAsStream(resourceName);
+            rin = ClassLoader.getSystemResourceAsStream(resourceName);
             StringBuffer out = new StringBuffer();
             byte[] b = new byte[4096];
             int n = 0;
@@ -199,6 +200,14 @@ public final class FF4jDroolsService implements Serializable {
             return out.toString();
         } catch (IOException ioe) {
             throw new IllegalArgumentException("Cannot read resource " + resourceName, ioe);
+        } finally {
+            if(rin != null) {
+                try {
+                    rin.close();
+                } catch (IOException e) {
+                    LOGGER.error("Exception while closing resource", e);
+                }
+            }
         }
     }
 

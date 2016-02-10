@@ -263,6 +263,7 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
                     break;
                     case DISABLE_FEATURE:
                         nbDisable++;
+                    break;
                     default:
                     break;
                 }
