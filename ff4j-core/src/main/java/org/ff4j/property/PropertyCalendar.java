@@ -87,5 +87,18 @@ public class PropertyCalendar extends Property< Calendar > {
            throw new IllegalArgumentException("Illegal expression for date, expecting yyyy-MM-dd HH:mm", e);
         }
     }
+    
+    /** 
+     * Serialized value as String
+     *
+     * @return
+     *      current value as a string or null
+     */
+    public String asString() {
+        if (value == null) {
+            return null;
+        }
+        return SDF.format(value.getTime());
+    }
 
 }
