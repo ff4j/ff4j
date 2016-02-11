@@ -78,9 +78,9 @@ public final class FeatureDocumentMapper implements FeatureStoreMongoConstants {
     public Property< ? > mapProperty(Document dbObject) {
         PropertyJsonBean pf = new PropertyJsonBean();
         pf.setName((String) dbObject.get(PROPERTY_NAME));
-        pf.setDescription(((String) dbObject.get(PROPERTY_DESCRIPTION)));
-        pf.setType(((String) dbObject.get(PROPERTY_TYPE)));
-        pf.setValue(((String) dbObject.get(PROPERTY_VALUE)));
+        pf.setDescription((String) dbObject.get(PROPERTY_DESCRIPTION));
+        pf.setType((String) dbObject.get(PROPERTY_TYPE));
+        pf.setValue((String) dbObject.get(PROPERTY_VALUE));
         if (dbObject.containsKey(PROPERTY_FIXEDVALUES)) {
             ArrayList<String> dbList = (ArrayList<String>) dbObject.get(PROPERTY_FIXEDVALUES);
             if (dbList != null) {

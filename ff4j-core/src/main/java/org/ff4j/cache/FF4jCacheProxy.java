@@ -333,7 +333,7 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
     @Override
     public boolean isEmpty() {
         Set<String> pNames = listPropertyNames();
-        return (pNames != null && pNames.size() > 0);
+        return pNames != null && pNames.size() > 0;
     }
 
     /** {@inheritDoc} */

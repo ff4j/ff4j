@@ -74,7 +74,7 @@ public class FeatureStoreEhCache extends AbstractFeatureStore implements FF4JEhC
     @Override
     public boolean exist(String uid) {
         Util.assertParamNotNull(uid, "Feature identifier");
-        return (getCache().get(uid) != null);
+        return getCache().get(uid) != null;
     }
     
     /** {@inheritDoc} */
