@@ -87,7 +87,7 @@ public final class FF4jDroolsService implements Serializable {
      *      singleton already created.
      */
     public static synchronized boolean isInitialized() {
-        return (_instance != null && _instance.ksession != null);
+        return _instance != null && _instance.ksession != null;
     }
     
     /**
