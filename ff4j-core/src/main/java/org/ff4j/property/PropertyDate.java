@@ -34,7 +34,7 @@ public class PropertyDate extends Property< Date > {
     private static final long serialVersionUID = -134543098672660987L;
     
     /** expected expression. */
-    public static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    public static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
      * Default constructor.
@@ -85,6 +85,19 @@ public class PropertyDate extends Property< Date > {
         } catch (ParseException e) {
            throw new IllegalArgumentException("Illegal expression for date, expecting yyyy-MM-dd HH:mm", e);
         }
+    }
+    
+    /** 
+     * Serialized value as String
+     *
+     * @return
+     *      current value as a string or null
+     */
+    public String asString() {
+        if (value == null) {
+            return null;
+        }
+        return SDF.format(value);
     }
 
 }

@@ -31,6 +31,7 @@ import javax.ws.rs.core.Response.Status;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.exception.PropertyAccessException;
+import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.AbstractPropertyStore;
@@ -159,11 +160,15 @@ public class PropertyStoreHttp extends AbstractPropertyStore implements FF4jWebC
     /** {@inheritDoc} */
     public <T> void createProperty(Property<T> value) {
         Util.assertNotNull(value);
-        assertPropertyName(value.getName());
+        Util.assertHasLength(value.getName());
+        if (existProperty(value.getName())) {
+            throw new PropertyAlreadyExistException("Property already exist");
+        }
         // Now can process upsert through PUT HTTP method
         ClientResponse cRes = getStore().path(value.getName())//
                 .type(MediaType.APPLICATION_JSON) //
                 .put(ClientResponse.class, new PropertyApiBean(value));
+        
         // Check response code CREATED or raised error
         if (Status.CREATED.getStatusCode() != cRes.getStatus()) {
             throw new FeatureAccessException("Cannot create properties, an HTTP error " + cRes.getStatus() + " occured.");
@@ -216,7 +221,7 @@ public class PropertyStoreHttp extends AbstractPropertyStore implements FF4jWebC
 
     /** {@inheritDoc} */
     public void clear() {
-        WebResource wr = client.resource(url).path(RESOURCE_STORE).path(STORE_CLEAR);
+        WebResource wr = client.resource(url).path(RESOURCE_PROPERTYSTORE).path(STORE_CLEAR);
         if (null != authorization) {
             wr.header(HEADER_AUTHORIZATION, authorization);
         }

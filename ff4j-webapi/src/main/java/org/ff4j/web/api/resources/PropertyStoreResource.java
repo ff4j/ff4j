@@ -93,7 +93,7 @@ public class PropertyStoreResource  extends AbstractResource {
     @ApiResponses(@ApiResponse(code = 200, message= "status of current ff4j bean", response=PropertyStoreApiBean.class))
     @Produces(MediaType.APPLICATION_JSON)
     public PropertyStoreApiBean clearProperties() {
-        getFeatureStore().clear();
+        getPropertyStore().clear();
         return new PropertyStoreApiBean(ff4j.getPropertiesStore());
     }
     
