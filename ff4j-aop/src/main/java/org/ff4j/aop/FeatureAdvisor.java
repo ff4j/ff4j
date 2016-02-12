@@ -80,7 +80,7 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
 
                 // Required parameters
                 if (!assertRequiredParams(ff)) {
-                    String msg = String.format("alterBeanName or alterClazz is required for {}", method.getDeclaringClass());
+                    String msg = String.format("alterBeanName or alterClazz is required for {%s}", method.getDeclaringClass());
                     throw new IllegalArgumentException(msg);
                 }
                 if (shouldCallAlterBeanMethod(pMInvoc, ff.alterBean(), targetLogger)) {

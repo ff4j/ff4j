@@ -39,7 +39,7 @@ public class FF4jInitServlet extends HttpServlet implements ConsoleConstants {
     private static final long serialVersionUID = 8447941463286918975L;
     
     /** Logger for this class. */
-    public Logger logger = LoggerFactory.getLogger(getClass());
+    public static final Logger logger = LoggerFactory.getLogger(FF4jInitServlet.class);
 
     /** {@inheritDoc} */
     @Override
