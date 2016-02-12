@@ -498,7 +498,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
      */
     public void createCustomProperties(String uid, Collection <Property<?> > props) {
         Util.assertNotNull(uid);
-        if (props == null | props.isEmpty()) return;
+        if (props == null || props.isEmpty()) return;
        
         Connection sqlConn = null;
         PreparedStatement ps = null;

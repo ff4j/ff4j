@@ -475,7 +475,7 @@ public final class XmlParser {
      * @throws ParserConfigurationException
      *             error during initialization
      */
-    public DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {
+    public static DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {
         if (builder == null) {
             builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             builder.setErrorHandler(new XmlParserErrorHandler());
