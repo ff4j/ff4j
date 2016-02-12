@@ -199,9 +199,9 @@ public class PropertyTest {
     @Test
     public void tesInitPropertyDate() {
         PropertyDate d0 = new PropertyDate();
-        d0.fromString("2015-01-02 13:00");
+        d0.fromString("2015-01-02 13:00:00");
         PropertyDate d1 = new PropertyDate("d1");
-        PropertyDate d2 = new PropertyDate("d2", "2015-01-02 13:00");
+        PropertyDate d2 = new PropertyDate("d2", "2015-01-02 13:00:00");
         Assert.assertNotNull(d1.getName());
         Assert.assertNotNull(d2.getName());
     }

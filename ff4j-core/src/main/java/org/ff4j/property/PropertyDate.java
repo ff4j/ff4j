@@ -83,7 +83,7 @@ public class PropertyDate extends Property< Date > {
         try {
             return SDF.parse(v);
         } catch (ParseException e) {
-           throw new IllegalArgumentException("Illegal expression for date, expecting yyyy-MM-dd HH:mm", e);
+           throw new IllegalArgumentException("Illegal expression for date, expecting yyyy-MM-dd HH:mm:ss", e);
         }
     }
     
