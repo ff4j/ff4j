@@ -58,4 +58,12 @@ public interface FF4jNameSpaceConstants {
    /** XML Attribute. **/
    String ATT_FF4J_AUDIT_REPOSITORY = "auditRepository";
    
+   /** Bean id. */
+   String BEANID_PLACEHOLDER_CONF = "ff4j.placeholderconfigurer";
+   
+   /** Bean id. */
+   String BEANID_PLACEHOLDER = "ff4j.placeholder";
+   
+   
+   
 }

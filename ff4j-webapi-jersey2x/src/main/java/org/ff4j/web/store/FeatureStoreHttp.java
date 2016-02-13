@@ -163,6 +163,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements org.ff4j.w
     public Feature read(String uid) {
         Util.assertHasLength(uid);
         Response cRes = getStore().path(uid).request(MediaType.APPLICATION_JSON_TYPE).get();
+        System.out.println(getStore().path(uid));
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new FeatureNotFoundException(uid);
         }

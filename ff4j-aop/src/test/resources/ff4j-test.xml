@@ -24,7 +24,7 @@
 			</fixedValues>
 		</property>
 		
-		<property name="today" value="2015-08-31 12:12"  type="org.ff4j.property.PropertyDate" />
+		<property name="today" value="2015-08-31 12:12:00"  type="org.ff4j.property.PropertyDate" />
 		
 		<property name="pExo" value="Yihaaaa"  type="org.ff4j.placeholder.PropertyExotic" />
 		

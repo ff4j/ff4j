@@ -24,7 +24,6 @@ package org.ff4j.spring.namespace;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ff4j.spring.placeholder.FF4jPropertiesPlaceHolderConfigurer;
-import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
@@ -42,43 +41,28 @@ import org.w3c.dom.Element;
  */
 public class FF4JPlaceHolderBeanDefinitionParser implements BeanDefinitionParser, FF4jNameSpaceConstants {
 
-    /** logger for class. **/
-    private static Log logger = LogFactory.getLog(FF4jBeanDefinitionParser.class);    
-
+    /** logger for class. */
+    private static Log logger = LogFactory.getLog(FF4jBeanDefinitionParser.class);
+    
     /** {@inheritDoc} */
     public final BeanDefinition parse(Element element, ParserContext parserContext) {
         logger.debug("Initialization from <ff4j:" + TAG_PLACEHOLDER + "> TAG");
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition();
         builder.getRawBeanDefinition().setBeanClass(FF4jPropertiesPlaceHolderConfigurer.class);
         builder.getRawBeanDefinition().setSource(parserContext.extractSource(element));
-//        if (parserContext.isNested()) {
-//            builder.setScope(parserContext.getContainingBeanDefinition().getScope());
-//        }
-//        // Default-lazy-init applies to custom bean definitions as well.
-//        if (parserContext.isDefaultLazyInit()) {
-//            builder.setLazyInit(true);
-//        }
 
         // Reference to FF4J bean
         RuntimeBeanReference refFF4j = new RuntimeBeanReference("ff4j");
-        builder.getBeanDefinition().getPropertyValues().addPropertyValue("id", "ff4j.placeholderconfigurer");
+        builder.getBeanDefinition().getPropertyValues().addPropertyValue("id", BEANID_PLACEHOLDER_CONF);
         builder.getBeanDefinition().getPropertyValues().addPropertyValue("ff4j", refFF4j);
         builder.getBeanDefinition().getPropertyValues().addPropertyValue("order", 2);
         
-        AbstractBeanDefinition definition = builder.getBeanDefinition();
-        if (definition != null && !parserContext.isNested()) {
-            try {
-                String id = "ff4j.propertyplaceholder";
-                String[] aliases = new String[0];
-                BeanDefinitionHolder holder = new BeanDefinitionHolder(definition, id, aliases);
-                BeanDefinitionReaderUtils.registerBeanDefinition(holder, parserContext.getRegistry());
-            }
-            catch (BeanDefinitionStoreException ex) {
-                parserContext.getReaderContext().error(ex.getMessage(), element);
-                return null;
-            }
+        AbstractBeanDefinition def = builder.getBeanDefinition();
+        if (def != null && !parserContext.isNested()) {
+            BeanDefinitionHolder holder = new BeanDefinitionHolder(def, BEANID_PLACEHOLDER,  new String[0]);
+            BeanDefinitionReaderUtils.registerBeanDefinition(holder, parserContext.getRegistry());
         }
-        return definition;
+        return def;
     }
   
 }
