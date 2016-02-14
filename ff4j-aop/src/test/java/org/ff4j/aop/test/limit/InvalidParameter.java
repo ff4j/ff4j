@@ -1,5 +1,12 @@
 package org.ff4j.aop.test.limit;
 
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Method;
+
+import org.aopalliance.intercept.MethodInvocation;
+import org.ff4j.FF4j;
+import org.ff4j.aop.FeatureAdvisor;
+
 /*
  * #%L
  * ff4j-aop
@@ -22,16 +29,43 @@ package org.ff4j.aop.test.limit;
 
 
 import org.ff4j.aop.Flip;
+import org.junit.Ignore;
 import org.junit.Test;
-
+@Ignore
 public class InvalidParameter {
 
-    public interface IDoIt { @Flip(name = "f1") void doIt(); };
+    public interface IDoIt { @Flip(name = "f1") void doIt(String a); };
     
-    public class IDoItImpl implements IDoIt { public void doIt() {} }
+    public class IDoItImpl  implements IDoIt { public void doIt(String a) {} }
+    
+    public class IDoItImpl2 implements IDoIt { public void doIt(String a) {} }
+    
     
     @Test(expected = IllegalArgumentException.class)
-    public void testInvalidParameter() {
+    public void testInvalidParameter() throws Throwable {
+        final IDoIt service = new IDoItImpl();
+        service.doIt("");
         
+        FeatureAdvisor fa = new FeatureAdvisor();
+        fa.setFf4j(new FF4j("test-ff4j-features.xml"));
+        
+        MethodInvocation mi = new MethodInvocation() {
+            public Object proceed() throws Throwable { return null; }
+            public Object getThis() { return service; }
+            public AccessibleObject getStaticPart() { return null; }
+            public Object[] getArguments() { return null;}
+            public Method getMethod() {
+                try {
+                    Method m = IDoIt.class.getMethod("doIt", String.class);
+                    return m;
+                } catch (SecurityException e) {
+                    e.printStackTrace();
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        };
+        fa.invoke(mi);
     }
 }

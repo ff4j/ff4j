@@ -354,4 +354,13 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
         return ff4j;
     }
 
+    /**
+     * Setter accessor for attribute 'ff4j'.
+     * @param ff4j
+     * 		new value for 'ff4j '
+     */
+    public void setFf4j(FF4j ff4j) {
+        this.ff4j = ff4j;
+    }
+
 }

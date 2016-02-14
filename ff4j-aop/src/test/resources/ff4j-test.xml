@@ -28,7 +28,6 @@
 		
 		<property name="pExo" value="Yihaaaa"  type="org.ff4j.placeholder.PropertyExotic" />
 		
-		
 		<property name="c" value="12.5"  type="org.ff4j.property.PropertyDouble" />
 		
 		<property name="d" value="true"  type="org.ff4j.property.PropertyBoolean" />
