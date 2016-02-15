@@ -44,15 +44,13 @@ public class JdbcFeatureStoreTestInvalidData implements JdbcStoreConstants {
     /** DataBase. */
     private EmbeddedDatabase db;
 
-    /** Builder. */
-    private EmbeddedDatabaseBuilder builder = null;
-    
+    /** Target Store. */
     private JdbcFeatureStore jdbcStore;
    
     /** {@inheritDoc} */
     @Before
     public void setUp() throws Exception {
-        builder = new EmbeddedDatabaseBuilder();
+        EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
         db = builder.
                 setType(EmbeddedDatabaseType.HSQL).//
                 addScript("classpath:schema-ddl.sql").//

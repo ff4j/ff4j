@@ -124,6 +124,7 @@ public class ClientFilterStrategyTest extends AbstractFf4jTest {
         ClientFilterStrategy fs = new ClientFilterStrategy("Pierre, Paul, Jacques");
         fs.init("f1", null);
         fs.init("f1", new HashMap<String, String>());
+        Assert.assertFalse(fs.getInitParams().containsKey("f2"));
         fs.assertRequiredParameter("f2");
     }
     
