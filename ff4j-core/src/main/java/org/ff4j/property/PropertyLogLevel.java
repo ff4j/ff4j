@@ -36,7 +36,7 @@ public class PropertyLogLevel extends Property<LogLevel> {
     private static final long serialVersionUID = 1792311055570779010L;
 
     /** Expected Log Levels. */
-    public static enum LogLevel {TRACE, DEBUG, INFO, WARN, ERROR, FATAL};
+    public static enum LogLevel {TRACE, DEBUG, INFO, WARN, ERROR, FATAL}
     
     /**
      * Constructor by string expression.

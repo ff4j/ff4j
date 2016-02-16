@@ -126,7 +126,7 @@ public class FF4jAuthorizationFilter implements ContainerRequestFilter, FF4jWebC
         
     }
     
-    private void forbidden() {
+    private static void forbidden() {
         throw new WebApplicationException(Response.status(Status.FORBIDDEN) //
                 .entity("Cannot reach ressource, forbidden check @RoleAllowed, @DenyAll") //
                 .type(MediaType.TEXT_HTML_TYPE).build());

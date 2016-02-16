@@ -51,7 +51,7 @@ import org.ff4j.utils.JdbcUtils;
 import org.ff4j.utils.MappingUtil;
 import org.ff4j.utils.Util;
 
-;/**
+/**
  * Implementation of {@link FeatureStore} to work with RDBMS through JDBC.
  * 
  * @author Cedrick Lunven (@clunven)

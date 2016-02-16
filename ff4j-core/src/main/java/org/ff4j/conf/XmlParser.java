@@ -443,7 +443,7 @@ public final class XmlParser {
      *            current working tag
      * @return description of the feature
      */
-    private String parseDescription(NamedNodeMap nnm) {
+    private static String parseDescription(NamedNodeMap nnm) {
         String desc = null;
         if (nnm.getNamedItem(FEATURE_ATT_DESC) != null) {
             desc = nnm.getNamedItem(FEATURE_ATT_DESC).getNodeValue();
@@ -458,7 +458,7 @@ public final class XmlParser {
      *            current TAG
      * @return list of authorizations.
      */
-    private Set<String> parseListAuthorizations(Element securityTag) {
+    private static Set<String> parseListAuthorizations(Element securityTag) {
         Set<String> authorizations = new TreeSet<String>();
         NodeList lisOfAuth = securityTag.getElementsByTagName(SECURITY_ROLE_TAG);
         for (int k = 0; k < lisOfAuth.getLength(); k++) {
