@@ -53,17 +53,7 @@ public class PieSector implements Serializable {
         this.label = l;
         this.value = v;
     }
-    
-    /** {@inheritDoc} */
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{ \"label\" : \"" + getLabel() + "\", ");
-        sb.append(" \"hitcount\" : " + getValue() + ", ");
-        sb.append(" \"color\" : \"#" + getColor() + "\" }");
-        return sb.toString();
-    }
-    
+
     /**
      * Constructor.
      *
@@ -75,6 +65,16 @@ public class PieSector implements Serializable {
     public PieSector(String l, double v, String color) {
         this(l,v);
         this.color = color;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{ \"label\" : \"" + getLabel() + "\", ");
+        sb.append(" \"hitcount\" : " + getValue() + ", ");
+        sb.append(" \"color\" : \"#" + getColor() + "\" }");
+        return sb.toString();
     }
 
     /**

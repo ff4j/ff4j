@@ -35,17 +35,17 @@ public class FF4jNameSpaceHandler extends NamespaceHandlerSupport implements FF4
     /** Logger statique pour la classe. **/
     private static Log logger = LogFactory.getLog(FF4jNameSpaceHandler.class);
 
-    /** {@inheritDoc} */
-    public void init() {
-        logger.debug("Parsing FF4J Spring Namespace Elements");
-    }
-
     /**
      * Default Constructor to register Parser in the handler.
      */
     public FF4jNameSpaceHandler() {
         registerBeanDefinitionParser(TAG_FF4J, new FF4jBeanDefinitionParser());
         registerBeanDefinitionParser(TAG_PLACEHOLDER, new FF4JPlaceHolderBeanDefinitionParser());
+    }
+
+    /** {@inheritDoc} */
+    public void init() {
+        logger.debug("Parsing FF4J Spring Namespace Elements");
     }
 
 }

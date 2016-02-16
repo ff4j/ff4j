@@ -51,6 +51,7 @@ public class MappingUtil {
 
     /** Separator to propose parameters. */
     private static final String SEPARATOR = "&";
+    private static Map < String, String > PROPERTY_TYPES;
 
     /**
      * Hiding default constructor for utility class.
@@ -58,7 +59,6 @@ public class MappingUtil {
     private MappingUtil() {}
     
     /** Substitution in XML or any store. */
-    private static Map < String, String > PROPERTY_TYPES;
     
     /**
      * Initialisation of substitution types

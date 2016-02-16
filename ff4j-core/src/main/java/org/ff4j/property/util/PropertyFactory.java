@@ -53,12 +53,12 @@ import org.ff4j.utils.Util;
  */
 public class PropertyFactory {
 
+    private static Map < Class<?> , Class<?> > validPropertyPrimitives = new HashMap<Class<?>, Class<?> >();
+
     /**
      * Hide constructor as util class.
      */
     public PropertyFactory() {}
-    
-    private static Map < Class<?> , Class<?> > validPropertyPrimitives = new HashMap<Class<?>, Class<?> >();
     
     /**
      * Initialized Primitive to work with Properties.

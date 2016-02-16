@@ -50,7 +50,16 @@ public abstract class FF4jApiApplicationJersey2x extends ResourceConfig {
      * Configuration for this.
      */
     private ApiConfig apiConfig;
-    
+
+    /**
+     * Initialisation of Jersey2 application.
+     *
+     * @param serviceLocator
+     */
+    public FF4jApiApplicationJersey2x() {
+        init();
+    }
+
     protected abstract ApiConfig getWebApiConfiguration();
    
     /**
@@ -65,15 +74,6 @@ public abstract class FF4jApiApplicationJersey2x extends ResourceConfig {
             bind(getWebApiConfiguration().getFF4j()).to(FF4j.class);
             log.info("FF4J is now bound to Jersey Context.");
         }
-    }
-    
-    /**
-     * Initialisation of Jersey2 application.
-     *
-     * @param serviceLocator
-     */
-    public FF4jApiApplicationJersey2x() {
-        init();
     }
 
     /**
