@@ -545,13 +545,13 @@ public class FF4j {
         StringBuilder sb = new StringBuilder("{");
         // Render Uptime as String "X day(s) X hours(s) X minute(s) X seconds"
         long uptime = System.currentTimeMillis() - startTime;
-        long daynumber = (long) Math.floor(uptime / (1000 * 3600 * 24));
+        long daynumber = (long) uptime / (1000 * 3600 * 24);
         uptime = uptime - (daynumber * 1000 * 3600 * 24);
-        long hourNumber = (long) Math.floor(uptime / (1000 * 3600));
+        long hourNumber = (long) uptime / (1000 * 3600);
         uptime = uptime - (hourNumber * 1000 * 3600);
-        long minutenumber = (long) Math.floor(uptime / (1000 * 60));
+        long minutenumber = (long) uptime / (1000 * 60);
         uptime = uptime - (minutenumber * 1000 * 60);
-        long secondnumber = (long) Math.floor(uptime / 1000);
+        long secondnumber = (long) uptime / 1000;
         sb.append("\"uptime\":\"");
         sb.append(daynumber + " day(s) ");
         sb.append(hourNumber + " hours(s) ");
