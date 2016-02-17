@@ -311,7 +311,7 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
                 + pMInvoc.getMethod().getDeclaringClass());
     }
 
-    private Object callAlterClazzMethod(final MethodInvocation pMInvoc, Object targetBean, Logger targetLogger) {
+    private static Object callAlterClazzMethod(final MethodInvocation pMInvoc, Object targetBean, Logger targetLogger) {
         Method method = pMInvoc.getMethod();
         String declaringClass = method.getDeclaringClass().getName();
         targetLogger.debug("FeatureFlipping on method:{} class:{}", method.getName(), declaringClass);
