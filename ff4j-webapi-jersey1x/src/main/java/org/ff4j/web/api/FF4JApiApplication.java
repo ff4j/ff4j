@@ -56,24 +56,6 @@ public abstract class FF4JApiApplication extends PackagesResourceConfig {
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
     /**
-     * Child class must fullfil the configuration of the apicd
-     * 
-     * @return
-     */
-    protected abstract ApiConfig getApiConfig();
-
-    /**
-     * Injection of bean ff4j within this static class.
-     *
-     * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
-     */
-    public static class FF4jInjectableProvider extends SingletonTypeInjectableProvider<Context, FF4j> {
-        public FF4jInjectableProvider(FF4j ff4j) {
-            super(FF4j.class, ff4j);
-        }
-    }
-
-    /**
      * Constructor to defined resources.
      */
     public FF4JApiApplication() {
@@ -135,6 +117,24 @@ public abstract class FF4JApiApplication extends PackagesResourceConfig {
             
            getSingletons().add(io.swagger.jaxrs.listing.ApiListingResource.class);
            getSingletons().add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
+        }
+    }
+
+    /**
+     * Child class must fullfil the configuration of the apicd
+     * 
+     * @return
+     */
+    protected abstract ApiConfig getApiConfig();
+
+    /**
+     * Injection of bean ff4j within this static class.
+     *
+     * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+     */
+    public static class FF4jInjectableProvider extends SingletonTypeInjectableProvider<Context, FF4j> {
+        public FF4jInjectableProvider(FF4j ff4j) {
+            super(FF4j.class, ff4j);
         }
     }
 
