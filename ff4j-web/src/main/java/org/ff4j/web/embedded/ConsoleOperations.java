@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 public class ConsoleOperations implements ConsoleConstants {
     
     /** Logger for this class. */
-    public static Logger LOGGER = LoggerFactory.getLogger(ConsoleOperations.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(ConsoleOperations.class);
     
     /**
      * User action to create a new Feature.

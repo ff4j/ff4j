@@ -32,7 +32,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class EventRejectedExecutionHandler implements RejectedExecutionHandler {
 
     /** Simulate Interrupted. */
-    public static boolean mock = false;
+    private static boolean mock = false;
     
     /** {@inheritDoc} */
     @Override
@@ -57,6 +57,14 @@ public class EventRejectedExecutionHandler implements RejectedExecutionHandler {
     public void waitInSeconds(int nbSecond) throws InterruptedException {
         if (mock) throw new InterruptedException();
         Thread.sleep(1000 * nbSecond);
+    }
+
+    public static boolean isMock() {
+        return mock;
+    }
+
+    public static void setMock(boolean mock) {
+        EventRejectedExecutionHandler.mock = mock;
     }
 
 }
