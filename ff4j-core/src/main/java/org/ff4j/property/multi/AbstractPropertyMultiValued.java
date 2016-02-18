@@ -43,7 +43,7 @@ public abstract class AbstractPropertyMultiValued < T, C extends Collection< T>>
     private static final long serialVersionUID = 1L;
     
     /** required if should be splip. */
-    public String listDelimiter = ",";
+    private String listDelimiter = ",";
     
     /**
      * Default constructor.

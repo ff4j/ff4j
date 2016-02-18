@@ -89,9 +89,9 @@ public class ExceptionsTest {
     
     @Test
     public void testExceptionHandlerInterrupted() throws InterruptedException {
-        EventRejectedExecutionHandler.mock = true;
+        EventRejectedExecutionHandler.setMock(true);
         EventRejectedExecutionHandler ereh = new EventRejectedExecutionHandler();
         ereh.rejectedExecution(new Thread(), null);
-        EventRejectedExecutionHandler.mock = false;
+        EventRejectedExecutionHandler.setMock(false);
     }
 }

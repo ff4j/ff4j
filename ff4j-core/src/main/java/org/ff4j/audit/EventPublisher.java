@@ -46,7 +46,7 @@ public class EventPublisher {
     public static final int DEFAULT_POOL_SIZE = 4;
     
     /** 2s to save the event other wize skip. */
-    public static long timeout = 2000L;
+    public static final long timeout = 2000L;
     
     /** Executor for item writer. */
     private ExecutorService executor;

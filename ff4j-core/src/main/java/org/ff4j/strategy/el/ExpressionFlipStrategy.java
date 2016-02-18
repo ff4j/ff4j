@@ -34,7 +34,7 @@ public class ExpressionFlipStrategy extends AbstractFlipStrategy implements Seri
     private static final long serialVersionUID = 4739173170455721752L;
 
     /** Expected parameter. */
-    public static String PARAM_EXPRESSION = "expression";
+    public static final String PARAM_EXPRESSION = "expression";
 
     /** Cached init value. */
     private static Map<String, String> mapOfValue = new HashMap<String, String>();
