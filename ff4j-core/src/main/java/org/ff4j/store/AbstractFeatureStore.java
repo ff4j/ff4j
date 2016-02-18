@@ -115,7 +115,7 @@ public abstract class AbstractFeatureStore implements FeatureStore {
      * @param uid
      *      target uid
      */
-    protected void assertUID(String uid) {
+    protected void assertFeatureExist(String uid) {
         Util.assertHasLength(uid);
         if (!exist(uid)) {
             throw new FeatureNotFoundException(uid);
@@ -128,10 +128,22 @@ public abstract class AbstractFeatureStore implements FeatureStore {
      * @param uid
      *      target uid
      */
-    protected void assertGroup(String groupName) {
+    protected void assertGroupExist(String groupName) {
         Util.assertHasLength(groupName);
         if (!existGroup(groupName)) {
             throw new GroupNotFoundException(groupName);
+        }
+    }
+    
+    /**
+     * Validate feature uid.
+     *
+     * @param uid
+     *      target uid
+     */
+    protected void assertFeatureNotNull(Feature feature) {
+        if (feature == null) {
+            throw new IllegalArgumentException("Feature cannot be null nor empty");
         }
     }
     
