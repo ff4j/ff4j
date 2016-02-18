@@ -110,14 +110,14 @@ public class FeatureStoreResource extends AbstractResource {
         Map< String , GroupDescApiBean > groups = new HashMap<String, GroupDescApiBean>();
         if (features != null && !features.isEmpty()) {
             // Build groups from features
-            for (String featureName : features.keySet()) {
-                String groupName = features.get(featureName).getGroup();
+            for (Map.Entry<String,Feature> featureName : features.entrySet()) {
+                String groupName = featureName.getValue().getGroup();
                 // Add current group to list
                 if (groupName != null && !groupName.isEmpty()) {
                     if (!groups.containsKey(groupName)) {
                         groups.put(groupName, new GroupDescApiBean(groupName, new ArrayList<String>()));
                     }
-                    groups.get(groupName).getFeatures().add(featureName);
+                    groups.get(groupName).getFeatures().add(featureName.getKey());
                 }
             }
         }

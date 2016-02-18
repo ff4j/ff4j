@@ -57,8 +57,8 @@ public class FF4JSecurityContextAuthenticationManager extends AbstractAuthorizat
         Set < String > vars = new HashSet<String>();
         if (FF4jSecurityContextFilter.securityConfig != null) {
             Map < String, Set<String > > perms = FF4jSecurityContextFilter.securityConfig.getPermissions();
-            for (String var : perms.keySet()) {
-                perms.get(var).addAll(perms.get(var));
+            for (Map.Entry<String,Set<String>> var : perms.entrySet()) {
+                var.getValue().addAll(var.getValue());
             }
         }
         return vars;

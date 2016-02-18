@@ -71,11 +71,11 @@ public class BarChart extends AbstractGraphFF4j {
         sb.append(" \"title\" : \"" +  getTitle() + "\", ");
         sb.append(" \"series\" : [");
         boolean first = true;
-        for(String bs : series.keySet()) {
+        for(Map.Entry<String, BarSeries> bs : series.entrySet()) {
             if (!first) {
                 sb.append(",");
             }
-            sb.append(series.get(bs).toString());
+            sb.append(bs.getValue());
             first= false;
         }
         sb.append("],");

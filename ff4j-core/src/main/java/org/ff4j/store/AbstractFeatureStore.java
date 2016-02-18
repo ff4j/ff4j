@@ -61,11 +61,11 @@ public abstract class AbstractFeatureStore implements FeatureStore {
         Map < String, Feature > features = conf.getFeatures();
 
         // Override existing configuration within database
-        for (String featureName : features.keySet()) {
-            if (exist(featureName)) {
-                delete(featureName);
+        for (Map.Entry<String,Feature> featureName : features.entrySet()) {
+            if (exist(featureName.getKey())) {
+                delete(featureName.getKey());
             }
-            create(features.get(featureName));
+            create(featureName.getValue());
         }
         return features;
     }

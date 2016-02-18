@@ -124,9 +124,9 @@ public class JsonUtils {
         StringBuilder json = new StringBuilder("{");
         if (null != customProperties && !customProperties.isEmpty()) {
             boolean first = true;
-            for (String key : customProperties.keySet()) {
+            for (Map.Entry<String, ? extends Property<?>> key : customProperties.entrySet()) {
                 json.append(first ? "" : ",");
-                json.append("\"" + key + "\":" + customProperties.get(key).toJson());
+                json.append("\"" + key.getKey() + "\":" + key.getValue().toJson());
                 first = false;
             }
         }
