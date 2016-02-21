@@ -167,9 +167,9 @@ public class FeatureStoreJCache extends AbstractFeatureStore {
         Util.assertParamNotNull(groupName, "groupName");
         Map < String, Feature > features = readAll();
         Map < String, Feature > group = new HashMap<>();
-        for (String uid : features.keySet()) {
-            if (groupName.equals(features.get(uid).getGroup())) {
-                group.put(uid, features.get(uid));
+        for (Map.Entry<String,Feature> uid : features.entrySet()) {
+            if (groupName.equals(uid.getValue().getGroup())) {
+                group.put(uid.getKey(), uid.getValue());
             }
         }
         if (group.isEmpty()) {
@@ -184,9 +184,9 @@ public class FeatureStoreJCache extends AbstractFeatureStore {
         Util.assertParamNotNull(groupName, "groupName");
         Map < String, Feature > features = readAll();
         Map < String, Feature > group = new HashMap<>();
-        for (String uid : features.keySet()) {
-            if (groupName.equals(features.get(uid).getGroup())) {
-                group.put(uid, features.get(uid));
+        for (Map.Entry<String,Feature> uid : features.entrySet()) {
+            if (groupName.equals(uid.getValue().getGroup())) {
+                group.put(uid.getKey(), uid.getValue());
             }
         }
         return !group.isEmpty();
@@ -196,9 +196,9 @@ public class FeatureStoreJCache extends AbstractFeatureStore {
     @Override
     public void enableGroup(String groupName) {
         Map < String, Feature > features = readGroup(groupName);
-        for (String uid : features.keySet()) {
-            features.get(uid).enable();
-            update(features.get(uid));
+        for (Map.Entry<String,Feature> uid : features.entrySet()) {
+            uid.getValue().enable();
+            update(uid.getValue());
         }
     }
 
@@ -206,9 +206,9 @@ public class FeatureStoreJCache extends AbstractFeatureStore {
     @Override
     public void disableGroup(String groupName) {
         Map < String, Feature > features = readGroup(groupName);
-        for (String uid : features.keySet()) {
-            features.get(uid).disable();
-            update(features.get(uid));
+        for (Map.Entry<String,Feature> uid : features.entrySet()) {
+            uid.getValue().disable();
+            update(uid.getValue());
         }
     }
 
@@ -242,8 +242,8 @@ public class FeatureStoreJCache extends AbstractFeatureStore {
     public Set<String> readAllGroups() {
         Map < String, Feature > features = readAll();
         Set < String > groups = new HashSet<>();
-        for (String uid : features.keySet()) {
-            groups.add(features.get(uid).getGroup());
+        for (Map.Entry<String,Feature> uid : features.entrySet()) {
+            groups.add(uid.getValue().getGroup());
         }
         groups.remove(null);
         return groups;

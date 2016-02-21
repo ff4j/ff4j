@@ -175,8 +175,8 @@ public final class FeatureDBObjectMapper implements FeatureStoreMongoConstants {
         if (dbObject.containsField(CUSTOMPROPERTIES)) {
             String properties = (String) dbObject.get(CUSTOMPROPERTIES);
             Map < String, BasicDBObject > values = (Map<String, BasicDBObject>) JSON.parse(properties);
-            for (String key : values.keySet()) {
-                mapOfCustomProperties.put(key, mapProperty(values.get(key)));
+            for (Map.Entry<String,BasicDBObject> entry : values.entrySet()) {
+                mapOfCustomProperties.put(entry.getKey(), mapProperty(entry.getValue()));
             }
         }
         return mapOfCustomProperties;

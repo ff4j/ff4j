@@ -221,8 +221,8 @@ public final class ConsoleRenderer implements ConsoleConstants {
     static final String renderPropertiesRows(FF4j ff4j, HttpServletRequest req) {
         StringBuilder sb = new StringBuilder();
         final Map < String, Property<?>> mapOfProperties = ff4j.getProperties();
-        for(String uid : mapOfProperties.keySet()) {
-            Property<?> currentProperty = mapOfProperties.get(uid);
+        for(Map.Entry<String,Property<?>> uid : mapOfProperties.entrySet()) {
+            Property<?> currentProperty = uid.getValue();
             sb.append("<tr>" + END_OF_LINE);
             
             // Column with uid and description as tooltip
@@ -291,8 +291,8 @@ public final class ConsoleRenderer implements ConsoleConstants {
     static final String renderFeatureRows(FF4j ff4j, HttpServletRequest req) {
         StringBuilder sb = new StringBuilder();
         final Map < String, Feature> mapOfFeatures = ff4j.getFeatures();
-        for(String uid : mapOfFeatures.keySet()) {
-            Feature currentFeature = mapOfFeatures.get(uid);
+        for(Map.Entry<String,Feature> uid : mapOfFeatures.entrySet()) {
+            Feature currentFeature = uid.getValue();
             sb.append("<tr>" + END_OF_LINE);
             
             // Column with uid and description as tooltip
@@ -380,7 +380,7 @@ public final class ConsoleRenderer implements ConsoleConstants {
             sb.append("<a href=\"");
             sb.append(req.getContextPath());
             sb.append(req.getServletPath());
-            sb.append("?op=" + OP_RMV_FEATURE + "&" + FEATID + "=" + uid);
+            sb.append("?op=" + OP_RMV_FEATURE + "&" + FEATID + "=" + uid.getKey());
             sb.append("\" style=\"width:6px;\" class=\"btn\">");
             sb.append("<i class=\"icon-trash\" style=\"margin-left:-5px;\"></i>");
             sb.append("</a>");

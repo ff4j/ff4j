@@ -584,13 +584,13 @@ public final class XmlParser {
             }
         }
             
-        for (String groupName : featuresPerGroup.keySet()) {
+        for (Map.Entry<String,List<Feature>> groupName : featuresPerGroup.entrySet()) {
             /// Building featureGroup
-            if (null != groupName && !groupName.isEmpty()) {
-                sb.append(" <" + FEATUREGROUP_TAG + " " + FEATUREGROUP_ATTNAME + "=\"" + groupName + "\" >\n\n");
+            if (null != groupName.getKey() && !groupName.getKey().isEmpty()) {
+                sb.append(" <" + FEATUREGROUP_TAG + " " + FEATUREGROUP_ATTNAME + "=\"" + groupName.getKey() + "\" >\n\n");
             }
             // Loop on feature
-            for (Feature feat : featuresPerGroup.get(groupName)) {
+            for (Feature feat : groupName.getValue()) {
                 sb.append(MessageFormat.format(XML_FEATURE, feat.getUid(), feat.getDescription(), feat.isEnable()));
                 // <security>
                 if (null != feat.getPermissions() && !feat.getPermissions().isEmpty()) {
@@ -626,7 +626,7 @@ public final class XmlParser {
                 sb.append(END_FEATURE);
             }
             
-            if (null != groupName && !groupName.isEmpty()) {
+            if (null != groupName.getKey() && !groupName.getKey().isEmpty()) {
                 sb.append(" </" + FEATUREGROUP_TAG + ">\n\n");
             }
         }

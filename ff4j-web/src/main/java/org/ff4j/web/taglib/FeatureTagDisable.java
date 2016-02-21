@@ -50,8 +50,8 @@ public class FeatureTagDisable extends AbstractFeatureTag {
             executionContext.putString("LOCALE", pageContext.getRequest().getLocalName());
             @SuppressWarnings("unchecked")
             Map < String, String[]> parameters = pageContext.getRequest().getParameterMap();
-            for (String param : parameters.keySet()) {
-                String[] innerParams = parameters.get(param);
+            for (Map.Entry<String,String[]> param : parameters.entrySet()) {
+                String[] innerParams = param.getValue();
                 if (innerParams != null) {
                     StringBuilder sb = new StringBuilder();
                     for (String innerParam : innerParams) {
@@ -59,7 +59,7 @@ public class FeatureTagDisable extends AbstractFeatureTag {
                         sb.append(",");
                     }
                     String expression = sb.toString();
-                    executionContext.putString(param, expression.substring(0, expression.length() - 1));
+                    executionContext.putString(param.getKey(), expression.substring(0, expression.length() - 1));
                 }
             }
         }

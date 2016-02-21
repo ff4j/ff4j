@@ -1061,8 +1061,8 @@ public abstract class FeatureStoreTestSupport implements TestsFf4jConstants {
         // Then
         Assert.assertTrue(testedStore.readAll().isEmpty());
         /// Reinit
-        for (String pName : before.keySet()) {
-            testedStore.create(before.get(pName));
+        for (Map.Entry<String,Feature> pName : before.entrySet()) {
+            testedStore.create(pName.getValue());
         }
     }
     
