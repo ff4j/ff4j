@@ -27,13 +27,18 @@ import java.util.Set;
 
 import javax.ws.rs.core.SecurityContext;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Default implementation of security context.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public class FF4jSecurityContext implements SecurityContext, Serializable {
-    
+
+    public static final Logger logger = LoggerFactory.getLogger(FF4jSecurityContext.class);
+
     /** Serial. */
     private static final long serialVersionUID = 9041009506390024931L;
 
@@ -70,7 +75,7 @@ public class FF4jSecurityContext implements SecurityContext, Serializable {
     /** {@inheritDoc} */
     @Override
     public Principal getUserPrincipal() {
-        System.out.println("PRINCP");
+        logger.info("PRINCP");
         return new Principal() {
             /** {@inheritDoc} */
             @Override
@@ -83,7 +88,7 @@ public class FF4jSecurityContext implements SecurityContext, Serializable {
     /** {@inheritDoc} */
     @Override
     public boolean isUserInRole(String role) {
-        System.out.println("TEST ROLE " + role + " against " + userRoles);
+        logger.info("TEST ROLE " + role + " against " + userRoles);
         return userRoles.contains(role);
     }
 
