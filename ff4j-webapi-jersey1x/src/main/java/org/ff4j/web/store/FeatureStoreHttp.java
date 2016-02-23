@@ -61,6 +61,16 @@ import com.sun.jersey.core.util.Base64;
  */
 public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebConstants {
 
+    private static final String OCCURED = " occured.";
+
+    private static final String GROUPNAME_CANNOT_BE_NULL_NOR_EMPTY = "Groupname cannot be null nor empty";
+
+    private static final String CANNOT_GRANT_ROLE_ON_FEATURE_AN_HTTP_ERROR = "Cannot grant role on feature, an HTTP error ";
+
+    private static final String ROLE_NAME_CANNOT_BE_NULL_NOR_EMPTY = "roleName cannot be null nor empty";
+
+    private static final String FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY = "Feature identifier cannot be null nor empty";
+
     /** Jersey Client. */
     protected Client client = null;
 
@@ -171,7 +181,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebCon
     @Override
     public Feature read(String uid) {
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY);
         }
         ClientResponse cRes = getStore().path(uid).get(ClientResponse.class);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
@@ -184,7 +194,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebCon
     @Override
     public void enable(String uid) {
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY);
         }
         ClientResponse cRes = getStore().path(uid).path(OPERATION_ENABLE).post(ClientResponse.class);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
@@ -196,7 +206,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebCon
     @Override
     public void disable(String uid) {
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY);
         }
         ClientResponse cRes = getStore().path(uid).path(OPERATION_DISABLE).post(ClientResponse.class);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
@@ -208,7 +218,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebCon
     @Override
     public boolean exist(String uid) {
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY);
         }
         ClientResponse cRes = getStore().path(uid).get(ClientResponse.class);
         if (Status.OK.getStatusCode() == cRes.getStatus()) {
@@ -235,7 +245,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebCon
                 .put(ClientResponse.class, new FeatureApiBean(fp));
         // Check response code CREATED or raised error
         if (Status.CREATED.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot create feature, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException("Cannot create feature, an HTTP error " + cRes.getStatus() + OCCURED);
         }
     }
 
@@ -244,7 +254,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebCon
     public Map<String, Feature> readAll() {
         ClientResponse cRes = getStore().get(ClientResponse.class);
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot read features, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException("Cannot read features, an HTTP error " + cRes.getStatus() + OCCURED);
         }
         String resEntity = cRes.getEntity(String.class);
         Feature[] fArray = parseFeatureArray(resEntity);
@@ -259,14 +269,14 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebCon
     @Override
     public void delete(String uid) {
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY);
         }
         ClientResponse cRes = getStore().path(uid).delete(ClientResponse.class);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new FeatureNotFoundException(uid);
         }
         if (Status.NO_CONTENT.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot delete feature, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException("Cannot delete feature, an HTTP error " + cRes.getStatus() + OCCURED);
         }
     }
 
@@ -281,7 +291,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebCon
                 .type(MediaType.APPLICATION_JSON)
                 .put(ClientResponse.class, new FeatureApiBean(fp));
         if (Status.NO_CONTENT.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot update feature, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException("Cannot update feature, an HTTP error " + cRes.getStatus() + OCCURED);
         }
     }
 
@@ -289,17 +299,17 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebCon
     @Override
     public void grantRoleOnFeature(String uid, String roleName) {
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY);
         }
         if (roleName == null || roleName.isEmpty()) {
-            throw new IllegalArgumentException("roleName cannot be null nor empty");
+            throw new IllegalArgumentException(ROLE_NAME_CANNOT_BE_NULL_NOR_EMPTY);
         }
         ClientResponse cRes = getStore().path(uid).path(OPERATION_GRANTROLE).path(roleName).post(ClientResponse.class);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new FeatureNotFoundException(uid);
         }
         if (Status.NO_CONTENT.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot grant role on feature, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException(CANNOT_GRANT_ROLE_ON_FEATURE_AN_HTTP_ERROR + cRes.getStatus() + OCCURED);
         }
     }
 
@@ -307,23 +317,23 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebCon
     @Override
     public void removeRoleFromFeature(String uid, String roleName) {
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY);
         }
         if (roleName == null || roleName.isEmpty()) {
-            throw new IllegalArgumentException("roleName cannot be null nor empty");
+            throw new IllegalArgumentException(ROLE_NAME_CANNOT_BE_NULL_NOR_EMPTY);
         }
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY);
         }
         if (roleName == null || roleName.isEmpty()) {
-            throw new IllegalArgumentException("roleName cannot be null nor empty");
+            throw new IllegalArgumentException(ROLE_NAME_CANNOT_BE_NULL_NOR_EMPTY);
         }
         ClientResponse cRes = getStore().path(uid).path(OPERATION_REMOVEROLE).path(roleName).post(ClientResponse.class);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new FeatureNotFoundException(uid);
         }
         if (Status.NO_CONTENT.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot remove role on feature, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException("Cannot remove role on feature, an HTTP error " + cRes.getStatus() + OCCURED);
         }
     }
 
@@ -331,17 +341,17 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebCon
     @Override
     public void addToGroup(String uid, String groupName) {
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY);
         }
         if (groupName == null || groupName.isEmpty()) {
-            throw new IllegalArgumentException("Groupname cannot be null nor empty");
+            throw new IllegalArgumentException(GROUPNAME_CANNOT_BE_NULL_NOR_EMPTY);
         }
         ClientResponse cRes = getStore().path(uid).path(OPERATION_ADDGROUP).path(groupName).post(ClientResponse.class);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new FeatureNotFoundException(uid);
         }
         if (Status.NO_CONTENT.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot add feature to group, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException("Cannot add feature to group, an HTTP error " + cRes.getStatus() + OCCURED);
         }
     }
 
@@ -349,16 +359,16 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebCon
     @Override
     public void removeFromGroup(String uid, String groupName) {
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY);
         }
         if (groupName == null || groupName.isEmpty()) {
-            throw new IllegalArgumentException("Groupname cannot be null nor empty");
+            throw new IllegalArgumentException(GROUPNAME_CANNOT_BE_NULL_NOR_EMPTY);
         }
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY);
         }
         if (groupName == null || groupName.isEmpty()) {
-            throw new IllegalArgumentException("Groupname cannot be null nor empty");
+            throw new IllegalArgumentException(GROUPNAME_CANNOT_BE_NULL_NOR_EMPTY);
         }
         ClientResponse cRes = getStore().path(uid).path(OPERATION_REMOVEGROUP).path(groupName).post(ClientResponse.class);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
@@ -368,7 +378,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebCon
             throw new GroupNotFoundException(groupName);
         }
         if (Status.NO_CONTENT.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot remove feature from group, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException("Cannot remove feature from group, an HTTP error " + cRes.getStatus() + OCCURED);
         }
     }
 
@@ -376,14 +386,14 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebCon
     @Override
     public void enableGroup(String groupName) {
         if (groupName == null || groupName.isEmpty()) {
-            throw new IllegalArgumentException("Groupname cannot be null nor empty");
+            throw new IllegalArgumentException(GROUPNAME_CANNOT_BE_NULL_NOR_EMPTY);
         }
         ClientResponse cRes = getGroups().path(groupName).path(OPERATION_ENABLE).post(ClientResponse.class);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new GroupNotFoundException(groupName);
         }
         if (Status.NO_CONTENT.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot grant role on feature, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException(CANNOT_GRANT_ROLE_ON_FEATURE_AN_HTTP_ERROR + cRes.getStatus() + OCCURED);
         }
     }
 
@@ -391,14 +401,14 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebCon
     @Override
     public void disableGroup(String groupName) {
         if (groupName == null || groupName.isEmpty()) {
-            throw new IllegalArgumentException("Groupname cannot be null nor empty");
+            throw new IllegalArgumentException(GROUPNAME_CANNOT_BE_NULL_NOR_EMPTY);
         }
         ClientResponse cRes = getGroups().path(groupName).path(OPERATION_DISABLE).post(ClientResponse.class);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new GroupNotFoundException(groupName);
         }
         if (Status.NO_CONTENT.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot grant role on feature, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException(CANNOT_GRANT_ROLE_ON_FEATURE_AN_HTTP_ERROR + cRes.getStatus() + OCCURED);
         }
     }
 
@@ -406,14 +416,14 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebCon
     @Override
     public Map<String, Feature> readGroup(String groupName) {
         if (groupName == null || groupName.isEmpty()) {
-            throw new IllegalArgumentException("Groupname cannot be null nor empty");
+            throw new IllegalArgumentException(GROUPNAME_CANNOT_BE_NULL_NOR_EMPTY);
         }
         ClientResponse cRes = getGroups().path(groupName).get(ClientResponse.class);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new GroupNotFoundException(groupName);
         }
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot grant role on feature, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException(CANNOT_GRANT_ROLE_ON_FEATURE_AN_HTTP_ERROR + cRes.getStatus() + OCCURED);
         }
         String resEntity = cRes.getEntity(String.class);
         Feature[] fArray = parseFeatureArray(resEntity);
@@ -428,7 +438,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebCon
     @Override
     public boolean existGroup(String groupName) {
         if (groupName == null || groupName.isEmpty()) {
-            throw new IllegalArgumentException("Groupname cannot be null nor empty");
+            throw new IllegalArgumentException(GROUPNAME_CANNOT_BE_NULL_NOR_EMPTY);
         }
         ClientResponse cRes = getGroups().path(groupName).get(ClientResponse.class);
         if (Status.OK.getStatusCode() == cRes.getStatus()) {
@@ -437,7 +447,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebCon
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             return false;
         }
-        throw new FeatureAccessException("Cannot check existence of group , an HTTP error " + cRes.getStatus() + " occured.");
+        throw new FeatureAccessException("Cannot check existence of group , an HTTP error " + cRes.getStatus() + OCCURED);
     }
 
     /** {@inheritDoc} */
@@ -446,7 +456,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebCon
         ClientResponse cRes = getGroups().get(ClientResponse.class);
         List<GroupDescApiBean> groupApiBeans = cRes.getEntity(new GenericType<List<GroupDescApiBean>>() {});
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot read groups, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException("Cannot read groups, an HTTP error " + cRes.getStatus() + OCCURED);
         }
         Set < String > groupNames = new HashSet<String>();
         for (GroupDescApiBean groupApiBean : groupApiBeans) {
