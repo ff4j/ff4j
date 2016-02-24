@@ -93,7 +93,8 @@ public class PropertiesPlaceHolderBeanDefinitionVisitor extends BeanDefinitionVi
         StringBuffer buf = new StringBuffer(strVal);
         
         // @ff4jProperty{}
-        for (int startIndex = strVal.indexOf(PLACEHOLDER_PROPERTY_PREFIX); startIndex != -1;) {
+        int startIndex = strVal.indexOf(PLACEHOLDER_PROPERTY_PREFIX);
+        while (startIndex != -1) {
             int endIndex = buf.toString().indexOf(PLACEHOLDER_SUFFIX, startIndex + PLACEHOLDER_PROPERTY_PREFIX.length());
             if (endIndex != -1) {
                 String placeholder = buf.substring(startIndex + PLACEHOLDER_PROPERTY_PREFIX.length(), endIndex);
@@ -122,7 +123,8 @@ public class PropertiesPlaceHolderBeanDefinitionVisitor extends BeanDefinitionVi
         }
         
         // @ff4jFeature{}
-        for (int startIndex = strVal.indexOf(PLACEHOLDER_FEATURE_PREFIX); startIndex != -1;) {
+        startIndex = strVal.indexOf(PLACEHOLDER_FEATURE_PREFIX);
+        while (startIndex != -1) {
             int endIndex = buf.toString().indexOf(PLACEHOLDER_SUFFIX, startIndex + PLACEHOLDER_FEATURE_PREFIX.length());
             if (endIndex != -1) {
                 String placeholder = buf.substring(startIndex + PLACEHOLDER_FEATURE_PREFIX.length(), endIndex);
