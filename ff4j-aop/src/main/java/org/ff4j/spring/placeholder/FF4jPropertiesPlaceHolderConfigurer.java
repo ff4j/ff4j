@@ -68,7 +68,7 @@ public class FF4jPropertiesPlaceHolderConfigurer implements BeanFactoryPostProce
             BeanDefinitionVisitor visitor = new PropertiesPlaceHolderBeanDefinitionVisitor(ff4j);
 
             // 2) Inject property & features value
-            String beanNames[] = beanFactory.getBeanDefinitionNames();
+            String[] beanNames = beanFactory.getBeanDefinitionNames();
             for (int i = 0; i < beanNames.length; i++) {
                 if (beanNames[i].equals(beanName) && beanFactory.equals(beanFactory)) {
                     continue;
