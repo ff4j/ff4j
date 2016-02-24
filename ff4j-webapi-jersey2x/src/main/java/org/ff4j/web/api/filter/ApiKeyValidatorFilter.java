@@ -64,34 +64,34 @@ public class ApiKeyValidatorFilter implements ContainerRequestFilter {
     public ApiKeyValidatorFilter(Map < String, ApiKey > apiKeys) {
         validApiKeysMap = apiKeys;
     }
-	
+
     /**
      * Before Method invocation reading HTTP REQUEST.
      *
      * {@inheritDoc}
      */
-	@Override
-	public void filter(ContainerRequestContext reqCtx) throws IOException {
-	    // Do not contains any API KEY
-	    if (!reqCtx.getHeaders().containsKey(HEADER_APIKEY)) {
-	        throw new WebApplicationException("API key (" + HEADER_APIKEY + ") is required for this API", Status.UNAUTHORIZED);
-	    }
-	    
-	    // Contains the header but invalid valid
-	    String apiKey = reqCtx.getHeaders().getFirst(HEADER_APIKEY);
-	    if (!validApiKeysMap.containsKey(apiKey)) {
-	        throw new WebApplicationException("Invalid API Key - not recognized", Status.UNAUTHORIZED);
-	    }
-	    
-	    // Does the API reach its expiration Date ?
-	    ApiKey currentKey = validApiKeysMap.get(apiKey);
-	    if (currentKey.getExpirationTime().before(new Date())) {
-	        throw new WebApplicationException("API key has expired ", Status.UNAUTHORIZED);
-	    }
-	    
-	    // from here : nothing to do, contains the header AND correct value AND still valid
-	    
-	}
+    @Override
+    public void filter(ContainerRequestContext reqCtx) throws IOException {
+        // Do not contains any API KEY
+        if (!reqCtx.getHeaders().containsKey(HEADER_APIKEY)) {
+            throw new WebApplicationException("API key (" + HEADER_APIKEY + ") is required for this API", Status.UNAUTHORIZED);
+        }
+        
+        // Contains the header but invalid valid
+        String apiKey = reqCtx.getHeaders().getFirst(HEADER_APIKEY);
+        if (!validApiKeysMap.containsKey(apiKey)) {
+            throw new WebApplicationException("Invalid API Key - not recognized", Status.UNAUTHORIZED);
+        }
+        
+        // Does the API reach its expiration Date ?
+        ApiKey currentKey = validApiKeysMap.get(apiKey);
+        if (currentKey.getExpirationTime().before(new Date())) {
+            throw new WebApplicationException("API key has expired ", Status.UNAUTHORIZED);
+        }
+        
+        // from here : nothing to do, contains the header AND correct value AND still valid
+        
+    }
 
     /**
      * Getter accessor for attribute 'validApiKeysMap'.
@@ -105,8 +105,7 @@ public class ApiKeyValidatorFilter implements ContainerRequestFilter {
 
     /**
      * Setter accessor for attribute 'validApiKeysMap'.
-     * @param validApiKeysMap
-     * 		new value for 'validApiKeysMap '
+     * @param validApiKeysMap new value for 'validApiKeysMap '
      */
     public static void setValidApiKeysMap(Map<String, ApiKey> validApiKeysMap) {
         ApiKeyValidatorFilter.validApiKeysMap = validApiKeysMap;

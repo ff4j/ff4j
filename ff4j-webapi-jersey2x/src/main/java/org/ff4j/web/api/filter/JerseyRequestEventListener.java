@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 @Provider
 public class JerseyRequestEventListener implements RequestEventListener {
 
-	/** logger. */
+    /** logger. */
     protected Logger logger = LoggerFactory.getLogger(JerseyRequestEventListener.class);
     
     /**
@@ -44,10 +44,10 @@ public class JerseyRequestEventListener implements RequestEventListener {
      */
     public JerseyRequestEventListener() {
     }
-	
+
     /** {@inheritDoc} */
     @Override
-	public void onEvent(RequestEvent reqEvt) {
+    public void onEvent(RequestEvent reqEvt) {
         if (RequestEvent.Type.ON_EXCEPTION.equals(reqEvt.getType())) {
             logger.error("An error occured when processing " + reqEvt.getContainerRequest().getRequestUri(), reqEvt.getException() );
             logger.error(" + Type : " + reqEvt.getException().getClass().getCanonicalName());
@@ -55,6 +55,6 @@ public class JerseyRequestEventListener implements RequestEventListener {
         } else {
             logger.debug(reqEvt.getContainerRequest().getRequestUri() + "[" + reqEvt.getType() + "]");
         }
-	}
+    }
 
 }
