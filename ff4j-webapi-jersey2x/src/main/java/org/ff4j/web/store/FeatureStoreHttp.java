@@ -82,8 +82,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements org.ff4j.w
     /**
      * Initialization from URL.
      *
-     * @param rootApiUrl
-     *            target root URL
+     * @param rootApiUrl target root URL
      */
     public FeatureStoreHttp(String rootApiUrl) {
         this.url = rootApiUrl;
@@ -92,10 +91,8 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements org.ff4j.w
     /**
      * Authentication through APIKEY.
      *
-     * @param rootApiUrl
-     *      target url
-     * @param apiKey
-     *      target api
+     * @param rootApiUrl target url
+     * @param apiKey target api
      */
     public FeatureStoreHttp(String rootApiUrl, String apiKey) {
         this(rootApiUrl);
@@ -105,12 +102,9 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements org.ff4j.w
     /**
      * Authentication through login/password.
      *
-     * @param rootApiUrl
-     *      target url
-     * @param username
-     *      target username
-     * @param password
-     *      target password
+     * @param rootApiUrl target url
+     * @param username target username
+     * @param password target password
      */
     public FeatureStoreHttp(String rootApiUrl, String username, String password) {
         this(rootApiUrl);
@@ -421,12 +415,9 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements org.ff4j.w
     
     /**
      * Build Authorization header for final user.
-     * @param username
-     *      target username
-     * @param password
-     *      target password
-     * @return
-     *      target header
+     * @param username target username
+     * @param password target password
+     * @return target header
      */
     public static String buildAuthorization4UserName(String username, String password) {
         return " Basic " + new String(Base64.encodeAsString(username + ":" + password));
@@ -436,8 +427,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements org.ff4j.w
     /**
      * Share header settings for invocations.
      *
-     * @param webTarget
-     *          target web
+     * @param webTarget target web
      * @return
      */
     private Response post(WebTarget webTarget) {
@@ -450,10 +440,8 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements org.ff4j.w
     
     /**
      * Build Authorization header for technical user.
-     * @param apiKey
-     *      target apiKey
-     * @return
-     *      target header
+     * @param apiKey target apiKey
+     * @return target header
      */
     public static String buildAuthorization4ApiKey(String apiKey) {
         return PARAM_AUTHKEY + "=" + apiKey;
@@ -462,8 +450,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements org.ff4j.w
     /**
      * Getter accessor for attribute 'url'.
      *
-     * @return
-     *       current value of 'url'
+     * @return current value of 'url'
      */
     public String getUrl() {
         return url;
@@ -471,8 +458,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore implements org.ff4j.w
 
     /**
      * Setter accessor for attribute 'url'.
-     * @param url
-     * 		new value for 'url '
+     * @param url new value for 'url '
      */
     public void setUrl(String url) {
         this.url = url;

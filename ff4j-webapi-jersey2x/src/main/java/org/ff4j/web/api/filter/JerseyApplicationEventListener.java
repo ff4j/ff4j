@@ -38,30 +38,30 @@ import org.slf4j.LoggerFactory;
 @Provider
 public class JerseyApplicationEventListener implements ApplicationEventListener {
 
-	/** logger. */
+    /** logger. */
     protected Logger logger = LoggerFactory.getLogger(getClass());
-	
-	@Override
-	public void onEvent(ApplicationEvent appEvent) {
-		switch(appEvent.getType()) {
-			case INITIALIZATION_START:
-				logger.info("Application Initialization");
-			break;
-			case INITIALIZATION_FINISHED:
-				logger.info("Initialization done");
-			break;
-			case INITIALIZATION_APP_FINISHED:
-				logger.info("Application is initialized");
-			break;
-			default:
-			break;
-		}
-	}
+    
+    @Override
+    public void onEvent(ApplicationEvent appEvent) {
+        switch(appEvent.getType()) {
+            case INITIALIZATION_START:
+                logger.info("Application Initialization");
+            break;
+            case INITIALIZATION_FINISHED:
+                logger.info("Initialization done");
+            break;
+            case INITIALIZATION_APP_FINISHED:
+                logger.info("Application is initialized");
+            break;
+            default:
+            break;
+        }
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public RequestEventListener onRequest(RequestEvent reEvent) {
-		return new JerseyRequestEventListener();
-	}
+    /** {@inheritDoc} */
+    @Override
+    public RequestEventListener onRequest(RequestEvent reEvent) {
+        return new JerseyRequestEventListener();
+    }
 
 }
