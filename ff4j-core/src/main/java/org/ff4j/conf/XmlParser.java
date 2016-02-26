@@ -287,7 +287,7 @@ public final class XmlParser {
             throw new IllegalArgumentException("Error syntax in configuration file : "
                     + "'enable' is required for each feature (check " + uid + ")");
         }
-        boolean enable = Boolean.valueOf(nnm.getNamedItem(FEATURE_ATT_ENABLE).getNodeValue());
+        boolean enable = Boolean.parseBoolean(nnm.getNamedItem(FEATURE_ATT_ENABLE).getNodeValue());
 
         // Create Feature with description
         Feature f = new Feature(uid, enable, parseDescription(nnm));

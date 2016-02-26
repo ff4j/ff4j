@@ -68,7 +68,7 @@ public class PonderationStrategy extends AbstractFlipStrategy implements Seriali
     public void init(String featureName, Map<String, String> initParams) {
         super.init(featureName, initParams);
         if (initParams != null && initParams.containsKey(PARAM_WEIGHT)) {
-            this.weight = Double.valueOf(initParams.get(PARAM_WEIGHT)).doubleValue();
+            this.weight = Double.parseDouble(initParams.get(PARAM_WEIGHT));
         }
         checkWeight();
     }
