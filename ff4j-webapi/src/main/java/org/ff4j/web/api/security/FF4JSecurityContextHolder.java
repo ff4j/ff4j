@@ -28,10 +28,12 @@ import javax.ws.rs.core.SecurityContext;
  *
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class FF4JSecurityContextHolder {
+public final class FF4JSecurityContextHolder {
 
     /** Put current security context as threadlocal to be reused by the AuthenticationProvider. */
     private static final ThreadLocal< SecurityContext > securityContextHolder = new ThreadLocal< SecurityContext >();
+    
+    private FF4JSecurityContextHolder() {}
     
     /**
      * Return custom FF4J Security Context.

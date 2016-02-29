@@ -45,10 +45,12 @@ import org.ff4j.property.util.PropertyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ConsoleOperations implements ConsoleConstants {
+public final class ConsoleOperations implements ConsoleConstants {
     
     /** Logger for this class. */
     private static Logger LOGGER = LoggerFactory.getLogger(ConsoleOperations.class);
+    
+    private ConsoleOperations() {}
     
     /**
      * User action to create a new Feature.

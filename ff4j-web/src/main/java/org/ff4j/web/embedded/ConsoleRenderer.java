@@ -87,7 +87,9 @@ public final class ConsoleRenderer implements ConsoleConstants {
         uxTypes.put("LogLevel", PropertyLogLevel.class.getName());
         uxTypes.put(String.class.getSimpleName(), PropertyString.class.getName());
     }
-
+    
+    private ConsoleRenderer() {}
+    
     /**
      * Render the ff4f console webpage through different block.
      * 
