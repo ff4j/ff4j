@@ -532,7 +532,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
         ps.setString(2, pp.getType());
         ps.setString(3, pp.asString());
         ps.setString(4, pp.getDescription());
-        if (pp.getFixedValues() != null && pp.getFixedValues().size() > 0) {
+        if (pp.getFixedValues() != null && !pp.getFixedValues().isEmpty()) {
             String fixedValues = pp.getFixedValues().toString();
             ps.setString(5, fixedValues.substring(1, fixedValues.length() - 1));
         } else {
