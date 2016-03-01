@@ -39,11 +39,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class PropertyJsonParser {
+public final class PropertyJsonParser {
 
     /** Jackson mapper. */
     private static ObjectMapper objectMapper = new ObjectMapper();
-
+    
+    private PropertyJsonParser() {}
+    
     /**
      * Unmarshall {@link Feature} from json string.
      *

@@ -29,9 +29,11 @@ import io.swagger.jaxrs.config.BeanConfig;
  *
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class FF4jSwaggerConfiguration {
+public final class FF4jSwaggerConfiguration {
     
     private static BeanConfig beanConfig;
+    
+    private FF4jSwaggerConfiguration() {}
     
     static {
         beanConfig = new BeanConfig();
