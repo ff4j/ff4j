@@ -180,7 +180,7 @@ public abstract class Property < T > implements Serializable {
      *      int value
      */
     public int asInt() {
-        return new Integer(asString()).intValue();
+        return Integer.parseInt(asString());
     }
 
     /**
@@ -190,7 +190,7 @@ public abstract class Property < T > implements Serializable {
      *      int value
      */
     public double asDouble() {
-        return new Double(asString()).doubleValue();
+        return Double.parseDouble(asString());
     }
     
     /**
@@ -200,7 +200,7 @@ public abstract class Property < T > implements Serializable {
      *      boolea value
      */
     public boolean asBoolean() {
-        return new Boolean(asString()).booleanValue();
+        return Boolean.parseBoolean(asString());
     }
 
     /**
