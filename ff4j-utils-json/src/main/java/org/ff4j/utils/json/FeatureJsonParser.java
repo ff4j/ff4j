@@ -111,22 +111,26 @@ public class FeatureJsonParser {
                 Property<?> ap = PropertyFactory.createProperty(propertyName, propertyType, propertyVal);
                 // FixedValued
                 List <Object> listOfFixedValue = (List<Object>) propertyJson.get("fixedValues");
-                if (listOfFixedValue != null) {
-                    for (Object v : listOfFixedValue) {
-                        ap.add2FixedValueFromString(String.valueOf(v));
-                    }
-                    // Check fixed value
-                    if (ap.getFixedValues() != null && !ap.getFixedValues().contains(ap.getValue())) {
-                        throw new IllegalArgumentException("Cannot create property <" + ap.getName() + 
-                                "> invalid value <" + ap.getValue() + 
-                                "> expected one of " + ap.getFixedValues());
-                    }
-                }
+                addFixedValuesToProperty(ap, listOfFixedValue);
                 myProperties.put(ap.getName(), ap);
             }
         }
         return myProperties;
         
+    }
+
+    private static void addFixedValuesToProperty(Property<?> ap, List<Object> listOfFixedValue) {
+        if (listOfFixedValue != null) {
+            for (Object v : listOfFixedValue) {
+                ap.add2FixedValueFromString(String.valueOf(v));
+            }
+            // Check fixed value
+            if (ap.getFixedValues() != null && !ap.getFixedValues().contains(ap.getValue())) {
+                throw new IllegalArgumentException("Cannot create property <" + ap.getName() + 
+                        "> invalid value <" + ap.getValue() + 
+                        "> expected one of " + ap.getFixedValues());
+            }
+        }
     }
 
     /**

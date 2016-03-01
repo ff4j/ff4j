@@ -123,9 +123,9 @@ public final class PropertyJsonParser {
     public static Property<?> parsePropertyMap(Map<String, Object> fMap) {
         PropertyJsonBean pf = new PropertyJsonBean();
         pf.setName((String) fMap.get("name"));
-        pf.setDescription(((String) fMap.get("description")));
-        pf.setType(((String) fMap.get("type")));
-        pf.setValue(((String) fMap.get("value")));
+        pf.setDescription((String) fMap.get("description"));
+        pf.setType((String) fMap.get("type"));
+        pf.setValue((String) fMap.get("value"));
         if (fMap.containsKey("fixedValues")) {
             List < String > dbList = (ArrayList<String>) fMap.get("fixedValues");
             if (dbList != null) {
