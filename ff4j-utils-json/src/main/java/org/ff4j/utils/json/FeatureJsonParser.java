@@ -162,7 +162,9 @@ public class FeatureJsonParser {
      */
     @SuppressWarnings("unchecked")
     public static FlippingStrategy parseFlipStrategyAsJson(String uid, String json) {
-        if (null == json || "".equals(json)) return null;
+        if (null == json || "".equals(json)) {
+            return null;
+        }
         try {
             return parseFlipStrategy(uid, (HashMap<String, Object>) objectMapper.readValue(json, HashMap.class));
         } catch (Exception e) {
@@ -181,7 +183,9 @@ public class FeatureJsonParser {
      */
     @SuppressWarnings("unchecked")
     public static FlippingStrategy parseFlipStrategy(String uid, HashMap<String, Object> flipMap) {
-        if (null == flipMap || flipMap.isEmpty()) return null;
+        if (null == flipMap || flipMap.isEmpty()) {
+            return null;
+        }
         String classType = (String) flipMap.get("type");
         HashMap<String, String> initparams = (HashMap<String, String>) flipMap.get("initParams");
         return MappingUtil.instanceFlippingStrategy(uid, classType, initparams);
@@ -197,7 +201,9 @@ public class FeatureJsonParser {
      */
     @SuppressWarnings("unchecked")
     public static Feature[] parseFeatureArray(String json) {
-        if (null == json || "".equals(json)) return null;
+        if (null == json || "".equals(json)) {
+            return null;
+        }
         try {
             List<LinkedHashMap<String, Object>> flipMap = objectMapper.readValue(json, List.class);
             Feature[] fArray = new Feature[flipMap.size()];
