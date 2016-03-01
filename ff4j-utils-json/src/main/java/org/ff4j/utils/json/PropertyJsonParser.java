@@ -55,7 +55,9 @@ public final class PropertyJsonParser {
      */
     @SuppressWarnings("unchecked")
     public static Property<?> parseProperty(String json) {
-        if (null == json || "".equals(json)) return null;
+        if (null == json || "".equals(json)) {
+            return null;
+        }
         Map<String, Object> propertyJson;
         try {
             propertyJson = objectMapper.readValue(json, HashMap.class);
@@ -93,7 +95,9 @@ public final class PropertyJsonParser {
      */
     @SuppressWarnings("unchecked")
     public static Property<?>[] parsePropertyArray(String json) {
-        if (null == json || "".equals(json)) return null;
+        if (null == json || "".equals(json)) {
+            return null;
+        }
         try {
             List<LinkedHashMap<String, Object>> flipMap = objectMapper.readValue(json, List.class);
             Property<?>[] fArray = new Property<?>[flipMap.size()];
