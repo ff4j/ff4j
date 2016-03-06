@@ -58,7 +58,7 @@ public class EventWorker implements Callable<Boolean> {
         this.event = e;
         this.eventRepository = repo;
         if (e != null) {
-            this.name = e.toThreadName();
+            this.name = e.getTimestamp() + "-" + e.getAction() + "-" + e.getName();
         }
     }
 

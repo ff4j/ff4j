@@ -23,14 +23,15 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.sql.DataSource;
 
 import org.ff4j.audit.Event;
-import org.ff4j.audit.EventType;
 import org.ff4j.audit.graph.BarChart;
 import org.ff4j.audit.graph.BarSeries;
 import org.ff4j.audit.graph.PieChart;
@@ -61,7 +62,6 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
     }
     
     /** {@inheritDoc} */
-    @Override
     public int getTotalEventCount() {
         Connection        sqlConn = null;
         PreparedStatement stmt = null;
@@ -72,7 +72,6 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
             sqlConn = dataSource.getConnection();
             stmt = sqlConn.prepareStatement(SQL_AUDIT_COUNT);
             rs = stmt.executeQuery();
-            // Should be ok
             rs.next();
             totalEvent =  rs.getInt(1);
         } catch(Exception exc) {
@@ -86,10 +85,11 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
     }
 
     /** {@inheritDoc} */
-    @Override
     public boolean saveEvent(Event evt) {
         Util.assertNotNull(evt);
-        Util.assertHasLength(evt.getFeatureName());
+        Util.assertHasLength(evt.getName());
+        Util.assertHasLength(evt.getType());
+        Util.assertHasLength(evt.getAction());
         
         Connection        sqlConn = null;
         PreparedStatement stmt = null;
@@ -99,10 +99,43 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
            
             // Open TX Bloc
             sqlConn.setAutoCommit(false);
-            stmt = sqlConn.prepareStatement(SQL_AUDIT_INSERT);
-            stmt.setTimestamp(1, new java.sql.Timestamp(evt.getTimestamp()));
-            stmt.setString(2, evt.getType().toString());
-            stmt.setString(3,  evt.getFeatureName());
+            int idx = 9;
+            Map < Integer, String > statementParams = new HashMap<Integer, String>();
+            StringBuilder sb = new StringBuilder("INSERT INTO FF4J_AUDIT (EVT_UUID,EVT_TIME,EVT_TYPE,EVT_NAME,EVT_ACTION,EVT_HOSTNAME,EVT_SOURCE,EVT_DURATION");
+            if (Util.hasLength(evt.getUser())) {
+                sb.append(", EVT_USER");
+                statementParams.put(idx, evt.getUser());
+                idx++;
+            }
+            if (Util.hasLength(evt.getValue())) {
+                sb.append(", EVT_VALUE");
+                statementParams.put(idx, evt.getValue());
+                idx++;
+            }
+            if (!evt.getCustomKeys().isEmpty()) {
+                sb.append(", EVT_KEYS");
+                statementParams.put(idx, evt.getCustomKeys().toString());
+                idx++;
+            }
+            
+            sb.append(") VALUES (?");
+            for(int offset = 1; offset < idx;offset++) {
+                sb.append(",?");
+            }
+            sb.append(")");
+            
+            stmt = sqlConn.prepareStatement(sb.toString());
+            stmt.setString(1, evt.getUuid());
+            stmt.setTimestamp(2, new java.sql.Timestamp(evt.getTimestamp()));
+            stmt.setString(3, evt.getType());
+            stmt.setString(4, evt.getName());
+            stmt.setString(5, evt.getAction());
+            stmt.setString(6, evt.getHostName());
+            stmt.setString(7, evt.getSource());
+            stmt.setLong(8, evt.getDuration());
+            for (int id = 9;id < idx;id++) {
+                stmt.setString(id, statementParams.get(id));
+            }
             
             // Execute Query
             stmt.executeUpdate();
@@ -121,7 +154,6 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
     }
 
     /** {@inheritDoc} */
-    @Override
     public Set < String > getFeatureNames() {
         Set < String> listOfFeatureNames = new HashSet<String>();
         Connection sqlConn = null;
@@ -133,7 +165,7 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
             ps = sqlConn.prepareStatement(SQL_AUDIT_LISTFEATURES);
             rs = ps.executeQuery();
             while (rs.next()) {
-                listOfFeatureNames.add(rs.getString(COL_EVENT_UID));
+                listOfFeatureNames.add(rs.getString(COL_EVENT_NAME));
             }
             return listOfFeatureNames;
         } catch (SQLException sqlEX) {
@@ -146,8 +178,7 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
     }
     
     /** {@inheritDoc} */
-    @Override
-    public PieChart getHitsPieChart(long startTime, long endTime) {
+    public PieChart getFeaturesUsageDistribution(long startTime, long endTime) {
         PieChart pieGraph = new PieChart(TITLE_PIE_HITCOUNT);
         Connection sqlConn = null;
         PreparedStatement ps = null;
@@ -181,8 +212,7 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
     }
     
     /** {@inheritDoc} */
-    @Override
-    public BarChart getHitsBarChart(Set<String> featNameSet, long startTime, long endTime, int nbslot) {
+    public BarChart getFeaturesUsageOverTime(Set<String> featNameSet, long startTime, long endTime, int nbslot) {
         
         // Build Labels
         long slotWitdh = (endTime - startTime) / nbslot;
@@ -227,8 +257,7 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
     }
 
     /** {@inheritDoc} */
-    @Override
-    public PieChart getFeatureHitsPie(String featureId, long startTime, long endTime) {
+    public PieChart getFeatureEventsDistribution(String featureId, long startTime, long endTime) {
         List < String > colors   = Util.getColorsGradient(4);
         PieChart pieGraph = new PieChart("Hits Count for " + featureId);
         

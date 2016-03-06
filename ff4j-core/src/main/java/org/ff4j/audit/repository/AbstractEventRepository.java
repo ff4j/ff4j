@@ -1,5 +1,8 @@
 package org.ff4j.audit.repository;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+
 /*
  * #%L
  * ff4j-core
@@ -22,7 +25,10 @@ package org.ff4j.audit.repository;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
+import org.ff4j.audit.Event;
 import org.ff4j.audit.graph.BarChart;
 import org.ff4j.audit.graph.PieChart;
 import org.ff4j.audit.graph.PieSector;
@@ -34,14 +40,11 @@ import org.ff4j.audit.graph.PieSector;
  * @author Cedrick Lunven (@clunven)
  */
 public abstract class AbstractEventRepository implements EventRepository { 
-    
-
+   
     /** {@inheritDoc} */
-    @Override
-    public BarChart getHitsBarChart(long startTime, long endTime, int nbslot) {
-        return getHitsBarChart(getFeatureNames(), startTime, endTime, nbslot);
+    public BarChart getFeaturesUsageOverTime(long startTime, long endTime, int nbslot) {
+        return getFeaturesUsageOverTime(getFeatureNames(), startTime, endTime, nbslot);
     }
-    
     
     /** {@inheritDoc} */
     @Override
@@ -63,11 +66,11 @@ public abstract class AbstractEventRepository implements EventRepository {
         c2.set(Calendar.SECOND, 0);
         
         // Create PIE
-        PieChart pie = getHitsPieChart(c.getTimeInMillis(), c2.getTimeInMillis());
+        PieChart pie = getFeaturesUsageDistribution(c.getTimeInMillis(), c2.getTimeInMillis());
         sb.append(",\"todayHitsPie\": " + pie.toJson());
         
         // Create BARCHART
-        BarChart barChart = getHitsBarChart(c.getTimeInMillis(), c2.getTimeInMillis(), 24);
+        BarChart barChart = getFeaturesUsageOverTime(c.getTimeInMillis(), c2.getTimeInMillis(), 24);
         sb.append(",\"todayHitsBarChart\": " + barChart.toJson());
 
         // Total Count
@@ -79,4 +82,23 @@ public abstract class AbstractEventRepository implements EventRepository {
         sb.append("}");
         return sb.toString();
     }
+    
+    protected BarChart initFeaturesOverTimeBarchart(Set < String > featNameSet, long startTime, long endTime, int nbslot) {
+        long slotWitdh = (endTime - startTime) / nbslot;
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        List <String> labels = new ArrayList<String>();
+        for (int i = 0; i < nbslot; i++) {
+            labels.add(sdf.format(new Date(startTime + slotWitdh * i)));
+        }
+        return new BarChart(TITLE_BARCHAR_HIT, labels, new ArrayList<String>(featNameSet));
+    }
+    
+    protected boolean isEventInInterval(Event evt, long startTime, long endTime) {
+        return (evt.getTimestamp() > startTime) && (evt.getTimestamp() < endTime);
+    }
+    
+    protected boolean isEventOK(Event evt, long startTime, long endTime) {
+        return isEventInInterval(evt, startTime, endTime) && ACTION_CHECK_OK.equals(evt.getType());
+    }
+        
 }

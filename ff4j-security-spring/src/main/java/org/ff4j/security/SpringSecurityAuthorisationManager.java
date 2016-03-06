@@ -29,7 +29,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class SpringSecurityAuthorisationManager extends AbstractAuthorizationManager {
 
     /** {@inheritDoc} */
-    @Override
     public Set<String> getCurrentUserPermissions() {
         Set<String> listOfRoles = new LinkedHashSet<String>();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -42,9 +41,17 @@ public class SpringSecurityAuthorisationManager extends AbstractAuthorizationMan
     }
 
     /** {@inheritDoc} */
-    @Override
     public Set<String> listAllPermissions() {
         return getCurrentUserPermissions();
+    }
+
+    /** {@inheritDoc} */
+    public String getCurrentUserName() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!(auth instanceof AnonymousAuthenticationToken)) {
+            return auth.getName();
+        }
+        return "anonymous";
     }   
 
 }

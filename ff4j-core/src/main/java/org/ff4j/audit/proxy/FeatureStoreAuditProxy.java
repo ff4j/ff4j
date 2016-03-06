@@ -1,0 +1,185 @@
+package org.ff4j.audit.proxy;
+
+import java.util.Map;
+import java.util.Set;
+
+import org.ff4j.FF4j;
+import org.ff4j.audit.EventConstants;
+import org.ff4j.audit.EventBuilder;
+import org.ff4j.audit.EventPublisher;
+import org.ff4j.core.Feature;
+import org.ff4j.core.FeatureStore;
+
+/**
+ * Proxy to publish operation to audit.
+ *
+ * @author Cedrick Lunven (@clunven)
+ */
+public class FeatureStoreAuditProxy implements FeatureStore, EventConstants {
+
+    /** Current FeatureStore. */
+    private FeatureStore target = null;
+    
+    /** Reference. */
+    private FF4j ff4j = null;
+    
+    /**
+     * Only constructor.
+     *
+     * @param pTarget
+     */
+    public FeatureStoreAuditProxy(FF4j pFF4j, FeatureStore pTarget) {
+        this.target = pTarget;
+        this.ff4j   = pFF4j;
+    }
+    
+    /** {@inheritDoc} */
+    public void enable(String uid) {
+        long start = System.nanoTime();
+        target.enable(uid);
+        long duration = System.nanoTime() - start;
+        publish(builder(ACTION_TOGGLE_ON).feature(uid).duration(duration));
+    }
+
+    /** {@inheritDoc} */
+    public void disable(String uid) {
+        long start = System.nanoTime();
+        target.disable(uid);
+        long duration = System.nanoTime() - start;
+        publish(builder(ACTION_TOGGLE_OFF).feature(uid).duration(duration));
+    }    
+
+    /** {@inheritDoc} */
+    public void create(Feature fp) {
+        long start = System.nanoTime();
+        target.create(fp);
+        long duration = System.nanoTime() - start;
+        publish(builder(ACTION_CREATE).feature(fp.getUid()).duration(duration));
+    }
+
+    /** {@inheritDoc} */
+    public void delete(String uid) {
+        long start = System.nanoTime();
+        target.delete(uid);
+        long duration = System.nanoTime() - start;
+        publish(builder(ACTION_DELETE).feature(uid).duration(duration));
+    }
+
+    /** {@inheritDoc} */
+    public void update(Feature fp) {
+        long start = System.nanoTime();
+        target.update(fp);
+        long duration = System.nanoTime() - start;
+        publish(builder(ACTION_UPDATE).feature(fp.getUid()).duration(duration));
+    }
+
+    /** {@inheritDoc} */
+    public void grantRoleOnFeature(String uid, String roleName) {
+        long start = System.nanoTime();
+        target.grantRoleOnFeature(uid, roleName);
+        long duration = System.nanoTime() - start;
+        publish(builder("GRANT ROLE " + roleName).feature(uid).duration(duration));
+    }
+
+    /** {@inheritDoc} */
+    public void removeRoleFromFeature(String uid, String roleName) {
+        long start = System.nanoTime();
+        target.removeRoleFromFeature(uid, roleName);
+        long duration = System.nanoTime() - start;
+        publish(builder("REMOVE ROLE " + roleName).feature(uid).duration(duration));
+    }
+    
+    /** {@inheritDoc} */
+    public void enableGroup(String groupName) {
+        long start = System.nanoTime();
+        target.enableGroup(groupName);
+        long duration = System.nanoTime() - start;
+        publish(builder(ACTION_TOGGLE_ON).group(groupName).duration(duration));
+    }
+
+    /** {@inheritDoc} */
+    public void disableGroup(String groupName) {
+        long start = System.nanoTime();
+        target.disableGroup(groupName);
+        long duration = System.nanoTime() - start;
+        publish(builder(ACTION_TOGGLE_OFF).group(groupName).duration(duration));
+    }
+
+    /** {@inheritDoc} */
+    public void addToGroup(String uid, String groupName) {
+        long start = System.nanoTime();
+        target.addToGroup(uid, groupName);
+        long duration = System.nanoTime() - start;
+        publish(builder("ADD TO GROUP " + groupName).feature(uid).duration(duration));
+    }
+
+    /** {@inheritDoc} */
+    public void removeFromGroup(String uid, String groupName) {
+        long start = System.nanoTime();
+        target.removeFromGroup(uid, groupName);
+        long duration = System.nanoTime() - start;
+        publish(builder("ADD TO GROUP " + groupName).feature(uid).duration(duration));
+    }
+
+    /** {@inheritDoc} */
+    public void clear() {
+        long start = System.nanoTime();
+        target.clear();
+        long duration = System.nanoTime() - start;
+        publish(builder(ACTION_CLEAR).type(TARGET_FSTORE)
+                .name(ff4j.getFeatureStore().getClass().getName())
+                .duration(duration));
+    }
+    
+    /**
+     * Init a new builder;
+     *
+     * @return
+     *      new builder
+     */
+    private EventBuilder builder(String action) {
+        EventBuilder eb = new EventBuilder(ff4j);
+        return eb.action(action);
+    }
+    
+    /**
+     * Publish target event to {@link EventPublisher}
+     *
+     * @param eb
+     *      current builder
+     */
+    private void publish(EventBuilder eb) {
+        ff4j.getEventPublisher().publish(eb.build());
+    }
+    
+    /** {@inheritDoc} */
+    public boolean exist(String uid) {
+        return target.exist(uid);
+    }
+
+    /** {@inheritDoc} */
+    public Feature read(String uid) {
+        return target.read(uid);
+    }
+
+    /** {@inheritDoc} */
+    public Map<String, Feature> readAll() {
+        return target.readAll();
+    }
+
+    /** {@inheritDoc} */
+    public boolean existGroup(String groupName) {
+        return target.existGroup(groupName);
+    }
+
+    /** {@inheritDoc} */
+    public Map<String, Feature> readGroup(String groupName) {
+        return target.readGroup(groupName);
+    }
+
+    /** {@inheritDoc} */
+    public Set<String> readAllGroups() {
+        return target.readAllGroups();
+    }
+
+}

@@ -59,7 +59,19 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
      * Default Constructor.
      */
     public FeatureStoreRedis() {
-        redisConnection = new RedisConnection();
+        this(new RedisConnection());
+    }
+    
+    /**
+     * Contact remote redis server.
+     * 
+     * @param host
+     *            target redis host
+     * @param port
+     *            target redis port
+     */
+    public FeatureStoreRedis(RedisConnection pRedisConnection) {
+        redisConnection = pRedisConnection;
     }
     
     /**
@@ -79,7 +91,20 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
      *            target redis port
      */
     public FeatureStoreRedis(String host, int port) {
-        redisConnection = new RedisConnection(host, port);
+        this(new RedisConnection(host, port));
+    }
+    
+    /**
+     * Contact remote redis server.
+     * 
+     * @param host
+     *            target redis host
+     * @param port
+     *            target redis port
+     */
+    public FeatureStoreRedis(String host, int port, String password, String xmlFeaturesfFile) {
+        this(new RedisConnection(host, port, password));
+        importFeaturesFromXmlFile(xmlFeaturesfFile);
     }
 
     /**

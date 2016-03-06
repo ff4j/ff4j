@@ -57,7 +57,19 @@ public class PropertyStoreRedis extends AbstractPropertyStore {
      * Default Constructor.
      */
     public PropertyStoreRedis() {
-        redisConnection = new RedisConnection();
+        this(new RedisConnection());
+    }
+    
+    /**
+     * Contact remote redis server.
+     * 
+     * @param host
+     *            target redis host
+     * @param port
+     *            target redis port
+     */
+    public PropertyStoreRedis(RedisConnection pRedisConnection) {
+        redisConnection = pRedisConnection;
     }
     
     /**
@@ -77,7 +89,20 @@ public class PropertyStoreRedis extends AbstractPropertyStore {
      *            target redis port
      */
     public PropertyStoreRedis(String host, int port) {
-        redisConnection = new RedisConnection(host, port);
+        this(new RedisConnection(host, port));
+    }
+    
+    /**
+     * Contact remote redis server.
+     * 
+     * @param host
+     *            target redis host
+     * @param port
+     *            target redis port
+     */
+    public PropertyStoreRedis(String host, int port, String password, String xmlFeaturesfFile) {
+        this(new RedisConnection(host, port, password));
+        importPropertiesFromXmlFile(xmlFeaturesfFile);
     }
 
     /**

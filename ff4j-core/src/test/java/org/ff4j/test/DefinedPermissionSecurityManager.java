@@ -28,20 +28,30 @@ public class DefinedPermissionSecurityManager extends AbstractAuthorizationManag
     
     private Set<String> internal = null;
     
+    private String user;
+    
+    public DefinedPermissionSecurityManager(String pUser, Set < String > value) {
+        this.internal = value;
+        this.user     = pUser;
+    }
+    
     public DefinedPermissionSecurityManager(Set < String > value) {
         this.internal = value;
     }
 
     /** {@inheritDoc} */
-    @Override
     public Set<String> getCurrentUserPermissions() {
         return internal;
     }
 
     /** {@inheritDoc} */
-    @Override
     public Set<String> listAllPermissions() {
         return getCurrentUserPermissions();
+    }
+
+    /** {@inheritDoc} */
+    public String getCurrentUserName() {
+        return user;
     }
 
 }

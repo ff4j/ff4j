@@ -30,8 +30,8 @@ import java.util.HashSet;
 
 import org.ff4j.FF4j;
 import org.ff4j.audit.Event;
+import org.ff4j.audit.EventConstants;
 import org.ff4j.audit.EventPublisher;
-import org.ff4j.audit.EventType;
 import org.ff4j.audit.repository.InMemoryEventRepository;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingExecutionContext;
@@ -115,11 +115,9 @@ public class FF4jTest extends AbstractFf4jTest {
         ff4j.stop();
         
         // When
-        Event evt = new Event("f1", EventType.CREATE_FEATURE, System.currentTimeMillis());
-        Assert.assertNotNull(evt.toCSV());
+        Event evt = new Event("f1", EventConstants.TARGET_FEATURE, "f2", EventConstants.ACTION_CHECK_OK);
         Assert.assertNotNull(evt.toJson());
         Assert.assertNotNull(evt.toString());
-        evt.setFeatureName("f2");
         
         // When
         EventPublisher ep = new EventPublisher();

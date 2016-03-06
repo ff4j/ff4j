@@ -47,6 +47,16 @@ public class Util {
     private Util() {
     }
     
+    /**
+     * Check that expression is true.
+     * 
+     * @param expression
+     *            expression to evaluate
+     */
+    public static boolean hasLength(String expression) {
+        return (expression != null && !"".equals(expression));
+    }
+    
    /**
      * Check that expression is true.
      * 

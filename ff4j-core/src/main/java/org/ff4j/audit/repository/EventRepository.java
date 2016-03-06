@@ -23,6 +23,7 @@ package org.ff4j.audit.repository;
 import java.util.Set;
 
 import org.ff4j.audit.Event;
+import org.ff4j.audit.EventConstants;
 import org.ff4j.audit.graph.BarChart;
 import org.ff4j.audit.graph.PieChart;
 
@@ -31,7 +32,7 @@ import org.ff4j.audit.graph.PieChart;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public interface EventRepository {
+public interface EventRepository extends EventConstants {
 
     /** total hit count. */
     String TITLE_PIE_HITCOUNT = "Total Hit Counts";
@@ -57,7 +58,10 @@ public interface EventRepository {
     Set < String> getFeatureNames();
 
     /**
-     * Get total hit of feature on a period of time.
+     * Draw a pie chart where each sector is for a feature. The value of each sector is the
+     * number of execution of the feature during the period of time.
+     * 
+     * Pie : Sector/Feature, value- number of check OK
      * 
      * @param startTime
      *            start time of window
@@ -65,41 +69,13 @@ public interface EventRepository {
      *            end time of window
      * @return
      */
-    PieChart getHitsPieChart(long startTime, long endTime);
+    PieChart getFeaturesUsageDistribution(long startTime, long endTime);
     
     /**
-     * Get hit curves.
+     * Draw a pie for a dedicated feature in which each sector is dedicated for a type of 
+     * event. The value is the hitcount in the period of time.
      *
-     * @param featNameSet
-     *            target feature name set
-     * @param nbslot
-     *            number of measure
-     * @param startTime
-     *            starttime for measure
-     * @param endTime
-     *            endtime for measure
-     * @return map of curves
-     */
-    BarChart getHitsBarChart(Set<String> featNameSet, long startTime, long endTime, int nbslot);
-    
-    /**
-     * Get hit curves.
-     *
-     * @param featNameSet
-     *            target feature name set
-     * @param nbslot
-     *            number of measure
-     * @param startTime
-     *            starttime for measure
-     * @param endTime
-     *            endtime for measure
-     * @return map of curves
-     */
-    BarChart getHitsBarChart(long startTime, long endTime, int nbslot);
-    
-    /**
-     * Get a pie of dedicated feature.
-     * @param featureId
+     * @param uid
      *      target feature if
      * @param startTime
      *      target start time
@@ -108,8 +84,38 @@ public interface EventRepository {
      * @return
      *      target pie
      */
-    PieChart getFeatureHitsPie(String featureId, long startTime, long endTime);
-   
+    PieChart getFeatureEventsDistribution(String uid, long startTime, long endTime);
+    
+    /**
+     * Get hit curves.
+     *
+     * @param featNameSet
+     *            target feature name set
+     * @param nbslot
+     *            number of measure
+     * @param startTime
+     *            starttime for measure
+     * @param endTime
+     *            endtime for measure
+     * @return map of curves
+     */
+    BarChart getFeaturesUsageOverTime(Set<String> featNameSet, long startTime, long endTime, int nbslot);
+    
+    /**
+     * Get hit curves.
+     *
+     * @param featNameSet
+     *            target feature name set
+     * @param nbslot
+     *            number of measure
+     * @param startTime
+     *            starttime for measure
+     * @param endTime
+     *            endtime for measure
+     * @return map of curves
+     */
+    BarChart getFeaturesUsageOverTime(long startTime, long endTime, int nbslot);
+    
     /**
      * Get all events.
      * 
