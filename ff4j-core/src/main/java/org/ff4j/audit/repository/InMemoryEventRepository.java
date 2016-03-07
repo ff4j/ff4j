@@ -1,7 +1,28 @@
 package org.ff4j.audit.repository;
 
+/*
+ * #%L
+ * ff4j-core
+ * %%
+ * Copyright (C) 2013 - 2016 FF4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +95,7 @@ public class InMemoryEventRepository extends AbstractEventRepository implements 
         if (!events.containsKey(e.getType())) {
             events.put(e.getType(), new ConcurrentHashMap<String, Queue<Event>>());
         }
-        Map < String, Queue<Event>> mapOfQueues = new ConcurrentHashMap<String, Queue<Event>>();
+        Map < String, Queue<Event>> mapOfQueues = events.get(e.getType());
         if (!mapOfQueues.containsKey(e.getName())) {
             mapOfQueues.put(e.getName(), new ArrayBlockingQueue<Event>(queueCapacity));
         }
@@ -82,26 +103,28 @@ public class InMemoryEventRepository extends AbstractEventRepository implements 
     }
     
     /** {@inheritDoc} */
-    public PieChart getFeaturesUsageDistribution(long startTime, long endTime) {
+    public PieChart featuresListDistributionPie(long startTime, long endTime) {
         PieChart pieGraph = new PieChart(TITLE_PIE_HITCOUNT);
         Map < String, Queue<Event>> eventsFeatures = events.get(TARGET_FEATURE);
-        List < String > colors   = Util.getColorsGradient(eventsFeatures.size());
-        List < String > features = new ArrayList<String>(eventsFeatures.keySet());
-        for(int idx = 0; idx < eventsFeatures.size();idx++) {
-            Queue< Event > qEvents = eventsFeatures.get(features.get(idx));
-            int counter = 0;
-            for (Event evt : qEvents) {
-                if (isEventOK(evt, startTime, endTime)) {
-                    counter++;
+        if (eventsFeatures != null) {
+            List < String > colors   = Util.getColorsGradient(eventsFeatures.size());
+            List < String > features = new ArrayList<String>(eventsFeatures.keySet());
+            for(int idx = 0; idx < eventsFeatures.size();idx++) {
+                Queue< Event > qEvents = eventsFeatures.get(features.get(idx));
+                int counter = 0;
+                for (Event evt : qEvents) {
+                    if (isEventOK(evt, startTime, endTime)) {
+                        counter++;
+                    }
                 }
+                pieGraph.getSectors().add(new PieSector(features.get(idx), counter, colors.get(idx)));
             }
-            pieGraph.getSectors().add(new PieSector(features.get(idx), counter, colors.get(idx)));
         }
         return pieGraph;
     }
     
     /** {@inheritDoc} */
-    public PieChart getFeatureEventsDistribution(String uid, long startTime, long endTime) {
+    public PieChart featureDistributionPie(String uid, long startTime, long endTime) {
         Queue< Event > queueOfEvents = events.get(TARGET_FEATURE).get(uid);
         
         // Loop over event and keep those in the time windows
@@ -138,23 +161,25 @@ public class InMemoryEventRepository extends AbstractEventRepository implements 
         // Build Statistics, loop over each serie
         Map < String, Queue< Event > > eventsPerFeatures = events.get(TARGET_FEATURE);
         
-        long slotWitdh = (endTime - startTime) / nbslot;
-        for (String name : eventsPerFeatures.keySet()) {
-            
-          // Retrieve events for target feature
-          Queue<Event> myQueue = eventsPerFeatures.get(name);
-          
-          // Create series for this feature (even if not present)
-          BarSeries currentSeries = barChart.getSeries().get(name);
-          if (myQueue != null) {
-              for (Iterator<Event> itEvt = myQueue.iterator(); itEvt.hasNext();) {
-                 Event evt = itEvt.next();
-                 long t = evt.getTimestamp();
-                 if (isEventOK(evt, startTime, endTime)) {
-                      currentSeries.incrCount((int) ((t - startTime) / slotWitdh));
-                 }   
-              }
-           }
+        if (eventsPerFeatures != null) {
+            long slotWitdh = (endTime - startTime) / nbslot;
+            for (String name : eventsPerFeatures.keySet()) {
+                
+              // Retrieve events for target feature
+              Queue<Event> myQueue = eventsPerFeatures.get(name);
+              
+              // Create series for this feature (even if not present)
+              BarSeries currentSeries = barChart.getSeries().get(name);
+              if (myQueue != null) {
+                  for (Iterator<Event> itEvt = myQueue.iterator(); itEvt.hasNext();) {
+                     Event evt = itEvt.next();
+                     long t = evt.getTimestamp();
+                     if (isEventOK(evt, startTime, endTime)) {
+                          currentSeries.incrCount((int) ((t - startTime) / slotWitdh));
+                     }   
+                  }
+               }
+            }
         }
         return barChart;
     }
@@ -172,6 +197,7 @@ public class InMemoryEventRepository extends AbstractEventRepository implements 
 
     /** {@inheritDoc} */
     public Set<String> getFeatureNames() {
+        if (!events.containsKey(TARGET_FEATURE)) return new HashSet<String>();
         return events.get(TARGET_FEATURE).keySet();
     }
 

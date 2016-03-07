@@ -1,5 +1,25 @@
 package org.ff4j.store;
 
+/*
+ * #%L
+ * ff4j-store-redis
+ * %%
+ * Copyright (C) 2013 - 2016 FF4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import java.util.Set;
 
 import org.ff4j.audit.Event;
@@ -81,23 +101,24 @@ public class EventRepositoryRedis extends AbstractEventRepository {
 	}
 
 	/** {@inheritDoc} */
-	public PieChart getHitsPieChart(long startTime, long endTime) {
-		return null;
-	}
-
-	/** {@inheritDoc} */
-	public BarChart getHitsBarChart(Set<String> featNameSet, long startTime, long endTime, int nbslot) {
-		return null;
-	}
-
-	/** {@inheritDoc} */
-	public PieChart getFeatureHitsPie(String featureId, long startTime, long endTime) {
-		return null;
-	}
-
-	/** {@inheritDoc} */
 	public int getTotalEventCount() {
 		return 0;
 	}
+
+    /** {@inheritDoc} */
+    public PieChart featuresListDistributionPie(long startTime, long endTime) {
+        redisConnection.getJedis();
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    public PieChart featureDistributionPie(String uid, long startTime, long endTime) {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    public BarChart getFeaturesUsageOverTime(Set<String> featNameSet, long startTime, long endTime, int nbslot) {
+        return null;
+    }
 
 }

@@ -23,8 +23,8 @@ package org.ff4j.test.audit;
 import java.util.Set;
 
 import org.ff4j.audit.Event;
+import org.ff4j.audit.EventConstants;
 import org.ff4j.audit.EventPublisher;
-import org.ff4j.audit.EventType;
 import org.ff4j.audit.graph.BarChart;
 import org.ff4j.audit.graph.PieChart;
 import org.ff4j.audit.graph.PieSector;
@@ -38,7 +38,7 @@ import org.junit.Test;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public abstract class AbstractEventRepositoryTest {
+public abstract class AbstractEventRepositoryTest implements EventConstants {
     
     /** Target {@link EventRepository}. */
     protected EventRepository repo;
@@ -51,6 +51,10 @@ public abstract class AbstractEventRepositoryTest {
     public void setUp() throws Exception {
         repo = initRepository();
         publisher = new EventPublisher(repo);
+    }
+    
+    protected Event generateEvent(String uid, String action) {
+        return new Event(SOURCE_JAVA, TARGET_FEATURE, uid, action);
     }
     
     /**
@@ -70,7 +74,7 @@ public abstract class AbstractEventRepositoryTest {
         int limit = 50;
         for (int i = 0; i < limit; i++) {
             Thread.sleep(2);
-            repo.saveEvent(new Event("aer", EventType.FEATURE_CHECK_ON));
+            repo.saveEvent(generateEvent("aer", ACTION_CHECK_OK));
         }
         // Then
         Assert.assertEquals(limit, repo.getTotalEventCount());
@@ -84,7 +88,7 @@ public abstract class AbstractEventRepositoryTest {
         
         // When
         for (int i = 0; i < nb; i++) {
-            Event evt = new Event("aer", EventType.FEATURE_CHECK_ON);
+            Event evt = new Event(SOURCE_JAVA, TARGET_FEATURE, "aer", ACTION_CHECK_OK);
             publisher.publish(evt);
             Thread.sleep(2);
         }
@@ -102,9 +106,9 @@ public abstract class AbstractEventRepositoryTest {
         Assert.assertTrue(repo.getFeatureNames().isEmpty());
         
         // When
-        repo.saveEvent(new Event("F1", EventType.FEATURE_CHECK_ON));
-        repo.saveEvent(new Event("F2", EventType.FEATURE_CHECK_ON));
-        repo.saveEvent(new Event("F3", EventType.FEATURE_CHECK_ON));
+        repo.saveEvent(generateEvent("F1", ACTION_CHECK_OK));
+        repo.saveEvent(generateEvent("F2", ACTION_CHECK_OK));
+        repo.saveEvent(generateEvent("F3", ACTION_CHECK_OK));
         
         // Then
         Set < String > features =  repo.getFeatureNames();
@@ -124,13 +128,13 @@ public abstract class AbstractEventRepositoryTest {
         
         // When
         for (int i = 0; i < nbEvent; i++) {
-            repo.saveEvent(new Event("evt1", EventType.FEATURE_CHECK_ON));
-            repo.saveEvent(new Event("evt2", EventType.FEATURE_CHECK_ON));
+            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "evt1", ACTION_CHECK_OK));
+            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "evt2", ACTION_CHECK_OK));
             Thread.sleep(2);
         }
         long endTime = System.currentTimeMillis();
         long startTime = endTime - (5 * nbEvent);
-        BarChart bc = repo.getHitsBarChart(startTime, endTime, nbSlot);
+        BarChart bc = repo.getFeaturesUsageOverTime(startTime, endTime, nbSlot);
         
         // Then
        
@@ -156,16 +160,16 @@ public abstract class AbstractEventRepositoryTest {
         
         // When
         for (int i = 0; i < nbEvent; i++) {
-            repo.saveEvent(new Event("evt1",  EventType.FEATURE_CHECK_ON));
+            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "evt1", ACTION_CHECK_OK));
             if (i%2 == 0)
-                repo.saveEvent(new Event("evt1",  EventType.FEATURE_CHECK_OFF));
+                repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "evt1", ACTION_CHECK_OK));
             if (i%5 == 0)
-                repo.saveEvent(new Event("evt1",  EventType.DISABLE_FEATURE));
+                repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "evt1", ACTION_UPDATE));
             Thread.sleep(2);
         }
         long endTime = System.currentTimeMillis();
         long startTime = endTime - (4 * nbEvent);
-        PieChart pc = repo.getFeatureHitsPie("evt1", startTime, endTime);
+        PieChart pc = repo.featureDistributionPie("evt1", startTime, endTime);
         
         // Then
         Assert.assertEquals(34, repo.getTotalEventCount());
@@ -176,6 +180,34 @@ public abstract class AbstractEventRepositoryTest {
         }
     }
     
+    @Test
+    public void testDistributionALL() throws InterruptedException {
+        int loopCount = 20;
+        for(int i=0;i<loopCount;i++) {
+            repo.saveEvent(generateEvent("f1", ACTION_CHECK_OK));
+            repo.saveEvent(generateEvent("f2", ACTION_CHECK_OK));
+            repo.saveEvent(generateEvent("f3", ACTION_CHECK_OK));
+            Thread.sleep(100);
+        }
+        
+        PieChart pie1 = repo.featuresListDistributionPie((System.currentTimeMillis() - 5000), 
+                                                  (System.currentTimeMillis()));
+        Assert.assertEquals(3, pie1.getSectors().size());
+        Assert.assertEquals(loopCount, (int) pie1.getSectors().get(1).getValue());
+    }
+    
+    @Test
+    public void testDistribution() throws InterruptedException {
+        repo.saveEvent(generateEvent("f1", ACTION_CHECK_OK));
+        repo.saveEvent(generateEvent("f1", ACTION_UPDATE));
+        repo.saveEvent(generateEvent("f1", ACTION_DELETE));
+        
+        PieChart pie2 = repo.featureDistributionPie("f1", 
+                (System.currentTimeMillis() - 10000), (System.currentTimeMillis() + 10000));
+        Assert.assertEquals(3, pie2.getSectors().size());
+    }
+    
+
 
 }
 

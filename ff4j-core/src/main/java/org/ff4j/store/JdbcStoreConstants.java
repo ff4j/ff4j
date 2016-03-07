@@ -181,12 +181,24 @@ public interface JdbcStoreConstants {
     /** Creation. */
     String SQL_AUDIT_LISTFEATURES = "SELECT DISTINCT " + COL_EVENT_NAME + " FROM " + TABLE_AUDIT + " WHERE " + COL_EVENT_TYPE + " LIKE '" + EventConstants.TARGET_FEATURE + "'";
     
-    /** Count target feature. */
-    String SQL_AUDIT_COUNT_OK =  "SELECT COUNT(*) FROM " + TABLE_AUDIT   + // Count
-                                     " WHERE (" + COL_EVENT_TYPE   + " LIKE '" + EventConstants.TARGET_FEATURE  + "') " +
-                                     " AND   (" + COL_EVENT_ACTION + " LIKE '" + EventConstants.ACTION_CHECK_OK + "') " + // only checked
-                                     " AND   (" + COL_EVENT_TIME + "> ?) " +    // lower bound
-                                     " AND   (" + COL_EVENT_TIME + "< ?)";      // upper bound
+    /** Get all information for the Pie as a single request. */
+    String SQL_AUDIT_OK_DISTRIB = "SELECT count(" + COL_EVENT_UUID + ") as NB, " + COL_EVENT_NAME + 
+                                  " FROM " + TABLE_AUDIT +
+                                  " WHERE (" + COL_EVENT_TYPE   + " LIKE '" + EventConstants.TARGET_FEATURE  + "') " +
+                                  " AND   (" + COL_EVENT_ACTION + " LIKE '" + EventConstants.ACTION_CHECK_OK + "') " +
+                                  " AND   (" + COL_EVENT_TIME + "> ?) " +
+                                  " AND   (" + COL_EVENT_TIME + "< ?)" +
+                                  " GROUP BY " + COL_EVENT_NAME;
+    
+    /** List events for a dedicate feature (in a time window). */
+    String SQL_AUDIT_FEATURE_DISTRIB = "SELECT count(" + COL_EVENT_UUID + ") as NB, " + COL_EVENT_ACTION + 
+                                     " FROM " + TABLE_AUDIT  + 
+                                     " WHERE (" + COL_EVENT_TYPE + " LIKE '" + EventConstants.TARGET_FEATURE  + "') " +
+                                     " AND   (" + COL_EVENT_NAME + " LIKE ?) " +  
+                                     " AND   (" + COL_EVENT_TIME + "> ?) " + 
+                                     " AND   (" + COL_EVENT_TIME + "< ?)" + 
+                                     " GROUP BY " + COL_EVENT_ACTION;
+    
       
     /** List events for a dedicate feature (in a time window). */
     String SQL_AUDIT_FEATURE_ALLEVENTS = "SELECT * FROM " + TABLE_AUDIT  +      // Count

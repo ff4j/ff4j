@@ -69,7 +69,7 @@ public interface EventRepository extends EventConstants {
      *            end time of window
      * @return
      */
-    PieChart getFeaturesUsageDistribution(long startTime, long endTime);
+    PieChart featuresListDistributionPie(long startTime, long endTime);
     
     /**
      * Draw a pie for a dedicated feature in which each sector is dedicated for a type of 
@@ -84,7 +84,7 @@ public interface EventRepository extends EventConstants {
      * @return
      *      target pie
      */
-    PieChart getFeatureEventsDistribution(String uid, long startTime, long endTime);
+    PieChart featureDistributionPie(String uid, long startTime, long endTime);
     
     /**
      * Get hit curves.

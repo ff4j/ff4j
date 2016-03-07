@@ -4,7 +4,7 @@ package org.ff4j.test.audit;
  * #%L
  * ff4j-core
  * %%
- * Copyright (C) 2013 - 2014 Ff4J
+ * Copyright (C) 2013 - 2016 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@ package org.ff4j.test.audit;
  * #L%
  */
 
-import org.ff4j.audit.Event;
-import org.ff4j.audit.EventType;
 import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.audit.repository.InMemoryEventRepository;
 import org.junit.Assert;
@@ -45,46 +43,32 @@ public class InMemoryEventRepositoryTest extends AbstractEventRepositoryTest {
     @Test
     public void testNotExceedLimit() throws InterruptedException {
         for (int i = 0; i < (2 * limit); i++) {
-            publisher.publish(new Event("aer", EventType.FEATURE_CHECK_ON));
+            publisher.publish(generateEvent("aer", ACTION_CHECK_OK));
             Thread.sleep(2);
         }
         Assert.assertEquals(limit, repo.getTotalEventCount());
         for (int i = 0; i < (2 * limit); i++) {
-            publisher.publish(new Event("aer", EventType.FEATURE_CHECK_OFF));
+            publisher.publish(generateEvent("aer", ACTION_CHECK_OFF));
             Thread.sleep(2);
         }
-        publisher.publish(new Event("aer", EventType.ENABLE_FEATURE));
-        repo.toString();
+        publisher.publish(generateEvent("aer", ACTION_TOGGLE_ON));
+        System.out.println(repo.toString());
         
-        repo.getHitsPieChart((System.currentTimeMillis() - 10000), (System.currentTimeMillis() + 10000));
-        
-    }
-    
-    @Test
-    public void testInMemoryTest() {
-        InMemoryEventRepository repo1 = new InMemoryEventRepository(limit);
-        repo1.saveEvent(new Event("aer", EventType.FEATURE_CHECK_ON));
-        repo1.saveEvent(new Event("aer", EventType.FEATURE_CHECK_ON));
-        repo1.getHitsPieChart((System.currentTimeMillis() - 10000), (System.currentTimeMillis() + 10000));
-        
-        repo1.saveEvent(new Event("aer", EventType.ENABLE_FEATURE));
-        repo1.getFeatureHitsPie("aer", (System.currentTimeMillis() - 100000), (System.currentTimeMillis() + 100000));
-    }
-    
-    @Test
-    public void testNotExceedLimit2() throws InterruptedException {
-        InMemoryEventRepository repo1 = new InMemoryEventRepository(limit);
-        repo1.toString();
+        repo.featuresListDistributionPie((System.currentTimeMillis() - 10000), (System.currentTimeMillis() + 10000));
     }
     
     @Test
     public void testTo() throws InterruptedException {
         for (int i = 0; i < (2 * limit); i++) {
-            publisher.publish(new Event("aer", EventType.FEATURE_CHECK_ON));
+            publisher.publish(generateEvent("aer", ACTION_CHECK_OK));
             Thread.sleep(2);
         }
         Assert.assertEquals(limit, repo.getTotalEventCount());
     }
-    
+    @Test
+    public void testNotExceedLimit2() throws InterruptedException {
+        InMemoryEventRepository repo1 = new InMemoryEventRepository(limit);
+        repo1.toString();
+    }
     
 }

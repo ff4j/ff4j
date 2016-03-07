@@ -38,7 +38,18 @@ import org.glassfish.jersey.server.ContainerRequest;
 public class FF4JSecurityContextAuthenticationManager extends AbstractAuthorizationManager{
 
     /** {@inheritDoc} */
-    @Override
+    public String getCurrentUserName() {
+        SecurityContext wrapper = FF4JSecurityContextHolder.getSecurityContext();
+        if (wrapper instanceof ContainerRequest) {
+            SecurityContext sc = ((ContainerRequest) wrapper).getSecurityContext();
+            if (sc != null && sc instanceof FF4jSecurityContext) {
+                return ((FF4jSecurityContext) sc).getUserName();
+            }
+        }
+        return null;
+    }
+    
+    /** {@inheritDoc} */
     public Set<String> getCurrentUserPermissions() {
         SecurityContext wrapper = FF4JSecurityContextHolder.getSecurityContext();
         if (wrapper instanceof ContainerRequest) {
@@ -51,7 +62,6 @@ public class FF4JSecurityContextAuthenticationManager extends AbstractAuthorizat
     }
 
     /** {@inheritDoc} */
-    @Override
     public Set<String> listAllPermissions() {
         Set < String > vars = new HashSet<>();
         if (FF4jAuthenticationFilter.apiConfig != null) {
@@ -62,4 +72,5 @@ public class FF4JSecurityContextAuthenticationManager extends AbstractAuthorizat
         }
         return vars;
     }
+    
 }

@@ -33,6 +33,9 @@ import org.ff4j.security.AuthorizationsManager;
  */
 public class DefaultAuthorisationManager implements AuthorizationsManager {
 
+    /** Current userName. */
+    private String userName;
+    
     /** All definitions. */
     private  Set<String> userDef = new HashSet<String>();
     
@@ -55,6 +58,25 @@ public class DefaultAuthorisationManager implements AuthorizationsManager {
     public DefaultAuthorisationManager(Set<String> user, Set<String> all) {
         this.userDef    = user;
         this.allDef     = all;
+    }
+    
+
+    /**
+     * Constructor for manager.
+     *
+     * @param user
+     *      user permissions
+     * @param all
+     *      all permissions.
+     */
+    public DefaultAuthorisationManager(Set<String> user, Set<String> all, String userName) {
+        this(user, all);
+        this.userName = userName;
+    }
+    
+    /** {@inheritDoc} */
+    public String getCurrentUserName() {
+        return userName;
     }
     
     /** {@inheritDoc} */
@@ -81,5 +103,7 @@ public class DefaultAuthorisationManager implements AuthorizationsManager {
     public String toJson() {
         return DefaultAuthorisationManager.class.getName();
     }
+
+    
 
 }

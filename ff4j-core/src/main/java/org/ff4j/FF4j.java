@@ -715,7 +715,6 @@ public class FF4j implements EventConstants {
      */
     public FeatureStore getFeatureStore() {
         if (!initialized) init();
-        
         return fstore;
     }
     
@@ -749,6 +748,10 @@ public class FF4j implements EventConstants {
      */
     public FlippingExecutionContext getCurrentContext() {
         if (!initialized) init();
+        
+        if (null == this.currentExecutionContext.get()) {
+            this.currentExecutionContext.set(new FlippingExecutionContext());
+        }
         return this.currentExecutionContext.get();
     }
 

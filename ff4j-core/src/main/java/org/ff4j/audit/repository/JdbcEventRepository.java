@@ -119,7 +119,7 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
             }
             
             sb.append(") VALUES (?");
-            for(int offset = 1; offset < idx;offset++) {
+            for(int offset = 1; offset < idx-1;offset++) {
                 sb.append(",?");
             }
             sb.append(")");
@@ -178,7 +178,7 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
     }
     
     /** {@inheritDoc} */
-    public PieChart getFeaturesUsageDistribution(long startTime, long endTime) {
+    public PieChart featuresListDistributionPie(long startTime, long endTime) {
         PieChart pieGraph = new PieChart(TITLE_PIE_HITCOUNT);
         Connection sqlConn = null;
         PreparedStatement ps = null;
@@ -186,20 +186,24 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
         try {
             // Returns features
             sqlConn = dataSource.getConnection();
-            int idx = 0;
-            Set < String > features = getFeatureNames();
-            List < String > colors  = Util.getColorsGradient(features.size());
-            for (String featName : features) {
-                int counter = 0;
-                ps = sqlConn.prepareStatement(SQL_AUDIT_COUNTFEATURE);
-                ps.setString(1, featName);
-                ps.setTimestamp(2, new Timestamp(startTime));
-                ps.setTimestamp(3, new Timestamp(endTime));
-                rs = ps.executeQuery();
-                rs.next();
-                counter = rs.getInt(1);
-                pieGraph.getSectors().add(new PieSector(featName, counter, colors.get(idx)));
+            
+            
+            ps = sqlConn.prepareStatement(SQL_AUDIT_OK_DISTRIB);
+            ps.setTimestamp(1, new Timestamp(startTime));
+            ps.setTimestamp(2, new Timestamp(endTime));
+            rs = ps.executeQuery();
+            Map < String, Integer > freq = new HashMap<String, Integer>();
+            while (rs.next()) {
+                freq.put(rs.getString(COL_EVENT_NAME), rs.getInt("NB"));
             }
+            List < String > colors  = Util.getColorsGradient(freq.size());
+            int idx = 0;
+            for (String featName : freq.keySet()) {
+                pieGraph.getSectors().add(
+                        new PieSector(featName, freq.get(featName), colors.get(idx)));
+                idx++;
+            }
+            
         } catch (SQLException sqlEX) {
             throw new FeatureAccessException("Cannot build PieChart from repository, ", sqlEX);
         } finally {
@@ -233,7 +237,7 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
             sqlConn = dataSource.getConnection();
             
             for (String featName : getFeatureNames()) {
-                ps = sqlConn.prepareStatement(SQL_AUDIT_FEATURE_EVENTOK);
+                ps = sqlConn.prepareStatement(SQL_AUDIT_FEATURE_ALLEVENTS);
                 ps.setString(1, featName);
                 ps.setTimestamp(2, new Timestamp(startTime));
                 ps.setTimestamp(3, new Timestamp(endTime));
@@ -257,8 +261,7 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
     }
 
     /** {@inheritDoc} */
-    public PieChart getFeatureEventsDistribution(String featureId, long startTime, long endTime) {
-        List < String > colors   = Util.getColorsGradient(4);
+    public PieChart featureDistributionPie(String featureId, long startTime, long endTime) {
         PieChart pieGraph = new PieChart("Hits Count for " + featureId);
         
         Connection sqlConn = null;
@@ -267,51 +270,21 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
         try {
             // Returns features
             sqlConn = dataSource.getConnection();
-            ps = sqlConn.prepareStatement(SQL_AUDIT_FEATURE_ALLEVENTS);
+            ps = sqlConn.prepareStatement(SQL_AUDIT_FEATURE_DISTRIB);
             ps.setString(1, featureId);
             ps.setTimestamp(2, new Timestamp(startTime));
             ps.setTimestamp(3, new Timestamp(endTime));
             rs = ps.executeQuery();
             
-            int nbEnable = 0;
-            int nbDisable = 0;
-            int nbFlip = 0;
-            int notFlip = 0;
+            Map < String, Integer > freq = new HashMap<String, Integer>();
             while (rs.next()) {
-                String eventTypeString = rs.getString(COL_EVENT_TYPE);
-                EventType eventType = EventType.valueOf(eventTypeString);
-                switch (eventType) {
-                    case FEATURE_CHECK_ON:
-                        nbFlip++;
-                    break;
-                    case FEATURE_CHECK_OFF:
-                        notFlip++;
-                    break;
-                    case ENABLE_FEATURE:
-                        nbEnable++;
-                    break;
-                    case DISABLE_FEATURE:
-                        nbDisable++;
-                    break;
-                    default:
-                    break;
-                }
+                freq.put(rs.getString(COL_EVENT_ACTION), rs.getInt("NB"));
             }
-            if (nbEnable > 0) {
-                pieGraph.getSectors().add(
-                        new PieSector(EventType.ENABLE_FEATURE.toString(), nbEnable, colors.get(0)));
-            }
-            if (nbDisable > 0) {
-                pieGraph.getSectors().add(new PieSector(
-                        EventType.DISABLE_FEATURE.toString(), nbDisable, colors.get(1)));
-            }
-            if (nbFlip > 0) {
-                pieGraph.getSectors().add(new PieSector(
-                        EventType.FEATURE_CHECK_ON.toString(), nbFlip, colors.get(2)));
-            }
-            if (notFlip > 0) {
-                pieGraph.getSectors().add(new PieSector(
-                        EventType.FEATURE_CHECK_OFF.toString(), notFlip, colors.get(3)));
+            List < String > colors = Util.getColorsGradient(freq.size());
+            int idx = 0;
+            for (String action : freq.keySet()) {
+                pieGraph.getSectors().add(new PieSector(action, freq.get(action), colors.get(idx)));
+                idx++;
             }
             return pieGraph;
                 

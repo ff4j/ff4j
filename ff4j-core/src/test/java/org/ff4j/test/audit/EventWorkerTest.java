@@ -26,8 +26,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.ff4j.audit.Event;
+import org.ff4j.audit.EventConstants;
 import org.ff4j.audit.EventPublisher;
-import org.ff4j.audit.EventType;
 import org.ff4j.audit.EventWorker;
 import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.audit.repository.InMemoryEventRepository;
@@ -35,13 +35,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 
-public class EventWorkerTest {
+public class EventWorkerTest implements EventConstants {
     
     @Test
     public void testEventWorker() {
         // Given
         EventRepository er = new InMemoryEventRepository();
-        Event evt = new Event("F1", EventType.FEATURE_CHECK_OFF);
+        Event evt = new Event(SOURCE_JAVA, TARGET_FEATURE, "F1", ACTION_CHECK_OFF);
         EventWorker ew = new EventWorker(evt, er);
         // When
         ew.setName("NAME1");
@@ -53,7 +53,7 @@ public class EventWorkerTest {
     public void testEventWorkerCall() throws Exception {
         // Given
         EventRepository er = mock(EventRepository.class);
-        Event evt = new Event("F1", EventType.FEATURE_CHECK_OFF);
+        Event evt = new Event(SOURCE_JAVA, TARGET_FEATURE, "F1", ACTION_CHECK_OK);
         when(er.saveEvent(evt)).thenReturn(false);
         EventWorker ew = new EventWorker(evt, er);
         // When
@@ -64,7 +64,7 @@ public class EventWorkerTest {
     public void testErrorOnSubmitEventPublisher() {
         // Given
         EventRepository er = mock(EventRepository.class);
-        Event evt = new Event("F1", EventType.FEATURE_CHECK_OFF);
+        Event evt = new Event(SOURCE_JAVA, TARGET_FEATURE, "F1", ACTION_CHECK_OFF);
         doThrow(new RuntimeException("Erreur")).when(er).saveEvent(evt);
         EventPublisher evtPublisher = new EventPublisher(er);
         evtPublisher.publish(evt);

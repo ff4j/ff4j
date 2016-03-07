@@ -66,7 +66,7 @@ public abstract class AbstractEventRepository implements EventRepository {
         c2.set(Calendar.SECOND, 0);
         
         // Create PIE
-        PieChart pie = getFeaturesUsageDistribution(c.getTimeInMillis(), c2.getTimeInMillis());
+        PieChart pie = featuresListDistributionPie(c.getTimeInMillis(), c2.getTimeInMillis());
         sb.append(",\"todayHitsPie\": " + pie.toJson());
         
         // Create BARCHART
@@ -98,7 +98,7 @@ public abstract class AbstractEventRepository implements EventRepository {
     }
     
     protected boolean isEventOK(Event evt, long startTime, long endTime) {
-        return isEventInInterval(evt, startTime, endTime) && ACTION_CHECK_OK.equals(evt.getType());
+        return isEventInInterval(evt, startTime, endTime) && ACTION_CHECK_OK.equals(evt.getAction());
     }
         
 }
