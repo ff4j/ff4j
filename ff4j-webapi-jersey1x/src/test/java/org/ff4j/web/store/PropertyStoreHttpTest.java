@@ -24,6 +24,8 @@ package org.ff4j.web.store;
 import org.ff4j.FF4j;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
+import org.ff4j.web.jersey1.store.FeatureStoreHttp;
+import org.ff4j.web.jersey1.store.PropertyStoreHttp;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 

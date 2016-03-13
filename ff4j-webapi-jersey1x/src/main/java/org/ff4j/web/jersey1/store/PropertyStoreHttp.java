@@ -1,4 +1,4 @@
-package org.ff4j.web.store;
+package org.ff4j.web.jersey1.store;
 
 /*
  * #%L
@@ -25,15 +25,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.exception.PropertyAccessException;
 import org.ff4j.exception.PropertyAlreadyExistException;
@@ -45,10 +40,14 @@ import org.ff4j.utils.json.PropertyJsonParser;
 import org.ff4j.web.FF4jWebConstants;
 import org.ff4j.web.api.FF4jJacksonMapper;
 import org.ff4j.web.api.resources.domain.PropertyApiBean;
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.internal.util.Base64;
 
-import io.swagger.jaxrs.json.JacksonJsonProvider;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.api.json.JSONConfiguration;
+import com.sun.jersey.core.util.Base64;
 
 /**
  * Implementation of the store with REST.
@@ -67,7 +66,7 @@ public class PropertyStoreHttp extends AbstractPropertyStore implements FF4jWebC
     private String authorization = null;
 
     /** Target jersey resource. */
-    private WebTarget storeWebRsc = null;
+    private WebResource storeWebRsc = null;
     
     /**
      * Default construtor
@@ -117,25 +116,29 @@ public class PropertyStoreHttp extends AbstractPropertyStore implements FF4jWebC
      */
     private void initJerseyClient() {
         if (client == null) {
-            ClientConfig clientConfig = new ClientConfig();
-            clientConfig.register(JacksonJsonProvider.class);
-            clientConfig.register(FF4jJacksonMapper.class);
-            client = ClientBuilder.newClient(clientConfig);
+            ClientConfig config = new DefaultClientConfig();
+            config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
+            config.getSingletons().add(new JacksonJsonProvider());
+            config.getSingletons().add(new FF4jJacksonMapper());
+            client = Client.create(config);
         }
         if (url == null) {
             throw new IllegalArgumentException("Cannot initialialize Jersey Client : please provide store URL in 'url' attribute");
         }
     }
-    
+
     /**
      * Get access to store web resource.
      * 
      * @return target web resource
      */
-    private WebTarget getStore() {
+    private WebResource getStore() {
         if (storeWebRsc == null) {
             initJerseyClient();
-            storeWebRsc = client.target(url).path(RESOURCE_PROPERTYSTORE).path(RESOURCE_PROPERTIES);
+            storeWebRsc = client.resource(url).path(RESOURCE_PROPERTYSTORE).path(RESOURCE_PROPERTIES);
+            if (null != authorization) {
+                storeWebRsc.header(HEADER_AUTHORIZATION, authorization);
+            }
         }
         return storeWebRsc;
     }
@@ -143,7 +146,7 @@ public class PropertyStoreHttp extends AbstractPropertyStore implements FF4jWebC
     /** {@inheritDoc} */
     public boolean existProperty(String name) {
         Util.assertHasLength(name);
-        Response cRes = getStore().path(name).request(MediaType.APPLICATION_JSON_TYPE).get();
+        ClientResponse cRes = getStore().path(name).get(ClientResponse.class);
         if (Status.OK.getStatusCode() == cRes.getStatus()) {
             return true;
         }
@@ -151,7 +154,7 @@ public class PropertyStoreHttp extends AbstractPropertyStore implements FF4jWebC
             return false;
         }
         throw new PropertyAccessException("Cannot check existence of property, an HTTP error " + 
-                cRes.getStatus() + " occured : " + cRes.getEntity());
+                cRes.getStatus() + " occured : " + cRes.getEntityInputStream());
     }
 
     /** {@inheritDoc} */
@@ -162,9 +165,9 @@ public class PropertyStoreHttp extends AbstractPropertyStore implements FF4jWebC
             throw new PropertyAlreadyExistException("Property already exist");
         }
         // Now can process upsert through PUT HTTP method
-        Response cRes = getStore().path(value.getName())//
-                .request(MediaType.APPLICATION_JSON)
-                .put(Entity.entity(new PropertyApiBean(value), MediaType.APPLICATION_JSON));
+        ClientResponse cRes = getStore().path(value.getName())//
+                .type(MediaType.APPLICATION_JSON) //
+                .put(ClientResponse.class, new PropertyApiBean(value));
         
         // Check response code CREATED or raised error
         if (Status.CREATED.getStatusCode() != cRes.getStatus()) {
@@ -177,18 +180,17 @@ public class PropertyStoreHttp extends AbstractPropertyStore implements FF4jWebC
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Property name cannot be null nor empty");
         }
-        Response cRes = getStore().path(name).request(MediaType.APPLICATION_JSON_TYPE).get();
+        ClientResponse cRes = getStore().path(name).get(ClientResponse.class);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new PropertyNotFoundException(name);
         }
-        String resEntity = (String) cRes.readEntity(String.class);
-        return PropertyJsonParser.parseProperty(resEntity);
+        return PropertyJsonParser.parseProperty(cRes.getEntity(String.class));
     }
 
     /** {@inheritDoc} */
     public void deleteProperty(String name) {
         Util.assertHasLength(name);
-        Response cRes = getStore().path(name).request().delete();
+        ClientResponse cRes = getStore().path(name).delete(ClientResponse.class);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new PropertyNotFoundException(name);
         }
@@ -199,11 +201,11 @@ public class PropertyStoreHttp extends AbstractPropertyStore implements FF4jWebC
 
     /** {@inheritDoc} */
     public Map<String, Property<?>> readAllProperties() {
-        Response cRes = getStore().request(MediaType.APPLICATION_JSON_TYPE).get();
+        ClientResponse cRes = getStore().get(ClientResponse.class);
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
             throw new PropertyAccessException("Cannot read properties, an HTTP error " + cRes.getStatus() + " occured.");
         }
-        String resEntity = cRes.readEntity(String.class);
+        String resEntity = cRes.getEntity(String.class);
         Property<?>[] pArray = PropertyJsonParser.parsePropertyArray(resEntity);
         Map<String, Property<?>> properties = new HashMap<String, Property<?>>();
         for (Property<?> pName : pArray) {
@@ -219,10 +221,13 @@ public class PropertyStoreHttp extends AbstractPropertyStore implements FF4jWebC
 
     /** {@inheritDoc} */
     public void clear() {
-        WebTarget wr = client.target(url).path(RESOURCE_PROPERTYSTORE).path(STORE_CLEAR);
-        Response cRes = post(wr);
+        WebResource wr = client.resource(url).path(RESOURCE_PROPERTYSTORE).path(STORE_CLEAR);
+        if (null != authorization) {
+            wr.header(HEADER_AUTHORIZATION, authorization);
+        }
+        ClientResponse cRes = wr.post(ClientResponse.class);
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
-            throw new PropertyAccessException("Cannot clear property store - " + cRes.getStatus());
+            throw new FeatureAccessException("Cannot clear feature store - " + cRes.getStatus());
         }
     }
 
@@ -247,22 +252,7 @@ public class PropertyStoreHttp extends AbstractPropertyStore implements FF4jWebC
      *      target header
      */
     public static String buildAuthorization4UserName(String username, String password) {
-        return " Basic " + new String(Base64.encodeAsString(username + ":" + password));
-    }
-    
-    /**
-     * Share header settings for invocations.
-     *
-     * @param webTarget
-     *          target web
-     * @return
-     */
-    private Response post(WebTarget webTarget) {
-        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
-        if (null != authorization) {
-            invocationBuilder.header(HEADER_AUTHORIZATION, authorization);
-        }
-        return invocationBuilder.post(Entity.text(""));
+        return " Basic " + new String(Base64.encode(username + ":" + password));
     }
     
 }

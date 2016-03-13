@@ -23,6 +23,7 @@ package org.ff4j.web.store;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.test.store.FeatureStoreTestSupport;
+import org.ff4j.web.jersey2.store.FeatureStoreHttp;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.AfterClass;
 import org.junit.Assert;

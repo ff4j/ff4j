@@ -35,7 +35,7 @@ import org.ff4j.test.AssertFf4j;
 import org.ff4j.web.api.FF4jJacksonMapper;
 import org.ff4j.web.api.resources.FF4jResource;
 import org.ff4j.web.api.security.FF4JSecurityContextAuthenticationManager;
-import org.ff4j.web.store.FeatureStoreHttp;
+import org.ff4j.web.jersey2.store.FeatureStoreHttp;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.test.grizzly.GrizzlyTestContainerFactory;
 import org.glassfish.jersey.test.spi.TestContainerFactory;

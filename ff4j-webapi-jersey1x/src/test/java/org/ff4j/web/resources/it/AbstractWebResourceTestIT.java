@@ -30,7 +30,7 @@ import org.ff4j.web.FF4jWebConstants;
 import org.ff4j.web.api.FF4JApiApplication;
 import org.ff4j.web.api.FF4jJacksonMapper;
 import org.ff4j.web.api.resources.FF4jResource;
-import org.ff4j.web.store.FeatureStoreHttp;
+import org.ff4j.web.jersey1.store.FeatureStoreHttp;
 import org.junit.Before;
 
 import com.fasterxml.jackson.databind.ObjectMapper;

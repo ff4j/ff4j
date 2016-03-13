@@ -3,7 +3,7 @@
  * 
  * @author Cedrick Lunven (@clunven)</a>
  */
-package org.ff4j.web.store;
+package org.ff4j.web.jersey1.store;
 
 /*
  * #%L
