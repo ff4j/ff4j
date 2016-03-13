@@ -144,7 +144,7 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
             sqlConn.commit();
             
         } catch(Exception exc) {
-            throw new AuditAccessException("Cannot insert event into DB", exc);
+            throw new AuditAccessException("Cannot insert event into DB (" + exc.getClass() + ") "+ exc.getCause(), exc);
             
         } finally {
            closeStatement(stmt);
