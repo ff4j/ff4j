@@ -31,6 +31,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.ff4j.exception.FeatureAccessException;
+
 /**
  *  Copyright 2004 Clinton Begin
  *
@@ -107,7 +109,7 @@ public class SqlScriptRunner {
         } catch (SQLException e) {
             throw e;
         } catch (Exception e) {
-            throw new RuntimeException("Error running script.  Cause: " + e, e);
+            throw new FeatureAccessException("Error running script.  Cause: " + e, e);
         }
     }
 

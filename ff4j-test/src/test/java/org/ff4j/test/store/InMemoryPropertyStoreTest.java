@@ -63,16 +63,14 @@ public class InMemoryPropertyStoreTest extends PropertyStoreTestSupport {
     }
     
     public void testProperty() {
-        
         FF4j ff4j = new FF4j("ff4j.xml");
-        
         ff4j.getPropertiesStore().createProperty(new PropertyDate("property_3", new Date()));
-       
         Property<?> ap = ff4j.getPropertiesStore().readProperty("property_3");
         PropertyDate pDate = (PropertyDate) ap;
         pDate.setValue(new Date());
         ff4j.getPropertiesStore().updateProperty(pDate);
         ff4j.getPropertiesStore().deleteProperty("property_3");
+        Assert.assertFalse(testedStore.existProperty("property_3"));
     }
     
     @Test

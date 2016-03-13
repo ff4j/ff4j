@@ -34,23 +34,22 @@ public class MockPropertyStore implements PropertyStore {
 
     private boolean empty = false;
     
-    @Override
+    /** {@inheritDoc} */
     public boolean existProperty(String name) {
-        if ("log".equals(name) || "a".equals(name)) return true;
-        return false;
+        return ("log".equals(name) || "a".equals(name));
     }
 
-    @Override
+    /** {@inheritDoc} */
     public <T> void createProperty(Property<T> value) {
     }
 
-    @Override
+    /** {@inheritDoc} */
     public Property<?> readProperty(String name) {
         if ("a".equals(name)) return new PropertyString("a", "AMER");
         return null;
     }
 
-    @Override
+    /** {@inheritDoc} */
     public void updateProperty(String name, String newValue) {
     }
 

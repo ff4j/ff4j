@@ -33,38 +33,30 @@ public class MockFeatureStore implements FeatureStore {
 
     private boolean empty = false;
     
-    @Override
+    /** {@inheritDoc} */
     public void enable(String featureID) {
-        // TODO Auto-generated method stub
-        
     }
 
-    @Override
+    /** {@inheritDoc} */
     public void disable(String fId) {
-        // TODO Auto-generated method stub
-        
     }
 
-    @Override
+    /** {@inheritDoc} */
     public boolean exist(String featId) {
-        if ("first".equals(featId)) return true;
-        
-        return false;
+        return ("first".equals(featId));
     }
 
-    @Override
+    /** {@inheritDoc} */
     public void create(Feature fp) {
-        // TODO Auto-generated method stub
-        
     }
 
-    @Override
+    /** {@inheritDoc} */
     public Feature read(String featureUid) {
         if ("first".equals(featureUid)) return new Feature("first");
         return null;
     }
 
-    @Override
+    /** {@inheritDoc} */
     public Map<String, Feature> readAll() {
         Map < String, Feature> map = new HashMap<String, Feature>();
         if (!empty) {
