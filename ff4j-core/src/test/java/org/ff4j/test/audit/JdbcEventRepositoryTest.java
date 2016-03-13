@@ -31,7 +31,6 @@ import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.utils.Util;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
@@ -43,7 +42,6 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
  *
  * @author Cedrick Lunven (@clunven)
  */
-@Ignore
 public class JdbcEventRepositoryTest extends AbstractEventRepositoryTest {
     
     /** DataBase. */
