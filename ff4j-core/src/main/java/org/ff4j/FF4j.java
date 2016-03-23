@@ -22,6 +22,7 @@ package org.ff4j;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Set;
 
@@ -98,6 +99,12 @@ public class FF4j {
 
     /** Hold flipping execution context as Thread-safe data. */
     private ThreadLocal<FlippingExecutionContext> currentExecutionContext = new ThreadLocal<FlippingExecutionContext>();
+
+    /**
+     * This attribute indicates when call the alter bean throw de {@link InvocationTargetException}
+     * or the wraps exception thrown by an invoked method or constructor
+     */
+    private boolean alterBeanThrowInvocationTargetException = true;
    
     /**
      * Default constructor to allows instantiation through IoC. The created store is an empty {@link InMemoryFeatureStore}.
@@ -792,5 +799,17 @@ public class FF4j {
         if (this.eventPublisher != null && this.shutdownEventPublisher) {
             this.eventPublisher.stop();
         }
+    }
+
+    public void enableAlterBeanThrowInvocationTargetException() {
+        this.alterBeanThrowInvocationTargetException = true;
+    }
+
+    public void disableAlterBeanThrowInvocationTargetException() {
+        this.alterBeanThrowInvocationTargetException = false;
+    }
+
+    public boolean isAlterBeanThrowInvocationTargetException() {
+        return alterBeanThrowInvocationTargetException;
     }
 }

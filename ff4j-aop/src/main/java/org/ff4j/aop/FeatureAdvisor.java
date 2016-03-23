@@ -32,6 +32,7 @@ import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.beans.factory.config.MethodInvokingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
@@ -274,14 +275,19 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
         
     }
 
-    private Object callAlterBeanMethod(final MethodInvocation pMInvoc, String alterBean, Logger targetLogger) {
+    private Object callAlterBeanMethod(final MethodInvocation pMInvoc, String alterBean, Logger targetLogger) throws Throwable {
         Method method = pMInvoc.getMethod();
         targetLogger.debug("FeatureFlipping on method:{} class:{}", method.getName(), method.getDeclaringClass().getName());
         // invoke same method (interface) with another spring bean (ff.alterBean())
         try {
             return method.invoke(appCtx.getBean(alterBean, method.getDeclaringClass()), pMInvoc.getArguments());
-        } catch (Exception e) {
-            throw new IllegalArgumentException("ff4j-aop: Cannot invoke method " + method.getName() + " on bean " + alterBean, e);
+        } catch (InvocationTargetException invocationTargetException) {
+            if(!ff4j.isAlterBeanThrowInvocationTargetException() && invocationTargetException.getCause() != null) {
+                throw invocationTargetException.getCause();
+            }
+            throw invocationTargetException;
+        } catch (Exception exception) {
+            throw new IllegalArgumentException("ff4j-aop: Cannot invoke method " + method.getName() + " on bean " + alterBean, exception);
         }
     }
 
@@ -299,7 +305,7 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
         return callAlterBeanMethod;
     }
 
-    private Object callAlterClazzMethodOnFirst(final MethodInvocation pMInvoc, Flip ff, Logger targetLogger) {
+    private Object callAlterClazzMethodOnFirst(final MethodInvocation pMInvoc, Flip ff, Logger targetLogger) throws Throwable {
         Map<String, ?> beans = appCtx.getBeansOfType(pMInvoc.getMethod().getDeclaringClass());
         for (Object bean : beans.values()) {
             if (isBeanAProxyOfAlterClass(bean, ff.alterClazz())) {
@@ -311,7 +317,7 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
                 + pMInvoc.getMethod().getDeclaringClass());
     }
 
-    private Object callAlterClazzMethod(final MethodInvocation pMInvoc, Object targetBean, Logger targetLogger) {
+    private Object callAlterClazzMethod(final MethodInvocation pMInvoc, Object targetBean, Logger targetLogger) throws Throwable {
         Method method = pMInvoc.getMethod();
         String declaringClass = method.getDeclaringClass().getName();
         targetLogger.debug("FeatureFlipping on method:{} class:{}", method.getName(), declaringClass);
@@ -320,9 +326,14 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
         } catch (IllegalAccessException e) {
             throw new IllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
                     + " please check visibility", e);
-        } catch (InvocationTargetException e) {
+        } catch (InvocationTargetException invocationTargetException) {
+            if(!ff4j.isAlterBeanThrowInvocationTargetException() && invocationTargetException.getCause() != null) {
+                throw invocationTargetException.getCause();
+            }
+            throw invocationTargetException;
+        } catch (Exception exception) {
             throw new IllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
-                    + " please check signatures", e);
+                    + " please check signatures", exception);
         }
     }
 
