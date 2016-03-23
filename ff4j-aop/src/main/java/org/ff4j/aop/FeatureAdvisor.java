@@ -285,9 +285,9 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
             if(!ff4j.isAlterBeanThrowInvocationTargetException() && invocationTargetException.getCause() != null) {
                 throw invocationTargetException.getCause();
             }
-            throw invocationTargetException;
+            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke method " + method.getName() + " on bean " + alterBean, invocationTargetException);
         } catch (Exception exception) {
-            throw new IllegalArgumentException("ff4j-aop: Cannot invoke method " + method.getName() + " on bean " + alterBean, exception);
+            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke method " + method.getName() + " on bean " + alterBean, exception);
         }
     }
 
@@ -324,17 +324,22 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
         try {
             return method.invoke(targetBean, pMInvoc.getArguments());
         } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
+            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
                     + " please check visibility", e);
         } catch (InvocationTargetException invocationTargetException) {
             if(!ff4j.isAlterBeanThrowInvocationTargetException() && invocationTargetException.getCause() != null) {
                 throw invocationTargetException.getCause();
             }
-            throw invocationTargetException;
+            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
+                    + " please check signatures", invocationTargetException);
         } catch (Exception exception) {
-            throw new IllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
+            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
                     + " please check signatures", exception);
         }
+    }
+
+    private IllegalArgumentException makeIllegalArgumentException(String message, Exception exception) {
+        return new IllegalArgumentException(message, exception);
     }
 
     protected boolean isBeanAProxyOfAlterClass(Object proxy, Class<?> alterClass) {

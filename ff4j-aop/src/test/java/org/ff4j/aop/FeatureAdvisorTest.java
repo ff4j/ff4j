@@ -20,13 +20,12 @@ package org.ff4j.aop;
  * #L%
  */
 
-import org.ff4j.aop.test.exception.ApplicationException;
-import org.junit.Assert;
-
 import org.ff4j.FF4j;
+import org.ff4j.aop.test.exception.ApplicationException;
 import org.ff4j.aop.test.goodbye.GoodbyeService;
 import org.ff4j.aop.test.greeting.GreetingService;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -117,14 +116,16 @@ public class FeatureAdvisorTest {
         goodbye.sayGoodbyeWithClassThrowException();
     }
 
-    @Test(expected = InvocationTargetException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testAlterBeanInvokeThrowInvocationTargetExceptionNull() throws Exception {
+        ff4j.enableAlterBeanThrowInvocationTargetException();
         ff4j.enable("language-english");
         goodbye.sayGoodbyeInvocationTargetExceptionNull();
     }
 
-    @Test(expected = InvocationTargetException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testAlterClazzInvokeThrowInvocationTargetExceptionNull() throws InvocationTargetException {
+        ff4j.enableAlterBeanThrowInvocationTargetException();
         ff4j.enable("language-english");
         goodbye.sayGoodbyeWithClassInvocationTargetExceptionNull();
     }
