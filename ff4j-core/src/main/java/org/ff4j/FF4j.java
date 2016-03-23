@@ -524,8 +524,8 @@ public class FF4j implements EventConstants {
      * @return current instance
      */
     public FF4j audit(boolean val) {
-         setEnableAudit(true);
-         return this;
+        setEnableAudit(true);
+        return this;
     }
 
     /**
