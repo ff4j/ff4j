@@ -56,8 +56,7 @@ public class ApiKey {
     /**
      * Getter accessor for attribute 'userId'.
      *
-     * @return
-     *       current value of 'userId'
+     * @return current value of 'userId'
      */
     public String getUserId() {
         return userId;
@@ -65,8 +64,7 @@ public class ApiKey {
 
     /**
      * Setter accessor for attribute 'userId'.
-     * @param userId
-     * 		new value for 'userId '
+     * @param userId new value for 'userId '
      */
     public void setUserId(String userId) {
         this.userId = userId;
@@ -84,8 +82,7 @@ public class ApiKey {
 
     /**
      * Setter accessor for attribute 'value'.
-     * @param value
-     * 		new value for 'value '
+     * @param value new value for 'value '
      */
     public void setValue(String value) {
         this.value = value;
@@ -94,8 +91,7 @@ public class ApiKey {
     /**
      * Getter accessor for attribute 'expirationTime'.
      *
-     * @return
-     *       current value of 'expirationTime'
+     * @return current value of 'expirationTime'
      */
     public Date getExpirationTime() {
         return expirationTime;
@@ -103,8 +99,7 @@ public class ApiKey {
 
     /**
      * Setter accessor for attribute 'expirationTime'.
-     * @param expirationTime
-     * 		new value for 'expirationTime '
+     * @param expirationTime new value for 'expirationTime '
      */
     public void setExpirationTime(Date expirationTime) {
         this.expirationTime = expirationTime;

@@ -360,8 +360,8 @@ public abstract class PropertyStoreTestSupport {
         Assert.assertTrue(testedStore.readAllProperties().isEmpty());
         
         /// Reinit
-        for (String pName : before.keySet()) {
-            testedStore.createProperty(before.get(pName));
+        for (Map.Entry<String,Property<?>> pName : before.entrySet()) {
+            testedStore.createProperty(pName.getValue());
         }
     }
     

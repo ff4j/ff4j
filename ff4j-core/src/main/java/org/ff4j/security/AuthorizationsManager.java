@@ -21,6 +21,14 @@ import java.util.Set;
 public interface AuthorizationsManager {
 
     /**
+     * Retrieve logged user name (audit purposes).
+     *
+     * @return
+     *      current user name
+     */
+    String getCurrentUserName();
+    
+    /**
      * Retrieves current autorization from context.
      * 
      * @param fPoint

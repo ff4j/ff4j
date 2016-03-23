@@ -287,7 +287,7 @@ public final class XmlParser {
             throw new IllegalArgumentException("Error syntax in configuration file : "
                     + "'enable' is required for each feature (check " + uid + ")");
         }
-        boolean enable = Boolean.valueOf(nnm.getNamedItem(FEATURE_ATT_ENABLE).getNodeValue());
+        boolean enable = Boolean.parseBoolean(nnm.getNamedItem(FEATURE_ATT_ENABLE).getNodeValue());
 
         // Create Feature with description
         Feature f = new Feature(uid, enable, parseDescription(nnm));
@@ -443,7 +443,7 @@ public final class XmlParser {
      *            current working tag
      * @return description of the feature
      */
-    private String parseDescription(NamedNodeMap nnm) {
+    private static String parseDescription(NamedNodeMap nnm) {
         String desc = null;
         if (nnm.getNamedItem(FEATURE_ATT_DESC) != null) {
             desc = nnm.getNamedItem(FEATURE_ATT_DESC).getNodeValue();
@@ -458,7 +458,7 @@ public final class XmlParser {
      *            current TAG
      * @return list of authorizations.
      */
-    private Set<String> parseListAuthorizations(Element securityTag) {
+    private static Set<String> parseListAuthorizations(Element securityTag) {
         Set<String> authorizations = new TreeSet<String>();
         NodeList lisOfAuth = securityTag.getElementsByTagName(SECURITY_ROLE_TAG);
         for (int k = 0; k < lisOfAuth.getLength(); k++) {
@@ -584,13 +584,13 @@ public final class XmlParser {
             }
         }
             
-        for (String groupName : featuresPerGroup.keySet()) {
+        for (Map.Entry<String,List<Feature>> groupName : featuresPerGroup.entrySet()) {
             /// Building featureGroup
-            if (null != groupName && !groupName.isEmpty()) {
-                sb.append(" <" + FEATUREGROUP_TAG + " " + FEATUREGROUP_ATTNAME + "=\"" + groupName + "\" >\n\n");
+            if (null != groupName.getKey() && !groupName.getKey().isEmpty()) {
+                sb.append(" <" + FEATUREGROUP_TAG + " " + FEATUREGROUP_ATTNAME + "=\"" + groupName.getKey() + "\" >\n\n");
             }
             // Loop on feature
-            for (Feature feat : featuresPerGroup.get(groupName)) {
+            for (Feature feat : groupName.getValue()) {
                 sb.append(MessageFormat.format(XML_FEATURE, feat.getUid(), feat.getDescription(), feat.isEnable()));
                 // <security>
                 if (null != feat.getPermissions() && !feat.getPermissions().isEmpty()) {
@@ -626,7 +626,7 @@ public final class XmlParser {
                 sb.append(END_FEATURE);
             }
             
-            if (null != groupName && !groupName.isEmpty()) {
+            if (null != groupName.getKey() && !groupName.getKey().isEmpty()) {
                 sb.append(" </" + FEATUREGROUP_TAG + ">\n\n");
             }
         }

@@ -26,6 +26,7 @@ import static org.ff4j.utils.JdbcUtils.closeConnection;
 import static org.ff4j.utils.JdbcUtils.closeResultSet;
 import static org.ff4j.utils.JdbcUtils.closeStatement;
 import static org.ff4j.utils.JdbcUtils.rollback;
+import static org.ff4j.utils.Util.assertHasLength;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -51,7 +52,7 @@ import org.ff4j.utils.JdbcUtils;
 import org.ff4j.utils.MappingUtil;
 import org.ff4j.utils.Util;
 
-;/**
+/**
  * Implementation of {@link FeatureStore} to work with RDBMS through JDBC.
  * 
  * @author Cedrick Lunven (@clunven)
@@ -92,35 +93,20 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
     }
 
     /** {@inheritDoc} */
-    @Override
     public void enable(String uid) {
-        if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
-        }
-        if (!exist(uid)) {
-            throw new FeatureNotFoundException(uid);
-        }
+    	assertFeatureExist(uid);
         update(SQL_ENABLE, uid);
     }
 
     /** {@inheritDoc} */
-    @Override
     public void disable(String uid) {
-        if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
-        }
-        if (!exist(uid)) {
-            throw new FeatureNotFoundException(uid);
-        }
+    	assertFeatureExist(uid);
         update(SQL_DISABLE, uid);
     }
 
     /** {@inheritDoc} */
-    @Override
     public boolean exist(String uid) {
-        if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
-        }
+    	assertHasLength(uid);
         Connection          sqlConn = null;
         PreparedStatement   ps = null;
         ResultSet           rs = null;
@@ -142,11 +128,9 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
     }
 
     /** {@inheritDoc} */    
-    @Override
-    public Feature read(String uid) {
-        if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
-        }
+    @SuppressWarnings("resource")
+	public Feature read(String uid) {
+    	assertFeatureExist(uid);
         
         Connection          sqlConn = null;
         PreparedStatement   ps = null;
@@ -193,13 +177,9 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
     }
 
     /** {@inheritDoc} */
-    @Override
     public void create(Feature fp) {
-        if (fp == null) {
-            throw new IllegalArgumentException("Feature cannot be null nor empty");
-        }
-       
-        Connection sqlConn = null;
+    	assertFeatureNotNull(fp);
+    	Connection sqlConn = null;
         PreparedStatement ps = null;
         try {
 
@@ -258,19 +238,15 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
     }
 
     /** {@inheritDoc} */
-    @Override
-    public void delete(String uid) {
-        Util.assertHasLength(uid);
+    @SuppressWarnings("resource")
+	public void delete(String uid) {
+    	assertFeatureExist(uid);
         Connection sqlConn = null;
         PreparedStatement ps = null;
         try {
             // Create connection
             sqlConn = getDataSource().getConnection();
             sqlConn.setAutoCommit(false);
-            
-            if (!exist(uid)) {
-                throw new FeatureNotFoundException(uid);
-            }
             Feature fp = read(uid);
             
             // Delete Properties
@@ -311,37 +287,20 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
     }
   
     /** {@inheritDoc} */
-    @Override
     public void grantRoleOnFeature(String uid, String roleName) {
-        if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
-        }
-        if (roleName == null || roleName.isEmpty()) {
-            throw new IllegalArgumentException("roleName cannot be null nor empty");
-        }
-        if (!exist(uid)) {
-            throw new FeatureNotFoundException(uid);
-        }
+    	assertFeatureExist(uid);
+        assertHasLength(roleName);
         update(SQL_ADD_ROLE, uid, roleName);
     }
 
     /** {@inheritDoc} */
-    @Override
     public void removeRoleFromFeature(String uid, String roleName) {
-        if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
-        }
-        if (roleName == null || roleName.isEmpty()) {
-            throw new IllegalArgumentException("roleName cannot be null nor empty");
-        }
-        if (!exist(uid)) {
-            throw new FeatureNotFoundException(uid);
-        }
+    	assertFeatureExist(uid);
+        assertHasLength(roleName);
         update(SQL_DELETE_ROLE, uid, roleName);
     }
     
     /** {@inheritDoc} */
-    @Override
     public Map<String, Feature> readAll() {
         LinkedHashMap<String, Feature> mapFP = new LinkedHashMap<String, Feature>();
         Connection sqlConn = null;
@@ -375,7 +334,6 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
     }
 
     /** {@inheritDoc} */
-    @Override
     public Set<String> readAllGroups() {
         Set<String> setOFGroup = new HashSet<String>();
         Connection sqlConn = null;
@@ -403,15 +361,13 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
     }
 
     /** {@inheritDoc} */
-    @Override
     public void update(Feature fp) {
-        Util.assertNotNull(fp);
+    	assertFeatureNotNull(fp);
         Connection sqlConn = null;
         PreparedStatement ps = null;
         
         try {
             sqlConn = dataSource.getConnection();
-            
             Feature fpExist = read(fp.getUid());
             String enable = "0";
             if (fp.isEnable()) {
@@ -463,8 +419,9 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
          
     }
 
-    @Override
-    public void clear() {
+    /** {@inheritDoc} */
+    @SuppressWarnings("resource")
+	public void clear() {
         Connection sqlConn = null;
         PreparedStatement ps = null;
         try {
@@ -525,6 +482,20 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
         }
     }
     
+    /**
+     * Create SQL statement to create property.
+     *
+     * @param sqlConn
+     * 		current sql connection
+     * @param featureId
+     * 		current unique feature identifier
+     * @param pp
+     * 		pojo property
+     * @return
+     * 		statement sql to be executed
+     * @throws SQLException
+     * 		error during sql operation
+     */
     private PreparedStatement createCustomProperty(Connection sqlConn, String featureId, Property<?> pp)
     throws SQLException {
         PreparedStatement ps = sqlConn.prepareStatement(SQL_CREATE_CUSTOMPROPERTY);
@@ -532,7 +503,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
         ps.setString(2, pp.getType());
         ps.setString(3, pp.asString());
         ps.setString(4, pp.getDescription());
-        if (pp.getFixedValues() != null && pp.getFixedValues().size() > 0) {
+        if (pp.getFixedValues() != null && !pp.getFixedValues().isEmpty()) {
             String fixedValues = pp.getFixedValues().toString();
             ps.setString(5, fixedValues.substring(1, fixedValues.length() - 1));
         } else {
@@ -544,11 +515,8 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
     }
 
     /** {@inheritDoc} */
-    @Override
     public boolean existGroup(String groupName) {
-        if (groupName == null || groupName.isEmpty()) {
-            throw new IllegalArgumentException("Groupname cannot be null nor empty");
-        }
+    	assertHasLength(groupName);
         Connection sqlConn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -569,35 +537,20 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
     }
 
     /** {@inheritDoc} */
-    @Override
     public void enableGroup(String groupName) {
-        if (groupName == null || groupName.isEmpty()) {
-            throw new IllegalArgumentException("Groupname cannot be null nor empty");
-        }
-        if (!existGroup(groupName)) {
-            throw new GroupNotFoundException(groupName);
-        }
+    	assertGroupExist(groupName);
         update(SQL_ENABLE_GROUP, groupName);
     }
 
     /** {@inheritDoc} */
-    @Override
     public void disableGroup(String groupName) {
-        if (groupName == null || groupName.isEmpty()) {
-            throw new IllegalArgumentException("Groupname cannot be null nor empty");
-        }
-        if (!existGroup(groupName)) {
-            throw new GroupNotFoundException(groupName);
-        }
+    	assertGroupExist(groupName);
         update(SQL_DISABLE_GROUP, groupName);
     }
 
     /** {@inheritDoc} */
-    @Override
     public Map<String, Feature> readGroup(String groupName) {
-        if (groupName == null || groupName.isEmpty()) {
-            throw new IllegalArgumentException("Groupname cannot be null nor empty");
-        }
+    	assertGroupExist(groupName);
         LinkedHashMap<String, Feature> mapFP = new LinkedHashMap<String, Feature>();
         Connection sqlConn = null;
         PreparedStatement ps = null;
@@ -637,30 +590,16 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
     }
 
     /** {@inheritDoc} */
-    @Override
     public void addToGroup(String uid, String groupName) {
-        if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
-        }
-        if (groupName == null || groupName.isEmpty()) {
-            throw new IllegalArgumentException("Groupname cannot be null nor empty");
-        }
-        if (!exist(uid)) {
-            throw new FeatureNotFoundException(uid);
-        }
+    	assertFeatureExist(uid);
+        assertHasLength(groupName);
         update(SQL_ADD_TO_GROUP, groupName, uid);
     }
 
     /** {@inheritDoc} */
-    @Override
     public void removeFromGroup(String uid, String groupName) {
-        Util.assertHasLength(uid, groupName);
-        if (!exist(uid)) {
-            throw new FeatureNotFoundException(uid);
-        }
-        if (!existGroup(groupName)) {
-            throw new GroupNotFoundException(groupName);
-        }
+    	assertFeatureExist(uid);
+        assertGroupExist(groupName);
         Feature feat = read(uid);
         if (feat.getGroup() != null && !feat.getGroup().equals(groupName)) {
             throw new IllegalArgumentException("'" + uid + "' is not in group '" + groupName + "'");

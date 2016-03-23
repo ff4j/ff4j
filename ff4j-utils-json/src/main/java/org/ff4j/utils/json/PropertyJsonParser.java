@@ -39,11 +39,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class PropertyJsonParser {
+public final class PropertyJsonParser {
 
     /** Jackson mapper. */
     private static ObjectMapper objectMapper = new ObjectMapper();
-
+    
+    private PropertyJsonParser() {}
+    
     /**
      * Unmarshall {@link Feature} from json string.
      *
@@ -53,7 +55,9 @@ public class PropertyJsonParser {
      */
     @SuppressWarnings("unchecked")
     public static Property<?> parseProperty(String json) {
-        if (null == json || "".equals(json)) return null;
+        if (null == json || "".equals(json)) {
+            return null;
+        }
         Map<String, Object> propertyJson;
         try {
             propertyJson = objectMapper.readValue(json, HashMap.class);
@@ -91,7 +95,9 @@ public class PropertyJsonParser {
      */
     @SuppressWarnings("unchecked")
     public static Property<?>[] parsePropertyArray(String json) {
-        if (null == json || "".equals(json)) return null;
+        if (null == json || "".equals(json)) {
+            return null;
+        }
         try {
             List<LinkedHashMap<String, Object>> flipMap = objectMapper.readValue(json, List.class);
             Property<?>[] fArray = new Property<?>[flipMap.size()];
@@ -117,9 +123,9 @@ public class PropertyJsonParser {
     public static Property<?> parsePropertyMap(Map<String, Object> fMap) {
         PropertyJsonBean pf = new PropertyJsonBean();
         pf.setName((String) fMap.get("name"));
-        pf.setDescription(((String) fMap.get("description")));
-        pf.setType(((String) fMap.get("type")));
-        pf.setValue(((String) fMap.get("value")));
+        pf.setDescription((String) fMap.get("description"));
+        pf.setType((String) fMap.get("type"));
+        pf.setValue((String) fMap.get("value"));
         if (fMap.containsKey("fixedValues")) {
             List < String > dbList = (ArrayList<String>) fMap.get("fixedValues");
             if (dbList != null) {

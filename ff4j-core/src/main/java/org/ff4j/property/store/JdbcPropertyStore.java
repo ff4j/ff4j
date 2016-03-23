@@ -115,7 +115,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStor
             ps.setString(2, ap.getType());
             ps.setString(3, ap.asString());
             ps.setString(4, ap.getDescription());
-            if (ap.getFixedValues() != null && ap.getFixedValues().size() > 0) {
+            if (ap.getFixedValues() != null && !ap.getFixedValues().isEmpty()) {
                 String fixedValues = ap.getFixedValues().toString();
                 ps.setString(5, fixedValues.substring(1, fixedValues.length() - 1));
             } else {

@@ -84,7 +84,7 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore implements FF4jNeo4j
     /** {@inheritDoc} */
     @Override
     public void enable(String uid) {
-        assertUID(uid);
+        assertFeatureExist(uid);
         Transaction tx = graphDb.beginTx();
         Map<String, Object> queryParameters = new HashMap<>();
         queryParameters.put("uid", uid);
@@ -95,7 +95,7 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore implements FF4jNeo4j
     /** {@inheritDoc} */
     @Override
     public void disable(String uid) {
-        assertUID(uid);
+        assertFeatureExist(uid);
         Transaction tx = graphDb.beginTx();
         Map<String, Object> queryParameters = new HashMap<>();
         queryParameters.put("uid", uid);
@@ -106,7 +106,7 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore implements FF4jNeo4j
     /** {@inheritDoc} */
     @Override
     public Feature read(String featId) {
-        assertUID(featId);
+        assertFeatureExist(featId);
         Feature targetFeature = null;
         Transaction tx = graphDb.beginTx();
         Map<String, Object> queryParameters = new HashMap<>();
@@ -474,7 +474,7 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore implements FF4jNeo4j
     /** {@inheritDoc} */
     @Override
     public Map<String, Feature> readGroup(String groupName) {
-        assertGroup(groupName);
+        assertGroupExist(groupName);
         Map<String, Feature> allFeatures = readAll();
         Map<String, Feature> groupFeatures = new HashMap<>();
         Transaction tx = graphDb.beginTx();
@@ -492,7 +492,7 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore implements FF4jNeo4j
     /** {@inheritDoc} */
     @Override
     public void enableGroup(String groupName) {
-        assertGroup(groupName);
+        assertGroupExist(groupName);
         Transaction tx = graphDb.beginTx();
         Map<String, Object> paramGroupName = new HashMap<>();
         paramGroupName.put("groupName", groupName);
@@ -503,7 +503,7 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore implements FF4jNeo4j
     /** {@inheritDoc} */
     @Override
     public void disableGroup(String groupName) {
-        assertGroup(groupName);
+        assertGroupExist(groupName);
         Transaction tx = graphDb.beginTx();
         Map<String, Object> paramGroupName = new HashMap<>();
         paramGroupName.put("groupName", groupName);
@@ -514,7 +514,7 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore implements FF4jNeo4j
     /** {@inheritDoc} */
     @Override
     public void addToGroup(String uid, String groupName) {
-        assertUID(uid);
+        assertFeatureExist(uid);
         Util.assertHasLength(groupName);
 
         // Create group if not exist
@@ -538,8 +538,8 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore implements FF4jNeo4j
     /** {@inheritDoc} */
     @Override
     public void removeFromGroup(String uid, String groupName) {
-        assertUID(uid);
-        assertGroup(groupName);
+        assertFeatureExist(uid);
+        assertGroupExist(groupName);
         Transaction tx = graphDb.beginTx();
         Map < String, Object > params = new HashMap<>();
         params.put("uid", uid);

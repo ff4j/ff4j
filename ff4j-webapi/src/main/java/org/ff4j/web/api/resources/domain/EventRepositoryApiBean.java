@@ -93,10 +93,10 @@ public class EventRepositoryApiBean {
             end = c2.getTimeInMillis();
         }
         // Create PIE
-        PieChart pie = evtRepository.getHitsPieChart(start, end);
+        PieChart pie = evtRepository.featuresListDistributionPie(start, end);
         eventsPie = new PieChartApiBean(pie);
         // Create BARCHART
-        BarChart bc = evtRepository.getHitsBarChart(start, end, 24);
+        BarChart bc = evtRepository.getFeaturesUsageOverTime(start, end, 24);
         barChart = new BarChartApiBean(bc);
         // Total Count
         for(PieSector sector : pie.getSectors()) {

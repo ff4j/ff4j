@@ -111,22 +111,26 @@ public class FeatureJsonParser {
                 Property<?> ap = PropertyFactory.createProperty(propertyName, propertyType, propertyVal);
                 // FixedValued
                 List <Object> listOfFixedValue = (List<Object>) propertyJson.get("fixedValues");
-                if (listOfFixedValue != null) {
-                    for (Object v : listOfFixedValue) {
-                        ap.add2FixedValueFromString(String.valueOf(v));
-                    }
-                    // Check fixed value
-                    if (ap.getFixedValues() != null && !ap.getFixedValues().contains(ap.getValue())) {
-                        throw new IllegalArgumentException("Cannot create property <" + ap.getName() + 
-                                "> invalid value <" + ap.getValue() + 
-                                "> expected one of " + ap.getFixedValues());
-                    }
-                }
+                addFixedValuesToProperty(ap, listOfFixedValue);
                 myProperties.put(ap.getName(), ap);
             }
         }
         return myProperties;
         
+    }
+
+    private static void addFixedValuesToProperty(Property<?> ap, List<Object> listOfFixedValue) {
+        if (listOfFixedValue != null) {
+            for (Object v : listOfFixedValue) {
+                ap.add2FixedValueFromString(String.valueOf(v));
+            }
+            // Check fixed value
+            if (ap.getFixedValues() != null && !ap.getFixedValues().contains(ap.getValue())) {
+                throw new IllegalArgumentException("Cannot create property <" + ap.getName() + 
+                        "> invalid value <" + ap.getValue() + 
+                        "> expected one of " + ap.getFixedValues());
+            }
+        }
     }
 
     /**
@@ -162,7 +166,9 @@ public class FeatureJsonParser {
      */
     @SuppressWarnings("unchecked")
     public static FlippingStrategy parseFlipStrategyAsJson(String uid, String json) {
-        if (null == json || "".equals(json)) return null;
+        if (null == json || "".equals(json)) {
+            return null;
+        }
         try {
             return parseFlipStrategy(uid, (HashMap<String, Object>) objectMapper.readValue(json, HashMap.class));
         } catch (Exception e) {
@@ -181,7 +187,9 @@ public class FeatureJsonParser {
      */
     @SuppressWarnings("unchecked")
     public static FlippingStrategy parseFlipStrategy(String uid, HashMap<String, Object> flipMap) {
-        if (null == flipMap || flipMap.isEmpty()) return null;
+        if (null == flipMap || flipMap.isEmpty()) {
+            return null;
+        }
         String classType = (String) flipMap.get("type");
         HashMap<String, String> initparams = (HashMap<String, String>) flipMap.get("initParams");
         return MappingUtil.instanceFlippingStrategy(uid, classType, initparams);
@@ -197,7 +205,9 @@ public class FeatureJsonParser {
      */
     @SuppressWarnings("unchecked")
     public static Feature[] parseFeatureArray(String json) {
-        if (null == json || "".equals(json)) return null;
+        if (null == json || "".equals(json)) {
+            return null;
+        }
         try {
             List<LinkedHashMap<String, Object>> flipMap = objectMapper.readValue(json, List.class);
             Feature[] fArray = new Feature[flipMap.size()];

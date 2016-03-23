@@ -87,13 +87,13 @@ public final class FF4jStatusApiBean {
     public FF4jStatusApiBean(FF4j ff4j) {
         // UpTime
         long up = System.currentTimeMillis() - ff4j.getStartTime();
-        long daynumber = (long) Math.floor(up / (1000 * 3600 * 24));
+        long daynumber = up / (1000 * 3600 * 24);
         up = up - (daynumber * 1000 * 3600 * 24);
-        long hourNumber = (long) Math.floor(up / (1000 * 3600));
+        long hourNumber = up / (1000 * 3600);
         up = up - (hourNumber * 1000 * 3600);
-        long minutenumber = (long) Math.floor(up / (1000 * 60));
+        long minutenumber = up / (1000 * 60);
         up = up - (minutenumber * 1000 * 60);
-        long secondnumber = (long) Math.floor(up / 1000);
+        long secondnumber = up / 1000;
         uptime =  daynumber + " day(s) ";
         uptime += hourNumber + " hours(s) ";
         uptime += minutenumber + " minute(s) ";

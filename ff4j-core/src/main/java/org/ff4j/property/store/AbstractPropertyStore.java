@@ -58,11 +58,11 @@ public abstract class AbstractPropertyStore implements PropertyStore {
         Map<String, Property<?>> properties = conf.getProperties();
 
         // Override existing configuration within database
-        for (String featureName : properties.keySet()) {
-            if (existProperty(featureName)) {
-                deleteProperty(featureName);
+        for (Map.Entry<String,Property<?>> featureName : properties.entrySet()) {
+            if (existProperty(featureName.getKey())) {
+                deleteProperty(featureName.getKey());
             }
-            createProperty(properties.get(featureName));
+            createProperty(featureName.getValue());
         }
         return properties;
     }
@@ -70,7 +70,7 @@ public abstract class AbstractPropertyStore implements PropertyStore {
     /** {@inheritDoc} */
     public boolean isEmpty() {
         Set < String > pNames = listPropertyNames();
-        return pNames == null || pNames.size() == 0;
+        return pNames == null || pNames.isEmpty();
     }
     
     /** {@inheritDoc} */

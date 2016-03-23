@@ -29,9 +29,7 @@ public class RedisConnection {
     private static String DEFAULT_REDIS_HOST = "localhost";
 
     /** default port. */
-    private static int DEFAULT_REDIS_PORT = 6379;
-
- 
+    private static int DEFAULT_REDIS_PORT = 6379; 
     
     /** redis host. */
     protected String redisHost = DEFAULT_REDIS_HOST;
@@ -39,19 +37,50 @@ public class RedisConnection {
     /** redis port. */
     protected int redisport = DEFAULT_REDIS_PORT;
     
+    /** used in protected redis cluster. */
+    protected String redisPassword = null;
+    
     /** Java Redis CLIENT. */
     protected Jedis jedis;
     
+    /**
+     * Default constructor.
+     */
     public RedisConnection() {
         this(DEFAULT_REDIS_HOST, DEFAULT_REDIS_PORT);
     }
     
-    public RedisConnection(String redisHost, int redisPort) {
-        this.redisHost = redisHost;
-        this.redisport = redisPort;
-        jedis = new Jedis(redisHost, redisport);
+    /**
+     * Constructor for unauthenticated connection.
+     *
+     * @param predisHost
+     * 		host
+     * @param predisPort
+     * 		port
+     */
+    public RedisConnection(String predisHost, int predisPort) {
+    	this(predisHost, predisPort, null);
     }
     
+    /**
+     * Constructor for authenticated connection.
+     *
+     * @param predisHost
+     * 		hostname
+     * @param predisPort
+     * 		port
+     * @param password
+     * 		redis password
+     */
+    public RedisConnection(String predisHost, int predisPort, String password) {
+        this.redisHost = predisHost;
+        this.redisport = predisPort;
+        this.redisPassword  = password;
+        jedis = new Jedis(redisHost, redisport);
+        if (redisPassword != null && "".equals(redisPassword)) {
+        	jedis.auth(redisPassword);
+        }
+    }
     
     /**
      * Getter accessor for attribute 'redisHost'.
@@ -80,7 +109,40 @@ public class RedisConnection {
     public Jedis getJedis() {
         return jedis;
     }
-    
-    
+
+	/**
+	 * Getter accessor for attribute 'redisPassword'.
+	 *
+	 * @return the redisPassword
+	 */
+	public String getRedisPassword() {
+		return redisPassword;
+	}
+
+	/**
+	 * Setter accessor for attribute 'redisPassword'.
+	 * @param redisPassword the redisPassword to set
+	 */
+	public void setRedisPassword(String redisPassword) {
+		this.redisPassword = redisPassword;
+	}
+
+	/**
+	 * Setter accessor for attribute 'redisHost'.
+	 *
+	 * @param redisHost the redisHost to set
+	 */
+	public void setRedisHost(String redisHost) {
+		this.redisHost = redisHost;
+	}
+
+	/**
+	 * Setter accessor for attribute 'redisport'.
+	 *
+	 * @param redisport the redisport to set
+	 */
+	public void setRedisport(int redisport) {
+		this.redisport = redisport;
+	}
 
 }

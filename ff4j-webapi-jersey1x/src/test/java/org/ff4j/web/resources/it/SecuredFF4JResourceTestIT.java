@@ -36,7 +36,7 @@ import org.ff4j.web.api.FF4JApiApplication;
 import org.ff4j.web.api.FF4jJacksonMapper;
 import org.ff4j.web.api.resources.FF4jResource;
 import org.ff4j.web.api.security.FF4JSecurityContextAuthenticationManager;
-import org.ff4j.web.store.FeatureStoreHttp;
+import org.ff4j.web.jersey1.store.FeatureStoreHttp;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

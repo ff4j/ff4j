@@ -168,8 +168,8 @@ public final class FeatureDocumentMapper implements FeatureStoreMongoConstants {
         if (dbObject.containsKey(CUSTOMPROPERTIES)) {
             String properties = (String) dbObject.get(CUSTOMPROPERTIES);
             Map < String, DBObject > values = (Map<String, DBObject>) JSON.parse(properties);
-            for (String key : values.keySet()) {
-                mapOfCustomProperties.put(key, mapProperty(values.get(key)));
+            for (Map.Entry<String,DBObject> entry : values.entrySet()) {
+                mapOfCustomProperties.put(entry.getKey(), mapProperty(entry.getValue()));
             }
         }
         return mapOfCustomProperties;

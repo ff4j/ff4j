@@ -46,7 +46,7 @@ public class EventPublisher {
     public static final int DEFAULT_POOL_SIZE = 4;
     
     /** 2s to save the event other wize skip. */
-    public static long timeout = 2000L;
+    public static final long timeout = 2000L;
     
     /** Executor for item writer. */
     private ExecutorService executor;
@@ -57,6 +57,7 @@ public class EventPublisher {
     /** the amount of time to wait after submitting for the task to complete. */
     private final long submitTimeout;
 
+    /** flag to shiutdown executor on failure. */
     private final boolean shutdownExecutor;
 
     /**
@@ -131,34 +132,6 @@ public class EventPublisher {
         } catch (Exception e1) {
             System.err.println("Cannot publish event " + e1.getMessage());
         }
-    }
-
-    /**
-     * Publish event to repository.
-     * 
-     * @param featureName
-     *            target feature name
-     * @param type
-     *            event type
-     */
-    public void publish(String featureName, EventType type) {
-        publish(new Event(featureName, type));
-    }
-
-    /**
-     * Parameterized constructor.
-     * 
-     * @param featureName
-     *            target feature name
-     * @param flipped
-     *            if flipped
-     */
-    public void publish(String featureName, boolean flipped) {
-        Event evt = new Event(featureName, EventType.FEATURE_CHECK_ON);
-        if (!flipped) {
-            evt.setType(EventType.FEATURE_CHECK_OFF);
-        }
-        publish(evt);
     }
 
     /**

@@ -39,6 +39,18 @@ import com.sun.jersey.spi.container.ContainerRequest;
 public class FF4JSecurityContextAuthenticationManager extends AbstractAuthorizationManager {
     
     /** {@inheritDoc} */
+    public String getCurrentUserName() {
+        SecurityContext wrapper = FF4JSecurityContextHolder.getSecurityContext();
+        if (wrapper instanceof ContainerRequest) {
+            SecurityContext sc = ((ContainerRequest) wrapper).getSecurityContext();
+            if (sc != null && sc instanceof FF4jSecurityContext) {
+                return ((FF4jSecurityContext) sc).getUserName();
+            }
+        }
+        return null;
+    }
+    
+    /** {@inheritDoc} */
     @Override
     public Set<String> getCurrentUserPermissions() {
         SecurityContext wrapper = FF4JSecurityContextHolder.getSecurityContext();
@@ -57,10 +69,11 @@ public class FF4JSecurityContextAuthenticationManager extends AbstractAuthorizat
         Set < String > vars = new HashSet<String>();
         if (FF4jSecurityContextFilter.securityConfig != null) {
             Map < String, Set<String > > perms = FF4jSecurityContextFilter.securityConfig.getPermissions();
-            for (String var : perms.keySet()) {
-                perms.get(var).addAll(perms.get(var));
+            for (Map.Entry<String,Set<String>> var : perms.entrySet()) {
+                var.getValue().addAll(var.getValue());
             }
         }
         return vars;
     }
+    
 }

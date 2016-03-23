@@ -63,8 +63,7 @@ public class FF4jAuthorizationFilter implements ContainerRequestFilter, FF4jWebC
     /**
      * Apply the filter ozz: check input request, validate or not with user auth
      * 
-     * @param containerRequest
-     *            The request from Tomcat server
+     * @param containerRequest The request from Tomcat server
      */
     @Override
     public void filter(ContainerRequestContext containerRequest) throws IOException {
@@ -126,7 +125,7 @@ public class FF4jAuthorizationFilter implements ContainerRequestFilter, FF4jWebC
         
     }
     
-    private void forbidden() {
+    private static void forbidden() {
         throw new WebApplicationException(Response.status(Status.FORBIDDEN) //
                 .entity("Cannot reach ressource, forbidden check @RoleAllowed, @DenyAll") //
                 .type(MediaType.TEXT_HTML_TYPE).build());
@@ -135,8 +134,7 @@ public class FF4jAuthorizationFilter implements ContainerRequestFilter, FF4jWebC
     /**
      * Getter accessor for attribute 'apiConfig'.
      *
-     * @return
-     *       current value of 'apiConfig'
+     * @return current value of 'apiConfig'
      */
     public static ApiConfig getApiConfig() {
         return apiConfig;
@@ -144,8 +142,7 @@ public class FF4jAuthorizationFilter implements ContainerRequestFilter, FF4jWebC
 
     /**
      * Setter accessor for attribute 'apiConfig'.
-     * @param apiConfig
-     * 		new value for 'apiConfig '
+     * @param apiConfig new value for 'apiConfig'
      */
     public static void setApiConfig(ApiConfig apiConfig) {
         FF4jAuthorizationFilter.apiConfig = apiConfig;
@@ -154,8 +151,7 @@ public class FF4jAuthorizationFilter implements ContainerRequestFilter, FF4jWebC
     /**
      * Getter accessor for attribute 'info'.
      *
-     * @return
-     *       current value of 'info'
+     * @return current value of 'info'
      */
     public ResourceInfo getInfo() {
         return info;
@@ -163,8 +159,7 @@ public class FF4jAuthorizationFilter implements ContainerRequestFilter, FF4jWebC
 
     /**
      * Setter accessor for attribute 'info'.
-     * @param info
-     * 		new value for 'info '
+     * @param info new value for 'info '
      */
     public void setInfo(ResourceInfo info) {
         this.info = info;

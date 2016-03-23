@@ -35,6 +35,7 @@ import org.ff4j.exception.AuditAccessException;
 import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.PropertyAccessException;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -89,9 +90,10 @@ public class ExceptionsTest {
     
     @Test
     public void testExceptionHandlerInterrupted() throws InterruptedException {
-        EventRejectedExecutionHandler.mock = true;
+        EventRejectedExecutionHandler.setMock(true);
         EventRejectedExecutionHandler ereh = new EventRejectedExecutionHandler();
         ereh.rejectedExecution(new Thread(), null);
-        EventRejectedExecutionHandler.mock = false;
+        EventRejectedExecutionHandler.setMock(false);
+        Assert.assertNotNull(ereh);
     }
 }

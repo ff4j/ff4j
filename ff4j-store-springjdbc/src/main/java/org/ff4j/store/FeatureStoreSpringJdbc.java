@@ -352,9 +352,9 @@ public class FeatureStoreSpringJdbc extends AbstractFeatureStore implements Jdbc
         RoleRowMapper rrm = new RoleRowMapper();
         getJdbcTemplate().query(SQL_GET_ALLROLES, rrm);
         Map<String, Set<String>> roles = rrm.getRoles();
-        for (String featId : roles.keySet()) {
-            if (mapFP.containsKey(featId)) {
-                mapFP.get(featId).getPermissions().addAll(roles.get(featId));
+        for (Map.Entry<String,Set<String>> featId : roles.entrySet()) {
+            if (mapFP.containsKey(featId.getKey())) {
+                mapFP.get(featId.getKey()).getPermissions().addAll(featId.getValue());
             }
         }
         return mapFP;

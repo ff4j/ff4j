@@ -25,6 +25,7 @@ import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.test.store.FeatureStoreTestSupport;
+import org.ff4j.web.jersey1.store.FeatureStoreHttp;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;

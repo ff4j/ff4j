@@ -81,6 +81,9 @@ public class FlipSecurityTests {
         // check authentication
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Assert.assertTrue(auth.isAuthenticated());
+        
+        Assert.assertEquals("user1", ff4j.getAuthorizationsManager().getCurrentUserName());
+        
 
         // init
 

@@ -123,8 +123,8 @@ public class MonitoringResource extends AbstractResource {
         }
         // Build response
         FeatureMonitoringApiBean fmab = new FeatureMonitoringApiBean(uid);
-        fmab.setEventsPie(new PieChartApiBean(getRepo().getFeatureHitsPie(uid, start, end)));
-        fmab.setBarChart(new BarChartApiBean(getRepo().getHitsBarChart(Util.set(uid), start, end, 24)));
+        fmab.setEventsPie(new PieChartApiBean(getRepo().featureDistributionPie(uid, start, end)));
+        fmab.setBarChart(new BarChartApiBean(getRepo().getFeaturesUsageOverTime(Util.set(uid), start, end, 24)));
         int hitcount = 0;
         for (PieSectorApiBean sec : fmab.getEventsPie().getSectors()) {
             hitcount+= sec.getValue();

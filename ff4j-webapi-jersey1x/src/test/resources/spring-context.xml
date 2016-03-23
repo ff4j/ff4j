@@ -27,8 +27,9 @@
 		<property name="store" ref="ff4j.store" />
 	</bean>
 
-	<bean id="ff4j.store" class="org.ff4j.web.store.FeatureStoreHttp">
-		<constructor-arg index="0" type="java.lang.String" name="rootApiUrl" value="http://localhost:9998/ff4j" />
+	<bean id="ff4j.store" class="org.ff4j.web.jersey1.store.FeatureStoreHttp">
+		<constructor-arg index="0" type="java.lang.String" 
+				name="rootApiUrl" value="http://localhost:9998/ff4j" />
 	</bean>
 	
 

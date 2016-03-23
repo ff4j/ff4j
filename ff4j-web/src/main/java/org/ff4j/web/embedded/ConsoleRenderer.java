@@ -87,7 +87,9 @@ public final class ConsoleRenderer implements ConsoleConstants {
         uxTypes.put("LogLevel", PropertyLogLevel.class.getName());
         uxTypes.put(String.class.getSimpleName(), PropertyString.class.getName());
     }
-
+    
+    private ConsoleRenderer() {}
+    
     /**
      * Render the ff4f console webpage through different block.
      * 
@@ -102,7 +104,7 @@ public final class ConsoleRenderer implements ConsoleConstants {
      * @throws IOException
      *             error during populating http response
      */
-    static void renderPage(FF4j ff4j, HttpServletRequest req, HttpServletResponse res, String msg, String msgType) throws IOException {
+    public static void renderPage(FF4j ff4j, HttpServletRequest req, HttpServletResponse res, String msg, String msgType) throws IOException {
         res.setContentType(CONTENT_TYPE_HTML);
         PrintWriter out = res.getWriter();
 
@@ -143,7 +145,7 @@ public final class ConsoleRenderer implements ConsoleConstants {
      *            target operationId
      * @return
      */
-    static String msg(String featureName, String operationId) {
+    public static String msg(String featureName, String operationId) {
         return String.format("Feature <b>%s</b> has been successfully %s", featureName, operationId);
     }
     
@@ -156,7 +158,7 @@ public final class ConsoleRenderer implements ConsoleConstants {
      *            target operationId
      * @return
      */
-    static  String renderMsgProperty(String featureName, String operationId) {
+    public static  String renderMsgProperty(String featureName, String operationId) {
         return String.format("Property <b>%s</b> has been successfully %s", featureName, operationId);
     }
 
@@ -169,7 +171,7 @@ public final class ConsoleRenderer implements ConsoleConstants {
      *            target operationId
      * @return
      */
-    static String renderMsgGroup(String groupName, String operationId) {
+    public static String renderMsgGroup(String groupName, String operationId) {
         return String.format("Group <b>%s</b> has been successfully %s", groupName, operationId);
     }
     
@@ -184,7 +186,7 @@ public final class ConsoleRenderer implements ConsoleConstants {
      * @throws IOException
      *             exceptions
      */
-     static boolean renderResources(HttpServletRequest req, HttpServletResponse res) throws IOException {
+    public static boolean renderResources(HttpServletRequest req, HttpServletResponse res) throws IOException {
         // Serve static resource file as CSS and Javascript
         String resources = req.getParameter(RESOURCE);
         if (resources != null && !resources.isEmpty()) {
@@ -202,13 +204,36 @@ public final class ConsoleRenderer implements ConsoleConstants {
     }
     
     /**
+     * Display message box if message.
+     * 
+     * @param message
+     *            target message to display
+     * @param type
+     *            type of messages
+     * @return html content to be displayed as message
+     */
+    public static String renderMessageBox(String message, String type) {
+        StringBuilder sb = new StringBuilder();
+        // Display Message box
+        if (message != null && !message.isEmpty()) {
+            sb.append("<div class=\"alert alert-" + type + "\" >");
+            sb.append("<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>");
+            sb.append("<span style=\"font-style:normal;color:#696969;\">");
+            sb.append(message);
+            sb.append("</span>");
+            sb.append("</div>");
+        }
+        return sb.toString();
+    }
+    
+    /**
      * Load HTML template file and substitute by current URL context path
      * 
      * @param req
      *            current http request
      * @return current text part as string
      */
-    static final String renderTemplate(HttpServletRequest req) {
+     private static final String renderTemplate(HttpServletRequest req) {
         if (htmlTemplate == null || htmlTemplate.isEmpty()) {
             String ctx = req.getContextPath() + req.getServletPath() + "";
             htmlTemplate = loadFileAsString(TEMPLATE_FILE);
@@ -218,11 +243,11 @@ public final class ConsoleRenderer implements ConsoleConstants {
         return htmlTemplate;
     }
     
-    static final String renderPropertiesRows(FF4j ff4j, HttpServletRequest req) {
+    private static final String renderPropertiesRows(FF4j ff4j, HttpServletRequest req) {
         StringBuilder sb = new StringBuilder();
         final Map < String, Property<?>> mapOfProperties = ff4j.getProperties();
-        for(String uid : mapOfProperties.keySet()) {
-            Property<?> currentProperty = mapOfProperties.get(uid);
+        for(Map.Entry<String,Property<?>> uid : mapOfProperties.entrySet()) {
+            Property<?> currentProperty = uid.getValue();
             sb.append("<tr>" + END_OF_LINE);
             
             // Column with uid and description as tooltip
@@ -288,11 +313,11 @@ public final class ConsoleRenderer implements ConsoleConstants {
      * @param currentElement
      * @return
      */
-    static final String renderFeatureRows(FF4j ff4j, HttpServletRequest req) {
+    private static final String renderFeatureRows(FF4j ff4j, HttpServletRequest req) {
         StringBuilder sb = new StringBuilder();
         final Map < String, Feature> mapOfFeatures = ff4j.getFeatures();
-        for(String uid : mapOfFeatures.keySet()) {
-            Feature currentFeature = mapOfFeatures.get(uid);
+        for(Map.Entry<String,Feature> uid : mapOfFeatures.entrySet()) {
+            Feature currentFeature = uid.getValue();
             sb.append("<tr>" + END_OF_LINE);
             
             // Column with uid and description as tooltip
@@ -380,34 +405,11 @@ public final class ConsoleRenderer implements ConsoleConstants {
             sb.append("<a href=\"");
             sb.append(req.getContextPath());
             sb.append(req.getServletPath());
-            sb.append("?op=" + OP_RMV_FEATURE + "&" + FEATID + "=" + uid);
+            sb.append("?op=" + OP_RMV_FEATURE + "&" + FEATID + "=" + uid.getKey());
             sb.append("\" style=\"width:6px;\" class=\"btn\">");
             sb.append("<i class=\"icon-trash\" style=\"margin-left:-5px;\"></i>");
             sb.append("</a>");
             sb.append("</td></tr>");
-        }
-        return sb.toString();
-    }
-    
-    /**
-     * Display message box if message.
-     * 
-     * @param message
-     *            target message to display
-     * @param type
-     *            type of messages
-     * @return html content to be displayed as message
-     */
-    static String renderMessageBox(String message, String type) {
-        StringBuilder sb = new StringBuilder();
-        // Display Message box
-        if (message != null && !message.isEmpty()) {
-            sb.append("<div class=\"alert alert-" + type + "\" >");
-            sb.append("<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>");
-            sb.append("<span style=\"font-style:normal;color:#696969;\">");
-            sb.append(message);
-            sb.append("</span>");
-            sb.append("</div>");
         }
         return sb.toString();
     }
@@ -419,7 +421,7 @@ public final class ConsoleRenderer implements ConsoleConstants {
      *            target ff4j.
      * @return list of group
      */
-    static String renderGroupList(FF4j ff4j, String modalId) {
+    private static String renderGroupList(FF4j ff4j, String modalId) {
         StringBuilder sb = new StringBuilder();
         if (null != ff4j.getFeatureStore().readAllGroups()) {
             for (String group : ff4j.getFeatureStore().readAllGroups()) {
@@ -440,7 +442,7 @@ public final class ConsoleRenderer implements ConsoleConstants {
      *            reference to curent ff4j instance
      * @return string representing the list of permissions
      */
-    static String renderPermissionList(FF4j ff4j) {
+    private static String renderPermissionList(FF4j ff4j) {
         StringBuilder sb = new StringBuilder("<br/>");
         if (null != ff4j.getAuthorizationsManager()) {
             for (String permission : ff4j.getAuthorizationsManager().listAllPermissions()) {
@@ -458,7 +460,7 @@ public final class ConsoleRenderer implements ConsoleConstants {
      *
      * @return CSS File
      */
-    static final String getCSS() {
+    private static final String getCSS() {
         if (null == cssContent) {
             cssContent = loadFileAsString(RESOURCE_CSS_FILE);
         }
@@ -470,7 +472,7 @@ public final class ConsoleRenderer implements ConsoleConstants {
      *
      * @return JS File
      */
-    static final String getJS() {
+    private static final String getJS() {
         if (null == jsContent) {
             jsContent = loadFileAsString(RESOURCE_JS_FILE);
         }
