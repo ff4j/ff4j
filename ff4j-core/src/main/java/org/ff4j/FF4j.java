@@ -9,9 +9,9 @@ package org.ff4j;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -73,7 +73,7 @@ public class FF4j implements EventConstants {
 
     /** Do not through {@link FeatureNotFoundException} exception and but feature is required. */
     private boolean autocreate = false;
-    
+
     /** Capture informations relative to audit. */
     private boolean enableAudit = false;
 
@@ -82,13 +82,13 @@ public class FF4j implements EventConstants {
 
     /** Version of ff4j. */
     private final String version = getClass().getPackage().getImplementationVersion();
-    
+
     /** Source of initialization (JAVA_API, WEBAPI, SSH, CONSOLE...). */
     private final String source =  SOURCE_JAVA;
-    
+
     /** Storage to persist feature within {@link FeatureStore}. */
     private FeatureStore fstore = new InMemoryFeatureStore();
-    
+
     /** Storage to persist properties within {@link PropertyStore}. */
     private PropertyStore pStore = new InMemoryPropertyStore();
 
@@ -100,9 +100,9 @@ public class FF4j implements EventConstants {
 
     /** Event Publisher (threadpool, executor) to send data into {@link EventRepository} */
     private EventPublisher eventPublisher = null;
-    
+
     private volatile boolean shutdownEventPublisher;
-    
+
     /** Post Processing like audit enable. */
     private boolean initialized = false;
 
@@ -174,13 +174,13 @@ public class FF4j implements EventConstants {
         }
         // Update current context
         currentExecutionContext.set(executionContext);
-        
+
         // Any access is logged into audit system
         publishCheck(featureID, flipped);
 
         return flipped;
     }
-    
+
     /**
      * Send target event to audit if expected.
      *
@@ -192,9 +192,9 @@ public class FF4j implements EventConstants {
     private void publishCheck(String uid, boolean checked) {
         if (isEnableAudit()) {
             getEventPublisher().publish(new EventBuilder(this)
-                        .feature(uid)
-                        .action(checked ? ACTION_CHECK_OK : ACTION_CHECK_OFF)
-                        .build());
+                    .feature(uid)
+                    .action(checked ? ACTION_CHECK_OK : ACTION_CHECK_OFF)
+                    .build());
         }
     }
 
@@ -271,7 +271,7 @@ public class FF4j implements EventConstants {
      * 		target property store.
      */
     public Map < String, Property<?>> getProperties() {
-    	return getPropertiesStore().readAllProperties();
+        return getPropertiesStore().readAllProperties();
     }
 
     /**
@@ -569,7 +569,7 @@ public class FF4j implements EventConstants {
         sb.append(secondnumber + " seconds\"");
         sb.append(", \"autocreate\":" + isAutocreate());
         sb.append(", \"version\": \"" + version + "\"");
-        
+
         // Display only if not null
         if (getFeatureStore() != null) {
             sb.append(", \"featuresStore\":");
@@ -687,20 +687,20 @@ public class FF4j implements EventConstants {
     public void setEventPublisher(EventPublisher eventPublisher) {
         this.eventPublisher = eventPublisher;
     }
-    
+
     /**
      * Initialization of background components.
      */
     private synchronized void init() {
-        
+
         // Execution Context
         FlippingExecutionContext context = new FlippingExecutionContext();
         this.currentExecutionContext.set(context);
-        
+
         // Event Publisher
         eventPublisher = new EventPublisher(eventRepository);
         this.shutdownEventPublisher = true;
-        
+
         // Audit
         if (isEnableAudit()) {
             if (fstore != null) {
@@ -710,7 +710,7 @@ public class FF4j implements EventConstants {
                 this.pStore = new PropertyStoreAuditProxy(this, pStore);
             }
         }
-        
+
         // Flag as OK
         this.initialized = true;
     }
@@ -755,7 +755,7 @@ public class FF4j implements EventConstants {
      */
     public FlippingExecutionContext getCurrentContext() {
         if (!initialized) init();
-        
+
         if (null == this.currentExecutionContext.get()) {
             this.currentExecutionContext.set(new FlippingExecutionContext());
         }
