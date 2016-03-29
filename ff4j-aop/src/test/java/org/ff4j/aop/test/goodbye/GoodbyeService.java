@@ -2,6 +2,8 @@ package org.ff4j.aop.test.goodbye;
 
 import org.ff4j.aop.Flip;
 
+import java.lang.reflect.InvocationTargetException;
+
 /*
  * #%L
  * ff4j-aop
@@ -29,5 +31,17 @@ public interface GoodbyeService {
 
 	@Flip(name = "language-english", alterClazz = GoodbyeServiceEnglishImpl.class)
 	String sayGoodbyeWithClass(String name);
+
+	@Flip(name = "language-english", alterBean = "goodbye.english")
+	void sayGoodbyeThrowException();
+
+	@Flip(name = "language-english", alterClazz = GoodbyeServiceEnglishImpl.class)
+	void sayGoodbyeWithClassThrowException();
+
+	@Flip(name = "language-english", alterBean = "goodbye.english")
+	void sayGoodbyeInvocationTargetExceptionNull() throws InvocationTargetException;
+
+	@Flip(name = "language-english", alterClazz = GoodbyeServiceEnglishImpl.class)
+	void sayGoodbyeWithClassInvocationTargetExceptionNull() throws InvocationTargetException;
 
 }
