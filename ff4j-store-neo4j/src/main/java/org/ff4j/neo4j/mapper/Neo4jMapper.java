@@ -126,7 +126,7 @@ public class Neo4jMapper implements FF4jNeo4jConstants {
         }
         if (nodeProperties.containsKey(NODEPROPERTY_ATT_FIXEDVALUES)) {
             String[] listOfValues = (String[]) nodeProperty.getProperty(NODEPROPERTY_ATT_FIXEDVALUES);
-            Set < String > fixedValues = new HashSet<String>(Arrays.asList(listOfValues));
+            Set < String > fixedValues = new HashSet<>(Arrays.asList(listOfValues));
             return PropertyFactory.createProperty(propertyName, propertyType, propertyValue ,propertyDescription, fixedValues);
         } else {
             Property<?> ap = PropertyFactory.createProperty(propertyName, propertyType, propertyValue);

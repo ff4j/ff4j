@@ -36,7 +36,7 @@ import org.ff4j.redis.RedisConnection;
 public class EventRepositoryRedis extends AbstractEventRepository {
 
 	/** prefix of keys. */
-    public static String KEY_PROPERTY = "FF4J_EVENT_";
+    public static final String KEY_PROPERTY = "FF4J_EVENT_";
     
     /** default ttl. */
     private static int DEFAULT_TTL = 900000000;
