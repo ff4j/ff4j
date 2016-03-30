@@ -186,7 +186,7 @@ public class FeatureJsonParser {
      * @return flip strategy
      */
     @SuppressWarnings("unchecked")
-    public static FlippingStrategy parseFlipStrategy(String uid, HashMap<String, Object> flipMap) {
+    public static FlippingStrategy parseFlipStrategy(String uid, Map<String, Object> flipMap) {
         if (null == flipMap || flipMap.isEmpty()) {
             return null;
         }
