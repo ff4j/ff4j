@@ -41,6 +41,11 @@ import org.junit.Test;
  */
 public abstract class FeatureStoreTestSupport implements TestsFf4jConstants {
 
+    public static final String GOLOGOLO = "GOLOGOLO";
+    public static final String ROLE_XYZ = "ROLE_XYZ";
+    public static final String PPSTRING = "ppstring";
+    public static final String DIGIT_VALUE = "digitValue";
+    public static final String REGION_IDENTIFIER = "regionIdentifier";
     /** Initialize */
     protected FF4j ff4j = null;
     
@@ -284,15 +289,15 @@ public abstract class FeatureStoreTestSupport implements TestsFf4jConstants {
     @Test(expected = FeatureAlreadyExistException.class)
     public void testAddFeatureAlreadyExis() throws Exception {
         // Given
-        assertFf4j.assertThatFeatureDoesNotExist("GOLOGOLO");
+        assertFf4j.assertThatFeatureDoesNotExist(GOLOGOLO);
         // When (first creation)
-        Feature fp = new Feature("GOLOGOLO", true, "description2");
+        Feature fp = new Feature(GOLOGOLO, true, "description2");
         testedStore.create(fp);
         // Then (first creation)
-        assertFf4j.assertThatFeatureExist("GOLOGOLO");
+        assertFf4j.assertThatFeatureExist(GOLOGOLO);
         // When (second creation)
         Set<String> rights = new HashSet<String>(Arrays.asList(new String[] {ROLE_USER}));
-        Feature fp2 = new Feature("GOLOGOLO", true, G1, "description3", rights);
+        Feature fp2 = new Feature(GOLOGOLO, true, G1, "description3", rights);
         testedStore.create(fp2);
         // Then, expected exception
     }
@@ -390,11 +395,11 @@ public abstract class FeatureStoreTestSupport implements TestsFf4jConstants {
     public void testGrantRoleToFeatureRoleDoesNotExist() throws Exception {
         // Given
         assertFf4j.assertThatFeatureExist(F1);
-        assertFf4j.assertThatFeatureHasNotRole(F1, "ROLE_XYZ");
+        assertFf4j.assertThatFeatureHasNotRole(F1, ROLE_XYZ);
         // When
-        testedStore.grantRoleOnFeature(F1, "ROLE_XYZ");
+        testedStore.grantRoleOnFeature(F1, ROLE_XYZ);
         // Then
-        assertFf4j.assertThatFeatureHasRole(F1, "ROLE_XYZ");
+        assertFf4j.assertThatFeatureHasRole(F1, ROLE_XYZ);
     }
 
     /**
@@ -1108,26 +1113,26 @@ public abstract class FeatureStoreTestSupport implements TestsFf4jConstants {
         assertFf4j.assertThatFeatureExist(F1);
         Feature myFeature = ff4j.getFeatureStore().read(F1);
         if (myFeature.getCustomProperties().isEmpty()) {
-            PropertyString p1 = new PropertyString("ppstring");
+            PropertyString p1 = new PropertyString(PPSTRING);
             p1.setValue("hello");
             myFeature.getCustomProperties().put(p1.getName(), p1);
             testedStore.update(myFeature);
         }
-        assertFf4j.assertThatFeatureHasProperty(F1, "ppstring");
+        assertFf4j.assertThatFeatureHasProperty(F1, PPSTRING);
         Assert.assertEquals("hello", 
                 ff4j.getFeatureStore().read(F1)//
-                    .getCustomProperties().get("ppstring")//
+                    .getCustomProperties().get(PPSTRING)//
                     .asString());
         // When
         myFeature = ff4j.getFeatureStore().read(F1);
-        PropertyString p1 = new PropertyString("ppstring", "goodbye");
+        PropertyString p1 = new PropertyString(PPSTRING, "goodbye");
         myFeature.getCustomProperties().put(p1.getName(), p1);
         testedStore.update(myFeature);
         
         // Then
         Assert.assertEquals("goodbye", 
                 ff4j.getFeatureStore().read(F1)//
-                    .getCustomProperties().get("ppstring")//
+                    .getCustomProperties().get(PPSTRING)//
                     .asString());
     }
     
@@ -1140,19 +1145,19 @@ public abstract class FeatureStoreTestSupport implements TestsFf4jConstants {
         // Given
         assertFf4j.assertThatFeatureExist(F1);
         Feature myFeature = ff4j.getFeatureStore().read(F1);
-        myFeature.addProperty(new PropertyInt("digitValue", 2, Util.set(0,1,2,3)));
+        myFeature.addProperty(new PropertyInt(DIGIT_VALUE, 2, Util.set(0,1,2,3)));
         ff4j.getFeatureStore().update(myFeature);
-        assertFf4j.assertThatFeatureHasProperty(F1, "digitValue");
+        assertFf4j.assertThatFeatureHasProperty(F1, DIGIT_VALUE);
         
         Set < Integer > fixValues = (Set<Integer>) ff4j
                 .getFeatureStore().read(F1)//
-                .getCustomProperties().get("digitValue")
+                .getCustomProperties().get(DIGIT_VALUE)
                 .getFixedValues();
         Assert.assertEquals(4, fixValues.size());
                 
         // When
         myFeature = ff4j.getFeatureStore().read(F1);
-        PropertyInt p1 = new PropertyInt("digitValue");
+        PropertyInt p1 = new PropertyInt(DIGIT_VALUE);
         p1.setFixedValues(Util.set(0,1,2,3,4));
         p1.setValue(4);
         myFeature.getCustomProperties().put(p1.getName(), p1);
@@ -1161,7 +1166,7 @@ public abstract class FeatureStoreTestSupport implements TestsFf4jConstants {
         // Then
         Set < Integer > fixValues2 = (Set<Integer>) ff4j
                 .getFeatureStore().read(F1) //
-                .getCustomProperties().get("digitValue")
+                .getCustomProperties().get(DIGIT_VALUE)
                 .getFixedValues();
         Assert.assertEquals(5, fixValues2.size());
     }
@@ -1175,18 +1180,18 @@ public abstract class FeatureStoreTestSupport implements TestsFf4jConstants {
      // Given
         assertFf4j.assertThatFeatureExist(F1);
         Feature myFeature = ff4j.getFeatureStore().read(F1);
-        myFeature.addProperty(new PropertyString("regionIdentifier", "AMER", Util.set("AMER","SSSS","EAST")));
+        myFeature.addProperty(new PropertyString(REGION_IDENTIFIER, "AMER", Util.set("AMER","SSSS","EAST")));
         testedStore.update(myFeature);
-        assertFf4j.assertThatFeatureHasProperty(F1, "regionIdentifier");
+        assertFf4j.assertThatFeatureHasProperty(F1, REGION_IDENTIFIER);
         Set < String > fixValues = (Set<String>) ff4j
                 .getFeatureStore().read(F1)//
-                .getCustomProperties().get("regionIdentifier")
+                .getCustomProperties().get(REGION_IDENTIFIER)
                 .getFixedValues();
         Assert.assertEquals(3, fixValues.size()); 
                 
         // When
         myFeature = ff4j.getFeatureStore().read(F1);
-        PropertyString p1 = new PropertyString("regionIdentifier");
+        PropertyString p1 = new PropertyString(REGION_IDENTIFIER);
         p1.setValue("AMER");
         p1.setFixedValues(Util.set("AMER", "SSSS"));
         myFeature.getCustomProperties().put(p1.getName(), p1);
@@ -1195,7 +1200,7 @@ public abstract class FeatureStoreTestSupport implements TestsFf4jConstants {
         // Then
         Set < Integer > fixValues2 = (Set<Integer>) ff4j
                 .getFeatureStore().read(F1)//
-                .getCustomProperties().get("regionIdentifier")
+                .getCustomProperties().get(REGION_IDENTIFIER)
                 .getFixedValues();
         Assert.assertEquals(2, fixValues2.size());
     }

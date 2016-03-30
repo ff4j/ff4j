@@ -41,6 +41,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public final class PropertyJsonParser {
 
+    public static final String FIXED_VALUES = "fixedValues";
     /** Jackson mapper. */
     private static ObjectMapper objectMapper = new ObjectMapper();
     
@@ -70,7 +71,7 @@ public final class PropertyJsonParser {
         Property < ?> ap = PropertyFactory.createProperty(propertyName, propertyType, propertyVal);
         
         // FixedValued
-        List <Object> listOfFixedValue = (List<Object>) propertyJson.get("fixedValues");
+        List <Object> listOfFixedValue = (List<Object>) propertyJson.get(FIXED_VALUES);
         if (listOfFixedValue != null) {
             for (Object v : listOfFixedValue) {
                 ap.add2FixedValueFromString(String.valueOf(v));
@@ -126,8 +127,8 @@ public final class PropertyJsonParser {
         pf.setDescription((String) fMap.get("description"));
         pf.setType((String) fMap.get("type"));
         pf.setValue((String) fMap.get("value"));
-        if (fMap.containsKey("fixedValues")) {
-            List < String > dbList = (ArrayList<String>) fMap.get("fixedValues");
+        if (fMap.containsKey(FIXED_VALUES)) {
+            List < String > dbList = (ArrayList<String>) fMap.get(FIXED_VALUES);
             if (dbList != null) {
                 for(Object item : dbList) {
                     pf.addFixedValue((String) item);
