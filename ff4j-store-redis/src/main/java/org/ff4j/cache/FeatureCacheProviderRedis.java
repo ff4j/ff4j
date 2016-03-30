@@ -42,7 +42,8 @@ public class FeatureCacheProviderRedis implements FF4JCacheManager {
     
     /** prefix of keys. */
     public static final String KEY_PROPERTY = "FF4J_PROPERTY_";
-    
+    public static final String FEATURE_IDENTIFIER_PARAM_0_CANNOT_BE_NULL_NOR_EMPTY = "Feature identifier (param#0) cannot be null nor empty";
+
     /** default ttl. */
     private static int DEFAULT_TTL = 900000000;
     
@@ -88,7 +89,7 @@ public class FeatureCacheProviderRedis implements FF4JCacheManager {
     @Override
     public void evictFeature(String uid) {
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_IDENTIFIER_PARAM_0_CANNOT_BE_NULL_NOR_EMPTY);
         }
         getJedis().del(KEY_FEATURE + uid);
     }
@@ -124,7 +125,7 @@ public class FeatureCacheProviderRedis implements FF4JCacheManager {
     @Override
     public Feature getFeature(String uid) {
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_IDENTIFIER_PARAM_0_CANNOT_BE_NULL_NOR_EMPTY);
         }
         String value = getJedis().get(KEY_FEATURE + uid);
         if (value != null) {
@@ -137,7 +138,7 @@ public class FeatureCacheProviderRedis implements FF4JCacheManager {
     @Override
     public Property<?> getProperty(String propertyName) {
         if (propertyName == null || propertyName.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier (param#0) cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_IDENTIFIER_PARAM_0_CANNOT_BE_NULL_NOR_EMPTY);
         }
         String value = getJedis().get(KEY_PROPERTY + propertyName);
         if (value != null) {

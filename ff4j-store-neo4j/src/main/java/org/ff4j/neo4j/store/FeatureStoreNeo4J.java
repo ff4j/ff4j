@@ -51,6 +51,8 @@ import org.neo4j.graphdb.Transaction;
  */
 public class FeatureStoreNeo4J extends AbstractFeatureStore implements FF4jNeo4jConstants {
 
+    public static final String GROUPNAME = "GROUPNAME";
+    public static final String GROUP_NAME = "groupName";
     /** Persistent storage. */
     private GraphDatabaseService graphDb;
     
@@ -170,9 +172,9 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore implements FF4jNeo4j
         // Check group
         Result result = graphDb.execute(QUERY_CYPHER_GETGROUPNAME, paramUID);
         if (result.hasNext()) {
-            String groupName = (String) result.next().get("GROUPNAME");
+            String groupName = (String) result.next().get(GROUPNAME);
             Map<String, Object> paramGroupName = new HashMap<>();
-            paramGroupName.put("groupName", groupName);
+            paramGroupName.put(GROUP_NAME, groupName);
             result = graphDb.execute(QUERY_CYPHER_COUNT_FEATURE_OF_GROUP, paramGroupName);
             if (result.hasNext()) {
                 long nbFeature = (long) result.next().get(QUERY_CYPHER_ALIAS);
@@ -320,7 +322,7 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore implements FF4jNeo4j
         queryParameters.put("uid", uid);
         Result result = graphDb.execute(QUERY_CYPHER_GETGROUPNAME, queryParameters);
         if (result.hasNext()) {
-            groupName = (String) result.next().get("GROUPNAME");
+            groupName = (String) result.next().get(GROUPNAME);
         }
         tx.success();
         return groupName;
@@ -462,7 +464,7 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore implements FF4jNeo4j
     public boolean existGroup(String groupName) {
         Util.assertHasLength(groupName);
         Map < String, Object > queryParameters = new HashMap<>();
-        queryParameters.put("groupName", groupName);
+        queryParameters.put(GROUP_NAME, groupName);
         Result result = graphDb.execute(QUERY_CYPHER_EXISTS_GROUP,  queryParameters);
         Object count = null;
         if (result.hasNext()) {
@@ -479,7 +481,7 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore implements FF4jNeo4j
         Map<String, Feature> groupFeatures = new HashMap<>();
         Transaction tx = graphDb.beginTx();
         Map<String, Object> paramGroupName = new HashMap<>();
-        paramGroupName.put("groupName", groupName);
+        paramGroupName.put(GROUP_NAME, groupName);
         Result result = graphDb.execute(QUERY_CYPHER_READ_FEATURES_OF_GROUP, paramGroupName);
         while (result.hasNext()) {
             String member = (String) result.next().get("UID");
@@ -495,7 +497,7 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore implements FF4jNeo4j
         assertGroupExist(groupName);
         Transaction tx = graphDb.beginTx();
         Map<String, Object> paramGroupName = new HashMap<>();
-        paramGroupName.put("groupName", groupName);
+        paramGroupName.put(GROUP_NAME, groupName);
         graphDb.execute(QUERY_CYPHER_ENABLE_GROUP, paramGroupName);
         tx.success();
     }
@@ -506,7 +508,7 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore implements FF4jNeo4j
         assertGroupExist(groupName);
         Transaction tx = graphDb.beginTx();
         Map<String, Object> paramGroupName = new HashMap<>();
-        paramGroupName.put("groupName", groupName);
+        paramGroupName.put(GROUP_NAME, groupName);
         graphDb.execute(QUERY_CYPHER_DISABLE_GROUP, paramGroupName);
         tx.success();
     }
@@ -530,7 +532,7 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore implements FF4jNeo4j
         Transaction tx = graphDb.beginTx();
         Map<String, Object> params = new HashMap<>();
         params.put("uid", uid);
-        params.put("groupName", groupName);
+        params.put(GROUP_NAME, groupName);
         graphDb.execute(QUERY_CYPHER_ADDTO_GROUP, params);
         tx.success();
     }
@@ -556,7 +558,7 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore implements FF4jNeo4j
         Result result = graphDb.execute(QUERY_READ_GROUPS);
         Set < String > response = new HashSet<>();
         while (result.hasNext()) {
-            response.add((String) result.next().get("GROUPNAME"));
+            response.add((String) result.next().get(GROUPNAME));
         }
         return response;
     }
@@ -622,7 +624,7 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore implements FF4jNeo4j
         Set < String > groupNames = readAllGroups();
         for (String groupName : groupNames) {
             Map < String, Object > paramGroupName = new HashMap<>();
-            paramGroupName.put("groupName", groupName);
+            paramGroupName.put(GROUP_NAME, groupName);
             Result result = graphDb.execute(QUERY_CYPHER_COUNT_FEATURE_OF_GROUP, paramGroupName);
             if (result.hasNext()) {
                 long nbFeature = (long) result.next().get(QUERY_CYPHER_ALIAS);

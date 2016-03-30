@@ -48,6 +48,7 @@ import org.ff4j.utils.Util;
  */
 public class JdbcEventRepository extends AbstractEventRepository implements JdbcStoreConstants {
 
+    public static final String CANNOT_BUILD_PIE_CHART_FROM_REPOSITORY = "Cannot build PieChart from repository, ";
     /** Access to storage. */
     private DataSource dataSource;
 
@@ -205,7 +206,7 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
             }
             
         } catch (SQLException sqlEX) {
-            throw new FeatureAccessException("Cannot build PieChart from repository, ", sqlEX);
+            throw new FeatureAccessException(CANNOT_BUILD_PIE_CHART_FROM_REPOSITORY, sqlEX);
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
@@ -251,7 +252,7 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
             }
                 
         } catch (SQLException sqlEX) {
-            throw new AuditAccessException("Cannot build PieChart from repository, ", sqlEX);
+            throw new AuditAccessException(CANNOT_BUILD_PIE_CHART_FROM_REPOSITORY, sqlEX);
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
@@ -289,7 +290,7 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
             return pieGraph;
                 
         } catch (SQLException sqlEX) {
-            throw new AuditAccessException("Cannot build PieChart from repository, ", sqlEX);
+            throw new AuditAccessException(CANNOT_BUILD_PIE_CHART_FROM_REPOSITORY, sqlEX);
         } finally {
             closeResultSet(rs);
             closeStatement(ps);

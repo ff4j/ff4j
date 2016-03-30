@@ -56,6 +56,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
 
     /** Logger for this class. */
     public static final Logger LOGGER = LoggerFactory.getLogger(ConsoleServlet.class);
+    public static final String ERROR = "error";
 
     /** instance of ff4j. */
     private FF4j ff4j = null;
@@ -210,7 +211,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
 
         } catch (Exception e) {
             // Any Error is trapped and display in the console
-            messagetype = "error";
+            messagetype = ERROR;
             message = e.getMessage();
             LOGGER.error("An error occured ", e);
         }
@@ -239,7 +240,7 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                             importFile(getFf4j(), item.getInputStream());
                             message = "The file <b>" + filename + "</b> has been successfully imported";
                         } else {
-                            messagetype = "error";
+                            messagetype = ERROR;
                             message = "Invalid FILE, must be CSV, XML or PROPERTIES files";
                         }
                     }
@@ -284,18 +285,18 @@ public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
                         }
                     } else {
                         LOGGER.error("Invalid POST OPERATION" + operation);
-                        messagetype = "error";
+                        messagetype = ERROR;
                         message = "Invalid REQUEST";
                     }
                 } else {
                     LOGGER.error("No ID provided" + operation);
-                    messagetype = "error";
+                    messagetype = ERROR;
                     message = "Invalid UID";
                 }
             }
 
         } catch (Exception e) {
-            messagetype = "error";
+            messagetype = ERROR;
             message = e.getMessage();
             LOGGER.error("An error occured ", e);
         }

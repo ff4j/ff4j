@@ -177,12 +177,12 @@ public interface JdbcStoreConstants {
      
     /** Creation. */
     String SQL_AUDIT_COUNT = "SELECT COUNT(*) FROM " + TABLE_AUDIT;
-    
+
     /** Creation. */
     String SQL_AUDIT_LISTFEATURES = "SELECT DISTINCT " + COL_EVENT_NAME + " FROM " + TABLE_AUDIT + " WHERE " + COL_EVENT_TYPE + " LIKE '" + EventConstants.TARGET_FEATURE + "'";
-    
+
     /** Get all information for the Pie as a single request. */
-    String SQL_AUDIT_OK_DISTRIB = "SELECT count(" + COL_EVENT_UUID + ") as NB, " + COL_EVENT_NAME + 
+    String SQL_AUDIT_OK_DISTRIB = "SELECT count(" + COL_EVENT_UUID + ") as NB, " + COL_EVENT_NAME +
                                   " FROM " + TABLE_AUDIT +
                                   " WHERE (" + COL_EVENT_TYPE   + " LIKE '" + EventConstants.TARGET_FEATURE  + "') " +
                                   " AND   (" + COL_EVENT_ACTION + " LIKE '" + EventConstants.ACTION_CHECK_OK + "') " +
@@ -191,8 +191,8 @@ public interface JdbcStoreConstants {
                                   " GROUP BY " + COL_EVENT_NAME;
     
     /** List events for a dedicate feature (in a time window). */
-    String SQL_AUDIT_FEATURE_DISTRIB = "SELECT count(" + COL_EVENT_UUID + ") as NB, " + COL_EVENT_ACTION + 
-                                     " FROM " + TABLE_AUDIT  + 
+    String SQL_AUDIT_FEATURE_DISTRIB = "SELECT count(" + COL_EVENT_UUID + ") as NB, " + COL_EVENT_ACTION +
+                                     " FROM " + TABLE_AUDIT  +
                                      " WHERE (" + COL_EVENT_TYPE + " LIKE '" + EventConstants.TARGET_FEATURE  + "') " +
                                      " AND   (" + COL_EVENT_NAME + " LIKE ?) " +  
                                      " AND   (" + COL_EVENT_TIME + "> ?) " + 

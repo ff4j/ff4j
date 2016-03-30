@@ -57,6 +57,7 @@ import io.swagger.jaxrs.json.JacksonJsonProvider;
  */
 public class PropertyStoreHttp extends AbstractPropertyStore implements FF4jWebConstants {
 
+    public static final String OCCURED = " occured.";
     /** Jersey Client. */
     protected Client client = null;
 
@@ -168,7 +169,7 @@ public class PropertyStoreHttp extends AbstractPropertyStore implements FF4jWebC
         
         // Check response code CREATED or raised error
         if (Status.CREATED.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot create properties, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException("Cannot create properties, an HTTP error " + cRes.getStatus() + OCCURED);
         }
     }
 
@@ -193,7 +194,7 @@ public class PropertyStoreHttp extends AbstractPropertyStore implements FF4jWebC
             throw new PropertyNotFoundException(name);
         }
         if (Status.NO_CONTENT.getStatusCode() != cRes.getStatus()) {
-            throw new PropertyAccessException("Cannot delete property, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new PropertyAccessException("Cannot delete property, an HTTP error " + cRes.getStatus() + OCCURED);
         }
     }
 
@@ -201,7 +202,7 @@ public class PropertyStoreHttp extends AbstractPropertyStore implements FF4jWebC
     public Map<String, Property<?>> readAllProperties() {
         Response cRes = getStore().request(MediaType.APPLICATION_JSON_TYPE).get();
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
-            throw new PropertyAccessException("Cannot read properties, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new PropertyAccessException("Cannot read properties, an HTTP error " + cRes.getStatus() + OCCURED);
         }
         String resEntity = cRes.readEntity(String.class);
         Property<?>[] pArray = PropertyJsonParser.parsePropertyArray(resEntity);
