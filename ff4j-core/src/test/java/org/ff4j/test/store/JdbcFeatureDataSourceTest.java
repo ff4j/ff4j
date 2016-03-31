@@ -29,6 +29,7 @@ import org.ff4j.store.JdbcFeatureStore;
 import org.ff4j.store.JdbcStoreConstants;
 import org.ff4j.test.utils.JdbcTestHelper;
 import org.ff4j.utils.JdbcUtils;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -139,12 +140,11 @@ public class JdbcFeatureDataSourceTest extends FStoreTestSupport implements Jdbc
         JdbcUtils.rollback(test);
     }
    
-    @Test//(expected = FeatureAccessException.class)
+    @Test
     public void testDS() throws SQLException {
         DataSource test = Mockito.mock(DataSource.class);
         doThrow(new SQLException()).when(test).getConnection();
-        ff4j.getFeatureStore().exist("I-DONT-EXIST");
+        Assert.assertFalse(ff4j.getFeatureStore().exist("I-DONT-EXIST"));
     }
-    
 
 }

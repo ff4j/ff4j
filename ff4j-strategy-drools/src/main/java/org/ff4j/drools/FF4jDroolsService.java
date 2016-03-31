@@ -190,7 +190,7 @@ public final class FF4jDroolsService implements Serializable {
         InputStream rin = null;
         try {
             rin = ClassLoader.getSystemResourceAsStream(resourceName);
-            StringBuffer out = new StringBuffer();
+            StringBuilder out = new StringBuilder();
             byte[] b = new byte[4096];
             int n = 0;
             while (n != -1) {

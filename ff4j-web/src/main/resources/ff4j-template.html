@@ -1,20 +1,13 @@
 <!DOCTYPE config>
 <html lang="en">
-
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  
-  <title>FF4J Console</title>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+  <title>ff4j</title>
   <link href="{SERVLET_CONTEXT}?rsc=css" rel="stylesheet">
   <script type="text/javascript" charset="utf-8" src="{SERVLET_CONTEXT}?rsc=js"></script>
-  
 </head>
 
 <body style="background-color:white">
- 
- <!-- ******************************* Navigation BAR  *********************************** -->
  
  <div class="navbar">
   <div class="navbar-inner">
@@ -26,9 +19,7 @@
    </div>
   </div>
  </div>
- 
- <!-- ************************************ SUB Navigation BAR **************************** -->
- 
+
 <div class="subnavbar">
   <div class="subnavbar-inner">
     <div class="container" style="position:absolute;left:0">
@@ -45,38 +36,34 @@
            <span><u><b>E</b></u>xport XML</span>
           </a>
         </li>
+        <li>
+          <a href="{SERVLET_CONTEXT}?op=monitoring">
+            <i class="shortcut-icon icon-dashboard"></i>
+           <span><u><b>A</b></u>udit</span>
+          </a>
+        </li>
         <li style="background-color:white"/>
       </ul>
     </div>
-    <!-- /container --> 
   </div>
-  <!-- /subnavbar-inner --> 
 </div>
-<!-- /subnavbar -->
 
-<!-- *************************  FEATURES ******************** -->
   
- <div class="container" style="width:95%">
-
-<div id="message" >{ALERT}</div>
-
- <!-- Table of Features -->
+<div class="container" style="width:95%">
+ <div id="message" >{ALERT}</div>
  
  <h4 style="color:#00ab8b"><i class="icon-home"></i>&nbsp;Features
   <div style="float:right;margin-bottom:10px">
-    
-		<button type="button" class="btn btn-green" data-toggle="modal" href="#modalCreate">
-			<i class="icon-plus icon-white" style="margin-left:10px"></i><br>
-            <span>New <u><b>F</b></u>eature</span>
-		</button>
-		
-		<button type="button" class="btn btn-green" data-toggle="modal" href="#modalToggle" > 
-			<i class="icon-th-list icon-white"></i><br>			
-            <span><u><b>T</b></u>oggle Group</span>
-		</button>
-	
-    </div>
-	</h4>
+   <button type="button" class="btn btn-green" data-toggle="modal" href="#modalCreate">
+	<i class="icon-plus icon-white" style="margin-left:10px"></i><br>
+     <span>New <u><b>F</b></u>eature</span>
+   </button>
+   <button type="button" class="btn btn-green" data-toggle="modal" href="#modalToggle" > 
+    <i class="icon-th-list icon-white"></i><br>			
+      <span><u><b>T</b></u>oggle Group</span>
+   </button>
+  </div>
+ </h4>
 	
  <div class="widget widget-table action-table">
   <div class="widget-content">
@@ -92,25 +79,21 @@
        <th style="width:5%;text-align:center">D</th>
       </tr>
     </thead>
-    <tbody> 
-      {FEATURE_ROWS}
-    </tbody>
+    <tbody>{FEATURE_ROWS}</tbody>
    </table>
-  </div> <!-- /widget-content -->
- </div> <!-- /widget -->
+  </div>
+ </div>
  
  <p/><br/>
  
- <!-- *************************  PROPERTIES ******************** -->
-
  <h4 style="color:#19599A"><i class="icon-list-alt"></i>&nbsp;Properties :
  <div style="float:right;margin-bottom:10px">
-		<button type="button" class="btn btn-primary" data-toggle="modal" href="#modalCreateProperty">
-			<i class="icon-plus icon-white" style="margin-left:10px"></i><br>
-            <span>New <u><b>P</b></u>roperty</span>
-		</button>
-    </div>
-	</h4>
+  <button type="button" class="btn btn-primary" data-toggle="modal" href="#modalCreateProperty">
+   <i class="icon-plus icon-white" style="margin-left:10px"></i><br>
+   <span>New <u><b>P</b></u>roperty</span>
+  </button>
+ </div>
+</h4>
 
 <div class="widget widget-table action-table">
   <div class="widget-content">
@@ -129,17 +112,11 @@
      {PROPERTIES_ROWS}
     </tbody>
     </table>
-  </div> <!-- /widget-content -->
- </div> <!-- /widget -->  
-  
-</div> <!-- /container --> 
+  </div>
+ </div>
+</div>
 
-
-<!-- *********************************************************** -->
-<!-- **                     Creation FORM                     ** -->
-<!-- *********************************************************** -->
-
-
+<!-- Creation FORM -->
 <form class="form-horizontal" action="{SERVLET_CONTEXT}" method="POST" >
 
  <div class="modal hide fade" id="modalCreate" tabindex="-1" role="dialog" aria-labelledby="labelCreate" aria-hidden="true">

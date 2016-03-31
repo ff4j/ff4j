@@ -99,6 +99,7 @@ public class InMemoryStoreTest extends FStoreTestSupport {
         InMemoryFeatureStore f = new InMemoryFeatureStore();
         f.importFeaturesFromXmlFile("ff4j.xml");
         f.importFeaturesFromXmlFile("ff4j.xml");
+        Assert.assertFalse(f.readAll().isEmpty());
     }
     
 }

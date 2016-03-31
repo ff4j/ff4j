@@ -32,7 +32,7 @@ import org.ff4j.web.FF4jWebConstants;
 import org.ff4j.web.api.FF4jJacksonMapper;
 import org.ff4j.web.api.resources.FF4jResource;
 import org.ff4j.web.api.test.SampleFF4jJersey2Application;
-import org.ff4j.web.store.FeatureStoreHttp;
+import org.ff4j.web.jersey2.store.FeatureStoreHttp;
 import org.ff4j.web.store.FeatureStoreHttpTestIT;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.test.JerseyTest;

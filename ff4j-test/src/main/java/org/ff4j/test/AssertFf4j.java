@@ -33,6 +33,8 @@ import org.junit.Assert;
  */
 public class AssertFf4j {
 
+    public static final String IS_MANDATORY = "' is mandatory";
+    public static final String FEATURE = "Feature '";
     /** reference to ff4j context. */
     private final FF4j ff4j;
 
@@ -54,7 +56,7 @@ public class AssertFf4j {
      * @return current object
      */
     public final AssertFf4j assertThatFeatureExist(String featureName) {
-        Assert.assertTrue("Feature '" + featureName + "' is mandatory", ff4j.exist(featureName));
+        Assert.assertTrue(FEATURE + featureName + IS_MANDATORY, ff4j.exist(featureName));
         return this;
     }
     
@@ -66,7 +68,7 @@ public class AssertFf4j {
      * @return current object
      */
     public final AssertFf4j assertThatPropertyExist(String propertyName) {
-        Assert.assertTrue("Property '" + propertyName + "' is mandatory", ff4j.getPropertiesStore().existProperty(propertyName));
+        Assert.assertTrue("Property '" + propertyName + IS_MANDATORY, ff4j.getPropertiesStore().existProperty(propertyName));
         return this;
     }
 
@@ -78,7 +80,7 @@ public class AssertFf4j {
      * @return current object
      */
     public final AssertFf4j assertThatFeatureDoesNotExist(String featureName) {
-        Assert.assertFalse("Feature '" + featureName + "' must not exist", ff4j.exist(featureName));
+        Assert.assertFalse(FEATURE + featureName + "' must not exist", ff4j.exist(featureName));
         return this;
     }
     
@@ -91,7 +93,7 @@ public class AssertFf4j {
      * @return current object
      */
     public final AssertFf4j assertThatPropertyDoesNotExist(String propertyName) {
-        Assert.assertFalse("Property '" + propertyName + "' is mandatory", ff4j.getPropertiesStore().existProperty(propertyName));
+        Assert.assertFalse("Property '" + propertyName + IS_MANDATORY, ff4j.getPropertiesStore().existProperty(propertyName));
         return this;
     }
 
@@ -328,7 +330,7 @@ public class AssertFf4j {
      * @return current object
      */
     public final AssertFf4j assertThatFeatureHasFlippingStrategy(String featureName) {
-        Assert.assertNotNull("Feature '" + featureName + "' must have a FlippingStrategy but doesn't", ff4j.getFeature(featureName).getFlippingStrategy());
+        Assert.assertNotNull(FEATURE + featureName + "' must have a FlippingStrategy but doesn't", ff4j.getFeature(featureName).getFlippingStrategy());
         return this;
     }
     
@@ -340,7 +342,7 @@ public class AssertFf4j {
      * @return current object
      */
     public final AssertFf4j assertThatFeatureDoesNotHaveFlippingStrategy(String featureName) {
-        Assert.assertNull("Feature '" + featureName + "' must not have a flipping strategy", ff4j.getFeature(featureName).getFlippingStrategy());
+        Assert.assertNull(FEATURE + featureName + "' must not have a flipping strategy", ff4j.getFeature(featureName).getFlippingStrategy());
         return this;
     }
     

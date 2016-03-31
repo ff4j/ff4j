@@ -66,7 +66,7 @@ public class FeatureAutoProxy extends AbstractAutoProxyCreator {
                     return PROXY_WITHOUT_ADDITIONAL_INTERCEPTORS;
                 }
             } else {
-               if ((currentInterface != null) && (currentInterface.isAnnotationPresent(Flip.class))) {
+               if (currentInterface.isAnnotationPresent(Flip.class)) {
                    // If annotation is registered on Interface class 
                    processedInterface.put(currentInterfaceName, true);
                     return PROXY_WITHOUT_ADDITIONAL_INTERCEPTORS;

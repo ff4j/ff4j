@@ -42,7 +42,7 @@ import redis.clients.jedis.Jedis;
 public class PropertyStoreRedis extends AbstractPropertyStore {
 
     /** prefix of keys. */
-    public static String KEY_PROPERTY = "FF4J_PROPERTY_";
+    public static final String KEY_PROPERTY = "FF4J_PROPERTY_";
     
     /** default ttl. */
     private static int DEFAULT_TTL = 900000000;

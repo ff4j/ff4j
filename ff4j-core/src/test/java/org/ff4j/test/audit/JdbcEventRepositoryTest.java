@@ -64,6 +64,8 @@ public class JdbcEventRepositoryTest extends AbstractEventRepositoryTest {
     /** {@inheritDoc} */
     @After
     public void tearDown() throws Exception {
+        // Let the event to be inserted in Async before shutdown db
+        Thread.sleep(200);
         db.shutdown();
     }
     
@@ -86,6 +88,7 @@ public class JdbcEventRepositoryTest extends AbstractEventRepositoryTest {
         Mockito.doThrow(new SQLException()).when(mockDS).getConnection();
         jrepo.setDataSource(mockDS);
         jrepo.getTotalEventCount();
+        
     }
     
     @Test(expected = AuditAccessException.class)

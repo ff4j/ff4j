@@ -274,14 +274,19 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
         
     }
 
-    private Object callAlterBeanMethod(final MethodInvocation pMInvoc, String alterBean, Logger targetLogger) {
+    private Object callAlterBeanMethod(final MethodInvocation pMInvoc, String alterBean, Logger targetLogger) throws Throwable {
         Method method = pMInvoc.getMethod();
         targetLogger.debug("FeatureFlipping on method:{} class:{}", method.getName(), method.getDeclaringClass().getName());
         // invoke same method (interface) with another spring bean (ff.alterBean())
         try {
             return method.invoke(appCtx.getBean(alterBean, method.getDeclaringClass()), pMInvoc.getArguments());
-        } catch (Exception e) {
-            throw new IllegalArgumentException("ff4j-aop: Cannot invoke method " + method.getName() + " on bean " + alterBean, e);
+        } catch (InvocationTargetException invocationTargetException) {
+            if(!ff4j.isAlterBeanThrowInvocationTargetException() && invocationTargetException.getCause() != null) {
+                throw invocationTargetException.getCause();
+            }
+            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke method " + method.getName() + " on bean " + alterBean, invocationTargetException);
+        } catch (Exception exception) {
+            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke method " + method.getName() + " on bean " + alterBean, exception);
         }
     }
 
@@ -299,7 +304,7 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
         return callAlterBeanMethod;
     }
 
-    private Object callAlterClazzMethodOnFirst(final MethodInvocation pMInvoc, Flip ff, Logger targetLogger) {
+    private Object callAlterClazzMethodOnFirst(final MethodInvocation pMInvoc, Flip ff, Logger targetLogger) throws Throwable {
         Map<String, ?> beans = appCtx.getBeansOfType(pMInvoc.getMethod().getDeclaringClass());
         for (Object bean : beans.values()) {
             if (isBeanAProxyOfAlterClass(bean, ff.alterClazz())) {
@@ -311,19 +316,29 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
                 + pMInvoc.getMethod().getDeclaringClass());
     }
 
-    private static Object callAlterClazzMethod(final MethodInvocation pMInvoc, Object targetBean, Logger targetLogger) {
+    private Object callAlterClazzMethod(final MethodInvocation pMInvoc, Object targetBean, Logger targetLogger) throws Throwable {
         Method method = pMInvoc.getMethod();
         String declaringClass = method.getDeclaringClass().getName();
         targetLogger.debug("FeatureFlipping on method:{} class:{}", method.getName(), declaringClass);
         try {
             return method.invoke(targetBean, pMInvoc.getArguments());
         } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
+            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
                     + " please check visibility", e);
-        } catch (InvocationTargetException e) {
-            throw new IllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
-                    + " please check signatures", e);
+        } catch (InvocationTargetException invocationTargetException) {
+            if(!ff4j.isAlterBeanThrowInvocationTargetException() && invocationTargetException.getCause() != null) {
+                throw invocationTargetException.getCause();
+            }
+            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
+                    + " please check signatures", invocationTargetException);
+        } catch (Exception exception) {
+            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
+                    + " please check signatures", exception);
         }
+    }
+
+    private IllegalArgumentException makeIllegalArgumentException(String message, Exception exception) {
+        return new IllegalArgumentException(message, exception);
     }
 
     protected boolean isBeanAProxyOfAlterClass(Object proxy, Class<?> alterClass) {
