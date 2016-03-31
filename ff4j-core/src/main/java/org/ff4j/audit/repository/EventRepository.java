@@ -32,14 +32,8 @@ import org.ff4j.audit.graph.PieChart;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public interface EventRepository extends EventConstants {
+public interface EventRepository {
 
-    /** total hit count. */
-    String TITLE_PIE_HITCOUNT = "Total Hit Counts";
-    
-    /** distribution. */
-    String TITLE_BARCHAR_HIT = "HitCounts Distribution";
-    
     /**
      * Save event into store synchronously.
      * 

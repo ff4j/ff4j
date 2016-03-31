@@ -24,16 +24,17 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
-import org.ff4j.web.embedded.ConsoleConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.ff4j.web.embedded.ConsoleConstants.*;
 
 /**
  * Servlet initialisation to put FF4J in HTTP Session.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FF4jInitServlet extends HttpServlet implements ConsoleConstants {
+public class FF4jInitServlet extends HttpServlet {
 
     /** Serial. */
     private static final long serialVersionUID = 8447941463286918975L;

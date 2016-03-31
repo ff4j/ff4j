@@ -30,14 +30,15 @@ import java.util.Set;
 import org.ff4j.property.Property;
 import org.ff4j.property.PropertyString;
 import org.ff4j.property.util.PropertyFactory;
-import org.ff4j.store.JdbcStoreConstants;
+
+import static org.ff4j.store.JdbcStoreConstants.*;
 
 /**
  * Convert resultset into {@link PropertyString}.
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class JdbcPropertyMapper implements JdbcStoreConstants {
+public class JdbcPropertyMapper {
     
     /**
      * Expect to convert a JDBC Result to Property.

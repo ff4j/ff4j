@@ -23,7 +23,6 @@ import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.store.mongodb.FeatureDBObjectBuilder;
 import org.ff4j.store.mongodb.FeatureDBObjectMapper;
-import org.ff4j.store.mongodb.FeatureStoreMongoConstants;
 import org.ff4j.utils.Util;
 
 import com.mongodb.BasicDBObject;
@@ -31,13 +30,15 @@ import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 
+import static org.ff4j.store.mongodb.FeatureStoreMongoConstants.*;
+
 /**
  * Implementation of {@link FeatureStore} to work with MongoDB.
  * 
  * @author William Delanoue (@twillouer) </a>
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreMongoDB extends AbstractFeatureStore implements FeatureStoreMongoConstants {
+public class FeatureStoreMongoDB extends AbstractFeatureStore {
 
     /** Map from DBObject to Feature. */
     private static final FeatureDBObjectMapper MAPPER = new FeatureDBObjectMapper();

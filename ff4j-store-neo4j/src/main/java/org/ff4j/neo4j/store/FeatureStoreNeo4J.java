@@ -33,7 +33,6 @@ import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
-import org.ff4j.neo4j.FF4jNeo4jConstants;
 import org.ff4j.neo4j.FF4jNeo4jLabels;
 import org.ff4j.neo4j.FF4jNeo4jRelationShips;
 import org.ff4j.property.Property;
@@ -44,12 +43,14 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
 
+import static org.ff4j.neo4j.FF4jNeo4jConstants.*;
+
 /**
  * Implementatino of NEO4J Store.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreNeo4J extends AbstractFeatureStore implements FF4jNeo4jConstants {
+public class FeatureStoreNeo4J extends AbstractFeatureStore {
 
     public static final String GROUPNAME = "GROUPNAME";
     public static final String GROUP_NAME = "groupName";

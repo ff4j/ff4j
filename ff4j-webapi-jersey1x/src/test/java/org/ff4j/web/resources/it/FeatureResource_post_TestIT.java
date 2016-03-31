@@ -29,6 +29,9 @@ import org.junit.Test;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
+import static org.ff4j.test.TestsFf4jConstants.*;
+import static org.ff4j.web.FF4jWebConstants.*;
+
 /**
  * Integration test for resources {@link FeatureResource}.
  * 

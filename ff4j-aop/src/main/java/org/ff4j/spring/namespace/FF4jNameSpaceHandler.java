@@ -25,12 +25,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
+import static org.ff4j.spring.namespace.FF4jNameSpaceConstants.*;
+
 /**
  * Use Spring NameSpace to simplify settings.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FF4jNameSpaceHandler extends NamespaceHandlerSupport implements FF4jNameSpaceConstants {
+public class FF4jNameSpaceHandler extends NamespaceHandlerSupport {
 
     /** Logger statique pour la classe. **/
     private static Log logger = LogFactory.getLog(FF4jNameSpaceHandler.class);

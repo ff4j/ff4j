@@ -28,12 +28,14 @@ import java.util.Map;
 
 import org.ff4j.core.Feature;
 
+import static org.ff4j.store.JdbcStoreConstants.*;
+
 /**
  * Map resultset into {@link Feature}
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class JdbcFeatureMapper implements JdbcStoreConstants {
+public class JdbcFeatureMapper {
     
     /**
      * Map feature result to bean.

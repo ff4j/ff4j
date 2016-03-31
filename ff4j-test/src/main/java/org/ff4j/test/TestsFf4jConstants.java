@@ -25,60 +25,62 @@ package org.ff4j.test;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public interface TestsFf4jConstants {
+public class TestsFf4jConstants {
 
     /** Initial feature number. */
-    int EXPECTED_FEATURES_NUMBERS = 5;
+    public static final int EXPECTED_FEATURES_NUMBERS = 5;
 
     /** Feature Name. */
-    String F1 = "first";
+    public static final String F1 = "first";
 
     /** Feature Name. */
-    String F2 = "second";
+    public static final String F2 = "second";
 
     /** Feature Name. */
-    String F3 = "third";
+    public static final String F3 = "third";
 
     /** Feature Name. */
-    String F4 = "forth";
+    public static final String F4 = "forth";
 
     /** Feature Name. */
-    String AWESOME = "AwesomeFeature";
+    public static final String AWESOME = "AwesomeFeature";
 
     /** Custom property name. */
-    String CUSTOM_PROPERTY = "KEY-1";
+    public static final String CUSTOM_PROPERTY = "KEY-1";
 
     /** Group Name. */
-    String G0 = "GRP0";
+    public static final String G0 = "GRP0";
 
     /** Group Name. */
-    String G1 = "GRP1";
+    public static final String G1 = "GRP1";
 
     /** Group Name. */
-    String F_DOESNOTEXIST = "invalid-feature-id";
+    public static final String F_DOESNOTEXIST = "invalid-feature-id";
 
     /** Group Name. */
-    String G_DOESNOTEXIST = "invalid-group-name";
+    public static final String G_DOESNOTEXIST = "invalid-group-name";
 
     /** Feature Name. */
-    String FEATURE_NEW = "new";
+    public static final String FEATURE_NEW = "new";
 
     /** Feature Name. */
-    String FEATURE_X = "x";
+    public static final String FEATURE_X = "x";
 
     /** Feature Name. */
-    String ROLE_USER = "USER";
+    public static final String ROLE_USER = "USER";
 
     /** Feature Name. */
-    String ROLE_ADMIN = "ADMINISTRATOR";
+    public static final String ROLE_ADMIN = "ADMINISTRATOR";
 
     /** Feature Name. */
-    String ROLE_TEST = "BETA-TESTER";
+    public static final String ROLE_TEST = "BETA-TESTER";
 
     /** Feature Name. */
-    String ROLE_NEW = "ROLE_NEW";
+    public static final String ROLE_NEW = "ROLE_NEW";
 
     /** Test file. */
-    String TEST_FEATURES_FILE = "test-ff4j-features.xml";
+    public static final String TEST_FEATURES_FILE = "test-ff4j-features.xml";
+
+    private TestsFf4jConstants() {}
 
 }

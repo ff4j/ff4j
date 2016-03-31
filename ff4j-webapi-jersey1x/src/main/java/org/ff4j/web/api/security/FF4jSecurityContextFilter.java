@@ -29,7 +29,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.SecurityContext;
 
 import org.ff4j.web.ApiConfig;
-import org.ff4j.web.FF4jWebConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,12 +38,14 @@ import com.sun.jersey.spi.container.ContainerRequestFilter;
 import com.sun.jersey.spi.container.ContainerResponseFilter;
 import com.sun.jersey.spi.container.ResourceFilter;
 
+import static org.ff4j.web.FF4jWebConstants.*;
+
 /**
  * Filter to get security.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FF4jSecurityContextFilter implements FF4jWebConstants, ContainerRequestFilter, ResourceFilter {
+public class FF4jSecurityContextFilter implements ContainerRequestFilter, ResourceFilter {
 
     /** logger for this class. */
     private final Logger log = LoggerFactory.getLogger(getClass());

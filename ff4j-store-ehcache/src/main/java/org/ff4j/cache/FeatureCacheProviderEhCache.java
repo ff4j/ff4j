@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.ff4j.core.Feature;
-import org.ff4j.ehcache.FF4JEhCacheConstants;
 import org.ff4j.property.Property;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +23,8 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.config.Configuration;
+
+import static org.ff4j.ehcache.FF4JEhCacheConstants.*;
 
 /**
  * Cache-aside implementation with EHCACHE.
@@ -34,7 +35,7 @@ import net.sf.ehcache.config.Configuration;
  * * Warn : DO NOT USE THIS CACHE WHEN WORKING WITH EXTERNAL FEATURESTORE (as Database) and cluster application : EACH NODE GOT
  * ITS MEMORY AND AN MODIFICATION IN STORE WON'T REFRESH THIS CACHE. Please use REDIS/MEMCACHED implementations.
  */
-public class FeatureCacheProviderEhCache implements FF4JCacheManager, FF4JEhCacheConstants {
+public class FeatureCacheProviderEhCache implements FF4JCacheManager {
 
     /** Logger for the class. */
     private static final Logger LOG = LoggerFactory.getLogger(FF4jCacheProxy.class);

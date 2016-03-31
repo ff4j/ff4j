@@ -30,12 +30,14 @@ import org.ff4j.audit.EventPublisher;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 
+import static org.ff4j.audit.EventConstants.*;
+
 /**
  * Proxy to publish operation to audit.
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class FeatureStoreAuditProxy implements FeatureStore, EventConstants {
+public class FeatureStoreAuditProxy implements FeatureStore {
 
     /** Current FeatureStore. */
     private FeatureStore target = null;

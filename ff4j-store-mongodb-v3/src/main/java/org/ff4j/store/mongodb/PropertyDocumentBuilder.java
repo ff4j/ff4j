@@ -26,12 +26,14 @@ import org.bson.Document;
 
 import com.mongodb.BasicDBList;
 
+import static org.ff4j.store.mongodb.FeatureStoreMongoConstants.*;
+
 /**
  * Mongo object builder.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public final class PropertyDocumentBuilder implements FeatureStoreMongoConstants {
+public final class PropertyDocumentBuilder {
    
     /**
      * Mongo v3 document builder.

@@ -38,12 +38,14 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
+import static org.ff4j.store.mongodb.FeatureStoreMongoConstants.*;
+
 /**
  * MApping from Mongo document to Feature.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public final class FeatureDBObjectMapper implements FeatureStoreMongoConstants {
+public final class FeatureDBObjectMapper {
 
     /**
      * Convert {@link DBObject} to {@link Feature}.

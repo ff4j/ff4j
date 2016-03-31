@@ -52,12 +52,14 @@ import org.ff4j.utils.JdbcUtils;
 import org.ff4j.utils.MappingUtil;
 import org.ff4j.utils.Util;
 
+import static org.ff4j.store.JdbcStoreConstants.*;
+
 /**
  * Implementation of {@link FeatureStore} to work with RDBMS through JDBC.
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStoreConstants {
+public class JdbcFeatureStore extends AbstractFeatureStore {
 
     public static final String CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE = "Cannot check feature existence, error related to database";
     public static final String CANNOT_UPDATE_FEATURES_DATABASE_SQL_ERROR = "Cannot update features database, SQL ERROR";

@@ -33,17 +33,18 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.SecurityContext;
 
 import org.ff4j.web.ApiConfig;
-import org.ff4j.web.FF4jWebConstants;
 import org.glassfish.jersey.internal.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.ff4j.web.FF4jWebConstants.*;
 
 /**
  * Filter to get security.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FF4jAuthenticationFilter implements ContainerRequestFilter, FF4jWebConstants {
+public class FF4jAuthenticationFilter implements ContainerRequestFilter {
 
     /** logger for this class. */
     private final Logger log = LoggerFactory.getLogger(getClass());

@@ -27,8 +27,6 @@ import javax.ws.rs.core.Application;
 
 import org.ff4j.FF4j;
 import org.ff4j.test.AssertFf4j;
-import org.ff4j.test.TestsFf4jConstants;
-import org.ff4j.web.FF4jWebConstants;
 import org.ff4j.web.api.FF4jJacksonMapper;
 import org.ff4j.web.api.resources.FF4jResource;
 import org.ff4j.web.api.test.SampleFF4jJersey2Application;
@@ -44,12 +42,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.swagger.jaxrs.json.JacksonJsonProvider;
 
+import static org.ff4j.test.TestsFf4jConstants.*;
+import static org.ff4j.web.FF4jWebConstants.*;
+
 /**
  * Superclass for testing web resources.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public abstract class AbstractWebResourceTestIT extends JerseyTest implements TestsFf4jConstants, FF4jWebConstants {
+public abstract class AbstractWebResourceTestIT extends JerseyTest {
     
     /** Relative resource. */
     public final static String APIPATH = FF4jResource.class.getAnnotation(Path.class).value();

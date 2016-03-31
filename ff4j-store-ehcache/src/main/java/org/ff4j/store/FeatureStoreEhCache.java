@@ -43,7 +43,7 @@ import net.sf.ehcache.config.Configuration;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreEhCache extends AbstractFeatureStore implements FF4JEhCacheConstants {
+public class FeatureStoreEhCache extends AbstractFeatureStore {
   
     /** Wrap EHCACHE Manager. */
     private FF4jEhCacheWrapper wrapper;
