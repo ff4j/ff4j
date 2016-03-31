@@ -114,7 +114,7 @@ public class PropertyStoreNeo4j extends AbstractPropertyStore implements FF4jNeo
     /** {@inheritDoc} */
     public Property<?> readProperty(String name) {
         assertPropertyName(name);
-        Property<?> pro = null;
+        Property<?> pro;
         Transaction tx = graphDb.beginTx();
         Map<String, Object> queryParameters = new HashMap<>();
         queryParameters.put("name", name);
