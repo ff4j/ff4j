@@ -61,7 +61,7 @@
 		<github.login />
 		<encoding>UTF-8</encoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		
+
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
 
@@ -87,9 +87,9 @@
 		<version.commons-io>2.4</version.commons-io>
 		<version.commons-fileupload>1.3.1</version.commons-fileupload>
 		<version.commons-cli>1.3.1</version.commons-cli>
-		
-		
-		
+
+
+
 
 		<version.servlet-api>2.5</version.servlet-api>
 		<version.jsp-api>2.2</version.jsp-api>
@@ -129,6 +129,14 @@
 		<version.maven.plugin.jar>2.6</version.maven.plugin.jar>
 		<version.maven.plugin.dependency>2.8</version.maven.plugin.dependency>
 
+		<spring-boot.version>1.3.2.RELEASE</spring-boot.version>
+		<commons.lang>3.0</commons.lang>
+		<cucumber.version>1.2.4</cucumber.version>
+		<gson.version>2.2.4</gson.version>
+		<assertj.version>3.2.0</assertj.version>
+		<jsonassert.version>1.2.3</jsonassert.version>
+		<easymock.version>3.1</easymock.version>
+		<swagger.version>2.2.2</swagger.version>
 	</properties>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -159,7 +167,9 @@
 		<module>ff4j-store-neo4j</module>
 		<!-- <module>ff4j-shell</module> -->
 		<!-- <module>ff4j-metrics</module> -->
-		
+		<!-- spring-boot-starter -->
+		<module>ff4j-spring-boot-autoconfigure</module>
+		<module>ff4j-spring-boot-starter</module>
 	</modules>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -167,7 +177,98 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<dependencyManagement>
 		<dependencies>
-
+			<!-- Spring boot -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot</artifactId>
+				<version>${spring-boot.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-autoconfigure</artifactId>
+				<version>${spring-boot.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-configuration-processor</artifactId>
+				<version>${spring-boot.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-web</artifactId>
+				<version>${spring-boot.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-tomcat</artifactId>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>${commons.lang}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-collections</groupId>
+				<artifactId>commons-collections</artifactId>
+				<version>${commons.lang}</version>
+			</dependency>
+			<!-- Swagger -->
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger2</artifactId>
+				<version>${swagger.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger-ui</artifactId>
+				<version>${swagger.version}</version>
+			</dependency>
+			<!-- Test dependency -->
+			<dependency>
+				<groupId>com.google.code.gson</groupId>
+				<artifactId>gson</artifactId>
+				<version>${gson.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.assertj</groupId>
+				<artifactId>assertj-core</artifactId>
+				<version>${assertj.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.skyscreamer</groupId>
+				<artifactId>jsonassert</artifactId>
+				<version>${jsonassert.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>info.cukes</groupId>
+				<artifactId>cucumber-junit</artifactId>
+				<version>${cucumber.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>info.cukes</groupId>
+				<artifactId>cucumber-spring</artifactId>
+				<version>${cucumber.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.easymock</groupId>
+				<artifactId>easymock</artifactId>
+				<version>${easymock.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-test</artifactId>
+				<version>${spring-boot.version}</version>
+				<scope>test</scope>
+			</dependency>
 			<!-- Spring -->
 			<dependency>
 				<groupId>org.springframework</groupId>
@@ -278,7 +379,7 @@
 				<artifactId>commons-cli</artifactId>
 				<version>${version.commons-cli}</version>
 			</dependency>
-			
+
 
 			<dependency>
 				<groupId>io.dropwizard.metrics</groupId>
@@ -307,7 +408,7 @@
 				<artifactId>swagger-jersey2-jaxrs</artifactId>
 				<version>${version.swagger}</version>
 			</dependency>
-			
+
 			<!-- Tests -->
 			<dependency>
 				<groupId>junit</groupId>
@@ -518,7 +619,7 @@
 				</execution>
 			</executions>
 		</plugin>
-		
+
 		<!-- Coveralls.io -->
 		<plugin>
     		<groupId>org.eluder.coveralls</groupId>
@@ -598,7 +699,7 @@
 							<goal>report-integration</goal>
 						</goals>
 					</execution>
-					<!-- 
+					<!--
 					<execution>
 						<id>default-check</id>
 						<goals>
