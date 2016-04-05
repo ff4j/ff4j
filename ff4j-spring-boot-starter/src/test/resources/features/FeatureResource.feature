@@ -344,7 +344,7 @@ Feature: This feature enables in providing the user with RESTful api's where in 
       | uid   | enable | description    | group | permissions          |
       | login | false  | the login page | user  | ROLE_ADMIN,ROLE_USER |
     When the user requests for a feature by "/ff4j/store/features/login/removerole/ROLE_SUPPORT" by "POST" http method and content type as "application/json"
-    Then the user gets an error response with code "404" and error message as "role does not exists"
+    Then the user gets an error response with code "404" and error message as "role does not exist"
     When the user requests for a feature by "/ff4j/store/features/login" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
