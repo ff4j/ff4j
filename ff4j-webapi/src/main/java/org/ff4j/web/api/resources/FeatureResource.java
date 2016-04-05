@@ -9,9 +9,9 @@ package org.ff4j.web.api.resources;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -55,7 +55,7 @@ import io.swagger.annotations.ApiResponses;
 
 /**
  * Represent a feature as WebResource.
- *
+ * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 @Path("/ff4j/store/features/{uid}")
@@ -63,7 +63,7 @@ import io.swagger.annotations.ApiResponses;
 @RolesAllowed({FF4jWebConstants.ROLE_WRITE})
 @Api(value = "/ff4j/store/features/{uid}")
 public class FeatureResource extends AbstractResource {
-
+   
     /**
      * Defaut constructor.
      */
@@ -71,7 +71,7 @@ public class FeatureResource extends AbstractResource {
 
     /**
      * Allows to retrieve feature by its id.
-     *
+     * 
      * @param featId
      *            target feature identifier
      * @return feature is exist
@@ -81,7 +81,7 @@ public class FeatureResource extends AbstractResource {
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value= "Read information about a feature", response=FeatureApiBean.class)
     @ApiResponses({
-        @ApiResponse(code = 200, message= "Information about features"),
+        @ApiResponse(code = 200, message= "Information about features"), 
         @ApiResponse(code = 404, message= "Feature not found") })
     public Response read(@PathParam("uid") String id) {
        if (!ff4j.getFeatureStore().exist(id)) {
@@ -93,7 +93,7 @@ public class FeatureResource extends AbstractResource {
 
     /**
      * Create the feature if not exist or update it
-     *
+     * 
      * @param headers
      *            current request header
      * @param data
@@ -106,7 +106,7 @@ public class FeatureResource extends AbstractResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-        @ApiResponse(code = 201, message= "Feature has been created"),
+        @ApiResponse(code = 201, message= "Feature has been created"), 
         @ApiResponse(code = 204, message= "No content, feature is updated") })
     public Response upsertFeature(@Context HttpHeaders headers, @PathParam("uid") String id, FeatureApiBean fApiBean) {
         // Parameter validations
@@ -114,7 +114,7 @@ public class FeatureResource extends AbstractResource {
             String errMsg = "Invalid identifier expected " + id;
             return Response.status(Response.Status.BAD_REQUEST).entity(errMsg).build();
         }
-
+        
         Feature feat = new Feature(id);
         feat.setDescription(fApiBean.getDescription());
         feat.setEnable(fApiBean.isEnable());
@@ -136,10 +136,10 @@ public class FeatureResource extends AbstractResource {
         if (mapProperties != null) {
             for(PropertyApiBean propertyBean : mapProperties.values()) {
                 feat.addProperty(propertyBean.asProperty());
-            }
+            }       
         }
-
-        // Update or create ?
+        
+        // Update or create ? 
         if (!getFeatureStore().exist(feat.getUid())) {
             getFeatureStore().create(feat);
             String location = String.format("%s", uriInfo.getAbsolutePath().toString());
@@ -149,7 +149,7 @@ public class FeatureResource extends AbstractResource {
                 return Response.status(Response.Status.CREATED).header(LOCATION, location).entity(id).build();
             }
         }
-
+        
         // Create
         getFeatureStore().update(feat);
         return Response.noContent().build();
@@ -157,7 +157,7 @@ public class FeatureResource extends AbstractResource {
 
     /**
      * Delete feature by its id.
-     *
+     * 
      * @return delete by its id.
      */
     @DELETE
@@ -165,7 +165,7 @@ public class FeatureResource extends AbstractResource {
     @Produces(MediaType.TEXT_PLAIN)
     @ApiOperation(value= "Delete a feature", response=Response.class)
     @ApiResponses({
-        @ApiResponse(code = 404, message= "Feature has not been found"),
+        @ApiResponse(code = 404, message= "Feature has not been found"), 
         @ApiResponse(code = 204, message= "No content, feature is deleted"),
         @ApiResponse(code = 400, message= "Bad identifier"),
         })
@@ -184,7 +184,7 @@ public class FeatureResource extends AbstractResource {
 
     /**
      * Convenient method to update partially the feature: Here enabling
-     *
+     * 
      * @return http response.
      */
     @POST
@@ -192,7 +192,7 @@ public class FeatureResource extends AbstractResource {
     @RolesAllowed({ROLE_WRITE})
     @ApiOperation(value= "Enable a feature", response=Response.class)
     @ApiResponses({
-        @ApiResponse(code = 204, message= "Features has been enabled"),
+        @ApiResponse(code = 204, message= "Features has been enabled"), 
         @ApiResponse(code = 404, message= "Feature not found") })
     public Response operationEnable(@PathParam("uid") String id) {
         if (!ff4j.getFeatureStore().exist(id)) {
@@ -205,7 +205,7 @@ public class FeatureResource extends AbstractResource {
 
     /**
      * Convenient method to update partially the feature: Here disabling
-     *
+     * 
      * @return http response.
      */
     @POST
@@ -213,7 +213,7 @@ public class FeatureResource extends AbstractResource {
     @RolesAllowed({ROLE_WRITE})
     @ApiOperation(value= "Disable a feature", response=Response.class)
     @ApiResponses({
-        @ApiResponse(code = 204, message= "Features has been disabled"),
+        @ApiResponse(code = 204, message= "Features has been disabled"), 
         @ApiResponse(code = 404, message= "Feature not found") })
     public Response operationDisable(@PathParam("uid") String id) {
         if (!ff4j.getFeatureStore().exist(id)) {
@@ -226,7 +226,7 @@ public class FeatureResource extends AbstractResource {
 
     /**
      * Convenient method to update partially the feature: Here grant a role
-     *
+     * 
      * @return http response.
      */
     @POST
@@ -234,7 +234,7 @@ public class FeatureResource extends AbstractResource {
     @Path("/" + OPERATION_GRANTROLE + "/{role}" )
     @ApiOperation(value= "Grant a permission on a feature", response=Response.class)
     @ApiResponses({
-        @ApiResponse(code = 204, message= "Permission has been granted"),
+        @ApiResponse(code = 204, message= "Permission has been granted"), 
         @ApiResponse(code = 404, message= "Feature not found"),
         @ApiResponse(code = 400, message= "Invalid RoleName") })
     public Response operationGrantRole(@PathParam("uid") String id, @PathParam("role") String role) {
@@ -252,7 +252,7 @@ public class FeatureResource extends AbstractResource {
 
     /**
      * Convenient method to update partially the feature: Here removing a role
-     *
+     * 
      * @return http response.
      */
     @POST
@@ -260,7 +260,7 @@ public class FeatureResource extends AbstractResource {
     @Path("/" + OPERATION_REMOVEROLE + "/{role}" )
     @ApiOperation(value= "Remove a permission on a feature", response=Response.class)
     @ApiResponses({
-        @ApiResponse(code = 204, message= "Permission has been granted"),
+        @ApiResponse(code = 204, message= "Permission has been granted"), 
         @ApiResponse(code = 404, message= "Feature not found"),
         @ApiResponse(code = 400, message= "Invalid RoleName") })
     public Response operationRemoveRole(@PathParam("uid") String id, @PathParam("role") String role) {
@@ -276,10 +276,10 @@ public class FeatureResource extends AbstractResource {
         getFeatureStore().removeRoleFromFeature(id, role);
         return Response.noContent().build();
     }
-
+    
     /**
      * Convenient method to update partially the feature: Adding to a group
-     *
+     * 
      * @return http response.
      */
     @POST
@@ -287,7 +287,7 @@ public class FeatureResource extends AbstractResource {
     @Path("/" + OPERATION_ADDGROUP  + "/{groupName}" )
     @ApiOperation(value= "Define the group of the feature", response=Response.class)
     @ApiResponses({
-        @ApiResponse(code = 204, message= "Group has been defined"),
+        @ApiResponse(code = 204, message= "Group has been defined"), 
         @ApiResponse(code = 404, message= "Feature not found"),
         @ApiResponse(code = 400, message= "Invalid GroupName") })
     public Response operationAddGroup(@PathParam("uid") String id, @PathParam("groupName") String groupName) {
@@ -302,10 +302,10 @@ public class FeatureResource extends AbstractResource {
         getFeatureStore().addToGroup(id, groupName);
         return Response.noContent().build();
     }
-
+    
     /**
      * Convenient method to update partially the feature: Removing from a group
-     *
+     * 
      * @return http response.
      */
     @POST
@@ -313,7 +313,7 @@ public class FeatureResource extends AbstractResource {
     @Path("/" + OPERATION_REMOVEGROUP  + "/{groupName}")
     @ApiOperation(value= "Remove the group of the feature", response=Response.class)
     @ApiResponses({
-        @ApiResponse(code = 204, message= "Group has been removed"),
+        @ApiResponse(code = 204, message= "Group has been removed"), 
         @ApiResponse(code = 404, message= "Feature not found"),
         @ApiResponse(code = 400, message= "Invalid GroupName") })
     public Response operationRemoveGroup(@PathParam("uid") String id,  @PathParam("groupName") String groupName) {
@@ -322,7 +322,7 @@ public class FeatureResource extends AbstractResource {
             return Response.status(Response.Status.NOT_FOUND).entity(errMsg).build();
         }
         // Expected behaviour is no error even if invalid groupname
-        // .. but invalid if group does not exist...
+        // .. but invalid if group does not exist... 
         if (!ff4j.getFeatureStore().existGroup(groupName)) {
             String errMsg = "Invalid groupName should be " + groupName;
             return Response.status(Response.Status.BAD_REQUEST).entity(errMsg).build();
