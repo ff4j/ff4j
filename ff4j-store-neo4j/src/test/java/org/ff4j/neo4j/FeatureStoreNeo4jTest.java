@@ -31,12 +31,14 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseSettings;
 import org.neo4j.test.TestGraphDatabaseFactory;
 
+import static org.ff4j.neo4j.FF4jNeo4jConstants.*;
+
 /**
  * Unit Testing for Neo4j store.
  * 
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class FeatureStoreNeo4jTest extends FeatureStoreTestSupport implements FF4jNeo4jConstants {
+public class FeatureStoreNeo4jTest extends FeatureStoreTestSupport {
 
     /** DataBase instance. */
     protected static GraphDatabaseService graphDb;

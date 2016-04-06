@@ -22,7 +22,9 @@ package org.ff4j.audit;
 
 import org.ff4j.FF4j;
 
-public class EventBuilder implements EventConstants {
+import static org.ff4j.audit.EventConstants.*;
+
+public class EventBuilder {
     
     /** API Configuration. */
     private Event event;

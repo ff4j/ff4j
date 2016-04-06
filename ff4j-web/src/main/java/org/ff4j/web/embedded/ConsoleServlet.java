@@ -11,6 +11,7 @@ import static org.ff4j.web.embedded.ConsoleRenderer.renderMessageBox;
 import static org.ff4j.web.embedded.ConsoleRenderer.renderMsgGroup;
 import static org.ff4j.web.embedded.ConsoleRenderer.renderMsgProperty;
 import static org.ff4j.web.embedded.ConsoleRenderer.renderPage;
+import static org.ff4j.web.embedded.ConsoleConstants.*;
 
 /*
  * #%L AdministrationConsoleServlet.java (ff4j-web) by Cedrick LUNVEN %% Copyright (C) 2013 Ff4J %% Licensed under the Apache
@@ -49,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class ConsoleServlet extends HttpServlet implements ConsoleConstants {
+public class ConsoleServlet extends HttpServlet {
 
     /** serial number. */
     private static final long serialVersionUID = -3982043895954284269L;

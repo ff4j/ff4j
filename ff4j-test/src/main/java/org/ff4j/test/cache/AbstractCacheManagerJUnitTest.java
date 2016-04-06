@@ -22,18 +22,19 @@ package org.ff4j.test.cache;
 
 import org.ff4j.cache.FF4JCacheManager;
 import org.ff4j.core.Feature;
-import org.ff4j.test.TestsFf4jConstants;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.ff4j.test.TestsFf4jConstants.*;
 
 /**
  * Cache manager.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public abstract class AbstractCacheManagerJUnitTest implements TestsFf4jConstants {
+public abstract class AbstractCacheManagerJUnitTest {
 
     public static final String DESCRIPTION = "Description";
     /** Cache Manager. */

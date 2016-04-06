@@ -44,12 +44,15 @@ import com.sun.jersey.test.framework.WebAppDescriptor;
 import com.sun.jersey.test.framework.spi.container.TestContainerFactory;
 import com.sun.jersey.test.framework.spi.container.grizzly2.web.GrizzlyWebTestContainerFactory;
 
+import static org.ff4j.test.TestsFf4jConstants.*;
+import static org.ff4j.web.FF4jWebConstants.*;
+
 /**
  * Superclass for testing web resources.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public abstract class AbstractWebResourceTestIT extends JerseyTest implements TestsFf4jConstants, FF4jWebConstants {
+public abstract class AbstractWebResourceTestIT extends JerseyTest {
     
     /** Relative resource. */
     public final static String APIPATH = FF4jResource.class.getAnnotation(Path.class).value();

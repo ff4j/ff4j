@@ -28,19 +28,20 @@ import java.util.Set;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingStrategy;
-import org.ff4j.neo4j.FF4jNeo4jConstants;
 import org.ff4j.property.Property;
 import org.ff4j.property.PropertyString;
 import org.ff4j.property.util.PropertyFactory;
 import org.ff4j.utils.MappingUtil;
 import org.neo4j.graphdb.Node;
 
+import static org.ff4j.neo4j.FF4jNeo4jConstants.*;
+
 /**
  * Map Neo4j node from and to {@link Feature} bean.
  *
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class Neo4jMapper implements FF4jNeo4jConstants {
+public class Neo4jMapper {
     
     /**
      * Hide default constructor.

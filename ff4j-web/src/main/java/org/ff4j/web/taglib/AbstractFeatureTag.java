@@ -27,14 +27,15 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import org.ff4j.FF4j;
-import org.ff4j.web.embedded.ConsoleConstants;
+
+import static org.ff4j.web.embedded.ConsoleConstants.*;
 
 /**
  * Parent class for FF4J TagLib library.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public abstract class AbstractFeatureTag extends TagSupport implements ConsoleConstants {
+public abstract class AbstractFeatureTag extends TagSupport {
 
     /** serial number. */
     private static final long serialVersionUID = 3967425494402133171L;

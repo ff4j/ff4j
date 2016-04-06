@@ -28,12 +28,14 @@ import java.util.Set;
 
 import org.ff4j.FF4j;
 
+import static org.ff4j.web.FF4jWebConstants.*;
+
 /**
  * Bean to configure security for the WebAPI. This custom bean is defined to limit dependencies to Spring security for instance.
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class ApiConfig implements FF4JProvider, FF4jWebConstants {
+public class ApiConfig implements FF4JProvider {
     
     /** Configuration of ff4j. */
     private FF4j ff4j;

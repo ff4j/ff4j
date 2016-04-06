@@ -25,194 +25,196 @@ package org.ff4j.web.embedded;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public interface ConsoleConstants {
+public class ConsoleConstants {
 
     
     // -------- CONTENT-TYPE ------------------------------
 
     /** Content type for response. */
-    String CONTENT_TYPE_HTML = "text/html";
+    public static final String CONTENT_TYPE_HTML = "text/html";
 
     /** Content type for response. */
-    String CONTENT_TYPE_CSS = "text/css";
+    public static final String CONTENT_TYPE_CSS = "text/css";
 
     /** Content type for response. */
-    String CONTENT_TYPE_JS = "application/javascript";
+    public static final String CONTENT_TYPE_JS = "application/javascript";
     
     /** Content type for response. */
-    String CONTENT_TYPE_JSON = "application/json";
+    public static final String CONTENT_TYPE_JSON = "application/json";
 
 
     // -------- RESOURCES ------------------------------
 
     /** static resource param name. */
-    String RESOURCE = "rsc";
+    public static final String RESOURCE = "rsc";
 
     /** static resource paramv alue. */
-    String RESOURCE_CSS_PARAM = "css";
+    public static final String RESOURCE_CSS_PARAM = "css";
 
     /** static resource file. */
-    String RESOURCE_CSS_FILE = "ff4j-embedded.css";
+    public static final String RESOURCE_CSS_FILE = "ff4j-embedded.css";
 
     /** static resource param value. */
-    String RESOURCE_JS_PARAM = "js";
+    public static final String RESOURCE_JS_PARAM = "js";
 
     /** static resource file. */
-    String RESOURCE_JS_FILE = "ff4j-embedded.js";
+    public static final String RESOURCE_JS_FILE = "ff4j-embedded.js";
 
 
     // -------- OPERATIONS ------------------------------
 
     /** POST - Operation. */
-    String OPERATION = "op";
+    public static final String OPERATION = "op";
 
     /** POST - Operation. */
-    String SUBOPERATION = "ope";
+    public static final String SUBOPERATION = "ope";
 
     /** User operation. */
-    String OP_CREATE_FEATURE = "create";
+    public static final String OP_CREATE_FEATURE = "create";
     
     /** User operation. */
-    String OP_CREATE_PROPERTY = "createProperty";
+    public static final String OP_CREATE_PROPERTY = "createProperty";
 
     /** User operation. */
-    String OP_EDIT_FEATURE = "update";
+    public static final String OP_EDIT_FEATURE = "update";
     
     /** User operation. */
-    String OP_EDIT_PROPERTY = "updateProperty";
+    public static final String OP_EDIT_PROPERTY = "updateProperty";
 
     /** User operation: remove feature. */
-    String OP_RMV_FEATURE = "delete";
+    public static final String OP_RMV_FEATURE = "delete";
     
     /** User operation: remove feature. */
-    String OP_RMV_PROPERTY = "deleteProperty";
+    public static final String OP_RMV_PROPERTY = "deleteProperty";
     
     /** User operation: remove feature. */
-    String OP_READ_PROPERTY = "readProperty";
+    public static final String OP_READ_PROPERTY = "readProperty";
     
     /** remove a value of a listed. */
-    String OP_DELETE_FIXEDVALUE = "deleteFixedValue";
+    public static final String OP_DELETE_FIXEDVALUE = "deleteFixedValue";
     
     /** remove a value of a listed. */
-    String OP_ADD_FIXEDVALUE = "addFixedValue";
+    public static final String OP_ADD_FIXEDVALUE = "addFixedValue";
 
     /** User operation. */
-    String OP_TOGGLE_GROUP = "toggleGroup";
+    public static final String OP_TOGGLE_GROUP = "toggleGroup";
     
     /** User operation: remove feature. */
-    String OP_READ_FEATURE = "readFeature";
+    public static final String OP_READ_FEATURE = "readFeature";
 
     /** User operation. */
-    String OP_ENABLE = "enable";
+    public static final String OP_ENABLE = "enable";
 
     /** User operation. */
-    String OP_DISABLE = "disable";
+    public static final String OP_DISABLE = "disable";
 
     /** User operation. */
-    String OP_IMPORT = "import";
+    public static final String OP_IMPORT = "import";
 
     /** User operation. */
-    String OP_EXPORT = "export";
+    public static final String OP_EXPORT = "export";
 
 
     // -------- TEMPLATING ------------------------------
 
     /** Header. */
-    String TEMPLATE_FILE = "ff4j-template.html";
+    public static final String TEMPLATE_FILE = "ff4j-template.html";
 
     /** templating. */
-    String KEY_SERVLET_CONTEXT = "SERVLET_CONTEXT";
+    public static final String KEY_SERVLET_CONTEXT = "SERVLET_CONTEXT";
 
     /** templating. */
-    String KEY_VERSION = "VERSION";
+    public static final String KEY_VERSION = "VERSION";
 
     /** templating. */
-    String KEY_FEATURE_ROWS = "FEATURE_ROWS";
+    public static final String KEY_FEATURE_ROWS = "FEATURE_ROWS";
     
     /** templating. */
-    String KEY_PROPERTIES_ROWS = "PROPERTIES_ROWS";
+    public static final String KEY_PROPERTIES_ROWS = "PROPERTIES_ROWS";
 
     /** templating. */
-    String KEY_GROUP_LIST_EDIT = "FEATURE_GRPS_EDIT";
+    public static final String KEY_GROUP_LIST_EDIT = "FEATURE_GRPS_EDIT";
 
     /** templating. */
-    String KEY_GROUP_LIST_CREATE = "FEATURE_GRPS_CREATE";
+    public static final String KEY_GROUP_LIST_CREATE = "FEATURE_GRPS_CREATE";
 
     /** templating. */
-    String KEY_GROUP_LIST_TOGGLE = "FEATURE_GRPS_TOGGLE";
+    public static final String KEY_GROUP_LIST_TOGGLE = "FEATURE_GRPS_TOGGLE";
 
     /** templating alert. */
-    String KEY_ALERT_MESSAGE = "ALERT";
+    public static final String KEY_ALERT_MESSAGE = "ALERT";
 
     /** templating. */
-    String KEY_PERMISSIONLIST = "PERMISSIONS";
+    public static final String KEY_PERMISSIONLIST = "PERMISSIONS";
 
 
     // -------- FORM PARAM ------------------------------
 
     /** HTTP Parameter. */
-    String FEATID = "uid";
+    public static final String FEATID = "uid";
 
     /** HTTP Parameter. */
-    String ROLE = "role";
+    public static final String ROLE = "role";
 
     /** HTTP Parameter. */
-    String DESCRIPTION = "desc";
+    public static final String DESCRIPTION = "desc";
 
     /** HTTP Parameter. */
-    String FLIPFILE = "flipFile";
+    public static final String FLIPFILE = "flipFile";
     
     /** HTTP Parameter. */
-    String GROUPNAME = "groupName";
+    public static final String GROUPNAME = "groupName";
 
     /** HTTP Parameter. */
-    String STRATEGY = "strategy";
+    public static final String STRATEGY = "strategy";
     
     /** HTTP Parameter. */
-    String STRATEGY_INIT = "initParams";
+    public static final String STRATEGY_INIT = "initParams";
 
     /** HTTP Parameter. */
-    String PERMISSION = "permission";
+    public static final String PERMISSION = "permission";
     
     /** HTTP Parameter. */
-    String NAME = "name";
+    public static final String NAME = "name";
 
     // -------- MISC ------------------------------
 
     /** File encoding. */
-    String UTF8_ENCODING = "UTF-8";
+    public static final String UTF8_ENCODING = "UTF-8";
 
     /** NewLine. */
-    String NEW_LINE = System.getProperty("line.separator");
+    public static final String NEW_LINE = System.getProperty("line.separator");
 
     /** buffer size. */
-    int BUFFER_SIZE = 4096;
+    public static final int BUFFER_SIZE = 4096;
 
     /** servlet init param. */
-    String PROVIDER_PARAM_NAME = "ff4jProvider";
+    public static final String PROVIDER_PARAM_NAME = "ff4jProvider";
 
     /** attribute name. */
-    String FF4J_SESSIONATTRIBUTE_NAME = "FF4J";
+    public static final String FF4J_SESSIONATTRIBUTE_NAME = "FF4J";
 
     /** attribute name. */
-    String PREFIX_CHECKBOX = "perm-check-";
+    public static final String PREFIX_CHECKBOX = "perm-check-";
 
     /** permission. */
-    String PERMISSION_PUBLIC = "Public";
+    public static final String PERMISSION_PUBLIC = "Public";
 
     /** permission. */
-    String PERMISSION_RESTRICTED = "Restricted";
+    public static final String PERMISSION_RESTRICTED = "Restricted";
 
     /** modal id. */
-    String MODAL_EDIT = "modalEdit";
+    public static final String MODAL_EDIT = "modalEdit";
 
     /** modal ID. */
-    String MODAL_CREATE = "modalCreate";
+    public static final String MODAL_CREATE = "modalCreate";
 
     /** modal ID. */
-    String MODAL_TOGGLE = "modalToggle";
+    public static final String MODAL_TOGGLE = "modalToggle";
     
     /** FixedValue to be remove. */
-    String PARAM_FIXEDVALUE = "fixedValue";
+    public static final String PARAM_FIXEDVALUE = "fixedValue";
+
+    private ConsoleConstants() {}
 
 }

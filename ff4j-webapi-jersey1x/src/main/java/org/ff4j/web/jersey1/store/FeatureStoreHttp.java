@@ -40,7 +40,6 @@ import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.store.AbstractFeatureStore;
 import org.ff4j.utils.Util;
-import org.ff4j.web.FF4jWebConstants;
 import org.ff4j.web.api.FF4jJacksonMapper;
 import org.ff4j.web.api.resources.domain.FeatureApiBean;
 import org.ff4j.web.api.resources.domain.GroupDescApiBean;
@@ -54,12 +53,14 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.core.util.Base64;
 
+import static org.ff4j.web.FF4jWebConstants.*;
+
 /**
  * Implementation of store using {@link HttpClient} connection.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreHttp extends AbstractFeatureStore implements FF4jWebConstants {
+public class FeatureStoreHttp extends AbstractFeatureStore {
 
     private static final String OCCURED = " occured.";
 

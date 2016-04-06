@@ -25,17 +25,18 @@ import java.util.Set;
 
 import org.ff4j.FF4j;
 import org.ff4j.audit.EventBuilder;
-import org.ff4j.audit.EventConstants;
 import org.ff4j.audit.EventPublisher;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.PropertyStore;
+
+import static org.ff4j.audit.EventConstants.*;
 
 /**
  * Implementation of audit on top of store.
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class PropertyStoreAuditProxy implements PropertyStore, EventConstants {
+public class PropertyStoreAuditProxy implements PropertyStore {
 
     /** Current FeatureStore. */
     private PropertyStore target = null;

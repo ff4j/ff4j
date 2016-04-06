@@ -42,7 +42,6 @@ import org.ff4j.property.Property;
 import org.ff4j.property.store.AbstractPropertyStore;
 import org.ff4j.utils.Util;
 import org.ff4j.utils.json.PropertyJsonParser;
-import org.ff4j.web.FF4jWebConstants;
 import org.ff4j.web.api.FF4jJacksonMapper;
 import org.ff4j.web.api.resources.domain.PropertyApiBean;
 import org.glassfish.jersey.client.ClientConfig;
@@ -50,12 +49,14 @@ import org.glassfish.jersey.internal.util.Base64;
 
 import io.swagger.jaxrs.json.JacksonJsonProvider;
 
+import static org.ff4j.web.FF4jWebConstants.*;
+
 /**
  * Implementation of the store with REST.
  *
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class PropertyStoreHttp extends AbstractPropertyStore implements FF4jWebConstants {
+public class PropertyStoreHttp extends AbstractPropertyStore {
 
     public static final String OCCURED = " occured.";
     /** Jersey Client. */

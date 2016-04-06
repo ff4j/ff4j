@@ -45,6 +45,7 @@ import org.ff4j.property.store.PropertyStore;
 import org.ff4j.security.AuthorizationsManager;
 import org.ff4j.store.InMemoryFeatureStore;
 
+import static org.ff4j.audit.EventConstants.*;
 /**
  * Principal class stands as public api to work with FF4J.
  *
@@ -69,7 +70,7 @@ import org.ff4j.store.InMemoryFeatureStore;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class FF4j implements EventConstants {
+public class FF4j {
 
     /** Do not through {@link FeatureNotFoundException} exception and but feature is required. */
     private boolean autocreate = false;

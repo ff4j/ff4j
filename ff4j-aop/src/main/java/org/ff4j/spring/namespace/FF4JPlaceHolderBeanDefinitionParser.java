@@ -34,12 +34,14 @@ import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
+import static org.ff4j.spring.namespace.FF4jNameSpaceConstants.*;
+
 /**
  * Custom and simple implementation of a {@link BeanDefinitionParser} to create and {@link FF4jPropertiesPlaceHolderConfigurer}.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FF4JPlaceHolderBeanDefinitionParser implements BeanDefinitionParser, FF4jNameSpaceConstants {
+public class FF4JPlaceHolderBeanDefinitionParser implements BeanDefinitionParser {
 
     /** logger for class. */
     private static Log logger = LogFactory.getLog(FF4jBeanDefinitionParser.class);

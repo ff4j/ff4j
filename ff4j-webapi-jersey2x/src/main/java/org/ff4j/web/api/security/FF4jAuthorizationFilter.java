@@ -40,7 +40,6 @@ import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.Response.Status;
 
 import org.ff4j.web.ApiConfig;
-import org.ff4j.web.FF4jWebConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +48,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FF4jAuthorizationFilter implements ContainerRequestFilter, FF4jWebConstants {
+public class FF4jAuthorizationFilter implements ContainerRequestFilter {
 
     /** logger for this class. */
     private final Logger log = LoggerFactory.getLogger(getClass());

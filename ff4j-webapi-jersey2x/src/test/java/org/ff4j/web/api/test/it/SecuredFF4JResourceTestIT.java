@@ -48,6 +48,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.swagger.jaxrs.json.JacksonJsonProvider;
 
+import static org.ff4j.test.TestsFf4jConstants.*;
+import static org.ff4j.web.FF4jWebConstants.*;
+
 /**
  * Force security through API KEY and check.
  *

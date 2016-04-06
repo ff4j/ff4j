@@ -45,7 +45,9 @@ import org.ff4j.property.util.PropertyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class ConsoleOperations implements ConsoleConstants {
+import static org.ff4j.web.embedded.ConsoleConstants.*;
+
+public final class ConsoleOperations {
     
     /** Logger for this class. */
     private static Logger LOGGER = LoggerFactory.getLogger(ConsoleOperations.class);

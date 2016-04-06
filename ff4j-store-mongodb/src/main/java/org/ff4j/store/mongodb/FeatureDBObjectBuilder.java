@@ -26,12 +26,14 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBObject;
 
+import static org.ff4j.store.mongodb.FeatureStoreMongoConstants.*;
+
 /**
  * Mongo object builder.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public final class FeatureDBObjectBuilder implements FeatureStoreMongoConstants {
+public final class FeatureDBObjectBuilder {
    
     /**
      * Default builder for adds.

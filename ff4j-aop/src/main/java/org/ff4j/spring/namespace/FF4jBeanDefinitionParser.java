@@ -32,12 +32,14 @@ import org.springframework.beans.factory.xml.AbstractSimpleBeanDefinitionParser;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
+import static org.ff4j.spring.namespace.FF4jNameSpaceConstants.*;
+
 /**
  * Parser for tag <ff4j:ff4j>
  *
  * @author Lunven Cedrick
  */
-public final class FF4jBeanDefinitionParser extends AbstractSimpleBeanDefinitionParser implements FF4jNameSpaceConstants {
+public final class FF4jBeanDefinitionParser extends AbstractSimpleBeanDefinitionParser {
 
     /** logger for class. **/
     private static Log logger = LogFactory.getLog(FF4jBeanDefinitionParser.class);

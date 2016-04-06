@@ -43,12 +43,14 @@ import org.ff4j.property.PropertyShort;
 import org.ff4j.property.PropertyString;
 import org.ff4j.utils.Util;
 
+import static org.ff4j.web.embedded.ConsoleConstants.*;
+
 /**
  * Used to build GUI Interface for feature flip servlet. It contains gui component render and parmeters
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public final class ConsoleRenderer implements ConsoleConstants {
+public final class ConsoleRenderer {
 
     /** Cache for page blocks. */
     private static String htmlTemplate = null;

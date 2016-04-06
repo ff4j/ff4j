@@ -23,7 +23,6 @@ package org.ff4j.test.audit;
 import java.util.Set;
 
 import org.ff4j.audit.Event;
-import org.ff4j.audit.EventConstants;
 import org.ff4j.audit.EventPublisher;
 import org.ff4j.audit.graph.BarChart;
 import org.ff4j.audit.graph.PieChart;
@@ -33,12 +32,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.ff4j.audit.EventConstants.*;
+
 /**
  * Superclass to test {@link EventRepository}.
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public abstract class AbstractEventRepositoryTest implements EventConstants {
+public abstract class AbstractEventRepositoryTest {
     
     /** Target {@link EventRepository}. */
     protected EventRepository repo;

@@ -28,18 +28,19 @@ import org.ff4j.property.PropertyString;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.PonderationStrategy;
 import org.ff4j.test.AssertFf4j;
-import org.ff4j.test.TestsFf4jConstants;
 import org.ff4j.utils.Util;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.ff4j.test.TestsFf4jConstants.*;
 
 /**
  * For different store.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public abstract class FeatureStoreTestSupport implements TestsFf4jConstants {
+public abstract class FeatureStoreTestSupport {
 
     public static final String GOLOGOLO = "GOLOGOLO";
     public static final String ROLE_XYZ = "ROLE_XYZ";

@@ -37,13 +37,15 @@ import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.ff4j.store.JdbcStoreConstants.*;
+
 /**
  * Implementation of {@link FeatureStore} to work with RDBMS through JDBC.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 @Repository
-public class FeatureStoreSpringJdbc extends AbstractFeatureStore implements JdbcStoreConstants {
+public class FeatureStoreSpringJdbc extends AbstractFeatureStore {
 
     /** Row Mapper for FlipPoint. */
     private static final FeatureRowMapper FMAPPER = new FeatureRowMapper();

@@ -37,6 +37,8 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
+import static org.ff4j.audit.EventConstants.*;
+
 /**
  * Unit testing of JDBC implementation of {@link EventRepository}.
  *

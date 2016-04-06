@@ -13,6 +13,8 @@ import org.ff4j.core.Feature;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.ff4j.test.TestsFf4jConstants.*;
+
 /*
  * #%L
  * ff4j-web

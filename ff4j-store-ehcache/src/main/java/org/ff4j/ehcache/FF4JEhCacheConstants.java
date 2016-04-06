@@ -21,18 +21,20 @@ package org.ff4j.ehcache;
  */
 
 
-public interface FF4JEhCacheConstants {
+public class FF4JEhCacheConstants {
     
     /** Default TTL is one hour. */
-    long DEFAULT_TIME_TO_LIVE = 120L;
+    public static final long DEFAULT_TIME_TO_LIVE = 120L;
 
     /** Default time to idle. */
-    long DEFAULT_TIME_TO_IDLE = 120L;
+    public static final long DEFAULT_TIME_TO_IDLE = 120L;
 
     /** Default cache name. */
-    String CACHENAME_FEATURES = "ff4jCacheFeatures";
+    public static final String CACHENAME_FEATURES = "ff4jCacheFeatures";
     
     /** Default cache name. */
-    String CACHENAME_PROPERTIES = "ff4jCacheProperties";
+    public static final String CACHENAME_PROPERTIES = "ff4jCacheProperties";
+
+    private FF4JEhCacheConstants() {}
 
 }

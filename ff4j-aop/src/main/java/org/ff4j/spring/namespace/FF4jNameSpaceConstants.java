@@ -26,44 +26,44 @@ package org.ff4j.spring.namespace;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public interface FF4jNameSpaceConstants {
+public class FF4jNameSpaceConstants {
 
     /** Namespace Prefix for tgas. **/
-   String PREFIX = "ff4j:";
+   public static final String PREFIX = "ff4j:";
 
     /** XML Tag. **/
-   String TAG_PLACEHOLDER = "property-placeholder";
+   public static final String TAG_PLACEHOLDER = "property-placeholder";
 
     /** XML Tag. **/
-   String TAG_FF4J = "ff4j";
+   public static final String TAG_FF4J = "ff4j";
    
    /** XML Attribute. **/
-   String ATT_FF4J_ID = "id";
+   public static final String ATT_FF4J_ID = "id";
    
    /** XML Attribute. **/
-   String ATT_FF4J_AUTOCREATE = "autocreate";
+   public static final String ATT_FF4J_AUTOCREATE = "autocreate";
    
    /** XML Attribute. **/
-   String ATT_FF4J_FILENAME = "fileName";
+   public static final String ATT_FF4J_FILENAME = "fileName";
    
    /** XML Attribute. **/
-   String ATT_FF4J_AUTH_MANAGER = "authManager";
+   public static final String ATT_FF4J_AUTH_MANAGER = "authManager";
    
    /** XML Attribute. **/
-   String ATT_FF4J_STORE_PROPERTY = "storeProperty";
+   public static final String ATT_FF4J_STORE_PROPERTY = "storeProperty";
    
    /** XML Attribute. **/
-   String ATT_FF4J_STORE_FEATURE = "storeFeature";
+   public static final String ATT_FF4J_STORE_FEATURE = "storeFeature";
    
    /** XML Attribute. **/
-   String ATT_FF4J_AUDIT_REPOSITORY = "auditRepository";
+   public static final String ATT_FF4J_AUDIT_REPOSITORY = "auditRepository";
    
    /** Bean id. */
-   String BEANID_PLACEHOLDER_CONF = "ff4j.placeholderconfigurer";
+   public static final String BEANID_PLACEHOLDER_CONF = "ff4j.placeholderconfigurer";
    
    /** Bean id. */
-   String BEANID_PLACEHOLDER = "ff4j.placeholder";
+   public static final String BEANID_PLACEHOLDER = "ff4j.placeholder";
    
-   
+   private FF4jNameSpaceConstants() {}
    
 }

@@ -25,7 +25,6 @@ import java.util.HashMap;
 
 import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.store.JdbcFeatureStore;
-import org.ff4j.store.JdbcStoreConstants;
 import org.ff4j.utils.MappingUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -39,7 +38,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class JdbcFeatureStoreTestInvalidData implements JdbcStoreConstants {
+public class JdbcFeatureStoreTestInvalidData {
 
     /** DataBase. */
     private EmbeddedDatabase db;

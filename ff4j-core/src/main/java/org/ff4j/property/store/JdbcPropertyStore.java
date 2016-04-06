@@ -20,9 +20,9 @@ import org.ff4j.exception.PropertyAccessException;
 import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.Property;
-import org.ff4j.store.JdbcStoreConstants;
 import org.ff4j.utils.Util;
 
+import static org.ff4j.store.JdbcStoreConstants.*;
 /*
  * #%L
  * ff4j-core
@@ -48,7 +48,7 @@ import org.ff4j.utils.Util;
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class JdbcPropertyStore extends AbstractPropertyStore implements JdbcStoreConstants {
+public class JdbcPropertyStore extends AbstractPropertyStore {
 
     /** Access to storage. */
     private DataSource dataSource;

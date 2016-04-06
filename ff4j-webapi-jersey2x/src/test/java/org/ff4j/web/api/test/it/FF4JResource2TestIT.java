@@ -31,6 +31,9 @@ import org.ff4j.store.InMemoryFeatureStore;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.ff4j.test.TestsFf4jConstants.*;
+import static org.ff4j.web.FF4jWebConstants.*;
+
 /**
  * Test core web resources /ff4j
  *
