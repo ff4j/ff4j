@@ -77,7 +77,7 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     Then the user gets an error response with code "404" and error message as "group does not exist"
 
   # Disable a group
-  Scenario: When the user tries to enable a group
+  Scenario: When the user tries to disable a group
     When the user requests for a feature by "/ff4j/store/groups/admin/disable" by "POST" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     When the user requests for a feature by "/ff4j/store/features/login" by "GET" http method and content type as "application/json"
@@ -99,6 +99,6 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     }
     """
 
-  Scenario: When the user tries to enable a group where the group does not exist
+  Scenario: When the user tries to disable a group where the group does not exist
     When the user requests for a feature by "/ff4j/store/groups/invalid/disable" by "POST" http method and content type as "application/json"
     Then the user gets an error response with code "404" and error message as "group does not exist"

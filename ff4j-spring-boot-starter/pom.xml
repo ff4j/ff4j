@@ -40,8 +40,10 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <artifactId>ff4j-core</artifactId>
             <groupId>org.ff4j</groupId>
+            <artifactId>ff4j-spring-services</artifactId>
+            <scope>compile</scope>
+            <type>jar</type>
             <version>${project.version}</version>
         </dependency>
         <dependency>

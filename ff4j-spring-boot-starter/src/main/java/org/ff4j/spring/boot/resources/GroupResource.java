@@ -23,8 +23,8 @@ package org.ff4j.spring.boot.resources;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.ff4j.spring.boot.domain.FeatureApiBean;
-import org.ff4j.spring.boot.services.GroupService;
+import org.ff4j.services.GroupServices;
+import org.ff4j.services.domain.FeatureApiBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,8 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
 
-import static org.ff4j.spring.boot.constants.CommonConstants.ROOT;
-import static org.ff4j.spring.boot.constants.FeatureConstants.*;
+import static org.ff4j.services.constants.FeatureConstants.*;
 import static org.ff4j.web.FF4jWebConstants.OPERATION_DISABLE;
 import static org.ff4j.web.FF4jWebConstants.OPERATION_ENABLE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -48,7 +47,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 public class GroupResource {
 
     @Autowired
-    private GroupService groupService;
+    private GroupServices groupServices;
 
     @RequestMapping(method = GET, produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get all the features belonging to the group", response = FeatureApiBean.class)
@@ -56,7 +55,7 @@ public class GroupResource {
             @ApiResponse(code = 200, message = "features belonging to the group"),
             @ApiResponse(code = 404, message = "Group not found")})
     public Collection<FeatureApiBean> getFeaturesByGroup(@PathVariable(value = PARAM_GROUP) String groupName) {
-        return groupService.getFeaturesByGroup(groupName);
+        return groupServices.getFeaturesByGroup(groupName);
     }
 
     @RequestMapping(value = ROOT + OPERATION_ENABLE, method = POST, produces = APPLICATION_JSON_VALUE)
@@ -65,7 +64,7 @@ public class GroupResource {
             @ApiResponse(code = 200, message = "Group has been enabled"),
             @ApiResponse(code = 404, message = "Group not found")})
     public void enableGroup(@PathVariable(value = PARAM_GROUP) String groupName) {
-        groupService.enableGroup(groupName);
+        groupServices.enableGroup(groupName);
     }
 
     @RequestMapping(value = ROOT + OPERATION_DISABLE, method = POST, produces = APPLICATION_JSON_VALUE)
@@ -74,6 +73,6 @@ public class GroupResource {
             @ApiResponse(code = 200, message = "Group has been disabled"),
             @ApiResponse(code = 404, message = "Group not found")})
     public void disableGroup(@PathVariable(value = PARAM_GROUP) String groupName) {
-        groupService.disableGroup(groupName);
+        groupServices.disableGroup(groupName);
     }
 }

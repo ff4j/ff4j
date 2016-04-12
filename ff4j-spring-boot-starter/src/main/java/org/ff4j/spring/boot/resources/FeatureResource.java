@@ -23,9 +23,9 @@ package org.ff4j.spring.boot.resources;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.ff4j.spring.boot.domain.FeatureApiBean;
-import org.ff4j.spring.boot.model.FeatureActions;
-import org.ff4j.spring.boot.services.FeatureServices;
+import org.ff4j.services.FeatureServices;
+import org.ff4j.services.domain.FeatureApiBean;
+import org.ff4j.spring.boot.utilts.FeatureWebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,8 +33,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static org.ff4j.spring.boot.constants.CommonConstants.ROOT;
-import static org.ff4j.spring.boot.constants.FeatureConstants.*;
+import static org.ff4j.services.constants.FeatureConstants.*;
 import static org.ff4j.web.FF4jWebConstants.*;
 import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -49,12 +48,12 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 public class FeatureResource {
 
     @Autowired
-    private FeatureServices featureService;
+    private FeatureServices featureServices;
 
 
     @RequestMapping(method = GET, produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     public FeatureApiBean getFeatureByUID(@PathVariable(value = PARAM_UID) String featureUID) {
-        return featureService.getFeature(featureUID);
+        return featureServices.getFeature(featureUID);
     }
 
     @RequestMapping(method = PUT, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
@@ -65,7 +64,7 @@ public class FeatureResource {
             @ApiResponse(code = 202, message = "Feature has been updated"),
             @ApiResponse(code = 204, message = "No content, no changes made to the feature")})
     public ResponseEntity<Boolean> createOrUpdateFeature(@PathVariable(value = PARAM_UID) String featureUID, @RequestBody FeatureApiBean featureApiBean) {
-        return FeatureActions.getBooleanResponseEntityByHttpStatus(featureService.createOrUpdateFeature(featureUID, featureApiBean));
+        return FeatureWebUtils.getBooleanResponseEntityByHttpStatus(featureServices.createOrUpdateFeature(featureUID, featureApiBean));
     }
 
     @RequestMapping(method = DELETE, consumes = APPLICATION_JSON_VALUE)
@@ -75,7 +74,7 @@ public class FeatureResource {
             @ApiResponse(code = 404, message = "Feature not found")
     })
     public ResponseEntity deleteFeature(@PathVariable(value = PARAM_UID) String featureUID) {
-        featureService.deleteFeature(featureUID);
+        featureServices.deleteFeature(featureUID);
         return new ResponseEntity(NO_CONTENT);
     }
 
@@ -85,7 +84,7 @@ public class FeatureResource {
             @ApiResponse(code = 202, message = "Features has been enabled"),
             @ApiResponse(code = 404, message = "Feature not found")})
     public ResponseEntity enableFeature(@PathVariable(value = PARAM_UID) String featureUID) {
-        featureService.enableFeature(featureUID);
+        featureServices.enableFeature(featureUID);
         return new ResponseEntity(ACCEPTED);
     }
 
@@ -95,7 +94,7 @@ public class FeatureResource {
             @ApiResponse(code = 202, message = "Features has been disabled"),
             @ApiResponse(code = 404, message = "Feature not found")})
     public ResponseEntity disableFeature(@PathVariable(value = PARAM_UID) String featureUID) {
-        featureService.disableFeature(featureUID);
+        featureServices.disableFeature(featureUID);
         return new ResponseEntity(ACCEPTED);
     }
 
@@ -106,7 +105,7 @@ public class FeatureResource {
             @ApiResponse(code = 404, message = "Feature not found"),
             @ApiResponse(code = 304, message = "Role already exists, nothing to update")})
     public ResponseEntity grantRoleToFeature(@PathVariable(value = PARAM_UID) String featureUID, @PathVariable(value = PARAM_ROLE) String role) {
-        featureService.grantRoleToFeature(featureUID, role);
+        featureServices.grantRoleToFeature(featureUID, role);
         return new ResponseEntity<>(ACCEPTED);
     }
 
@@ -116,7 +115,7 @@ public class FeatureResource {
             @ApiResponse(code = 202, message = "Permission has been granted"),
             @ApiResponse(code = 404, message = "Feature not found")})
     public ResponseEntity removeRoleFromFeature(@PathVariable(value = PARAM_UID) String featureUID, @PathVariable(value = PARAM_ROLE) String role) {
-        featureService.removeRoleFromFeature(featureUID, role);
+        featureServices.removeRoleFromFeature(featureUID, role);
         return new ResponseEntity<>(ACCEPTED);
     }
 
@@ -127,7 +126,7 @@ public class FeatureResource {
             @ApiResponse(code = 404, message = "Feature not found"),
             @ApiResponse(code = 304, message = "Group already exists, nothing to update")})
     public ResponseEntity addGroupToFeature(@PathVariable(value = PARAM_UID) String featureUID, @PathVariable(value = PARAM_GROUP) String groupName) {
-        featureService.addGroupToFeature(featureUID, groupName);
+        featureServices.addGroupToFeature(featureUID, groupName);
         return new ResponseEntity<>(ACCEPTED);
     }
 
@@ -137,7 +136,7 @@ public class FeatureResource {
             @ApiResponse(code = 204, message = "Group has been removed"),
             @ApiResponse(code = 404, message = "Feature not found")})
     public ResponseEntity removeGroupFromFeature(@PathVariable(value = PARAM_UID) String featureUID, @PathVariable(value = PARAM_GROUP) String groupName) {
-        featureService.removeGroupFromFeature(featureUID, groupName);
+        featureServices.removeGroupFromFeature(featureUID, groupName);
         return new ResponseEntity<>(ACCEPTED);
     }
 }

@@ -23,9 +23,9 @@ package org.ff4j.spring.boot.resources;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.ff4j.spring.boot.domain.PropertyApiBean;
-import org.ff4j.spring.boot.model.FeatureActions;
-import org.ff4j.spring.boot.services.PropertyService;
+import org.ff4j.services.PropertyServices;
+import org.ff4j.services.domain.PropertyApiBean;
+import org.ff4j.spring.boot.utilts.FeatureWebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +34,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static org.ff4j.spring.boot.constants.CommonConstants.ROOT;
-import static org.ff4j.spring.boot.constants.FeatureConstants.*;
+import static org.ff4j.services.constants.FeatureConstants.*;
 import static org.ff4j.web.FF4jWebConstants.OPERATION_UPDATE;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -48,7 +47,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 @RequestMapping(value = RESOURCE_PROPERTIES_STORE_PROPERTIES + ROOT + PATH_PARAM_NAME)
 public class PropertyResource {
     @Autowired
-    private PropertyService propertyService;
+    private PropertyServices propertyServices;
 
     @RequestMapping(method = GET, produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Read information about a property", response = PropertyApiBean.class)
@@ -56,7 +55,7 @@ public class PropertyResource {
             @ApiResponse(code = 200, message = "Information about property"),
             @ApiResponse(code = 404, message = "Property not found")})
     public PropertyApiBean getProperty(@PathVariable(value = PARAM_NAME) String propertyName) {
-        return propertyService.getProperty(propertyName);
+        return propertyServices.getProperty(propertyName);
     }
 
     @RequestMapping(method = PUT, produces = APPLICATION_JSON_VALUE)
@@ -67,7 +66,7 @@ public class PropertyResource {
             @ApiResponse(code = 202, message = "Property has been updated"),
             @ApiResponse(code = 204, message = "No content, no changes made to the feature")})
     public ResponseEntity createOrUpdateProperty(@PathVariable(value = PARAM_NAME) String propertyName, @RequestBody PropertyApiBean propertyApiBean) {
-        return FeatureActions.getBooleanResponseEntityByHttpStatus(propertyService.createOrUpdateProperty(propertyName, propertyApiBean));
+        return FeatureWebUtils.getBooleanResponseEntityByHttpStatus(propertyServices.createOrUpdateProperty(propertyName, propertyApiBean));
     }
 
     @RequestMapping(method = DELETE, produces = APPLICATION_JSON_VALUE)
@@ -77,7 +76,7 @@ public class PropertyResource {
             @ApiResponse(code = 404, message = "Property not found")
     })
     public ResponseEntity deleteProperty(@PathVariable(value = PARAM_NAME) String propertyName) {
-        propertyService.deleteProperty(propertyName);
+        propertyServices.deleteProperty(propertyName);
         return new ResponseEntity(NO_CONTENT);
     }
 
@@ -88,7 +87,7 @@ public class PropertyResource {
             @ApiResponse(code = 404, message = "Property not found"),
             @ApiResponse(code = 400, message = "Invalid new value")})
     public ResponseEntity updatePropertyName(@PathVariable(value = PARAM_NAME) String propertyName, @PathVariable(value = PARAM_VALUE) String newPropertyName) {
-        propertyService.updatePropertyName(propertyName, newPropertyName);
+        propertyServices.updatePropertyName(propertyName, newPropertyName);
         return new ResponseEntity(HttpStatus.ACCEPTED);
     }
 }

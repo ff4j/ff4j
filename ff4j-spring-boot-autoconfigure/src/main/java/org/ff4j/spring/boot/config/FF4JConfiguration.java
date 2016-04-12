@@ -32,7 +32,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ConditionalOnClass({FF4j.class})
-@ComponentScan(value = "org.ff4j.spring.boot")
+@ComponentScan(value = {"org.ff4j.spring.boot", "org.ff4j.services"})
 public class FF4JConfiguration {
 
     @Bean

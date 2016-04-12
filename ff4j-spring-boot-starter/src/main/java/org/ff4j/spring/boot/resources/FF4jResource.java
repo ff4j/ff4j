@@ -23,9 +23,9 @@ package org.ff4j.spring.boot.resources;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.ff4j.spring.boot.domain.AuthorizationsManagerApiBean;
-import org.ff4j.spring.boot.domain.FF4jStatusApiBean;
-import org.ff4j.spring.boot.services.FF4jServices;
+import org.ff4j.services.FF4jServices;
+import org.ff4j.services.domain.AuthorizationsManagerApiBean;
+import org.ff4j.services.domain.FF4jStatusApiBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
@@ -36,9 +36,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-import static org.ff4j.spring.boot.constants.CommonConstants.ROOT;
-import static org.ff4j.spring.boot.constants.FeatureConstants.PATH_PARAM_UID;
-import static org.ff4j.spring.boot.constants.FeatureConstants.RESOURCE_FF4J;
+import static org.ff4j.services.constants.FeatureConstants.PATH_PARAM_UID;
+import static org.ff4j.services.constants.FeatureConstants.ROOT;
 import static org.ff4j.web.FF4jWebConstants.*;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
