@@ -379,6 +379,5 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
         }
         return redisConnection.getJedis() ;
     }
-
     
 }

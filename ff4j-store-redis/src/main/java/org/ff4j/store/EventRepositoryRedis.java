@@ -28,20 +28,22 @@ import org.ff4j.audit.graph.PieChart;
 import org.ff4j.audit.repository.AbstractEventRepository;
 import org.ff4j.redis.RedisConnection;
 
+import redis.clients.jedis.Jedis;
+
 /**
- * Implementation of the repository for redis.
+ * Persist audit events into REDIS storage technology.
  *
  * @author clunven
  */
 public class EventRepositoryRedis extends AbstractEventRepository {
 
 	/** prefix of keys. */
-    public static String KEY_PROPERTY = "FF4J_EVENT_";
+    public static String KEY_EVENT = "FF4J_EVENT_";
     
-    /** default ttl. */
+    /** Default ttl. */
     private static int DEFAULT_TTL = 900000000;
     
-    /** time to live. */
+    /** Time to live. */
     protected int timeToLive = DEFAULT_TTL;
     
     /** Wrapping of redis connection (isolation). */
@@ -91,12 +93,20 @@ public class EventRepositoryRedis extends AbstractEventRepository {
     }
     
 	/** {@inheritDoc} */
-	public boolean saveEvent(Event e) {
-		return false;
+	public boolean saveEvent(Event evt) {
+		 if (evt == null) {
+			 throw new IllegalArgumentException("Event cannot be null nor empty");
+	     }
+		 String uid = KEY_EVENT + "-" + evt.getTimestamp() + "-" + evt.getUuid();
+	     getJedis().set(uid, evt.toJson());
+	     getJedis().persist(uid);
+		 return true;
 	}
 
 	/** {@inheritDoc} */
 	public Set<String> getFeatureNames() {
+		
+		// Cle composite EVENTYPE => EVENTNAME
 		return null;
 	}
 
@@ -119,6 +129,21 @@ public class EventRepositoryRedis extends AbstractEventRepository {
     /** {@inheritDoc} */
     public BarChart getFeaturesUsageOverTime(Set<String> featNameSet, long startTime, long endTime, int nbslot) {
         return null;
+    }
+    
+    /**
+     * Safe acces to Jedis, avoid JNPE.
+     *
+     * @return
+     */
+    public Jedis getJedis() {
+        if (redisConnection == null) {
+            throw new IllegalArgumentException("Cannot found any redis Connection");
+        }
+        if (redisConnection.getJedis() == null) {
+            throw new IllegalArgumentException("Cannot found any jedis connection, please build connection");
+        }
+        return redisConnection.getJedis();
     }
 
 }
