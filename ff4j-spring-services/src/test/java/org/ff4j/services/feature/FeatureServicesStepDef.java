@@ -9,9 +9,9 @@ package org.ff4j.services.feature;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -45,13 +45,9 @@ public class FeatureServicesStepDef extends AbstractStepDef {
     @Autowired
     private FeatureServices featureServices;
 
-    private Throwable exception;
-
-    private Object actualResponse;
-
     @Given("^the feature store is cleared$")
     public void the_feature_store_is_cleared() throws Throwable {
-        ff4j.setFeatureStore(new InMemoryFeatureStore());
+        clearFeatureStore();
     }
 
     @Given("^the feature with \"([^\"]*)\", \"([^\"]*)\", \"([^\"]*)\", \"([^\"]*)\" and \"([^\"]*)\" exists in the feature store$")
@@ -149,7 +145,7 @@ public class FeatureServicesStepDef extends AbstractStepDef {
 
     @Then("^the user gets an exception \"([^\"]*)\"$")
     public void the_user_gets_an_exception(String className) throws Throwable {
-        assertThat(exception).isInstanceOf(Class.forName(className));
+        assertException(className);
     }
 
     @Then("^the user gets the response as \"([^\"]*)\", \"([^\"]*)\", \"([^\"]*)\", \"([^\"]*)\" and \"([^\"]*)\"$")
@@ -161,7 +157,7 @@ public class FeatureServicesStepDef extends AbstractStepDef {
 
     @Then("^feature is created$")
     public void feature_is_created() throws Throwable {
-        assertThat(actualResponse).isEqualTo(FeatureActions.CREATED);
+        assertCreated();
     }
 
     @Then("^the user gets the response as$")
@@ -172,7 +168,7 @@ public class FeatureServicesStepDef extends AbstractStepDef {
 
     @Then("^feature is updated$")
     public void feature_is_updated() throws Throwable {
-        assertThat(actualResponse).isEqualTo(FeatureActions.UPDATED);
+        assertUpdated();
     }
 }
 

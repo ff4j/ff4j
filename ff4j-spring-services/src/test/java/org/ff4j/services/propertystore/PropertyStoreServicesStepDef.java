@@ -9,9 +9,9 @@ package org.ff4j.services.propertystore;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -46,8 +46,6 @@ public class PropertyStoreServicesStepDef extends AbstractStepDef {
 
     @Autowired
     private PropertyStoreServices propertyStoreServices;
-    private Object actualResponse;
-    private Throwable exception;
 
     @Given("^the feature store is cleared$")
     public void the_feature_store_is_cleared() throws Throwable {
@@ -120,12 +118,12 @@ public class PropertyStoreServicesStepDef extends AbstractStepDef {
 
     @Then("^the user gets an exception \"([^\"]*)\"$")
     public void the_user_gets_an_exception(String className) throws Throwable {
-        assertThat(exception).isInstanceOf(Class.forName(className));
+        assertException(className);
     }
 
     @Then("^the user gets the response as$")
     public void the_user_gets_the_response_as(String expectedResponse) throws Throwable {
-        JSONAssert.assertEquals(expectedResponse, GSON.toJson(actualResponse), false);
+        assertLenientResponse(expectedResponse);
     }
 }
 
