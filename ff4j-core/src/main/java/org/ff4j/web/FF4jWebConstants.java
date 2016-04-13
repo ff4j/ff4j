@@ -25,103 +25,105 @@ package org.ff4j.web;
  *
  * @author Cedrick Lunven (@clunven)
  */
-public interface FF4jWebConstants {
+public class FF4jWebConstants {
 
     /** Header param sent on creation 201. */
-    String LOCATION = "Location";
+    public static final String LOCATION = "Location";
 
     /** expected post parameter from POST methods. */
-    String POST_PARAMNAME_FEATURE_UID = "uid";
+    public static final String POST_PARAMNAME_FEATURE_UID = "uid";
     
     /** parameter. */
-    String POST_PARAMNAME_CUSTOM_PREFIX = "PARAM_";
+    public static final String POST_PARAMNAME_CUSTOM_PREFIX = "PARAM_";
 
     /** Custom operation on resource. */
-    String OPERATION_ENABLE = "enable";
+    public static final String OPERATION_ENABLE = "enable";
 
     /** Custom operation on resource. */
-    String OPERATION_DISABLE = "disable";
+    public static final String OPERATION_DISABLE = "disable";
 
     /** Custom operation on resource. */
-    String OPERATION_CHECK = "check";
+    public static final String OPERATION_CHECK = "check";
 
     /** Custom operation on resource. */
-    String OPERATION_GRANTROLE = "grantrole";
+    public static final String OPERATION_GRANTROLE = "grantrole";
 
     /** Custom operation on resource. */
-    String OPERATION_REMOVEROLE = "removerole";
+    public static final String OPERATION_REMOVEROLE = "removerole";
 
     /** Custom operation on resource. */
-    String OPERATION_ADDGROUP = "addGroup";
+    public static final String OPERATION_ADDGROUP = "addGroup";
 
     /** Custom operation on resource. */
-    String OPERATION_REMOVEGROUP = "removeGroup";
+    public static final String OPERATION_REMOVEGROUP = "removeGroup";
 
     /** Custom operation on resource. */
-    String OPERATION_UPDATE = "update";
+    public static final String OPERATION_UPDATE = "update";
     
     /** relative path. */
-    String RESOURCE_FEATURES = "features";
+    public static final String RESOURCE_FEATURES = "features";
     
     /** relative path. */
-    String RESOURCE_PROPERTIES = "properties";
+    public static final String RESOURCE_PROPERTIES = "properties";
 
     /** relative path. */
-    String RESOURCE_GROUPS = "groups";
+    public static final String RESOURCE_GROUPS = "groups";
 
     /** relative path. */
-    String RESOURCE_STORE = "store";
+    public static final String RESOURCE_STORE = "store";
     
     /** relative path. */
-    String RESOURCE_PROPERTYSTORE = "propertyStore";
+    public static final String RESOURCE_PROPERTYSTORE = "propertyStore";
 
     /** relative path. */
-    String RESOURCE_MONITORING = "monitoring";
+    public static final String RESOURCE_MONITORING = "monitoring";
     
     /** relative path for security. */
-    String RESOURCE_SECURITY = "security";
+    public static final String RESOURCE_SECURITY = "security";
     
     /** relative path for cache. */
-    String RESOURCE_CACHE = "cache";
+    public static final String RESOURCE_CACHE = "cache";
     
     /** relative path for cache. */
-    String STORE_CLEAR = "clear";
+    public static final String STORE_CLEAR = "clear";
 
     /** relative path. */
-    String RESOURCE_FF4J = "ff4j";
+    public static final String RESOURCE_FF4J = "ff4j";
 
     /** list of curves. */
-    String RESOURCE_PIE = "pieChart";
+    public static final String RESOURCE_PIE = "pieChart";
     
     /** list of curves. */
-    String RESOURCE_BAR = "barChart";
+    public static final String RESOURCE_BAR = "barChart";
     
     /** filter for resource. */
-    String PARAM_START = "start";
+    public static final String PARAM_START = "start";
     
     /** featureID. */
-    String PARAM_UID = "uid";
+    public static final String PARAM_UID = "uid";
     
     /** filter for resource. */
-    String PARAM_END = "end";
+    public static final String PARAM_END = "end";
     
     /** nb of points in the curve. */
-    String PARAM_NBPOINTS = "nbpoints";
+    public static final String PARAM_NBPOINTS = "nbpoints";
 
     /** security role. */
-    String ROLE_READ = "READ";
+    public static final String ROLE_READ = "READ";
 
     /** security role. */
-    String ROLE_WRITE = "WRITE";
+    public static final String ROLE_WRITE = "WRITE";
     
     /** HTTP Parameter. */
-    String PARAM_AUTHKEY = "apiKey";
+    public static final String PARAM_AUTHKEY = "apiKey";
     
     /** HTTP Header. */
-    String HEADER_AUTHORIZATION = "Authorization";
+    public static final String HEADER_AUTHORIZATION = "Authorization";
     
     /** Manifest File. */
-    String MANIFEST_FILE = "/META-INF/MANIFEST.MF";
-    
-    String MANIFEST_VERSION = "Specification-Version";
+    public static final String MANIFEST_FILE = "/META-INF/MANIFEST.MF";
+
+    public static final String MANIFEST_VERSION = "Specification-Version";
+
+    private FF4jWebConstants() {}
 }

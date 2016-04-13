@@ -34,6 +34,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.sun.jersey.test.framework.JerseyTest;
 
+import static org.ff4j.test.TestsFf4jConstants.*;
+
 /**
  * Unitary test for {@link FeatureStoreHttp} on Grizzly server.
  *

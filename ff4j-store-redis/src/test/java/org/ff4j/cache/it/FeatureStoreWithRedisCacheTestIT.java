@@ -36,6 +36,8 @@ import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static org.ff4j.test.TestsFf4jConstants.*;
+
 /**
  * Class to test the REDIS {@link FeatureCacheProviderEhCache}.
  * 

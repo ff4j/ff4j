@@ -32,7 +32,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.ff4j.audit.Event;
-import org.ff4j.audit.EventConstants;
 import org.ff4j.audit.graph.BarChart;
 import org.ff4j.audit.graph.BarSeries;
 import org.ff4j.audit.graph.MutableInt;
@@ -40,12 +39,14 @@ import org.ff4j.audit.graph.PieChart;
 import org.ff4j.audit.graph.PieSector;
 import org.ff4j.utils.Util;
 
+import static org.ff4j.audit.EventConstants.*;
+
 /**
  * Implementation of in memory {@link EventRepository} with limited events.
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class InMemoryEventRepository extends AbstractEventRepository implements EventConstants {
+public class InMemoryEventRepository extends AbstractEventRepository {
     
     /** default retention. */
     private static final int DEFAULT_QUEUE_CAPACITY = 100000;

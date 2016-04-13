@@ -26,7 +26,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.ff4j.audit.Event;
-import org.ff4j.audit.EventConstants;
 import org.ff4j.audit.EventPublisher;
 import org.ff4j.audit.EventWorker;
 import org.ff4j.audit.repository.EventRepository;
@@ -34,8 +33,9 @@ import org.ff4j.audit.repository.InMemoryEventRepository;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.ff4j.audit.EventConstants.*;
 
-public class EventWorkerTest implements EventConstants {
+public class EventWorkerTest {
     
     @Test
     public void testEventWorker() {

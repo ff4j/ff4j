@@ -33,12 +33,14 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseSettings;
 import org.neo4j.test.TestGraphDatabaseFactory;
 
+import static org.ff4j.neo4j.FF4jNeo4jConstants.*;
+
 /**
  * Unit testing of property with Neo4j.
  *
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class PropertyStoreNeo4jTest extends PropertyStoreTestSupport implements FF4jNeo4jConstants {
+public class PropertyStoreNeo4jTest extends PropertyStoreTestSupport {
 
     /** DataBase instance. */
     protected static GraphDatabaseService graphDb;

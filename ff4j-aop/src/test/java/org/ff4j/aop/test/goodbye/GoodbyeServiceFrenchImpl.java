@@ -20,7 +20,10 @@ package org.ff4j.aop.test.goodbye;
  * #L%
  */
 
+import org.ff4j.aop.test.exception.ApplicationException;
 import org.springframework.stereotype.Component;
+
+import java.lang.reflect.InvocationTargetException;
 
 @Component("goodbye.french")
 public class GoodbyeServiceFrenchImpl implements GoodbyeService {
@@ -33,5 +36,25 @@ public class GoodbyeServiceFrenchImpl implements GoodbyeService {
 	@Override
 	public String sayGoodbyeWithClass(String name) {
 		return "A plus " + name;
+	}
+
+	@Override
+	public void sayGoodbyeThrowException() {
+		throw new ApplicationException();
+	}
+
+	@Override
+	public void sayGoodbyeWithClassThrowException() {
+		throw new ApplicationException();
+	}
+
+	@Override
+	public void sayGoodbyeInvocationTargetExceptionNull() throws InvocationTargetException {
+		throw new InvocationTargetException(null);
+	}
+
+	@Override
+	public void sayGoodbyeWithClassInvocationTargetExceptionNull() throws InvocationTargetException {
+		throw new InvocationTargetException(null);
 	}
 }

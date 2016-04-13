@@ -37,7 +37,6 @@ import org.ff4j.property.Property;
 import org.ff4j.property.store.AbstractPropertyStore;
 import org.ff4j.utils.Util;
 import org.ff4j.utils.json.PropertyJsonParser;
-import org.ff4j.web.FF4jWebConstants;
 import org.ff4j.web.api.FF4jJacksonMapper;
 import org.ff4j.web.api.resources.domain.PropertyApiBean;
 
@@ -49,13 +48,16 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.core.util.Base64;
 
+import static org.ff4j.web.FF4jWebConstants.*;
+
 /**
  * Implementation of the store with REST.
  *
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class PropertyStoreHttp extends AbstractPropertyStore implements FF4jWebConstants {
+public class PropertyStoreHttp extends AbstractPropertyStore {
 
+    public static final String OCCURED = " occured.";
     /** Jersey Client. */
     protected Client client = null;
 
@@ -171,7 +173,7 @@ public class PropertyStoreHttp extends AbstractPropertyStore implements FF4jWebC
         
         // Check response code CREATED or raised error
         if (Status.CREATED.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot create properties, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException("Cannot create properties, an HTTP error " + cRes.getStatus() + OCCURED);
         }
     }
 
@@ -195,7 +197,7 @@ public class PropertyStoreHttp extends AbstractPropertyStore implements FF4jWebC
             throw new PropertyNotFoundException(name);
         }
         if (Status.NO_CONTENT.getStatusCode() != cRes.getStatus()) {
-            throw new PropertyAccessException("Cannot delete property, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new PropertyAccessException("Cannot delete property, an HTTP error " + cRes.getStatus() + OCCURED);
         }
     }
 
@@ -203,7 +205,7 @@ public class PropertyStoreHttp extends AbstractPropertyStore implements FF4jWebC
     public Map<String, Property<?>> readAllProperties() {
         ClientResponse cRes = getStore().get(ClientResponse.class);
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
-            throw new PropertyAccessException("Cannot read properties, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new PropertyAccessException("Cannot read properties, an HTTP error " + cRes.getStatus() + OCCURED);
         }
         String resEntity = cRes.getEntity(String.class);
         Property<?>[] pArray = PropertyJsonParser.parsePropertyArray(resEntity);

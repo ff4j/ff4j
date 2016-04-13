@@ -53,12 +53,14 @@ import com.sun.jersey.test.framework.WebAppDescriptor;
 import com.sun.jersey.test.framework.spi.container.TestContainerFactory;
 import com.sun.jersey.test.framework.spi.container.grizzly2.web.GrizzlyWebTestContainerFactory;
 
+import static org.ff4j.test.TestsFf4jConstants.*;
+import static org.ff4j.web.FF4jWebConstants.*;
 /**
  * Force security through API KEY and check.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class SecuredFF4JResourceTestIT extends JerseyTest implements TestsFf4jConstants, FF4jWebConstants {
+public class SecuredFF4JResourceTestIT extends JerseyTest {
     
     /** Relative resource. */
     public final static String APIPATH = FF4jResource.class.getAnnotation(Path.class).value();

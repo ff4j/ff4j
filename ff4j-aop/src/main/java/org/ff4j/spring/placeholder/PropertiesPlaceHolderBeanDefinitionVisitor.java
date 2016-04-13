@@ -90,14 +90,14 @@ public class PropertiesPlaceHolderBeanDefinitionVisitor extends BeanDefinitionVi
      */
     protected String parseStringValue(String strVal, Map<String, Property<?>> propertiesMap, Map<String, Feature> featureMap, Set<String> visitedPlaceholders) 
     throws BeanDefinitionStoreException {
-        StringBuffer buf = new StringBuffer(strVal);
+        StringBuilder builder = new StringBuilder(strVal);
         
         // @ff4jProperty{}
         int startIndex = strVal.indexOf(PLACEHOLDER_PROPERTY_PREFIX);
         while (startIndex != -1) {
-            int endIndex = buf.toString().indexOf(PLACEHOLDER_SUFFIX, startIndex + PLACEHOLDER_PROPERTY_PREFIX.length());
+            int endIndex = builder.toString().indexOf(PLACEHOLDER_SUFFIX, startIndex + PLACEHOLDER_PROPERTY_PREFIX.length());
             if (endIndex != -1) {
-                String placeholder = buf.substring(startIndex + PLACEHOLDER_PROPERTY_PREFIX.length(), endIndex);
+                String placeholder = builder.substring(startIndex + PLACEHOLDER_PROPERTY_PREFIX.length(), endIndex);
                 if (!visitedPlaceholders.add(placeholder)) {
                     throw new BeanDefinitionStoreException("Circular placeholder reference '" + placeholder + "' in property definitions");
                 }
@@ -108,11 +108,11 @@ public class PropertiesPlaceHolderBeanDefinitionVisitor extends BeanDefinitionVi
                 String propVal = propertiesMap.get(placeholder).asString();
                 if (propVal != null) {
                     propVal = parseStringValue(propVal, propertiesMap, featureMap, visitedPlaceholders);
-                    buf.replace(startIndex, endIndex + PLACEHOLDER_SUFFIX.length(), propVal);
+                    builder.replace(startIndex, endIndex + PLACEHOLDER_SUFFIX.length(), propVal);
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("Resolved placeholder '{}' to value '{}'", placeholder, propVal);
                     }
-                    startIndex = buf.toString().indexOf(PLACEHOLDER_PROPERTY_PREFIX, startIndex + propVal.length());
+                    startIndex = builder.toString().indexOf(PLACEHOLDER_PROPERTY_PREFIX, startIndex + propVal.length());
                 } else {
                     throw new BeanDefinitionStoreException("Could not resolve placeholder '" + placeholder + "'");
                 }
@@ -125,9 +125,9 @@ public class PropertiesPlaceHolderBeanDefinitionVisitor extends BeanDefinitionVi
         // @ff4jFeature{}
         startIndex = strVal.indexOf(PLACEHOLDER_FEATURE_PREFIX);
         while (startIndex != -1) {
-            int endIndex = buf.toString().indexOf(PLACEHOLDER_SUFFIX, startIndex + PLACEHOLDER_FEATURE_PREFIX.length());
+            int endIndex = builder.toString().indexOf(PLACEHOLDER_SUFFIX, startIndex + PLACEHOLDER_FEATURE_PREFIX.length());
             if (endIndex != -1) {
-                String placeholder = buf.substring(startIndex + PLACEHOLDER_FEATURE_PREFIX.length(), endIndex);
+                String placeholder = builder.substring(startIndex + PLACEHOLDER_FEATURE_PREFIX.length(), endIndex);
                 if (!visitedPlaceholders.add(placeholder)) {
                     throw new BeanDefinitionStoreException("Circular placeholder reference '" + placeholder + "' in property definitions");
                 }
@@ -138,11 +138,11 @@ public class PropertiesPlaceHolderBeanDefinitionVisitor extends BeanDefinitionVi
                 String propVal = String.valueOf(featureMap.get(placeholder).isEnable());
                 if (propVal != null) {
                     propVal = parseStringValue(propVal, propertiesMap, featureMap, visitedPlaceholders);
-                    buf.replace(startIndex, endIndex + PLACEHOLDER_FEATURE_PREFIX.length(), propVal);
+                    builder.replace(startIndex, endIndex + PLACEHOLDER_FEATURE_PREFIX.length(), propVal);
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("Resolved placeholder '{}' to value '{}'", placeholder, propVal);
                     }
-                    startIndex = buf.toString().indexOf(PLACEHOLDER_FEATURE_PREFIX, startIndex + propVal.length());
+                    startIndex = builder.toString().indexOf(PLACEHOLDER_FEATURE_PREFIX, startIndex + propVal.length());
                 } else {
                     throw new BeanDefinitionStoreException("Could not resolve placeholder '" + placeholder + "'");
                 }
@@ -152,7 +152,7 @@ public class PropertiesPlaceHolderBeanDefinitionVisitor extends BeanDefinitionVi
             }
         }
         
-        return buf.toString();
+        return builder.toString();
     }
     
 }

@@ -33,6 +33,7 @@ import org.ff4j.audit.graph.BarChart;
 import org.ff4j.audit.graph.PieChart;
 import org.ff4j.audit.graph.PieSector;
 
+import static org.ff4j.audit.EventConstants.*;
 
 /**
  * Superclass implementing the custom serialization.

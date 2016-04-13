@@ -47,12 +47,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.ff4j.test.TestsFf4jConstants.*;
+
 /**
  * Test to work with Redis as a store.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreJCacheTest implements TestsFf4jConstants {
+public class FeatureStoreJCacheTest {
    
     /** {@inheritDoc} */
     protected FeatureStore initStore() {

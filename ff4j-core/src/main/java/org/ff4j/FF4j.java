@@ -22,6 +22,7 @@ package org.ff4j;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,6 +45,7 @@ import org.ff4j.property.store.PropertyStore;
 import org.ff4j.security.AuthorizationsManager;
 import org.ff4j.store.InMemoryFeatureStore;
 
+import static org.ff4j.audit.EventConstants.*;
 /**
  * Principal class stands as public api to work with FF4J.
  *
@@ -68,7 +70,7 @@ import org.ff4j.store.InMemoryFeatureStore;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class FF4j implements EventConstants {
+public class FF4j {
 
     /** Do not through {@link FeatureNotFoundException} exception and but feature is required. */
     private boolean autocreate = false;
@@ -107,7 +109,13 @@ public class FF4j implements EventConstants {
 
     /** Hold flipping execution context as Thread-safe data. */
     private ThreadLocal<FlippingExecutionContext> currentExecutionContext = new ThreadLocal<FlippingExecutionContext>();
-   
+
+    /**
+     * This attribute indicates when call the alter bean throw de {@link InvocationTargetException}
+     * or the wraps exception thrown by an invoked method or constructor
+     */
+    private boolean alterBeanThrowInvocationTargetException = true;
+    
     /**
      * Default constructor to allows instantiation through IoC. The created store is an empty {@link InMemoryFeatureStore}.
      */
@@ -845,5 +853,31 @@ public class FF4j implements EventConstants {
      */
     public String getSource() {
         return source;
+    }
+    
+        /**
+     * Enable Alter bean Throw InvocationTargetException, when enabled
+     * the alter bean method always throw {@link InvocationTargetException}
+     */
+    public void enableAlterBeanThrowInvocationTargetException() {
+        this.alterBeanThrowInvocationTargetException = true;
+    }
+
+    /**
+     * Disable Alter bean Throw InvocationTargetException, when disabled
+     * the alter bean method always throw the exception cause.
+     */
+    public void disableAlterBeanThrowInvocationTargetException() {
+        this.alterBeanThrowInvocationTargetException = false;
+    }
+
+    /**
+     * Getter accessor for attribute 'alterBeanThrowInvocationTargetException'.
+     *
+     * @return
+     *       current value of 'alterBeanThrowInvocationTargetException'
+     */
+    public boolean isAlterBeanThrowInvocationTargetException() {
+        return alterBeanThrowInvocationTargetException;
     }
 }

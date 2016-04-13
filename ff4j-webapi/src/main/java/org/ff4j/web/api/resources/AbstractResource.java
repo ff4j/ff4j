@@ -29,14 +29,13 @@ import org.ff4j.FF4j;
 import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.property.store.PropertyStore;
-import org.ff4j.web.FF4jWebConstants;
 
 /**
  * SuperClass for common injections.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public abstract class AbstractResource implements FF4jWebConstants {
+public abstract class AbstractResource {
     
     /** Access to Features through store. */
     @Context

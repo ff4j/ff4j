@@ -52,13 +52,17 @@ import org.ff4j.utils.JdbcUtils;
 import org.ff4j.utils.MappingUtil;
 import org.ff4j.utils.Util;
 
+import static org.ff4j.store.JdbcStoreConstants.*;
+
 /**
  * Implementation of {@link FeatureStore} to work with RDBMS through JDBC.
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStoreConstants {
+public class JdbcFeatureStore extends AbstractFeatureStore {
 
+    public static final String CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE = "Cannot check feature existence, error related to database";
+    public static final String CANNOT_UPDATE_FEATURES_DATABASE_SQL_ERROR = "Cannot update features database, SQL ERROR";
     /** Access to storage. */
     private DataSource dataSource;
     
@@ -119,7 +123,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
             rs.next();
             return 1 == rs.getInt(1);
         } catch (SQLException sqlEX) {
-            throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
+            throw new FeatureAccessException(CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE, sqlEX);
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
@@ -168,7 +172,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
             }
             return f;
         } catch (SQLException sqlEX) {
-            throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
+            throw new FeatureAccessException(CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE, sqlEX);
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
@@ -230,7 +234,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
 
         } catch (SQLException sqlEX) {
             rollback(sqlConn);
-            throw new FeatureAccessException("Cannot update features database, SQL ERROR", sqlEX);
+            throw new FeatureAccessException(CANNOT_UPDATE_FEATURES_DATABASE_SQL_ERROR, sqlEX);
         } finally {
             closeStatement(ps);
             closeConnection(sqlConn);
@@ -279,7 +283,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
 
         } catch (SQLException sqlEX) {
             rollback(sqlConn);
-            throw new FeatureAccessException("Cannot update features database, SQL ERROR", sqlEX);
+            throw new FeatureAccessException(CANNOT_UPDATE_FEATURES_DATABASE_SQL_ERROR, sqlEX);
         } finally {
             closeStatement(ps);
             closeConnection(sqlConn);
@@ -325,7 +329,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
             return mapFP;
 
         } catch (SQLException sqlEX) {
-            throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
+            throw new FeatureAccessException(CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE, sqlEX);
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
@@ -411,7 +415,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
                 createCustomProperties(fp.getUid(), fp.getCustomProperties().values());
             } 
             } catch (SQLException sqlEX) {
-                throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
+                throw new FeatureAccessException(CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE, sqlEX);
             } finally {
                 closeStatement(ps);
                 closeConnection(sqlConn);
@@ -438,7 +442,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
             ps.executeUpdate();
             
         } catch (SQLException sqlEX) {
-            throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
+            throw new FeatureAccessException(CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE, sqlEX);
         } finally {
             closeStatement(ps);
             closeConnection(sqlConn);
@@ -475,7 +479,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
             sqlConn.commit();
             
         } catch (SQLException sqlEX) {
-            throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
+            throw new FeatureAccessException(CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE, sqlEX);
         } finally {
             closeStatement(ps);
             closeConnection(sqlConn);
@@ -528,7 +532,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
             rs.next(); 
             return rs.getInt(1) > 0;
         } catch (SQLException sqlEX) {
-            throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
+            throw new FeatureAccessException(CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE, sqlEX);
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
@@ -581,7 +585,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
             return mapFP;
 
         } catch (SQLException sqlEX) {
-            throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
+            throw new FeatureAccessException(CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE, sqlEX);
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
@@ -623,7 +627,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore implements  JdbcStore
             ps = buildStatement(sqlConnection, query, params);
             ps.executeUpdate();
         } catch (SQLException sqlEX) {
-            throw new FeatureAccessException("Cannot update features database, SQL ERROR", sqlEX);
+            throw new FeatureAccessException(CANNOT_UPDATE_FEATURES_DATABASE_SQL_ERROR, sqlEX);
         } finally {
             closeStatement(ps);
             closeConnection(sqlConnection);

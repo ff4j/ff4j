@@ -37,7 +37,9 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseSettings;
 import org.neo4j.test.TestGraphDatabaseFactory;
 
-public class FeatureStoreNeo4jLimitTest implements FF4jNeo4jConstants {
+import static org.ff4j.neo4j.FF4jNeo4jConstants.*;
+
+public class FeatureStoreNeo4jLimitTest {
 
     /** DataBase instance. */
     protected static GraphDatabaseService graphDb;

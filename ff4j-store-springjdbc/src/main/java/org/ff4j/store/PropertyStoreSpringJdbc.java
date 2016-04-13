@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static org.ff4j.store.JdbcStoreConstants.*;
+
 /*
  * #%L
  * ff4j-store-springjdbc
@@ -48,7 +50,7 @@ import org.springframework.stereotype.Repository;
  * @author Cedrick Lunven (@clunven)</a>
  */
 @Repository
-public class PropertyStoreSpringJdbc extends AbstractPropertyStore implements JdbcStoreConstants {
+public class PropertyStoreSpringJdbc extends AbstractPropertyStore {
 
     /** target mapper. */
     private static CustomPropertyRowMapper PMAPPER = new CustomPropertyRowMapper();

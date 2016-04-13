@@ -169,7 +169,8 @@ public final class XmlParser {
     
     /** XML Generation constants. */
     private static final String END_FF4J = "</ff4j>\n\n";
-    
+    public static final String ERROR_SYNTAX_IN_CONFIGURATION_FILE = "Error syntax in configuration file : ";
+
     /** Document Builder use to parse XML. */
     private static DocumentBuilder builder = null;
    
@@ -279,12 +280,12 @@ public final class XmlParser {
         // Identifier
         String uid;
         if (nnm.getNamedItem(FEATURE_ATT_UID) == null) {
-            throw new IllegalArgumentException("Error syntax in configuration file : " + "'uid' is required for each feature");
+            throw new IllegalArgumentException(ERROR_SYNTAX_IN_CONFIGURATION_FILE + "'uid' is required for each feature");
         }
         uid = nnm.getNamedItem(FEATURE_ATT_UID).getNodeValue();
         // Enable
         if (nnm.getNamedItem(FEATURE_ATT_ENABLE) == null) {
-            throw new IllegalArgumentException("Error syntax in configuration file : "
+            throw new IllegalArgumentException(ERROR_SYNTAX_IN_CONFIGURATION_FILE
                     + "'enable' is required for each feature (check " + uid + ")");
         }
         boolean enable = Boolean.parseBoolean(nnm.getNamedItem(FEATURE_ATT_ENABLE).getNodeValue());
@@ -414,7 +415,7 @@ public final class XmlParser {
                 // Check for required attribute name
                 String currentParamName;
                 if (nnmap.getNamedItem(FLIPSTRATEGY_PARAMNAME) == null) {
-                    throw new IllegalArgumentException("Error syntax in configuration file : "
+                    throw new IllegalArgumentException(ERROR_SYNTAX_IN_CONFIGURATION_FILE
                             + "'name' is required for each param in flipstrategy(check " + uid + ")");
                 }
                 currentParamName = nnmap.getNamedItem(FLIPSTRATEGY_PARAMNAME).getNodeValue();

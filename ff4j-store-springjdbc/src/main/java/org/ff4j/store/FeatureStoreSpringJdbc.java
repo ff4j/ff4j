@@ -37,19 +37,23 @@ import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.ff4j.store.JdbcStoreConstants.*;
+
 /**
  * Implementation of {@link FeatureStore} to work with RDBMS through JDBC.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 @Repository
-public class FeatureStoreSpringJdbc extends AbstractFeatureStore implements JdbcStoreConstants {
+public class FeatureStoreSpringJdbc extends AbstractFeatureStore {
 
     /** Row Mapper for FlipPoint. */
     private static final FeatureRowMapper FMAPPER = new FeatureRowMapper();
 
     /** Mapper for custom properties. */
     private static final CustomPropertyRowMapper PMAPPER = new CustomPropertyRowMapper();
+    public static final String FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY = "Feature identifier cannot be null nor empty";
+    public static final String GROUPNAME_CANNOT_BE_NULL_NOR_EMPTY = "Groupname cannot be null nor empty";
 
     /** SQL DataSource. */
     private DataSource dataSource;
@@ -225,7 +229,7 @@ public class FeatureStoreSpringJdbc extends AbstractFeatureStore implements Jdbc
     @Transactional
     public void grantRoleOnFeature(String uid, String roleName) {
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY);
         }
         if (roleName == null || roleName.isEmpty()) {
             throw new IllegalArgumentException("roleName cannot be null nor empty");
@@ -241,7 +245,7 @@ public class FeatureStoreSpringJdbc extends AbstractFeatureStore implements Jdbc
     @Transactional
     public void removeRoleFromFeature(String uid, String roleName) {
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY);
         }
         if (roleName == null || roleName.isEmpty()) {
             throw new IllegalArgumentException("roleName cannot be null nor empty");
@@ -257,7 +261,7 @@ public class FeatureStoreSpringJdbc extends AbstractFeatureStore implements Jdbc
     @Transactional
     public void enableGroup(String groupName) {
         if (groupName == null || groupName.isEmpty()) {
-            throw new IllegalArgumentException("Groupname cannot be null nor empty");
+            throw new IllegalArgumentException(GROUPNAME_CANNOT_BE_NULL_NOR_EMPTY);
         }
         if (!existGroup(groupName)) {
             throw new GroupNotFoundException(groupName);
@@ -270,7 +274,7 @@ public class FeatureStoreSpringJdbc extends AbstractFeatureStore implements Jdbc
     @Transactional
     public void disableGroup(String groupName) {
         if (groupName == null || groupName.isEmpty()) {
-            throw new IllegalArgumentException("Groupname cannot be null nor empty");
+            throw new IllegalArgumentException(GROUPNAME_CANNOT_BE_NULL_NOR_EMPTY);
         }
         if (!existGroup(groupName)) {
             throw new GroupNotFoundException(groupName);
@@ -282,7 +286,7 @@ public class FeatureStoreSpringJdbc extends AbstractFeatureStore implements Jdbc
     @Override
     public boolean existGroup(String groupName) {
         if (groupName == null || groupName.isEmpty()) {
-            throw new IllegalArgumentException("Groupname cannot be null nor empty");
+            throw new IllegalArgumentException(GROUPNAME_CANNOT_BE_NULL_NOR_EMPTY);
         }
         int count = getJdbcTemplate().queryForObject(SQL_EXIST_GROUP, Integer.class, groupName);
         return count > 0;
@@ -292,7 +296,7 @@ public class FeatureStoreSpringJdbc extends AbstractFeatureStore implements Jdbc
     @Override
     public Map<String, Feature> readGroup(String groupName) {
         if (groupName == null || groupName.isEmpty()) {
-            throw new IllegalArgumentException("Groupname cannot be null nor empty");
+            throw new IllegalArgumentException(GROUPNAME_CANNOT_BE_NULL_NOR_EMPTY);
         }
         if (!existGroup(groupName)) {
             throw new GroupNotFoundException(groupName);
@@ -310,10 +314,10 @@ public class FeatureStoreSpringJdbc extends AbstractFeatureStore implements Jdbc
     @Transactional
     public void addToGroup(String uid, String groupName) {
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY);
         }
         if (groupName == null || groupName.isEmpty()) {
-            throw new IllegalArgumentException("Groupname cannot be null nor empty");
+            throw new IllegalArgumentException(GROUPNAME_CANNOT_BE_NULL_NOR_EMPTY);
         }
         if (!exist(uid)) {
             throw new FeatureNotFoundException(uid);
@@ -326,10 +330,10 @@ public class FeatureStoreSpringJdbc extends AbstractFeatureStore implements Jdbc
     @Transactional
     public void removeFromGroup(String uid, String groupName) {
         if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
+            throw new IllegalArgumentException(FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY);
         }
         if (groupName == null || groupName.isEmpty()) {
-            throw new IllegalArgumentException("Groupname cannot be null nor empty");
+            throw new IllegalArgumentException(GROUPNAME_CANNOT_BE_NULL_NOR_EMPTY);
         }
         if (!exist(uid)) {
             throw new FeatureNotFoundException(uid);

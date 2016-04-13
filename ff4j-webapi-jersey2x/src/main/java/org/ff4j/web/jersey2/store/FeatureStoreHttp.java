@@ -52,12 +52,14 @@ import org.glassfish.jersey.internal.util.Base64;
 
 import io.swagger.jaxrs.json.JacksonJsonProvider;
 
+import static org.ff4j.web.FF4jWebConstants.*;
+
 /**
  * Implementation of store using {@link HttpClient} connection.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreHttp extends AbstractFeatureStore implements org.ff4j.web.FF4jWebConstants {
+public class FeatureStoreHttp extends AbstractFeatureStore {
 
     /** Jersey Client. */
     protected Client client = null;

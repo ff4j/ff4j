@@ -39,12 +39,14 @@ import com.mongodb.BasicDBList;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
+import static org.ff4j.store.mongodb.FeatureStoreMongoConstants.*;
+
 /**
  * MApping from Mongo document to Feature.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public final class FeatureDocumentMapper implements FeatureStoreMongoConstants {
+public final class FeatureDocumentMapper {
 
     /**
      * Convert {@link Document} to {@link Feature}.
@@ -196,9 +198,9 @@ public final class FeatureDocumentMapper implements FeatureStoreMongoConstants {
     public Property< ? > mapProperty(DBObject dbObject) {
         PropertyJsonBean pf = new PropertyJsonBean();
         pf.setName((String) dbObject.get(PROPERTY_NAME));
-        pf.setDescription(((String) dbObject.get(PROPERTY_DESCRIPTION)));
-        pf.setType(((String) dbObject.get(PROPERTY_TYPE)));
-        pf.setValue(((String) dbObject.get(PROPERTY_VALUE)));
+        pf.setDescription((String) dbObject.get(PROPERTY_DESCRIPTION));
+        pf.setType((String) dbObject.get(PROPERTY_TYPE));
+        pf.setValue((String) dbObject.get(PROPERTY_VALUE));
         if (dbObject.containsField(PROPERTY_FIXEDVALUES)) {
             BasicDBList dbList = (BasicDBList) dbObject.get(PROPERTY_FIXEDVALUES);
             if (dbList != null) {

@@ -25,47 +25,49 @@ package org.ff4j.store.mongodb;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public interface FeatureStoreMongoConstants {
+public class FeatureStoreMongoConstants {
 
     /** Identifier */
-    String UUID = "_id";
+    public static final String UUID = "_id";
 
     /** ENABLE */
-    String ENABLE = "enable";
+    public static final String ENABLE = "enable";
 
     /** DESCRIPTION */
-    String DESCRIPTION = "description";
+    public static final String DESCRIPTION = "description";
 
     /** Strategy. */
-    String STRATEGY = "strategy";
+    public static final String STRATEGY = "strategy";
 
     /** Expression. */
-    String EXPRESSION = "expression";
+    public static final String EXPRESSION = "expression";
 
     /** GroupName. */
-    String GROUPNAME = "groupname";
+    public static final String GROUPNAME = "groupname";
     
     /** Custom Properties. */
-    String CUSTOMPROPERTIES = "customProperties";
+    public static final String CUSTOMPROPERTIES = "customProperties";
 
     /** Roles. */
-    String ROLES = "roles";
+    public static final String ROLES = "roles";
 
     /** Custom Properties. */
-    String MONGO_SET = "$set";
+    public static final String MONGO_SET = "$set";
     
     /** Property collection attribute. */
-    String PROPERTY_NAME = "name";
+    public static final String PROPERTY_NAME = "name";
     
     /** Property collection attribute. */
-    String PROPERTY_DESCRIPTION = "description";
+    public static final String PROPERTY_DESCRIPTION = "description";
     
     /** Property collection attribute. */
-    String PROPERTY_FIXEDVALUES = "fixedValues";
+    public static final String PROPERTY_FIXEDVALUES = "fixedValues";
     
     /** Property collection attribute. */
-    String PROPERTY_TYPE = "type";
+    public static final String PROPERTY_TYPE = "type";
     
     /** Property collection attribute. */
-    String PROPERTY_VALUE = "value";
+    public static final String PROPERTY_VALUE = "value";
+
+    private FeatureStoreMongoConstants() {}
 }

@@ -45,6 +45,11 @@ import org.junit.Test;
  */
 public abstract class PropertyStoreTestSupport {
 
+    public static final String ADD_PROPERTY_O_KSIMPLE = "addPropertyOKsimple";
+    public static final String READ_OK_FIXED = "readOKFixed";
+    public static final String INVALID = "invalid";
+    public static final String UPDATE_OK = "updateOK";
+    public static final String DELETE_OK = "deleteOK";
     /** Tested Store. */
     protected PropertyStore testedStore;
 
@@ -98,11 +103,11 @@ public abstract class PropertyStoreTestSupport {
     @Test
     public void addPropertyOKsimple() {
         // Given
-        Assert.assertFalse(testedStore.existProperty("addPropertyOKsimple"));
+        Assert.assertFalse(testedStore.existProperty(ADD_PROPERTY_O_KSIMPLE));
         // When
-        testedStore.createProperty(new PropertyString("addPropertyOKsimple", "ff4j"));
+        testedStore.createProperty(new PropertyString(ADD_PROPERTY_O_KSIMPLE, "ff4j"));
         // Then
-        Assert.assertTrue(testedStore.existProperty("addPropertyOKsimple"));
+        Assert.assertTrue(testedStore.existProperty(ADD_PROPERTY_O_KSIMPLE));
     }
     
     /** TDD. */
@@ -167,13 +172,13 @@ public abstract class PropertyStoreTestSupport {
     @Test
     public void readOKFixed() {
         // Given
-        testedStore.createProperty(new PropertyLogLevel("readOKFixed", LogLevel.ERROR));
+        testedStore.createProperty(new PropertyLogLevel(READ_OK_FIXED, LogLevel.ERROR));
         // When
-        Property<?> log = testedStore.readProperty("readOKFixed");
+        Property<?> log = testedStore.readProperty(READ_OK_FIXED);
         // Then
         Assert.assertNotNull(log);
         Assert.assertNotNull(log.getName());
-        Assert.assertEquals("readOKFixed", log.getName());
+        Assert.assertEquals(READ_OK_FIXED, log.getName());
         Assert.assertEquals(LogLevel.ERROR, log.getValue());
         Assert.assertEquals("ERROR", log.asString());
         Assert.assertNotNull(log.getFixedValues());
@@ -197,9 +202,9 @@ public abstract class PropertyStoreTestSupport {
     @Test(expected = PropertyNotFoundException.class)
     public void readKOnotExist() {
         // Given
-        Assert.assertFalse(testedStore.existProperty("invalid"));
+        Assert.assertFalse(testedStore.existProperty(INVALID));
         // When
-        testedStore.readProperty("invalid");
+        testedStore.readProperty(INVALID);
     }
     
     // ------------------ update --------------------
@@ -208,9 +213,9 @@ public abstract class PropertyStoreTestSupport {
     @Test(expected = PropertyNotFoundException.class)
     public void updateKOdoesnotExist() {
         // Given
-        Assert.assertFalse(testedStore.existProperty("invalid"));
+        Assert.assertFalse(testedStore.existProperty(INVALID));
         // When
-        testedStore.updateProperty("invalid", "aa");
+        testedStore.updateProperty(INVALID, "aa");
     }
     
     /** TDD. */
@@ -256,11 +261,11 @@ public abstract class PropertyStoreTestSupport {
     @Test
     public void updateOK() {
         // Given
-        testedStore.createProperty(new PropertyLogLevel("updateOK", LogLevel.ERROR));
+        testedStore.createProperty(new PropertyLogLevel(UPDATE_OK, LogLevel.ERROR));
         // When
-        testedStore.updateProperty("updateOK", "INFO");
+        testedStore.updateProperty(UPDATE_OK, "INFO");
         // Then
-        Assert.assertEquals(LogLevel.INFO, testedStore.readProperty("updateOK").getValue());
+        Assert.assertEquals(LogLevel.INFO, testedStore.readProperty(UPDATE_OK).getValue());
     }
     
     /** TDD. */
@@ -295,21 +300,21 @@ public abstract class PropertyStoreTestSupport {
     @Test(expected = PropertyNotFoundException.class)
     public void deleteKOdoesnotexist() {
         // Given
-        Assert.assertFalse(testedStore.existProperty("invalid"));
+        Assert.assertFalse(testedStore.existProperty(INVALID));
         // When
-        testedStore.deleteProperty("invalid");
+        testedStore.deleteProperty(INVALID);
     }
     
     /** TDD. */
     @Test
     public void deleteOK() {
         // Given
-        testedStore.createProperty(new PropertyString("deleteOK", "ff4j"));
-        Assert.assertTrue(testedStore.existProperty("deleteOK"));
+        testedStore.createProperty(new PropertyString(DELETE_OK, "ff4j"));
+        Assert.assertTrue(testedStore.existProperty(DELETE_OK));
         // When
-        testedStore.deleteProperty("deleteOK");
+        testedStore.deleteProperty(DELETE_OK);
         // Then
-        Assert.assertFalse(testedStore.existProperty("deleteOK"));
+        Assert.assertFalse(testedStore.existProperty(DELETE_OK));
     }
     
     @Test

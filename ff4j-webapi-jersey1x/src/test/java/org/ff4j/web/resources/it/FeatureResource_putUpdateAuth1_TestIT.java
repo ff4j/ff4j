@@ -31,6 +31,8 @@ import org.junit.Test;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
+import static org.ff4j.test.TestsFf4jConstants.*;
+
 /**
  * Externalisation of PUT REQUEST.
  *

@@ -29,18 +29,19 @@ import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.AbstractPropertyStore;
 import org.ff4j.store.mongodb.FeatureDocumentMapper;
-import org.ff4j.store.mongodb.FeatureStoreMongoConstants;
 import org.ff4j.store.mongodb.PropertyDocumentBuilder;
 import org.ff4j.utils.Util;
 
 import com.mongodb.client.MongoCollection;
+
+import static org.ff4j.store.mongodb.FeatureStoreMongoConstants.*;
 
 /**
  * PropertyStore based on MongoDB database.
  *
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class PropertyStoreMongoCollection extends AbstractPropertyStore implements FeatureStoreMongoConstants {
+public class PropertyStoreMongoCollection extends AbstractPropertyStore {
 
     /** MongoDB collection. */
     private final MongoCollection<Document> collection;

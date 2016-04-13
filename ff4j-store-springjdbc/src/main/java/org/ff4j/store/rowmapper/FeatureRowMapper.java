@@ -26,16 +26,17 @@ import java.util.Map;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingStrategy;
-import org.ff4j.store.JdbcStoreConstants;
 import org.ff4j.utils.MappingUtil;
 import org.springframework.jdbc.core.RowMapper;
+
+import static org.ff4j.store.JdbcStoreConstants.*;
 
 /**
  * Mapper to convert result into
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureRowMapper implements RowMapper<Feature>, JdbcStoreConstants {
+public class FeatureRowMapper implements RowMapper<Feature> {
 
     /** {@inheritDoc} */
     @Override

@@ -32,6 +32,9 @@ import org.ff4j.web.api.resources.domain.FeatureApiBean;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.ff4j.test.TestsFf4jConstants.*;
+import static org.ff4j.web.FF4jWebConstants.*;
+
 /**
  * Externalisation of PUT REQUEST.
  *

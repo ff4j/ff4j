@@ -38,16 +38,19 @@ import org.ff4j.audit.graph.PieChart;
 import org.ff4j.audit.graph.PieSector;
 import org.ff4j.exception.AuditAccessException;
 import org.ff4j.exception.FeatureAccessException;
-import org.ff4j.store.JdbcStoreConstants;
 import org.ff4j.utils.Util;
+
+import static org.ff4j.store.JdbcStoreConstants.*;
+import static org.ff4j.audit.EventConstants.*;
 
 /**
  * Implementation of in memory {@link EventRepository} with limited events.
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class JdbcEventRepository extends AbstractEventRepository implements JdbcStoreConstants {
+public class JdbcEventRepository extends AbstractEventRepository {
 
+    public static final String CANNOT_BUILD_PIE_CHART_FROM_REPOSITORY = "Cannot build PieChart from repository, ";
     /** Access to storage. */
     private DataSource dataSource;
 
@@ -205,7 +208,7 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
             }
             
         } catch (SQLException sqlEX) {
-            throw new FeatureAccessException("Cannot build PieChart from repository, ", sqlEX);
+            throw new FeatureAccessException(CANNOT_BUILD_PIE_CHART_FROM_REPOSITORY, sqlEX);
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
@@ -251,7 +254,7 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
             }
                 
         } catch (SQLException sqlEX) {
-            throw new AuditAccessException("Cannot build PieChart from repository, ", sqlEX);
+            throw new AuditAccessException(CANNOT_BUILD_PIE_CHART_FROM_REPOSITORY, sqlEX);
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
@@ -289,7 +292,7 @@ public class JdbcEventRepository extends AbstractEventRepository implements Jdbc
             return pieGraph;
                 
         } catch (SQLException sqlEX) {
-            throw new AuditAccessException("Cannot build PieChart from repository, ", sqlEX);
+            throw new AuditAccessException(CANNOT_BUILD_PIE_CHART_FROM_REPOSITORY, sqlEX);
         } finally {
             closeResultSet(rs);
             closeStatement(ps);

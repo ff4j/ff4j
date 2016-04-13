@@ -25,6 +25,8 @@ import org.ff4j.audit.repository.InMemoryEventRepository;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.ff4j.audit.EventConstants.*;
+
 /**
  * Test for publisher and InMemory Event repository.
  * 

@@ -54,7 +54,7 @@ public class Util {
      *            expression to evaluate
      */
     public static boolean hasLength(String expression) {
-        return (expression != null && !"".equals(expression));
+        return expression != null && !"".equals(expression);
     }
     
    /**

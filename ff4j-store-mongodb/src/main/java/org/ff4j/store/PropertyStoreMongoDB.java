@@ -39,12 +39,14 @@ import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 
+import static org.ff4j.store.mongodb.FeatureStoreMongoConstants.*;
+
 /**
  * PropertyStore based on MongoDB database.
  *
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class PropertyStoreMongoDB extends AbstractPropertyStore implements FeatureStoreMongoConstants {
+public class PropertyStoreMongoDB extends AbstractPropertyStore {
 
     /** MongoDB collection. */
     private final DBCollection collection;

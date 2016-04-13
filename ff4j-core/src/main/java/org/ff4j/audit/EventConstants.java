@@ -25,33 +25,40 @@ package org.ff4j.audit;
  * 
  * @author clunven
  */
-public interface EventConstants {
+public class EventConstants {
 	
 	/** ACTIONS. */
-	String ACTION_CONNECT 		= "connect";
-	String ACTION_DISCONNECT 	= "disconnect";
-	String ACTION_TOGGLE_ON 	= "toggle-on";
-	String ACTION_TOGGLE_OFF 	= "toggle-off";
-	String ACTION_CREATE 		= "create";
-	String ACTION_DELETE 		= "delete";
-	String ACTION_UPDATE 		= "update";
-	String ACTION_CLEAR 		= "clear";
-	String ACTION_CHECK_OK      = "checkOn";
-	String ACTION_CHECK_OFF     = "checkOff";
+	public static final String ACTION_CONNECT 		= "connect";
+	public static final String ACTION_DISCONNECT 	= "disconnect";
+	public static final String ACTION_TOGGLE_ON 	= "toggle-on";
+	public static final String ACTION_TOGGLE_OFF 	= "toggle-off";
+	public static final String ACTION_CREATE 		= "create";
+	public static final String ACTION_DELETE 		= "delete";
+	public static final String ACTION_UPDATE 		= "update";
+	public static final String ACTION_CLEAR 		= "clear";
+	public static final String ACTION_CHECK_OK      = "checkOn";
+	public static final String ACTION_CHECK_OFF     = "checkOff";
     
 	/** TARGETS. */
-	String TARGET_FEATURE 	= "feature";
-	String TARGET_GROUP 	= "group";
-	String TARGET_PROPERTY 	= "property";
-	String TARGET_USER 		= "user";
-	String TARGET_FSTORE 	= "featureStore";
-	String TARGET_PSTORE 	= "propertyStore";
+	public static final String TARGET_FEATURE 	= "feature";
+	public static final String TARGET_GROUP 	= "group";
+	public static final String TARGET_PROPERTY 	= "property";
+	public static final String TARGET_USER 		= "user";
+	public static final String TARGET_FSTORE 	= "featureStore";
+	public static final String TARGET_PSTORE 	= "propertyStore";
 	
 	/** SOURCES. */
-	String SOURCE_JAVA     = "JAVA_API";
-	String SOURCE_WEB      = "EMBEDDED_SERVLET";
-	String SOURCE_WEBAPI   = "WEB_API";
-	String SOURCE_SSH      = "SSH";
-    
-    
+	public static final String SOURCE_JAVA     = "JAVA_API";
+	public static final String SOURCE_WEB      = "EMBEDDED_SERVLET";
+	public static final String SOURCE_WEBAPI   = "WEB_API";
+	public static final String SOURCE_SSH      = "SSH";
+
+	/** total hit count. */
+	public static final String TITLE_PIE_HITCOUNT = "Total Hit Counts";
+
+	/** distribution. */
+	public static final String TITLE_BARCHAR_HIT = "HitCounts Distribution";
+
+
+	private EventConstants() {}
 }

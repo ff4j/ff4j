@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.ff4j.exception.PropertyAlreadyExistException;
-import org.ff4j.neo4j.FF4jNeo4jConstants;
 import org.ff4j.neo4j.FF4jNeo4jLabels;
 import org.ff4j.neo4j.mapper.Neo4jMapper;
 import org.ff4j.property.Property;
@@ -39,12 +38,14 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
 
+import static org.ff4j.neo4j.FF4jNeo4jConstants.*;
+
 /**
  *Implementation of {@link PropertyStore} to work with Neo4J.
  *
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class PropertyStoreNeo4j extends AbstractPropertyStore implements FF4jNeo4jConstants {
+public class PropertyStoreNeo4j extends AbstractPropertyStore {
     
     /** Persistent storage. */
     private GraphDatabaseService graphDb;
@@ -114,7 +115,7 @@ public class PropertyStoreNeo4j extends AbstractPropertyStore implements FF4jNeo
     /** {@inheritDoc} */
     public Property<?> readProperty(String name) {
         assertPropertyName(name);
-        Property<?> pro = null;
+        Property<?> pro;
         Transaction tx = graphDb.beginTx();
         Map<String, Object> queryParameters = new HashMap<>();
         queryParameters.put("name", name);

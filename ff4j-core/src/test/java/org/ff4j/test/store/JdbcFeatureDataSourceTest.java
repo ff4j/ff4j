@@ -26,7 +26,6 @@ import javax.sql.DataSource;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.store.JdbcFeatureStore;
-import org.ff4j.store.JdbcStoreConstants;
 import org.ff4j.test.utils.JdbcTestHelper;
 import org.ff4j.utils.JdbcUtils;
 import org.junit.Assert;
@@ -34,12 +33,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import static org.ff4j.store.JdbcStoreConstants.*;
+
 /**
  * This test is meant to access a Jfeature store in 'pure' JDBC.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class JdbcFeatureDataSourceTest extends FStoreTestSupport implements JdbcStoreConstants {
+public class JdbcFeatureDataSourceTest extends FStoreTestSupport {
 
     /** SQL DataSource. */
     private DataSource sqlDataSource;
