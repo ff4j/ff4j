@@ -21,21 +21,17 @@ package org.ff4j.spring.autowire;
  */
 
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface AutowiredFF4JFeature {
-    
+public @interface FF4JFeature {
+
     /**
      * Close to behaviour of {@Value }, inject property if relevant.
      */
     String value();
-    
+
     boolean required() default true;
 }

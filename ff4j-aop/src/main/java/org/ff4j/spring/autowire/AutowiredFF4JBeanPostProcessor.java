@@ -21,8 +21,6 @@ package org.ff4j.spring.autowire;
  */
 
 
-import java.lang.reflect.Field;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ff4j.FF4j;
@@ -34,48 +32,58 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.lang.reflect.Field;
+
 /**
  * When Proxified, analyze bean to eventually invoke ANOTHER implementation (flip up).
- * 
+ *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 @Component("ff4j.autowiringpostprocessor")
 public class AutowiredFF4JBeanPostProcessor implements BeanPostProcessor {
 
-    /** Logger for this class. */
+    /**
+     * Logger for this class.
+     */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    /** Injection of current FF4J bean. */
+    /**
+     * Injection of current FF4J bean.
+     */
     @Autowired
     private FF4j ff4j;
-    
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) {
         // Nothing to do before initializations, will inject only on post treatment
         return bean;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) {
         if (bean == null) return null;
-        Class <?> beanClass = bean.getClass();
+        Class<?> beanClass = bean.getClass();
         Field[] fields = beanClass.getDeclaredFields();
         for (Field field : fields) {
             // Expect to get annnotation Autowired
-            if (field.isAnnotationPresent(AutowiredFF4JProperty.class)) {
+            if (field.isAnnotationPresent(FF4JProperty.class)) {
                 autoWiredProperty(bean, field);
-            } else if (field.isAnnotationPresent(AutowiredFF4JFeature.class)) {
+            } else if (field.isAnnotationPresent(FF4JFeature.class)) {
                 autoWiredFeature(bean, field);
             }
         }
         return bean;
     }
-    
+
     private void autoWiredFeature(Object bean, Field field) {
         // Find the required and name parameters
-        AutowiredFF4JFeature annFeature = field.getAnnotation(AutowiredFF4JFeature.class);
+        FF4JFeature annFeature = field.getAnnotation(FF4JFeature.class);
         String annValue = annFeature.value();
         String featureName = field.getName();
         if (annValue != null && !"".equals(annValue)) {
@@ -90,16 +98,16 @@ public class AutowiredFF4JBeanPostProcessor implements BeanPostProcessor {
             } else if (boolean.class.isAssignableFrom(field.getType())) {
                 injectValue(field, bean, featureName, feature.isEnable());
             } else {
-                    throw new IllegalArgumentException("Field annotated with @AutowiredFF4JFeature"
-                                + " must inherit from org.ff4j.Feature or be boolean " + field.getType() + " [class=" + bean.getClass().getName() 
-                                + ", field=" + field.getName() + "]");
+                throw new IllegalArgumentException("Field annotated with @FF4JFeature"
+                        + " must inherit from org.ff4j.Feature or be boolean " + field.getType() + " [class=" + bean.getClass().getName()
+                        + ", field=" + field.getName() + "]");
             }
         }
     }
-    
+
     private void autoWiredProperty(Object bean, Field field) {
         // Find the required and name parameters
-        AutowiredFF4JProperty annProperty = field.getAnnotation(AutowiredFF4JProperty.class);
+        FF4JProperty annProperty = field.getAnnotation(FF4JProperty.class);
         String propertyName = StringUtils.hasLength(annProperty.value()) ? annProperty.value() : field.getName();
         Property<?> property = readProperty(field, propertyName, annProperty.required());
         // if not available in store
@@ -108,43 +116,43 @@ public class AutowiredFF4JBeanPostProcessor implements BeanPostProcessor {
                 injectValue(field, bean, propertyName, property);
             } else if (property.parameterizedType().isAssignableFrom(field.getType())) {
                 injectValue(field, bean, propertyName, property.getValue());
-            } else if (property.parameterizedType().equals(Integer.class) 
+            } else if (property.parameterizedType().equals(Integer.class)
                     && field.getType().equals(int.class) && (null != property.getValue())) {
                 // Autoboxing Integer -> Int
                 injectValue(field, bean, propertyName, property.getValue());
-            } else if (property.parameterizedType().equals(Long.class) 
+            } else if (property.parameterizedType().equals(Long.class)
                     && field.getType().equals(long.class) && (null != property.getValue())) {
                 // Autoboxing Long -> long
                 injectValue(field, bean, propertyName, property.getValue());
-            } else if (property.parameterizedType().equals(Double.class) 
+            } else if (property.parameterizedType().equals(Double.class)
                     && field.getType().equals(double.class) && (null != property.getValue())) {
                 // Autoboxing Double -> double
                 injectValue(field, bean, propertyName, property.getValue());
-            } else if (property.parameterizedType().equals(Byte.class) 
+            } else if (property.parameterizedType().equals(Byte.class)
                     && field.getType().equals(byte.class) && (null != property.getValue())) {
                 // Autoboxing Byte -> byte
                 injectValue(field, bean, propertyName, property.getValue());
-            } else if (property.parameterizedType().equals(Boolean.class) 
+            } else if (property.parameterizedType().equals(Boolean.class)
                     && field.getType().equals(boolean.class) && (null != property.getValue())) {
                 // Autoboxing Boolean -> boolean
                 injectValue(field, bean, propertyName, property.getValue());
-            } else if (property.parameterizedType().equals(Short.class) 
+            } else if (property.parameterizedType().equals(Short.class)
                     && field.getType().equals(short.class) && (null != property.getValue())) {
                 // Autoboxing Short -> short
                 injectValue(field, bean, propertyName, property.getValue());
-            } else if (property.parameterizedType().equals(Character.class) 
+            } else if (property.parameterizedType().equals(Character.class)
                     && field.getType().equals(char.class) && (null != property.getValue())) {
                 // Autoboxing Character -> char
                 injectValue(field, bean, propertyName, property.getValue());
-            } else if (property.parameterizedType().equals(Float.class) 
+            } else if (property.parameterizedType().equals(Float.class)
                     && field.getType().equals(float.class) && (null != property.getValue())) {
                 // Autoboxing Float -> float
                 injectValue(field, bean, propertyName, property.getValue());
             } else {
-                throw new IllegalArgumentException("Field annotated with @AutowiredFF4JProperty"
-                            + " must inherit from org.ff4j.property.AbstractProperty or be of type " + 
-                            property.parameterizedType() + "but is " +  field.getType() + " [class=" + bean.getClass().getName() 
-                            + ", field=" + field.getName() + "]");
+                throw new IllegalArgumentException("Field annotated with @FF4JProperty"
+                        + " must inherit from org.ff4j.property.AbstractProperty or be of type " +
+                        property.parameterizedType() + "but is " + field.getType() + " [class=" + bean.getClass().getName()
+                        + ", field=" + field.getName() + "]");
             }
         }
     }
@@ -156,7 +164,7 @@ public class AutowiredFF4JBeanPostProcessor implements BeanPostProcessor {
         ReflectionUtils.setField(field, currentBean, propValue);
         logger.debug("Injection of property '" + propName + "' on " + currentBean.getClass().getName() + "." + field.getName());
     }
-    
+
     private Feature readFeature(Field field, String featureName, boolean required) {
         if (!ff4j.getFeatureStore().exist(featureName)) {
             if (required) {
@@ -179,8 +187,8 @@ public class AutowiredFF4JBeanPostProcessor implements BeanPostProcessor {
                 logger.warn("Property '" + propertyName + "' has not been found but not required");
                 return null;
             }
-        }   
-        return  ff4j.getPropertiesStore().readProperty(propertyName);
+        }
+        return ff4j.getPropertiesStore().readProperty(propertyName);
     }
-    
+
 }

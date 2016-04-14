@@ -24,8 +24,8 @@ package org.ff4j.placeholder;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.property.PropertyInt;
-import org.ff4j.spring.autowire.AutowiredFF4JFeature;
-import org.ff4j.spring.autowire.AutowiredFF4JProperty;
+import org.ff4j.spring.autowire.FF4JFeature;
+import org.ff4j.spring.autowire.FF4JProperty;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,39 +39,40 @@ public class PlaceHolderTest {
 
     @Autowired
     private FF4j ff4j;
-    
+
     @Autowired
     private SampleBean sb;
-    
+
     // --------------------------------------------
-    
-    @AutowiredFF4JProperty("pInt")
+
+    @FF4JProperty("pInt")
     private PropertyInt pro;
-    
-    @AutowiredFF4JProperty("pInt")
+
+    @FF4JProperty("pInt")
     private Integer pro2 = 2;
-    
-    @AutowiredFF4JProperty("pInt")
+
+    @FF4JProperty("pInt")
     private int pro3 = 3;
-    
-    @AutowiredFF4JProperty(value="toto", required = false)
+
+    @FF4JProperty(value = "toto", required = false)
     private PropertyInt pro4 = null;
-    
-    @AutowiredFF4JProperty(value="pExo")
+
+    @FF4JProperty(value = "pExo")
     private PropertyExotic exo;
-   
-    @AutowiredFF4JFeature("AwesomeFeature")
-    private Feature feat  = null;;
-    
-    @AutowiredFF4JFeature("AwesomeFeature")
+
+    @FF4JFeature("AwesomeFeature")
+    private Feature feat = null;
+    ;
+
+    @FF4JFeature("AwesomeFeature")
     private Boolean feat2 = false;
-    
-    @AutowiredFF4JFeature("AwesomeFeature")
+
+    @FF4JFeature("AwesomeFeature")
     private boolean feat3 = false;
-        
-    @AutowiredFF4JFeature(value="i-dont-exist", required = false)
+
+    @FF4JFeature(value = "i-dont-exist", required = false)
     private Feature feat4 = null;
-    
+
     @Test
     public void testPlaceholderWithinXMLFile() {
         // Given, configuration loaded
@@ -83,18 +84,18 @@ public class PlaceHolderTest {
         Assert.assertEquals(1, sb.getP());
         Assert.assertEquals(true, sb.isF());
     }
-    
+
     @Test
     public void testPlaceHolderWithAnnotation() {
         Assert.assertEquals(new Integer(1), pro.getValue());
         Assert.assertEquals(new Integer(1), pro2);
         Assert.assertEquals(1, pro3);
         Assert.assertNull(pro4);
-        
+
         Assert.assertEquals(true, feat.isEnable());
         Assert.assertEquals(true, feat2);
         Assert.assertEquals(true, feat3);
         Assert.assertNull(feat4);
     }
-    
+
 }
