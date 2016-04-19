@@ -35,6 +35,7 @@ import org.fusesource.jansi.AnsiConsole;
  */
 public class AnsiTerminal implements AnsiConstants {
 	
+	/** Default log format. */
 	private static final SimpleDateFormat SDF = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
 
     /**
@@ -66,7 +67,6 @@ public class AnsiTerminal implements AnsiConstants {
      * @param attribute
      */
     public static void setup(AnsiForegroundColor color, AnsiBackGroundColor backgroundColor, AnsiTextAttribute attribute) {
-        // Create Ansi code
         StringBuilder sb = new StringBuilder(PREFIX);
         if (attribute != null) {
             sb.append(attribute.getCode());
@@ -173,5 +173,45 @@ public class AnsiTerminal implements AnsiConstants {
         print(text);
         System.out.println("\n");
     }
+    
+	/**
+	 * Change text color to white.
+	 */
+	public static void white(String text) {
+		AnsiTerminal.foreGroundColor(AnsiForegroundColor.WHITE);
+		System.out.print(text);
+	}
+	
+	/**
+	 * Change text color to yellow.
+	 */
+	public static void yellow(String text) {
+		AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
+		System.out.print(text);
+	}
+	
+	/**
+	 * Change text color to yellow.
+	 */
+	public static void red(String text) {
+		AnsiTerminal.foreGroundColor(AnsiForegroundColor.RED);
+		System.out.print(text);
+	}
+	
+	/**
+	 * Change text color to cyan.
+	 */
+	public static void cyan(String text) {
+		AnsiTerminal.foreGroundColor(AnsiForegroundColor.CYAN);
+		System.out.print(text);
+	}
+	
+	/**
+	 * Change text color to green.
+	 */
+	public static void green(String text) {
+		AnsiTerminal.foreGroundColor(AnsiForegroundColor.GREEN);
+		System.out.print(text);
+	}
     
 }

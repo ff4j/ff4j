@@ -1,5 +1,9 @@
 package org.ff4j.cli;
 
+import static org.ff4j.cli.FF4jCliDisplay.displayEnvironments;
+import static org.ff4j.cli.FF4jCliDisplay.displayHelpNotConnected;
+import static org.ff4j.cli.FF4jCliOptions.connectOptions;
+
 /*
  * #%L
  * ff4j-cli
@@ -20,10 +24,12 @@ package org.ff4j.cli;
  * #L%
  */
 
-
 import static org.ff4j.cli.ansi.AnsiTerminal.logError;
 import static org.ff4j.cli.ansi.AnsiTerminal.logInfo;
 import static org.ff4j.cli.ansi.AnsiTerminal.logWarn;
+import static org.ff4j.cli.ansi.AnsiTerminal.foreGroundColor;
+import static org.ff4j.cli.ansi.AnsiTerminal.*;
+import static org.ff4j.cli.FF4jCliDisplay.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,12 +37,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang.StringUtils;
 import org.ff4j.FF4j;
 import org.ff4j.cli.ansi.AnsiForegroundColor;
 import org.ff4j.cli.ansi.AnsiTerminal;
 import org.ff4j.cli.ansi.AnsiTextAttribute;
-import org.ff4j.core.Feature;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -46,6 +55,9 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class FF4jCliProcessor {
 
+	/** Commons-cli command parser. */
+	private static final CommandLineParser CMD_PARSER = new DefaultParser();
+	
 	/** Environnements. */
 	private Map<String, FF4j> envs = new LinkedHashMap<String, FF4j>();
 
@@ -73,16 +85,16 @@ public class FF4jCliProcessor {
 	}
 
 	/**
-	 * execute command.
+	 * Command are not the same if you have selected an environnement or not.
 	 *
 	 * @param commandLine
 	 * 		current command lien
 	 */
-	public void processCommandLine(String commandLine) {
+	public void evaluate(String commandLine) {
 		if (currentEnv == null) {
-			commandNotConnected(commandLine);
+			dispatchCommandNotConnected(commandLine);
 		} else {
-			commandConnected(commandLine);
+			dispatchCommandConnected(commandLine);
 		}
 	}
 	
@@ -92,120 +104,132 @@ public class FF4jCliProcessor {
 	 * @param commandLine
 	 * 		current command line
 	 */
-	private void commandNotConnected(String commandLine) {
-		List<String> params = new ArrayList<String>(Arrays.asList(commandLine.split(" ")));
-		
+	private void dispatchCommandNotConnected(String commandLine) {
 		if (commandLine.startsWith("help") || commandLine.startsWith("?")) {
-			FF4jCliDisplay.displayHelpNotConnected();
-			
+			displayHelpNotConnected();
 		} else if (commandLine.equals("list") || commandLine.equals("ls")) {
-			FF4jCliDisplay.displayEnvironments(envs);
-			
+			displayEnvironments(envs);
 		} else if (commandLine.startsWith("exit") || commandLine.startsWith("quit")) {
 			exit();
-			
-		} else if (commandLine.equals("enableAudit")) {
-			
-			
 		} else if (commandLine.startsWith("connect")) {
-			
-			logInfo("Selecting [" + params.get(1) + "]");
-			if (users.isEmpty()) {
-				connectEnv(params.get(1));
-			} else {
-				// -u and -p mandatory
-				int idxIser = params.indexOf("-u");
-				int idxPassword = params.indexOf("-p");
-				if (idxIser == -1 || idxPassword == -1 || 
-						params.size() < (idxIser+1) || 
-						params.size() < (idxPassword+1)) {
-					logWarn("Connection is not setup as opened, expecting credentials");
-					logWarn("Invalid syntax expected connect <envName> -u <user> -p <password>");
-				} else {
-					// user and password
-					String user = params.get(idxIser+1);
-					String password = params.get(idxPassword+1);
-					if (!users.containsKey(user) || 
-							!users.get(user).equals(password)) {
-						logWarn("Invalid credentials, check users");
-					} else {
-						connectEnv(params.get(1));
-					}
-				}
-			}
+			processCommandConnect(commandLine);
 		} else {
 			logWarn("Invalid command, not recognized");
-			FF4jCliDisplay.displayHelpNotConnected();
+			displayHelpNotConnected();
 		}
 	}
 	
+	/**
+	 * Element for connected commands.
+	 *
+	 * @param commandLine
+	 * 			command 
+	 */
+	private void dispatchCommandConnected(String commandLine) {
+		String[] cmdParts = commandLine.split(" ");
+		String cmd = cmdParts[0].toLowerCase().trim();
+		if (cmd.equals("quit")) {
+			currentEnv  = null;
+			currentFF4J = null;
+			
+		} else if (cmd.equals("exit") ) {
+			exit();
+			
+		} else if (cmd.equals("help") || cmd.equals("?")) {
+			displayHelpConnected();
+			
+		} else if (cmd.equals("features")) {
+			displayFeatures(currentFF4J.getFeatureStore().readAll());
+			
+		} else if (cmd.equals("properties")) {
+			displayProperties(currentFF4J.getPropertiesStore().readAllProperties());
+			red("Not yet available");
+			
+		} else if (cmd.equals("list")) {
+			red("Not yet available");
+			
+		} else if (cmd.equals("enable")) {
+			red("Not yet available");
+			
+		} else if (cmd.equals("disable")) {
+			red("Not yet available");
+			
+		} else if (cmd.equals("grant")) {
+			red("Not yet available");
+			
+		}  else if (cmd.equals("revoke")) {
+			red("Not yet available");
+			
+		} else if (cmd.equals("enableGroup")) {
+			red("Not yet available");
+			
+		} else if (cmd.equals("disableGroup")) {
+			red("Not yet available");
+			
+		} else if (cmd.equals("update")) {
+			red("Not yet available");
+			
+		} else if (cmd.equals("enableAudit")) {
+			red("Not yet available");
+			
+		} else {
+			logWarn("Invalid command, not recognized");
+			FF4jCliDisplay.displayHelpConnected();
+		}
+	}
+	
+	/**
+	 * Command to connect.
+	 *
+	 * @param commandLine
+	 * 			execute command line
+	 */
+	private void processCommandConnect(String commandLine) {
+		try {
+			CommandLine cmd = CMD_PARSER.parse(connectOptions(), commandLine.split(" "));
+			if (cmd.getArgList().size() != 2) {
+				logWarn("Invalid command, expecting connect <envName> [-u user] [-p password]");
+			} else if (users.isEmpty()) {
+				connectEnv(cmd.getArgList().get(1));
+			} else if (!cmd.hasOption("u") || !cmd.hasOption("p")) {
+				logWarn("Connection is not setup as opened, expecting credentials");
+				logWarn("Invalid syntax expected connect <envName> -u <user> -p <password>");
+			} else {
+				String user     = cmd.getOptionValue('u');
+				String password = cmd.getOptionValue('p');
+				if (!users.containsKey(user) || !users.get(user).equals(password)) {
+					logWarn("Invalid credentials, check users");
+				} else {
+					connectEnv(cmd.getArgList().get(1));
+				}
+			}
+		} catch (ParseException e) {
+			error(e, "Error during connect command");
+		}
+	}
+	
+	/**
+	 * Selecting environnement.
+	 *
+	 * @param envName
+	 * 		target environment name
+	 */
 	private void connectEnv(String envName) {
-		currentEnv = envName;
+		currentEnv  = envName;
 		currentFF4J = envs.get(currentEnv);
 		if (currentFF4J == null) {
 			logWarn("Invalid environment name, please check");
-			FF4jCliDisplay.displayEnvironments(envs);
+			displayEnvironments(envs);
+			currentEnv  = null;
 		} else {
 			logInfo("Environment [" + currentEnv + "] is now selected");
 		}
 	}
 	
 	/**
-	 * 
-	 * @param commandLine
-	 * 			command 
-	 */
-	private void commandConnected(String commandLine) {
-		List<String> params = new ArrayList<String>(Arrays.asList(commandLine.split(" ")));
-		
-		String cmd = params.get(0).toLowerCase().trim();
-		if (cmd.equals("quit")) {
-			currentEnv  = null;
-			currentFF4J = null;
-		} else if (cmd.equals("exit") ) {
-			exit();
-		} else if (cmd.equals("help") || cmd.equals("?")) {
-			FF4jCliDisplay.displayHelpConnected();
-		} else if (cmd.equals("uptime")) {
-			FF4jCliDisplay.displayUptime(currentFF4J.getStartTime());
-		} else if (cmd.equals("features")) {
-			FF4jCliDisplay.displayFeatures(currentFF4J.getFeatureStore().readAll());
-		} else if (cmd.equals("properties")) {
-			AnsiTerminal.foreGroundColor(AnsiForegroundColor.RED);
-			System.out.println("Not yet available");
-		} else if (cmd.equals("list")) {
-			AnsiTerminal.foreGroundColor(AnsiForegroundColor.RED);
-			System.out.println("Not yet available");
-		} else if (cmd.equals("enable")) {
-			AnsiTerminal.foreGroundColor(AnsiForegroundColor.RED);
-			System.out.println("Not yet available");
-		} else if (cmd.equals("disable")) {
-			AnsiTerminal.foreGroundColor(AnsiForegroundColor.RED);
-			System.out.println("Not yet available");
-		} else if (cmd.equals("grant")) {
-			AnsiTerminal.foreGroundColor(AnsiForegroundColor.RED);
-			System.out.println("Not yet available");
-		}  else if (cmd.equals("revoke")) {
-			AnsiTerminal.foreGroundColor(AnsiForegroundColor.RED);
-			System.out.println("Not yet available");
-		} else if (cmd.equals("enableGroup")) {
-			AnsiTerminal.foreGroundColor(AnsiForegroundColor.RED);
-			System.out.println("Not yet available");
-		} else if (cmd.equals("disableGroup")) {
-			AnsiTerminal.foreGroundColor(AnsiForegroundColor.RED);
-			System.out.println("Not yet available");
-		} else if (cmd.equals("update")) {
-			AnsiTerminal.foreGroundColor(AnsiForegroundColor.RED);
-			System.out.println("Not yet available");
-		} else {
-			logWarn("Invalid command, not recognized");
-			FF4jCliDisplay.displayHelpConnected();
-		}
-	}
-
-	/**
 	 * Parse Spring context.
 	 */
+	@SuppressWarnings("unchecked")
 	public void parseSpringContext(String fileName) {
 		try {
 			logInfo("Loading configurations from classpath file [" + fileName + "]");
@@ -216,17 +240,27 @@ public class FF4jCliProcessor {
 			}
 			ctx.close();
 		} catch (RuntimeException fne) {
-			error(fne, "Cannot read configuration file, check conf folder.");
+			error(fne, "Cannot parse Spring context");
 		}
 	}
 	
+	/**
+	 * Exit
+	 */
 	private void exit() {
 		logInfo("Exiting FF4j... Good Bye");
-		AnsiTerminal.foreGroundColor(AnsiForegroundColor.WHITE);
-		AnsiTerminal.textAttribute(AnsiTextAttribute.CLEAR);
+		foreGroundColor(AnsiForegroundColor.WHITE);
+		textAttribute(AnsiTextAttribute.CLEAR);
 		System.exit(0);
 	}
 	
+	/**
+	 * Error.
+	 * 
+	 * @param t
+	 * 		current erorr
+	 * @param message
+	 */
 	private void error(Throwable t, String message) {
 		if (t != null) {
 			logError(t.getClass().getName() + " : " + t.getMessage());

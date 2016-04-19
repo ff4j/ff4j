@@ -1,10 +1,14 @@
-package org.ff4j.cli.command;
-
-import java.util.Map;
+/**
+ * Main package for CLI
+ *
+ * @author Cedrick Lunven (@clunven)</a>
+ * @version 1.0
+ */
+package org.ff4j.cli;
 
 /*
  * #%L
- * ff4j-cli
+ * ff4j-core
  * %%
  * Copyright (C) 2013 - 2016 FF4J
  * %%
@@ -21,12 +25,3 @@ import java.util.Map;
  * limitations under the License.
  * #L%
  */
-
-
-public class CommandLine {
-	
-	private String cmd;
-	
-	private Map < String , String > options;
-
-}

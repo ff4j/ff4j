@@ -1,7 +1,5 @@
 package org.ff4j.cli;
 
-import org.apache.commons.cli.CommandLine;
-
 /*
  * #%L
  * ff4j-cli
@@ -22,30 +20,39 @@ import org.apache.commons.cli.CommandLine;
  * #L%
  */
 
+
+import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.junit.Test;
 
-public class ParserTest {
+public class FF4jCliOptions {
+	
+	/**
+	 * Options for command Line. The connect method will select an Environnement.
+	 *
+	 * @return
+	 * 		elements
+	 */
+    public static Options connectOptions() {
+        Options options = new Options();
+        
+        options.addOption(Option.builder("u").longOpt("user")
+                .hasArg().argName("userName")
+                .required(false)
+                .desc("username to connect to env").build());
+        
+        options.addOption(Option.builder("p").longOpt("passwd")
+                .hasArg().argName("password")
+                .required(false)
+                .desc("username to connect to env").build());
+        
+        return options;
+    }
+    
 
-	@Test
-	public void testParse() throws ParseException {
-
-		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp("connect <envName> \nUse to connect to env\n", FF4jCliOptions.connectOptions());
-		CommandLineParser parser = new DefaultParser();
-		CommandLine cmd = parser.parse(FF4jCliOptions.connectOptions(),
-				new String[] { "connect", "dev", "-u", "admin", "-p", "password" });
-
-		if (cmd.hasOption("u")) {
-			System.out.println(cmd.getOptionValue("u"));
-		}
-		if (cmd.hasOption("p")) {
-			System.out.println(cmd.getOptionValue("u"));
-		}
-		System.out.println(cmd.getArgList());
-	}
-
+	
 }

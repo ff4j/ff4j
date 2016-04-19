@@ -1,6 +1,7 @@
 package org.ff4j.cli;
 
-import static org.ff4j.cli.ansi.AnsiTerminal.logError;
+import static org.ff4j.cli.FF4jCliDisplay.displayBanner;
+import static org.ff4j.cli.FF4jCliDisplay.displayPrompt;
 
 /*
  * #%L
@@ -23,20 +24,9 @@ import static org.ff4j.cli.ansi.AnsiTerminal.logError;
  */
 
 import static org.ff4j.cli.ansi.AnsiTerminal.logInfo;
-import static org.ff4j.cli.ansi.AnsiTerminal.logWarn;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.ff4j.FF4j;
-import org.ff4j.cli.ansi.AnsiForegroundColor;
-import org.ff4j.cli.ansi.AnsiTerminal;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * Command line to operate FF4J.
@@ -54,19 +44,24 @@ public class MainCli {
 	 *             error during manipulation
 	 */
 	public static void main(String[] args) throws Exception {
-		FF4jCliDisplay.displayBanner();
+		// TODO if -conf option define other location for configuration file
+		
+		/* TODO 
+		 * Bridge operations from ff4j to main 
+		 * ff4j -env dev -u admin -p admin -op enableFeature -f f1
+		 */
+		
+		displayBanner();
+		
 		FF4jCliProcessor main = new FF4jCliProcessor("ff4j-cli-config.xml");
 		logInfo("Enter '?' or 'help' to get help");
+		
+		// Connect to System.in
 		BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
 		while (true) {
-			FF4jCliDisplay.displayPrompt(main.getCurrentEnv());
-			main.processCommandLine(console.readLine());
+			displayPrompt(main.getCurrentEnv());
+			main.evaluate(console.readLine());
 		}
+		
 	}
-	
-	
-	
-	
-	
-
 }

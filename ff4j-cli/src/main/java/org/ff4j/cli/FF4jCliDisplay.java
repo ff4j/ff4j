@@ -19,7 +19,9 @@ package org.ff4j.cli;
  * limitations under the License.
  * #L%
  */
-
+import static org.ff4j.cli.ansi.AnsiTerminal.cyan;
+import static org.ff4j.cli.ansi.AnsiTerminal.green;
+import static org.ff4j.cli.ansi.AnsiTerminal.white;
 
 import java.util.Map;
 
@@ -29,6 +31,9 @@ import org.ff4j.cli.ansi.AnsiForegroundColor;
 import org.ff4j.cli.ansi.AnsiTerminal;
 import org.ff4j.cli.ansi.AnsiTextAttribute;
 import org.ff4j.core.Feature;
+import org.ff4j.core.FeatureStore;
+import org.ff4j.property.Property;
+import org.ff4j.property.store.PropertyStore;
 
 /**
  * Render all component for the FF4J commands.
@@ -37,32 +42,16 @@ import org.ff4j.core.Feature;
  */
 public class FF4jCliDisplay {
 	
-	private static void white(String text) {
-		AnsiTerminal.foreGroundColor(AnsiForegroundColor.WHITE);
-		System.out.print(text);
+	/**
+	 * Default constructor.
+	 */
+	private FF4jCliDisplay() {
+		throw new UnsupportedOperationException("Should no instanciate utility class");
 	}
-	
-	private static void yellow(String text) {
-		AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
-		System.out.print(text);
-	}
-	
-	private static void cyan(String text) {
-		AnsiTerminal.foreGroundColor(AnsiForegroundColor.CYAN);
-		System.out.print(text);
-	}
-	
-	private static void green(String text) {
-		AnsiTerminal.foreGroundColor(AnsiForegroundColor.GREEN);
-		System.out.print(text);
-	}
-	
-	private static void lineHelp(String opt, String message) {
-		System.out.println("");
-		green("  " + StringUtils.rightPad(opt, 42));
-		white(message);
-	}
-	
+		
+	/**
+	 * Start Banner.
+	 */
 	public static void displayBanner() {
 		AnsiTerminal.foreGroundColor(AnsiForegroundColor.GREEN);
         System.out.println("  __  __ _  _   _ ");
@@ -74,6 +63,45 @@ public class FF4jCliDisplay {
         System.out.println("\n");
 	}
 	
+	/**
+	 * Display prompt like "ff4j@DEV>".
+	 *
+	 * @param currentEnv
+	 * 		environment selected if exists
+	 */
+	public static void displayPrompt(String currentEnv) {
+		System.out.println();
+		AnsiTerminal.foreGroundColor(AnsiForegroundColor.GREEN);
+		System.out.print("ff4j");
+		if (null != currentEnv) {
+			AnsiTerminal.foreGroundColor(AnsiForegroundColor.WHITE);
+			System.out.print("@");
+			AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
+			System.out.print(currentEnv);
+			AnsiTerminal.foreGroundColor(AnsiForegroundColor.WHITE);
+		}
+		System.out.print(">");
+		System.out.flush();
+		AnsiTerminal.foreGroundColor(AnsiForegroundColor.WHITE);
+	}
+	
+	/**
+	 * Template for helps.
+	 *
+	 * @param opt
+	 * 		options
+	 * @param message
+	 * 		current messages
+	 */
+	private static void lineHelp(String opt, String message) {
+		System.out.println("");
+		green("  " + StringUtils.rightPad(opt, 42));
+		white(message);
+	}
+	
+	/**
+	 * Help when no environnement is selected.
+	 */
 	public static void displayHelpNotConnected() {
 		System.out.print("\nUsage (you are not connected) :");
 		lineHelp("?, help", "Display this help");
@@ -82,34 +110,38 @@ public class FF4jCliDisplay {
 		lineHelp("exit,quit", "Exit the program");
 		System.out.println("");
 	}
-	
+
+	/**
+	 * Help when an environnement is selected.
+	 */
 	public static void displayHelpConnected() {
 		System.out.print("\nUsage (you are connected):");
 		lineHelp("?, help", "Display this help");
-		lineHelp("uptime", "Display uptime");
 		lineHelp("conf", "Display ff4j configuration for this env");
 		lineHelp("list", "List all available elements");
 		lineHelp("features", "List available features");
 		lineHelp("properties", "List available properties");
-		
 		lineHelp("enable -f <featureName>", "Toggle ON feature");
 		lineHelp("disable -f <featureName>", "Toggle OFF feature");
 		lineHelp("grant -r <role> -f <featureName>", "Grant role on feature");
 		lineHelp("revoke -r <role> -f <featureName>", "Revoke role on feature");
-		
 		lineHelp("enableGroup -g <groupName>", "Toggle ON group");
 		lineHelp("disableGroup -g <groupName>", "Toggle ON group");
-		
 		lineHelp("update -p <property> -v <value>", "Toggle ON feature");
-		
 		lineHelp("quit", "Disconnect from current env");
 		lineHelp("exit", "Exit the program");
 		System.out.println("");
 	}
 	
+	/**
+	 * Display a table of available environments.
+	 *
+	 * @param envs
+	 * 		environnements in config file
+	 */
 	public static void displayEnvironments(Map < String, FF4j> envs) {
 		AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
-		System.out.println("+--------------------+---------------------------------------------------------+");
+		System.out.println("+--------------------+----------+------------+-------+----------+");
 		System.out.print("|");
 		AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
 		AnsiTerminal.foreGroundColor(AnsiForegroundColor.CYAN);
@@ -132,32 +164,86 @@ public class FF4jCliDisplay {
 		AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
 		AnsiTerminal.foreGroundColor(AnsiForegroundColor.CYAN);
 		System.out.print(" Audit ");
+		AnsiTerminal.textAttribute(AnsiTextAttribute.CLEAR);
+		AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
+		System.out.print("|");
+		AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
+		AnsiTerminal.foreGroundColor(AnsiForegroundColor.CYAN);
+		System.out.print(" Security ");
+		AnsiTerminal.textAttribute(AnsiTextAttribute.CLEAR);
+		AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
+		System.out.println("|");
+		System.out.println("+--------------------+----------+------------+-------+----------+");
 		
 		for(Map.Entry<String, FF4j> entries : envs.entrySet()) {
-			System.out.println("");
-			green("  " + StringUtils.rightPad(entries.getKey(), 15));
-			white("features: ");
-			cyan(entries.getValue().getFeatures().keySet().toString());
+			FeatureStore  fs = entries.getValue().getFeatureStore();
+			PropertyStore ps = entries.getValue().getPropertiesStore();
+			
+			AnsiTerminal.textAttribute(AnsiTextAttribute.CLEAR);
+			AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
+			System.out.print("|  ");
+			AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
+			AnsiTerminal.foreGroundColor(AnsiForegroundColor.GREEN);
+			System.out.print(StringUtils.rightPad(entries.getKey(), 18));
+			AnsiTerminal.textAttribute(AnsiTextAttribute.CLEAR);
+			AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
+			System.out.print("|  ");
+			AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
+			AnsiTerminal.foreGroundColor(AnsiForegroundColor.WHITE);
+			String featureStore = "---";
+			if (fs != null) {
+				featureStore = String.valueOf(fs.readAll().size());
+			}
+			System.out.print(StringUtils.rightPad(featureStore, 8));
+			AnsiTerminal.textAttribute(AnsiTextAttribute.CLEAR);
+			AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
+			System.out.print("|  ");
+			AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
+			AnsiTerminal.foreGroundColor(AnsiForegroundColor.WHITE);
+			String propertyStore = "---";
+			if (fs != null) {
+				propertyStore = String.valueOf(ps.listPropertyNames().size());
+			}
+			System.out.print(StringUtils.rightPad(propertyStore, 10));
+			AnsiTerminal.textAttribute(AnsiTextAttribute.CLEAR);
+			AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
+			System.out.print("|");
+			if (entries.getValue().isEnableAudit()) {
+				AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
+				AnsiTerminal.foreGroundColor(AnsiForegroundColor.GREEN);
+				System.out.print("  ON   ");
+			} else {
+				AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
+				AnsiTerminal.foreGroundColor(AnsiForegroundColor.RED);
+				System.out.print("  OFF  ");
+			}
+			AnsiTerminal.textAttribute(AnsiTextAttribute.CLEAR);
+			AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
+			System.out.print("|");
+			if (entries.getValue().getAuthorizationsManager() != null) {
+				AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
+				AnsiTerminal.foreGroundColor(AnsiForegroundColor.GREEN);
+				System.out.print("  ON      ");
+			} else {
+				AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
+				AnsiTerminal.foreGroundColor(AnsiForegroundColor.RED);
+				System.out.print("  OFF     ");
+			}
+			AnsiTerminal.textAttribute(AnsiTextAttribute.CLEAR);
+			AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
+			System.out.println("|");
 		}
+		System.out.println("+--------------------+----------+------------+-------+----------+");
 		System.out.println("");
 	}
 	
-	public static void displayPrompt(String currentEnv) {
-		System.out.println();
-		AnsiTerminal.foreGroundColor(AnsiForegroundColor.GREEN);
-		System.out.print("ff4j");
-		if (null != currentEnv) {
-			AnsiTerminal.foreGroundColor(AnsiForegroundColor.WHITE);
-			System.out.print("@");
-			AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
-			System.out.print(currentEnv);
-			AnsiTerminal.foreGroundColor(AnsiForegroundColor.WHITE);
-		}
-		System.out.print(">");
-		System.out.flush();
-		AnsiTerminal.foreGroundColor(AnsiForegroundColor.WHITE);
-	}
 	
+	/**
+	 * Configuration for a sample environnement.
+	 *
+	 * @param ff4j
+	 * 		ff4j dedicated to the environnement.
+	 */
 	public static void displayConf(FF4j ff4j) {
 		System.out.println("Version :" + ff4j.getVersion());
 		System.out.println("AutoCreate Enable :" + ff4j.isAutocreate());
@@ -168,25 +254,39 @@ public class FF4jCliDisplay {
 	/**
 	 * Command line uptime
 	 */
-	public static void displayUptime(long startTime) {
-		long uptime = System.currentTimeMillis() - startTime;
-        long daynumber = uptime / (1000 * 3600 * 24L);
-        uptime = uptime - daynumber * 1000 * 3600 * 24L;
-        long hourNumber = uptime / (1000 * 3600L);
-        uptime = uptime - hourNumber * 1000 * 3600L;
-        long minutenumber = uptime / (1000 * 60L);
-        uptime = uptime - minutenumber * 1000 * 60L;
-        long secondnumber = uptime / 1000L;
-        
-        StringBuilder sb = new StringBuilder();
-        sb.append(daynumber + " day(s) ");
-        sb.append(hourNumber + " hours(s) ");
-        sb.append(minutenumber + " minute(s) ");
-        sb.append(secondnumber + " second(s) ");
-        AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
-        System.out.print("Uptime : ");
-        AnsiTerminal.foreGroundColor(AnsiForegroundColor.WHITE);
-        System.out.println(sb.toString());
+	public static void displayProperties(Map < String, Property<?> > properties) {
+		if (properties == null || properties.isEmpty()) {
+			System.out.println(" There are no properties in the store");
+		}
+		AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
+		System.out.println("+--------------------+--------+---------------+--------------------------------+");
+		System.out.print("|");
+		AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
+		AnsiTerminal.foreGroundColor(AnsiForegroundColor.CYAN);
+		System.out.print(" Property names      ");
+		AnsiTerminal.textAttribute(AnsiTextAttribute.CLEAR);
+		AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
+		System.out.print("|");
+		AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
+		AnsiTerminal.foreGroundColor(AnsiForegroundColor.CYAN);
+		System.out.print(" Value  ");
+		AnsiTerminal.textAttribute(AnsiTextAttribute.CLEAR);
+		AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
+		System.out.print("|");
+		AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
+		AnsiTerminal.foreGroundColor(AnsiForegroundColor.CYAN);
+		System.out.print(" Type  ");
+		AnsiTerminal.textAttribute(AnsiTextAttribute.CLEAR);
+		AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
+		System.out.print("|");
+		AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
+		AnsiTerminal.foreGroundColor(AnsiForegroundColor.CYAN);
+		System.out.print(" FixedValues  ");
+		AnsiTerminal.textAttribute(AnsiTextAttribute.CLEAR);
+		AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
+		System.out.println("|");
+		System.out.println("+--------------------+--------+---------------+--------------------------------+");
+		
 	}
 	
 	/**
