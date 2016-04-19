@@ -1,0 +1,40 @@
+package org.ff4j.cli.ansi;
+
+/*
+ * #%L
+ * ff4j-cli
+ * %%
+ * Copyright (C) 2013 - 2016 FF4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
+
+/**
+ * Ansi Escape chars.
+ *
+ * @author Cedrick Lunven (@clunven)</a>
+ */
+public interface AnsiConstants {
+    
+    /** Every Ansi escape code begins with this PREFIX. */
+    String PREFIX = "\033[";
+    
+    /** Every attribute is separated by this SEPARATOR. */
+    String SEPARATOR = ";";
+    
+    /** Every Ansi escape code end with this POSTFIX. */
+    String POSTFIX = "m";
+
+}

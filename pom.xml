@@ -149,6 +149,7 @@
         <module>ff4j-core</module>
         <module>ff4j-aop</module>
         <module>ff4j-test</module>
+        <module>ff4j-cli</module>
         <module>ff4j-jmx</module>
 
         <module>ff4j-web</module>
