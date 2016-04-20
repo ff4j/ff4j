@@ -33,48 +33,13 @@ import org.junit.Test;
  *
  * @author Cedrick LUNVEN (@clunven)
  */
-public class FF4JCliTester {
-	
-	/** Expect to initialize with the processor. */
-	private FF4jCliProcessor processor;
-	
-	/** Trap output. */
-	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-	
-	/** Trap error. */
-	private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
-	
-	/**
-	 * Utility for testing output.
-	 *
-	 * @param expression
-	 */
-	private void assertOutputContains(String... expression) {
-		String output = outContent.toString();
-		if (expression != null) {
-			for (String string : expression) {
-				assertTrue("Output must contain :" + string, output.contains(string));
-			}
-		}
-	}
+public class TestNotConnectedHelp extends AbstractCommandLineTest {
 	
 	@Before
 	public void init() {
 		processor = new FF4jCliProcessor("ff4j-cli-config.xml");
 		System.setOut(new PrintStream(outContent));
 		System.setErr(new PrintStream(errContent));
-	}
-	
-	@Test
-	public void testNotConnectedList() {
-		processor.evaluate("list");
-		assertOutputContains("dev", "int");
-	}
-	
-	@Test
-	public void testNotConnectedLs() {
-		processor.evaluate("ls");
-		assertOutputContains("dev", "int");
 	}
 	
 	@Test

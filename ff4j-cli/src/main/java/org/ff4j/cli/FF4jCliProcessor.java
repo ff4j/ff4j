@@ -1,8 +1,13 @@
 package org.ff4j.cli;
 
+import static org.ff4j.cli.FF4jCliDisplay.displayConf;
 import static org.ff4j.cli.FF4jCliDisplay.displayEnvironments;
+import static org.ff4j.cli.FF4jCliDisplay.displayFeatures;
+import static org.ff4j.cli.FF4jCliDisplay.displayHelpConnected;
 import static org.ff4j.cli.FF4jCliDisplay.displayHelpNotConnected;
+import static org.ff4j.cli.FF4jCliDisplay.displayProperties;
 import static org.ff4j.cli.FF4jCliOptions.connectOptions;
+import static org.ff4j.cli.ansi.AnsiTerminal.foreGroundColor;
 
 /*
  * #%L
@@ -27,24 +32,18 @@ import static org.ff4j.cli.FF4jCliOptions.connectOptions;
 import static org.ff4j.cli.ansi.AnsiTerminal.logError;
 import static org.ff4j.cli.ansi.AnsiTerminal.logInfo;
 import static org.ff4j.cli.ansi.AnsiTerminal.logWarn;
-import static org.ff4j.cli.ansi.AnsiTerminal.foreGroundColor;
-import static org.ff4j.cli.ansi.AnsiTerminal.*;
-import static org.ff4j.cli.FF4jCliDisplay.*;
+import static org.ff4j.cli.ansi.AnsiTerminal.red;
+import static org.ff4j.cli.ansi.AnsiTerminal.textAttribute;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.lang.StringUtils;
 import org.ff4j.FF4j;
 import org.ff4j.cli.ansi.AnsiForegroundColor;
-import org.ff4j.cli.ansi.AnsiTerminal;
 import org.ff4j.cli.ansi.AnsiTextAttribute;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -143,12 +142,16 @@ public class FF4jCliProcessor {
 			
 		} else if (cmd.equals("properties")) {
 			displayProperties(currentFF4J.getPropertiesStore().readAllProperties());
-			red("Not yet available");
 			
-		} else if (cmd.equals("list")) {
-			red("Not yet available");
+		} else if (cmd.equals("features")) {
+			displayConf(currentFF4J);
+			
+		}else if (cmd.equals("list") || cmd.equals("ls")) {
+			displayFeatures(currentFF4J.getFeatureStore().readAll());
+			displayProperties(currentFF4J.getPropertiesStore().readAllProperties());
 			
 		} else if (cmd.equals("enable")) {
+			
 			red("Not yet available");
 			
 		} else if (cmd.equals("disable")) {

@@ -20,14 +20,8 @@ package org.ff4j.cli;
  * #L%
  */
 
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 
 public class FF4jCliOptions {
 	
@@ -39,18 +33,24 @@ public class FF4jCliOptions {
 	 */
     public static Options connectOptions() {
         Options options = new Options();
-        
         options.addOption(Option.builder("u").longOpt("user")
                 .hasArg().argName("userName")
                 .required(false)
                 .desc("username to connect to env").build());
-        
         options.addOption(Option.builder("p").longOpt("passwd")
                 .hasArg().argName("password")
                 .required(false)
                 .desc("username to connect to env").build());
-        
         return options;
+    }
+    
+    public static Options enableFeatureOptions() {
+    	 Options options = new Options();
+         options.addOption(Option.builder("u").longOpt("user")
+                 .hasArg().argName("userName")
+                 .required(false)
+                 .desc("username to connect to env").build());
+         return options;
     }
     
 

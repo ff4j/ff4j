@@ -39,26 +39,6 @@ public class AnsiTerminal implements AnsiConstants {
 	private static final SimpleDateFormat SDF = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
 
     /**
-     * Change text color
-     *
-     * @param color
-     *      blue color
-     */
-    public static void foreGroundColor(AnsiForegroundColor color) {
-        setup(color, null, null);
-    }
-    
-    /**
-     * Change text color
-     *
-     * @param color
-     *      blue color
-     */
-    public static void textAttribute(AnsiTextAttribute txt) {
-        setup(null, null, txt);
-    }
-
-    /**
      * Change everything.
      *
      * @param color
@@ -81,58 +61,27 @@ public class AnsiTerminal implements AnsiConstants {
         }
         sb.append(POSTFIX);
 
-        // Apply to Terminal
         print(sb.toString());
     }
     
-    public static void print(String text, AnsiForegroundColor color) {
-        foreGroundColor(color);
-        print(text);
+    /**
+     * Change text color
+     *
+     * @param color
+     *      blue color
+     */
+    public static void foreGroundColor(AnsiForegroundColor color) {
+        setup(color, null, null);
     }
     
     /**
-     * Log warning.
+     * Change text color
      *
-     * @param text
-     *      text to be displayed
+     * @param color
+     *      blue color
      */
-    public static void logWarn(String text) {
-    	foreGroundColor(AnsiForegroundColor.WHITE);
-    	System.out.print(SDF.format(new Date()));
-        foreGroundColor(AnsiForegroundColor.YELLOW);
-        System.out.print(" [WARN ] ");
-        foreGroundColor(AnsiForegroundColor.WHITE);
-        System.out.println(text);
-    }
-    
-    /**
-     * Log info.
-     *
-     * @param text
-     *       text to be displayed
-     */
-    public static void logInfo(String text) {
-    	foreGroundColor(AnsiForegroundColor.WHITE);
-    	System.out.print(SDF.format(new Date()));
-        foreGroundColor(AnsiForegroundColor.CYAN);
-        System.out.print(" [INFO ] ");
-        foreGroundColor(AnsiForegroundColor.WHITE);
-        System.out.println(text);
-    }
-    
-    /**
-     * Log error.
-     *
-     * @param text
-     *       text to be displayed
-     */
-    public static void logError(String text) {
-    	foreGroundColor(AnsiForegroundColor.WHITE);
-    	System.out.print(SDF.format(new Date()));
-        foreGroundColor(AnsiForegroundColor.RED);
-        System.out.print(" [ERROR] ");
-        foreGroundColor(AnsiForegroundColor.WHITE);
-        System.out.println(text);
+    public static void textAttribute(AnsiTextAttribute txt) {
+        setup(null, null, txt);
     }
     
     /**
@@ -159,8 +108,18 @@ public class AnsiTerminal implements AnsiConstants {
                     System.out.flush();
                 break;
             }
-        }   
-        
+        }
+    }
+    
+    /**
+     * Output.
+     *
+     * @param text
+     * @param color
+     */
+    public static void print(String text, AnsiForegroundColor color) {
+        foreGroundColor(color);
+        print(text);
     }
     
     /**
@@ -178,40 +137,71 @@ public class AnsiTerminal implements AnsiConstants {
 	 * Change text color to white.
 	 */
 	public static void white(String text) {
-		AnsiTerminal.foreGroundColor(AnsiForegroundColor.WHITE);
-		System.out.print(text);
+		print(text, AnsiForegroundColor.WHITE);
 	}
 	
 	/**
 	 * Change text color to yellow.
 	 */
 	public static void yellow(String text) {
-		AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
-		System.out.print(text);
+		print(text, AnsiForegroundColor.YELLOW);
 	}
 	
 	/**
-	 * Change text color to yellow.
+	 * Change text color to red.
 	 */
 	public static void red(String text) {
-		AnsiTerminal.foreGroundColor(AnsiForegroundColor.RED);
-		System.out.print(text);
+		print(text, AnsiForegroundColor.RED);
 	}
 	
 	/**
 	 * Change text color to cyan.
 	 */
 	public static void cyan(String text) {
-		AnsiTerminal.foreGroundColor(AnsiForegroundColor.CYAN);
-		System.out.print(text);
+		print(text, AnsiForegroundColor.CYAN);
 	}
 	
 	/**
 	 * Change text color to green.
 	 */
 	public static void green(String text) {
-		AnsiTerminal.foreGroundColor(AnsiForegroundColor.GREEN);
-		System.out.print(text);
+		print(text, AnsiForegroundColor.GREEN);
 	}
+	
+	/**
+     * Log warning.
+     *
+     * @param text
+     *      text to be displayed
+     */
+    public static void logWarn(String text) {
+    	white(SDF.format(new Date()));
+    	yellow(" [WARN ] ");
+    	white(text);
+    }
+    
+    /**
+     * Log info.
+     *
+     * @param text
+     *       text to be displayed
+     */
+    public static void logInfo(String text) {
+    	white(SDF.format(new Date()));
+    	cyan(" [INFO ] ");
+    	white(text);
+    }
+    
+    /**
+     * Log error.
+     *
+     * @param text
+     *       text to be displayed
+     */
+    public static void logError(String text) {
+    	white(SDF.format(new Date()));
+    	red(" [ERROR] ");
+    	white(text);
+    }
     
 }

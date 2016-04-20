@@ -33,7 +33,7 @@ import org.junit.Test;
  *
  * @author Cedrick LUNVEN (@clunven)
  */
-public class FF4JCliTester {
+public class TestNotConnectedList {
 	
 	/** Expect to initialize with the processor. */
 	private FF4jCliProcessor processor;
@@ -53,6 +53,7 @@ public class FF4JCliTester {
 		String output = outContent.toString();
 		if (expression != null) {
 			for (String string : expression) {
+				
 				assertTrue("Output must contain :" + string, output.contains(string));
 			}
 		}
@@ -69,18 +70,6 @@ public class FF4JCliTester {
 	public void testNotConnectedList() {
 		processor.evaluate("list");
 		assertOutputContains("dev", "int");
-	}
-	
-	@Test
-	public void testNotConnectedLs() {
-		processor.evaluate("ls");
-		assertOutputContains("dev", "int");
-	}
-	
-	@Test
-	public void testNotConnectedHelp() {
-		processor.evaluate("help");
-		assertOutputContains("you are not connected");
 	}
 	
 	@After

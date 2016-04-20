@@ -20,7 +20,6 @@ package org.ff4j.cli;
  * #L%
  */
 import static org.ff4j.cli.ansi.AnsiTerminal.cyan;
-import static org.ff4j.cli.ansi.AnsiTerminal.green;
 import static org.ff4j.cli.ansi.AnsiTerminal.white;
 
 import java.util.Map;
@@ -95,7 +94,7 @@ public class FF4jCliDisplay {
 	 */
 	private static void lineHelp(String opt, String message) {
 		System.out.println("");
-		green("  " + StringUtils.rightPad(opt, 42));
+		cyan("  " + StringUtils.rightPad(opt, 43));
 		white(message);
 	}
 	
@@ -106,7 +105,7 @@ public class FF4jCliDisplay {
 		System.out.print("\nUsage (you are not connected) :");
 		lineHelp("?, help", "Display this help");
 		lineHelp("ls,list", "List available environments");
-		lineHelp("connect <envName> (-u <user> -p <passwd>)", "Connect to target environments");
+		lineHelp("connect <envName> [-u <user>] [-p <passwd>]", "Connect to target environments");
 		lineHelp("exit,quit", "Exit the program");
 		System.out.println("");
 	}
