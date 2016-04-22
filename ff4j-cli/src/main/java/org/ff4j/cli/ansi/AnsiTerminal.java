@@ -178,6 +178,7 @@ public class AnsiTerminal implements AnsiConstants {
     	white(SDF.format(new Date()));
     	yellow(" [WARN ] ");
     	white(text);
+    	System.out.println("");
     }
     
     /**
@@ -190,6 +191,7 @@ public class AnsiTerminal implements AnsiConstants {
     	white(SDF.format(new Date()));
     	cyan(" [INFO ] ");
     	white(text);
+    	System.out.println("");
     }
     
     /**
@@ -202,6 +204,7 @@ public class AnsiTerminal implements AnsiConstants {
     	white(SDF.format(new Date()));
     	red(" [ERROR] ");
     	white(text);
+    	System.out.println("");
     }
     
 }

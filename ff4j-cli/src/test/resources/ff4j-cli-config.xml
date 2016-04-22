@@ -34,24 +34,18 @@
 	
 	<!-- EXPECT to have  this ID (if empty no security) -->
 	<util:map id="AUTHORIZED_USERS">
-     <!-- 
      <entry key="admin" value="admin"/>
      <entry key="clu"   value="clu"/>
-     -->
 	</util:map>
 	
 	<!-- DEV -->
-	<bean id="dev" class="org.ff4j.FF4j" p:store-ref="DEV.STORE" >
-		<property name="enableAudit" value="true"	/>
-	</bean>
-	
-	<bean id="DEV.STORE" class="org.ff4j.store.InMemoryFeatureStore" >
+	<bean id="dev" class="org.ff4j.FF4j">
 		<constructor-arg index="0" value="ff4j-cli-features.xml" />
+		<property name="enableAudit" value="true"	  />
 	</bean>
 	
 	<!-- INT -->
 	<bean id="int" class="org.ff4j.FF4j" p:store-ref="INT.STORE" />
-	
 	<bean id="INT.STORE" class="org.ff4j.store.InMemoryFeatureStore" >
 		<constructor-arg index="0" value="ff4j-cli-features.xml" />
 	</bean>

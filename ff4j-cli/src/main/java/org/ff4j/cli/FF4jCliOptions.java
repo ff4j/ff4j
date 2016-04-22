@@ -23,6 +23,11 @@ package org.ff4j.cli;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
+/**
+ * Command line options.
+ *
+ * @author Cedrick LUNVEN (@clunven)
+ */
 public class FF4jCliOptions {
 	
 	/**
@@ -44,15 +49,94 @@ public class FF4jCliOptions {
         return options;
     }
     
+    /**
+     * Enable a feature.
+     *
+     * @return
+     * 		target option
+     */
     public static Options enableFeatureOptions() {
     	 Options options = new Options();
-         options.addOption(Option.builder("u").longOpt("user")
-                 .hasArg().argName("userName")
-                 .required(false)
-                 .desc("username to connect to env").build());
+         options.addOption(Option.builder("f").longOpt("feature")
+                 .hasArg().argName("featurename")
+                 .required(true)
+                 .desc("target feature to update").build());
          return options;
     }
     
+    /**
+     * Enable a feature.
+     *
+     * @return
+     * 		target option
+     */
+    public static Options enableGroupOptions() {
+    	 Options options = new Options();
+         options.addOption(Option.builder("g").longOpt("group")
+                 .hasArg().argName("groupName")
+                 .required(true)
+                 .desc("target group to update").build());
+         return options;
+    }
+    
+    /**
+     * Enable a feature.
+     *
+     * @return
+     * 		target option
+     */
+    public static Options grantOptions() {
+    	 Options options = new Options();
+    	 
+    	 options.addOption(Option.builder("f").longOpt("feature")
+                 .hasArg().argName("featurename")
+                 .required(true)
+                 .desc("target feature to update").build());
+    	 
+    	 options.addOption(Option.builder("r").longOpt("role")
+                 .hasArg().argName("roleName")
+                 .required(true)
+                 .desc("target role to grant/revoke").build());
+         return options;
+    }
+    
+    /**
+     * Enable a feature.
+     *
+     * @return
+     * 		target option
+     */
+    public static Options addGroupOptions() {
+    	 Options options = new Options();
+    	 options.addOption(Option.builder("f").longOpt("feature")
+                 .hasArg().argName("featurename")
+                 .required(true)
+                 .desc("target feature to update").build());
+         options.addOption(Option.builder("g").longOpt("group")
+                 .hasArg().argName("groupName")
+                 .required(true)
+                 .desc("target group to update").build());
+    	 return options;
+    }
+    
+    /**
+     * Enable a feature.
+     *
+     * @return
+     * 		target option
+     */
+    public static Options propertyOptions() {
+    	 Options options = new Options();
+    	 options.addOption(Option.builder("p").longOpt("property")
+                 .hasArg().argName("property")
+                 .required(true)
+                 .desc("target property to update").build());
+         options.addOption(Option.builder("v").longOpt("value")
+                 .hasArg().argName("value")
+                 .required(true)
+                 .desc("new value for property").build());
+    	 return options;
+    }
 
 	
 }
