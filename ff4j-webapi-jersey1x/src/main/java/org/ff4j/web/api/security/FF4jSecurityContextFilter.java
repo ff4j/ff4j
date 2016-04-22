@@ -51,7 +51,7 @@ public class FF4jSecurityContextFilter implements ContainerRequestFilter, Resour
     private final Logger log = LoggerFactory.getLogger(getClass());
     
     /** security configuration. */
-    public static ApiConfig securityConfig = null;
+    private static ApiConfig securityConfig = null;
 
     /**
      * Apply the filter : check input request, validate or not with user auth
@@ -146,5 +146,13 @@ public class FF4jSecurityContextFilter implements ContainerRequestFilter, Resour
     public ContainerResponseFilter getResponseFilter() {
         // No response filter
         return null;
+    }
+
+    public static ApiConfig getSecurityConfig() {
+        return securityConfig;
+    }
+
+    public static void setSecurityConfig(ApiConfig securityConfig) {
+        FF4jSecurityContextFilter.securityConfig = securityConfig;
     }
 }

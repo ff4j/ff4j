@@ -32,7 +32,7 @@ import java.net.UnknownHostException;
 public class IOUtil {
 
     /** Would like to use the Inet Component. */
-    public static boolean useInetAddress = true;
+    private static boolean useInetAddress = true;
     
     /**
      * Static
@@ -55,5 +55,13 @@ public class IOUtil {
         } catch (UnknownHostException e) {
             throw new IllegalArgumentException("Cannot find the target host by itself", e);
         }
+    }
+
+    public static boolean isUseInetAddress() {
+        return useInetAddress;
+    }
+
+    public static void setUseInetAddress(boolean useInetAddress) {
+        IOUtil.useInetAddress = useInetAddress;
     }
 }

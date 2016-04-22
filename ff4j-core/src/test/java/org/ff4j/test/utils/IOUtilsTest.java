@@ -34,15 +34,15 @@ public class IOUtilsTest {
     
     @Test
     public void testResolveOK() throws Exception {
-        IOUtil.useInetAddress = true;
+        IOUtil.setUseInetAddress(true);
         IOUtil.resolveHostName();
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void testResolveKO() throws Exception {
-        IOUtil.useInetAddress = false;
+        IOUtil.setUseInetAddress(false);
         IOUtil.resolveHostName();
-        IOUtil.useInetAddress = true;
+        IOUtil.setUseInetAddress(true);
         Assert.fail();
     }
 

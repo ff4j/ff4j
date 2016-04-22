@@ -88,7 +88,7 @@ public class SecurityAuthenticationFilterTest {
         when(mockUriInfo.getPath()).thenReturn("someURL");
         when(mockRequest.getUriInfo()).thenReturn(mockUriInfo);
         // Define ApiConfig
-        FF4jAuthenticationFilter.apiConfig = new ApiConfig();
+        FF4jAuthenticationFilter.setApiConfig(new ApiConfig());
         
         // When
         faf.filter(mockRequest);
@@ -112,7 +112,7 @@ public class SecurityAuthenticationFilterTest {
     @Test
     public void testAuthorizedApiKey() throws IOException {
         // Define ApiConfig
-        FF4jAuthenticationFilter.apiConfig = new ApiConfig().createApiKey("12", true, true, Util.set("USER"));
+        FF4jAuthenticationFilter.setApiConfig(new ApiConfig().createApiKey("12", true, true, Util.set("USER")));
         
         // Given
         FF4jAuthenticationFilter faf = new FF4jAuthenticationFilter();
