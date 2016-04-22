@@ -22,6 +22,7 @@ import java.io.IOException;
  * #L%
  */
 
+import java.util.Arrays;
 import java.util.Set;
 
 import javax.ws.rs.WebApplicationException;
@@ -108,7 +109,7 @@ public class FF4jAuthenticationFilter implements ContainerRequestFilter {
             
             // Positionning Roles
             Set<String> perms = apiConfig.getPermissions().get(lap[0]);
-            System.out.println(perms);
+            log.info(Arrays.toString(perms.toArray()));
             SecurityContext sc = new FF4jSecurityContext(lap[0], FF4jSecurityContext.AUTH_SCHEME_BASIC, perms);
             containerRequest.setSecurityContext(sc);
             log.info("Client successfully logged with a user/pasword pair ");
