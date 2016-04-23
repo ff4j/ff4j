@@ -54,7 +54,7 @@ public class FF4jAuthorizationFilter implements ContainerRequestFilter {
     private final Logger log = LoggerFactory.getLogger(getClass());
     
     /** security configuration. */
-    public static ApiConfig apiConfig = null;
+    private static ApiConfig apiConfig = null;
     
     @Context
     public ResourceInfo info;
@@ -163,7 +163,5 @@ public class FF4jAuthorizationFilter implements ContainerRequestFilter {
     public void setInfo(ResourceInfo info) {
         this.info = info;
     }
-    
-    
-    
+
 }

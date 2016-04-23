@@ -38,7 +38,7 @@ import redis.clients.jedis.Jedis;
 public class EventRepositoryRedis extends AbstractEventRepository {
 
 	/** prefix of keys. */
-    public static String KEY_EVENT = "FF4J_EVENT_";
+    public static final String KEY_EVENT = "FF4J_EVENT_";
     
     /** Default ttl. */
     private static int DEFAULT_TTL = 900000000;

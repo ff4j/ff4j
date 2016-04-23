@@ -131,13 +131,13 @@ public abstract class FF4jApiApplicationJersey2x extends ResourceConfig {
     }
     
     private void enableAuthenticationFilter() {
-        FF4jAuthenticationFilter.apiConfig = apiConfig;
+        FF4jAuthenticationFilter.setApiConfig(apiConfig);
         register(FF4jAuthenticationFilter.class);
         log.info("WebService Authentication is now enabled");
     }
     
     private void enableAuthorizationFilter() {
-        FF4jAuthorizationFilter.apiConfig = apiConfig;
+        FF4jAuthorizationFilter.setApiConfig(apiConfig);
         register(FF4jAuthorizationFilter.class);
         log.info("WebService Authorization is now enabled");
     }

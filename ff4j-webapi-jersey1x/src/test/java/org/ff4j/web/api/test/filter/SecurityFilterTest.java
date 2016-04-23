@@ -77,7 +77,7 @@ public class SecurityFilterTest {
         when(mockRequest.getMethod()).thenReturn("GET");
         when(mockRequest.getPath(true)).thenReturn("someURLl");
         when(mockRequest.getHeaderValue("Authorization")).thenReturn("apiKey=12");
-        FF4jSecurityContextFilter.securityConfig = new ApiConfig();
+        FF4jSecurityContextFilter.setSecurityConfig(new ApiConfig());
         Assert.assertNotNull(faf);
         faf.filter(mockRequest);
     }
@@ -96,7 +96,7 @@ public class SecurityFilterTest {
     @Test
     public void testAuthorizedApiKey() throws IOException {
         // Define ApiConfig
-        FF4jSecurityContextFilter.securityConfig = new ApiConfig().createApiKey("12", true, true, Util.set("USER"));
+        FF4jSecurityContextFilter.setSecurityConfig(new ApiConfig().createApiKey("12", true, true, Util.set("USER")));
         
         // Given
         FF4jSecurityContextFilter faf = new FF4jSecurityContextFilter();
