@@ -70,9 +70,9 @@ public abstract class FF4JApiApplication extends PackagesResourceConfig {
         
         // Initialize through configuration
         ApiConfig conf = getApiConfig();
-        FF4jSecurityContextFilter.securityConfig = conf;
-        FF4jRolesResourceFilterFactory.apiConfig = conf;
-        
+        FF4jSecurityContextFilter.setSecurityConfig(conf);
+        FF4jRolesResourceFilterFactory.setApiConfig(conf);
+
         // Register ff4J bean to be injected into resources.
         getSingletons().add(new FF4jInjectableProvider(conf.getFF4j()));
         

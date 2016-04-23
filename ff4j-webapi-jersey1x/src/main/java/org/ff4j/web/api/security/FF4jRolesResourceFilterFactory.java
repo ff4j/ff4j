@@ -37,7 +37,7 @@ import com.sun.jersey.spi.container.ResourceFilter;
 public class FF4jRolesResourceFilterFactory extends RolesAllowedResourceFilterFactory {
 
     /** Api Config to initialize filters. */
-    public static ApiConfig apiConfig = null;
+    private static ApiConfig apiConfig = null;
 
     /** {@inheritDoc} */
     @Override
@@ -57,5 +57,13 @@ public class FF4jRolesResourceFilterFactory extends RolesAllowedResourceFilterFa
         filters.add(0, new FF4jSecurityContextFilter());
 
         return filters;
+    }
+
+    public static ApiConfig getApiConfig() {
+        return apiConfig;
+    }
+
+    public static void setApiConfig(ApiConfig apiConfig) {
+        FF4jRolesResourceFilterFactory.apiConfig = apiConfig;
     }
 }

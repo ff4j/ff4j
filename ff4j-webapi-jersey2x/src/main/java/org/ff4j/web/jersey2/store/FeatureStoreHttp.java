@@ -51,6 +51,8 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.internal.util.Base64;
 
 import io.swagger.jaxrs.json.JacksonJsonProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.ff4j.web.FF4jWebConstants.*;
 
@@ -60,6 +62,9 @@ import static org.ff4j.web.FF4jWebConstants.*;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public class FeatureStoreHttp extends AbstractFeatureStore {
+
+    /** logger for this class. */
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     /** Jersey Client. */
     protected Client client = null;
@@ -159,7 +164,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
     public Feature read(String uid) {
         Util.assertHasLength(uid);
         Response cRes = getStore().path(uid).request(MediaType.APPLICATION_JSON_TYPE).get();
-        System.out.println(getStore().path(uid));
+        log.info(String.valueOf(getStore().path(uid)));
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new FeatureNotFoundException(uid);
         }

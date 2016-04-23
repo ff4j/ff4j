@@ -22,6 +22,7 @@ import java.io.IOException;
  * #L%
  */
 
+import java.util.Arrays;
 import java.util.Set;
 
 import javax.ws.rs.WebApplicationException;
@@ -50,7 +51,7 @@ public class FF4jAuthenticationFilter implements ContainerRequestFilter {
     private final Logger log = LoggerFactory.getLogger(getClass());
     
     /** security configuration. */
-    public static ApiConfig apiConfig = null;
+    private static ApiConfig apiConfig = null;
     
     /**
      * Apply the filter ozz: check input request, validate or not with user auth
@@ -108,7 +109,7 @@ public class FF4jAuthenticationFilter implements ContainerRequestFilter {
             
             // Positionning Roles
             Set<String> perms = apiConfig.getPermissions().get(lap[0]);
-            System.out.println(perms);
+            log.info(Arrays.toString(perms.toArray()));
             SecurityContext sc = new FF4jSecurityContext(lap[0], FF4jSecurityContext.AUTH_SCHEME_BASIC, perms);
             containerRequest.setSecurityContext(sc);
             log.info("Client successfully logged with a user/pasword pair ");
@@ -132,5 +133,13 @@ public class FF4jAuthenticationFilter implements ContainerRequestFilter {
         log.error("Authentication error :" + message);
         throw new WebApplicationException(Response.status(Status.UNAUTHORIZED).entity(msg.toString())
                 .type(MediaType.TEXT_HTML_TYPE).build());
+    }
+
+    public static ApiConfig getApiConfig() {
+        return apiConfig;
+    }
+
+    public static void setApiConfig(ApiConfig apiConfig) {
+        FF4jAuthenticationFilter.apiConfig = apiConfig;
     }
 }
