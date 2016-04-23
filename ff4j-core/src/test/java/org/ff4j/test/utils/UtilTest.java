@@ -1,5 +1,7 @@
 package org.ff4j.test.utils;
 
+import java.lang.reflect.Constructor;
+
 /*
  * #%L
  * ff4j-core
@@ -25,6 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.ff4j.audit.EventConstants;
+import org.ff4j.store.JdbcStoreConstants;
 import org.ff4j.utils.Util;
 import org.junit.Assert;
 import org.junit.Test;
@@ -57,6 +61,20 @@ public class UtilTest {
         
         Assert.assertNull(Util.getFirstKeyByValue(code, "invalid"));
         Assert.assertNotNull(Util.getFirstKeyByValue(code, "val"));
+    }
+    
+    @Test
+    public void testConstants() throws Exception {
+    	 
+    	 Constructor<JdbcStoreConstants> ce = JdbcStoreConstants.class.getDeclaredConstructor();
+	     ce.setAccessible(true);
+	     ce.newInstance();
+	     
+	     Constructor<EventConstants> de = EventConstants.class.getDeclaredConstructor();
+	     de.setAccessible(true);
+	     de.newInstance();
+	     
+	     
     }
 
 }

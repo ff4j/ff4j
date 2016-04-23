@@ -1,5 +1,7 @@
 package org.ff4j.test.store;
 
+import java.lang.reflect.Constructor;
+
 /*
  * #%L ff4j-store-jdbc %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of the License at
@@ -16,6 +18,7 @@ import java.util.Arrays;
 
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.FeatureStoreMongoDB;
+import org.ff4j.store.mongodb.FeatureStoreMongoConstants;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -85,6 +88,13 @@ public class FeatureStoreMongoDBCore1Test extends FeatureStoreTestSupport {
         FeatureStore mongoStore = new FeatureStoreMongoDB(features, "ff4j.xml");
         // Then (no error)
         Assert.assertTrue(mongoStore.readAll().keySet().size() > 0);
+    }
+    
+    @Test
+    public void testConstants() throws Exception {
+    	Constructor<FeatureStoreMongoConstants> ce = FeatureStoreMongoConstants.class.getDeclaredConstructor();
+	    ce.setAccessible(true);
+	    ce.newInstance();
     }
     
     
