@@ -22,6 +22,8 @@ package org.ff4j.cli;
 import static org.ff4j.cli.ansi.AnsiTerminal.cyan;
 import static org.ff4j.cli.ansi.AnsiTerminal.white;
 import static org.ff4j.cli.ansi.AnsiTerminal.yellow;
+import static org.ff4j.cli.ansi.AnsiTerminal.green;
+import static org.ff4j.cli.ansi.AnsiTerminal.red;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -81,7 +83,6 @@ public class FF4jCliDisplay {
 	 * Default constructor.
 	 */
 	private FF4jCliDisplay() {
-		throw new UnsupportedOperationException("Should no instanciate utility class");
 	}
 		
 	/**
@@ -178,98 +179,53 @@ public class FF4jCliDisplay {
 	 * 		environnements in config file
 	 */
 	public static void displayEnvironments(Map < String, FF4j> envs) {
-		AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
+		yellow("+--------------------+----------+------------+-------+----------+\n");
+		System.out.print("|");
+		cyan(" Environments       ");
+		yellow("|");
+		cyan(" Features ");
+		yellow("|");
+		cyan(" Properties ");
+		yellow("|");
+		cyan(" Audit ");
+		yellow("|");
+		cyan(" Security ");
+		yellow("|\n");
 		System.out.println("+--------------------+----------+------------+-------+----------+");
-		System.out.print("|");
-		AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
-		AnsiTerminal.foreGroundColor(AnsiForegroundColor.CYAN);
-		System.out.print(" Environments       ");
-		AnsiTerminal.textAttribute(AnsiTextAttribute.CLEAR);
-		AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
-		System.out.print("|");
-		AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
-		AnsiTerminal.foreGroundColor(AnsiForegroundColor.CYAN);
-		System.out.print(" Features ");
-		AnsiTerminal.textAttribute(AnsiTextAttribute.CLEAR);
-		AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
-		System.out.print("|");
-		AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
-		AnsiTerminal.foreGroundColor(AnsiForegroundColor.CYAN);
-		System.out.print(" Properties ");
-		AnsiTerminal.textAttribute(AnsiTextAttribute.CLEAR);
-		AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
-		System.out.print("|");
-		AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
-		AnsiTerminal.foreGroundColor(AnsiForegroundColor.CYAN);
-		System.out.print(" Audit ");
-		AnsiTerminal.textAttribute(AnsiTextAttribute.CLEAR);
-		AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
-		System.out.print("|");
-		AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
-		AnsiTerminal.foreGroundColor(AnsiForegroundColor.CYAN);
-		System.out.print(" Security ");
-		AnsiTerminal.textAttribute(AnsiTextAttribute.CLEAR);
-		AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
-		System.out.println("|");
-		System.out.println("+--------------------+----------+------------+-------+----------+");
-		
 		for(Map.Entry<String, FF4j> entries : envs.entrySet()) {
 			FeatureStore  fs = entries.getValue().getFeatureStore();
 			PropertyStore ps = entries.getValue().getPropertiesStore();
-			
-			AnsiTerminal.textAttribute(AnsiTextAttribute.CLEAR);
-			AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
-			System.out.print("|  ");
-			AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
-			AnsiTerminal.foreGroundColor(AnsiForegroundColor.GREEN);
-			System.out.print(StringUtils.rightPad(entries.getKey(), 18));
-			AnsiTerminal.textAttribute(AnsiTextAttribute.CLEAR);
-			AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
-			System.out.print("|  ");
-			AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
-			AnsiTerminal.foreGroundColor(AnsiForegroundColor.WHITE);
+			yellow("|  ");
+			green(StringUtils.rightPad(entries.getKey(), 18));
+			yellow("|  ");
 			String featureStore = "---";
 			if (fs != null) {
 				featureStore = String.valueOf(fs.readAll().size());
 			}
-			System.out.print(StringUtils.rightPad(featureStore, 8));
-			AnsiTerminal.textAttribute(AnsiTextAttribute.CLEAR);
-			AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
-			System.out.print("|  ");
-			AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
-			AnsiTerminal.foreGroundColor(AnsiForegroundColor.WHITE);
+			white(StringUtils.rightPad(featureStore, 8));
+			yellow("|  ");
 			String propertyStore = "---";
 			if (fs != null) {
 				propertyStore = String.valueOf(ps.listPropertyNames().size());
 			}
-			System.out.print(StringUtils.rightPad(propertyStore, 10));
-			AnsiTerminal.textAttribute(AnsiTextAttribute.CLEAR);
-			AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
-			System.out.print("|");
+			white(StringUtils.rightPad(propertyStore, 10));
+			yellow("|");
+			AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
 			if (entries.getValue().isEnableAudit()) {
-				AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
-				AnsiTerminal.foreGroundColor(AnsiForegroundColor.GREEN);
-				System.out.print("  ON   ");
+				green("  ON   ");
 			} else {
-				AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
-				AnsiTerminal.foreGroundColor(AnsiForegroundColor.RED);
-				System.out.print("  OFF  ");
+				red("  OFF  ");
 			}
 			AnsiTerminal.textAttribute(AnsiTextAttribute.CLEAR);
-			AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
-			System.out.print("|");
+			yellow("|");
+			AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
 			if (entries.getValue().getAuthorizationsManager() != null) {
-				AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
-				AnsiTerminal.foreGroundColor(AnsiForegroundColor.GREEN);
-				System.out.print("  ON      ");
+				green("  ON      ");
 			} else {
-				AnsiTerminal.textAttribute(AnsiTextAttribute.BOLD);
-				AnsiTerminal.foreGroundColor(AnsiForegroundColor.RED);
-				System.out.print("  OFF     ");
+				red("  OFF     ");
 			}
 			AnsiTerminal.textAttribute(AnsiTextAttribute.CLEAR);
-			AnsiTerminal.foreGroundColor(AnsiForegroundColor.YELLOW);
-			System.out.println("|");
+			yellow("|\n");
 		}
 		System.out.println("+--------------------+----------+------------+-------+----------+");
 		System.out.println("");

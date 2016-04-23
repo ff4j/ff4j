@@ -34,6 +34,12 @@ public class OSUtil {
     private static OSSupported currentOS = null;
     
     /**
+     * Hide default constructor.
+     */
+    private OSUtil() {
+    }
+    
+    /**
      * Retrieve OS.
      *
      * @return

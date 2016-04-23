@@ -1,5 +1,11 @@
 package org.ff4j.cli;
 
+import java.lang.reflect.Constructor;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.ff4j.security.AuthorizationsManager;
+
 /*
  * #%L
  * ff4j-cli
@@ -32,6 +38,8 @@ public class TestConnected extends AbstractCommandLineTest {
 		processor.evaluate("connect dev -u admin -p admin");
 		
 		Assert.assertEquals("dev", processor.getCurrentEnv());
+		
+		FF4jCliDisplay.displayPrompt(processor.getCurrentEnv());
 		
 		processor.evaluate("conf");
 		
@@ -122,6 +130,33 @@ public class TestConnected extends AbstractCommandLineTest {
 		
 		processor.evaluate("InvalidCommand");
 		
+		// limits
+		processor.getCurrentFF4J().setAuthorizationsManager(new AuthorizationsManager() {
+			public String toJson() { return "dummy";}
+			public Set<String> listAllPermissions() { return new HashSet<String>(); }
+			public Set<String> getCurrentUserPermissions() {return new HashSet<String>(); }
+			public String getCurrentUserName() { return "dummy";}
+		});
+		processor.getCurrentFF4J().getFeatureStore().clear();
+		processor.getCurrentFF4J().getPropertiesStore().clear();
+		processor.evaluate("conf");
+		processor.evaluate("ls");
+		processor.evaluate("quit");
+		processor.evaluate("ls");
 	}
+	
+	 @Test
+	 public void testInstance1() throws Exception {
+	     Constructor<FF4jCliDisplay> ce = FF4jCliDisplay.class.getDeclaredConstructor();
+	     ce.setAccessible(true);
+	     ce.newInstance();
+	 }
+	 
+	 @Test
+	 public void testInstance2() throws Exception {
+	     Constructor<FF4jCliOptions> ce = FF4jCliOptions.class.getDeclaredConstructor();
+	     ce.setAccessible(true);
+	     ce.newInstance();
+	 }
 	
 }

@@ -1,8 +1,5 @@
 package org.ff4j.cli.ansi;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 /*
  * #%L
  * ff4j-cli
@@ -24,6 +21,9 @@ import java.util.Date;
  */
 
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.ff4j.cli.util.OSSupported;
 import org.ff4j.cli.util.OSUtil;
 import org.fusesource.jansi.AnsiConsole;
@@ -38,6 +38,12 @@ public class AnsiTerminal implements AnsiConstants {
 	/** Default log format. */
 	private static final SimpleDateFormat SDF = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
 
+	/**
+	 * Hide default  constructor.
+	 */
+	private AnsiTerminal() {
+	}
+	
     /**
      * Change everything.
      *
@@ -91,24 +97,27 @@ public class AnsiTerminal implements AnsiConstants {
      *      current text to be displauyed
      */
     public static void print(String text) {
-        OSSupported os = OSUtil.getCurrentOS();
-        if (os == null) {
-            System.out.print(text);
-            System.out.flush();
-        } else {
-            switch (os) {
-                case WINDOWS:
-                    AnsiConsole.out.print(text);
-                    AnsiConsole.out.flush();
-                break;
-                case UNIX:
-                case OS_X:
-                case SOLARIS:
-                    System.out.print(text);
-                    System.out.flush();
-                break;
-            }
-        }
+        print(text, OSUtil.getCurrentOS());
+    }
+    
+    public static void print(String text, OSSupported os) {
+    	if (os == null) {
+             System.out.print(text);
+             System.out.flush();
+         } else {
+             switch (os) {
+                 case WINDOWS:
+                     AnsiConsole.out.print(text);
+                     AnsiConsole.out.flush();
+                 break;
+                 case UNIX:
+                 case OS_X:
+                 case SOLARIS:
+                     System.out.print(text);
+                     System.out.flush();
+                 break;
+             }
+         }
     }
     
     /**
@@ -123,17 +132,6 @@ public class AnsiTerminal implements AnsiConstants {
     }
     
     /**
-     * Print text ton console.
-     *
-     * @param text
-     *      current text to be displauyed
-     */
-    public static void println(String text) {
-        print(text);
-        System.out.println("\n");
-    }
-    
-	/**
 	 * Change text color to white.
 	 */
 	public static void white(String text) {

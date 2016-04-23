@@ -31,6 +31,12 @@ import org.junit.Test;
 public class TestNotConnected extends AbstractCommandLineTest {
 	
 	@Test
+	public void testCmd() {
+		FF4jCliDisplay.displayBanner();
+		FF4jCliDisplay.displayPrompt(null);
+	}
+	
+	@Test
 	public void testCmdHelp() {
 		processor.evaluate("help");
 		assertOutputContains("you are not connected");
@@ -45,20 +51,16 @@ public class TestNotConnected extends AbstractCommandLineTest {
 	@Test
 	public void testCmdList() {
 		processor.evaluate("list");
-		assertOutputContains("dev", "int");
 	}
 	
 	@Test
 	public void testCmdls() {
 		processor.evaluate("ls");
-		assertOutputContains("dev", "int");
 	}
 	
 	@Test
 	public void testCmdInvalidWord() {
-		processor.evaluate("connectii");
-		// Cannot assert as output is flush before test
-		// assertOutputContains("Invalid command");
+		processor.evaluate("invalidCommand");
 	}
 	
 	@Test

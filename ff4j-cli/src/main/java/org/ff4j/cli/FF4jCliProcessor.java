@@ -37,7 +37,6 @@ import static org.ff4j.cli.ansi.AnsiTerminal.foreGroundColor;
 import static org.ff4j.cli.ansi.AnsiTerminal.logError;
 import static org.ff4j.cli.ansi.AnsiTerminal.logInfo;
 import static org.ff4j.cli.ansi.AnsiTerminal.logWarn;
-import static org.ff4j.cli.ansi.AnsiTerminal.red;
 import static org.ff4j.cli.ansi.AnsiTerminal.textAttribute;
 
 import java.util.HashMap;
@@ -77,12 +76,6 @@ public class FF4jCliProcessor {
 
 	/** Current environment. */
 	private FF4j currentFF4J = null;
-	
-	/**
-	 * Default Constructor.
-	 */
-	public FF4jCliProcessor() {
-	}
 	
 	/**
 	 * Sample Processor.
@@ -459,33 +452,7 @@ public class FF4jCliProcessor {
 	 * @param message
 	 */
 	private void error(Throwable t, String message) {
-		if (t != null) {
-			logError(t.getClass().getName() + " : " + t.getMessage());
-		} else {
-			logError(message);
-		}
-		//System.exit(-1);
-	}
-
-	/**
-	 * @return the envs
-	 */
-	public Map<String, FF4j> getEnvs() {
-		return envs;
-	}
-
-	/**
-	 * @param envs the envs to set
-	 */
-	public void setEnvs(Map<String, FF4j> envs) {
-		this.envs = envs;
-	}
-
-	/**
-	 * @return the users
-	 */
-	public Map<String, String> getUsers() {
-		return users;
+		logError(t.getClass().getName() + " : " + t.getMessage());
 	}
 	
 	/**

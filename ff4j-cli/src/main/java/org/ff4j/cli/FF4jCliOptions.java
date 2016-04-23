@@ -31,6 +31,12 @@ import org.apache.commons.cli.Options;
 public class FF4jCliOptions {
 	
 	/**
+	 * Remove public constructor for utilities.
+	 */
+	private FF4jCliOptions() {
+	}
+	
+	/**
 	 * Options for command Line. The connect method will select an Environnement.
 	 *
 	 * @return
