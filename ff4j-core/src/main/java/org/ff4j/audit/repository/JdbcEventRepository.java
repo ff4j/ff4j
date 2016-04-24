@@ -38,6 +38,7 @@ import org.ff4j.audit.graph.PieChart;
 import org.ff4j.audit.graph.PieSector;
 import org.ff4j.exception.AuditAccessException;
 import org.ff4j.exception.FeatureAccessException;
+import org.ff4j.store.JdbcQueryBuilder;
 import org.ff4j.utils.Util;
 
 import static org.ff4j.store.JdbcStoreConstants.*;
@@ -50,9 +51,15 @@ import static org.ff4j.audit.EventConstants.*;
  */
 public class JdbcEventRepository extends AbstractEventRepository {
 
-    public static final String CANNOT_BUILD_PIE_CHART_FROM_REPOSITORY = "Cannot build PieChart from repository, ";
+	/** error message. */
+    public static final String CANNOT_BUILD_PIE_CHART_FROM_REPOSITORY = 
+    		"Cannot build PieChart from repository, ";
+    
     /** Access to storage. */
     private DataSource dataSource;
+    
+    /** Query builder. */
+    private JdbcQueryBuilder queryBuilder;
 
     /**
      * Constructor from DataSource.
@@ -73,7 +80,7 @@ public class JdbcEventRepository extends AbstractEventRepository {
         try {
             // Get collection from Pool
             sqlConn = dataSource.getConnection();
-            stmt = sqlConn.prepareStatement(SQL_AUDIT_COUNT);
+            stmt = sqlConn.prepareStatement(getQueryBuilder().countAudit());
             rs = stmt.executeQuery();
             rs.next();
             totalEvent =  rs.getInt(1);
@@ -104,7 +111,10 @@ public class JdbcEventRepository extends AbstractEventRepository {
             sqlConn.setAutoCommit(false);
             int idx = 9;
             Map < Integer, String > statementParams = new HashMap<Integer, String>();
-            StringBuilder sb = new StringBuilder("INSERT INTO FF4J_AUDIT (EVT_UUID,EVT_TIME,EVT_TYPE,EVT_NAME,EVT_ACTION,EVT_HOSTNAME,EVT_SOURCE,EVT_DURATION");
+            
+            StringBuilder sb = new StringBuilder("INSERT INTO " +
+            		getQueryBuilder().getTableName("AUDIT") + 
+            		"(EVT_UUID,EVT_TIME,EVT_TYPE,EVT_NAME,EVT_ACTION,EVT_HOSTNAME,EVT_SOURCE,EVT_DURATION");
             if (Util.hasLength(evt.getUser())) {
                 sb.append(", EVT_USER");
                 statementParams.put(idx, evt.getUser());
@@ -165,7 +175,7 @@ public class JdbcEventRepository extends AbstractEventRepository {
         try {
             // Returns features
             sqlConn = dataSource.getConnection();
-            ps = sqlConn.prepareStatement(SQL_AUDIT_LISTFEATURES);
+            ps = sqlConn.prepareStatement(getQueryBuilder().listFeaturesAudit());
             rs = ps.executeQuery();
             while (rs.next()) {
                 listOfFeatureNames.add(rs.getString(COL_EVENT_NAME));
@@ -191,7 +201,7 @@ public class JdbcEventRepository extends AbstractEventRepository {
             sqlConn = dataSource.getConnection();
             
             
-            ps = sqlConn.prepareStatement(SQL_AUDIT_OK_DISTRIB);
+            ps = sqlConn.prepareStatement(getQueryBuilder().getFeaturesPieAudit());
             ps.setTimestamp(1, new Timestamp(startTime));
             ps.setTimestamp(2, new Timestamp(endTime));
             rs = ps.executeQuery();
@@ -240,7 +250,7 @@ public class JdbcEventRepository extends AbstractEventRepository {
             sqlConn = dataSource.getConnection();
             
             for (String featName : getFeatureNames()) {
-                ps = sqlConn.prepareStatement(SQL_AUDIT_FEATURE_ALLEVENTS);
+                ps = sqlConn.prepareStatement(getQueryBuilder().getAllEventsFeatureAudit());
                 ps.setString(1, featName);
                 ps.setTimestamp(2, new Timestamp(startTime));
                 ps.setTimestamp(3, new Timestamp(endTime));
@@ -273,7 +283,7 @@ public class JdbcEventRepository extends AbstractEventRepository {
         try {
             // Returns features
             sqlConn = dataSource.getConnection();
-            ps = sqlConn.prepareStatement(SQL_AUDIT_FEATURE_DISTRIB);
+            ps = sqlConn.prepareStatement(getQueryBuilder().getFeatureDistributionAudit());
             ps.setString(1, featureId);
             ps.setTimestamp(2, new Timestamp(startTime));
             ps.setTimestamp(3, new Timestamp(endTime));
@@ -319,4 +329,21 @@ public class JdbcEventRepository extends AbstractEventRepository {
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
+    
+    /**
+	 * @return the queryBuilder
+	 */
+	public JdbcQueryBuilder getQueryBuilder() {
+		if (queryBuilder == null) {
+			queryBuilder = new JdbcQueryBuilder();
+		}
+		return queryBuilder;
+	}
+
+	/**
+	 * @param queryBuilder the queryBuilder to set
+	 */
+	public void setQueryBuilder(JdbcQueryBuilder queryBuilder) {
+		this.queryBuilder = queryBuilder;
+	}
 }

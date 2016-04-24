@@ -19,10 +19,10 @@ import org.ff4j.audit.EventConstants;
  * @author Cedrick Lunven (@clunven)
  */
 public class JdbcStoreConstants {
-
-    /** sql query expression */
+	
+	/** sql query expression */
     public static final String SQLQUERY_ALLFEATURES = "SELECT FEAT_UID,ENABLE,DESCRIPTION,STRATEGY,EXPRESSION,GROUPNAME FROM FF4J_FEATURES";
-
+	
     /** sql query expression */
     public static final String SQLQUERY_ALLGROUPS = "SELECT DISTINCT(GROUPNAME) FROM FF4J_FEATURES";
 
