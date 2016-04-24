@@ -60,6 +60,9 @@ public class JdbcPropertyStore extends AbstractPropertyStore {
     /** Mapper. */
     private JdbcPropertyMapper JDBC_MAPPER = new JdbcPropertyMapper();
 
+    /** Default Constructor. */
+    public JdbcPropertyStore() {}
+    
     /**
      * Constructor from DataSource.
      * 

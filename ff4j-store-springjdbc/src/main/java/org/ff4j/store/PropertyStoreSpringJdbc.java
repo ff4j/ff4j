@@ -4,8 +4,6 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import static org.ff4j.store.JdbcStoreConstants.*;
-
 /*
  * #%L
  * ff4j-store-springjdbc
@@ -60,11 +58,15 @@ public class PropertyStoreSpringJdbc extends AbstractPropertyStore {
 
     /** Access to storage. */
     private JdbcTemplate jdbcTemplate;
+    
+    /** Query builder. */
+    private JdbcQueryBuilder queryBuilder;
 
     /** {@inheritDoc} */
     public boolean existProperty(String name) {
         Util.assertHasLength(name);
-        return 1 == getJdbcTemplate().queryForObject(SQL_PROPERTY_EXIST, Integer.class, name);
+        return 1 == getJdbcTemplate().
+        		queryForObject(getQueryBuilder().existProperty(), Integer.class, name);
     }
 
     /** {@inheritDoc} */
@@ -79,7 +81,7 @@ public class PropertyStoreSpringJdbc extends AbstractPropertyStore {
             fixedValues = ap.getFixedValues().toString();
             fixedValues = fixedValues.substring(1, fixedValues.length() - 1);
         }
-        getJdbcTemplate().update(SQL_PROPERTY_CREATE, 
+        getJdbcTemplate().update(getQueryBuilder().createProperty(), 
                 ap.getName(), ap.getType(), ap.asString(), 
                 ap.getDescription(), fixedValues);
     }
@@ -90,7 +92,8 @@ public class PropertyStoreSpringJdbc extends AbstractPropertyStore {
         if (!existProperty(name)) {
             throw new PropertyNotFoundException(name);
         }
-        return getJdbcTemplate().queryForObject(SQL_PROPERTY_READ, PMAPPER, name);
+        return getJdbcTemplate().
+        		queryForObject(getQueryBuilder().getProperty(), PMAPPER, name);
     }
 
     /** {@inheritDoc} */
@@ -101,7 +104,7 @@ public class PropertyStoreSpringJdbc extends AbstractPropertyStore {
         }
         // Check new value validity
         readProperty(name).fromString(newValue);
-        getJdbcTemplate().update(SQL_PROPERTY_UPDATE, newValue, name);
+        getJdbcTemplate().update(getQueryBuilder().updateProperty(), newValue, name);
     }
 
     /** {@inheritDoc} */
@@ -119,13 +122,14 @@ public class PropertyStoreSpringJdbc extends AbstractPropertyStore {
         if (!existProperty(name)) {
             throw new PropertyNotFoundException(name);
         }
-        getJdbcTemplate().update(SQL_PROPERTY_DELETE, name);
+        getJdbcTemplate().update(getQueryBuilder().deleteProperty(), name);
     }
 
     /** {@inheritDoc} */
     public Map<String, Property<?>> readAllProperties() {
         Map<String, Property<?>> properties = new LinkedHashMap<String, Property<?>>();
-        List<Property<?>> listOfProps = getJdbcTemplate().query(SQL_PROPERTY_READALL, PMAPPER);
+        List<Property<?>> listOfProps = getJdbcTemplate().
+        		query(getQueryBuilder().getAllProperties(), PMAPPER);
         for(Property<?> p : listOfProps) {
             properties.put(p.getName(),  p);
         }
@@ -134,14 +138,13 @@ public class PropertyStoreSpringJdbc extends AbstractPropertyStore {
 
     /** {@inheritDoc} */
     public Set<String> listPropertyNames() {
-        return new HashSet<String>(
-                getJdbcTemplate().query(SQL_PROPERTY_READNAMES, 
-                        new SingleColumnRowMapper<String>()));
+        return new HashSet<String>(getJdbcTemplate().query(
+        		getQueryBuilder().getAllPropertiesNames(), new SingleColumnRowMapper<String>()));
     }
 
     /** {@inheritDoc} */
     public void clear() {
-        getJdbcTemplate().update(SQL_PROPERTY_DELETE_ALL);
+        getJdbcTemplate().update(getQueryBuilder().deleteAllProperties());
     }
     
     /**
@@ -167,6 +170,22 @@ public class PropertyStoreSpringJdbc extends AbstractPropertyStore {
         }
         return jdbcTemplate;
     }
-   
+
+    /**
+	 * @return the queryBuilder
+	 */
+	public JdbcQueryBuilder getQueryBuilder() {
+		if (queryBuilder == null) {
+			queryBuilder = new JdbcQueryBuilder();
+		}
+		return queryBuilder;
+	}
+
+	/**
+	 * @param queryBuilder the queryBuilder to set
+	 */
+	public void setQueryBuilder(JdbcQueryBuilder queryBuilder) {
+		this.queryBuilder = queryBuilder;
+	}
 
 }
