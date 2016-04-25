@@ -66,7 +66,6 @@ public class JdbcEventRepositoryTest extends AbstractEventRepositoryTest {
     /** {@inheritDoc} */
     @After
     public void tearDown() throws Exception {
-        // Let the event to be inserted in Async before shutdown db
         Thread.sleep(200);
         db.shutdown();
     }
