@@ -54,6 +54,9 @@ public final class ConsoleRenderer {
 
     /** Cache for page blocks. */
     private static String htmlTemplate = null;
+    
+    /** Cache for page blocks. */
+    private static String htmlTemplateMonitoring = null;
 
     /** Load CSS. */
     private static String cssContent = null;
@@ -136,7 +139,32 @@ public final class ConsoleRenderer {
 
         out.println(htmlContent);
     }
+    
+    
+    /**
+     * Render the ff4f console webpage through different block.
+     * 
+     * @param req
+     *            http request (with parameters)
+     * @param res
+     *            http response (with outouput test)
+     * @param message
+     *            text in the information box (blue/green/orange/red)
+     * @param messagetype
+     *            type of informatice message (info,success,warning,error)
+     * @throws IOException
+     *             error during populating http response
+     */
+    public static void renderPageMonitoring(FF4j ff4j, HttpServletRequest req, HttpServletResponse res, String msg, String msgType) throws IOException {
+        res.setContentType(CONTENT_TYPE_HTML);
+        PrintWriter out = res.getWriter();
 
+        String htmlContent = renderTemplateMonitoring(req);
+        htmlContent = htmlContent.replaceAll("\\{" + KEY_ALERT_MESSAGE + "\\}", renderMessageBox(msg, msgType));
+
+        
+        out.println(htmlContent);
+    }
 
     /**
      * Build info messages.
@@ -244,6 +272,23 @@ public final class ConsoleRenderer {
         }
         return htmlTemplate;
     }
+     
+     /**
+      * Load HTML template file and substitute by current URL context path
+      * 
+      * @param req
+      *            current http request
+      * @return current text part as string
+      */
+      private static final String renderTemplateMonitoring(HttpServletRequest req) {
+         if (htmlTemplateMonitoring == null || htmlTemplateMonitoring.isEmpty()) {
+             String ctx = req.getContextPath() + req.getServletPath() + "";
+             htmlTemplateMonitoring = loadFileAsString(TEMPLATE_FILE_MONITORING);
+             htmlTemplateMonitoring = htmlTemplateMonitoring.replaceAll("\\{" + KEY_SERVLET_CONTEXT + "\\}", ctx);
+             htmlTemplateMonitoring = htmlTemplateMonitoring.replaceAll("\\{" + KEY_VERSION + "\\}", FF4J_VERSION);
+         }
+         return htmlTemplateMonitoring;
+     }
     
     private static final String renderPropertiesRows(FF4j ff4j, HttpServletRequest req) {
         StringBuilder sb = new StringBuilder();

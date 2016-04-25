@@ -37,8 +37,8 @@
           </a>
         </li>
         <li>
-          <a href="{SERVLET_CONTEXT}?op=monitoring">
-            <i class="shortcut-icon icon-dashboard"></i>
+          <a href="{SERVLET_CONTEXT}?view=monitoring">
+            <i class="shortcut-icon icon-signal"></i>
            <span><u><b>A</b></u>udit</span>
           </a>
         </li>
@@ -694,16 +694,57 @@
 
  function toggle(flip) {        
     if(!$(flip).is(':checked')) {
-       $.get($(location).attr('href') + '?op=disable&uid=' + $(flip).attr('id'),
-             function(responseText) { 
-                  $('#message').html(responseText);         
-              });
+    	$.ajax({
+    	    type: 'GET',
+    	    url: $(location).attr('href') + '?op=disable&uid=' + $(flip).attr('id'),
+    	    success: function(data){
+    	    	 $('#message').html(data);     
+    	    },
+    	    statusCode: {
+    	    401: function() {
+    	    	$('#message').html('<div class="alert alert-error" >' +
+    	   				'<button type="button" class="close" data-dismiss="alert">&times;</button>' +
+    	   				'<span style="font-style:normal;color:#880000;">' +
+    	   				'UnAuthorized : You must be logged</span></div>');
+    	   		$(flip).prop('checked', true);
+    	    },
+    	    403: function() {
+    	   		$('#message').html('<div class="alert alert-error" >' +
+    	   				'<button type="button" class="close" data-dismiss="alert">&times;</button>' +
+    	   				'<span style="font-style:normal;color:#880000;">' +
+    	   				'Forbidden : Insuffisant permissions</span></div>');
+    	   		$(flip).prop('checked', true);
+    	   }
+    	  }
+    	});
+      
     } else {
-      $.get($(location).attr('href') + '?op=enable&uid=' + $(flip).attr('id'),
-             function(responseText) { 
-                  $('#message').html(responseText);         
-              });
+    	
+    	$.ajax({
+    	    type: 'GET',
+    	    url: $(location).attr('href') + '?op=enable&uid=' + $(flip).attr('id'),
+    	    success: function(data){
+    	    	 $('#message').html(data);     
+    	    },
+    	    statusCode: {
+    	    401: function() {
+    	    	$('#message').html('<div class="alert alert-error" >' +
+    	   				'<button type="button" class="close" data-dismiss="alert">&times;</button>' +
+    	   				'<span style="font-style:normal;color:#880000;">' +
+    	   				'UnAuthorized : You must be logged</span></div>');
+    	   		$(flip).prop('checked', true);
+    	    },
+    	    403: function() {
+    	   		$('#message').html('<div class="alert alert-error" >' +
+    	   				'<button type="button" class="close" data-dismiss="alert">&times;</button>' +
+    	   				'<span style="font-style:normal;color:#880000;">' +
+    	   				'Forbidden : Insuffisant permissions</span></div>');
+    	   		$(flip).prop('checked', true);
+    	   }
+    	  }
+    	});
     }
+    
   }
  
  function ff4j_redrawDivProperty(pname) {

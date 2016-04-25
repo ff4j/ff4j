@@ -54,7 +54,7 @@ public class InMemoryEventRepository extends AbstractEventRepository {
     /** current capacity. */
     private int queueCapacity = DEFAULT_QUEUE_CAPACITY;
 
-    /** Store : < EventType |  EventName | Event > */
+    /** Store : < TARGET | UID | Event > */
     private final Map<String, Map < String, Queue<Event> > > events = 
             new ConcurrentHashMap<String,  Map < String, Queue<Event>>>();
     

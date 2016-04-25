@@ -11,6 +11,7 @@ import static org.ff4j.web.embedded.ConsoleRenderer.renderMessageBox;
 import static org.ff4j.web.embedded.ConsoleRenderer.renderMsgGroup;
 import static org.ff4j.web.embedded.ConsoleRenderer.renderMsgProperty;
 import static org.ff4j.web.embedded.ConsoleRenderer.renderPage;
+import static org.ff4j.web.embedded.ConsoleRenderer.renderPageMonitoring;
 import static org.ff4j.web.embedded.ConsoleConstants.*;
 
 /*
@@ -57,6 +58,8 @@ public class ConsoleServlet extends HttpServlet {
 
     /** Logger for this class. */
     public static final Logger LOGGER = LoggerFactory.getLogger(ConsoleServlet.class);
+    
+    /** Error Message. */
     public static final String ERROR = "error";
 
     /** instance of ff4j. */
@@ -73,7 +76,6 @@ public class ConsoleServlet extends HttpServlet {
      * @throws ServletException
      *             error during servlet initialization
      */
-    @Override
     public void init(ServletConfig servletConfig) throws ServletException {
         LOGGER.info("  __  __ _  _   _ ");
         LOGGER.info(" / _|/ _| || | (_)");
@@ -88,11 +90,8 @@ public class ConsoleServlet extends HttpServlet {
             try {
                 Class<?> c = Class.forName(className);
                 Object o = c.newInstance();
-                
                 ff4jProvider = (FF4JProvider) o;
-               
                 LOGGER.info("ff4j context has been successfully initialized - {} feature(s)", ff4jProvider.getFF4j().getFeatures().size());
-                
             } catch (ClassNotFoundException e) {
                 throw new IllegalArgumentException("Cannot load ff4jProvider as " + ff4jProvider, e);
             } catch (InstantiationException e) {
@@ -113,13 +112,41 @@ public class ConsoleServlet extends HttpServlet {
     }
 
     /** {@inheritDoc} */
-    @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException {
-       
-        String message = null;
+    	
+    	String targetView = req.getParameter(VIEW);
+    	
+    	if (targetView == null || "".equals(targetView)) {
+    		pageCore(req, res);
+    	
+    	} else if ("monitoring".equals(targetView)) {
+    		pageMonitoring(req, res);
+    	}
+    }
+    
+    public void pageMonitoring(HttpServletRequest req, HttpServletResponse res) throws IOException {
+    	String message = null;
         String messagetype = "info";
-        // Routing on pagename
+        try {
+        	ff4j.getEventRepository().getFeatureNames();
+        	
+        	ff4j.getEventRepository().getTotalEventCount();
+        	
+        	
+        	
+        } catch (Exception e) {
+            // Any Error is trapped and display in the console
+            messagetype = ERROR;
+            message = e.getMessage();
+            LOGGER.error("An error occured ", e);
+        }
+        renderPageMonitoring(getFf4j(), req, res, message, messagetype);
+    }
+    
+    public void pageCore(HttpServletRequest req, HttpServletResponse res) throws IOException {
+    	String message = null;
+        String messagetype = "info";
         try {
             
             // 'RSC' parameter will load some static resources
@@ -135,7 +162,8 @@ public class ConsoleServlet extends HttpServlet {
                 if (OP_EXPORT.equalsIgnoreCase(operation)) {
                     exportFile(ff4j, res);
                     return;
-                }                
+                }
+                
                 
                 // Work on a feature ID
                 if ((featureId != null) && (!featureId.isEmpty())) {
@@ -220,7 +248,7 @@ public class ConsoleServlet extends HttpServlet {
         // Default page rendering (table)
         renderPage(getFf4j(), req, res, message, messagetype);
     }
-
+    
     /** {@inheritDoc} */
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {

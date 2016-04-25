@@ -26,7 +26,6 @@ package org.ff4j.web.embedded;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public class ConsoleConstants {
-
     
     // -------- CONTENT-TYPE ------------------------------
 
@@ -65,6 +64,9 @@ public class ConsoleConstants {
 
     /** POST - Operation. */
     public static final String OPERATION = "op";
+    
+    /** View for dispatch. */
+    public static final String VIEW = "view";
 
     /** POST - Operation. */
     public static final String SUBOPERATION = "ope";
@@ -113,12 +115,18 @@ public class ConsoleConstants {
 
     /** User operation. */
     public static final String OP_EXPORT = "export";
+    
+    /** User operation. */
+    public static final String OP_MONITORING = "monitoring";
 
 
     // -------- TEMPLATING ------------------------------
 
     /** Header. */
     public static final String TEMPLATE_FILE = "ff4j-template.html";
+    
+    /** Monitoring. */
+    public static final String TEMPLATE_FILE_MONITORING = "ff4j-monitoring.html";
 
     /** templating. */
     public static final String KEY_SERVLET_CONTEXT = "SERVLET_CONTEXT";
