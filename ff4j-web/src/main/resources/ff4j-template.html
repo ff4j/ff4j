@@ -732,14 +732,14 @@
     	   				'<button type="button" class="close" data-dismiss="alert">&times;</button>' +
     	   				'<span style="font-style:normal;color:#880000;">' +
     	   				'UnAuthorized : You must be logged</span></div>');
-    	   		$(flip).prop('checked', true);
+    	   		$(flip).prop('checked', false);
     	    },
     	    403: function() {
     	   		$('#message').html('<div class="alert alert-error" >' +
     	   				'<button type="button" class="close" data-dismiss="alert">&times;</button>' +
     	   				'<span style="font-style:normal;color:#880000;">' +
     	   				'Forbidden : Insuffisant permissions</span></div>');
-    	   		$(flip).prop('checked', true);
+    	   		$(flip).prop('checked', false);
     	   }
     	  }
     	});

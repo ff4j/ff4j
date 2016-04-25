@@ -151,6 +151,9 @@ public class ConsoleConstants {
 
     /** templating alert. */
     public static final String KEY_ALERT_MESSAGE = "ALERT";
+    
+    /** templating alert. */
+    public static final String KEY_AUDIT_ROWS = "AUDIT_ROWS";
 
     /** templating. */
     public static final String KEY_PERMISSIONLIST = "PERMISSIONS";

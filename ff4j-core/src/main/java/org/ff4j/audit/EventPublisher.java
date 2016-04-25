@@ -31,7 +31,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.audit.repository.InMemoryEventRepository;
-import org.ff4j.cache.FF4jCacheProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

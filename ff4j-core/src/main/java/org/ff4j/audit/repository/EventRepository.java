@@ -1,5 +1,7 @@
 package org.ff4j.audit.repository;
 
+import java.util.List;
+
 /*
  * #%L
  * ff4j-core
@@ -23,7 +25,7 @@ package org.ff4j.audit.repository;
 import java.util.Set;
 
 import org.ff4j.audit.Event;
-import org.ff4j.audit.EventConstants;
+import org.ff4j.audit.EventQueryDefinition;
 import org.ff4j.audit.graph.BarChart;
 import org.ff4j.audit.graph.PieChart;
 
@@ -116,5 +118,13 @@ public interface EventRepository {
      * @return all event in the repository
      */
     int getTotalEventCount();
+    
+    /**
+     * Search over events.
+     *
+     * @return
+     * 		a list of events
+     */
+    List < Event > search(EventQueryDefinition query);
   
 }

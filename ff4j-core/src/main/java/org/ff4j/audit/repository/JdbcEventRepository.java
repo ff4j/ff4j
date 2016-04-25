@@ -1,5 +1,11 @@
 package org.ff4j.audit.repository;
 
+import static org.ff4j.audit.EventConstants.TITLE_BARCHAR_HIT;
+import static org.ff4j.audit.EventConstants.TITLE_PIE_HITCOUNT;
+import static org.ff4j.store.JdbcStoreConstants.COL_EVENT_ACTION;
+import static org.ff4j.store.JdbcStoreConstants.COL_EVENT_NAME;
+import static org.ff4j.store.JdbcStoreConstants.COL_EVENT_TIME;
+
 /*
  * #%L ff4j-core %% Copyright (C) 2013 - 2015 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of the License at
@@ -40,9 +46,6 @@ import org.ff4j.exception.AuditAccessException;
 import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.store.JdbcQueryBuilder;
 import org.ff4j.utils.Util;
-
-import static org.ff4j.store.JdbcStoreConstants.*;
-import static org.ff4j.audit.EventConstants.*;
 
 /**
  * Implementation of in memory {@link EventRepository} with limited events.
@@ -310,7 +313,7 @@ public class JdbcEventRepository extends AbstractEventRepository {
         }
         
     }
-
+  
     /**
      * Getter accessor for attribute 'dataSource'.
      *

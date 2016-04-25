@@ -37,9 +37,15 @@
 </div>
   
 <div class="container" style="width:95%">
- <div id="message" >{ALERT}</div>
+ <div id="message" >
+ <div class="alert alert-info" >
+ 	<button type="button" class="close" data-dismiss="alert">&times;</button>
+     <span style="font-style:normal;color:#000088;">
+   	   <b>Preview :</b> Stores could have proxy to log anything as audit, soon nice graphs here.
+   	 </span></div>
+ </div>
  
- <h4 style="color:#00ab8b"><i class="icon-home"></i>&nbsp;Search
+ <h4 style="color:#00ab8b"><i class="icon-signal"></i>&nbsp; Monitoring
  </h4>
 	
  <div class="widget widget-table action-table">
@@ -49,58 +55,14 @@
       <tr>
        <th style="width:15%;text-align:center">Time</th>
        <th style="width:15%;text-align:center">Target</th>
-       <th style="width:20%;text-align:center">Action</th>
        <th style="width:20%;text-align:center">Name</th>
-       <th style="width:20%;text-align:center">Detail</th>
+       <th style="width:20%;text-align:center">Action</th>
       </tr>
     </thead>
-    <tbody>
-    <tr>
-      <td>2016-04-15 12:00</td>
-      <td>Feature</td>
-      <td>Toggle-On</td>
-      <td>AwesomeFeature</td>
-      <td><a data-toggle="modal" href="#modalEdit" 
-      	   data-id="AwesomeFeature"  
-      	   data-desc="some desc" data-group="null" 
-      	   data-strategy="" data-stratparams="" data-permissions="" 
-      	   style="width:6px;" class="open-EditFlipDialog btn">
-      	   <i class="icon-pencil" style="margin-left:-5px;"></i>
-      	 </a></td>
-      	 </tr>
-    </tbody>
-   </table>
+    <tbody>{AUDIT_ROWS}</tbody>
+    </table>
   </div>
  </div>
- 
- Filter FROM  TO 
- 
- Filter Target
- 
- 
-  <!-- Group --> 
-    <div class="control-group">  
-      <label class="control-label" for="eventTarget" style="color:#00ab8b;font-style:normal">Filter Target</label>  
-        <div class="controls">
-          <div class="btn-group">
-            <input type="text" name="eventTarget" id="eventTarget" style="width:250px;height:30px;" />
-            <button type="button" class="btn btn-green dropdown-toggle" data-toggle="dropdown">
-              <span class="caret"></span>
-              <span class="sr-only"><i class="icon-inbox icon-white" ></i></span>
-            </button>
-            <ul class="dropdown-menu" role="menu" style="width:250px;font-style:normal;color:#696969">
-              <li><a href="#" onclick="javascript:$('#eventTarget').val('feature');">Feature</a></li>
-              <li><a href="#" onclick="javascript:$('#eventTarget').val('group');">Group</a></li>
-              <li><a href="#" onclick="javascript:$('#eventTarget').val('property');">Property</a></li>
-              <li><a href="#" onclick="javascript:$('#eventTarget').val('user');">User</a></li>
-              <li><a href="#" onclick="javascript:$('#eventTarget').val('featurestore');">FeatureStore</a></li>
-              <li><a href="#" onclick="javascript:$('#eventTarget').val('propertystore');">PropertyStore</a></li>
-              <li class="divider"></li>
-              <li><a href="#" onclick="javascript:$('#eventTarget').val('');">None</a></li>
-            </ul>
-          </div> <!-- btn-group -->     
-        </div> <!-- controls -->
-      </div> <!-- control-group -->
 
 </body>
 </html>

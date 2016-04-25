@@ -1,5 +1,35 @@
 package org.ff4j.web.embedded;
 
+import static org.ff4j.web.embedded.ConsoleConstants.CONTENT_TYPE_CSS;
+import static org.ff4j.web.embedded.ConsoleConstants.CONTENT_TYPE_HTML;
+import static org.ff4j.web.embedded.ConsoleConstants.CONTENT_TYPE_JS;
+import static org.ff4j.web.embedded.ConsoleConstants.FEATID;
+import static org.ff4j.web.embedded.ConsoleConstants.KEY_ALERT_MESSAGE;
+import static org.ff4j.web.embedded.ConsoleConstants.KEY_AUDIT_ROWS;
+import static org.ff4j.web.embedded.ConsoleConstants.KEY_FEATURE_ROWS;
+import static org.ff4j.web.embedded.ConsoleConstants.KEY_GROUP_LIST_CREATE;
+import static org.ff4j.web.embedded.ConsoleConstants.KEY_GROUP_LIST_EDIT;
+import static org.ff4j.web.embedded.ConsoleConstants.KEY_GROUP_LIST_TOGGLE;
+import static org.ff4j.web.embedded.ConsoleConstants.KEY_PERMISSIONLIST;
+import static org.ff4j.web.embedded.ConsoleConstants.KEY_PROPERTIES_ROWS;
+import static org.ff4j.web.embedded.ConsoleConstants.KEY_SERVLET_CONTEXT;
+import static org.ff4j.web.embedded.ConsoleConstants.KEY_VERSION;
+import static org.ff4j.web.embedded.ConsoleConstants.MODAL_CREATE;
+import static org.ff4j.web.embedded.ConsoleConstants.MODAL_EDIT;
+import static org.ff4j.web.embedded.ConsoleConstants.MODAL_TOGGLE;
+import static org.ff4j.web.embedded.ConsoleConstants.NEW_LINE;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_RMV_FEATURE;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_RMV_PROPERTY;
+import static org.ff4j.web.embedded.ConsoleConstants.PREFIX_CHECKBOX;
+import static org.ff4j.web.embedded.ConsoleConstants.RESOURCE;
+import static org.ff4j.web.embedded.ConsoleConstants.RESOURCE_CSS_FILE;
+import static org.ff4j.web.embedded.ConsoleConstants.RESOURCE_CSS_PARAM;
+import static org.ff4j.web.embedded.ConsoleConstants.RESOURCE_JS_FILE;
+import static org.ff4j.web.embedded.ConsoleConstants.RESOURCE_JS_PARAM;
+import static org.ff4j.web.embedded.ConsoleConstants.TEMPLATE_FILE;
+import static org.ff4j.web.embedded.ConsoleConstants.TEMPLATE_FILE_MONITORING;
+import static org.ff4j.web.embedded.ConsoleConstants.UTF8_ENCODING;
+
 import java.io.IOException;
 
 /*
@@ -18,6 +48,8 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -27,6 +59,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.ff4j.FF4j;
+import org.ff4j.audit.Event;
+import org.ff4j.audit.EventQueryDefinition;
+import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.property.Property;
@@ -42,8 +77,6 @@ import org.ff4j.property.PropertyLong;
 import org.ff4j.property.PropertyShort;
 import org.ff4j.property.PropertyString;
 import org.ff4j.utils.Util;
-
-import static org.ff4j.web.embedded.ConsoleConstants.*;
 
 /**
  * Used to build GUI Interface for feature flip servlet. It contains gui component render and parmeters
@@ -72,6 +105,9 @@ public final class ConsoleRenderer {
 
     /** Get version of the component. */
     static final String FF4J_VERSION = ConsoleRenderer.class.getPackage().getImplementationVersion();
+    
+    /** Display audit log date. */
+    static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss"); 
     
     /** Mapping from simple 'String' <=> 'org.ff4j.property.PropertyString'. */
     private static Map < String , String > uxTypes = new HashMap< String , String>();
@@ -158,11 +194,9 @@ public final class ConsoleRenderer {
     public static void renderPageMonitoring(FF4j ff4j, HttpServletRequest req, HttpServletResponse res, String msg, String msgType) throws IOException {
         res.setContentType(CONTENT_TYPE_HTML);
         PrintWriter out = res.getWriter();
-
         String htmlContent = renderTemplateMonitoring(req);
         htmlContent = htmlContent.replaceAll("\\{" + KEY_ALERT_MESSAGE + "\\}", renderMessageBox(msg, msgType));
-
-        
+        htmlContent = htmlContent.replaceAll("\\{" + KEY_AUDIT_ROWS + "\\}", renderAuditRows(ff4j , req));
         out.println(htmlContent);
     }
 
@@ -354,6 +388,21 @@ public final class ConsoleRenderer {
         return sb.toString();
     }
 
+    private static final String renderAuditRows(FF4j ff4j, HttpServletRequest req) {
+    	StringBuilder sb = new StringBuilder();
+    	EventRepository er = ff4j.getEventRepository();
+    	EventQueryDefinition query = new EventQueryDefinition();
+    	for (Event event : er.search(query)) {
+    		sb.append("<tr>" + END_OF_LINE);
+        	sb.append("<td>" + SDF.format(new Date(event.getTimestamp())) + "</td>");
+        	sb.append("<td>" + event.getType() + "</td>");
+        	sb.append("<td>" + event.getName() + "</td>");
+        	sb.append("<td>" + event.getAction() + "</td>");
+        	sb.append("</tr>");
+		}
+    	return sb.toString();
+    }
+    
     /**
      * Produce the rows of the Feature Table.
      *

@@ -32,6 +32,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.ff4j.audit.Event;
+import org.ff4j.audit.EventQueryDefinition;
 import org.ff4j.audit.graph.BarChart;
 import org.ff4j.audit.graph.BarSeries;
 import org.ff4j.audit.graph.MutableInt;
@@ -83,6 +84,53 @@ public class InMemoryEventRepository extends AbstractEventRepository {
         }
         return myQueue.offer(e);
     }
+
+    /** {@inheritDoc} */
+    @Override
+	public List<Event> search(EventQueryDefinition query) {
+		List < Event > targetEvents = new ArrayList<Event>();
+		if (query != null) {
+			// Loop over all events
+			for (Map.Entry<String , Map < String, Queue<Event> > > entry : events.entrySet()) {
+				for(Map.Entry<String ,  Queue<Event> > entry2 : entry.getValue().entrySet()) {
+					for (Event evt : entry2.getValue()) {
+						targetEvents.add(evt);
+					}
+				}
+				/* Filter over target if exist
+				if (query.getTargetsFilter() == null || 
+					query.getTargetsFilter().isEmpty() ||  
+					query.getTargetsFilter().contains(entry.getKey())) {
+					
+					Map < String, Queue<Event> > elements = entry.getValue();
+					for(Map.Entry<String ,  Queue<Event> > entry2 : elements.entrySet()) {
+						
+						// Filter over UID if exist
+						if (query.getNamesFilter() == null || 
+							query.getNamesFilter().isEmpty() ||  
+							query.getNamesFilter().contains(entry2.getKey())) {
+							
+							// Loop in the Queue
+				            for (Event evt : entry2.getValue()) {
+				            	
+				            	// Filter over Action if expected
+				            	if (query.getActionFilter() == null || 
+										query.getActionFilter().isEmpty() ||  
+										query.getActionFilter().contains(evt.getAction())) {
+				            		
+				            		// Filter overTime
+				            		if (isEventInInterval(query, evt)) {
+				            			targetEvents.add(evt);
+				            		}
+				            	}
+				            }
+						}
+					}
+				}*/
+			}
+		}
+		return targetEvents;
+	}
     
     /**
      * Retrieve event for same feature and name.
@@ -201,5 +249,5 @@ public class InMemoryEventRepository extends AbstractEventRepository {
         if (!events.containsKey(TARGET_FEATURE)) return new HashSet<String>();
         return events.get(TARGET_FEATURE).keySet();
     }
-
+	
 }

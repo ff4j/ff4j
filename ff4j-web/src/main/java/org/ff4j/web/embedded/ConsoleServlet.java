@@ -129,9 +129,6 @@ public class ConsoleServlet extends HttpServlet {
     	String message = null;
         String messagetype = "info";
         try {
-        	ff4j.getEventRepository().getFeatureNames();
-        	
-        	ff4j.getEventRepository().getTotalEventCount();
         	
         	
         	
@@ -163,7 +160,6 @@ public class ConsoleServlet extends HttpServlet {
                     exportFile(ff4j, res);
                     return;
                 }
-                
                 
                 // Work on a feature ID
                 if ((featureId != null) && (!featureId.isEmpty())) {

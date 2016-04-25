@@ -1,5 +1,13 @@
 package org.ff4j.audit.proxy;
 
+import static org.ff4j.audit.EventConstants.ACTION_CLEAR;
+import static org.ff4j.audit.EventConstants.ACTION_CREATE;
+import static org.ff4j.audit.EventConstants.ACTION_DELETE;
+import static org.ff4j.audit.EventConstants.ACTION_TOGGLE_OFF;
+import static org.ff4j.audit.EventConstants.ACTION_TOGGLE_ON;
+import static org.ff4j.audit.EventConstants.ACTION_UPDATE;
+import static org.ff4j.audit.EventConstants.TARGET_FSTORE;
+
 /*
  * #%L
  * ff4j-core
@@ -24,13 +32,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.ff4j.FF4j;
-import org.ff4j.audit.EventConstants;
 import org.ff4j.audit.EventBuilder;
 import org.ff4j.audit.EventPublisher;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
-
-import static org.ff4j.audit.EventConstants.*;
 
 /**
  * Proxy to publish operation to audit.

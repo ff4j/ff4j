@@ -29,9 +29,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.ff4j.audit.Event;
+import org.ff4j.audit.EventQueryDefinition;
 import org.ff4j.audit.graph.BarChart;
 import org.ff4j.audit.graph.PieChart;
 import org.ff4j.audit.graph.PieSector;
+import org.ff4j.utils.TimeUtils;
 
 import static org.ff4j.audit.EventConstants.*;
 
@@ -46,19 +48,18 @@ public abstract class AbstractEventRepository implements EventRepository {
     public BarChart getFeaturesUsageOverTime(long startTime, long endTime, int nbslot) {
         return getFeaturesUsageOverTime(getFeatureNames(), startTime, endTime, nbslot);
     }
+     
+    protected boolean isEventInInterval(EventQueryDefinition query, Event evt) {
+		return (query.getFrom() == null) || (query.getFrom() <= evt.getTimestamp()) &&
+			   (query.getTo()   == null) || (query.getTo() >= evt.getTimestamp());
+    }
     
     /** {@inheritDoc} */
-    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("{");
         sb.append("\"type\":\"" + this.getClass().getCanonicalName() + "\"");
 
-        // Today
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.HOUR_OF_DAY, 0);
-        c.set(Calendar.MINUTE, 0);
-        c.set(Calendar.SECOND, 0);
-        
+    
         // Tomorrow 00:00
         Calendar c2 = Calendar.getInstance();
         c2.setTime(new Date(System.currentTimeMillis() + 1000 * 3600 * 24));
@@ -67,11 +68,13 @@ public abstract class AbstractEventRepository implements EventRepository {
         c2.set(Calendar.SECOND, 0);
         
         // Create PIE
-        PieChart pie = featuresListDistributionPie(c.getTimeInMillis(), c2.getTimeInMillis());
+        PieChart pie = featuresListDistributionPie(TimeUtils.getTodayMidnightTime(),
+        		TimeUtils.getTomorrowMidnightTime());
         sb.append(",\"todayHitsPie\": " + pie.toJson());
         
         // Create BARCHART
-        BarChart barChart = getFeaturesUsageOverTime(c.getTimeInMillis(), c2.getTimeInMillis(), 24);
+        BarChart barChart = getFeaturesUsageOverTime(TimeUtils.getTodayMidnightTime(), 
+        		TimeUtils.getTomorrowMidnightTime(), 24);
         sb.append(",\"todayHitsBarChart\": " + barChart.toJson());
 
         // Total Count
@@ -92,6 +95,13 @@ public abstract class AbstractEventRepository implements EventRepository {
             labels.add(sdf.format(new Date(startTime + slotWitdh * i)));
         }
         return new BarChart(TITLE_BARCHAR_HIT, labels, new ArrayList<String>(featNameSet));
+    }
+    
+    
+    /** {@inheritDoc} */
+    public List<Event> search(EventQueryDefinition query) {
+		List < Event > targetEvents = new ArrayList<Event>();
+		return targetEvents;
     }
     
     protected boolean isEventInInterval(Event evt, long startTime, long endTime) {

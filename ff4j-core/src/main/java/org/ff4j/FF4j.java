@@ -1,5 +1,9 @@
 package org.ff4j;
 
+import static org.ff4j.audit.EventConstants.ACTION_CHECK_OFF;
+import static org.ff4j.audit.EventConstants.ACTION_CHECK_OK;
+import static org.ff4j.audit.EventConstants.SOURCE_JAVA;
+
 /*
  * #%L
  * ff4j-core
@@ -27,7 +31,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.ff4j.audit.EventBuilder;
-import org.ff4j.audit.EventConstants;
 import org.ff4j.audit.EventPublisher;
 import org.ff4j.audit.proxy.FeatureStoreAuditProxy;
 import org.ff4j.audit.proxy.PropertyStoreAuditProxy;
@@ -44,8 +47,6 @@ import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.security.AuthorizationsManager;
 import org.ff4j.store.InMemoryFeatureStore;
-
-import static org.ff4j.audit.EventConstants.*;
 /**
  * Principal class stands as public api to work with FF4J.
  *
