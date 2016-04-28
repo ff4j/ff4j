@@ -88,7 +88,6 @@ public abstract class AbstractPropertyMultiValued < T, C extends Collection< T>>
     
     /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
-    @Override
     public C fromString(String v) {
         if (v == null) return null;
         String[] items = v.split(getListDelimiter());

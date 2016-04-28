@@ -24,7 +24,7 @@
         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 	<bean id="ff4j" class="org.ff4j.FF4j">
-		<property name="store" ref="ff4j.store" />
+		<property name="featureStore" ref="ff4j.store" />
 	</bean>
 
 	<bean id="ff4j.store" class="org.ff4j.web.jersey1.store.FeatureStoreHttp">

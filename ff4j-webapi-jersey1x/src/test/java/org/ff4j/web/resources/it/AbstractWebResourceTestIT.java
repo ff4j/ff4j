@@ -1,5 +1,12 @@
 package org.ff4j.web.resources.it;
 
+import static org.ff4j.test.TestsFf4jConstants.TEST_FEATURES_FILE;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_FEATURES;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_GROUPS;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_PROPERTIES;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_PROPERTYSTORE;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_STORE;
+
 /*
  * #%L
  * ff4j-web
@@ -24,9 +31,7 @@ import javax.ws.rs.Path;
 
 import org.ff4j.FF4j;
 import org.ff4j.test.AssertFf4j;
-import org.ff4j.test.TestsFf4jConstants;
 import org.ff4j.web.ApiConfig;
-import org.ff4j.web.FF4jWebConstants;
 import org.ff4j.web.api.FF4JApiApplication;
 import org.ff4j.web.api.FF4jJacksonMapper;
 import org.ff4j.web.api.resources.FF4jResource;
@@ -43,9 +48,6 @@ import com.sun.jersey.test.framework.JerseyTest;
 import com.sun.jersey.test.framework.WebAppDescriptor;
 import com.sun.jersey.test.framework.spi.container.TestContainerFactory;
 import com.sun.jersey.test.framework.spi.container.grizzly2.web.GrizzlyWebTestContainerFactory;
-
-import static org.ff4j.test.TestsFf4jConstants.*;
-import static org.ff4j.web.FF4jWebConstants.*;
 
 /**
  * Superclass for testing web resources.

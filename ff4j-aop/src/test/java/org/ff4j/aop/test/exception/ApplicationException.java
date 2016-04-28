@@ -22,7 +22,10 @@ package org.ff4j.aop.test.exception;
 
 public class ApplicationException extends RuntimeException {
 
-    public ApplicationException() {
+    /** serial. */
+	private static final long serialVersionUID = 1L;
+
+	public ApplicationException() {
         super("Application Exception!");
     }
 

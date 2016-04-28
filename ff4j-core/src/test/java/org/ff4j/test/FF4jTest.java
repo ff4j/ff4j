@@ -127,15 +127,14 @@ public class FF4jTest extends AbstractFf4jTest {
         Assert.assertNotNull(ep.getRepository());
     }
     
-    @SuppressWarnings("deprecation")
     @Test
     public void enableDisableGroups() {
         // Given
         FF4j ff4j = new FF4j();
         ff4j.audit();
-        ff4j.setStore(new InMemoryFeatureStore());
-        ff4j.create("f1", true);
-        ff4j.create("f2");
+        ff4j.setFeatureStore(new InMemoryFeatureStore());
+        ff4j.createFeature("f1", true);
+        ff4j.createFeature("f2");
         ff4j.getFeatureStore().addToGroup("f1", "g1");
         ff4j.getFeatureStore().addToGroup("f2", "g1");
         
@@ -168,12 +167,11 @@ public class FF4jTest extends AbstractFf4jTest {
         Assert.assertNotNull(ff4j.getProperties());
     }
     
-    @SuppressWarnings("deprecation")
     @Test
     public void testToString() {
         FF4j ff4j = new FF4j("ff4j.xml");
         ff4j.toString();
-        Assert.assertNotNull(ff4j.getStore());
+        Assert.assertNotNull(ff4j.getFeatureStore());
         ff4j.setFeatureStore(null);
         ff4j.setPropertiesStore(null);
         ff4j.setEventRepository(null);
@@ -285,17 +283,14 @@ public class FF4jTest extends AbstractFf4jTest {
         Assert.assertFalse(ff4j.checkOveridingStrategy("cocorico", mockFlipStrategy));
     }
     
-    @SuppressWarnings("deprecation")
     @Test
     public void testOverrideStrategy() {
         FF4j ff4j = new FF4j();
         ff4j.audit();
         ff4j.createFeature("N1", true, "description NEWS");
-        ff4j.create("N2", false, "description NEWS");
+        ff4j.createFeature("N2", false, "description NEWS");
         Assert.assertTrue(ff4j.check("N1"));
-        
         Assert.assertFalse(ff4j.checkOveridingStrategy("N1", new ExpressionFlipStrategy("N1", "N1 & N2")));
-        
     }
         
     @Test

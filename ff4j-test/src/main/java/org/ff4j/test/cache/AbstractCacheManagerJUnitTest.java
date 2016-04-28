@@ -27,8 +27,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.ff4j.test.TestsFf4jConstants.*;
-
 /**
  * Cache manager.
  *

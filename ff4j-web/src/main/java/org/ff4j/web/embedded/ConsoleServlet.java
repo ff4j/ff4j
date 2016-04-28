@@ -1,5 +1,31 @@
 package org.ff4j.web.embedded;
 
+import static org.ff4j.web.embedded.ConsoleConstants.CONTENT_TYPE_HTML;
+import static org.ff4j.web.embedded.ConsoleConstants.CONTENT_TYPE_JSON;
+import static org.ff4j.web.embedded.ConsoleConstants.FEATID;
+import static org.ff4j.web.embedded.ConsoleConstants.FF4J_SESSIONATTRIBUTE_NAME;
+import static org.ff4j.web.embedded.ConsoleConstants.FLIPFILE;
+import static org.ff4j.web.embedded.ConsoleConstants.GROUPNAME;
+import static org.ff4j.web.embedded.ConsoleConstants.NAME;
+import static org.ff4j.web.embedded.ConsoleConstants.OPERATION;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_ADD_FIXEDVALUE;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_CREATE_FEATURE;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_CREATE_PROPERTY;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_DELETE_FIXEDVALUE;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_DISABLE;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_EDIT_FEATURE;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_EDIT_PROPERTY;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_ENABLE;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_EXPORT;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_READ_FEATURE;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_READ_PROPERTY;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_RMV_FEATURE;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_RMV_PROPERTY;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_TOGGLE_GROUP;
+import static org.ff4j.web.embedded.ConsoleConstants.PARAM_FIXEDVALUE;
+import static org.ff4j.web.embedded.ConsoleConstants.PROVIDER_PARAM_NAME;
+import static org.ff4j.web.embedded.ConsoleConstants.SUBOPERATION;
+import static org.ff4j.web.embedded.ConsoleConstants.VIEW;
 import static org.ff4j.web.embedded.ConsoleOperations.createFeature;
 import static org.ff4j.web.embedded.ConsoleOperations.createProperty;
 import static org.ff4j.web.embedded.ConsoleOperations.exportFile;
@@ -12,7 +38,6 @@ import static org.ff4j.web.embedded.ConsoleRenderer.renderMsgGroup;
 import static org.ff4j.web.embedded.ConsoleRenderer.renderMsgProperty;
 import static org.ff4j.web.embedded.ConsoleRenderer.renderPage;
 import static org.ff4j.web.embedded.ConsoleRenderer.renderPageMonitoring;
-import static org.ff4j.web.embedded.ConsoleConstants.*;
 
 /*
  * #%L AdministrationConsoleServlet.java (ff4j-web) by Cedrick LUNVEN %% Copyright (C) 2013 Ff4J %% Licensed under the Apache
@@ -114,6 +139,17 @@ public class ConsoleServlet extends HttpServlet {
     /** {@inheritDoc} */
     public void doGet(HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException {
+    	
+    	if (ff4j.check("ff4j.admin.secure")) {
+    		/*
+    		 	PropertyStringList listOfUsers = (PropertyStringList) 
+    				ff4j.getPropertiesStore().readProperty("authorizedUsers");
+    		if (!listOfUsers.contains(ff4j.getAuthorizationsManager().getCurrentUserName())) {
+    			// Forbidden
+    		}
+    		*/
+    		
+    	}
     	
     	String targetView = req.getParameter(VIEW);
     	

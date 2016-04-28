@@ -209,4 +209,14 @@ public class FeatureStoreAuditProxy implements FeatureStore {
         return target.readAllGroups();
     }
 
+	/**
+	 * Getter accessor for attribute 'target'.
+	 *
+	 * @return
+	 *       current value of 'target'
+	 */
+	public FeatureStore getTarget() {
+		return target;
+	}
+
 }

@@ -89,7 +89,6 @@ public class AnsiTerminalTest {
 		AnsiTerminal.setup(AnsiForegroundColor.WHITE, AnsiBackGroundColor.BLACK, AnsiTextAttribute.CLEAR);
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Test
 	public void simuMain() throws Exception {
 		new MainCli();

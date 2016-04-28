@@ -22,7 +22,6 @@ package org.ff4j.test.store;
 
 
 import org.ff4j.property.store.PropertyStore;
-import org.ff4j.store.JdbcFeatureStore;
 import org.ff4j.store.JdbcQueryBuilder;
 import org.ff4j.store.PropertyStoreSpringJdbc;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;

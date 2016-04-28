@@ -1,5 +1,16 @@
 package org.ff4j.web.resources.it;
 
+import static org.ff4j.test.TestsFf4jConstants.F1;
+import static org.ff4j.test.TestsFf4jConstants.F4;
+import static org.ff4j.test.TestsFf4jConstants.TEST_FEATURES_FILE;
+import static org.ff4j.web.FF4jWebConstants.HEADER_AUTHORIZATION;
+import static org.ff4j.web.FF4jWebConstants.OPERATION_CHECK;
+import static org.ff4j.web.FF4jWebConstants.OPERATION_DISABLE;
+import static org.ff4j.web.FF4jWebConstants.PARAM_AUTHKEY;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_FEATURES;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_GROUPS;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_STORE;
+
 /*
  * #%L
  * ff4j-web
@@ -27,11 +38,9 @@ import javax.ws.rs.core.Response.Status;
 import org.ff4j.FF4j;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.test.AssertFf4j;
-import org.ff4j.test.TestsFf4jConstants;
 import org.ff4j.utils.Util;
 import org.ff4j.web.ApiConfig;
 import org.ff4j.web.ApiConfigBuilder;
-import org.ff4j.web.FF4jWebConstants;
 import org.ff4j.web.api.FF4JApiApplication;
 import org.ff4j.web.api.FF4jJacksonMapper;
 import org.ff4j.web.api.resources.FF4jResource;
@@ -52,9 +61,6 @@ import com.sun.jersey.test.framework.JerseyTest;
 import com.sun.jersey.test.framework.WebAppDescriptor;
 import com.sun.jersey.test.framework.spi.container.TestContainerFactory;
 import com.sun.jersey.test.framework.spi.container.grizzly2.web.GrizzlyWebTestContainerFactory;
-
-import static org.ff4j.test.TestsFf4jConstants.*;
-import static org.ff4j.web.FF4jWebConstants.*;
 /**
  * Force security through API KEY and check.
  *

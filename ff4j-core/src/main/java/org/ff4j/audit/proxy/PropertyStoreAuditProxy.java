@@ -153,4 +153,14 @@ public class PropertyStoreAuditProxy implements PropertyStore {
         ff4j.getEventPublisher().publish(eb.build());
     }
 
+	/**
+	 * Getter accessor for attribute 'target'.
+	 *
+	 * @return
+	 *       current value of 'target'
+	 */
+	public PropertyStore getTarget() {
+		return target;
+	}
+
 }

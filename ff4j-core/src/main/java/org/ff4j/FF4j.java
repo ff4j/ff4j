@@ -47,6 +47,7 @@ import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.security.AuthorizationsManager;
 import org.ff4j.store.InMemoryFeatureStore;
+
 /**
  * Principal class stands as public api to work with FF4J.
  *
@@ -287,9 +288,10 @@ public class FF4j {
             getFeatureStore().enable(featureID);
         } catch (FeatureNotFoundException fnfe) {
             if (this.autocreate) {
-                return create(new Feature(featureID, true));
+                getFeatureStore().create(new Feature(featureID, true));
+            } else {
+            	throw fnfe;
             }
-            throw fnfe;
         }
         return this;
     }
@@ -372,58 +374,6 @@ public class FF4j {
     }
 
     /**
-     * Create new Feature.
-     * 
-     * @param featureID
-     *            unique feature identifier.
-     *
-     * @Deprecated As of release 1.3, replaced by {@link #createFeature()}, as you can now also create {@link Property}.
-     */
-    @Deprecated
-    public FF4j create(Feature fp) {
-        return createFeature(fp);
-    }
-    
-    /**
-     * Create new Feature.
-     * 
-     * @param featureID
-     *            unique feature identifier.
-     *
-     * @Deprecated As of release 1.3, replaced by {@link #createFeature()}, as you can now also create {@link Property}. 
-     */
-    @Deprecated
-    public FF4j create(String featureName, boolean enable, String description) {
-        return create(new Feature(featureName, enable, description));
-    }
-
-    /**
-     * Create new Feature.
-     * 
-     * @param featureID
-     *            unique feature identifier.
-     *
-     * @Deprecated As of release 1.3, replaced by {@link #createFeature()}, as you can now also create {@link Property}.           
-     */
-    @Deprecated
-    public FF4j create(String featureName, boolean enable) {
-        return create(featureName, enable, "");
-    }
-
-    /**
-     * Create new Feature.
-     * 
-     * @param featureID
-     *            unique feature identifier.
-     *
-     * @Deprecated As of release 1.3, replaced by {@link #createFeature()}, as you can now also create {@link Property}.
-     */
-    @Deprecated
-    public FF4j create(String featureName) {
-        return create(featureName, false, "");
-    }
-
-    /**
      * Disable Feature.
      * 
      * @param featureID
@@ -433,10 +383,11 @@ public class FF4j {
         try {
             getFeatureStore().disable(featureID);
         } catch (FeatureNotFoundException fnfe) {
-            if (this.autocreate) {
-                return create(new Feature(featureID, false));
-            }
-            throw fnfe;
+        	 if (this.autocreate) {
+                 getFeatureStore().create(new Feature(featureID, false));
+             } else {
+             	throw fnfe;
+             }
         }
         return this;
     }
@@ -526,7 +477,7 @@ public class FF4j {
      * @return current instance
      */
     public FF4j audit(boolean val) {
-         setEnableAudit(true);
+         setEnableAudit(val);
          return this;
     }
 
@@ -553,7 +504,6 @@ public class FF4j {
     }
 
     /** {@inheritDoc} */
-    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("{");
         long uptime = System.currentTimeMillis() - startTime;
@@ -596,32 +546,7 @@ public class FF4j {
     // -------------------------------------------------------------------------
     // ------------------- GETTERS & SETTERS -----------------------------------
     // -------------------------------------------------------------------------
-
-    /**
-     * Access store as static way (single store).
-     * 
-     * @deprecated use {@link #getFeatureStore()} instead as since 1.4 there are both Features and properties stores
-     * 
-     * @return current store
-     */
-    @Deprecated
-    public FeatureStore getStore() {
-        return fstore;
-    }
-
-    /**
-     * NON Static to be use by Injection of Control.
-     * 
-     * @deprecated use {@link #getFeatureStore()} instead as since 1.4 there are both Features and properties stores
-     * 
-     * @param fbs
-     *            target store.
-     */
-    @Deprecated
-    public void setStore(FeatureStore fbs) {
-        this.fstore = fbs;
-    }
-    
+       
     /**
      * NON Static to be use by Injection of Control.
      * 
@@ -703,14 +628,24 @@ public class FF4j {
         eventPublisher = new EventPublisher(eventRepository);
         this.shutdownEventPublisher = true;
         
-        // Audit
+        // Audit is enabled, proxified for auditing
         if (isEnableAudit()) {
-            if (fstore != null) {
+        	
+        	if (fstore != null && !(fstore instanceof FeatureStoreAuditProxy)) {
                 this.fstore = new FeatureStoreAuditProxy(this, fstore);
             }
-            if (pStore != null) {
+            if (pStore != null && !(pStore instanceof PropertyStoreAuditProxy)) { 
                 this.pStore = new PropertyStoreAuditProxy(this, pStore);
             }
+        } else {
+        	
+        	 // Audit is disabled but could have been enabled before... removing PROXY if relevant
+        	 if (fstore != null && fstore instanceof FeatureStoreAuditProxy) {
+        		 this.fstore = ((FeatureStoreAuditProxy) fstore).getTarget();
+        	 }
+        	 if (pStore != null && pStore instanceof PropertyStoreAuditProxy) { 
+        		 this.pStore = ((PropertyStoreAuditProxy) pStore).getTarget();
+             }
         }
         
         // Flag as OK
@@ -821,15 +756,20 @@ public class FF4j {
 
     /**
      * Setter accessor for attribute 'enableAudit'.
+     *
      * @param enableAudit
      * 		new value for 'enableAudit '
      */
     public void setEnableAudit(boolean enableAudit) {
-        this.enableAudit = enableAudit;
+    	this.enableAudit = enableAudit;
+    	
+    	// if you disable the audit you should remove the auditProxy
+    	initialized = false;
     }
     
     /**
      * Required for spring namespace and 'fileName' attribut on ff4j tag.
+     *
      * @param fname
      *      target name
      */
