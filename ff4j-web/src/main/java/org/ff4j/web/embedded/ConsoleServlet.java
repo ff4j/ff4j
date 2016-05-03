@@ -3,8 +3,8 @@ package org.ff4j.web.embedded;
 import static org.ff4j.web.embedded.ConsoleConstants.CONTENT_TYPE_HTML;
 import static org.ff4j.web.embedded.ConsoleConstants.CONTENT_TYPE_JSON;
 import static org.ff4j.web.embedded.ConsoleConstants.FEATID;
-import static org.ff4j.web.embedded.ConsoleConstants.FF4J_SESSIONATTRIBUTE_NAME;
 import static org.ff4j.web.embedded.ConsoleConstants.FLIPFILE;
+import static org.ff4j.web.embedded.ConsoleConstants.VIEW;
 import static org.ff4j.web.embedded.ConsoleConstants.GROUPNAME;
 import static org.ff4j.web.embedded.ConsoleConstants.NAME;
 import static org.ff4j.web.embedded.ConsoleConstants.OPERATION;
@@ -23,9 +23,7 @@ import static org.ff4j.web.embedded.ConsoleConstants.OP_RMV_FEATURE;
 import static org.ff4j.web.embedded.ConsoleConstants.OP_RMV_PROPERTY;
 import static org.ff4j.web.embedded.ConsoleConstants.OP_TOGGLE_GROUP;
 import static org.ff4j.web.embedded.ConsoleConstants.PARAM_FIXEDVALUE;
-import static org.ff4j.web.embedded.ConsoleConstants.PROVIDER_PARAM_NAME;
 import static org.ff4j.web.embedded.ConsoleConstants.SUBOPERATION;
-import static org.ff4j.web.embedded.ConsoleConstants.VIEW;
 import static org.ff4j.web.embedded.ConsoleOperations.createFeature;
 import static org.ff4j.web.embedded.ConsoleOperations.createProperty;
 import static org.ff4j.web.embedded.ConsoleOperations.exportFile;
@@ -54,9 +52,7 @@ import static org.ff4j.web.embedded.ConsoleRenderer.renderPageMonitoring;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -67,7 +63,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
-import org.ff4j.web.FF4JProvider;
+import org.ff4j.web.FF4jInitServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +72,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class ConsoleServlet extends HttpServlet {
+public class ConsoleServlet extends FF4jInitServlet {
 
     /** serial number. */
     private static final long serialVersionUID = -3982043895954284269L;
@@ -87,69 +83,37 @@ public class ConsoleServlet extends HttpServlet {
     /** Error Message. */
     public static final String ERROR = "error";
 
-    /** instance of ff4j. */
-    private FF4j ff4j = null;
-
-    /** initializing ff4j provider. */
-    private FF4JProvider ff4jProvider = null;
-
-    /**
-     * Servlet initialization, init FF4J from "ff4jProvider" attribute Name.
-     *
-     * @param servletConfig
-     *            current {@link ServletConfig} context
-     * @throws ServletException
-     *             error during servlet initialization
-     */
-    public void init(ServletConfig servletConfig) throws ServletException {
-        LOGGER.info("  __  __ _  _   _ ");
-        LOGGER.info(" / _|/ _| || | (_)");
-        LOGGER.info("| |_| |_| || |_| |");
-        LOGGER.info("|  _|  _|__   _| |");
-        LOGGER.info("|_| |_|    |_|_/ |");
-        LOGGER.info("             |__/   Embedded Console - v" + getClass().getPackage().getImplementationVersion());
-        LOGGER.info(" ");
-        
-        if (ff4j == null) {
-            String className = servletConfig.getInitParameter(PROVIDER_PARAM_NAME);
-            try {
-                Class<?> c = Class.forName(className);
-                Object o = c.newInstance();
-                ff4jProvider = (FF4JProvider) o;
-                LOGGER.info("ff4j context has been successfully initialized - {} feature(s)", ff4jProvider.getFF4j().getFeatures().size());
-            } catch (ClassNotFoundException e) {
-                throw new IllegalArgumentException("Cannot load ff4jProvider as " + ff4jProvider, e);
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("Cannot instantiate  " + ff4jProvider + " as ff4jProvider", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("No public constructor for  " + ff4jProvider + " as ff4jProvider", e);
-            } catch (ClassCastException ce) {
-                throw new IllegalArgumentException("ff4jProvider expected instance of " + FF4JProvider.class, ce);
-            }
-
-            // Put the FF4J in ApplicationScope (useful for tags)
-            ff4j = ff4jProvider.getFF4j();
-            servletConfig.getServletContext().setAttribute(FF4J_SESSIONATTRIBUTE_NAME, ff4j);
-            LOGGER.debug("Servlet has been initialized and ff4j store in session with {} ", ff4j.getFeatures().size());
-        } else {
-            LOGGER.debug("Servlet has been initialized, ff4j was injected");
-        }
-    }
-
     /** {@inheritDoc} */
     public void doGet(HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException {
     	
+    	if (ConsoleRenderer.renderResources(req, res)) return;
+    	 
+    	/* Sample Context
+    	ServletContext sc = req.getSession().getServletContext();
+    	WebContext ctx = new WebContext(req, res, sc, req.getLocale());
+    	ctx.setVariable("CHAINE", "Sample Valeur");
+    	ApiConfig api = new ApiConfig();
+    	api.setHost("HOST_X");
+    	ctx.setVariable("BEAN", api);
+    	ctx.setVariable("today", Calendar.getInstance());
+    	
+    	List < ApiConfig > listA = new ArrayList<ApiConfig>();
+    	listA.add(new ApiConfig());
+    	listA.add(new ApiConfig());
+    	listA.add(api);
+    	ctx.setVariable("apis", listA);
+    	
+    	templateEngine.process("home", ctx, res.getWriter());
+	    */
+    	/*
     	if (ff4j.check("ff4j.admin.secure")) {
-    		/*
     		 	PropertyStringList listOfUsers = (PropertyStringList) 
     				ff4j.getPropertiesStore().readProperty("authorizedUsers");
     		if (!listOfUsers.contains(ff4j.getAuthorizationsManager().getCurrentUserName())) {
     			// Forbidden
     		}
-    		*/
-    		
-    	}
+    	}*/
     	
     	String targetView = req.getParameter(VIEW);
     	

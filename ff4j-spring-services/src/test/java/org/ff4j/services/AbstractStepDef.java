@@ -1,5 +1,13 @@
 package org.ff4j.services;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.ff4j.services.utils.JsonUtils.GSON;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /*
  * #%L
  * ff4j-spring-services
@@ -23,7 +31,11 @@ package org.ff4j.services;
 import org.apache.commons.lang3.StringUtils;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
-import org.ff4j.property.*;
+import org.ff4j.property.Property;
+import org.ff4j.property.PropertyBoolean;
+import org.ff4j.property.PropertyInt;
+import org.ff4j.property.PropertyLong;
+import org.ff4j.property.PropertyString;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.util.PropertyFactory;
 import org.ff4j.services.model.FeatureActions;
@@ -31,14 +43,6 @@ import org.ff4j.store.InMemoryFeatureStore;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.ff4j.services.utils.JsonUtils.GSON;
 
 /**
  * @author <a href="mailto:paul58914080@gmail.com">Paul Williams</a>
@@ -62,14 +66,14 @@ public class AbstractStepDef {
 
     protected void createProperties(List<PropertyPojo> properties) {
         for (PropertyPojo propertyPojo : properties) {
-            Property property = asProperty(propertyPojo.getName(), propertyPojo.getType(), propertyPojo.getValue(),
+            Property<?> property = asProperty(propertyPojo.getName(), propertyPojo.getType(), propertyPojo.getValue(),
                     propertyPojo.getDescription(),
                     StringUtils.isNotBlank(propertyPojo.getFixedValueCSV()) ? new HashSet<>(Arrays.asList(propertyPojo.getFixedValueCSV().split(","))) : null);
             createProperty(property);
         }
     }
 
-    private void createProperty(Property property) {
+    private void createProperty(Property<?> property) {
         ff4j.createProperty(property);
     }
 
@@ -85,7 +89,7 @@ public class AbstractStepDef {
         ff4j.setPropertiesStore(new InMemoryPropertyStore());
     }
 
-    protected Property asProperty(String name, String type, String value, String description, Set<String> fixedValues) {
+    protected Property<?> asProperty(String name, String type, String value, String description, Set<String> fixedValues) {
         return PropertyFactory.createProperty(name, getType(type), value, description, fixedValues);
     }
 

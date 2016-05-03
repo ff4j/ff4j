@@ -1,5 +1,20 @@
 package org.ff4j.cache.store;
 
+import static org.ff4j.test.TestsFf4jConstants.EXPECTED_FEATURES_NUMBERS;
+import static org.ff4j.test.TestsFf4jConstants.F1;
+import static org.ff4j.test.TestsFf4jConstants.F2;
+import static org.ff4j.test.TestsFf4jConstants.F3;
+import static org.ff4j.test.TestsFf4jConstants.F4;
+import static org.ff4j.test.TestsFf4jConstants.FEATURE_NEW;
+import static org.ff4j.test.TestsFf4jConstants.F_DOESNOTEXIST;
+import static org.ff4j.test.TestsFf4jConstants.G0;
+import static org.ff4j.test.TestsFf4jConstants.G1;
+import static org.ff4j.test.TestsFf4jConstants.G_DOESNOTEXIST;
+import static org.ff4j.test.TestsFf4jConstants.ROLE_ADMIN;
+import static org.ff4j.test.TestsFf4jConstants.ROLE_NEW;
+import static org.ff4j.test.TestsFf4jConstants.ROLE_USER;
+import static org.ff4j.test.TestsFf4jConstants.TEST_FEATURES_FILE;
+
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -40,14 +55,11 @@ import org.ff4j.store.FeatureStoreJCache;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.PonderationStrategy;
 import org.ff4j.test.AssertFf4j;
-import org.ff4j.test.TestsFf4jConstants;
 import org.ff4j.utils.Util;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.ff4j.test.TestsFf4jConstants.*;
 
 /**
  * Test to work with Redis as a store.

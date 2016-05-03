@@ -1,5 +1,16 @@
 package org.ff4j.spring.boot.resources.propertystore;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.ff4j.cache.FF4jCacheProxy;
+import org.ff4j.cache.InMemoryCacheManager;
+import org.ff4j.property.Property;
+import org.ff4j.spring.boot.resources.AbstractStepDef;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
 /*
  * #%L
  * ff4j-spring-boot-starter
@@ -24,16 +35,6 @@ import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import org.apache.commons.lang3.StringUtils;
-import org.ff4j.cache.FF4jCacheProxy;
-import org.ff4j.cache.InMemoryCacheManager;
-import org.ff4j.property.Property;
-import org.ff4j.spring.boot.resources.AbstractStepDef;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
 
 /**
  * @author <a href="mailto:paul58914080@gmail.com">Paul Williams</a>
@@ -64,7 +65,7 @@ public class PropertyStoreStepDef extends AbstractStepDef {
     @Given("^the following properties are cached$")
     public void the_following_properties_are_cached(List<PropertyPojo> properties) throws Throwable {
         for (PropertyPojo propertyPojo : properties) {
-            Property property = asProperty(propertyPojo.getName(), propertyPojo.getType(), propertyPojo.getValue(),
+            Property<?> property = asProperty(propertyPojo.getName(), propertyPojo.getType(), propertyPojo.getValue(),
                     propertyPojo.getDescription(),
                     StringUtils.isNotBlank(propertyPojo.getFixedValueCSV()) ? new HashSet<>(Arrays.asList(propertyPojo.getFixedValueCSV().split(","))) : null);
             ((FF4jCacheProxy) ff4j.getPropertiesStore()).getCacheManager().putProperty(property);

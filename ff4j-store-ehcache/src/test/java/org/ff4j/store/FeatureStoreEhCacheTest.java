@@ -24,7 +24,6 @@ import java.lang.reflect.Constructor;
 
 import java.util.Map;
 
-import org.ff4j.audit.EventConstants;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.ehcache.FF4JEhCacheConstants;

@@ -1,5 +1,8 @@
 package org.ff4j.store;
 
+import static org.ff4j.store.mongodb.FeatureStoreMongoConstants.MONGO_SET;
+import static org.ff4j.store.mongodb.FeatureStoreMongoConstants.PROPERTY_NAME;
+
 /*
  * #%L
  * ff4j-store-mongodb
@@ -30,7 +33,6 @@ import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.AbstractPropertyStore;
 import org.ff4j.store.mongodb.FeatureDBObjectMapper;
-import org.ff4j.store.mongodb.FeatureStoreMongoConstants;
 import org.ff4j.store.mongodb.PropertyDBObjectBuilder;
 import org.ff4j.utils.Util;
 
@@ -38,8 +40,6 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
-
-import static org.ff4j.store.mongodb.FeatureStoreMongoConstants.*;
 
 /**
  * PropertyStore based on MongoDB database.

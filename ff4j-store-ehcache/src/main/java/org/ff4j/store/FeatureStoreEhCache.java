@@ -27,7 +27,6 @@ import java.util.Set;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.ehcache.FF4JEhCacheConstants;
 import org.ff4j.ehcache.FF4jEhCacheWrapper;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;

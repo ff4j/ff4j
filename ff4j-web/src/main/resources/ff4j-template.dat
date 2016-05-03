@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8" />
   <title>ff4j</title>
-  <link href="{SERVLET_CONTEXT}?rsc=css" rel="stylesheet">
+  <link href="{URL_CSS}" rel="stylesheet">
   <script type="text/javascript" charset="utf-8" src="{SERVLET_CONTEXT}?rsc=js"></script>
 </head>
 

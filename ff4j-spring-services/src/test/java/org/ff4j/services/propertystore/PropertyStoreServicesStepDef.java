@@ -72,7 +72,7 @@ public class PropertyStoreServicesStepDef extends AbstractStepDef {
     @Given("^the following properties are cached$")
     public void the_following_properties_are_cached(List<PropertyPojo> properties) throws Throwable {
         for (PropertyPojo propertyPojo : properties) {
-            Property property = asProperty(propertyPojo.getName(), propertyPojo.getType(), propertyPojo.getValue(),
+            Property<?> property = asProperty(propertyPojo.getName(), propertyPojo.getType(), propertyPojo.getValue(),
                     propertyPojo.getDescription(),
                     StringUtils.isNotBlank(propertyPojo.getFixedValueCSV()) ? new HashSet<>(Arrays.asList(propertyPojo.getFixedValueCSV().split(","))) : null);
             ((FF4jCacheProxy) ff4j.getPropertiesStore()).getCacheManager().putProperty(property);

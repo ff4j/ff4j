@@ -3,9 +3,11 @@ package org.ff4j.web.embedded;
 import static org.ff4j.web.embedded.ConsoleConstants.CONTENT_TYPE_CSS;
 import static org.ff4j.web.embedded.ConsoleConstants.CONTENT_TYPE_HTML;
 import static org.ff4j.web.embedded.ConsoleConstants.CONTENT_TYPE_JS;
+import static org.ff4j.web.embedded.ConsoleConstants.CSS_SESSIONATTRIBUTE_NAME;
 import static org.ff4j.web.embedded.ConsoleConstants.FEATID;
 import static org.ff4j.web.embedded.ConsoleConstants.KEY_ALERT_MESSAGE;
 import static org.ff4j.web.embedded.ConsoleConstants.KEY_AUDIT_ROWS;
+import static org.ff4j.web.embedded.ConsoleConstants.KEY_CSS_URL;
 import static org.ff4j.web.embedded.ConsoleConstants.KEY_FEATURE_ROWS;
 import static org.ff4j.web.embedded.ConsoleConstants.KEY_GROUP_LIST_CREATE;
 import static org.ff4j.web.embedded.ConsoleConstants.KEY_GROUP_LIST_EDIT;
@@ -298,11 +300,20 @@ public final class ConsoleRenderer {
      * @return current text part as string
      */
      private static final String renderTemplate(HttpServletRequest req) {
-        if (htmlTemplate == null || htmlTemplate.isEmpty()) {
+    	if (htmlTemplate == null || htmlTemplate.isEmpty()) {
             String ctx = req.getContextPath() + req.getServletPath() + "";
             htmlTemplate = loadFileAsString(TEMPLATE_FILE);
             htmlTemplate = htmlTemplate.replaceAll("\\{" + KEY_SERVLET_CONTEXT + "\\}", ctx);
             htmlTemplate = htmlTemplate.replaceAll("\\{" + KEY_VERSION + "\\}", FF4J_VERSION);
+            
+            // Customization of the CSS
+            String targetCss = ctx + "?rsc=css";
+            String cssAttribute = (String) req.getSession()
+            			.getServletContext().getAttribute(CSS_SESSIONATTRIBUTE_NAME);
+            if (cssAttribute != null) {
+            	targetCss = cssAttribute;
+            }
+            htmlTemplate = htmlTemplate.replaceAll("\\{" + KEY_CSS_URL + "\\}", targetCss);
         }
         return htmlTemplate;
     }

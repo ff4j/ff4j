@@ -1,0 +1,48 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+    <title>FF4J - Home page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" media="all" 
+          href="ff4j-embedded.css.css" 
+          th:href="@{/ff4j-console?rsc=css}" />
+  </head>
+
+  <body>
+  
+    <div th:include="header :: title"></div>
+  
+    <p th:text="#{home.welcome}">Welcome to our grocery store!</p>
+    
+    <p>Host is: <span th:text="${BEAN.host}">invalid host</span></p>
+    
+    <p>Chaine is: <span th:text="${CHAINE}">une chaine</span></p>
+    
+  	<p th:utext="#{home.sampleparam(${BEAN.host})}">Host</p>
+	
+  	<p>Locale : <span th:text="${#locale.language}">La locale 2</span></p>
+  	
+  	<span th:text="${#calendars.format(today,'dd MMMM yyyy')}">13 May 2011</span>
+  
+    <div th:if="${BEAN.host} != null">
+     OK IF
+    </div>
+    
+    <table>
+	 <tr>
+		<th>NAME</th>
+		<th>PRICE</th>
+		<th>IN STOCK</th>
+	 </tr>
+	 <tr th:each="api : ${apis}">
+		<td th:text="${api.host}">Onions</td>
+		<td th:text="${api.host}">2.41</td>
+		<td th:text="${api.host}">yes</td>
+	 </tr>
+	</table>
+	
+  </body>
+
+</html>

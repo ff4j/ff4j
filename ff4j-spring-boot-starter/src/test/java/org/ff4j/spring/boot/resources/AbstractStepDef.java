@@ -1,5 +1,13 @@
 package org.ff4j.spring.boot.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /*
  * #%L
  * ff4j-spring-boot-starter
@@ -23,7 +31,11 @@ package org.ff4j.spring.boot.resources;
 import org.apache.commons.lang3.StringUtils;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
-import org.ff4j.property.*;
+import org.ff4j.property.Property;
+import org.ff4j.property.PropertyBoolean;
+import org.ff4j.property.PropertyInt;
+import org.ff4j.property.PropertyLong;
+import org.ff4j.property.PropertyString;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.util.PropertyFactory;
 import org.ff4j.spring.boot.Application;
@@ -41,14 +53,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:paul58914080@gmail.com">Paul Williams</a>
@@ -105,14 +109,14 @@ public abstract class AbstractStepDef {
 
     protected void createProperties(List<PropertyPojo> properties) {
         for (PropertyPojo propertyPojo : properties) {
-            Property property = asProperty(propertyPojo.getName(), propertyPojo.getType(), propertyPojo.getValue(),
+            Property<?> property = asProperty(propertyPojo.getName(), propertyPojo.getType(), propertyPojo.getValue(),
                     propertyPojo.getDescription(),
                     StringUtils.isNotBlank(propertyPojo.getFixedValueCSV()) ? new HashSet<>(Arrays.asList(propertyPojo.getFixedValueCSV().split(","))) : null);
             createProperty(property);
         }
     }
 
-    private void createProperty(Property property) {
+    private void createProperty(Property<?> property) {
         ff4j.createProperty(property);
     }
 
@@ -143,7 +147,7 @@ public abstract class AbstractStepDef {
         assertThat(response.getContentAsString()).contains(expectedResponse);
     }
 
-    protected Property asProperty(String name, String type, String value, String description, Set<String> fixedValues) {
+    protected Property<?> asProperty(String name, String type, String value, String description, Set<String> fixedValues) {
         return PropertyFactory.createProperty(name, getType(type), value, description, fixedValues);
     }
 

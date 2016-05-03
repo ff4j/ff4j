@@ -56,15 +56,28 @@
 			<scope>provided</scope>
 		</dependency>
 		
+		<!-- TagLibs -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
 		</dependency>
-		
 		<dependency>
 			<groupId>taglibs</groupId>
 			<artifactId>standard</artifactId>
 			<scope>runtime</scope>
+		</dependency>
+		
+		<!-- Templating Engine -->
+		<dependency>
+			<groupId>org.thymeleaf</groupId>
+			<artifactId>thymeleaf</artifactId>
+		</dependency>
+		
+		<!-- Support for tests -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
 		</dependency>
 		
 		<!-- logs -->

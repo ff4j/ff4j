@@ -44,7 +44,6 @@
 		<dependency>
 			<groupId>javax.cache</groupId>
 			<artifactId>cache-api</artifactId>
-			<version>${jsr107.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		
@@ -68,7 +67,6 @@
 		<dependency>
 			<groupId>com.hazelcast</groupId>
 			<artifactId>hazelcast</artifactId>
-			<version>${hazelcast.version}</version>
 			<scope>test</scope>
 		</dependency>
 		

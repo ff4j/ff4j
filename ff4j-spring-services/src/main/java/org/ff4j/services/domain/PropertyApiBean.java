@@ -62,7 +62,7 @@ public class PropertyApiBean implements Serializable {
         }
     }
 
-    public Property asProperty() {
+    public Property<?> asProperty() {
         return PropertyFactory.createProperty(name, type, value, description, fixedValues);
     }
 

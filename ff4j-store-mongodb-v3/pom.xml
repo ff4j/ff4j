@@ -39,7 +39,7 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
-            <version>3.0.3</version>
+            <version>3.0.3</version><!--$NO-MVN-MAN-VER$-->
             <scope>provided</scope> <!-- provided to NOT FIX the version -->
         </dependency>
 
