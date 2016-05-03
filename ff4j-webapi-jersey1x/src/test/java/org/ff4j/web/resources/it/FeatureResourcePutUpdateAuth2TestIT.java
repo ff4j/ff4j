@@ -38,29 +38,29 @@ import static org.ff4j.test.TestsFf4jConstants.*;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureResource_putUpdateAuth1_TestIT extends AbstractWebResourceTestIT {
+public class FeatureResourcePutUpdateAuth2TestIT extends AbstractWebResourceTestIT {
 
     /**
      * TDD, update by adding in the authorization
      */
     @Test
-    public void testPut_upsertUpdateAddAuthorization() {
+    public void testPutUpsertUpdateRemoveAuthorization() {
         // Given
         assertFF4J.assertThatFeatureExist(F1);
-        ff4j.getFeatureStore().removeRoleFromFeature(F1, ROLE_NEW);
-        assertFF4J.assertThatFeatureHasNotRole(F1, ROLE_NEW);
+        ff4j.getFeatureStore().grantRoleOnFeature(F1, ROLE_USER);
+        assertFF4J.assertThatFeatureHasRole(F1, ROLE_USER);
         // When
         Feature fNew = ff4j.getFeature(F1);
-        fNew.getPermissions().add(ROLE_NEW);
+        fNew.getPermissions().remove(ROLE_USER);
         WebResource webResFeat = resourceFeatures().path(F1);
-        ClientResponse res = webResFeat //
-                .type(MediaType.APPLICATION_JSON) //
+        ClientResponse res = webResFeat//
+                .type(MediaType.APPLICATION_JSON)//
                 .put(ClientResponse.class, new FeatureApiBean(fNew));
         // Then HTTPResponse
         Assert.assertEquals(Status.NO_CONTENT.getStatusCode(), res.getStatus());
         // Then Object Entity : null
         // Then
-        assertFF4J.assertThatFeatureHasRole(F1, ROLE_NEW);
+        assertFF4J.assertThatFeatureHasNotRole(F1, ROLE_USER);
     }
 
 

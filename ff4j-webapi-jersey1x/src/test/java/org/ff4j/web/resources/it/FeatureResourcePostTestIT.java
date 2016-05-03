@@ -37,13 +37,13 @@ import static org.ff4j.web.FF4jWebConstants.*;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
+public class FeatureResourcePostTestIT extends AbstractWebResourceTestIT {
 
     /**
      * TDD.
      */
     @Test
-    public void testPost_enable() {
+    public void testPostEnable() {
         // Given
         assertFF4J.assertThatFeatureExist(F2);
         ff4j.getFeatureStore().disable(F2);
@@ -61,7 +61,7 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testPost_enableNotFound() {
+    public void testPostEnableNotFound() {
         // Given
         assertFF4J.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
         // When
@@ -79,7 +79,7 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testPost_disable() {
+    public void testPostDisable() {
         // Given
         assertFF4J.assertThatFeatureExist(AWESOME);
         assertFF4J.assertThatFeatureIsEnabled(AWESOME);
@@ -96,7 +96,7 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testPost_disableNotFound() {
+    public void testPostDisableNotFound() {
         // Given
         assertFF4J.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
         // When
@@ -114,7 +114,7 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testPost_grantRole() {
+    public void testPostGrantRole() {
         // Given
         assertFF4J.assertThatFeatureExist(F2);
         assertFF4J.assertThatFeatureHasNotRole(F2, ROLE_NEW);
@@ -131,7 +131,7 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testPost_grantRoleFeatureDoesNotExist() {
+    public void testPostGrantRoleFeatureDoesNotExist() {
         // Given
         assertFF4J.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
         // When
@@ -149,7 +149,7 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testPost_removeRole() {
+    public void testPostRemoveRole() {
         // Given
         assertFF4J.assertThatFeatureExist(F2);
         assertFF4J.assertThatFeatureHasRole(F2, ROLE_USER);
@@ -166,7 +166,7 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testPost_removeRoleFeatureDoesNotExist() {
+    public void testPostRemoveRoleFeatureDoesNotExist() {
         // Given
         assertFF4J.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
         // When
@@ -184,7 +184,7 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testPost_removeRoleInvalidParameter() {
+    public void testPostRemoveRoleInvalidParameter() {
         // Given
         assertFF4J.assertThatFeatureExist(F2);
         Assert.assertFalse(ff4j.getFeatureStore().read(F2).getPermissions().contains(ROLE_READ));
@@ -203,7 +203,7 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testPost_addToGroup() {
+    public void testPostAddToGroup() {
         // Given
         assertFF4J.assertThatFeatureExist(F2);
         assertFF4J.assertThatFeatureNotInGroup(F2, G1);
@@ -220,7 +220,7 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testPost_addToGroupFeatureDoesNotExist() {
+    public void testPostAddToGroupFeatureDoesNotExist() {
         // Given
         assertFF4J.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
         // When
@@ -238,7 +238,7 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testPost_removeFromGroup() {
+    public void testPostRemoveFromGroup() {
         // Given
         assertFF4J.assertThatFeatureExist(F2);
         ff4j.getFeatureStore().addToGroup(F2, G0);
@@ -256,7 +256,7 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testPost_removeFromGroupFeatureDoesNotExist() {
+    public void testPostRemoveFromGroupFeatureDoesNotExist() {
         // Given
         assertFF4J.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
         // When
@@ -275,7 +275,7 @@ public class FeatureResource_post_TestIT extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testPost_removeFromGroupInvalidParameter() {
+    public void testPostRemoveFromGroupInvalidParameter() {
         // Given
         assertFF4J.assertThatFeatureExist(F2);
         assertFF4J.assertThatFeatureNotInGroup(F2, G1);

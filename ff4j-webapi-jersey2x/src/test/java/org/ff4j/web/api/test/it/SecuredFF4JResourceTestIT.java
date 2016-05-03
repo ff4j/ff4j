@@ -160,7 +160,7 @@ public class SecuredFF4JResourceTestIT  extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testKO_NotAuthorized_NoApiKeyNorCredentials() {
+    public void testKONotAuthorizedNoApiKeyNorCredentials() {
         // Given
         Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getFeatureStore().getClass());
         // When
@@ -173,7 +173,7 @@ public class SecuredFF4JResourceTestIT  extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testOK_withApiKey() {
+    public void testOKWithApiKey() {
         // Given
         Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getFeatureStore().getClass());
         // When
@@ -188,7 +188,7 @@ public class SecuredFF4JResourceTestIT  extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testKO_withInvalidApiKey() {
+    public void testKOWithInvalidApiKey() {
         // Given
         Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getFeatureStore().getClass());
         // When
@@ -203,7 +203,7 @@ public class SecuredFF4JResourceTestIT  extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testOK_withCredentials() {
+    public void testOKWithCredentials() {
         // Given
         Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getFeatureStore().getClass());
         // When
@@ -219,7 +219,7 @@ public class SecuredFF4JResourceTestIT  extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testKO_withInvalidUserName() {
+    public void testKOWithInvalidUserName() {
         // Given
         Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getFeatureStore().getClass());
         // When
@@ -236,7 +236,7 @@ public class SecuredFF4JResourceTestIT  extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testKO_withInvalidPassword() {
+    public void testKOWithInvalidPassword() {
         // Given
         Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getFeatureStore().getClass());
         // When
@@ -255,7 +255,7 @@ public class SecuredFF4JResourceTestIT  extends AbstractWebResourceTestIT {
      */
     @Test
     @Ignore
-    public void testKO_withReadOnlyApiKey() {
+    public void testKOWithReadOnlyApiKey() {
         // Given
         assertFF4J.assertThatFeatureExist(F4);
         assertFF4J.assertThatFeatureIsEnabled(F4);

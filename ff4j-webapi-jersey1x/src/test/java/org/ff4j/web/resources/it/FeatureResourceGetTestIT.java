@@ -22,8 +22,9 @@ package org.ff4j.web.resources.it;
 
 import javax.ws.rs.core.Response.Status;
 
-import org.junit.Assert;
 import org.ff4j.web.api.resources.FeatureResource;
+import org.ff4j.web.api.resources.domain.FeatureApiBean;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.ClientResponse;
@@ -36,34 +37,35 @@ import static org.ff4j.test.TestsFf4jConstants.*;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureResource_delete_TestIT extends AbstractWebResourceTestIT {
+public class FeatureResourceGetTestIT extends AbstractWebResourceTestIT {
 
     /**
      * TDD.
      */
     @Test
-    public void testGet_delete() {
+    public void testGetRead() {
         // Given
-        assertFF4J.assertThatFeatureExist(F1);
+        assertFF4J.assertThatFeatureExist(F4);
         // When
-        WebResource wResf4 = resourceFeatures().path(F1);
-        ClientResponse resHttp = wResf4.delete(ClientResponse.class);
-        // Then, HTTP Response
-        Assert.assertEquals("Expected status is 204", Status.NO_CONTENT.getStatusCode(), resHttp.getStatus());
-        // Then, Store state
-        assertFF4J.assertThatFeatureDoesNotExist(F1);
+        WebResource wResf4 = resourceFeatures().path(F4);
+        ClientResponse resHttp   = wResf4.get(ClientResponse.class);
+        FeatureApiBean resEntity = resHttp.getEntity(FeatureApiBean.class);
+        // Then
+        Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
+        Assert.assertNotNull(resEntity);
+        Assert.assertNotNull(F4, resEntity.getUid());
     }
 
     /**
      * TDD.
      */
     @Test
-    public void testGet_deleteNotFound() {
+    public void testGetReadNotFound() {
         // Given
         assertFF4J.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
         // When
         WebResource wResf4 = resourceFeatures().path(F_DOESNOTEXIST);
-        ClientResponse resHttp = wResf4.delete(ClientResponse.class);
+        ClientResponse resHttp = wResf4.get(ClientResponse.class);
         String resEntity = resHttp.getEntity(String.class);
         // Then, HTTP Response
         Assert.assertEquals("Expected status is 404", Status.NOT_FOUND.getStatusCode(), resHttp.getStatus());

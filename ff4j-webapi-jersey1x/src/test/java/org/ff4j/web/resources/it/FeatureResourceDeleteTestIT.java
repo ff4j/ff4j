@@ -36,33 +36,33 @@ import static org.ff4j.test.TestsFf4jConstants.*;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class PropertyResource_delete_TestIT extends AbstractWebResourceTestIT {
+public class FeatureResourceDeleteTestIT extends AbstractWebResourceTestIT {
 
     /**
      * TDD.
      */
     @Test
-    public void testGet_delete() {
+    public void testGetDelete() {
         // Given
-        assertFF4J.assertThatPropertyExist("c");
+        assertFF4J.assertThatFeatureExist(F1);
         // When
-        WebResource wResf4 = rscProperties().path("c");
+        WebResource wResf4 = resourceFeatures().path(F1);
         ClientResponse resHttp = wResf4.delete(ClientResponse.class);
         // Then, HTTP Response
         Assert.assertEquals("Expected status is 204", Status.NO_CONTENT.getStatusCode(), resHttp.getStatus());
         // Then, Store state
-        assertFF4J.assertThatPropertyDoesNotExist("c");
+        assertFF4J.assertThatFeatureDoesNotExist(F1);
     }
 
     /**
      * TDD.
      */
     @Test
-    public void testGet_deleteNotFound() {
+    public void testGetDeleteNotFound() {
         // Given
-        assertFF4J.assertThatPropertyDoesNotExist(F_DOESNOTEXIST);
+        assertFF4J.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
         // When
-        WebResource wResf4 = rscProperties().path(F_DOESNOTEXIST);
+        WebResource wResf4 = resourceFeatures().path(F_DOESNOTEXIST);
         ClientResponse resHttp = wResf4.delete(ClientResponse.class);
         String resEntity = resHttp.getEntity(String.class);
         // Then, HTTP Response

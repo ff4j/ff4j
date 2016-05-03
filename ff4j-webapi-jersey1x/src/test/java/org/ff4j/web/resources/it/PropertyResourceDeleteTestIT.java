@@ -22,9 +22,8 @@ package org.ff4j.web.resources.it;
 
 import javax.ws.rs.core.Response.Status;
 
-import org.ff4j.web.api.resources.FeatureResource;
-import org.ff4j.web.api.resources.domain.FeatureApiBean;
 import org.junit.Assert;
+import org.ff4j.web.api.resources.FeatureResource;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.ClientResponse;
@@ -37,35 +36,34 @@ import static org.ff4j.test.TestsFf4jConstants.*;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureResource_get_TestIT extends AbstractWebResourceTestIT {
+public class PropertyResourceDeleteTestIT extends AbstractWebResourceTestIT {
 
     /**
      * TDD.
      */
     @Test
-    public void testGet_read() {
+    public void testGet_delete() {
         // Given
-        assertFF4J.assertThatFeatureExist(F4);
+        assertFF4J.assertThatPropertyExist("c");
         // When
-        WebResource wResf4 = resourceFeatures().path(F4);
-        ClientResponse resHttp   = wResf4.get(ClientResponse.class);
-        FeatureApiBean resEntity = resHttp.getEntity(FeatureApiBean.class);
-        // Then
-        Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
-        Assert.assertNotNull(resEntity);
-        Assert.assertNotNull(F4, resEntity.getUid());
+        WebResource wResf4 = rscProperties().path("c");
+        ClientResponse resHttp = wResf4.delete(ClientResponse.class);
+        // Then, HTTP Response
+        Assert.assertEquals("Expected status is 204", Status.NO_CONTENT.getStatusCode(), resHttp.getStatus());
+        // Then, Store state
+        assertFF4J.assertThatPropertyDoesNotExist("c");
     }
 
     /**
      * TDD.
      */
     @Test
-    public void testGet_readNotFound() {
+    public void testGet_deleteNotFound() {
         // Given
-        assertFF4J.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
+        assertFF4J.assertThatPropertyDoesNotExist(F_DOESNOTEXIST);
         // When
-        WebResource wResf4 = resourceFeatures().path(F_DOESNOTEXIST);
-        ClientResponse resHttp = wResf4.get(ClientResponse.class);
+        WebResource wResf4 = rscProperties().path(F_DOESNOTEXIST);
+        ClientResponse resHttp = wResf4.delete(ClientResponse.class);
         String resEntity = resHttp.getEntity(String.class);
         // Then, HTTP Response
         Assert.assertEquals("Expected status is 404", Status.NOT_FOUND.getStatusCode(), resHttp.getStatus());

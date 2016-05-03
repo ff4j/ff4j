@@ -1,5 +1,8 @@
 package org.ff4j.web.api.test.it;
 
+import static org.ff4j.test.TestsFf4jConstants.F3;
+import static org.ff4j.test.TestsFf4jConstants.F4;
+import static org.ff4j.test.TestsFf4jConstants.G1;
 import static org.ff4j.utils.json.FeatureJsonParser.parseFeatureArray;
 
 import java.util.HashSet;
@@ -12,8 +15,8 @@ import javax.ws.rs.core.Response.Status;
 import org.ff4j.core.Feature;
 import org.junit.Assert;
 import org.junit.Test;
-
-import static org.ff4j.test.TestsFf4jConstants.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
  * #%L
@@ -42,11 +45,14 @@ import static org.ff4j.test.TestsFf4jConstants.*;
  */
 public class GroupResourceTestIT extends AbstractWebResourceTestIT {
 
+	/** Logger. */
+	private static Logger LOGGER = LoggerFactory.getLogger(GroupResourceTestIT.class);
+	
     /**
      * TDD
      */
     @Test
-    public void testGet_readGroup() {
+    public void testGetReadGroup() {
         // Given
         assertFF4J.assertThatGroupExist(G1);
         assertFF4J.assertThatGroupHasSize(2, G1);
@@ -72,19 +78,26 @@ public class GroupResourceTestIT extends AbstractWebResourceTestIT {
     
     @Test
     public void getGroupNotFound() {
+    	LOGGER.debug("TODO [getGroupNotFound]");
     }
     
     @Test
-    public void testPost_EnableGroup() {}
+    public void testPostEnableGroup() {
+    	LOGGER.debug("TODO [testPostEnableGroup]");
+    }
 
     @Test
-    public void testPost_EnableGroupNotFound() {}
+    public void testPostEnableGroupNotFound() {
+    	LOGGER.debug("TODO [testPostEnableGroupNotFound]");
+    }
 
     @Test
-    public void testPost_DisableGroup() {
+    public void testPostDisableGroup() {
+    	LOGGER.debug("TODO [testPostDisableGroup]");
     }
     
     @Test
-    public void testPost_DisableGroupNotFound() {
+    public void testPostDisableGroupNotFound() {
+    	LOGGER.debug("TODO [testPostDisableGroupNotFound]");
     }
 }

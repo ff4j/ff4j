@@ -29,9 +29,20 @@ import java.util.Set;
 import org.ff4j.property.Property;
 import org.ff4j.property.PropertyString;
 import org.ff4j.property.store.PropertyStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * Mock implementation of {@link PropertyStore}
+ *
+ * @author Cedrick LUNVEN (@clunven)
+ */
 public class MockPropertyStore implements PropertyStore {
 
+	/** Logger. */
+	private static Logger LOGGER = LoggerFactory.getLogger(MockPropertyStore.class);
+	
+	/** Custom behaviour. */
     private boolean empty = false;
     
     /** {@inheritDoc} */
@@ -41,6 +52,7 @@ public class MockPropertyStore implements PropertyStore {
 
     /** {@inheritDoc} */
     public <T> void createProperty(Property<T> value) {
+    	LOGGER.debug("MOCK [createProperty]");
     }
 
     /** {@inheritDoc} */
@@ -51,17 +63,20 @@ public class MockPropertyStore implements PropertyStore {
 
     /** {@inheritDoc} */
     public void updateProperty(String name, String newValue) {
+    	LOGGER.debug("MOCK [updateProperty]");
     }
 
-    @Override
+   /** {@inheritDoc} */
     public <T> void updateProperty(Property<T> fixedValue) {
+    	LOGGER.debug("MOCK [updateProperty]");
     }
 
-    @Override
+   /** {@inheritDoc} */
     public void deleteProperty(String name) {
+    	LOGGER.debug("MOCK [enable]");
     }
 
-    @Override
+    /** {@inheritDoc} */
     public Map<String, Property<?>> readAllProperties() {
         Map < String, Property<?>> map = new HashMap<String, Property<?>>();
         if (!empty) {
@@ -70,19 +85,18 @@ public class MockPropertyStore implements PropertyStore {
         return map;
     }
 
-    @Override
+    /** {@inheritDoc} */
     public Set<String> listPropertyNames() {
-        // TODO Auto-generated method stub
+    	LOGGER.debug("MOCK [listPropertyNames]");
         return null;
     }
 
-    @Override
+    /** {@inheritDoc} */
     public boolean isEmpty() {
-        // TODO Auto-generated method stub
         return false;
     }
 
-    @Override
+    /** {@inheritDoc} */
     public void clear() {
         empty = true;
     }

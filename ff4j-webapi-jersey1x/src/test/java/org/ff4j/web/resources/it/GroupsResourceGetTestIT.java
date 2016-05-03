@@ -37,7 +37,7 @@ import com.sun.jersey.api.client.WebResource;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class GroupsResource_get_TestIT extends AbstractWebResourceTestIT {
+public class GroupsResourceGetTestIT extends AbstractWebResourceTestIT {
 
     /**
      * TDD.

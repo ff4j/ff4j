@@ -23,44 +23,43 @@ package org.ff4j.web.resources.it;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
+import org.junit.Assert;
 import org.ff4j.core.Feature;
 import org.ff4j.web.api.resources.domain.FeatureApiBean;
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 import static org.ff4j.test.TestsFf4jConstants.*;
+import static org.ff4j.web.FF4jWebConstants.*;
 
 /**
  * Externalisation of PUT REQUEST.
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureResource_putUpdateGroup1_TestIT extends AbstractWebResourceTestIT {
+public class FeatureResourcePutCreateTestIT extends AbstractWebResourceTestIT {
 
     /**
-     * TDD, update by adding in the authorization
+     * TDD.
      */
     @Test
-    public void testPut_upsertUpdateAddGroup() throws Exception {
+    public void testPutUpsertIfNotExistCreateIt() {
         // Given
-        assertFF4J.assertThatFeatureExist(AWESOME);
-        assertFF4J.assertThatFeatureNotInGroup(AWESOME, "g2");
+        assertFF4J.assertThatFeatureDoesNotExist(FEATURE_X);
         // When
-        Feature f1 = ff4j.getFeature(AWESOME);
-        f1.setGroup("g2");
-        WebResource webResFeat = resourceFeatures().path(AWESOME);
-        ClientResponse res = webResFeat.//
-                type(MediaType.APPLICATION_JSON).//
-                put(ClientResponse.class,  toJson(new FeatureApiBean(f1)));
-        
+        Feature f = new Feature(FEATURE_X);
+        WebResource webResFeat = resourceFeatures().path(FEATURE_X);
+        ClientResponse res = webResFeat//
+                .type(MediaType.APPLICATION_JSON)//
+                .put(ClientResponse.class, new FeatureApiBean(f));
         // Then HTTPResponse
-        Assert.assertEquals(Status.NO_CONTENT.getStatusCode(), res.getStatus());
-        // Then Object Entity : null
-        // Then
-        assertFF4J.assertThatFeatureIsInGroup(AWESOME, "g2");
+        Assert.assertEquals(Status.CREATED.getStatusCode(), res.getStatus());
+        Assert.assertNotNull(res.getHeaders().getFirst(LOCATION));
+        // Then, testing target store
+        assertFF4J.assertThatFeatureExist(FEATURE_X);
+        res.close();
     }
 
 

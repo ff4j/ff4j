@@ -62,7 +62,7 @@ public class FF4JResource2TestIT extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testPost_isNotFlipped() {
+    public void testPostIsNotFlipped() {
         // Given
         assertFF4J.assertThatFeatureExist(F4);
         assertFF4J.assertThatFeatureNotFlipped(F4);
@@ -87,7 +87,7 @@ public class FF4JResource2TestIT extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testPost_isNotFlippedGET() {
+    public void testPostIsNotFlippedGET() {
         // Given
         assertFF4J.assertThatFeatureExist(F4);
         ff4j.disable(F4);
@@ -109,7 +109,7 @@ public class FF4JResource2TestIT extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testPost_isFlipped() {
+    public void testPostIsFlipped() {
         // Given
         assertFF4J.assertThatFeatureExist(F2);
         ff4j.getFeatureStore().enable(F2);
@@ -138,7 +138,7 @@ public class FF4JResource2TestIT extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testPost_isFlippedNotFound() {
+    public void testPostIsFlippedNotFound() {
         // Given
         assertFF4J.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
         // When
@@ -154,7 +154,7 @@ public class FF4JResource2TestIT extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testPost_isFlippedInvalidParameter() {
+    public void testPostIsFlippedInvalidParameter() {
         // Given
         assertFF4J.assertThatFeatureExist(AWESOME);
         // When
@@ -179,7 +179,7 @@ public class FF4JResource2TestIT extends AbstractWebResourceTestIT {
      * TDD.
      */
     @Test
-    public void testPost_isFlippedWithParameters() {
+    public void testPostIsFlippedWithParameters() {
         // Given
         assertFF4J.assertThatFeatureExist(AWESOME);
         // When

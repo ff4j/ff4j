@@ -28,17 +28,30 @@ import java.util.Set;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * Mock implementation of {@link FeatureStore} to make tests.
+ *
+ * @author Cedrick LUNVEN (@clunven)
+ */
 public class MockFeatureStore implements FeatureStore {
+	
+	/** Logger. */
+	private static Logger LOGGER = LoggerFactory.getLogger(MockFeatureStore.class);
 
+	/** Change behaviour at runtime. */
     private boolean empty = false;
     
     /** {@inheritDoc} */
     public void enable(String featureID) {
+    	LOGGER.debug("MOCK [enable]" + featureID);
     }
 
     /** {@inheritDoc} */
-    public void disable(String fId) {
+    public void disable(String featureID) {
+    	LOGGER.debug("MOCK [disable]" + featureID);
     }
 
     /** {@inheritDoc} */
@@ -48,6 +61,7 @@ public class MockFeatureStore implements FeatureStore {
 
     /** {@inheritDoc} */
     public void create(Feature fp) {
+    	LOGGER.debug("MOCK [create]" + fp);
     }
 
     /** {@inheritDoc} */
@@ -64,77 +78,68 @@ public class MockFeatureStore implements FeatureStore {
         }
         return map;
     }
-
-    @Override
-    public void delete(String fpId) {
-        // TODO Auto-generated method stub
-        
+    
+    /** {@inheritDoc} */
+    public void delete(String featureID) {
+    	LOGGER.debug("MOCK [delete]" + featureID);
     }
-
-    @Override
+    
+    /** {@inheritDoc} */
     public void update(Feature fp) {
-        // TODO Auto-generated method stub
-        
+    	LOGGER.debug("MOCK [update]" + fp);
     }
-
-    @Override
+    
+    /** {@inheritDoc} */
     public void grantRoleOnFeature(String flipId, String roleName) {
-        // TODO Auto-generated method stub
-        
+    	LOGGER.debug("MOCK [grantRoleOnFeature]" + flipId);
     }
-
-    @Override
+    
+    /** {@inheritDoc} */
     public void removeRoleFromFeature(String flipId, String roleName) {
-        // TODO Auto-generated method stub
-        
+    	LOGGER.debug("MOCK [removeRoleFromFeature]" + flipId);
     }
-
-    @Override
+    
+    /** {@inheritDoc} */
     public void enableGroup(String groupName) {
-        // TODO Auto-generated method stub
-        
+    	LOGGER.debug("MOCK [enableGroup]" + groupName);
     }
-
-    @Override
+    
+    /** {@inheritDoc} */
     public void disableGroup(String groupName) {
-        // TODO Auto-generated method stub
-        
+    	LOGGER.debug("MOCK [disableGroup]" + groupName);
     }
-
-    @Override
+    
+    /** {@inheritDoc} */
     public boolean existGroup(String groupName) {
         if ("GRP1".equals(groupName)) return true;
         return false;
     }
-
-    @Override
+    
+    /** {@inheritDoc} */
     public Map<String, Feature> readGroup(String groupName) {
-        // TODO Auto-generated method stub
+    	LOGGER.debug("MOCK [readGroup]" + groupName);
         return null;
     }
-
-    @Override
+    
+    /** {@inheritDoc} */
     public void addToGroup(String featureId, String groupName) {
-        // TODO Auto-generated method stub
-        
+    	LOGGER.debug("MOCK [addToGroup]" + featureId);
     }
-
-    @Override
+    
+    /** {@inheritDoc} */
     public void removeFromGroup(String featureId, String groupName) {
-        // TODO Auto-generated method stub
-        
+    	LOGGER.debug("MOCK [removeFromGroup]" + featureId);
     }
-
-    @Override
+    
+    /** {@inheritDoc} */
     public Set<String> readAllGroups() {
-        // TODO Auto-generated method stub
+    	LOGGER.debug("MOCK [readAllGroups]");
         return null;
     }
 
-    @Override
+    /** {@inheritDoc} */
     public void clear() {
-        empty = true;;
-        
+        empty = true;
     }
 
 }

@@ -33,8 +33,12 @@ import org.junit.Assert;
  */
 public class AssertFf4j {
 
+	/** error message. */
     public static final String IS_MANDATORY = "' is mandatory";
+    
+	/** error message. */
     public static final String FEATURE = "Feature '";
+    
     /** reference to ff4j context. */
     private final FF4j ff4j;
 

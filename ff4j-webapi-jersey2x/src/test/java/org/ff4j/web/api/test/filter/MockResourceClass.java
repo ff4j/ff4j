@@ -25,20 +25,44 @@ import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Sample Resource to test JSR 250.
+ *
+ * @author Cedrick LUNVEN (@clunven)
+ *
+ * @param <T>
+ * 		template T
+ */
 @RolesAllowed("USER")
 public class MockResourceClass< T > {
+	
+	/** Logger. */
+	private static Logger LOGGER = LoggerFactory.getLogger(MockResourceClass.class);
     
-    public MockResourceClass() {}
+    public MockResourceClass() {
+    	LOGGER.debug("MOCK [constructor]");
+    }
     
     @DenyAll
-    public void denyAll() {}
+    public void denyAll() {
+    	LOGGER.debug("MOCK [denyAll]");
+    }
     
     @PermitAll
-    public void permitAll() {}
+    public void permitAll() {
+    	LOGGER.debug("MOCK [permitAll]");
+    }
     
     @RolesAllowed("USER")
-    public void user() {}
+    public void user() {
+    	LOGGER.debug("MOCK [user]");
+    }
     
-    public void nothing() {}
+    public void nothing() {
+    	LOGGER.debug("MOCK [nothing]");
+    }
     
 }

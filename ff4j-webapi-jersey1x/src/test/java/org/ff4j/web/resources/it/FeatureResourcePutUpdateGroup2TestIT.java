@@ -38,13 +38,13 @@ import static org.ff4j.test.TestsFf4jConstants.*;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureResource_putUpdateGroup2_TestIT extends AbstractWebResourceTestIT {
+public class FeatureResourcePutUpdateGroup2TestIT extends AbstractWebResourceTestIT {
 
     /**
      * TDD, update by adding in the authorization
      */
     @Test
-    public void testPut_upsertUpdateAddGroup() {
+    public void testPutUpsertUpdateAddGroup() {
         // Given
         assertFF4J.assertThatFeatureExist(F3);
         assertFF4J.assertThatFeatureIsInGroup(F3, G1);
