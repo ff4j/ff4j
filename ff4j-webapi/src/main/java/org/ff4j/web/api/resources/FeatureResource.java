@@ -65,12 +65,7 @@ import static org.ff4j.web.FF4jWebConstants.*;
 @RolesAllowed({FF4jWebConstants.ROLE_WRITE})
 @Api(value = "/ff4j/store/features/{uid}")
 public class FeatureResource extends AbstractResource {
-   
-    /**
-     * Defaut constructor.
-     */
-    public FeatureResource() {}
-
+  
     /**
      * Allows to retrieve feature by its id.
      * 

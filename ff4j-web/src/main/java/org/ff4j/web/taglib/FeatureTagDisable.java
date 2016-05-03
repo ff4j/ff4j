@@ -36,14 +36,8 @@ public class FeatureTagDisable extends AbstractFeatureTag {
 
     /** serial. */
     private static final long serialVersionUID = 2699259876617318061L;
-
-    /**
-     * Default constructor.
-     */
-    public FeatureTagDisable() {}
-
+  
     /** {@inheritDoc} */
-    @Override
     protected boolean eval(FF4j ff4j, PageContext jspContext) {
         FlippingExecutionContext executionContext = new FlippingExecutionContext();
         if (isShareHttpSession()) {

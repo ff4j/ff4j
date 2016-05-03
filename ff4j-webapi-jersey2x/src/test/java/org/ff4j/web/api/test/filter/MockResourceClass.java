@@ -42,10 +42,6 @@ public class MockResourceClass< T > {
 	/** Logger. */
 	private static Logger LOGGER = LoggerFactory.getLogger(MockResourceClass.class);
     
-    public MockResourceClass() {
-    	LOGGER.debug("MOCK [constructor]");
-    }
-    
     @DenyAll
     public void denyAll() {
     	LOGGER.debug("MOCK [denyAll]");

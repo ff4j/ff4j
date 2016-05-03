@@ -50,13 +50,7 @@ import static org.ff4j.web.FF4jWebConstants.*;
 @RolesAllowed({FF4jWebConstants.ROLE_READ})
 @Api(value = "/ff4j/propertyStore")
 public class PropertyStoreResource  extends AbstractResource {
-    
-    /**
-     * Default Constructor.
-     */
-    public PropertyStoreResource() {
-    }
-    
+  
     /**
      * Allows to retrieve feature by its id.
      * 

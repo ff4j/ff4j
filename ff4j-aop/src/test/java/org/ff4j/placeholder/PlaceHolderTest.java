@@ -96,6 +96,7 @@ public class PlaceHolderTest {
         Assert.assertEquals(true, feat2);
         Assert.assertEquals(true, feat3);
         Assert.assertNull(feat4);
+        Assert.assertNotNull(exo);
     }
 
 }

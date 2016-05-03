@@ -32,13 +32,11 @@ import org.junit.Test;
  * @author Cedrick Lunven (@clunven)
  */
 public class GettingStartedCode {
-
-    private FF4j ff4j;
-
+    
     @Test
     public void helloWorld() {
 
-        ff4j = new FF4j("ff4j.xml").autoCreate(true);
+    	FF4j ff4j = new FF4j("ff4j.xml").autoCreate(true);
 
         // ff4j initialization.....
 

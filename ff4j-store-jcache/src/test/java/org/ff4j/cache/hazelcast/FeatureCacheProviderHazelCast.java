@@ -40,10 +40,7 @@ import com.hazelcast.core.HazelcastInstance;
  * @author Cedrick Lunven (@clunven)</a>
  */
 public class FeatureCacheProviderHazelCast extends FF4jJCacheManager {
-    
-    /** Internal HazelCast Settings. */
-    private HazelcastInstance instance;
-    
+   
     /** {@inheritDoc} */
     @Override
     public CachingProvider initCachingProvider(String className) {
@@ -61,7 +58,7 @@ public class FeatureCacheProviderHazelCast extends FF4jJCacheManager {
         System.setProperty("hazelcast.jcache.provider.type", "server");
         
         Config cfg = new XmlConfigBuilder().build();
-        instance = Hazelcast.newHazelcastInstance(cfg);
+        HazelcastInstance instance = Hazelcast.newHazelcastInstance(cfg);
         return HazelcastServerCachingProvider.createCachingProvider(instance);
     }
 

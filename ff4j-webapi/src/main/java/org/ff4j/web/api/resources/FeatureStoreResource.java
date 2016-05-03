@@ -60,12 +60,6 @@ import static org.ff4j.web.FF4jWebConstants.*;
 public class FeatureStoreResource extends AbstractResource {
     
     /**
-     * Default Constructor.
-     */
-    public FeatureStoreResource() {
-    }
-    
-    /**
      * Allows to retrieve feature by its id.
      * 
      * @param featId

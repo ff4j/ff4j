@@ -452,7 +452,7 @@ public class FF4jCliProcessor {
 	 * @param message
 	 */
 	private void error(Throwable t, String message) {
-		logError(t.getClass().getName() + " : " + t.getMessage());
+		logError(t.getClass().getName() + " : " + t.getMessage() + "[" + message + "]");
 	}
 	
 	/**

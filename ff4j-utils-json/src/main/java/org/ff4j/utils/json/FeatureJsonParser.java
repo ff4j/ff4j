@@ -84,7 +84,7 @@ public class FeatureJsonParser {
         f.setFlippingStrategy(parseFlipStrategy(f.getUid(), (LinkedHashMap<String, Object>) fMap.get("flippingStrategy")));
         // custom properties
         Map <String, Object > propertyMap = (Map < String, Object >) fMap.get("customProperties");
-        f.setCustomProperties(parseCustomProperties(f.getUid(), propertyMap));
+        f.setCustomProperties(parseCustomProperties(propertyMap));
         return f;
     }    
     
@@ -99,7 +99,7 @@ public class FeatureJsonParser {
      *      target map of properties
      */
     @SuppressWarnings("unchecked")
-    private static Map < String, Property<?>> parseCustomProperties(String uid, Map <String, Object > customPTag) {
+    private static Map < String, Property<?>> parseCustomProperties(Map <String, Object > customPTag) {
         Map < String, Property<?>> myProperties = new LinkedHashMap<String, Property<?>>();
         if (null != customPTag && !customPTag.isEmpty()) {
             // Loop over properties

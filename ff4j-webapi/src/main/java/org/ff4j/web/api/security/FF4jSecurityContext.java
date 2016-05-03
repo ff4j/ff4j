@@ -68,8 +68,9 @@ public class FF4jSecurityContext implements SecurityContext, Serializable {
      *            target permission
      */
     public FF4jSecurityContext(String userName, String authSchem, Set < String > perm) {
-        this.userName = userName;
-        this.userRoles = perm;
+        this.userName   = userName;
+        this.userRoles  = perm;
+        this.authScheme = authSchem;
     }
 
     /** {@inheritDoc} */

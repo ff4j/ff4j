@@ -38,15 +38,9 @@ public class JerseyRequestEventListener implements RequestEventListener {
 
     /** logger. */
     protected Logger logger = LoggerFactory.getLogger(JerseyRequestEventListener.class);
-    
-    /**
-     * Constructor to TODO
-     */
-    public JerseyRequestEventListener() {
-    }
+   
 
     /** {@inheritDoc} */
-    @Override
     public void onEvent(RequestEvent reqEvt) {
         if (RequestEvent.Type.ON_EXCEPTION.equals(reqEvt.getType())) {
             logger.error("An error occured when processing " + reqEvt.getContainerRequest().getRequestUri(), reqEvt.getException() );

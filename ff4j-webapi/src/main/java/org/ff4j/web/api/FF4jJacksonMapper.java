@@ -36,15 +36,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Provider
 public class FF4jJacksonMapper extends FF4jCustomObjectMapper implements ContextResolver<ObjectMapper> {
     
-    /**
-     * Default Constructor.
-     */
-    public FF4jJacksonMapper() {
-        super();
-    }
- 
     /** {@inheritDoc} */
-    @Override
     public ObjectMapper getContext(Class<?> type) {
         return defaultObjectMapper;
     }

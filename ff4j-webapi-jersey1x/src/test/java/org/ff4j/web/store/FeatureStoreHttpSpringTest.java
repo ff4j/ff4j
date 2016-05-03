@@ -1,5 +1,10 @@
 package org.ff4j.web.store;
 
+import static org.ff4j.test.TestsFf4jConstants.EXPECTED_FEATURES_NUMBERS;
+import static org.ff4j.test.TestsFf4jConstants.F1;
+import static org.ff4j.test.TestsFf4jConstants.ROLE_NEW;
+import static org.ff4j.test.TestsFf4jConstants.ROLE_USER;
+
 import org.ff4j.FF4j;
 
 /*
@@ -34,8 +39,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.sun.jersey.test.framework.JerseyTest;
 
-import static org.ff4j.test.TestsFf4jConstants.*;
-
 /**
  * Unitary test for {@link FeatureStoreHttp} on Grizzly server.
  *
@@ -45,9 +48,6 @@ public class FeatureStoreHttpSpringTest extends FeatureStoreTestSupport {
 
     /** Jersy Test */
     private static JerseyTest jt = null;
-    
-    /** Load Store from Spring. */
-    private ClassPathXmlApplicationContext appCtx;
     
     /**
      * Start Server Grizzly before tests on remote FeatureStore.
@@ -59,10 +59,11 @@ public class FeatureStoreHttpSpringTest extends FeatureStoreTestSupport {
     }
 
     /** {@inheritDoc} */
-    @Override
     protected FeatureStore initStore() {
-    	appCtx = new ClassPathXmlApplicationContext("spring-context.xml");
-        return appCtx.getBean(FF4j.class).getFeatureStore();
+    	ClassPathXmlApplicationContext appCtx = new ClassPathXmlApplicationContext("spring-context.xml");
+    	FeatureStore store = appCtx.getBean(FF4j.class).getFeatureStore();
+    	appCtx.close();
+    	return store;
     }
 
     /**

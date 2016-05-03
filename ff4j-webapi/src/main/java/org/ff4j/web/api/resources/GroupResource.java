@@ -51,12 +51,7 @@ import static org.ff4j.web.FF4jWebConstants.*;
 @RolesAllowed({FF4jWebConstants.ROLE_READ})
 @Api(value = "/ff4j/store/groups/{groupName}")
 public class GroupResource extends AbstractResource {
-  
-    /**
-     * Defaut constructor.
-     */
-    public GroupResource() {}
-   
+ 
     /**
      * Convenient method to work on groupd : Here enabling
      * 
