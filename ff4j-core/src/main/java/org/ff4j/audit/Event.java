@@ -114,9 +114,9 @@ public class Event implements Serializable {
         keyAsString(sb, "value", value);
         sb.append(", \"duration\":" + duration);
         if (customKeys != null && !customKeys.isEmpty()) {
-            for(String key : customKeys.keySet()) {
-                if (null != customKeys.get(key)) {
-                    keyAsString(sb, key, customKeys.get(key));
+            for(Map.Entry<String,String> customKeysEntry : customKeys.entrySet()) {
+                if (null != customKeysEntry.getValue()) {
+                    keyAsString(sb, customKeysEntry.getKey(), customKeysEntry.getValue());
                 }
             }
         }

@@ -214,9 +214,9 @@ public class JdbcEventRepository extends AbstractEventRepository {
             }
             List < String > colors  = Util.getColorsGradient(freq.size());
             int idx = 0;
-            for (String featName : freq.keySet()) {
+            for (Map.Entry < String, Integer > featNameEntry : freq.entrySet()) {
                 pieGraph.getSectors().add(
-                        new PieSector(featName, freq.get(featName), colors.get(idx)));
+                        new PieSector(featNameEntry.getKey(), featNameEntry.getValue(), colors.get(idx)));
                 idx++;
             }
             
@@ -298,8 +298,8 @@ public class JdbcEventRepository extends AbstractEventRepository {
             }
             List < String > colors = Util.getColorsGradient(freq.size());
             int idx = 0;
-            for (String action : freq.keySet()) {
-                pieGraph.getSectors().add(new PieSector(action, freq.get(action), colors.get(idx)));
+            for (Map.Entry < String, Integer > actionEntry : freq.entrySet()) {
+                pieGraph.getSectors().add(new PieSector(actionEntry.getKey(), actionEntry.getValue(), colors.get(idx)));
                 idx++;
             }
             return pieGraph;

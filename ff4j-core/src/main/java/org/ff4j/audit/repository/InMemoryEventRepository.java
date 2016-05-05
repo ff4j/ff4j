@@ -194,8 +194,8 @@ public class InMemoryEventRepository extends AbstractEventRepository {
         PieChart pieGraph = new PieChart("Hits Count for " + uid);
         List < String > colors = Util.getColorsGradient(freq.size());
         int idx = 0;
-        for (String action:freq.keySet()) {
-            pieGraph.getSectors().add(new PieSector(action, freq.get(action).get(), colors.get(idx)));
+        for (Map.Entry<java.lang.String, org.ff4j.audit.graph.MutableInt> actionEntry : freq.entrySet()) {
+            pieGraph.getSectors().add(new PieSector(actionEntry.getKey(), actionEntry.getValue().get(), colors.get(idx)));
             idx++;
         }
         return pieGraph;
@@ -212,13 +212,13 @@ public class InMemoryEventRepository extends AbstractEventRepository {
         
         if (eventsPerFeatures != null) {
             long slotWitdh = (endTime - startTime) / nbslot;
-            for (String name : eventsPerFeatures.keySet()) {
+            for (Map.Entry < String, Queue< Event > > nameEntry : eventsPerFeatures.entrySet()) {
                 
               // Retrieve events for target feature
-              Queue<Event> myQueue = eventsPerFeatures.get(name);
+              Queue<Event> myQueue = nameEntry.getValue();
               
               // Create series for this feature (even if not present)
-              BarSeries currentSeries = barChart.getSeries().get(name);
+              BarSeries currentSeries = barChart.getSeries().get(nameEntry.getKey());
               if (myQueue != null) {
                   for (Iterator<Event> itEvt = myQueue.iterator(); itEvt.hasNext();) {
                      Event evt = itEvt.next();
@@ -236,9 +236,9 @@ public class InMemoryEventRepository extends AbstractEventRepository {
     /** {@inheritDoc} */
     public int getTotalEventCount() {
         int total = 0;
-        for(String evt : events.keySet()) {
-            for(String name : events.get(evt).keySet()) {
-                total += events.get(evt).get(name).size();
+        for(Map.Entry<String, Map < String, Queue<Event> > > evtEntry : events.entrySet()) {
+            for(String name : evtEntry.getValue().keySet()) {
+                total += evtEntry.getValue().get(name).size();
             }
         }
         return total;
