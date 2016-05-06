@@ -337,11 +337,11 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
         Map < String, String > initParams = fp.getFlippingStrategy().getInitParams();
         if (initParams != null && initParams.size() > 0) {
             boolean first = true;
-            for (String key : initParams.keySet()) {
+            for (Map.Entry < String, String > entry : initParams.entrySet()) {
                 if (!first) {
                     fsCreateQuery += ",";
                 }
-                fsCreateQuery += "'" + key + "=" + initParams.get(key) + "'";
+                fsCreateQuery += "'" + entry.getKey() + "=" + entry.getValue() + "'";
                 first = false;
             }
         }
@@ -414,11 +414,11 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
         Map < String, String > initParams = fp.getFlippingStrategy().getInitParams();
             if (initParams != null && initParams.size() > 0) {
             boolean first = true;
-            for (String key : initParams.keySet()) {
+            for (Map.Entry < String, String > entry : initParams.entrySet()) {
                 if (!first) {
                     queryUpdate += ",";
                 }
-                queryUpdate += "'" + key + "=" + initParams.get(key) + "'";
+                queryUpdate += "'" + entry.getKey() + "=" + entry.getValue() + "'";
                 first = false;
             }
         }
