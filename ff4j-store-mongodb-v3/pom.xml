@@ -39,7 +39,7 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
-            <version>3.0.3</version><!--$NO-MVN-MAN-VER$-->
+            <version>3.2.2</version><!--$NO-MVN-MAN-VER$-->
             <scope>provided</scope> <!-- provided to NOT FIX the version -->
         </dependency>
 
@@ -68,7 +68,7 @@
 		<dependency>
 			<groupId>com.github.fakemongo</groupId>
 			<artifactId>fongo</artifactId>
-            <version>2.0.2</version>
+ 			<version>2.0.6</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
