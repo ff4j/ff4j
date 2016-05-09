@@ -140,6 +140,14 @@ public class FF4j {
         this.fstore = new InMemoryFeatureStore(xmlFileResourceAsStream);
     }
 
+	/**
+     * Constructor initializing ff4j with InmemoryStore using a featureMap
+     * @param featureMap
+     */
+    public FF4j(Map<String, Feature> featureMap) {
+        this.fstore = new InMemoryFeatureStore(featureMap);
+    }
+
     /**
      * Ask if flipped.
      * 
