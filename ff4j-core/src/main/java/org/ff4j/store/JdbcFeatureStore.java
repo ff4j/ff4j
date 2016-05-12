@@ -14,9 +14,9 @@ import static org.ff4j.utils.JdbcUtils.buildStatement;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,6 +36,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -57,25 +58,25 @@ import org.ff4j.utils.Util;
 
 /**
  * Implementation of {@link FeatureStore} to work with RDBMS through JDBC.
- * 
+ *
  * @author Cedrick Lunven (@clunven)
  */
 public class JdbcFeatureStore extends AbstractFeatureStore {
 
 	/** Error message 1. */
-    public static final String CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE = 
+    public static final String CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE =
     		"Cannot check feature existence, error related to database";
-    
+
     /** Error message 2. */
-    public static final String CANNOT_UPDATE_FEATURES_DATABASE_SQL_ERROR = 
+    public static final String CANNOT_UPDATE_FEATURES_DATABASE_SQL_ERROR =
     		"Cannot update features database, SQL ERROR";
-    
+
     /** Access to storage. */
     private DataSource dataSource;
-    
+
     /** Query builder. */
     private JdbcQueryBuilder queryBuilder;
-    
+
     /** Mapper. */
     private JdbcPropertyMapper JDBC_PROPERTY_MAPPER = new JdbcPropertyMapper();
 
@@ -87,17 +88,17 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
 
     /**
      * Constructor from DataSource.
-     * 
+     *
      * @param jdbcDS
      *            native jdbc datasource
      */
     public JdbcFeatureStore(DataSource jdbcDS) {
         this.dataSource = jdbcDS;
     }
-    
+
     /**
      * Constructor from DataSource.
-     * 
+     *
      * @param jdbcDS
      *            native jdbc datasource
      */
@@ -139,7 +140,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
         }
     }
 
-    /** {@inheritDoc} */    
+    /** {@inheritDoc} */
     @SuppressWarnings("resource")
 	public Feature read(String uid) {
     	assertFeatureExist(uid);
@@ -165,7 +166,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             while (rs.next()) {
                 f.getPermissions().add(rs.getString("ROLE_NAME"));
             }
-            
+
             // Enrich with properties 3d request to get custom properties by uid
             ps = sqlConn.prepareStatement(getQueryBuilder().getFeatureProperties());
             ps.setString(1, uid);
@@ -196,7 +197,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             if (exist(fp.getUid())) {
                 throw new FeatureAlreadyExistException(fp.getUid());
             }
-            
+
             // Begin TX
             sqlConn.setAutoCommit(false);
 
@@ -225,7 +226,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
                     ps.executeUpdate();
                 }
             }
-            
+
             // Create customproperties
             if (fp.getCustomProperties() != null && !fp.getCustomProperties().isEmpty()) {
                 for (Property<?> pp : fp.getCustomProperties().values()) {
@@ -256,7 +257,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             sqlConn = getDataSource().getConnection();
             sqlConn.setAutoCommit(false);
             Feature fp = read(uid);
-            
+
             // Delete Properties
             if (fp.getCustomProperties() != null && !fp.getCustomProperties().isEmpty()) {
                 for (String property : fp.getCustomProperties().keySet()) {
@@ -293,8 +294,8 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             closeConnection(sqlConn);
         }
     }
-  
-    /** {@inheritDoc} */ 
+
+    /** {@inheritDoc} */
     public void grantRoleOnFeature(String uid, String roleName) {
     	assertFeatureExist(uid);
         assertHasLength(roleName);
@@ -307,7 +308,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
         assertHasLength(roleName);
         update(getQueryBuilder().deleteFeatureRole(), uid, roleName);
     }
-    
+
     /** {@inheritDoc} */
     public Map<String, Feature> readAll() {
         LinkedHashMap<String, Feature> mapFP = new LinkedHashMap<String, Feature>();
@@ -315,7 +316,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            
+
         	// Returns features
             sqlConn = dataSource.getConnection();
             ps = sqlConn.prepareStatement(getQueryBuilder().getAllFeatures());
@@ -332,6 +333,23 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
                 String uid = rs.getString(COL_ROLE_FEATID);
                 mapFP.get(uid).getPermissions().add(rs.getString(COL_ROLE_ROLENAME));
             }
+
+            // Read custom properties for each feature
+            for (Feature f : mapFP.values()) {
+                ps = sqlConn.prepareStatement(getQueryBuilder().getFeatureProperties());
+                ps.setString(1, f.getUid());
+                rs = ps.executeQuery();
+
+                while (rs.next()) {
+                    if (f.getCustomProperties() == null) {
+                        f.setCustomProperties(new HashMap<String, Property<?>>());
+                    }
+
+                    Property<?> property = JDBC_PROPERTY_MAPPER.map(rs);
+                    f.getCustomProperties().put(property.getName(), property);
+                }
+            }
+
             return mapFP;
 
         } catch (SQLException sqlEX) {
@@ -375,7 +393,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
     	assertFeatureNotNull(fp);
         Connection sqlConn = null;
         PreparedStatement ps = null;
-        
+
         try {
             sqlConn = dataSource.getConnection();
             Feature fpExist = read(fp.getUid());
@@ -389,11 +407,11 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
                 fStrategy = fp.getFlippingStrategy().getClass().getCanonicalName();
                 fExpression = MappingUtil.fromMap(fp.getFlippingStrategy().getInitParams());
             }
-            update(getQueryBuilder().updateFeature(), 
+            update(getQueryBuilder().updateFeature(),
             		enable, fp.getDescription(), fStrategy, fExpression, fp.getGroup(), fp.getUid());
-    
+
             // ROLES
-            
+
             // To be deleted (not in new value but was at first)
             Set<String> toBeDeleted = new HashSet<String>();
             toBeDeleted.addAll(fpExist.getPermissions());
@@ -401,7 +419,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             for (String roleToBeDelete : toBeDeleted) {
                 removeRoleFromFeature(fpExist.getUid(), roleToBeDelete);
             }
-    
+
             // To be created : in second but not in first
             Set<String> toBeAdded = new HashSet<String>();
             toBeAdded.addAll(fp.getPermissions());
@@ -409,18 +427,18 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             for (String addee : toBeAdded) {
                 grantRoleOnFeature(fpExist.getUid(), addee);
             }
-            
+
             // REMOVE EXISTING CUSTOM PROPERTIES
             if (fpExist.getCustomProperties() != null && !fpExist.getCustomProperties().isEmpty()) {
                 ps = sqlConn.prepareStatement(getQueryBuilder().deleteAllFeatureCustomProperties());
                 ps.setString(1, fpExist.getUid());
                 ps.executeUpdate();
             }
-            
+
             // CREATE PROPERTIES
             if (fp.getCustomProperties() != null && !fp.getCustomProperties().isEmpty()) {
                 createCustomProperties(fp.getUid(), fp.getCustomProperties().values());
-            } 
+            }
             } catch (SQLException sqlEX) {
                 throw new FeatureAccessException(CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE, sqlEX);
             } finally {
@@ -435,18 +453,18 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
         Connection sqlConn = null;
         PreparedStatement ps = null;
         try {
-            
+
             sqlConn = dataSource.getConnection();
-            
+
             ps = sqlConn.prepareStatement(getQueryBuilder().deleteAllCustomProperties());
             ps.executeUpdate();
-            
+
             ps = sqlConn.prepareStatement(getQueryBuilder().deleteAllRoles());
             ps.executeUpdate();
-            
+
             ps = sqlConn.prepareStatement(getQueryBuilder().deleteAllFeatures());
             ps.executeUpdate();
-            
+
         } catch (SQLException sqlEX) {
             throw new FeatureAccessException(CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE, sqlEX);
         } finally {
@@ -454,10 +472,10 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             closeConnection(sqlConn);
         }
     }
-    
+
     /**
      * Ease creation of properties in Database.
-     * 
+     *
      * @param uid
      *      target unique identifier
      * @param props
@@ -466,24 +484,24 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
     public void createCustomProperties(String uid, Collection <Property<?> > props) {
         Util.assertNotNull(uid);
         if (props == null || props.isEmpty()) return;
-       
+
         Connection sqlConn = null;
         PreparedStatement ps = null;
-        
+
         try {
             sqlConn = dataSource.getConnection();
-            
+
             // Begin TX
             sqlConn.setAutoCommit(false);
-            
+
             // Queries
             for (Property<?> pp : props) {
                 ps = createCustomProperty(sqlConn, uid, pp);
             }
-            
+
             // End TX
             sqlConn.commit();
-            
+
         } catch (SQLException sqlEX) {
             throw new FeatureAccessException(CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE, sqlEX);
         } finally {
@@ -491,7 +509,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             closeConnection(sqlConn);
         }
     }
-    
+
     /**
      * Create SQL statement to create property.
      *
@@ -535,7 +553,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             ps = sqlConn.prepareStatement(getQueryBuilder().existGroup());
             ps.setString(1, groupName);
             rs = ps.executeQuery();
-            rs.next(); 
+            rs.next();
             return rs.getInt(1) > 0;
         } catch (SQLException sqlEX) {
             throw new FeatureAccessException(CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE, sqlEX);
@@ -589,6 +607,23 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
                     mapFP.get(uid).getPermissions().add(rs.getString(COL_ROLE_ROLENAME));
                 }
             }
+
+            // Read custom properties for each feature
+            for (Feature f : mapFP.values()) {
+                ps = sqlConn.prepareStatement(getQueryBuilder().getFeatureProperties());
+                ps.setString(1, f.getUid());
+                rs = ps.executeQuery();
+
+                while (rs.next()) {
+                    if (f.getCustomProperties() == null) {
+                        f.setCustomProperties(new HashMap<String, Property<?>>());
+                    }
+
+                    Property<?> property = JDBC_PROPERTY_MAPPER.map(rs);
+                    f.getCustomProperties().put(property.getName(), property);
+                }
+            }
+
             return mapFP;
 
         } catch (SQLException sqlEX) {
@@ -617,10 +652,10 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
         }
         update(getQueryBuilder().addFeatureToGroup(), "", uid);
     }
-    
+
     /**
      * Utility method to perform UPDATE and DELETE operations.
-     * 
+     *
      * @param query
      *            target query
      * @param params
@@ -643,7 +678,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
 
     /**
      * Getter accessor for attribute 'dataSource'.
-     * 
+     *
      * @return current value of 'dataSource'
      */
     public DataSource getDataSource() {
@@ -655,7 +690,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
 
     /**
      * Setter accessor for attribute 'dataSource'.
-     * 
+     *
      * @param dataSource
      *            new value for 'dataSource '
      */
