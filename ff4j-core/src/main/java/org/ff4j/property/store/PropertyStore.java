@@ -1,5 +1,6 @@
 package org.ff4j.property.store;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -117,7 +118,11 @@ public interface PropertyStore {
      */
     void clear();
     
-    
-    
-    
+    /**
+     * Import a set of properties.
+     *
+     * @param properties
+     *      a set of properties
+     */
+    void importProperties(Collection<Property<?>> properties);
 }

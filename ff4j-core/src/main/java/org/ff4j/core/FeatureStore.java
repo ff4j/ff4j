@@ -1,5 +1,7 @@
 package org.ff4j.core;
 
+import java.util.Collection;
+
 /*
  * #%L
  * ff4j-core
@@ -170,6 +172,14 @@ public interface FeatureStore {
      * Empty features set.
      */
     void clear();
+    
+    /**
+     * Import features.
+     *
+     * @param features
+     *      list of features.s
+     */
+    void importFeatures(Collection < Feature > features);
 
     
 }

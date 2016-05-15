@@ -4,7 +4,6 @@ import static org.ff4j.web.embedded.ConsoleConstants.CONTENT_TYPE_HTML;
 import static org.ff4j.web.embedded.ConsoleConstants.CONTENT_TYPE_JSON;
 import static org.ff4j.web.embedded.ConsoleConstants.FEATID;
 import static org.ff4j.web.embedded.ConsoleConstants.FLIPFILE;
-import static org.ff4j.web.embedded.ConsoleConstants.VIEW;
 import static org.ff4j.web.embedded.ConsoleConstants.GROUPNAME;
 import static org.ff4j.web.embedded.ConsoleConstants.NAME;
 import static org.ff4j.web.embedded.ConsoleConstants.OPERATION;
@@ -50,8 +49,11 @@ import static org.ff4j.web.embedded.ConsoleRenderer.renderPageMonitoring;
  */
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -63,9 +65,13 @@ import org.apache.commons.io.FilenameUtils;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
+import org.ff4j.web.ApiConfig;
 import org.ff4j.web.FF4jInitServlet;
+import org.ff4j.web.console.ImageProvider;
+import org.ff4j.web.console.ImageProvider.ImageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.thymeleaf.context.WebContext;
 
 /**
  * Unique Servlet to manage FlipPoints and security
@@ -82,6 +88,7 @@ public class ConsoleServlet extends FF4jInitServlet {
     
     /** Error Message. */
     public static final String ERROR = "error";
+    
 
     /** {@inheritDoc} */
     public void doGet(HttpServletRequest req, HttpServletResponse res)
@@ -89,7 +96,7 @@ public class ConsoleServlet extends FF4jInitServlet {
     	
     	if (ConsoleRenderer.renderResources(req, res)) return;
     	 
-    	/* Sample Context
+    	// Sample Context
     	ServletContext sc = req.getSession().getServletContext();
     	WebContext ctx = new WebContext(req, res, sc, req.getLocale());
     	ctx.setVariable("CHAINE", "Sample Valeur");
@@ -97,6 +104,9 @@ public class ConsoleServlet extends FF4jInitServlet {
     	api.setHost("HOST_X");
     	ctx.setVariable("BEAN", api);
     	ctx.setVariable("today", Calendar.getInstance());
+    
+    	// Load image, put in cache, return as base64
+    	ImageProvider.getInstance().addImageToContext(ctx, "flagFrance", ImageType.png);
     	
     	List < ApiConfig > listA = new ArrayList<ApiConfig>();
     	listA.add(new ApiConfig());
@@ -105,7 +115,7 @@ public class ConsoleServlet extends FF4jInitServlet {
     	ctx.setVariable("apis", listA);
     	
     	templateEngine.process("home", ctx, res.getWriter());
-	    */
+    	 
     	/*
     	if (ff4j.check("ff4j.admin.secure")) {
     		 	PropertyStringList listOfUsers = (PropertyStringList) 
@@ -113,7 +123,7 @@ public class ConsoleServlet extends FF4jInitServlet {
     		if (!listOfUsers.contains(ff4j.getAuthorizationsManager().getCurrentUserName())) {
     			// Forbidden
     		}
-    	}*/
+    	}
     	
     	String targetView = req.getParameter(VIEW);
     	
@@ -122,7 +132,7 @@ public class ConsoleServlet extends FF4jInitServlet {
     	
     	} else if ("monitoring".equals(targetView)) {
     		pageMonitoring(req, res);
-    	}
+    	}*/
     }
     
     public void pageMonitoring(HttpServletRequest req, HttpServletResponse res) throws IOException {

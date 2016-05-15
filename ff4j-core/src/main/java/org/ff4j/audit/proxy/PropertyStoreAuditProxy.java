@@ -1,5 +1,7 @@
 package org.ff4j.audit.proxy;
 
+import java.util.Collection;
+
 /*
  * #%L
  * ff4j-core
@@ -26,6 +28,7 @@ import java.util.Set;
 import org.ff4j.FF4j;
 import org.ff4j.audit.EventBuilder;
 import org.ff4j.audit.EventPublisher;
+import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.PropertyStore;
 
@@ -130,6 +133,19 @@ public class PropertyStoreAuditProxy implements PropertyStore {
         publish(builder(ACTION_CLEAR).type(TARGET_PSTORE)
                 .name(ff4j.getPropertiesStore().getClass().getName())
                 .duration(duration));
+    }
+    
+    /** {@inheritDoc} */
+    public void importProperties(Collection<Property<?>> properties) {
+        // Do not use target as the delete/create operation will be traced
+        if (properties != null) {
+            for (Property<?> property : properties) {
+                if (existProperty(property.getName())) {
+                    deleteProperty(property.getName());
+                }
+                createProperty(property);
+            }
+        }
     }
     
     /**

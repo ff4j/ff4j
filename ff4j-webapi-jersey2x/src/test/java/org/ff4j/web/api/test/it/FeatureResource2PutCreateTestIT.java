@@ -40,7 +40,7 @@ import static org.ff4j.web.FF4jWebConstants.*;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureResource2_putCreate_TestIT extends AbstractWebResourceTestIT {
+public class FeatureResource2PutCreateTestIT extends AbstractWebResourceTestIT {
 
     /**
      * TDD.

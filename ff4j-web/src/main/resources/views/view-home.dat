@@ -13,6 +13,8 @@
   <body>
   
     <div th:include="header :: title"></div>
+    
+    <img height="16" width="16" th:src="${flagFrance}" />
   
     <p th:text="#{home.welcome}">Welcome to our grocery store!</p>
     

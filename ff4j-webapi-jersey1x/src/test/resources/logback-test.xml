@@ -30,7 +30,7 @@
   
   <logger name="ch.qos.logback" level="ERROR" 	/>
    
-  <root level="WARN">
+  <root level="ERROR">
     <appender-ref ref="STDOUT" />
   </root>
 

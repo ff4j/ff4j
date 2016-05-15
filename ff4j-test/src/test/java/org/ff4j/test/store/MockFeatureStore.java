@@ -1,5 +1,6 @@
 package org.ff4j.test.store;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 /*
@@ -140,6 +141,11 @@ public class MockFeatureStore implements FeatureStore {
     /** {@inheritDoc} */
     public void clear() {
         empty = true;
+    }
+
+    /** {@inheritDoc} */
+    public void importFeatures(Collection<Feature> features) {
+        LOGGER.debug("MOCK [importFeatures]");
     }
 
 }

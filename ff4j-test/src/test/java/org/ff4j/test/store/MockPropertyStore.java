@@ -1,5 +1,6 @@
 package org.ff4j.test.store;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 /*
@@ -99,6 +100,11 @@ public class MockPropertyStore implements PropertyStore {
     /** {@inheritDoc} */
     public void clear() {
         empty = true;
+    }
+
+    /** {@inheritDoc} */
+    public void importProperties(Collection<Property<?>> properties) {
+        LOGGER.debug("MOCK [importProperties]");
     }
 
 }

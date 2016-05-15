@@ -39,7 +39,7 @@ import static org.ff4j.test.TestsFf4jConstants.*;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureResource2_putUpdateAuth2_TestIT extends AbstractWebResourceTestIT {
+public class FeatureResource2PutUpdateAuth2TestIT extends AbstractWebResourceTestIT {
 
     /**
      * TDD, update by adding in the authorization

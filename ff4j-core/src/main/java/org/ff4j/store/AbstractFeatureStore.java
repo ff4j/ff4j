@@ -21,6 +21,7 @@ package org.ff4j.store;
  */
 
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -59,17 +60,25 @@ public abstract class AbstractFeatureStore implements FeatureStore {
         // Use the Feature Parser
         XmlConfig conf = new XmlParser().parseConfigurationFile(xmlIS);
         Map < String, Feature > features = conf.getFeatures();
-
-        // Override existing configuration within database
-        for (Map.Entry<String,Feature> featureName : features.entrySet()) {
-            if (exist(featureName.getKey())) {
-                delete(featureName.getKey());
-            }
-            create(featureName.getValue());
-        }
+        importFeatures(features.values());
         return features;
     }
     
+    /**
+     * Import features from a set of feature.
+     *
+     * @param features
+     */
+    public void importFeatures(Collection < Feature > features) {
+        if (features != null) {
+            for (Feature feature : features) {
+                if (exist(feature.getUid())) {
+                    delete(feature.getUid());
+                }
+                create(feature);
+            }
+        }
+    }
     
     /** {@inheritDoc} */
     public String toJson() {

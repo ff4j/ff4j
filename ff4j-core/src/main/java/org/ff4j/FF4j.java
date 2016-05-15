@@ -27,6 +27,7 @@ import static org.ff4j.audit.EventConstants.SOURCE_JAVA;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -104,14 +105,17 @@ public class FF4j {
     /** Event Publisher (threadpool, executor) to send data into {@link EventRepository} */
     private EventPublisher eventPublisher = null;
     
-    private volatile boolean shutdownEventPublisher;
-    
     /** Post Processing like audit enable. */
     private boolean initialized = false;
 
     /** Hold flipping execution context as Thread-safe data. */
     private ThreadLocal<FlippingExecutionContext> currentExecutionContext = new ThreadLocal<FlippingExecutionContext>();
 
+    /**
+     * This attribute indicates to stop the event publisher.
+     */
+    private volatile boolean shutdownEventPublisher;
+    
     /**
      * This attribute indicates when call the alter bean throw de {@link InvocationTargetException}
      * or the wraps exception thrown by an invoked method or constructor
@@ -410,7 +414,7 @@ public class FF4j {
      *            target feature ID
      * @return target feature.
      */
-    public Feature getFeature(String featureID) {
+    public synchronized Feature getFeature(String featureID) {
         Feature fp = null;
         try {
             fp = getFeatureStore().read(featureID);
@@ -423,6 +427,40 @@ public class FF4j {
             }
         }
         return fp;
+    }
+    
+    /**
+     * Help to import features.
+     * 
+     * @param features
+     *      set of features.
+     * @return
+     *      a reference to this object (builder pattern).
+     *
+     * @since 1.6
+     */
+    public FF4j importFeatures(Collection < Feature> features) {
+        getFeatureStore().importFeatures(features);
+        return this;
+    }
+    
+    /**
+     * Help to import propertiess.
+     * 
+     * @param features
+     *      set of features.
+     * @return
+     *      a reference to this object (builder pattern).
+     *
+     * @since 1.6
+     */
+    public FF4j importProperties(Collection < Property<?>> properties) {
+        if (properties != null) {
+            for (Property<?> property : properties) {
+                getPropertiesStore().createProperty(property);
+            }
+        }
+        return this;
     }
 
     /**

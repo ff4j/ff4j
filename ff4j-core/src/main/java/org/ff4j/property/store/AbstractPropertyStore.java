@@ -1,6 +1,7 @@
 package org.ff4j.property.store;
 
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -122,6 +123,19 @@ public abstract class AbstractPropertyStore implements PropertyStore {
         p.setValueFromString(newValue);
         // Serialization and update key, update TTL
         updateProperty(p);
+    }
+    
+    /** {@inheritDoc} */
+    public void importProperties(Collection<Property<?>> properties) {
+        // Do not use target as the delete/create operation will be traced
+        if (properties != null) {
+            for (Property<?> property : properties) {
+                if (existProperty(property.getName())) {
+                    deleteProperty(property.getName());
+                }
+                createProperty(property);
+            }
+        }
     }
 
     

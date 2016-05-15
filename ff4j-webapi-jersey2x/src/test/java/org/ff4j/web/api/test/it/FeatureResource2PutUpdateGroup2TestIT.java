@@ -39,30 +39,31 @@ import static org.ff4j.test.TestsFf4jConstants.*;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureResource2_putUpdateGroup1_TestIT extends AbstractWebResourceTestIT {
+public class FeatureResource2PutUpdateGroup2TestIT extends AbstractWebResourceTestIT {
 
     /**
      * TDD, update by adding in the authorization
      */
     @Test
-    public void testPut_upsertUpdateAddGroup() throws Exception {
+    public void testPut_upsertUpdateAddGroup() {
         // Given
-        assertFF4J.assertThatFeatureExist(F1);
-        assertFF4J.assertThatFeatureNotInGroup(F1, "g2");
+        assertFF4J.assertThatFeatureExist(F3);
+        assertFF4J.assertThatFeatureIsInGroup(F3, G1);
         // When
-        Feature f1 = ff4j.getFeature(F1);
-        f1.setGroup("g2");
+        Feature f3 = ff4j.getFeature(F3);
+        f3.setGroup("");
         
-        WebTarget webResFeat = resourceFeatures().path(F1);
+        
+        WebTarget webResFeat = resourceFeatures().path(F3);
         Response res = webResFeat//
                 .request(MediaType.APPLICATION_JSON)//
-                .put(Entity.entity(new FeatureApiBean(f1), MediaType.APPLICATION_JSON), Response.class);
-                
+                .put(Entity.entity(new FeatureApiBean(f3), MediaType.APPLICATION_JSON), Response.class);
+   
         // Then HTTPResponse
         Assert.assertEquals(Status.NO_CONTENT.getStatusCode(), res.getStatus());
         // Then Object Entity : null
         // Then
-        assertFF4J.assertThatFeatureIsInGroup(F1, "g2");
+        assertFF4J.assertThatFeatureNotInGroup(F3, G1);
     }
 
 

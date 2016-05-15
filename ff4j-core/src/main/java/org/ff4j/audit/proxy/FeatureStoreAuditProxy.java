@@ -8,6 +8,8 @@ import static org.ff4j.audit.EventConstants.ACTION_TOGGLE_ON;
 import static org.ff4j.audit.EventConstants.ACTION_UPDATE;
 import static org.ff4j.audit.EventConstants.TARGET_FSTORE;
 
+import java.util.Collection;
+
 /*
  * #%L
  * ff4j-core
@@ -208,6 +210,19 @@ public class FeatureStoreAuditProxy implements FeatureStore {
     public Set<String> readAllGroups() {
         return target.readAllGroups();
     }
+    
+    /** {@inheritDoc} */
+    public void importFeatures(Collection<Feature> features) {
+        // Do not use target as the delete/create operation will be traced
+        if (features != null) {
+            for (Feature feature : features) {
+                if (exist(feature.getUid())) {
+                    delete(feature.getUid());
+                }
+                create(feature);
+            }
+        }
+    }
 
 	/**
 	 * Getter accessor for attribute 'target'.
@@ -218,5 +233,4 @@ public class FeatureStoreAuditProxy implements FeatureStore {
 	public FeatureStore getTarget() {
 		return target;
 	}
-
 }

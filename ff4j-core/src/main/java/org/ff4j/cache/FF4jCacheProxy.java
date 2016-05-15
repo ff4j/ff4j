@@ -1,5 +1,7 @@
 package org.ff4j.cache;
 
+import java.util.Collection;
+
 /*
  * #%L ff4j-core %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not use
  * this file except in compliance with the License. You may obtain a copy of the License at
@@ -353,6 +355,19 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
         getCacheManager().clearFeatures();
         getTargetFeatureStore().clear();
     }
+    
+
+    /** {@inheritDoc} */
+    public void importProperties(Collection<Property<?>> properties) {
+        getCacheManager().clearProperties();
+        getTargetPropertyStore().importProperties(properties);
+    }
+
+    /** {@inheritDoc} */
+    public void importFeatures(Collection<Feature> features) {
+        getCacheManager().clearFeatures();
+        getTargetFeatureStore().importFeatures(features);
+    }
 
     /**
      * Setter accessor for attribute 'targetFeatureStore'.
@@ -373,5 +388,6 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
     public void setTargetPropertyStore(PropertyStore targetPropertyStore) {
         this.targetPropertyStore = targetPropertyStore;
     }
+
 
 }

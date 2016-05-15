@@ -65,6 +65,7 @@ public class FF4JResource2TestIT extends AbstractWebResourceTestIT {
     public void testPostIsNotFlipped() {
         // Given
         assertFF4J.assertThatFeatureExist(F4);
+        ff4j.disable(F4);
         assertFF4J.assertThatFeatureNotFlipped(F4);
         
         // When

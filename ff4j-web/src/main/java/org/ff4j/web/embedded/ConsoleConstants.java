@@ -51,13 +51,13 @@ public class ConsoleConstants {
     public static final String RESOURCE_CSS_PARAM = "css";
 
     /** static resource file. */
-    public static final String RESOURCE_CSS_FILE = "ff4j-embedded.css";
+    public static final String RESOURCE_CSS_FILE = "ff4j-embedded-css.dat";
 
     /** static resource param value. */
     public static final String RESOURCE_JS_PARAM = "js";
 
     /** static resource file. */
-    public static final String RESOURCE_JS_FILE = "ff4j-embedded.js";
+    public static final String RESOURCE_JS_FILE = "ff4j-embedded-js.dat";
 
 
     // -------- OPERATIONS ------------------------------

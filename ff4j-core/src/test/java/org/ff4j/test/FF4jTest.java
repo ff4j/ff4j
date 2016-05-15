@@ -25,8 +25,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 import org.ff4j.FF4j;
 import org.ff4j.audit.Event;
@@ -36,6 +38,7 @@ import org.ff4j.audit.repository.InMemoryEventRepository;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.property.Property;
 import org.ff4j.property.PropertyString;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.el.ExpressionFlipStrategy;
@@ -343,5 +346,31 @@ public class FF4jTest extends AbstractFf4jTest {
         ff4j.disableAlterBeanThrowInvocationTargetException();
         Assert.assertFalse(ff4j.isAlterBeanThrowInvocationTargetException());
     }
+
+    @Test
+    public void testImportFeatures() {
+        FF4j ff4j = new FF4j();
+        List < Feature > listOfFeatures = new ArrayList<Feature>();
+        listOfFeatures.add(new Feature("f1", true, null, null, Util.set("USER")));
+        ff4j.importFeatures(listOfFeatures);
+        Assert.assertTrue(ff4j.exist("f1"));
+        
+        // no Error
+        ff4j.importFeatures(null);
+    }
+    
+    @Test
+    public void testImportProperties() {
+        FF4j ff4j = new FF4j();
+        List < Property<?> > listOfProperties = new ArrayList<Property<?>>();
+        listOfProperties.add(new PropertyString("p1", "v1"));
+        ff4j.importProperties(listOfProperties);
+        Assert.assertTrue(ff4j.getPropertiesStore().existProperty("p1"));
+        
+        // no Error
+        ff4j.importProperties(null);
+    }
+    
+    
 
 }

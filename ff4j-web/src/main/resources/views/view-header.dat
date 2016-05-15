@@ -3,7 +3,9 @@
 xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment="title">
-Ceci est le header
+XX Fragment
+
 </div>
 </body>
 </html>
+
