@@ -20,14 +20,6 @@ package org.ff4j.test;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
-
 import org.ff4j.FF4j;
 import org.ff4j.audit.Event;
 import org.ff4j.audit.EventConstants;
@@ -41,7 +33,17 @@ import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.el.ExpressionFlipStrategy;
 import org.ff4j.utils.Util;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
+import static org.junit.Assert.*;
 
 /**
  * Test operations over {@link FF4j}
@@ -49,6 +51,9 @@ import org.junit.Test;
  * @author Cedrick Lunven (@clunven)
  */
 public class FF4jTest extends AbstractFf4jTest {
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     @Override
     public FF4j initFF4j() {
@@ -342,6 +347,25 @@ public class FF4jTest extends AbstractFf4jTest {
         FF4j ff4j = new FF4j();
         ff4j.disableAlterBeanThrowInvocationTargetException();
         Assert.assertFalse(ff4j.isAlterBeanThrowInvocationTargetException());
+    }
+
+    @Test
+    public void should_create_an_ff4j_instance_from_a_map_of_features(){
+        Map<String, Feature> featureMap = new HashMap<>();
+        featureMap.put("someFeature1",  new Feature("someFeature1", true, "some description 1"));
+        featureMap.put("somefeature2",  new Feature("somefeature2", false, "some description 2"));
+        FF4j ff4j = new FF4j(featureMap);
+        boolean feature1Enabled = ff4j.check("someFeature1");
+        boolean feature2Enabled = ff4j.check("somefeature2");
+        assertTrue(feature1Enabled);
+        assertFalse(feature2Enabled);
+    }
+
+    @Test
+    public void should_fail_creating_an_ff4j_instance_from_a_null_map_of_features(){
+        expectedException.expect(NullPointerException.class);
+        Map<String, Feature> featureMap = null;
+        FF4j ff4j = new FF4j(featureMap);
     }
 
 }
