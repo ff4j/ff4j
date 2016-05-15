@@ -1,6 +1,9 @@
 language: java
 jdk:
   - oraclejdk8
+env:
+  global:
+  - TERM=dumb
 after_success:
   - mvn clean test jacoco:report coveralls:report
-  
+
