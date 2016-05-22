@@ -51,6 +51,8 @@ public class MappingUtil {
 
     /** Separator to propose parameters. */
     private static final String SEPARATOR = "&";
+    
+    /** Primitive mapping. */
     private static Map < String, String > PROPERTY_TYPES;
 
     /**
@@ -92,6 +94,32 @@ public class MappingUtil {
            return PROPERTY_TYPES.get(pType.toLowerCase());
         }
         return pType;
+    }
+    
+    /**
+     * Substitution of PropertyXXX intoPrimitive.
+     *
+     * Allows to TODO
+     * @param pType
+     * @return
+     */
+    public static String mapSimpleType(String className) {
+        if (className == null) return className;
+        if (PROPERTY_TYPES.containsValue(className)) {
+           return Util.getFirstKeyByValue(PROPERTY_TYPES, className);
+        }
+        return className;
+    }
+
+    /**
+     * Substitution of primitive into PropertyXXX.
+     * Allows to TODO
+     * @param pType
+     * @return
+     */
+    public static String mapSimpleType(Class<?> pType) {
+        if (pType == null) return null;
+        return mapSimpleType(pType.getName());
     }
 
     /**

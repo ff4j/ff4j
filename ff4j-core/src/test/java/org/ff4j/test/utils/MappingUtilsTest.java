@@ -31,6 +31,7 @@ import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.property.Property;
+import org.ff4j.property.PropertyInt;
 import org.ff4j.property.PropertyString;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.utils.JdbcUtils;
@@ -125,6 +126,19 @@ public class MappingUtilsTest {
         String expression = JsonUtils.customPropertiesAsJson(props);
         // Then
         Assert.assertNotNull(expression);
+    }
+    
+    @Test
+    public void testMappingPropertyToPrimitive() {
+        // Primitive -> Property
+        Assert.assertEquals(PropertyInt.class.getName(), MappingUtil.mapPropertyType("int"));
+        Assert.assertEquals("unknown", MappingUtil.mapPropertyType("unknown"));
+        Assert.assertNull(MappingUtil.mapPropertyType(null));
+        
+        // Property -> Primitive
+        Assert.assertEquals(PropertyInt.class.getName(), MappingUtil.mapPropertyType("int"));
+        
+        
     }
 
 }

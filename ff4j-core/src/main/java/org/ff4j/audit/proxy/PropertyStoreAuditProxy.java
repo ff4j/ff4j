@@ -1,5 +1,11 @@
 package org.ff4j.audit.proxy;
 
+import static org.ff4j.audit.EventConstants.ACTION_CLEAR;
+import static org.ff4j.audit.EventConstants.ACTION_CREATE;
+import static org.ff4j.audit.EventConstants.ACTION_DELETE;
+import static org.ff4j.audit.EventConstants.ACTION_UPDATE;
+import static org.ff4j.audit.EventConstants.TARGET_PSTORE;
+
 import java.util.Collection;
 
 /*
@@ -28,11 +34,8 @@ import java.util.Set;
 import org.ff4j.FF4j;
 import org.ff4j.audit.EventBuilder;
 import org.ff4j.audit.EventPublisher;
-import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.PropertyStore;
-
-import static org.ff4j.audit.EventConstants.*;
 
 /**
  * Implementation of audit on top of store.
