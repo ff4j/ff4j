@@ -37,6 +37,7 @@ import org.ff4j.audit.proxy.FeatureStoreAuditProxy;
 import org.ff4j.audit.proxy.PropertyStoreAuditProxy;
 import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.audit.repository.InMemoryEventRepository;
+import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
@@ -859,4 +860,57 @@ public class FF4j {
     public boolean isAlterBeanThrowInvocationTargetException() {
         return alterBeanThrowInvocationTargetException;
     }
+    
+    /**
+     * Reach concrete implementation of the featureStore.
+     *
+     * @return
+     */
+    public FeatureStore getConcreteFeatureStore() {
+        return getConcreteFeatureStore(getFeatureStore());
+    }
+    
+    /**
+     * Reach concrete implementation of the propertyStore.
+     *
+     * @return
+     */
+    public PropertyStore getConcretePropertyStore() {
+        return getConcretePropertyStore(getPropertiesStore());
+    }
+    
+    /**
+     * Return concrete implementation.
+     *
+     * @param fs
+     *      current featureStore
+     * @return
+     *      target featureStore
+     */
+    private FeatureStore getConcreteFeatureStore(FeatureStore fs) {
+        if (fs instanceof FeatureStoreAuditProxy) {
+            return getConcreteFeatureStore(((FeatureStoreAuditProxy) fs).getTarget());
+        } else if (fs instanceof FF4jCacheProxy) {
+            return getConcreteFeatureStore(((FF4jCacheProxy) fs).getTargetFeatureStore());
+        }
+        return fs;
+    }
+    
+    /**
+     * Return concrete implementation.
+     *
+     * @param fs
+     *      current propertyStoyre
+     * @return
+     *      target propertyStoyre
+     */
+    private PropertyStore getConcretePropertyStore(PropertyStore ps) {
+        if (ps instanceof PropertyStoreAuditProxy) {
+            return getConcretePropertyStore(((PropertyStoreAuditProxy) ps).getTarget());
+        } else if (ps instanceof FF4jCacheProxy) {
+            return getConcretePropertyStore(((FF4jCacheProxy) ps).getTargetPropertyStore());
+        }
+        return ps;
+    }
+    
 }
