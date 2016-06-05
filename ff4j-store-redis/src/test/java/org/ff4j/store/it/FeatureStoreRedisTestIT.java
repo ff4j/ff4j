@@ -34,7 +34,6 @@ import org.junit.Ignore;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-@Ignore
 public class FeatureStoreRedisTestIT extends FeatureStoreTestSupport {
    
     /** {@inheritDoc} */

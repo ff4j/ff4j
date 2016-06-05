@@ -121,10 +121,17 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
     }
     
     /** {@inheritDoc} */
-    @Override
     public boolean exist(String uid) {
         Util.assertParamNotNull(uid, "Feature identifier");
-        return getJedis().exists(KEY_FEATURE + uid);
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            return jedis.exists(KEY_FEATURE + uid);
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
     }
     
     /** {@inheritDoc} */
@@ -139,14 +146,20 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public void update(Feature fp) {
-        if (fp == null) {
-            throw new IllegalArgumentException("Feature cannot be null");
-        }
+        Util.assertNotNull("Feature" , fp);
         if (!exist(fp.getUid())) {
             throw new FeatureNotFoundException(fp.getUid());
         }
-        getJedis().set(KEY_FEATURE + fp.getUid(), fp.toJson());
-        getJedis().persist(KEY_FEATURE + fp.getUid());
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            jedis.set(KEY_FEATURE + fp.getUid(), fp.toJson());
+            jedis.persist(KEY_FEATURE + fp.getUid());
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
     }
     
     /** {@inheritDoc} */
@@ -174,37 +187,58 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public void create(Feature fp) {
-        if (fp == null) {
-            throw new IllegalArgumentException("Feature cannot be null nor empty");
-        }
+        Util.assertNotNull("Feature" , fp);
         if (exist(fp.getUid())) {
             throw new FeatureAlreadyExistException(fp.getUid());
         }
-        getJedis().set(KEY_FEATURE + fp.getUid(), fp.toJson());
-        getJedis().persist(KEY_FEATURE + fp.getUid());
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            jedis.set(KEY_FEATURE + fp.getUid(), fp.toJson());
+            jedis.persist(KEY_FEATURE + fp.getUid());
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public Map<String, Feature> readAll() {
-        Set < String > myKeys = getJedis().keys(KEY_FEATURE + "*");
-        Map<String, Feature> myMap = new HashMap<String, Feature>();
-        if (myKeys != null) {
-            for (String key : myKeys) {
-                key = key.replaceAll(KEY_FEATURE, "");
-                myMap.put(key, read(key));
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            Set < String > myKeys = getJedis().keys(KEY_FEATURE + "*");
+            Map<String, Feature> myMap = new HashMap<String, Feature>();
+            if (myKeys != null) {
+                for (String key : myKeys) {
+                    key = key.replaceAll(KEY_FEATURE, "");
+                    myMap.put(key, read(key));
+                }
+            }
+            return myMap;
+        } finally {
+            if (jedis != null) {
+                jedis.close();
             }
         }
-        return myMap;
     }
 
     /** {@inheritDoc} */
-    @Override
     public void delete(String fpId) {
         if (!exist(fpId)) {
             throw new FeatureNotFoundException(fpId);
         }
-        getJedis().del(KEY_FEATURE + fpId);
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            jedis.del(KEY_FEATURE + fpId);
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
     }    
 
     /** {@inheritDoc} */
@@ -322,8 +356,16 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public void clear() {
-        Set < String > myKeys = getJedis().keys(KEY_FEATURE + "*");
-        getJedis().del(myKeys.toArray(new String[0]));
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            Set < String > myKeys = jedis.keys(KEY_FEATURE + "*");
+            jedis.del(myKeys.toArray(new String[0]));
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
     }
 
     
@@ -374,10 +416,11 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
         if (redisConnection == null) {
             throw new IllegalArgumentException("Cannot found any redisConnection");
         }
-        if (redisConnection.getJedis() == null) {
+        Jedis jedis = redisConnection.getJedis();
+        if (jedis == null) {
             throw new IllegalArgumentException("Cannot found any jedis connection, please build connection");
         }
-        return redisConnection.getJedis() ;
+        return jedis;
     }
     
 }

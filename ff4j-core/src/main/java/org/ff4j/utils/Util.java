@@ -88,11 +88,21 @@ public class Util {
      *            target object
      */
     public static void assertNotNull(Object... params) {
+        assertNotNull("parameter", params);
+    }
+    
+    /**
+     * Check that object is not null.
+     * 
+     * @param object
+     *            target object
+     */
+    public static void assertNotNull(String objectName, Object... params) {
         if (params != null) {
             for (int idx = 0; idx < params.length ;idx++) {
                 Object currentparam = params[idx];
                 if (null == currentparam) {
-                    throw new IllegalArgumentException("[Assertion failed] - Parameter #" + idx + "(object)  must not be null");
+                    throw new IllegalArgumentException("[Assertion failed] - " + objectName + " must not be null");
                 }
             }
         }

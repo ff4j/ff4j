@@ -22,32 +22,51 @@ package org.ff4j.redis;
 
 
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.JedisSentinelPool;
+import redis.clients.jedis.Protocol;
+import redis.clients.util.Pool;
 
+/**
+ * Connection to redis DataBase.
+ *
+ * @author Cedrick LUNVEN (@clunven)
+ */
 public class RedisConnection {
     
-    /** default host. */
-    private static String DEFAULT_REDIS_HOST = "localhost";
+    /** redis host(if not sentinel). */
+    protected String redisHost = Protocol.DEFAULT_HOST;
 
-    /** default port. */
-    private static int DEFAULT_REDIS_PORT = 6379; 
-    
-    /** redis host. */
-    protected String redisHost = DEFAULT_REDIS_HOST;
-
-    /** redis port. */
-    protected int redisport = DEFAULT_REDIS_PORT;
-    
+    /** redis port (if not sentinel). */
+    protected int redisport =  Protocol.DEFAULT_PORT;
+  
     /** used in protected redis cluster. */
     protected String redisPassword = null;
     
-    /** Java Redis CLIENT. */
-    protected Jedis jedis;
+    /** redis. */ 
+    protected int redisPoolMaxTotal =  8;
+    
+    /** redis. */ 
+    protected int redisPoolTimeout = Protocol.DEFAULT_TIMEOUT;
+    
+    /**
+     * Jedis connection Pool.
+     * 
+     * @see JedisPool
+     * @see JedisSentinelPool
+     */
+    protected Pool < Jedis > jedisPool;
     
     /**
      * Default constructor.
      */
     public RedisConnection() {
-        this(DEFAULT_REDIS_HOST, DEFAULT_REDIS_PORT);
+    }
+    
+    /** Jedis connection Pool. */
+    public RedisConnection(Pool < Jedis > jedisPool) {
+        this.jedisPool = jedisPool;
     }
     
     /**
@@ -59,7 +78,8 @@ public class RedisConnection {
      * 		port
      */
     public RedisConnection(String predisHost, int predisPort) {
-    	this(predisHost, predisPort, null);
+        this.redisHost      = predisHost;
+        this.redisport      = predisPort;
     }
     
     /**
@@ -73,13 +93,8 @@ public class RedisConnection {
      * 		redis password
      */
     public RedisConnection(String predisHost, int predisPort, String password) {
-        this.redisHost = predisHost;
-        this.redisport = predisPort;
+        this(predisHost, predisPort);
         this.redisPassword  = password;
-        jedis = new Jedis(redisHost, redisport);
-        if (redisPassword != null && "".equals(redisPassword)) {
-        	jedis.auth(redisPassword);
-        }
     }
     
     /**
@@ -101,23 +116,33 @@ public class RedisConnection {
     }
 
     /**
+     * Getter accessor for attribute 'redisPassword'.
+     *
+     * @return the redisPassword
+     */
+    @Deprecated
+    public String getRedisPassword() {
+        return redisPassword;
+    }
+    
+    /**
      * Getter accessor for attribute 'jedis'.
      *
      * @return
      *       current value of 'jedis'
      */
     public Jedis getJedis() {
-        return jedis;
-    }
-
-	/**
-	 * Getter accessor for attribute 'redisPassword'.
-	 *
-	 * @return the redisPassword
-	 */
-	public String getRedisPassword() {
-		return redisPassword;
-	}
+        if (jedisPool == null) {
+            if (redisPassword != null && !"".equals(redisPassword)) {
+                JedisPoolConfig poolConfig = new JedisPoolConfig();
+                this.jedisPool = new JedisPool(poolConfig, 
+                        redisHost, redisport, redisPoolTimeout, redisPassword);
+            } else {
+                this.jedisPool = new JedisPool(redisHost, redisport);
+            }
+        }
+        return jedisPool.getResource();
+    }	
 
 	/**
 	 * Setter accessor for attribute 'redisPassword'.
@@ -144,5 +169,62 @@ public class RedisConnection {
 	public void setRedisport(int redisport) {
 		this.redisport = redisport;
 	}
+
+    /**
+     * Getter accessor for attribute 'redisPoolMaxTotal'.
+     *
+     * @return
+     *       current value of 'redisPoolMaxTotal'
+     */
+    public int getRedisPoolMaxTotal() {
+        return redisPoolMaxTotal;
+    }
+
+    /**
+     * Setter accessor for attribute 'redisPoolMaxTotal'.
+     * @param redisPoolMaxTotal
+     * 		new value for 'redisPoolMaxTotal '
+     */
+    public void setRedisPoolMaxTotal(int redisPoolMaxTotal) {
+        this.redisPoolMaxTotal = redisPoolMaxTotal;
+    }
+
+    /**
+     * Getter accessor for attribute 'redisPoolTimeout'.
+     *
+     * @return
+     *       current value of 'redisPoolTimeout'
+     */
+    public long getRedisPoolTimeout() {
+        return redisPoolTimeout;
+    }
+
+    /**
+     * Setter accessor for attribute 'redisPoolTimeout'.
+     * @param redisPoolTimeout
+     * 		new value for 'redisPoolTimeout '
+     */
+    public void setRedisPoolTimeout(int redisPoolTimeout) {
+        this.redisPoolTimeout = redisPoolTimeout;
+    }
+
+    /**
+     * Getter accessor for attribute 'jedisPool'.
+     *
+     * @return
+     *       current value of 'jedisPool'
+     */
+    public Pool<Jedis> getJedisPool() {
+        return jedisPool;
+    }
+
+    /**
+     * Setter accessor for attribute 'jedisPool'.
+     * @param jedisPool
+     * 		new value for 'jedisPool '
+     */
+    public void setJedisPool(Pool<Jedis> jedisPool) {
+        this.jedisPool = jedisPool;
+    }
 
 }
