@@ -43,10 +43,8 @@ package org.ff4j.store.it;
  *   "source": "JAVA_API", "user": "Admin", "name": "P1", 
  *   "type": "property", "action": "update", 
  *   "value": "NewValue", "duration":1}
- * 
- * 
+ *   
  * @author CEL
- *
  */
 public class EventRepositoryTestIT {
 
