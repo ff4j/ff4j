@@ -69,7 +69,7 @@ public class MappingUtilsTest {
     
     @Test
     public void testUtil() {
-        Util.assertParamNotNull("toto", "tata");
+        Util.assertParamHasLength("toto", "tata");
         Set < String> ss = Util.set("one", "two");
         Assert.assertNotNull(ss);
         Util.assertTrue(true);
@@ -88,12 +88,12 @@ public class MappingUtilsTest {
     
     @Test(expected = IllegalArgumentException.class)
     public void testAssert3() {
-        Util.assertParamNotNull("", "tata");
+        Util.assertParamHasLength("", "tata");
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void testAssert4() {
-        Util.assertParamNotNull(null, "tata");
+        Util.assertParamHasLength(null, "tata");
     }
     
     @Test(expected = IllegalArgumentException.class)

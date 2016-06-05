@@ -36,21 +36,14 @@ import org.ff4j.utils.json.FeatureJsonParser;
 
 import redis.clients.jedis.Jedis;
 
+import static org.ff4j.redis.RedisContants.KEY_FEATURE;
+
 /**
  * {@link FeatureStore} to persist data into
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public class FeatureStoreRedis extends AbstractFeatureStore {
-    
-    /** prefix of keys. */
-    public static final String KEY_FEATURE = "FF4J_FEATURE_";
-    
-    /** default ttl. */
-    private static int DEFAULT_TTL = 900000000;
-    
-    /** time to live. */
-    protected int timeToLive = DEFAULT_TTL;
     
     /** Wrapping of redis connection (isolation). */
     private RedisConnection redisConnection;
@@ -122,7 +115,7 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
     
     /** {@inheritDoc} */
     public boolean exist(String uid) {
-        Util.assertParamNotNull(uid, "Feature identifier");
+        Util.assertParamHasLength(uid, "Feature identifier");
         Jedis jedis = null;
         try {
             jedis = getJedis();
@@ -140,7 +133,15 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
         if (!exist(uid)) {
             throw new FeatureNotFoundException(uid);
         }
-        return FeatureJsonParser.parseFeature(getJedis().get(KEY_FEATURE + uid));
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            return FeatureJsonParser.parseFeature(jedis.get(KEY_FEATURE + uid));
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
     }
     
     /** {@inheritDoc} */
@@ -209,7 +210,7 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            Set < String > myKeys = getJedis().keys(KEY_FEATURE + "*");
+            Set < String > myKeys = jedis.keys(KEY_FEATURE + "*");
             Map<String, Feature> myMap = new HashMap<String, Feature>();
             if (myKeys != null) {
                 for (String key : myKeys) {
@@ -244,7 +245,7 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public void grantRoleOnFeature(String flipId, String roleName) {
-        Util.assertParamNotNull(roleName, "roleName (#2)");
+        Util.assertParamHasLength(roleName, "roleName (#2)");
         // retrieve
         Feature f = read(flipId);
         // modify
@@ -256,7 +257,7 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public void removeRoleFromFeature(String flipId, String roleName) {
-        Util.assertParamNotNull(roleName, "roleName (#2)");
+        Util.assertParamHasLength(roleName, "roleName (#2)");
         // retrieve
         Feature f = read(flipId);
         f.getPermissions().remove(roleName);
@@ -267,7 +268,7 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public Map<String, Feature> readGroup(String groupName) {
-        Util.assertParamNotNull(groupName, "groupName");
+        Util.assertParamHasLength(groupName, "groupName");
         Map < String, Feature > features = readAll();
         Map < String, Feature > group = new HashMap<String, Feature>();
         for (Map.Entry<String,Feature> uid : features.entrySet()) {
@@ -284,7 +285,7 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public boolean existGroup(String groupName) {
-        Util.assertParamNotNull(groupName, "groupName");
+        Util.assertParamHasLength(groupName, "groupName");
         Map < String, Feature > features = readAll();
         Map < String, Feature > group = new HashMap<String, Feature>();
         for (Map.Entry<String,Feature> uid : features.entrySet()) {
@@ -318,7 +319,7 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public void addToGroup(String featureId, String groupName) {
-        Util.assertParamNotNull(groupName, "groupName (#2)");
+        Util.assertParamHasLength(groupName, "groupName (#2)");
         // retrieve
         Feature f = read(featureId);
         f.setGroup(groupName);
@@ -329,7 +330,7 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public void removeFromGroup(String featureId, String groupName) {
-        Util.assertParamNotNull(groupName, "groupName (#2)");
+        Util.assertParamHasLength(groupName, "groupName (#2)");
         if (!existGroup(groupName)) {
             throw new GroupNotFoundException(groupName);
         }
@@ -368,26 +369,6 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
         }
     }
 
-    
-    /**
-     * Getter accessor for attribute 'timeToLive'.
-     *
-     * @return
-     *       current value of 'timeToLive'
-     */
-    public int getTimeToLive() {
-        return timeToLive;
-    }
-
-    /**
-     * Setter accessor for attribute 'timeToLive'.
-     * @param timeToLive
-     * 		new value for 'timeToLive '
-     */
-    public void setTimeToLive(int timeToLive) {
-        this.timeToLive = timeToLive;
-    }
-
     /**
      * Getter accessor for attribute 'redisConnection'.
      *
@@ -411,6 +392,7 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
      * Safe acces to Jedis, avoid JNPE.
      *
      * @return
+     *      access jedis
      */
     public Jedis getJedis() {
         if (redisConnection == null) {

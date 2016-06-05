@@ -1,5 +1,9 @@
 package org.ff4j.store;
 
+import static org.ff4j.redis.RedisContants.KEY_PROPERTY;
+
+import java.util.HashSet;
+
 /*
  * #%L
  * ff4j-store-redis
@@ -25,7 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.ff4j.exception.FeatureAlreadyExistException;
+import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.AbstractPropertyStore;
 import org.ff4j.redis.RedisConnection;
@@ -40,15 +44,6 @@ import redis.clients.jedis.Jedis;
  * @author Cedrick Lunven (@clunven)</a>
  */
 public class PropertyStoreRedis extends AbstractPropertyStore {
-
-    /** prefix of keys. */
-    public static final String KEY_PROPERTY = "FF4J_PROPERTY_";
-    
-    /** default ttl. */
-    private static int DEFAULT_TTL = 900000000;
-    
-    /** time to live. */
-    protected int timeToLive = DEFAULT_TTL;
     
     /** Wrapping of redis connection (isolation). */
     private RedisConnection redisConnection;
@@ -120,75 +115,119 @@ public class PropertyStoreRedis extends AbstractPropertyStore {
     
     /** {@inheritDoc} */
     public boolean existProperty(String name) {
-        Util.assertParamNotNull(name, "PropertyName identifier");
-        return getJedis().exists(KEY_PROPERTY + name);
+        Util.assertParamHasLength(name, "PropertyName identifier");
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            return jedis.exists(KEY_PROPERTY + name);
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        } 
     }
 
     /** {@inheritDoc} */
     public <T> void createProperty(Property<T> prop) {
-        Util.assertNotNull(prop, prop.getName());
+        Util.assertNotNull(prop);
         if (existProperty(prop.getName())) {
-            throw new FeatureAlreadyExistException( prop.getName());
+            throw new PropertyAlreadyExistException(prop.getName());
         }
-        getJedis().set(KEY_PROPERTY + prop.getName(), prop.toJson());
-        getJedis().persist(KEY_PROPERTY + prop.getName());
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            jedis.set(KEY_PROPERTY + prop.getName(), prop.toJson());
+            jedis.persist(KEY_PROPERTY + prop.getName());
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        } 
     }
 
     /** {@inheritDoc} */
     public Property<?> readProperty(String name) {
         assertPropertyName(name);
-        return PropertyJsonParser.parseProperty(getJedis().get(KEY_PROPERTY + name));
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            return PropertyJsonParser.parseProperty(jedis.get(KEY_PROPERTY + name));
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        } 
     }  
 
     /** {@inheritDoc} */
     public void deleteProperty(String name) {
         assertPropertyName(name);
-        getJedis().del(KEY_PROPERTY + name);
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            jedis.del(KEY_PROPERTY + name);
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        } 
     }
 
     /** {@inheritDoc} */
     public Map<String, Property<?>> readAllProperties() {
         LinkedHashMap<String, Property<?>> mapP = new LinkedHashMap<String, Property<?>>();
-        Set < String > myKeys = getJedis().keys(KEY_PROPERTY + "*");
-        if (myKeys != null) {
-            for (String key : myKeys) {
-                key = key.replaceAll(KEY_PROPERTY, "");
-                mapP.put(key, readProperty(key));
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            Set < String > myKeys = jedis.keys(KEY_PROPERTY + "*");
+            if (myKeys != null) {
+                for (String key : myKeys) {
+                    key = key.replaceAll(KEY_PROPERTY, "");
+                    mapP.put(key, readProperty(key));
+                }
             }
-        }
-        return mapP;
+            return mapP;
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        } 
     }
 
     /** {@inheritDoc} */
     public Set<String> listPropertyNames() {
-        return getJedis().keys(KEY_PROPERTY + "*");
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            Set < String > propertyNames = jedis.keys(KEY_PROPERTY + "*");
+            Set < String > responses = new HashSet<String>();
+            if (propertyNames != null) {
+                for (String pName : propertyNames) {
+                    responses.add(pName.replaceAll(KEY_PROPERTY, ""));
+                }
+            }
+            return responses;
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        } 
     }
 
     /** {@inheritDoc} */
     public void clear() {
-        Set < String > myKeys = getJedis().keys(KEY_PROPERTY + "*");
-        getJedis().del(myKeys.toArray(new String[0]));
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            Set < String > myKeys = jedis.keys(KEY_PROPERTY + "*");
+            jedis.del(myKeys.toArray(new String[0]));
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        } 
     }
     
-    /**
-     * Getter accessor for attribute 'timeToLive'.
-     *
-     * @return
-     *       current value of 'timeToLive'
-     */
-    public int getTimeToLive() {
-        return timeToLive;
-    }
-
-    /**
-     * Setter accessor for attribute 'timeToLive'.
-     * @param timeToLive
-     *      new value for 'timeToLive '
-     */
-    public void setTimeToLive(int timeToLive) {
-        this.timeToLive = timeToLive;
-    }
-
     /**
      * Getter accessor for attribute 'redisConnection'.
      *
@@ -217,11 +256,11 @@ public class PropertyStoreRedis extends AbstractPropertyStore {
         if (redisConnection == null) {
             throw new IllegalArgumentException("Cannot found any redisConnection");
         }
-        if (redisConnection.getJedis() == null) {
+        Jedis jedis = redisConnection.getJedis();
+        if (jedis == null) {
             throw new IllegalArgumentException("Cannot found any jedis connection, please build connection");
         }
-        return redisConnection.getJedis() ;
+        return jedis;
     }
-
 
 }

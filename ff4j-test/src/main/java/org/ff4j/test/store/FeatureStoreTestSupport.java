@@ -47,6 +47,7 @@ public abstract class FeatureStoreTestSupport {
     public static final String PPSTRING = "ppstring";
     public static final String DIGIT_VALUE = "digitValue";
     public static final String REGION_IDENTIFIER = "regionIdentifier";
+    
     /** Initialize */
     protected FF4j ff4j = null;
     

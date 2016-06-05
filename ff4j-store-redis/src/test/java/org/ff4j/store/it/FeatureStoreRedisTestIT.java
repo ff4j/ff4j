@@ -27,7 +27,6 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.store.FeatureStoreRedis;
 import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.After;
-import org.junit.Ignore;
 
 /**
  * Test to work with Redis as a store.
@@ -41,14 +40,6 @@ public class FeatureStoreRedisTestIT extends FeatureStoreTestSupport {
     protected FeatureStore initStore() {
         FeatureStoreRedis redisStore = new FeatureStoreRedis();
         redisStore.importFeaturesFromXmlFile("ff4j.xml");
-        
-        /*redisStore.create(new Feature("AwesomeFeature", true, "some desc"));
-        redisStore.create(new Feature("first", true, "description", null, Arrays.asList("USER")));
-        redisStore.create(new Feature("second", false, "description", "GRP0", Arrays.asList("USER")));
-        redisStore.create(new Feature("third", false, "ThirdJDBC", "GRP1", Arrays.asList("ADMINISTRATOR", "BETA-TESTER")));
-        FlippingStrategy strategy = new org.ff4j.strategy.el.ExpressionFlipStrategy();
-        strategy.init("forth", ParameterUtils.toMap("expression=third|second"));
-        redisStore.create(new Feature("forth", true, "ForthJDBC", "GRP1", Arrays.asList("ADMINISTRATOR", "BETA-TESTER"),strategy));*/
         return redisStore;
     }
     
@@ -61,6 +52,8 @@ public class FeatureStoreRedisTestIT extends FeatureStoreTestSupport {
         for (String key : f.keySet()) {
             testedStore.delete(key);
         }
+        // Close Pool
+        ((FeatureStoreRedis) ff4j.getConcreteFeatureStore()).getRedisConnection().destroyPool();
     }
 
 }

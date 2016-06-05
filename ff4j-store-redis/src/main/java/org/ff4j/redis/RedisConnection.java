@@ -34,7 +34,7 @@ import redis.clients.util.Pool;
  * @author Cedrick LUNVEN (@clunven)
  */
 public class RedisConnection {
-    
+  
     /** redis host(if not sentinel). */
     protected String redisHost = Protocol.DEFAULT_HOST;
 
@@ -142,7 +142,16 @@ public class RedisConnection {
             }
         }
         return jedisPool.getResource();
-    }	
+    }
+    
+    /**
+     * Clean up connections after tests.
+     */
+    public void destroyPool() {
+        if (jedisPool != null) {
+            jedisPool.destroy();
+        }
+    }
 
 	/**
 	 * Setter accessor for attribute 'redisPassword'.

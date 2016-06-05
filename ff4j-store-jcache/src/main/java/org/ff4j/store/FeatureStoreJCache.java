@@ -62,7 +62,7 @@ public class FeatureStoreJCache extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public boolean exist(String uid) {
-        Util.assertParamNotNull(uid, "Feature identifier");
+        Util.assertParamHasLength(uid, "Feature identifier");
         return getCacheManager().getFeature(uid) != null;
     }
     
@@ -141,7 +141,7 @@ public class FeatureStoreJCache extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public void grantRoleOnFeature(String flipId, String roleName) {
-        Util.assertParamNotNull(roleName, "roleName (#2)");
+        Util.assertParamHasLength(roleName, "roleName (#2)");
         // retrieve
         Feature f = read(flipId);
         // modify
@@ -153,7 +153,7 @@ public class FeatureStoreJCache extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public void removeRoleFromFeature(String flipId, String roleName) {
-        Util.assertParamNotNull(roleName, "roleName (#2)");
+        Util.assertParamHasLength(roleName, "roleName (#2)");
         // retrieve
         Feature f = read(flipId);
         f.getPermissions().remove(roleName);
@@ -164,7 +164,7 @@ public class FeatureStoreJCache extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public Map<String, Feature> readGroup(String groupName) {
-        Util.assertParamNotNull(groupName, "groupName");
+        Util.assertParamHasLength(groupName, "groupName");
         Map < String, Feature > features = readAll();
         Map < String, Feature > group = new HashMap<>();
         for (Map.Entry<String,Feature> uid : features.entrySet()) {
@@ -181,7 +181,7 @@ public class FeatureStoreJCache extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public boolean existGroup(String groupName) {
-        Util.assertParamNotNull(groupName, "groupName");
+        Util.assertParamHasLength(groupName, "groupName");
         Map < String, Feature > features = readAll();
         Map < String, Feature > group = new HashMap<>();
         for (Map.Entry<String,Feature> uid : features.entrySet()) {
@@ -215,7 +215,7 @@ public class FeatureStoreJCache extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public void addToGroup(String featureId, String groupName) {
-        Util.assertParamNotNull(groupName, "groupName (#2)");
+        Util.assertParamHasLength(groupName, "groupName (#2)");
         // retrieve
         Feature f = read(featureId);
         f.setGroup(groupName);
@@ -226,7 +226,7 @@ public class FeatureStoreJCache extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public void removeFromGroup(String featureId, String groupName) {
-        Util.assertParamNotNull(groupName, "groupName (#2)");
+        Util.assertParamHasLength(groupName, "groupName (#2)");
         if (!existGroup(groupName)) {
             throw new GroupNotFoundException(groupName);
         }

@@ -29,6 +29,7 @@ import org.ff4j.audit.repository.AbstractEventRepository;
 import org.ff4j.redis.RedisConnection;
 
 import redis.clients.jedis.Jedis;
+import static org.ff4j.redis.RedisContants.KEY_EVENT;
 
 /**
  * Persist audit events into REDIS storage technology.
@@ -36,16 +37,7 @@ import redis.clients.jedis.Jedis;
  * @author clunven
  */
 public class EventRepositoryRedis extends AbstractEventRepository {
-
-	/** prefix of keys. */
-    public static final String KEY_EVENT = "FF4J_EVENT_";
-    
-    /** Default ttl. */
-    private static int DEFAULT_TTL = 900000000;
-    
-    /** Time to live. */
-    protected int timeToLive = DEFAULT_TTL;
-    
+	
     /** Wrapping of redis connection (isolation). */
     private RedisConnection redisConnection;
     
@@ -97,10 +89,18 @@ public class EventRepositoryRedis extends AbstractEventRepository {
 		 if (evt == null) {
 			 throw new IllegalArgumentException("Event cannot be null nor empty");
 	     }
-		 String uid = KEY_EVENT + "-" + evt.getTimestamp() + "-" + evt.getUuid();
-	     getJedis().set(uid, evt.toJson());
-	     getJedis().persist(uid);
-		 return true;
+		 Jedis jedis = null;
+	     try {
+	         jedis = getJedis();
+    		 String uid = KEY_EVENT + "-" + evt.getTimestamp() + "-" + evt.getUuid();
+    	     jedis.set(uid, evt.toJson());
+    	     jedis.persist(uid);
+    		 return true;
+	        } finally {
+	            if (jedis != null) {
+	                jedis.close();
+	            }
+	        }
 	}
 
 	/** {@inheritDoc} */
@@ -117,7 +117,6 @@ public class EventRepositoryRedis extends AbstractEventRepository {
 
     /** {@inheritDoc} */
     public PieChart featuresListDistributionPie(long startTime, long endTime) {
-        redisConnection.getJedis();
         return null;
     }
 
@@ -135,15 +134,16 @@ public class EventRepositoryRedis extends AbstractEventRepository {
      * Safe acces to Jedis, avoid JNPE.
      *
      * @return
+     *      access jedis
      */
     public Jedis getJedis() {
         if (redisConnection == null) {
-            throw new IllegalArgumentException("Cannot found any redis Connection");
+            throw new IllegalArgumentException("Cannot found any redisConnection");
         }
-        if (redisConnection.getJedis() == null) {
+        Jedis jedis = redisConnection.getJedis();
+        if (jedis == null) {
             throw new IllegalArgumentException("Cannot found any jedis connection, please build connection");
         }
-        return redisConnection.getJedis();
+        return jedis;
     }
-
 }

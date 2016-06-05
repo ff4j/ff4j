@@ -145,7 +145,7 @@ public class Util {
      * @param paramName
      *      current parameter name
      */
-    public static void assertParamNotNull(String param, String paramName) {
+    public static void assertParamHasLength(String param, String paramName) {
         if (param == null || param.isEmpty()) {
             throw new IllegalArgumentException("Missing Parameter '" + paramName + "' must not be null nor empty");
         }

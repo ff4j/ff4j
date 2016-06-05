@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
+import org.ff4j.FF4j;
+
 /*
  * #%L
  * ff4j-test
@@ -50,6 +52,10 @@ public abstract class PropertyStoreTestSupport {
     public static final String INVALID = "invalid";
     public static final String UPDATE_OK = "updateOK";
     public static final String DELETE_OK = "deleteOK";
+    
+    /** Initialize */
+    protected FF4j ff4j = null;
+    
     /** Tested Store. */
     protected PropertyStore testedStore;
 
@@ -59,7 +65,9 @@ public abstract class PropertyStoreTestSupport {
     /** {@inheritDoc} */
     @Before
     public void setUp() throws Exception {
-        testedStore = initPropertyStore();
+        ff4j = new FF4j();
+        ff4j.setPropertiesStore(initPropertyStore());
+        testedStore = ff4j.getConcretePropertyStore();
     }
 
     /**
@@ -337,7 +345,7 @@ public abstract class PropertyStoreTestSupport {
         // Given, When
         Set< String > proNames = testedStore.listPropertyNames();
         // Then
-       Assert.assertTrue(proNames.contains("a"));
+        Assert.assertTrue(proNames.contains("a"));
     }
     
     /** TDD. */
