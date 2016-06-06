@@ -47,7 +47,9 @@ import org.springframework.stereotype.Service;
 public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, ApplicationContextAware {
 
     /** Log with target className. */
-    private final Map<String, Logger> targetLoggers = new HashMap<String, Logger>();
+    private final Logger logger = LoggerFactory.getLogger(FeatureAdvisor.class);
+    
+    //private final Map<String, Logger> targetLoggers = new HashMap<String, Logger>();
 
     /** Processed Interfaces. */
     private final Set<String> targetInterfacesNames = new HashSet<String>();
@@ -66,7 +68,7 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
     @Override
     public Object invoke(final MethodInvocation pMInvoc) throws Throwable {
         Method method = pMInvoc.getMethod();
-        Logger targetLogger = getLogger(method);
+        //Logger targetLogger = getLogger(method);
         Flip ff = null;
         if (method.isAnnotationPresent(Flip.class)) {
             ff = method.getAnnotation(Flip.class);
@@ -75,7 +77,7 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
         }
 
         if (ff != null) {
-            FlippingExecutionContext context = retrieveContext(ff, pMInvoc, targetLogger);
+            FlippingExecutionContext context = retrieveContext(ff, pMInvoc);
             if (shouldFlip(ff, context)) {
 
                 // Required parameters
@@ -83,12 +85,12 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
                     String msg = String.format("alterBeanName or alterClazz is required for {%s}", method.getDeclaringClass());
                     throw new IllegalArgumentException(msg);
                 }
-                if (shouldCallAlterBeanMethod(pMInvoc, ff.alterBean(), targetLogger)) {
-                    return callAlterBeanMethod(pMInvoc, ff.alterBean(), targetLogger);
+                if (shouldCallAlterBeanMethod(pMInvoc, ff.alterBean())) {
+                    return callAlterBeanMethod(pMInvoc, ff.alterBean());
                 }
                 // Test alterClazz Property of annotation
-                if (shouldCallAlterClazzMethod(pMInvoc, ff.alterClazz(), targetLogger)) {
-                    return callAlterClazzMethodOnFirst(pMInvoc, ff, targetLogger);
+                if (shouldCallAlterClazzMethod(pMInvoc, ff.alterClazz())) {
+                    return callAlterClazzMethodOnFirst(pMInvoc, ff);
                 }
             }
         }
@@ -96,7 +98,7 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
         return pMInvoc.proceed();
     }
 
-    private FlippingExecutionContext retrieveContext(Flip ff, MethodInvocation methodInvocation, Logger logger) {
+    private FlippingExecutionContext retrieveContext(Flip ff, MethodInvocation methodInvocation) {
         FlippingExecutionContext context = null;
         if (ff.contextLocation() == ContextLocation.FF4J) {
             context = getFf4j().getCurrentContext();
@@ -154,23 +156,7 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
     public Object postProcessAfterInitialization(Object bean, String beanName) {
         return bean;
     }
-
-    /**
-     * Store single instance of loggers but init if does not exist
-     * 
-     * @param targetMethod
-     *            current processed method
-     * @return singleton for class related to this execution
-     */
-    private Logger getLogger(Method targetMethod) {
-        String methodName = targetMethod.getDeclaringClass().getCanonicalName();
-        // Register logger if require
-        if (!targetLoggers.containsKey(methodName)) {
-            targetLoggers.put(methodName, LoggerFactory.getLogger(targetMethod.getDeclaringClass()));
-        }
-        return targetLoggers.get(methodName);
-    }
-
+    
     /**
      * Call if Flipped based on different parameters of the annotation
      * 
@@ -215,7 +201,7 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
      *            current logger for the class
      * @return flag if alterBean should be invoked
      */
-    private boolean shouldCallAlterBeanMethod(final MethodInvocation pMInvoc, String alterBean, Logger logger) {
+    private boolean shouldCallAlterBeanMethod(final MethodInvocation pMInvoc, String alterBean) {
         boolean callAlterBeanMethod = false;
         Method method = pMInvoc.getMethod();
 
@@ -274,9 +260,9 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
         
     }
 
-    private Object callAlterBeanMethod(final MethodInvocation pMInvoc, String alterBean, Logger targetLogger) throws Throwable {
+    private Object callAlterBeanMethod(final MethodInvocation pMInvoc, String alterBean) throws Throwable {
         Method method = pMInvoc.getMethod();
-        targetLogger.debug("FeatureFlipping on method:{} class:{}", method.getName(), method.getDeclaringClass().getName());
+        logger.debug("FeatureFlipping on method:{} class:{}", method.getName(), method.getDeclaringClass().getName());
         // invoke same method (interface) with another spring bean (ff.alterBean())
         try {
             return method.invoke(appCtx.getBean(alterBean, method.getDeclaringClass()), pMInvoc.getArguments());
@@ -290,7 +276,7 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
         }
     }
 
-    private boolean shouldCallAlterClazzMethod(final MethodInvocation pMInvoc, Class<?> alterClass, Logger logger) {
+    private boolean shouldCallAlterClazzMethod(final MethodInvocation pMInvoc, Class<?> alterClass) {
         boolean callAlterBeanMethod = false;
         Method method = pMInvoc.getMethod();
         Class<?> currentClass = pMInvoc.getThis().getClass();
@@ -304,11 +290,11 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
         return callAlterBeanMethod;
     }
 
-    private Object callAlterClazzMethodOnFirst(final MethodInvocation pMInvoc, Flip ff, Logger targetLogger) throws Throwable {
+    private Object callAlterClazzMethodOnFirst(final MethodInvocation pMInvoc, Flip ff) throws Throwable {
         Map<String, ?> beans = appCtx.getBeansOfType(pMInvoc.getMethod().getDeclaringClass());
         for (Object bean : beans.values()) {
             if (isBeanAProxyOfAlterClass(bean, ff.alterClazz())) {
-                return callAlterClazzMethod(pMInvoc, bean, targetLogger);
+                return callAlterClazzMethod(pMInvoc, bean);
             }
         }
         throw new BeanCreationException("ff4j-aop : bean with class '" + ff.alterClazz()
@@ -316,10 +302,10 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
                 + pMInvoc.getMethod().getDeclaringClass());
     }
 
-    private Object callAlterClazzMethod(final MethodInvocation pMInvoc, Object targetBean, Logger targetLogger) throws Throwable {
+    private Object callAlterClazzMethod(final MethodInvocation pMInvoc, Object targetBean) throws Throwable {
         Method method = pMInvoc.getMethod();
         String declaringClass = method.getDeclaringClass().getName();
-        targetLogger.debug("FeatureFlipping on method:{} class:{}", method.getName(), declaringClass);
+        logger.debug("FeatureFlipping on method:{} class:{}", method.getName(), declaringClass);
         try {
             return method.invoke(targetBean, pMInvoc.getArguments());
         } catch (IllegalAccessException e) {
