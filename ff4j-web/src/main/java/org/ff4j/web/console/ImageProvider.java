@@ -26,11 +26,11 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
+import javax.xml.bind.DatatypeConverter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,7 +92,7 @@ public class ImageProvider {
 			// Write into outpustream
 			ImageIO.write(resizedImage, type.toString(), bos);
 			// Convert to base64
-			return new String(Base64.getEncoder().encode(bos.toByteArray()));
+            return DatatypeConverter.printBase64Binary(bos.toByteArray());
 		} catch (IOException e) {
 			throw new IllegalArgumentException("Cannot convert image to base64", e);
 		} finally {
