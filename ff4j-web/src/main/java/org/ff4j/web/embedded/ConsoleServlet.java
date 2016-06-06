@@ -93,29 +93,31 @@ public class ConsoleServlet extends FF4jInitServlet {
     /** {@inheritDoc} */
     public void doGet(HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException {
-    	
-    	if (ConsoleRenderer.renderResources(req, res)) return;
-    	 
-    	// Sample Context
-    	ServletContext sc = req.getSession().getServletContext();
-    	WebContext ctx = new WebContext(req, res, sc, req.getLocale());
-    	ctx.setVariable("CHAINE", "Sample Valeur");
-    	ApiConfig api = new ApiConfig();
-    	api.setHost("HOST_X");
-    	ctx.setVariable("BEAN", api);
-    	ctx.setVariable("today", Calendar.getInstance());
-    
-    	// Load image, put in cache, return as base64
-    	ImageProvider.getInstance().addImageToContext(ctx, "flagFrance", ImageType.png);
-    	
-    	List < ApiConfig > listA = new ArrayList<ApiConfig>();
-    	listA.add(new ApiConfig());
-    	listA.add(new ApiConfig());
-    	listA.add(api);
-    	ctx.setVariable("apis", listA);
-    	
-    	templateEngine.process("home", ctx, res.getWriter());
-    	 
+        try {
+            if (ConsoleRenderer.renderResources(req, res)) return;
+
+            // Sample Context
+            ServletContext sc = req.getSession().getServletContext();
+            WebContext ctx = new WebContext(req, res, sc, req.getLocale());
+            ctx.setVariable("CHAINE", "Sample Valeur");
+            ApiConfig api = new ApiConfig();
+            api.setHost("HOST_X");
+            ctx.setVariable("BEAN", api);
+            ctx.setVariable("today", Calendar.getInstance());
+
+            // Load image, put in cache, return as base64
+            ImageProvider.getInstance().addImageToContext(ctx, "flagFrance", ImageType.png);
+
+            List<ApiConfig> listA = new ArrayList<ApiConfig>();
+            listA.add(new ApiConfig());
+            listA.add(new ApiConfig());
+            listA.add(api);
+            ctx.setVariable("apis", listA);
+
+            templateEngine.process("home", ctx, res.getWriter());
+        } catch (Exception e) {
+            LOGGER.error("Exception in ConsolServlet doGet() method.", e);
+        }
     	/*
     	if (ff4j.check("ff4j.admin.secure")) {
     		 	PropertyStringList listOfUsers = (PropertyStringList) 
@@ -136,7 +138,7 @@ public class ConsoleServlet extends FF4jInitServlet {
     }
     
     public void pageMonitoring(HttpServletRequest req, HttpServletResponse res) throws IOException {
-    	String message = null;
+        String message = null;
         String messagetype = "info";
         try {
         	
@@ -152,7 +154,7 @@ public class ConsoleServlet extends FF4jInitServlet {
     }
     
     public void pageCore(HttpServletRequest req, HttpServletResponse res) throws IOException {
-    	String message = null;
+        String message = null;
         String messagetype = "info";
         try {
             
@@ -335,7 +337,11 @@ public class ConsoleServlet extends FF4jInitServlet {
             message = e.getMessage();
             LOGGER.error("An error occured ", e);
         }
-        renderPage(ff4j, req, res, message, messagetype);
+        try {
+            renderPage(ff4j, req, res, message, messagetype);
+        } catch (Exception e) {
+            LOGGER.error("Exception in ConsolServlet doPost() method.", e);
+        }
     }
 
     /**
