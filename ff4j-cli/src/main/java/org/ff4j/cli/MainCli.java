@@ -34,7 +34,9 @@ import java.io.InputStreamReader;
  * @author Cedrick Lunven (@clunven)</a>
  */
 public class MainCli {
-	
+
+	private MainCli() {}
+
 	/**
 	 * Main loop.
 	 *
