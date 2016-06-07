@@ -64,7 +64,11 @@ public class FF4jCliProcessor {
 
 	/** Commons-cli command parser. */
 	private static final CommandLineParser CMD_PARSER = new DefaultParser();
-	
+
+	/** String constants */
+	private static final String FEATURE = "Feature ";
+	private static final String ERROR_DURING_CONNECT_COMMAND = "Error during connect command";
+
 	/** Environnements. */
 	private Map<String, FF4j> envs = new LinkedHashMap<String, FF4j>();
 
@@ -248,12 +252,12 @@ public class FF4jCliProcessor {
 				} else {
 					if (cmd.getArgList().get(0).equals("addToGroup")) {
 						currentFF4J.getFeatureStore().addToGroup(feature, group);
-						logInfo("Feature " + feature + " has been added to group " + group);
+						logInfo(FEATURE + feature + " has been added to group " + group);
 					} else if (cmd.getArgList().get(0).equals("removeFromGroup")) {
 						String currentGroup = currentFF4J.getFeatureStore().read(feature).getGroup();
 						if (group.equals(currentGroup)) {
 							currentFF4J.getFeatureStore().removeFromGroup(feature, group);
-							logInfo("Feature " + feature + " has been removed from group: " + group);
+							logInfo(FEATURE + feature + " has been removed from group: " + group);
 						} else if (currentGroup == null || currentGroup.isEmpty()){
 							logWarn("The groupName is invalid expected:" + currentGroup + " but was [" + group + "]");
 						} else {
@@ -287,7 +291,7 @@ public class FF4jCliProcessor {
 							logWarn("The role is invalidn there is no role on the feature " + feature);
 						} else if (permissions.contains(role)) {
 							currentFF4J.getFeatureStore().removeRoleFromFeature(feature, role);
-							logInfo("Feature " + feature + " has not more role " + role);
+							logInfo(FEATURE + feature + " has not more role " + role);
 						} else {
 							logWarn("The role is invalid expected one of " + permissions.toString());
 						}
@@ -326,7 +330,7 @@ public class FF4jCliProcessor {
 				}
 			}
 		} catch (ParseException e) {
-			error(e, "Error during connect command");
+			error(e, ERROR_DURING_CONNECT_COMMAND);
 		}
 	}
 	
@@ -350,15 +354,15 @@ public class FF4jCliProcessor {
 					
 				} else if (enable){
 					currentFF4J.getFeatureStore().enable(featureName);
-					logInfo("Feature " + featureName + " is now enabled") ;
+					logInfo(FEATURE + featureName + " is now enabled") ;
 					
 				} else {
 					currentFF4J.getFeatureStore().disable(featureName);
-					logInfo("Feature " + featureName + " is now disabled") ;
+					logInfo(FEATURE + featureName + " is now disabled") ;
 				}
 			}
 		} catch (ParseException moe) {
-			error(moe, "Error during connect command");
+			error(moe, ERROR_DURING_CONNECT_COMMAND);
 		}
 	}
 	
@@ -394,7 +398,7 @@ public class FF4jCliProcessor {
 				}
 			}
 		} catch (ParseException e) {
-			error(e, "Error during connect command");
+			error(e, ERROR_DURING_CONNECT_COMMAND);
 		}
 	}
 	

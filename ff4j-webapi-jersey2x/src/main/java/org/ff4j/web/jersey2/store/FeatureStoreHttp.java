@@ -66,6 +66,10 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
     /** logger for this class. */
     private final Logger log = LoggerFactory.getLogger(getClass());
 
+    /** String constants */
+    private static final String OCCURED = " occured.";
+    private static final String CANNOT_GRANT_ROLE_ON_FEATURE_AN_HTTP_ERROR = "Cannot grant role on feature, an HTTP error ";
+
     /** Jersey Client. */
     protected Client client = null;
 
@@ -220,7 +224,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
                 .put(Entity.entity(new FeatureApiBean(fp), MediaType.APPLICATION_JSON));
         // Check response code CREATED or raised error
         if (Status.CREATED.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot create feature, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException("Cannot create feature, an HTTP error " + cRes.getStatus() + OCCURED);
         }
     }
 
@@ -230,7 +234,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
         
         Response cRes = getStore().request(MediaType.APPLICATION_JSON_TYPE).get();
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot read features, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException("Cannot read features, an HTTP error " + cRes.getStatus() + OCCURED);
         }
        
         String resEntity = (String) cRes.readEntity(String.class);
@@ -251,7 +255,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
             throw new FeatureNotFoundException(uid);
         }
         if (Status.NO_CONTENT.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot delete feature, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException("Cannot delete feature, an HTTP error " + cRes.getStatus() + OCCURED);
         }
     }
 
@@ -268,7 +272,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(new FeatureApiBean(fp), MediaType.APPLICATION_JSON));
         if (Status.NO_CONTENT.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot update feature, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException("Cannot update feature, an HTTP error " + cRes.getStatus() + OCCURED);
         }
     }
 
@@ -281,7 +285,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
             throw new FeatureNotFoundException(uid);
         }
         if (Status.NO_CONTENT.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot grant role on feature, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException(CANNOT_GRANT_ROLE_ON_FEATURE_AN_HTTP_ERROR + cRes.getStatus() + OCCURED);
         }
     }
 
@@ -294,7 +298,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
             throw new FeatureNotFoundException(uid);
         }
         if (Status.NO_CONTENT.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot remove role on feature, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException("Cannot remove role on feature, an HTTP error " + cRes.getStatus() + OCCURED);
         }
     }
 
@@ -310,7 +314,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
         }
         
         if (Status.NO_CONTENT.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot add feature to group, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException("Cannot add feature to group, an HTTP error " + cRes.getStatus() + OCCURED);
         }
         
     }
@@ -327,7 +331,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
             throw new GroupNotFoundException(groupName);
         }
         if (Status.NO_CONTENT.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot remove feature from group, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException("Cannot remove feature from group, an HTTP error " + cRes.getStatus() + OCCURED);
         }
     }
 
@@ -340,7 +344,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
             throw new GroupNotFoundException(groupName);
         }
         if (Status.NO_CONTENT.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot grant role on feature, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException(CANNOT_GRANT_ROLE_ON_FEATURE_AN_HTTP_ERROR + cRes.getStatus() + OCCURED);
         }
     }
 
@@ -354,7 +358,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
             throw new GroupNotFoundException(groupName);
         }
         if (Status.NO_CONTENT.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot grant role on feature, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException(CANNOT_GRANT_ROLE_ON_FEATURE_AN_HTTP_ERROR + cRes.getStatus() + OCCURED);
         }
     }
    
@@ -367,7 +371,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
             throw new GroupNotFoundException(groupName);
         }
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot grant role on feature, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException(CANNOT_GRANT_ROLE_ON_FEATURE_AN_HTTP_ERROR + cRes.getStatus() + OCCURED);
         }
         String resEntity = cRes.readEntity(String.class);
         Feature[] fArray = parseFeatureArray(resEntity);
@@ -389,7 +393,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             return false;
         }
-        throw new FeatureAccessException("Cannot check existence of group , an HTTP error " + cRes.getStatus() + " occured.");
+        throw new FeatureAccessException("Cannot check existence of group , an HTTP error " + cRes.getStatus() + OCCURED);
     }
 
     /** {@inheritDoc} */
@@ -399,7 +403,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
         Response cRes = getGroups().request(MediaType.APPLICATION_JSON).get();
         List < Map < String, String>> groupList = cRes.readEntity(List.class);
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot read groups, an HTTP error " + cRes.getStatus() + " occured.");
+            throw new FeatureAccessException("Cannot read groups, an HTTP error " + cRes.getStatus() + OCCURED);
         }
         Set < String > groupNames = new HashSet<>();
         for (Map <String, String > currentGroup : groupList) {

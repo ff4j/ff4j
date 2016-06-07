@@ -47,6 +47,10 @@ import org.springframework.stereotype.Service;
 @Component("ff.advisor")
 public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, ApplicationContextAware {
 
+    /** String constants */
+    private static final String FF4J_AOP_CANNOT_INVOKE = "ff4j-aop: Cannot invoke ";
+    private static final String ON_ALTERBEAN = " on alterbean ";
+
     /** Log with target className. */
     private final Logger logger = LoggerFactory.getLogger(FeatureAdvisor.class);
     
@@ -310,16 +314,16 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
         try {
             return method.invoke(targetBean, pMInvoc.getArguments());
         } catch (IllegalAccessException e) {
-            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
+            throw makeIllegalArgumentException(FF4J_AOP_CANNOT_INVOKE + method.getName() + ON_ALTERBEAN + declaringClass
                     + " please check visibility", e);
         } catch (InvocationTargetException invocationTargetException) {
             if(!ff4j.isAlterBeanThrowInvocationTargetException() && invocationTargetException.getCause() != null) {
                 throw invocationTargetException.getCause();
             }
-            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
+            throw makeIllegalArgumentException(FF4J_AOP_CANNOT_INVOKE + method.getName() + ON_ALTERBEAN + declaringClass
                     + " please check signatures", invocationTargetException);
         } catch (Exception exception) {
-            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
+            throw makeIllegalArgumentException(FF4J_AOP_CANNOT_INVOKE + method.getName() + ON_ALTERBEAN + declaringClass
                     + " please check signatures", exception);
         }
     }

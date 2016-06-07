@@ -87,8 +87,9 @@ public class ConsoleServlet extends FF4jInitServlet {
     public static final Logger LOGGER = LoggerFactory.getLogger(ConsoleServlet.class);
     
     /** Error Message. */
-    public static final String ERROR = "error";
-    
+    private static final String ERROR = "error";
+    private static final String AN_ERROR_OCCURED = "An error occured ";
+
 
     /** {@inheritDoc} */
     public void doGet(HttpServletRequest req, HttpServletResponse res)
@@ -148,7 +149,7 @@ public class ConsoleServlet extends FF4jInitServlet {
             // Any Error is trapped and display in the console
             messagetype = ERROR;
             message = e.getMessage();
-            LOGGER.error("An error occured ", e);
+            LOGGER.error(AN_ERROR_OCCURED, e);
         }
         renderPageMonitoring(getFf4j(), req, res, message, messagetype);
     }
@@ -250,7 +251,7 @@ public class ConsoleServlet extends FF4jInitServlet {
             // Any Error is trapped and display in the console
             messagetype = ERROR;
             message = e.getMessage();
-            LOGGER.error("An error occured ", e);
+            LOGGER.error(AN_ERROR_OCCURED, e);
         }
 
         // Default page rendering (table)
@@ -335,7 +336,7 @@ public class ConsoleServlet extends FF4jInitServlet {
         } catch (Exception e) {
             messagetype = ERROR;
             message = e.getMessage();
-            LOGGER.error("An error occured ", e);
+            LOGGER.error(AN_ERROR_OCCURED, e);
         }
         try {
             renderPage(ff4j, req, res, message, messagetype);
