@@ -21,30 +21,20 @@ package org.ff4j.services.domain;
  */
 
 
+import org.ff4j.property.BasePropertyBean;
 import org.ff4j.property.Property;
 import org.ff4j.property.util.PropertyFactory;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:paul58914080@gmail.com">Paul Williams</a>
  */
-public class PropertyApiBean implements Serializable {
+public class PropertyApiBean extends BasePropertyBean implements Serializable {
 
     private static final long serialVersionUID = -5366099799518640405L;
-
-    private String name;
-
-    private String description;
-
-    private String type;
-
-    private String value;
-
-    private Set<String> fixedValues = new HashSet<>();
 
     public PropertyApiBean() {
         super();
@@ -64,45 +54,5 @@ public class PropertyApiBean implements Serializable {
 
     public Property<?> asProperty() {
         return PropertyFactory.createProperty(name, type, value, description, fixedValues);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public Set<String> getFixedValues() {
-        return fixedValues;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public void setFixedValues(Set<String> fixedValues) {
-        this.fixedValues = fixedValues;
     }
 }
