@@ -23,6 +23,8 @@ package org.ff4j.store;
 
 import org.ff4j.audit.EventConstants;
 
+import static org.ff4j.store.JdbcStoreConstants.*;
+
 /**
  * Create JDBC queries for FF4J with capabilities to 
  *
@@ -30,81 +32,6 @@ import org.ff4j.audit.EventConstants;
  */
 public class JdbcQueryBuilder {
 	
-	/** sql column name from table FF4J_FEATURES. */
-    public static final String COL_FEAT_UID = "FEAT_UID";
-
-    /** sql column name from table FF4J_FEATURES. */
-    public static final String COL_FEAT_ENABLE = "ENABLE";
-
-    /** sql column name from table FF4J_FEATURES. */
-    public static final String COL_FEAT_DESCRIPTION = "DESCRIPTION";
-
-    /** sql column name from table FF4J_FEATURES. */
-    public static final String COL_FEAT_GROUPNAME = "GROUPNAME";
-
-    /** sql column name from table FF4J_FEATURES. */
-    public static final String COL_FEAT_STRATEGY = "STRATEGY";
-
-    /** sql column name from table FF4J_FEATURES. */
-    public static final String COL_FEAT_EXPRESSION = "EXPRESSION";
-
-    /** sql column name from table FF4J_ROLES. */
-    public static final String COL_ROLE_FEATID = "FEAT_UID";
-
-    /** sql column name from table FF4J_ROLES. */
-    public static final String COL_ROLE_ROLENAME = "ROLE_NAME";
-    
-    /** sql column name from table FF4J_PROPERTIES. */
-    public static final String COL_PROPERTY_ID = "PROPERTY_ID";
-    
-    /** sql column name from table FF4J_PROPERTIES. */
-    public static final String COL_PROPERTY_TYPE = "CLAZZ";
-    
-    /** sql column name from table FF4J_PROPERTIES. */
-    public static final String COL_PROPERTY_VALUE = "CURRENTVALUE";
-    
-    /** sql column name from table FF4J_PROPERTIES. */
-    public static final String COL_PROPERTY_FIXED = "FIXEDVALUES";
-    
-    /** sql column name from table FF4J_PROPERTIES. */
-    public static final String COL_PROPERTY_FEATID = "FEAT_UID";
-    
-    /** sql column name from table FF4J_PROPERTIES. */
-    public static final String COL_PROPERTY_DESCRIPTION = "DESCRIPTION";
-    
-    /** sql column name for table FF4J_AUDIT. */
-    public static final String COL_EVENT_UUID = "EVT_UUID";
-    
-    /** sql column name for table FF4J_AUDIT. */
-    public static final String COL_EVENT_TIME = "EVT_TIME";
-    
-    /** sql column name for table FF4J_AUDIT. */
-    public static final String COL_EVENT_TYPE = "EVT_TYPE";
-    
-    /** sql column name for table FF4J_AUDIT. */
-    public static final String COL_EVENT_NAME = "EVT_NAME";
-    
-    /** sql column name for table FF4J_AUDIT. */
-    public static final String COL_EVENT_ACTION = "EVT_ACTION";
-    
-    /** sql column name for table FF4J_AUDIT. */
-    public static final String COL_EVENT_HOSTNAME = "EVT_HOSTNAME";
-    
-    /** sql column name for table FF4J_AUDIT. */
-    public static final String COL_EVENT_SOURCE = "EVT_SOURCE";
-    
-    /** sql column name for table FF4J_AUDIT. */
-    public static final String COL_EVENT_DURATION = "EVT_DURATION";
-    
-    /** sql column name for table FF4J_AUDIT. */
-    public static final String COL_EVENT_USER = "EVT_USER";
-    
-    /** sql column name for table FF4J_AUDIT. */
-    public static final String COL_EVENT_VALUE = "EVT_VALUE";
-    
-    /** sql column name for table FF4J_AUDIT. */
-    public static final String COL_EVENT_KEYS = "EVT_KEYS";
-    
     /** table prefix. */
 	public String tablePrefix = "FF4J_";
 	
