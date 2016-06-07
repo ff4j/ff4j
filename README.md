@@ -8,7 +8,7 @@
 [![Coverage Status](https://coveralls.io/repos/clun/ff4j/badge.svg?branch=master&service=github)](https://coveralls.io/github/clun/ff4j?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/grade/c900676eb9674bc48c246dc112e60e16)](https://www.codacy.com/app/cedrick-lunven/ff4j)
 [![Join the chat at https://gitter.im/clun/ff4j](https://badges.gitter.im/clun/ff4j.svg)](https://gitter.im/clun/ff4j?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![License Apache2](https://img.shields.io/hexpm/l/plug.svg)]()
+[![License Apache2](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
 
 FF4J is a proposition of [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html). 
