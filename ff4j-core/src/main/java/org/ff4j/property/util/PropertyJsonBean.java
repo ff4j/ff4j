@@ -25,31 +25,17 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.ff4j.property.BasePropertyBean;
 import org.ff4j.property.Property;
 
 /**
  * JSON Expression.
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class PropertyJsonBean implements Serializable {
+public class PropertyJsonBean extends BasePropertyBean implements Serializable {
     
     /** Serial number.*/
     private static final long serialVersionUID = 7249710480883717637L;
-
-    /** unique identifier for the property. */
-    private String name;
-    
-    /** property description if exist. */
-    private String description;
-    
-    /** nature of the property (classname). */
-    private String type;
-    
-    /** Value as String. */
-    private String value;
-    
-    /** Fixed values as String. */
-    private Set < String > fixedValues = null;
 
     /**
      * Default constructor for instrospection.
@@ -132,100 +118,4 @@ public class PropertyJsonBean implements Serializable {
         jsonExpression.append("}");
         return jsonExpression.toString();
     }
-
-    /**
-     * Getter accessor for attribute 'name'.
-     *
-     * @return
-     *       current value of 'name'
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Setter accessor for attribute 'name'.
-     * @param name
-     *      new value for 'name '
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Getter accessor for attribute 'description'.
-     *
-     * @return
-     *       current value of 'description'
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Setter accessor for attribute 'description'.
-     * @param description
-     *      new value for 'description '
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * Getter accessor for attribute 'type'.
-     *
-     * @return
-     *       current value of 'type'
-     */
-    public String getType() {
-        return type;
-    }
-
-    /**
-     * Setter accessor for attribute 'type'.
-     * @param type
-     *      new value for 'type '
-     */
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    /**
-     * Getter accessor for attribute 'value'.
-     *
-     * @return
-     *       current value of 'value'
-     */
-    public String getValue() {
-        return value;
-    }
-
-    /**
-     * Setter accessor for attribute 'value'.
-     * @param value
-     *      new value for 'value '
-     */
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    /**
-     * Getter accessor for attribute 'fixedValues'.
-     *
-     * @return
-     *       current value of 'fixedValues'
-     */
-    public Set<String> getFixedValues() {
-        return fixedValues;
-    }
-
-    /**
-     * Setter accessor for attribute 'fixedValues'.
-     * @param fixedValues
-     *      new value for 'fixedValues '
-     */
-    public void setFixedValues(Set<String> fixedValues) {
-        this.fixedValues = fixedValues;
-    }
-
 }
