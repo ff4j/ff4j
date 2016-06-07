@@ -28,6 +28,7 @@ import org.ff4j.core.FlippingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.Advised;
+import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -335,8 +336,9 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
                 throw new IllegalArgumentException("ff4j-aop: Cannot evaluate is target bean is proxy", e);
             }
         } else {
-            // expected to be cglib proxy then, which is simply a specialized class
-            return proxy.getClass().equals(alterClass);
+            // Expected to be cglib proxy then, which is simply a specialized class
+            return AopProxyUtils.ultimateTargetClass(proxy).equals(alterClass);
+            //return proxy.getClass().equals(alterClass);
         }
     }
 

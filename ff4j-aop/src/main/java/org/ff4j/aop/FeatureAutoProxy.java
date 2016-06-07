@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.aop.TargetSource;
+import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator;
 import org.springframework.stereotype.Component;
 
@@ -44,6 +45,8 @@ public class FeatureAutoProxy extends AbstractAutoProxyCreator {
     @Override
     protected Object[] getAdvicesAndAdvisorsForBean(Class<?> beanClass, String beanName, TargetSource targetSource) {
         // Scan interface only once.
+        // If cglib enhance should access target
+        //Class<?> ultimateBeanClass = AopProxyUtils.ultimateTargetClass(beanClass);
         if (!beanClass.isInterface() && beanClass.getInterfaces() != null) {
             // Get Interface
             for (Class<?> currentInterface : beanClass.getInterfaces()) {
