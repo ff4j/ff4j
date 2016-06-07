@@ -29,8 +29,13 @@ import org.apache.commons.cli.Options;
  * @author Cedrick LUNVEN (@clunven)
  */
 public class FF4jCliOptions {
-	
-	/**
+
+    /** String constants */
+    private static final String FEATURE = "feature";
+    private static final String FEATURENAME = "featurename";
+    private static final String TARGET_FEATURE_TO_UPDATE = "target feature to update";
+
+    /**
 	 * Remove public constructor for utilities.
 	 */
 	private FF4jCliOptions() {
@@ -63,10 +68,10 @@ public class FF4jCliOptions {
      */
     public static Options enableFeatureOptions() {
     	 Options options = new Options();
-         options.addOption(Option.builder("f").longOpt("feature")
-                 .hasArg().argName("featurename")
+         options.addOption(Option.builder("f").longOpt(FEATURE)
+                 .hasArg().argName(FEATURENAME)
                  .required(true)
-                 .desc("target feature to update").build());
+                 .desc(TARGET_FEATURE_TO_UPDATE).build());
          return options;
     }
     
@@ -94,10 +99,10 @@ public class FF4jCliOptions {
     public static Options grantOptions() {
     	 Options options = new Options();
     	 
-    	 options.addOption(Option.builder("f").longOpt("feature")
-                 .hasArg().argName("featurename")
+    	 options.addOption(Option.builder("f").longOpt(FEATURE)
+                 .hasArg().argName(FEATURENAME)
                  .required(true)
-                 .desc("target feature to update").build());
+                 .desc(TARGET_FEATURE_TO_UPDATE).build());
     	 
     	 options.addOption(Option.builder("r").longOpt("role")
                  .hasArg().argName("roleName")
@@ -114,10 +119,10 @@ public class FF4jCliOptions {
      */
     public static Options addGroupOptions() {
     	 Options options = new Options();
-    	 options.addOption(Option.builder("f").longOpt("feature")
-                 .hasArg().argName("featurename")
+    	 options.addOption(Option.builder("f").longOpt(FEATURE)
+                 .hasArg().argName(FEATURENAME)
                  .required(true)
-                 .desc("target feature to update").build());
+                 .desc(TARGET_FEATURE_TO_UPDATE).build());
          options.addOption(Option.builder("g").longOpt("group")
                  .hasArg().argName("groupName")
                  .required(true)
