@@ -173,12 +173,12 @@ public class FF4j {
 
         // If authorization manager provided, apply security filter
         if (flipped && getAuthorizationsManager() != null) {
-            flipped = flipped && isAllowed(fp);
+            flipped = isAllowed(fp);
         }
 
         // If custom strategy has been defined, delegate flipping to
         if (flipped && fp.getFlippingStrategy() != null) {
-            flipped = flipped && fp.getFlippingStrategy().evaluate(featureID, getFeatureStore(), executionContext);
+            flipped = fp.getFlippingStrategy().evaluate(featureID, getFeatureStore(), executionContext);
         }
         // Update current context
         currentExecutionContext.set(executionContext);

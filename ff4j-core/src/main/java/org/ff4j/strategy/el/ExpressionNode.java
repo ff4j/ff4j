@@ -114,7 +114,7 @@ public class ExpressionNode {
         boolean status = true;
         int idx = 0;
         while (status && idx < subNodes.size()) {
-            status = status && subNodes.get(idx).evalue(stateMap);
+            status = subNodes.get(idx).evalue(stateMap);
             idx++;
         }
         return status;
