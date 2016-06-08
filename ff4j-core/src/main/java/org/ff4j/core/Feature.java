@@ -21,7 +21,9 @@ import java.util.TreeSet;
 
 import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.Property;
+import org.ff4j.property.util.PropertyFactory;
 import org.ff4j.utils.JsonUtils;
+import org.ff4j.utils.MappingUtil;
 import org.ff4j.utils.Util;
 
 /**
@@ -159,6 +161,31 @@ public class Feature implements Serializable {
         this(uid, penable, pdescription, group, auths);
         if (strat != null) {
             this.flippingStrategy = strat;
+        }
+    }
+    
+    /**
+     * Copy constructor.
+     *
+     * @param f
+     *      current feature
+     */
+    public Feature(final Feature f) {
+        this(f.getUid(), f.isEnable(), f.getDescription(), f.getGroup());
+        this.permissions.addAll(f.getPermissions());
+        // Flipping Strategy
+        if (f.getFlippingStrategy() != null) {
+            this.flippingStrategy = MappingUtil.instanceFlippingStrategy(f.getUid(),
+                    f.getFlippingStrategy().getClass().getName(), 
+                    f.getFlippingStrategy().getInitParams());
+        }
+        // Custom Properties
+        if (f.getCustomProperties() != null && !f.getCustomProperties().isEmpty()) {
+            for(Property<?> p : f.getCustomProperties().values()) {
+                Property<?> targetProp = 
+                        PropertyFactory.createProperty(p.getName(), p.getType(), p.asString(), p.getDescription(), null);
+                this.getCustomProperties().put(targetProp.getName(), targetProp);
+            }
         }
     }
 
