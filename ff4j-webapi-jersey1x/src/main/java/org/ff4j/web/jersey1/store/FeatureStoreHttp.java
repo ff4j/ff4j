@@ -323,12 +323,6 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
         if (roleName == null || roleName.isEmpty()) {
             throw new IllegalArgumentException(ROLE_NAME_CANNOT_BE_NULL_NOR_EMPTY);
         }
-        if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException(FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY);
-        }
-        if (roleName == null || roleName.isEmpty()) {
-            throw new IllegalArgumentException(ROLE_NAME_CANNOT_BE_NULL_NOR_EMPTY);
-        }
         ClientResponse cRes = getStore().path(uid).path(OPERATION_REMOVEROLE).path(roleName).post(ClientResponse.class);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new FeatureNotFoundException(uid);
@@ -359,12 +353,6 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public void removeFromGroup(String uid, String groupName) {
-        if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException(FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY);
-        }
-        if (groupName == null || groupName.isEmpty()) {
-            throw new IllegalArgumentException(GROUPNAME_CANNOT_BE_NULL_NOR_EMPTY);
-        }
         if (uid == null || uid.isEmpty()) {
             throw new IllegalArgumentException(FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY);
         }
