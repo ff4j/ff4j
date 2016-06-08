@@ -9,9 +9,9 @@ package org.ff4j.services.constants;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -38,8 +38,17 @@ public class CommonConstantsTest {
             c.setAccessible(true);
             final CommonConstants newInstance = c.newInstance();
             assertThat(newInstance).isNull();
-        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException e) {
+        } catch (NoSuchMethodException e) {
+            assertThat(e).hasCauseExactlyInstanceOf(UnsupportedOperationException.class);
+        } catch (SecurityException e) {
+            assertThat(e).hasCauseExactlyInstanceOf(UnsupportedOperationException.class);
+        } catch (InstantiationException e) {
+            assertThat(e).hasCauseExactlyInstanceOf(UnsupportedOperationException.class);
+        } catch (IllegalAccessException e) {
+            assertThat(e).hasCauseExactlyInstanceOf(UnsupportedOperationException.class);
+        } catch (IllegalArgumentException e) {
+            assertThat(e).hasCauseExactlyInstanceOf(UnsupportedOperationException.class);
+        } catch (InvocationTargetException e) {
             assertThat(e).hasCauseExactlyInstanceOf(UnsupportedOperationException.class);
         }
     }

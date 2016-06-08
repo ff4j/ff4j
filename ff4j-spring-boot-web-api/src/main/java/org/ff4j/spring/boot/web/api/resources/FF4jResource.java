@@ -9,9 +9,9 @@ package org.ff4j.spring.boot.web.api.resources;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -81,7 +81,7 @@ public class FF4jResource {
             @ApiResponse(code = 404, message = "Feature not found")})
     public ResponseEntity<Boolean> check(@PathVariable(value = PARAM_UID) String featureUID) {
         Boolean status = ff4JServices.check(featureUID);
-        return new ResponseEntity<>(status, OK);
+        return new ResponseEntity<Boolean>(status, OK);
     }
 
     @RequestMapping(value = ROOT + OPERATION_CHECK + ROOT + PATH_PARAM_UID, method = POST, consumes = APPLICATION_FORM_URLENCODED_VALUE)
@@ -93,6 +93,6 @@ public class FF4jResource {
     public ResponseEntity<Boolean> check(@PathVariable(value = PARAM_UID) String featureUID, @RequestParam MultiValueMap<String, String> formParams) {
         Map<String, String> map = formParams.toSingleValueMap();
         Boolean status = ff4JServices.check(featureUID, map);
-        return new ResponseEntity<>(status, OK);
+        return new ResponseEntity<Boolean>(status, OK);
     }
 }

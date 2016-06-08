@@ -9,9 +9,9 @@ package org.ff4j.services.domain;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,11 +22,11 @@ package org.ff4j.services.domain;
 
 
 import org.ff4j.audit.graph.BarChart;
+import org.ff4j.audit.graph.BarSeries;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 /**
@@ -38,9 +38,9 @@ public class BarChartApiBean implements Serializable {
 
     private String title;
 
-    private List<String> labels = new ArrayList<>();
+    private List<String> labels = new ArrayList<String>();
 
-    private List<BarSeriesApiBean> series = new ArrayList<>();
+    private List<BarSeriesApiBean> series = new ArrayList<BarSeriesApiBean>();
 
     public BarChartApiBean() {
         super();
@@ -49,7 +49,9 @@ public class BarChartApiBean implements Serializable {
     public BarChartApiBean(BarChart barChart) {
         this.title = barChart.getTitle();
         this.labels = barChart.getLabels();
-        series.addAll(barChart.getSeries().values().stream().map(BarSeriesApiBean::new).collect(Collectors.toList()));
+        for (BarSeries value : barChart.getSeries().values()) {
+            this.series.add(new BarSeriesApiBean(value));
+        }
     }
 
     public String getTitle() {

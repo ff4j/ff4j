@@ -27,7 +27,7 @@ import org.ff4j.property.util.PropertyFactory;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:paul58914080@gmail.com">Paul Williams</a>
@@ -46,14 +46,17 @@ public class PropertyApiBean extends BasePropertyBean implements Serializable {
             this.description = property.getDescription();
             this.type = property.getType();
             this.value = property.asString();
-            this.fixedValues = new HashSet<>();
-            if (property.getFixedValues() != null) {
-                fixedValues.addAll(property.getFixedValues().stream().map(Object::toString).collect(Collectors.toList()));
+            this.fixedValues = new HashSet<String>();
+            Set<?> values = property.getFixedValues();
+            if (values != null) {
+                for (Object object : values) {
+                    this.fixedValues.add(object.toString());
+                }
             }
         }
     }
 
-    public Property<?> asProperty() {
+    public Property asProperty() {
         return PropertyFactory.createProperty(name, type, value, description, fixedValues);
     }
 }

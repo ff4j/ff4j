@@ -9,9 +9,9 @@ package org.ff4j.spring.boot.web.api.resources;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -73,9 +73,9 @@ public class FeatureResource {
             @ApiResponse(code = 204, message = "No content, feature is deleted"),
             @ApiResponse(code = 404, message = "Feature not found")
     })
-	public ResponseEntity<?> deleteFeature(@PathVariable(value = PARAM_UID) String featureUID) {
+    public ResponseEntity<?> deleteFeature(@PathVariable(value = PARAM_UID) String featureUID) {
         featureServices.deleteFeature(featureUID);
-        return new ResponseEntity<>(NO_CONTENT);
+        return new ResponseEntity(NO_CONTENT);
     }
 
     @RequestMapping(value = ROOT + OPERATION_ENABLE, method = POST, consumes = APPLICATION_JSON_VALUE)
@@ -85,7 +85,7 @@ public class FeatureResource {
             @ApiResponse(code = 404, message = "Feature not found")})
     public ResponseEntity<?> enableFeature(@PathVariable(value = PARAM_UID) String featureUID) {
         featureServices.enableFeature(featureUID);
-        return new ResponseEntity<>(ACCEPTED);
+        return new ResponseEntity(ACCEPTED);
     }
 
     @RequestMapping(value = ROOT + OPERATION_DISABLE, method = POST, consumes = APPLICATION_JSON_VALUE)
@@ -93,9 +93,9 @@ public class FeatureResource {
     @ApiResponses({
             @ApiResponse(code = 202, message = "Features has been disabled"),
             @ApiResponse(code = 404, message = "Feature not found")})
-    public ResponseEntity<?> disableFeature(@PathVariable(value = PARAM_UID) String featureUID) {
+    public ResponseEntity disableFeature(@PathVariable(value = PARAM_UID) String featureUID) {
         featureServices.disableFeature(featureUID);
-        return new ResponseEntity<>(ACCEPTED);
+        return new ResponseEntity(ACCEPTED);
     }
 
     @RequestMapping(value = ROOT + OPERATION_GRANTROLE + ROOT + PATH_PARAM_ROLE, method = POST, consumes = APPLICATION_JSON_VALUE)
@@ -104,9 +104,9 @@ public class FeatureResource {
             @ApiResponse(code = 202, message = "Permission has been granted"),
             @ApiResponse(code = 404, message = "Feature not found"),
             @ApiResponse(code = 304, message = "Role already exists, nothing to update")})
-    public ResponseEntity<?> grantRoleToFeature(@PathVariable(value = PARAM_UID) String featureUID, @PathVariable(value = PARAM_ROLE) String role) {
+    public ResponseEntity grantRoleToFeature(@PathVariable(value = PARAM_UID) String featureUID, @PathVariable(value = PARAM_ROLE) String role) {
         featureServices.grantRoleToFeature(featureUID, role);
-        return new ResponseEntity<>(ACCEPTED);
+        return new ResponseEntity(ACCEPTED);
     }
 
     @RequestMapping(value = ROOT + OPERATION_REMOVEROLE + ROOT + PATH_PARAM_ROLE, method = POST, consumes = APPLICATION_JSON_VALUE)
@@ -114,9 +114,9 @@ public class FeatureResource {
     @ApiResponses({
             @ApiResponse(code = 202, message = "Permission has been granted"),
             @ApiResponse(code = 404, message = "Feature not found")})
-    public ResponseEntity<?> removeRoleFromFeature(@PathVariable(value = PARAM_UID) String featureUID, @PathVariable(value = PARAM_ROLE) String role) {
+    public ResponseEntity removeRoleFromFeature(@PathVariable(value = PARAM_UID) String featureUID, @PathVariable(value = PARAM_ROLE) String role) {
         featureServices.removeRoleFromFeature(featureUID, role);
-        return new ResponseEntity<>(ACCEPTED);
+        return new ResponseEntity(ACCEPTED);
     }
 
     @RequestMapping(value = ROOT + OPERATION_ADDGROUP + ROOT + PATH_PARAM_GROUP, method = POST, consumes = APPLICATION_JSON_VALUE)
@@ -125,9 +125,9 @@ public class FeatureResource {
             @ApiResponse(code = 202, message = "Group has been defined"),
             @ApiResponse(code = 404, message = "Feature not found"),
             @ApiResponse(code = 304, message = "Group already exists, nothing to update")})
-    public ResponseEntity<?> addGroupToFeature(@PathVariable(value = PARAM_UID) String featureUID, @PathVariable(value = PARAM_GROUP) String groupName) {
+    public ResponseEntity addGroupToFeature(@PathVariable(value = PARAM_UID) String featureUID, @PathVariable(value = PARAM_GROUP) String groupName) {
         featureServices.addGroupToFeature(featureUID, groupName);
-        return new ResponseEntity<>(ACCEPTED);
+        return new ResponseEntity(ACCEPTED);
     }
 
     @RequestMapping(value = ROOT + OPERATION_REMOVEGROUP + ROOT + PATH_PARAM_GROUP, method = POST, consumes = APPLICATION_JSON_VALUE)
@@ -135,8 +135,8 @@ public class FeatureResource {
     @ApiResponses({
             @ApiResponse(code = 204, message = "Group has been removed"),
             @ApiResponse(code = 404, message = "Feature not found")})
-    public ResponseEntity<?> removeGroupFromFeature(@PathVariable(value = PARAM_UID) String featureUID, @PathVariable(value = PARAM_GROUP) String groupName) {
+    public ResponseEntity removeGroupFromFeature(@PathVariable(value = PARAM_UID) String featureUID, @PathVariable(value = PARAM_GROUP) String groupName) {
         featureServices.removeGroupFromFeature(featureUID, groupName);
-        return new ResponseEntity<>(ACCEPTED);
+        return new ResponseEntity(ACCEPTED);
     }
 }

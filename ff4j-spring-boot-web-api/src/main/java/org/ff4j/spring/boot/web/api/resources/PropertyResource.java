@@ -9,9 +9,9 @@ package org.ff4j.spring.boot.web.api.resources;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -65,7 +65,7 @@ public class PropertyResource {
             @ApiResponse(code = 201, message = "Property has been created"),
             @ApiResponse(code = 202, message = "Property has been updated"),
             @ApiResponse(code = 204, message = "No content, no changes made to the feature")})
-    public ResponseEntity<?> createOrUpdateProperty(@PathVariable(value = PARAM_NAME) String propertyName, @RequestBody PropertyApiBean propertyApiBean) {
+    public ResponseEntity createOrUpdateProperty(@PathVariable(value = PARAM_NAME) String propertyName, @RequestBody PropertyApiBean propertyApiBean) {
         return FeatureWebUtils.getBooleanResponseEntityByHttpStatus(propertyServices.createOrUpdateProperty(propertyName, propertyApiBean));
     }
 
@@ -75,9 +75,9 @@ public class PropertyResource {
             @ApiResponse(code = 204, message = "No content, property is deleted"),
             @ApiResponse(code = 404, message = "Property not found")
     })
-    public ResponseEntity<?> deleteProperty(@PathVariable(value = PARAM_NAME) String propertyName) {
+    public ResponseEntity deleteProperty(@PathVariable(value = PARAM_NAME) String propertyName) {
         propertyServices.deleteProperty(propertyName);
-        return new ResponseEntity<>(NO_CONTENT);
+        return new ResponseEntity(NO_CONTENT);
     }
 
     @RequestMapping(value = ROOT + OPERATION_UPDATE + ROOT + PATH_PARAM_VALUE, method = POST, produces = APPLICATION_JSON_VALUE)
@@ -86,8 +86,8 @@ public class PropertyResource {
             @ApiResponse(code = 202, message = "Property has been updated"),
             @ApiResponse(code = 404, message = "Property not found"),
             @ApiResponse(code = 400, message = "Invalid new value")})
-    public ResponseEntity<?> updatePropertyName(@PathVariable(value = PARAM_NAME) String propertyName, @PathVariable(value = PARAM_VALUE) String newPropertyName) {
+    public ResponseEntity updatePropertyName(@PathVariable(value = PARAM_NAME) String propertyName, @PathVariable(value = PARAM_VALUE) String newPropertyName) {
         propertyServices.updatePropertyName(propertyName, newPropertyName);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity(HttpStatus.ACCEPTED);
     }
 }

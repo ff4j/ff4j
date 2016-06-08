@@ -9,9 +9,9 @@ package org.ff4j.services.domain;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,11 +21,11 @@ package org.ff4j.services.domain;
  */
 
 import org.ff4j.audit.graph.PieChart;
+import org.ff4j.audit.graph.PieSector;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 /**
@@ -37,7 +37,7 @@ public class PieChartApiBean implements Serializable {
 
     private String title;
 
-    private List<PieSectorApiBean> sectors = new ArrayList<>();
+    private List<PieSectorApiBean> sectors = new ArrayList<PieSectorApiBean>();
 
     public PieChartApiBean() {
         super();
@@ -45,7 +45,9 @@ public class PieChartApiBean implements Serializable {
 
     public PieChartApiBean(PieChart pie) {
         title = pie.getTitle();
-        sectors.addAll(pie.getSectors().stream().map(PieSectorApiBean::new).collect(Collectors.toList()));
+        for (PieSector sector : pie.getSectors()) {
+            sectors.add(new PieSectorApiBean(sector));
+        }
     }
 
     public String getTitle() {

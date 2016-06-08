@@ -9,9 +9,9 @@ package org.ff4j.spring.boot.web.api.resources;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -71,9 +71,9 @@ public class PropertyStoreResource {
     @RequestMapping(value = ROOT + STORE_CLEAR, method = DELETE)
     @ApiOperation(value = "Delete all <b>Properties</b> in store")
     @ApiResponses(@ApiResponse(code = 204, message = "all properties have been deleted", response = ResponseEntity.class))
-    public ResponseEntity<?> deleteAllProperties() {
+    public ResponseEntity deleteAllProperties() {
         propertyStoreServices.deleteAllProperties();
-        return new ResponseEntity<>(NO_CONTENT);
+        return new ResponseEntity(NO_CONTENT);
     }
 
     @RequestMapping(value = ROOT + RESOURCE_CACHE, method = GET, produces = APPLICATION_JSON_VALUE)
@@ -88,8 +88,8 @@ public class PropertyStoreResource {
     @ApiOperation(value = "Clear cache", response = ResponseEntity.class)
     @ApiResponses({@ApiResponse(code = 204, message = "cache is cleared"),
             @ApiResponse(code = 404, message = "property store is not cached")})
-    public ResponseEntity<?> clearCachedPropertyStore() {
+    public ResponseEntity clearCachedPropertyStore() {
         propertyStoreServices.clearCachedPropertyStore();
-        return new ResponseEntity<>(NO_CONTENT);
+        return new ResponseEntity(NO_CONTENT);
     }
 }

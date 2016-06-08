@@ -9,9 +9,9 @@ package org.ff4j.services;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,7 +35,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:paul58914080@gmail.com">Paul Williams</a>
@@ -53,16 +52,18 @@ public class FeatureStoreServices {
         List<FeatureApiBean> features;
         Map<String, Feature> featureMap = ff4j.getFeatureStore().readAll();
         if (CollectionUtils.isEmpty(featureMap)) {
-            features = new ArrayList<>(0);
+            features = new ArrayList<FeatureApiBean>(0);
         } else {
-            features = new ArrayList<>(featureMap.size());
-            features.addAll(featureMap.values().stream().map(FeatureApiBean::new).collect(Collectors.toList()));
+            features = new ArrayList<FeatureApiBean>(featureMap.size());
+            for (Feature feature : featureMap.values()) {
+                features.add(new FeatureApiBean(feature));
+            }
         }
         return features;
     }
 
     public Collection<GroupDescApiBean> getAllGroups() {
-        Map<String, GroupDescApiBean> groups = new HashMap<>();
+        Map<String, GroupDescApiBean> groups = new HashMap<String, GroupDescApiBean>();
         Map<String, Feature> featureMap = ff4j.getFeatureStore().readAll();
         if (!CollectionUtils.isEmpty(featureMap)) {
             for (Feature feature : featureMap.values()) {
@@ -75,7 +76,7 @@ public class FeatureStoreServices {
     private void initGroupMap(Map<String, GroupDescApiBean> groups, String featureUID, String groupName) {
         if (StringUtils.isNotBlank(groupName)) {
             if (!groups.containsKey(groupName)) {
-                groups.put(groupName, new GroupDescApiBean(groupName, new ArrayList<>()));
+                groups.put(groupName, new GroupDescApiBean(groupName, new ArrayList<String>()));
             }
             groups.get(groupName).getFeatures().add(featureUID);
         }

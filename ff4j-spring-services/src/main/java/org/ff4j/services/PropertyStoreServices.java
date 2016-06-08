@@ -9,9 +9,9 @@ package org.ff4j.services;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,7 +34,6 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:paul58914080@gmail.com">Paul Williams</a>
@@ -53,10 +52,12 @@ public class PropertyStoreServices {
         List<PropertyApiBean> properties;
         Map<String, Property<?>> propertyMap = ff4j.getPropertiesStore().readAllProperties();
         if (CollectionUtils.isEmpty(propertyMap)) {
-            properties = new ArrayList<>(0);
+            properties = new ArrayList<PropertyApiBean>(0);
         } else {
-            properties = new ArrayList<>(propertyMap.size());
-            properties.addAll(propertyMap.values().stream().map(PropertyApiBean::new).collect(Collectors.toList()));
+            properties = new ArrayList<PropertyApiBean>(propertyMap.size());
+            for (Property value : propertyMap.values()) {
+                properties.add(new PropertyApiBean(value));
+            }
         }
         return properties;
     }
