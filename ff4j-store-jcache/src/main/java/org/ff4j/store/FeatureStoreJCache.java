@@ -194,51 +194,6 @@ public class FeatureStoreJCache extends AbstractFeatureStore {
 
     /** {@inheritDoc} */
     @Override
-    public void enableGroup(String groupName) {
-        Map < String, Feature > features = readGroup(groupName);
-        for (Map.Entry<String,Feature> uid : features.entrySet()) {
-            uid.getValue().enable();
-            update(uid.getValue());
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void disableGroup(String groupName) {
-        Map < String, Feature > features = readGroup(groupName);
-        for (Map.Entry<String,Feature> uid : features.entrySet()) {
-            uid.getValue().disable();
-            update(uid.getValue());
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void addToGroup(String featureId, String groupName) {
-        Util.assertParamHasLength(groupName, "groupName (#2)");
-        // retrieve
-        Feature f = read(featureId);
-        f.setGroup(groupName);
-        // persist modification
-        update(f);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void removeFromGroup(String featureId, String groupName) {
-        Util.assertParamHasLength(groupName, "groupName (#2)");
-        if (!existGroup(groupName)) {
-            throw new GroupNotFoundException(groupName);
-        }
-        // retrieve
-        Feature f = read(featureId);
-        f.setGroup(null);
-        // persist modification
-        update(f);
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public Set<String> readAllGroups() {
         Map < String, Feature > features = readAll();
         Set < String > groups = new HashSet<>();
