@@ -77,7 +77,7 @@ public class FF4jPropertiesPlaceHolderConfigurer implements BeanFactoryPostProce
                 try {
                     visitor.visitBeanDefinition(bd);
                 } catch (BeanDefinitionStoreException ex) {
-                    throw new BeanDefinitionStoreException(bd.getResourceDescription(), beanNames[i], ex.getMessage());
+                    throw new BeanDefinitionStoreException(bd.getResourceDescription(), beanNames[i], ex.getMessage(), ex);
                 }
             }
         } catch (Exception e) {

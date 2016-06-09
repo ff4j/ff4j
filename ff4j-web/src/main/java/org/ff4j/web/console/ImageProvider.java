@@ -98,7 +98,9 @@ public class ImageProvider {
 		} finally {
 			try {
 				bos.close();
-			} catch (IOException e) {}
+			} catch (IOException e) {
+				LOGGER.error(e.getMessage(), e);
+			}
 		}
 	}	
 	
