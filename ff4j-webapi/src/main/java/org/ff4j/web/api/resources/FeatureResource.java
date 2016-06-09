@@ -52,6 +52,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.ff4j.web.FF4jWebConstants.*;
 
@@ -65,7 +67,9 @@ import static org.ff4j.web.FF4jWebConstants.*;
 @RolesAllowed({FF4jWebConstants.ROLE_WRITE})
 @Api(value = "/ff4j/store/features/{uid}")
 public class FeatureResource extends AbstractResource {
-  
+
+    private static final Logger logger = LoggerFactory.getLogger(FeatureResource.class);
+
     /**
      * Allows to retrieve feature by its id.
      * 
@@ -124,6 +128,7 @@ public class FeatureResource extends AbstractResource {
                 Map<String, String> initparams = flipApiBean.getInitParams();
                 feat.setFlippingStrategy(MappingUtil.instanceFlippingStrategy(id, flipApiBean.getType(), initparams));
             } catch (Exception e) {
+                logger.error(e.getMessage(), e);
                 String errMsg = "Cannot read Flipping Strategy, does not seems to have a DEFAULT constructor, " + e.getMessage();
                 return Response.status(Response.Status.BAD_REQUEST).entity(errMsg).build();
             }
@@ -143,6 +148,7 @@ public class FeatureResource extends AbstractResource {
             try {
                 return Response.created(new URI(location)).build();
             } catch (URISyntaxException e) {
+                logger.error(e.getMessage(), e);
                 return Response.status(Response.Status.CREATED).header(LOCATION, location).entity(id).build();
             }
         }

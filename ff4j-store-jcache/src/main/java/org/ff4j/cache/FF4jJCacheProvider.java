@@ -28,9 +28,13 @@ import javax.cache.spi.CachingProvider;
 
 import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FF4jJCacheProvider {
-    
+
+    private static final Logger logger = LoggerFactory.getLogger(FF4jJCacheProvider.class);
+
     /** The Cache Provider. */
     private CachingProvider cachingProvider;
     
@@ -71,6 +75,7 @@ public class FF4jJCacheProvider {
             }
             return Caching.getCachingProvider(cachingProviderClassname);
         } catch(RuntimeException re) {
+            logger.error(re.getMessage(), re);
             /* Some cache implementation do not provide CachingProvider but the cacheManager
              * work properly. As a consequence, caching provider can be null and should not throw
              * caching exception.

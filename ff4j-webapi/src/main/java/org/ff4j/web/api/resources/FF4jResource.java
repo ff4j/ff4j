@@ -46,6 +46,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.ff4j.web.FF4jWebConstants.*;
 
@@ -59,7 +61,9 @@ import static org.ff4j.web.FF4jWebConstants.*;
 @RolesAllowed({FF4jWebConstants.ROLE_READ})
 @Api(value = "/ff4j")
 public class FF4jResource extends AbstractResource {
-    
+
+    private static final Logger logger = LoggerFactory.getLogger(FF4jResource.class);
+
     /**
      * Provide core information on ff4J and available sub resources.
      * @return
@@ -158,6 +162,7 @@ public class FF4jResource extends AbstractResource {
            boolean flipped = ff4j.check(uid, flipExecCtx);
            return Response.ok(String.valueOf(flipped)).build();
        } catch(IllegalArgumentException iae) {
+           logger.error(iae.getMessage(), iae);
            String errMsg = "Invalid parameter " + iae.getMessage();
            return Response.status(Response.Status.BAD_REQUEST).entity(errMsg).build();
        }

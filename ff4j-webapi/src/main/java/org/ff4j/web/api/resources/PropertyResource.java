@@ -27,6 +27,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.ff4j.web.FF4jWebConstants.*;
 
@@ -60,7 +62,9 @@ import static org.ff4j.web.FF4jWebConstants.*;
 @RolesAllowed({FF4jWebConstants.ROLE_WRITE})
 @Api(value = "/ff4j/propertyStore/properties/{name}")
 public class PropertyResource extends AbstractResource {
- 
+
+    private static final Logger logger = LoggerFactory.getLogger(PropertyResource.class);
+
     /**
      * Allows to retrieve feature by its id.
      * 
@@ -115,6 +119,7 @@ public class PropertyResource extends AbstractResource {
             try {
                 return Response.created(new URI(location)).build();
             } catch (URISyntaxException e) {
+                logger.error(e.getMessage(), e);
                 return Response.status(Response.Status.CREATED).header(LOCATION, location).entity(name).build();
             }
         }
