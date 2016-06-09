@@ -67,7 +67,7 @@ public class FeatureStoreEhCache extends AbstractFeatureStore {
     public FeatureStoreEhCache(String xmlEhCacheConfig) {
         wrapper = new FF4jEhCacheWrapper(xmlEhCacheConfig);
     }
-    
+
     
     /** {@inheritDoc} */
     @Override
@@ -158,29 +158,6 @@ public class FeatureStoreEhCache extends AbstractFeatureStore {
 
     /** {@inheritDoc} */
     @Override
-    public void grantRoleOnFeature(String flipId, String roleName) {
-        Util.assertParamHasLength(roleName, "roleName (#2)");
-        // retrieve
-        Feature f = read(flipId);
-        // modify
-        f.getPermissions().add(roleName);
-        // persist modification
-        update(f);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void removeRoleFromFeature(String flipId, String roleName) {
-        Util.assertParamHasLength(roleName, "roleName (#2)");
-        // retrieve
-        Feature f = read(flipId);
-        f.getPermissions().remove(roleName);
-        // persist modification
-        update(f);
-    }
-    
-    /** {@inheritDoc} */
-    @Override
     public Map<String, Feature> readGroup(String groupName) {
         Util.assertParamHasLength(groupName, "groupName");
         Map < String, Feature > features = readAll();
@@ -253,18 +230,6 @@ public class FeatureStoreEhCache extends AbstractFeatureStore {
         f.setGroup(null);
         // persist modification
         update(f);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Set<String> readAllGroups() {
-        Map < String, Feature > features = readAll();
-        Set < String > groups = new HashSet<String>();
-        for (Map.Entry<String,Feature> uid : features.entrySet()) {
-            groups.add(uid.getValue().getGroup());
-        }
-        groups.remove(null);
-        return groups;
     }
 
     /**
