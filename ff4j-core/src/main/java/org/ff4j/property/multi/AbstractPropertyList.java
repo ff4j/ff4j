@@ -83,7 +83,9 @@ public abstract class AbstractPropertyList < T > extends AbstractPropertyMultiVa
     @Override
     public List<T> fromString(String v) {
         List<T> list = super.fromString(v);
-        if (list == null) return null;
+        if (list == null) {
+            return null;
+        }
         return new ArrayList<T>(list);
     }
 

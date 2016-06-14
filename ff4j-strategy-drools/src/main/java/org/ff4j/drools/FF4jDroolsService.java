@@ -57,7 +57,7 @@ public final class FF4jDroolsService implements Serializable {
     private static final Logger LOGGER = LoggerFactory.getLogger(FF4jDroolsFlippingStrategy.class);
 
     /** Protected instance. */
-    private static FF4jDroolsService _instance;
+    private static FF4jDroolsService instance;
     
     /** Drools services first level. */
     private KieServices kieServices;
@@ -87,7 +87,7 @@ public final class FF4jDroolsService implements Serializable {
      *      singleton already created.
      */
     public static synchronized boolean isInitialized() {
-        return _instance != null && _instance.ksession != null;
+        return instance != null && instance.ksession != null;
     }
     
     /**
@@ -100,7 +100,7 @@ public final class FF4jDroolsService implements Serializable {
             throw new IllegalStateException("The service has not been initialized yet, "
                     + "please init with initFromBaseName() or initFromRulesFiles()");
         }
-        return _instance;
+        return instance;
     }
     
     /**
@@ -118,13 +118,13 @@ public final class FF4jDroolsService implements Serializable {
         if (isInitialized()) {
             throw new IllegalStateException("This Factory has already be initialized once");
         }
-        _instance               = new FF4jDroolsService();
-        _instance.basename      = baseName; 
-        _instance.kieServices   = KieServices.Factory.get();
-        _instance.kieContainer  = _instance.kieServices.newKieClasspathContainer();
-        _instance.ksession      = _instance.kieContainer.newKieSession(baseName);
+        instance               = new FF4jDroolsService();
+        instance.basename      = baseName; 
+        instance.kieServices   = KieServices.Factory.get();
+        instance.kieContainer  = instance.kieServices.newKieClasspathContainer();
+        instance.ksession      = instance.kieContainer.newKieSession(baseName);
         
-        if (_instance.ksession == null) {
+        if (instance.ksession == null) {
             throw new IllegalArgumentException("Cannot find kName " + baseName + " , check kmodule.xml file.");
         }
     }
@@ -139,8 +139,8 @@ public final class FF4jDroolsService implements Serializable {
         if (isInitialized()) {
             throw new IllegalStateException("This Factory has already be initialized once");
         }
-        _instance               = new FF4jDroolsService();
-        _instance.ruleFiles     = ruleFiles; 
+        instance               = new FF4jDroolsService();
+        instance.ruleFiles     = ruleFiles; 
         
         KieHelper helper = new KieHelper();
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
@@ -151,7 +151,7 @@ public final class FF4jDroolsService implements Serializable {
             ResourceType typeFile = ResourceType.determineResourceType(drlFile);
             helper.addContent(fileContent, typeFile);
         }
-        _instance.ksession = helper.build(EventProcessingOption.STREAM).newKieSession(sessionConfig, null);
+        instance.ksession = helper.build(EventProcessingOption.STREAM).newKieSession(sessionConfig, null);
     }
     
     /** {@inheritDoc} */
@@ -162,16 +162,16 @@ public final class FF4jDroolsService implements Serializable {
          * 
          * FF4J expects the fact {@link FF4JDroolsRequest} to be modified by the target rules. By default the status is 'false'.
          */
-        _instance.ksession.setGlobal("store", request.getFeatureStore());
+        instance.ksession.setGlobal("store", request.getFeatureStore());
 
         // FactHandle drHandler = ksession.insert(droolsRequest);
-        FactHandle requestHandle = _instance.ksession.insert(request);
+        FactHandle requestHandle = instance.ksession.insert(request);
 
         // Execute the rules
         ksession.fireAllRules();
 
         // clean session, note that retract() is deprecated
-        _instance.ksession.delete(requestHandle);
+        instance.ksession.delete(requestHandle);
         //_instance.ksession.dispose();
 
         LOGGER.debug("Evaluating feature " + request.getFeatureName() + " to " + request.isToggled());        
@@ -186,7 +186,7 @@ public final class FF4jDroolsService implements Serializable {
      * @return
      *      file content as string
      */
-    private final static String loadResourceAsString(final String resourceName) {
+    private static final String loadResourceAsString(final String resourceName) {
         InputStream rin = null;
         try {
             rin = ClassLoader.getSystemResourceAsStream(resourceName);

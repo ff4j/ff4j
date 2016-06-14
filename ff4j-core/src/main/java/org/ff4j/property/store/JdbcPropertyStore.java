@@ -58,7 +58,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore {
     private JdbcQueryBuilder queryBuilder;
     
     /** Mapper. */
-    private JdbcPropertyMapper JDBC_MAPPER = new JdbcPropertyMapper();
+    private JdbcPropertyMapper jdbcMapper = new JdbcPropertyMapper();
 
     /** Default Constructor. */
     public JdbcPropertyStore() {}
@@ -151,7 +151,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore {
             ps = buildStatement(sqlConn, getQueryBuilder().getProperty(), name);
             rs = ps.executeQuery();
             rs.next();
-            return JDBC_MAPPER.map(rs);
+            return jdbcMapper.map(rs);
         } catch (SQLException sqlEX) {
             throw new PropertyAccessException("Cannot check property existence, error related to database", sqlEX);
         } finally {
@@ -223,7 +223,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore {
             ps = buildStatement(sqlConn, getQueryBuilder().getAllProperties());
             rs = ps.executeQuery();
             while (rs.next()) {
-                Property<?> ap = JDBC_MAPPER.map(rs);
+                Property<?> ap = jdbcMapper.map(rs);
                 properties.put(ap.getName(),ap);
             }
         } catch (SQLException sqlEX) {

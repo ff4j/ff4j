@@ -80,7 +80,7 @@ public class Neo4jMapper {
      * @return
      *      target flippingStrategy
      */
-    static public FlippingStrategy fromNode2FlippingStrategy(String featureUid, Node nodeFlippingStrategy) {
+    public static FlippingStrategy fromNode2FlippingStrategy(String featureUid, Node nodeFlippingStrategy) {
         Map < String, Object > nodeProperties = nodeFlippingStrategy.getAllProperties();
         HashMap < String, String > initParams = new HashMap<>();
         if (nodeProperties.containsKey(NODESTRATEGY_ATT_INITPARAMS)) {
@@ -107,7 +107,7 @@ public class Neo4jMapper {
      * @return
      *      value of node
      */
-    static public Property<?> fromNode2Property(Node nodeProperty) {
+    public static Property<?> fromNode2Property(Node nodeProperty) {
         Map < String, Object > nodeProperties = nodeProperty.getAllProperties();
         if (!nodeProperties.containsKey(NODEPROPERTY_ATT_NAME)) {
             throw new IllegalArgumentException(NODEPROPERTY_ATT_NAME + " is a required property");
