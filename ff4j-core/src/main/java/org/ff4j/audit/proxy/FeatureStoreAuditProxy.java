@@ -63,6 +63,7 @@ public class FeatureStoreAuditProxy implements FeatureStore {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void enable(String uid) {
         long start = System.nanoTime();
         target.enable(uid);
@@ -71,6 +72,7 @@ public class FeatureStoreAuditProxy implements FeatureStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void disable(String uid) {
         long start = System.nanoTime();
         target.disable(uid);
@@ -79,6 +81,7 @@ public class FeatureStoreAuditProxy implements FeatureStore {
     }    
 
     /** {@inheritDoc} */
+    @Override
     public void create(Feature fp) {
         long start = System.nanoTime();
         target.create(fp);
@@ -87,6 +90,7 @@ public class FeatureStoreAuditProxy implements FeatureStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void delete(String uid) {
         long start = System.nanoTime();
         target.delete(uid);
@@ -95,6 +99,7 @@ public class FeatureStoreAuditProxy implements FeatureStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void update(Feature fp) {
         long start = System.nanoTime();
         target.update(fp);
@@ -103,6 +108,7 @@ public class FeatureStoreAuditProxy implements FeatureStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void grantRoleOnFeature(String uid, String roleName) {
         long start = System.nanoTime();
         target.grantRoleOnFeature(uid, roleName);
@@ -119,6 +125,7 @@ public class FeatureStoreAuditProxy implements FeatureStore {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void enableGroup(String groupName) {
         long start = System.nanoTime();
         target.enableGroup(groupName);
@@ -127,6 +134,7 @@ public class FeatureStoreAuditProxy implements FeatureStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void disableGroup(String groupName) {
         long start = System.nanoTime();
         target.disableGroup(groupName);
@@ -135,6 +143,7 @@ public class FeatureStoreAuditProxy implements FeatureStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void addToGroup(String uid, String groupName) {
         long start = System.nanoTime();
         target.addToGroup(uid, groupName);
@@ -143,6 +152,7 @@ public class FeatureStoreAuditProxy implements FeatureStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void removeFromGroup(String uid, String groupName) {
         long start = System.nanoTime();
         target.removeFromGroup(uid, groupName);
@@ -151,6 +161,7 @@ public class FeatureStoreAuditProxy implements FeatureStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void clear() {
         long start = System.nanoTime();
         target.clear();
@@ -182,36 +193,43 @@ public class FeatureStoreAuditProxy implements FeatureStore {
     }
     
     /** {@inheritDoc} */
+    @Override
     public boolean exist(String uid) {
         return target.exist(uid);
     }
 
     /** {@inheritDoc} */
+    @Override
     public Feature read(String uid) {
         return target.read(uid);
     }
 
     /** {@inheritDoc} */
+    @Override
     public Map<String, Feature> readAll() {
         return target.readAll();
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean existGroup(String groupName) {
         return target.existGroup(groupName);
     }
 
     /** {@inheritDoc} */
+    @Override
     public Map<String, Feature> readGroup(String groupName) {
         return target.readGroup(groupName);
     }
 
     /** {@inheritDoc} */
+    @Override
     public Set<String> readAllGroups() {
         return target.readAllGroups();
     }
     
     /** {@inheritDoc} */
+    @Override
     public void importFeatures(Collection<Feature> features) {
         // Do not use target as the delete/create operation will be traced
         if (features != null) {
