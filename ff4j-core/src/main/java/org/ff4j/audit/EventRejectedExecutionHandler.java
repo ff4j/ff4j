@@ -48,6 +48,7 @@ public class EventRejectedExecutionHandler implements RejectedExecutionHandler {
             // try once again
             executor.execute(r);
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             LOG.error("Event reject has been interrupted", e);
         }
     }
@@ -61,8 +62,10 @@ public class EventRejectedExecutionHandler implements RejectedExecutionHandler {
      *      interupted
      */
     public void waitInSeconds(int nbSecond) throws InterruptedException {
-        if (mock) throw new InterruptedException();
-        Thread.sleep(1000 * nbSecond);
+        if (mock) {
+            throw new InterruptedException();
+        }
+        Thread.sleep(1000L * nbSecond);
     }
 
     public static boolean isMock() {

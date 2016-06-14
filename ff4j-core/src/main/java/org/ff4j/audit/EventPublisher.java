@@ -51,7 +51,7 @@ public class EventPublisher {
     public static final int DEFAULT_POOL_SIZE = 4;
     
     /** 2s to save the event other wize skip. */
-    public static final long timeout = 2000L;
+    public static final long TIMEOUT = 2000L;
     
     /** Executor for item writer. */
     private ExecutorService executor;
@@ -83,7 +83,7 @@ public class EventPublisher {
      * Default constructor.
      */
     public EventPublisher(int queueCapacity, int poolSize, EventRepository er) {
-        this(queueCapacity, poolSize, er, timeout);
+        this(queueCapacity, poolSize, er, TIMEOUT);
     }
 
     /**
@@ -108,7 +108,7 @@ public class EventPublisher {
      * @param executorService the executor service
      */
     public EventPublisher(EventRepository er, ExecutorService executorService) {
-        this(er, executorService, timeout);
+        this(er, executorService, TIMEOUT);
     }
 
     /**
