@@ -75,11 +75,7 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
         Method method = pMInvoc.getMethod();
         //Logger targetLogger = getLogger(method);
         Flip ff = null;
-        if (method.isAnnotationPresent(Flip.class)) {
-            ff = method.getAnnotation(Flip.class);
-        } else if (method.getDeclaringClass().isAnnotationPresent(Flip.class)) {
-            ff = method.getDeclaringClass().getAnnotation(Flip.class);
-        }
+        ff = getFlip(method, ff);
 
         if (ff != null) {
             FlippingExecutionContext context = retrieveContext(ff, pMInvoc);
@@ -101,6 +97,15 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
         }
         // do not catch throwable
         return pMInvoc.proceed();
+    }
+
+    private Flip getFlip(Method method, Flip ff) {
+        if (method.isAnnotationPresent(Flip.class)) {
+            ff = method.getAnnotation(Flip.class);
+        } else if (method.getDeclaringClass().isAnnotationPresent(Flip.class)) {
+            ff = method.getDeclaringClass().getAnnotation(Flip.class);
+        }
+        return ff;
     }
 
     private FlippingExecutionContext retrieveContext(Flip ff, MethodInvocation methodInvocation) {
@@ -232,6 +237,40 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
         if (targetClass == null) {
             throw new IllegalArgumentException("ff4j-aop: Static methods cannot be feature flipped");
         }
+        String beanName = getStereotypeAnnotationValue(targetClass);
+        if(beanName != null) {
+        	return beanName;
+        }
+        
+        // There is no annotation on the bean, still be declared in applicationContext.xml
+        try {
+            beanName = getBeanName(targetClass);
+            if(beanName != null) {
+            	return beanName;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("ff4j-aop: Cannot read bheind proxy target", e);
+            
+        }
+        throw new IllegalArgumentException("ff4j-aop: Feature bean must be annotated as a Service or a Component");
+        
+    }
+
+    private String getBeanName(Class<?> targetClass) throws Exception {
+        // Use BeanDefinition names to loop on each bean and fetch target if proxified
+        for(String beanName :  appCtx.getBeanDefinitionNames()) {
+            Object bean = appCtx.getBean(beanName);
+            if (AopUtils.isJdkDynamicProxy(bean)) {
+               bean = ((Advised) bean).getTargetSource().getTarget();
+            }
+            if (bean != null && bean.getClass().isAssignableFrom(targetClass)) {
+                return beanName;
+            }
+        }
+        return null;
+    }
+
+    private String getStereotypeAnnotationValue(Class<?> targetClass) {
         Component component = targetClass.getAnnotation(Component.class);
         if (component != null) {
             return component.value();
@@ -244,26 +283,8 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
         if (repo != null) {
             return repo.value();
         }
-        
-        // There is no annotation on the bean, still be declared in applicationContext.xml
-        try {
-            // Use BeanDefinition names to loop on each bean and fetch target if proxified
-            for(String beanName :  appCtx.getBeanDefinitionNames()) {
-                Object bean = appCtx.getBean(beanName);
-                if (AopUtils.isJdkDynamicProxy(bean)) {
-                   bean = ((Advised) bean).getTargetSource().getTarget();
-                }
-                if (bean != null && bean.getClass().isAssignableFrom(targetClass)) {
-                    return beanName;
-                }
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("ff4j-aop: Cannot read bheind proxy target", e);
-            
-        }
-        throw new IllegalArgumentException("ff4j-aop: Feature bean must be annotated as a Service or a Component");
-        
-    }
+        return null;
+	}
 
     private Object callAlterBeanMethod(final MethodInvocation pMInvoc, String alterBean) throws Throwable {
         Method method = pMInvoc.getMethod();
