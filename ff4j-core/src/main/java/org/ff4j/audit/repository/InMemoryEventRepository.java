@@ -77,6 +77,7 @@ public class InMemoryEventRepository extends AbstractEventRepository {
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean saveEvent(Event e) {
         Queue<Event> myQueue = getQueue(e);
         if (myQueue.size() >= queueCapacity) {
@@ -87,51 +88,56 @@ public class InMemoryEventRepository extends AbstractEventRepository {
 
     /** {@inheritDoc} */
     @Override
-	public List<Event> search(EventQueryDefinition query) {
-		List < Event > targetEvents = new ArrayList<Event>();
-		if (query != null) {
-			// Loop over all events
-			for (Map.Entry<String , Map < String, Queue<Event> > > entry : events.entrySet()) {
-				for(Map.Entry<String ,  Queue<Event> > entry2 : entry.getValue().entrySet()) {
-					for (Event evt : entry2.getValue()) {
-						targetEvents.add(evt);
-					}
-				}
-				/* Filter over target if exist
-				if (query.getTargetsFilter() == null || 
-					query.getTargetsFilter().isEmpty() ||  
-					query.getTargetsFilter().contains(entry.getKey())) {
-					
-					Map < String, Queue<Event> > elements = entry.getValue();
-					for(Map.Entry<String ,  Queue<Event> > entry2 : elements.entrySet()) {
-						
-						// Filter over UID if exist
-						if (query.getNamesFilter() == null || 
-							query.getNamesFilter().isEmpty() ||  
-							query.getNamesFilter().contains(entry2.getKey())) {
-							
-							// Loop in the Queue
-				            for (Event evt : entry2.getValue()) {
-				            	
-				            	// Filter over Action if expected
-				            	if (query.getActionFilter() == null || 
-										query.getActionFilter().isEmpty() ||  
-										query.getActionFilter().contains(evt.getAction())) {
-				            		
-				            		// Filter overTime
-				            		if (isEventInInterval(query, evt)) {
-				            			targetEvents.add(evt);
-				            		}
-				            	}
-				            }
-						}
-					}
-				}*/
-			}
-		}
-		return targetEvents;
-	}
-    
+    public List<Event> search(EventQueryDefinition query) {
+        List < Event > targetEvents = new ArrayList<Event>();
+        if (query != null) {
+            // Loop over all events
+            for (Map.Entry<String , Map < String, Queue<Event> > > entry : events.entrySet()) {
+                fillTargetEvents(targetEvents, entry);
+                /* Filter over target if exist
+                if (query.getTargetsFilter() == null || 
+                    query.getTargetsFilter().isEmpty() ||  
+                    query.getTargetsFilter().contains(entry.getKey())) {
+                    
+                    Map < String, Queue<Event> > elements = entry.getValue();
+                    for(Map.Entry<String ,  Queue<Event> > entry2 : elements.entrySet()) {
+                        
+                        // Filter over UID if exist
+                        if (query.getNamesFilter() == null || 
+                            query.getNamesFilter().isEmpty() ||  
+                            query.getNamesFilter().contains(entry2.getKey())) {
+                            
+                            // Loop in the Queue
+                            for (Event evt : entry2.getValue()) {
+                                
+                                // Filter over Action if expected
+                                if (query.getActionFilter() == null || 
+                                        query.getActionFilter().isEmpty() ||  
+                                        query.getActionFilter().contains(evt.getAction())) {
+                                    
+                                    // Filter overTime
+                                    if (isEventInInterval(query, evt)) {
+                                        targetEvents.add(evt);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }*/
+            }
+        }
+        return targetEvents;
+    }
+
+    private void fillTargetEvents(List<Event> targetEvents,
+            Map.Entry<String, Map<String, Queue<Event>>> entry) {
+        for(Map.Entry<String ,  Queue<Event> > entry2 : entry.getValue().entrySet()) {
+            for (Event evt : entry2.getValue()) {
+                targetEvents.add(evt);
+            }
+        }
+    }
+
     /**
      * Retrieve event for same feature and name.
      *
@@ -152,6 +158,7 @@ public class InMemoryEventRepository extends AbstractEventRepository {
     }
     
     /** {@inheritDoc} */
+    @Override
     public PieChart featuresListDistributionPie(long startTime, long endTime) {
         PieChart pieGraph = new PieChart(TITLE_PIE_HITCOUNT);
         Map < String, Queue<Event>> eventsFeatures = events.get(TARGET_FEATURE);
@@ -160,19 +167,25 @@ public class InMemoryEventRepository extends AbstractEventRepository {
             List < String > features = new ArrayList<String>(eventsFeatures.keySet());
             for(int idx = 0; idx < eventsFeatures.size();idx++) {
                 Queue< Event > qEvents = eventsFeatures.get(features.get(idx));
-                int counter = 0;
-                for (Event evt : qEvents) {
-                    if (isEventOK(evt, startTime, endTime)) {
-                        counter++;
-                    }
-                }
+                 int counter = countEvents(startTime, endTime, qEvents);
                 pieGraph.getSectors().add(new PieSector(features.get(idx), counter, colors.get(idx)));
             }
         }
         return pieGraph;
     }
-    
+
+    private int countEvents(long startTime, long endTime, Queue<Event> qEvents) {
+        int counter = 0;
+        for (Event evt : qEvents) {
+            if (isEventOK(evt, startTime, endTime)) {
+                counter++;
+            }
+        }
+        return counter;
+    }
+
     /** {@inheritDoc} */
+    @Override
     public PieChart featureDistributionPie(String uid, long startTime, long endTime) {
         Queue< Event > queueOfEvents = events.get(TARGET_FEATURE).get(uid);
         
@@ -202,6 +215,7 @@ public class InMemoryEventRepository extends AbstractEventRepository {
     }
     
     /** {@inheritDoc} */
+    @Override
     public BarChart getFeaturesUsageOverTime(Set < String > featNameSet, long startTime, long endTime, int nbslot) {
         
         // Build Labels
@@ -234,6 +248,7 @@ public class InMemoryEventRepository extends AbstractEventRepository {
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getTotalEventCount() {
         int total = 0;
         for(Map.Entry<String, Map < String, Queue<Event> > > evtEntry : events.entrySet()) {
@@ -245,6 +260,7 @@ public class InMemoryEventRepository extends AbstractEventRepository {
     }
 
     /** {@inheritDoc} */
+    @Override
     public Set<String> getFeatureNames() {
         if (!events.containsKey(TARGET_FEATURE)) return new HashSet<String>();
         return events.get(TARGET_FEATURE).keySet();
