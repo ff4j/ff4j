@@ -32,7 +32,7 @@ import java.util.Map;
 public class FlippingExecutionContext {
 
     /** Current Parameter Map. */
-    private transient Map<String, Object> parameters = new HashMap<String, Object>();
+    private Map<String, Object> parameters = new HashMap<String, Object>();
 
     /**
      * Default Constructor.

@@ -677,11 +677,13 @@ public final class XmlParser {
      * @return
      */
     public String escapeXML(String value) {
-        if (value == null) return null;
-        value = value.replaceAll("&", "&amp;");
-        value = value.replaceAll(">", "&gt;");
-        value = value.replaceAll("<", "&lt;");
-        return value;
+        if (value == null) {
+            return null;
+        }
+        
+        return value.replaceAll("&", "&amp;")
+                    .replaceAll(">", "&gt;")
+                    .replaceAll("<", "&lt;");
     }
     
 
