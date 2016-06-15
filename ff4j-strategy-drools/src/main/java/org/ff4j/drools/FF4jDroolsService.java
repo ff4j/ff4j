@@ -145,7 +145,6 @@ public final class FF4jDroolsService implements Serializable {
         KieHelper helper = new KieHelper();
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
-        //ruleFiles.stream().forEach(drlFile -> helper.addContent(loadResourceAsString(drlFile), ResourceType.determineResourceType(drlFile)));
         for (String drlFile : ruleFiles) {
             String fileContent    = loadResourceAsString(drlFile);            
             ResourceType typeFile = ResourceType.determineResourceType(drlFile);
@@ -164,7 +163,6 @@ public final class FF4jDroolsService implements Serializable {
          */
         instance.ksession.setGlobal("store", request.getFeatureStore());
 
-        // FactHandle drHandler = ksession.insert(droolsRequest);
         FactHandle requestHandle = instance.ksession.insert(request);
 
         // Execute the rules
@@ -172,7 +170,6 @@ public final class FF4jDroolsService implements Serializable {
 
         // clean session, note that retract() is deprecated
         instance.ksession.delete(requestHandle);
-        //_instance.ksession.dispose();
 
         LOGGER.debug("Evaluating feature " + request.getFeatureName() + " to " + request.isToggled());        
         return request.isToggled();

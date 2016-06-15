@@ -91,8 +91,6 @@ public class PropertiesPlaceHolderBeanDefinitionVisitor extends BeanDefinitionVi
     protected String parseStringValue(String strVal, Map<String, Property<?>> propertiesMap, Map<String, Feature> featureMap, Set<String> visitedPlaceholders) 
     throws BeanDefinitionStoreException {
         StringBuilder builder = new StringBuilder(strVal);
-        
-        // @ff4jProperty{}
         int startIndex = strVal.indexOf(PLACEHOLDER_PROPERTY_PREFIX);
         while (startIndex != -1) {
             int endIndex = builder.toString().indexOf(PLACEHOLDER_SUFFIX, startIndex + PLACEHOLDER_PROPERTY_PREFIX.length());
@@ -121,8 +119,6 @@ public class PropertiesPlaceHolderBeanDefinitionVisitor extends BeanDefinitionVi
                 startIndex = -1;
             }
         }
-        
-        // @ff4jFeature{}
         startIndex = strVal.indexOf(PLACEHOLDER_FEATURE_PREFIX);
         while (startIndex != -1) {
             int endIndex = builder.toString().indexOf(PLACEHOLDER_SUFFIX, startIndex + PLACEHOLDER_FEATURE_PREFIX.length());

@@ -80,10 +80,6 @@ public class PropertyString extends Property<String> {
         if (v == null) {
             throw new IllegalArgumentException("Property value cannot be null");
         }
-        // Use to initialize fixedValue, cannot check them immediately
-        //if (fixedValues!= null && !fixedValues.contains(v)) {
-        //    throw new IllegalArgumentException("Invalid value corrects are " + fixedValues);
-        // }
         return v;
     }
 
