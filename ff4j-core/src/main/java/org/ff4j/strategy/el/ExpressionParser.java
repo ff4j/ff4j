@@ -174,7 +174,6 @@ public final class ExpressionParser {
             }
 
         }
-        // LOG.debug("Embedded Parenthesis finished : INITIAL=" + initExpr + " WITH NODES=" + exprNodes);
 
         // Take Initial Expression and replace expression within first parenthesis level to constants
         String exp = initExpr.replaceAll("\\|", " OR ").replaceAll("\\&", " AND ");
@@ -186,10 +185,8 @@ public final class ExpressionParser {
 
         // Place real operator for recursive calls
         exp = exp.replaceAll(" AND ", "&").replaceAll(" OR ", "|").replace(" ", "");
-        // LOG.debug("Embedded Parenthesis finished with : " + exp + " : " + exprMap.keySet());
 
         returnednode = parseExpressionWithoutParenthesis(exp);
-        // LOG.debug("Expression parsed with parenthesis subtitutions : " + returnednode);
 
         // Process substitution
         ExpressionNode tmpNode = new ExpressionNode(returnednode.getOperator());
@@ -216,7 +213,6 @@ public final class ExpressionParser {
         if (exprNode.getValue() != null && !exprNode.getValue().isEmpty()) {
             if (exprNodes.containsKey(exprNode.getValue())) {
                 ExpressionNode storedNode = exprNodes.get(exprNode.getValue());
-                // LOG.info("Replacing '" + exprNode + "' by '" + storedNode + "'");
                 tmpNode.getSubNodes().add(storedNode);
                 tmpNode.getSubNodes().remove(exprNode);
             }
@@ -226,7 +222,6 @@ public final class ExpressionParser {
             if (exprNodes.containsKey(subNodeNot.getValue())) {
                 ExpressionNode notNode = new ExpressionNode(ExpressionOperator.NOT);
                 notNode.getSubNodes().add(exprNodes.get(subNodeNot.getValue()));
-                // LOG.info("Replacing '" + subNodeNot + "' by '" + exprNodes.get(subNodeNot.getValue()) + "'");
                 tmpNode.getSubNodes().add(notNode);
                 tmpNode.getSubNodes().remove(exprNode);
             }
@@ -245,18 +240,15 @@ public final class ExpressionParser {
         String[] andOperArray = expr.replaceAll(" ", "").split("\\" + AND);
         if (andOperArray.length > 1) {
             // There is AND operation, loop over elements
-            // LOG.debug("NoBracket [" + expr + "] : Operator AND");
             ExpressionNode subNodeAND = new ExpressionNode(ExpressionOperator.AND);
             for (String andOper : andOperArray) {
                 if (andOper.startsWith("!")) {
                     // Handle NOT SHET
-                    // LOG.debug("Adding NOT subnode [" + andOper.substring(1) + "]");
                     ExpressionNode node = new ExpressionNode(ExpressionOperator.NOT);
                     node.getSubNodes().add(new ExpressionNode(andOper.substring(1)));
                     subNodeAND.getSubNodes().add(node);
                 } else {
                     // Handle sheet
-                    // LOG.debug("Adding sheet [" + andOper + "]");
                     subNodeAND.getSubNodes().add(new ExpressionNode(andOper));
                 }
             }
@@ -282,7 +274,6 @@ public final class ExpressionParser {
      * @return parsed expression as node
      */
     private static ExpressionNode parseOperatorNot(ExpressionNode currentNode, String expr) {
-        // LOG.debug("NoBracket NoOR [" + expr + "] : Operator NOT");
         ExpressionNode subNodeNot = new ExpressionNode(ExpressionOperator.NOT);
         subNodeNot.getSubNodes().add(new ExpressionNode(expr.substring(1)));
         if (currentNode != null) {
@@ -303,7 +294,6 @@ public final class ExpressionParser {
      * @return parsed expression as node
      */
     private static ExpressionNode parseSheet(ExpressionNode currentNode, String expr) {
-        // LOG.debug("Adding sheet [" + expr + "]");
         if (currentNode != null) {
             currentNode.getSubNodes().add(new ExpressionNode(expr));
         } else {
@@ -321,7 +311,6 @@ public final class ExpressionParser {
     private static ExpressionNode parseExpressionWithoutParenthesis(String expr) {
         // Expression without operator => Sheet
         if (!expr.contains(String.valueOf(OR)) && !expr.contains(String.valueOf(AND)) && !expr.contains(String.valueOf(NOT))) {
-            // LOG.info("Unique sheet : " + expr);
             return new ExpressionNode(expr);
 
         } else {
@@ -331,14 +320,12 @@ public final class ExpressionParser {
             ExpressionNode currentNode;
             // less priority operator is OR
             if (orOperArray.length > 1) {
-                // LOG.debug("NoBracket [" + expr + "] : Operator OR");
                 currentNode = new ExpressionNode(ExpressionOperator.OR);
                 for (String oper : orOperArray) {
                     currentNode = parseExpressionAndNot(currentNode, oper);
                 }
             } else {
                 // Check next priority operator AND
-                // LOG.debug("NoBracket [" + expr + "] : No Operator OR");
                 currentNode = parseExpressionAndNot(null, expr);
             }
             return currentNode;
