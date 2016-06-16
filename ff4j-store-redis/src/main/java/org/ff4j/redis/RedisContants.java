@@ -27,12 +27,6 @@ package org.ff4j.redis;
  */
 public class RedisContants {
     
-    /**
-     * Hide contructor for constants.
-     */
-    private RedisContants() {
-    }
-    
     /** prefix of keys. */
     public static final String KEY_FEATURE = "FF4J_FEATURE_";
     
@@ -45,5 +39,9 @@ public class RedisContants {
     /** default ttl. */
     public static int DEFAULT_TTL = 900000000;
     
-
+    /**
+     * Hide contructor for constants.
+     */
+    private RedisContants() {
+    }
 }
