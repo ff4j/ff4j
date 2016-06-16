@@ -61,6 +61,7 @@ public class PropertyStoreAuditProxy implements PropertyStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public  < T > void createProperty(Property<T> prop) {
         long start = System.nanoTime();
         target.createProperty(prop);
@@ -72,6 +73,7 @@ public class PropertyStoreAuditProxy implements PropertyStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void updateProperty(String name, String newValue) {
         long start = System.nanoTime();
         target.updateProperty(name, newValue);
@@ -83,6 +85,7 @@ public class PropertyStoreAuditProxy implements PropertyStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public <T> void updateProperty(Property<T> prop) {
         long start = System.nanoTime();
         target.updateProperty(prop);
@@ -94,6 +97,7 @@ public class PropertyStoreAuditProxy implements PropertyStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void deleteProperty(String name) {
         long start = System.nanoTime();
         target.deleteProperty(name);
@@ -104,31 +108,37 @@ public class PropertyStoreAuditProxy implements PropertyStore {
     }
     
     /** {@inheritDoc} */
+    @Override
     public boolean existProperty(String name) {
         return target.existProperty(name);
     }
 
     /** {@inheritDoc} */
+    @Override
     public Property<?> readProperty(String name) {
         return target.readProperty(name);
     }
     
     /** {@inheritDoc} */
+    @Override
     public Map<String, Property<?>> readAllProperties() {
         return target.readAllProperties();
     }
 
     /** {@inheritDoc} */
+    @Override
     public Set<String> listPropertyNames() {
         return target.listPropertyNames();
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isEmpty() {
         return target.isEmpty();
     }
 
     /** {@inheritDoc} */
+    @Override
     public void clear() {
         long start = System.nanoTime();
         target.clear();
@@ -139,6 +149,7 @@ public class PropertyStoreAuditProxy implements PropertyStore {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void importProperties(Collection<Property<?>> properties) {
         // Do not use target as the delete/create operation will be traced
         if (properties != null) {
