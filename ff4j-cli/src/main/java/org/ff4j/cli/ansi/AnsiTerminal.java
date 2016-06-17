@@ -115,7 +115,9 @@ public class AnsiTerminal implements AnsiConstants {
                  case SOLARIS:
                      System.out.print(text);
                      System.out.flush();
-                 break;
+                     break;
+                 default:
+                     break;
              }
          }
     }

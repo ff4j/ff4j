@@ -75,6 +75,7 @@ public class JdbcEventRepository extends AbstractEventRepository {
     }
     
     /** {@inheritDoc} */
+    @Override
     public int getTotalEventCount() {
         Connection        sqlConn = null;
         PreparedStatement stmt = null;
@@ -98,6 +99,7 @@ public class JdbcEventRepository extends AbstractEventRepository {
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean saveEvent(Event evt) {
         Util.assertNotNull(evt);
         Util.assertHasLength(evt.getName());
@@ -170,6 +172,7 @@ public class JdbcEventRepository extends AbstractEventRepository {
     }
 
     /** {@inheritDoc} */
+    @Override
     public Set < String > getFeatureNames() {
         Set < String> listOfFeatureNames = new HashSet<String>();
         Connection sqlConn = null;
@@ -194,6 +197,7 @@ public class JdbcEventRepository extends AbstractEventRepository {
     }
     
     /** {@inheritDoc} */
+    @Override
     public PieChart featuresListDistributionPie(long startTime, long endTime) {
         PieChart pieGraph = new PieChart(TITLE_PIE_HITCOUNT);
         Connection sqlConn = null;
@@ -232,6 +236,7 @@ public class JdbcEventRepository extends AbstractEventRepository {
     }
     
     /** {@inheritDoc} */
+    @Override
     public BarChart getFeaturesUsageOverTime(Set<String> featNameSet, long startTime, long endTime, int nbslot) {
         
         // Build Labels
@@ -277,6 +282,7 @@ public class JdbcEventRepository extends AbstractEventRepository {
     }
 
     /** {@inheritDoc} */
+    @Override
     public PieChart featureDistributionPie(String featureId, long startTime, long endTime) {
         PieChart pieGraph = new PieChart("Hits Count for " + featureId);
         
