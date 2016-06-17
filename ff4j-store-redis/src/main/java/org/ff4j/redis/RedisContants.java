@@ -37,7 +37,7 @@ public class RedisContants {
     public static final String KEY_EVENT = "FF4J_EVENT_";
     
     /** default ttl. */
-    public static int DEFAULT_TTL = 900000000;
+    public static final int DEFAULT_TTL = 900000000;
     
     /**
      * Hide contructor for constants.

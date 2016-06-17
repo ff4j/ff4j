@@ -117,6 +117,7 @@ public class FeatureStoreAuditProxy implements FeatureStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void removeRoleFromFeature(String uid, String roleName) {
         long start = System.nanoTime();
         target.removeRoleFromFeature(uid, roleName);

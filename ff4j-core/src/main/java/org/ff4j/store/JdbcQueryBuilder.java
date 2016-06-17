@@ -33,10 +33,10 @@ import static org.ff4j.store.JdbcStoreConstants.*;
 public class JdbcQueryBuilder {
 	
     /** table prefix. */
-	public String tablePrefix = "FF4J_";
+	private String tablePrefix = "FF4J_";
 	
 	/** table suffix. */
-	public String tableSuffix = "";
+	private String tableSuffix = "";
 
 	/** 
 	 * Default constructor. 
@@ -393,5 +393,21 @@ public class JdbcQueryBuilder {
 		sb.append(" AND   (" + COL_EVENT_TIME + "< ?)");
 		return sb.toString();
     }
-	
+
+	public String getTablePrefix() {
+		return tablePrefix;
+	}
+
+	public void setTablePrefix(String tablePrefix) {
+		this.tablePrefix = tablePrefix;
+	}
+
+	public String getTableSuffix() {
+		return tableSuffix;
+	}
+
+	public void setTableSuffix(String tableSuffix) {
+		this.tableSuffix = tableSuffix;
+	}
+
 }
