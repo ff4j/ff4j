@@ -23,7 +23,6 @@ package org.ff4j.property.util;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Set;
 
 import org.ff4j.property.BasePropertyBean;
 import org.ff4j.property.Property;

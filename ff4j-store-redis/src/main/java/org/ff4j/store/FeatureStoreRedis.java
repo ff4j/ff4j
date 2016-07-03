@@ -1,5 +1,7 @@
 package org.ff4j.store;
 
+import static org.ff4j.redis.RedisContants.KEY_FEATURE;
+
 /*
  * #%L
  * ff4j-store-redis
@@ -21,7 +23,6 @@ package org.ff4j.store;
  */
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,8 +36,6 @@ import org.ff4j.utils.Util;
 import org.ff4j.utils.json.FeatureJsonParser;
 
 import redis.clients.jedis.Jedis;
-
-import static org.ff4j.redis.RedisContants.KEY_FEATURE;
 
 /**
  * {@link FeatureStore} to persist data into
