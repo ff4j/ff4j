@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/ff4j-logo.png?raw=true" alt="functions" height="120px" />
+<img src="https://raw.githubusercontent.com/clun/ff4j/master/src/site/resources/images/ff4j.png?raw=true" alt="functions" height="120px" />
 </p>
 ## Feature Flipping for Java
 
@@ -10,14 +10,35 @@
 [![Join the chat at https://gitter.im/clun/ff4j](https://badges.gitter.im/clun/ff4j.svg)](https://gitter.im/clun/ff4j?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![License Apache2](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
+FF4J is a proposition of [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html) pattern. The purpose is 
+to be able to __enable and disable features at runtime__ with dedicated consoles. FF4J let you choose among a  list of technologies to persist the state of your features: _xml, jdbc, mongodb, redis, neo4j, any JSR107 cache ..._
 
-FF4J is a proposition of [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html). 
-You can enable and disable features through configuration at runtime with dedicated consoles or Web API but also __monitor__ features usage. You can also define any __Property__ and change its value at runtime with 
-the exact same web console.
+Features are just a special type of property (boolean) so we implement all sutff for you to define, update and inject  __Property__ at runtime using the same stores technologies and the same screens.
 
-More information at [ff4j.org](http://ff4j.org) or [reference guide](https://github.com/clun/ff4j-extra/raw/master/ff4j-reference-guide-1.3.pdf). To access a demo please click [here] (http://cannys.com/ff4j-demo)
+<table>
+<tr>
+<td width="150px">
+<p align="center">
+<img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/refguide.png?raw=true" />
+<a href="https://github.com/clun/ff4j/wiki">Documentation</a>
+</p>
+</td>
+<td width="150px">
+<p align="center">
+<img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/demo.png?raw=true" />
+<a href="http://cannys.com/ff4j-demo/">Demonstration</a>
+</p>
+</td>
+<td width="150px">
+<p align="center">
+<img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/website.png?raw=true" />
+<a href="http://ff4j.org">Website</a>
+</p>
+</td>
+</tr>
+</table>
 
- <p align="center">
+<p align="center">
   <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/ff4j-console.png?raw=true" />
   <br>
   <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/stack3.png?raw=true" />
