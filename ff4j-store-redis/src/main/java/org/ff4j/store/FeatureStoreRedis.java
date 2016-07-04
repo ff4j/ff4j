@@ -1,6 +1,6 @@
 package org.ff4j.store;
 
-import static org.ff4j.redis.RedisContants.KEY_FEATURE;
+import static org.ff4j.redis.RedisConstants.KEY_FEATURE;
 
 /*
  * #%L

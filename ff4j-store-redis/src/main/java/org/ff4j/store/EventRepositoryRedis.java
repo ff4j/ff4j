@@ -29,7 +29,7 @@ import org.ff4j.audit.repository.AbstractEventRepository;
 import org.ff4j.redis.RedisConnection;
 
 import redis.clients.jedis.Jedis;
-import static org.ff4j.redis.RedisContants.KEY_EVENT;
+import static org.ff4j.redis.RedisConstants.KEY_EVENT;
 
 /**
  * Persist audit events into REDIS storage technology.

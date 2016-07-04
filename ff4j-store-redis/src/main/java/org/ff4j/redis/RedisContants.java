@@ -25,7 +25,7 @@ package org.ff4j.redis;
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class RedisContants {
+public class RedisConstants {
     
     /** prefix of keys. */
     public static final String KEY_FEATURE = "FF4J_FEATURE_";
@@ -42,6 +42,6 @@ public class RedisContants {
     /**
      * Hide contructor for constants.
      */
-    private RedisContants() {
+    private RedisConstants() {
     }
 }

@@ -30,7 +30,7 @@ import org.ff4j.utils.json.FeatureJsonParser;
 import org.ff4j.utils.json.PropertyJsonParser;
 
 import redis.clients.jedis.Jedis;
-import static org.ff4j.redis.RedisContants.*;
+import static org.ff4j.redis.RedisConstants.*;
 
 /**
  * Implementation of ditributed cache to limit overhead, with REDIS (JEDIS).
