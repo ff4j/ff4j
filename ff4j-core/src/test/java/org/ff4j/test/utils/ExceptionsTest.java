@@ -96,4 +96,6 @@ public class ExceptionsTest {
         EventRejectedExecutionHandler.setMock(false);
         Assert.assertNotNull(ereh);
     }
+    
+   
 }

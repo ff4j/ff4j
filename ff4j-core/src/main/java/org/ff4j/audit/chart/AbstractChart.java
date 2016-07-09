@@ -1,4 +1,4 @@
-package org.ff4j.audit.graph;
+package org.ff4j.audit.chart;
 
 /*
  * #%L
@@ -27,13 +27,27 @@ import java.io.Serializable;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public abstract class AbstractGraphFF4j implements Serializable {
+public abstract class AbstractChart implements Serializable {
     
     /** serial.*/
     private static final long serialVersionUID = -2333637646709224406L;
     
     /** title of the graph. */
     private String title = "N/A";
+   
+    /** Default constructor. */
+    public AbstractChart() {
+    }
+    
+    /**
+     * Parameterized constructor.
+     *
+     * @param title
+     *      title
+     */
+    public AbstractChart(String title) {
+        this.title = title;
+    }
 
     /**
      * Getter accessor for attribute 'title'.

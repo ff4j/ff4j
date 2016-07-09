@@ -32,7 +32,7 @@ import org.ff4j.utils.IOUtil;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class Event implements Serializable {
+public class Event implements Serializable, Comparable < Event > {
 
     /** Serial. */
     private static final long serialVersionUID = 6490780530212257217L;
@@ -367,6 +367,12 @@ public class Event implements Serializable {
      */
     public void setValue(String value) {
         this.value = value;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int compareTo(Event evt) {
+        return new Long(this.getTimestamp() - evt.getTimestamp()).intValue();
     }
 
 }

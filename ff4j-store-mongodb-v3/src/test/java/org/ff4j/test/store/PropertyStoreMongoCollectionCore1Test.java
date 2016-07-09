@@ -1,5 +1,8 @@
 package org.ff4j.test.store;
 
+import org.ff4j.mongo.mapper.PropertyDocumentBuilder;
+import org.ff4j.mongo.store.PropertyStoreMongo;
+
 /*
  * #%L
  * ff4j-store-mongodb-v3
@@ -22,8 +25,6 @@ package org.ff4j.test.store;
 
 
 import org.ff4j.property.store.PropertyStore;
-import org.ff4j.store.PropertyStoreMongoCollection;
-import org.ff4j.store.mongodb.PropertyDocumentBuilder;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -46,7 +47,7 @@ public class PropertyStoreMongoCollectionCore1Test extends PropertyStoreTestSupp
 
      /** {@inheritDoc} */
     protected PropertyStore initPropertyStore() {
-        return new PropertyStoreMongoCollection(
+        return new PropertyStoreMongo(
                 fongoRule.getDatabase().getCollection("ff4j"), "test-ff4j-features.xml");
     }
     
@@ -54,7 +55,6 @@ public class PropertyStoreMongoCollectionCore1Test extends PropertyStoreTestSupp
     public void testInit() {
         PropertyDocumentBuilder pod = new PropertyDocumentBuilder ();
         Assert.assertNotNull(pod.getDescription("a"));
-        Assert.assertNotNull(pod.getStrategy("a"));
         Assert.assertNotNull(pod.getType("a"));
         Assert.assertNotNull(pod.getFixedValues("a"));
     }

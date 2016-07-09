@@ -1,4 +1,10 @@
-package org.ff4j.store.mongodb;
+package org.ff4j.mongo.mapper;
+
+import static org.ff4j.mongo.MongoDbConstants.PROPERTY_DESCRIPTION;
+import static org.ff4j.mongo.MongoDbConstants.PROPERTY_FIXEDVALUES;
+import static org.ff4j.mongo.MongoDbConstants.PROPERTY_NAME;
+import static org.ff4j.mongo.MongoDbConstants.PROPERTY_TYPE;
+import static org.ff4j.mongo.MongoDbConstants.PROPERTY_VALUE;
 
 /*
  * #%L
@@ -25,8 +31,6 @@ import java.util.Set;
 import org.bson.Document;
 
 import com.mongodb.BasicDBList;
-
-import static org.ff4j.store.mongodb.FeatureStoreMongoConstants.*;
 
 /**
  * Mongo object builder.
@@ -86,18 +90,6 @@ public final class PropertyDocumentBuilder {
     public PropertyDocumentBuilder addDescription(String value) {
         builder.append(PROPERTY_DESCRIPTION, value);
         return this;
-    }
-    
-    /**
-     * Mongo internal object representing attribute 'strategy'.
-     *
-     * @param value
-     *      target value
-     * @return
-     *      internal mong object
-     */
-    public Document getStrategy(String value) {
-        return  new Document(STRATEGY, value);
     }
     
     /**

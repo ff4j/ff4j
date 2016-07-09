@@ -1,4 +1,23 @@
-package org.ff4j.store;
+package org.ff4j.mongo.store;
+
+import static org.ff4j.mongo.MongoDbConstants.MONGO_SET;
+
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+
+import org.bson.Document;
+import org.ff4j.core.Feature;
+import org.ff4j.core.FeatureStore;
+import org.ff4j.exception.FeatureAlreadyExistException;
+import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.exception.GroupNotFoundException;
+import org.ff4j.mongo.MongoDbConstants;
+import org.ff4j.mongo.mapper.FeatureDocumentBuilder;
+import org.ff4j.mongo.mapper.MongoFeatureMapper;
+import org.ff4j.store.AbstractFeatureStore;
+import org.ff4j.utils.Util;
 
 /*
  * #%L ff4j-store-jdbc %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -12,22 +31,7 @@ package org.ff4j.store;
  */
 
 import com.mongodb.client.MongoCollection;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-
-import org.bson.Document;
-import org.ff4j.core.Feature;
-import org.ff4j.core.FeatureStore;
-import org.ff4j.exception.FeatureAlreadyExistException;
-import org.ff4j.exception.FeatureNotFoundException;
-import org.ff4j.exception.GroupNotFoundException;
-import org.ff4j.store.mongodb.FeatureDocumentBuilder;
-import org.ff4j.store.mongodb.FeatureDocumentMapper;
-import org.ff4j.utils.Util;
-
-import static org.ff4j.store.mongodb.FeatureStoreMongoConstants.*;
+import com.mongodb.client.MongoDatabase;
 
 /**
  * Implementation of {@link FeatureStore} to work with MongoDB.
@@ -35,14 +39,18 @@ import static org.ff4j.store.mongodb.FeatureStoreMongoConstants.*;
  * @author William Delanoue (@twillouer) </a>
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class FeatureStoreMongoCollection extends AbstractFeatureStore {
+public class FeatureStoreMongo extends AbstractFeatureStore {
 
     /** Map from DBObject to Feature. */
-    private static final FeatureDocumentMapper MAPPER = new FeatureDocumentMapper();
+    private static final MongoFeatureMapper FMAPPER = new MongoFeatureMapper();
 
     /** Build fields. */
     private static final FeatureDocumentBuilder BUILDER = new FeatureDocumentBuilder();
+    
+    /** error message. */
     public static final String FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY = "Feature identifier cannot be null nor empty";
+    
+    /** error message. */
     public static final String GROUPNAME_CANNOT_BE_NULL_NOR_EMPTY = "Groupname cannot be null nor empty";
 
     /** MongoDB collection. */
@@ -54,7 +62,27 @@ public class FeatureStoreMongoCollection extends AbstractFeatureStore {
      * @param collection
      *            the collection to set
      */
-    public FeatureStoreMongoCollection(MongoCollection<Document> collection) {
+    public FeatureStoreMongo(MongoDatabase db) {
+        this(db, MongoDbConstants.DEFAULT_FEATURE_COLLECTION);
+    }
+    
+    /**
+     * Parameterized constructor with collection.
+     * 
+     * @param collection
+     *            the collection to set
+     */
+    public FeatureStoreMongo(MongoDatabase db, String collectionName) {
+        this.collection = db.getCollection(collectionName);
+    }
+    
+    /**
+     * Parameterized constructor with collection.
+     * 
+     * @param collection
+     *            the collection to set
+     */
+    public FeatureStoreMongo(MongoCollection<Document> collection) {
         this.collection = collection;
     }
     
@@ -64,7 +92,7 @@ public class FeatureStoreMongoCollection extends AbstractFeatureStore {
      * @param collection
      *            the collection to set
      */
-    public FeatureStoreMongoCollection(MongoCollection<Document> collection, String xmlConfFile) {
+    public FeatureStoreMongo(MongoCollection<Document> collection, String xmlConfFile) {
         this(collection);
         importFeaturesFromXmlFile(xmlConfFile);
     }
@@ -118,7 +146,7 @@ public class FeatureStoreMongoCollection extends AbstractFeatureStore {
         if (object==null) {
             throw new FeatureNotFoundException(uid);
         }
-        return MAPPER.mapFeature(object);
+        return FMAPPER.fromStore(object);
     }
 
     /** {@inheritDoc} */
@@ -130,7 +158,7 @@ public class FeatureStoreMongoCollection extends AbstractFeatureStore {
         if (exist(fp.getUid())) {
             throw new FeatureAlreadyExistException(fp.getUid());
         }
-        collection.insertOne(MAPPER.toDocument(fp));
+        collection.insertOne(FMAPPER.toStore(fp));
     }
 
     /** {@inheritDoc} */
@@ -180,7 +208,7 @@ public class FeatureStoreMongoCollection extends AbstractFeatureStore {
     public Map<String, Feature> readAll() {
         LinkedHashMap<String, Feature> mapFP = new LinkedHashMap<String, Feature>();
         for(Document document : collection.find()) {
-            Feature feature = MAPPER.mapFeature(document);
+            Feature feature = FMAPPER.fromStore(document);
             mapFP.put(feature.getUid(), feature);
         }
         return mapFP;
@@ -193,7 +221,7 @@ public class FeatureStoreMongoCollection extends AbstractFeatureStore {
             throw new IllegalArgumentException("Feature cannot be null nor empty");
         }
         read(fp.getUid());
-        collection.updateOne(BUILDER.getFeatUid(fp.getUid()), new Document(MONGO_SET, MAPPER.toDocument(fp)));
+        collection.updateOne(BUILDER.getFeatUid(fp.getUid()), new Document(MONGO_SET, FMAPPER.toStore(fp)));
     }
 
     /** {@inheritDoc} */
@@ -210,7 +238,7 @@ public class FeatureStoreMongoCollection extends AbstractFeatureStore {
     public Set<String> readAllGroups() {
         Set<String> setOfGroups = new HashSet<String>();
         for (Document document : collection.find()) {
-            setOfGroups.add(document.getString(GROUPNAME));
+            setOfGroups.add(document.getString(MongoDbConstants.FEATURE_GROUPNAME));
         }
         setOfGroups.remove(null);
         setOfGroups.remove("");
@@ -228,7 +256,7 @@ public class FeatureStoreMongoCollection extends AbstractFeatureStore {
         }
         LinkedHashMap<String, Feature> mapFP = new LinkedHashMap<String, Feature>();
         for (Document document : collection.find(BUILDER.getGroupName(groupName))) {
-            Feature feature = MAPPER.mapFeature(document);
+            Feature feature = FMAPPER.fromStore(document);
             mapFP.put(feature.getUid(), feature);
         }
         return mapFP;

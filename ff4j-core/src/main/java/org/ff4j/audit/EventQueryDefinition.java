@@ -40,17 +40,8 @@ public class EventQueryDefinition implements Serializable {
 	/** bound top. */
 	private Long to;
 	
-	/** filter about target. */
-	private Set < String > targetsFilter = null;
-	
 	/** filter about names. */
 	private Set < String > namesFilter = null;
-	
-	/** filter about action. */
-	private Set < String > actionFilter = null;
-	
-	/** Sort at end the end if required. */
-	private EventQueryCriteria sortCriteria;
 	
 	/**
 	 * Default constucot
@@ -107,26 +98,6 @@ public class EventQueryDefinition implements Serializable {
 	}
 
 	/**
-	 * Getter accessor for attribute 'targetsFilter'.
-	 *
-	 * @return
-	 *       current value of 'targetsFilter'
-	 */
-	public Set<String> getTargetsFilter() {
-		return targetsFilter;
-	}
-
-	/**
-	 * Setter accessor for attribute 'targetsFilter'.
-	 *
-	 * @param targetsFilter
-	 * 		new value for 'targetsFilter '
-	 */
-	public void setTargetsFilter(Set<String> targetsFilter) {
-		this.targetsFilter = targetsFilter;
-	}
-
-	/**
 	 * Getter accessor for attribute 'namesFilter'.
 	 *
 	 * @return
@@ -143,44 +114,5 @@ public class EventQueryDefinition implements Serializable {
 	 */
 	public void setNamesFilter(Set<String> namesFilter) {
 		this.namesFilter = namesFilter;
-	}
-
-	/**
-	 * Getter accessor for attribute 'actionFilter'.
-	 *
-	 * @return
-	 *       current value of 'actionFilter'
-	 */
-	public Set<String> getActionFilter() {
-		return actionFilter;
-	}
-
-	/**
-	 * Setter accessor for attribute 'actionFilter'.
-	 *
-	 * @param actionFilter
-	 * 		new value for 'actionFilter '
-	 */
-	public void setActionFilter(Set<String> actionFilter) {
-		this.actionFilter = actionFilter;
-	}
-
-	/**
-	 * Getter accessor for attribute 'sortCriteria'.
-	 *
-	 * @return
-	 *       current value of 'sortCriteria'
-	 */
-	public EventQueryCriteria getSortCriteria() {
-		return sortCriteria;
-	}
-
-	/**
-	 * Setter accessor for attribute 'sortCriteria'.
-	 * @param sortCriteria
-	 * 		new value for 'sortCriteria '
-	 */
-	public void setSortCriteria(EventQueryCriteria sortCriteria) {
-		this.sortCriteria = sortCriteria;
 	}
 }

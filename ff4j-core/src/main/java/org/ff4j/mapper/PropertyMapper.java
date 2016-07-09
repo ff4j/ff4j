@@ -1,4 +1,4 @@
-package org.ff4j.test.audit;
+package org.ff4j.mapper;
 
 /*
  * #%L
@@ -20,20 +20,14 @@ package org.ff4j.test.audit;
  * #L%
  */
 
-import org.ff4j.audit.repository.EventRepository;
-import org.ff4j.audit.repository.InMemoryEventRepository;
+import org.ff4j.property.Property;
 
 /**
- * Test for publisher and InMemory Event repository.
- * 
- * @author Cedrick Lunven (@clunven)
+ * Specialization of {@link Mapper} for {@link Property}.
+ *
+ * @author Cedrick LUNVEN (@clunven)
+ *
+ * @param <STORE_OBJ>
+ *      target database driver bean
  */
-public class InMemoryEventRepositoryTest extends AbstractEventRepositoryTest {
-    
-    /** {@inheritDoc} */
-    @Override
-    protected EventRepository initRepository() {
-        return new InMemoryEventRepository(60);
-    }
-    
-}
+public interface PropertyMapper <STORE_OBJ > extends Mapper< Property<?>, STORE_OBJ>{}

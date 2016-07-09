@@ -1,4 +1,6 @@
-package org.ff4j.store.mongodb;
+package org.ff4j.mongo.mapper;
+
+import static org.ff4j.mongo.MongoDbConstants.*;
 
 /*
  * #%L
@@ -25,8 +27,6 @@ import java.util.Set;
 
 import org.bson.Document;
 
-import static org.ff4j.store.mongodb.FeatureStoreMongoConstants.*;
-
 /**
  * Mongo object builder.
  *
@@ -48,7 +48,7 @@ public final class FeatureDocumentBuilder {
      *      internal mongo object
      */
     public Document getFeatUid(String value) {
-        return new Document(UUID, value);
+        return new Document(FEATURE_UUID, value);
     }
 
     /**
@@ -59,7 +59,7 @@ public final class FeatureDocumentBuilder {
      * @return
      */
     public FeatureDocumentBuilder addFeatUid(String value) {
-        builder.append(UUID, value);
+        builder.append(FEATURE_UUID, value);
         return this;
     }
 
@@ -72,7 +72,7 @@ public final class FeatureDocumentBuilder {
      *      internal mong object
      */
     public Document getEnable(boolean value) {
-        return new Document(ENABLE, value);
+        return new Document(FEATURE_ENABLE, value);
     }
 
     /**
@@ -83,7 +83,7 @@ public final class FeatureDocumentBuilder {
      * @return
      */
     public FeatureDocumentBuilder addEnable(boolean value) {
-        builder.append(ENABLE, value);
+        builder.append(FEATURE_ENABLE, value);
         return this;
     }
 
@@ -96,7 +96,7 @@ public final class FeatureDocumentBuilder {
      *      internal mongo object
      */
     public Document getDescription(String value) {
-        return new Document(DESCRIPTION, value);
+        return new Document(FEATURE_DESCRIPTION, value);
     }
 
     /**
@@ -107,7 +107,7 @@ public final class FeatureDocumentBuilder {
      * @return
      */
     public FeatureDocumentBuilder addDescription(String value) {
-        builder.append(DESCRIPTION, value);
+        builder.append(FEATURE_DESCRIPTION, value);
         return this;
     }
 
@@ -120,7 +120,7 @@ public final class FeatureDocumentBuilder {
      *      internal mongo object
      */
     public Document getStrategy(String value) {
-        return new Document(STRATEGY, value);
+        return new Document(FEATURE_STRATEGY, value);
     }
 
     /**
@@ -131,7 +131,7 @@ public final class FeatureDocumentBuilder {
      * @return
      */
     public FeatureDocumentBuilder addStrategy(String value) {
-        builder.append(STRATEGY, value);
+        builder.append(FEATURE_STRATEGY, value);
         return this;
     }
 
@@ -143,7 +143,7 @@ public final class FeatureDocumentBuilder {
      * @return internal mongo object
      */
     public Document getExpression(String value) {
-        return new Document(EXPRESSION, value);
+        return new Document(FEATURE_EXPRESSION, value);
     }
 
     /**
@@ -154,7 +154,7 @@ public final class FeatureDocumentBuilder {
      * @return
      */
     public FeatureDocumentBuilder addExpression(String value) {
-        builder.append(EXPRESSION, value);
+        builder.append(FEATURE_EXPRESSION, value);
         return this;
     }
 
@@ -166,7 +166,7 @@ public final class FeatureDocumentBuilder {
      * @return internal mongo object
      */
     public Document getGroupName(String value) {
-        return new Document(GROUPNAME, value);
+        return new Document(FEATURE_GROUPNAME, value);
     }
 
     /**
@@ -177,7 +177,7 @@ public final class FeatureDocumentBuilder {
      * @return
      */
     public FeatureDocumentBuilder addGroupName(String value) {
-        builder.append(GROUPNAME, value);
+        builder.append(FEATURE_GROUPNAME, value);
         return this;
     }
 
@@ -189,7 +189,7 @@ public final class FeatureDocumentBuilder {
      * @return internal mongo object
      */
     public Document getRoles(String value) {
-        return new Document(ROLES, value);
+        return new Document(FEATURE_ROLES, value);
     }
 
     /**
@@ -200,7 +200,7 @@ public final class FeatureDocumentBuilder {
      * @return
      */
     public FeatureDocumentBuilder addRoles(Set<String> auths) {
-        builder.append(ROLES, new ArrayList<String>(auths));
+        builder.append(FEATURE_ROLES, new ArrayList<String>(auths));
         return this;
     }
     
@@ -212,7 +212,7 @@ public final class FeatureDocumentBuilder {
      * @return
      */
     public FeatureDocumentBuilder addCustomProperties(String value) {
-        builder.append(CUSTOMPROPERTIES, value);
+        builder.append(FEATURE_CUSTOMPROPERTIES, value);
         return this;
     }
 

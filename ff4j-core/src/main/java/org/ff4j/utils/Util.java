@@ -1,5 +1,6 @@
 package org.ff4j.utils;
 
+import java.awt.Color;
 import java.lang.reflect.Constructor;
 
 /*
@@ -30,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import org.ff4j.audit.Event;
 
 /**
  * Tips and tricks to be less verbose.
@@ -79,6 +82,13 @@ public class Util {
         if (object != null) {
             throw new IllegalArgumentException("[Assertion failed] - the object argument must be null");
         }
+    }
+    
+    public static void assertEvent(Event evt) {
+        assertNotNull(evt);
+        assertHasLength(evt.getName());
+        assertHasLength(evt.getType());
+        assertHasLength(evt.getAction());
     }
 
     /**
@@ -174,6 +184,28 @@ public class Util {
     }
     
     /**
+     * Get a random offset within map.
+     *
+     * @param size
+     *      target list size
+     * @return
+     *      a random positive integer below size
+     */
+    public static int getRandomOffset(int size) {
+        return (int) (Math.random() * Math.abs(size));
+    }
+    
+    /**
+     * Get a random element from a list.
+     *
+     * @param myList
+     *      current list
+     */
+    public static < T > T getRandomElement(List<T> myList) {
+        return myList.get(getRandomOffset(myList.size()));
+    }
+    
+    /**
      * This code build the color gradient between 2 colors with defined step.
      * @param codeFrom
      *      color source
@@ -184,24 +216,57 @@ public class Util {
      * @return
      *      the list of colors
      */
-    private static List < String > getColorGradient(String codeFrom, String codeTo, int nbDivision) {
+    public static List < String > generateRGBGradient(String codeFrom, String codeTo, int nbDivision) {
         List < String > colors = new ArrayList<String>();
         if (nbDivision > 0) {
-            int rStart = Integer.parseInt(codeFrom.substring(0, 2), 16);
-            int rDelta = (Integer.parseInt(codeTo.substring(0, 2), 16) - rStart) / nbDivision;
-            int gStart = Integer.parseInt(codeFrom.substring(2, 4), 16);
-            int gDelta = (Integer.parseInt(codeTo.substring(2, 4), 16) - gStart) / nbDivision;
-            int bStart = Integer.parseInt(codeFrom.substring(4, 6), 16);
-            int bDelta = (Integer.parseInt(codeTo.substring(4, 6), 16) - bStart) / nbDivision;
+            int r1 = Integer.parseInt(codeFrom.substring(0, 2), 16);
+            int g1 = Integer.parseInt(codeFrom.substring(2, 4), 16);
+            int b1 = Integer.parseInt(codeFrom.substring(4, 6), 16);
+            int r2 = Integer.parseInt(codeTo.substring(0, 2), 16);
+            int g2 = Integer.parseInt(codeTo.substring(2, 4), 16);
+            int b2 = Integer.parseInt(codeTo.substring(4, 6), 16);
+            int rDelta = (r2 - r1) / nbDivision;
+            int gDelta = (g2 - g1) / nbDivision;
+            int bDelta = (b2 - b1) / nbDivision;
             for (int idx = 0;idx < nbDivision;idx++) {
-                String red = Integer.toHexString(rStart + rDelta * idx);
-                String green = Integer.toHexString(gStart + gDelta * idx);
-                String blue = Integer.toHexString(bStart + bDelta * idx);
+                String red   = Integer.toHexString(r1 + rDelta * idx);
+                String green = Integer.toHexString(g1 + gDelta * idx);
+                String blue  = Integer.toHexString(b1 + bDelta * idx);
                 colors.add(red + green + blue);
             }
         }
         return colors;
     }
+    
+    public static List < String > generateHSVGradient(String codeFrom, String codeTo, int nbDivision) {
+        int r1 = Integer.parseInt(codeFrom.substring(0, 2), 16);
+        int g1 = Integer.parseInt(codeFrom.substring(2, 4), 16);
+        int b1 = Integer.parseInt(codeFrom.substring(4, 6), 16);
+        int r2 = Integer.parseInt(codeTo.substring(0, 2), 16);
+        int g2 = Integer.parseInt(codeTo.substring(2, 4), 16);
+        int b2 = Integer.parseInt(codeTo.substring(4, 6), 16);
+        float[] startHSB = Color.RGBtoHSB(r1, g1, b1, null);
+        float[] endHSB   = Color.RGBtoHSB(r2, g2, b2, null);
+        float brightness = (startHSB[2] + endHSB[2]) / 2;
+        float saturation = (startHSB[1] + endHSB[1]) / 2;
+        float hueMax = 0;
+        float hueMin = 0;
+        if (startHSB[0] > endHSB[0]) {
+            hueMax = startHSB[0];
+            hueMin = endHSB[0];
+        } else {
+            hueMin = startHSB[0];
+            hueMax = endHSB[0];
+        }
+        List < String > colors = new ArrayList<String>();
+        for (int idx = 0;idx < nbDivision;idx++) {
+            float hue = ((hueMax - hueMin) * idx/nbDivision) + hueMin;
+            int rgbColor = Color.HSBtoRGB(hue, saturation, brightness);
+            colors.add(Integer.toHexString(rgbColor).substring(2));
+        }
+        return colors;
+    }
+    
     
     /**
      * Dedicated gradient for ff4j console (Pie Chart).
@@ -212,7 +277,7 @@ public class Util {
      *      color gradient
      */
     public static List < String > getColorsGradient(int nbsectors) {
-        return getColorGradient(START_COLOR, END_COLOR, nbsectors);
+        return generateRGBGradient(START_COLOR, END_COLOR, nbsectors);
     }
     
     /**

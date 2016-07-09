@@ -1,4 +1,4 @@
-package org.ff4j.test.audit;
+package org.ff4j.mapper;
 
 /*
  * #%L
@@ -20,20 +20,36 @@ package org.ff4j.test.audit;
  * #L%
  */
 
-import org.ff4j.audit.repository.EventRepository;
-import org.ff4j.audit.repository.InMemoryEventRepository;
-
 /**
- * Test for publisher and InMemory Event repository.
- * 
- * @author Cedrick Lunven (@clunven)
+ * Mapping from Store to Java.
+ *
+ * @author Cedrick LUNVEN (@clunven)
+ *
+ * @param <JAVA_OBJ>
+ *      current java Bean
+ * @param <STORE_OBJ>
+ *      target storeage bean
  */
-public class InMemoryEventRepositoryTest extends AbstractEventRepositoryTest {
+public interface Mapper < JAVA_OBJ, STORE_OBJ > {
     
-    /** {@inheritDoc} */
-    @Override
-    protected EventRepository initRepository() {
-        return new InMemoryEventRepository(60);
-    }
+    /**
+     * Convert object from store driver/client to FF4J framework Object.
+     *
+     * @param bean
+     *      current bean
+     * @return
+     *      store object
+     */
+    STORE_OBJ toStore(JAVA_OBJ bean);
     
+    /**
+     * From DB to Java transformation.
+     *
+     * @param bean
+     *      target bean
+     * @return
+     *      the JAVA BEAN
+     */
+    JAVA_OBJ fromStore(STORE_OBJ bean);
+
 }

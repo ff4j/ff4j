@@ -1,4 +1,4 @@
-package org.ff4j.audit.graph;
+package org.ff4j.mapper;
 
 /*
  * #%L
@@ -20,33 +20,12 @@ package org.ff4j.audit.graph;
  * #L%
  */
 
+import org.ff4j.audit.Event;
+
 /**
- * Utility class to perform some computation. The mutable implementation is more efficient because
- * there is less instanciations.
- * 
- * @see http://stackoverflow.com/questions/81346/most-efficient-way-to-increment-a-map-value-in-java
- * 
- * @author Cedrick Lunven (@clunven)
+ * Specialization of mapper for Events
+ * @author Cedrick LUNVEN (@clunven)
+ *
+ * @param <STORE_OBJ>
  */
-public final class MutableInt {
-
-    /** We start at 1 since we're counting. */
-    int value = 1;
-
-    /**
-     * Increment value
-     */
-    public void inc() { 
-        ++value;
-    }
-    
-    /**
-     * Read value.
-     * @return
-     *      current value
-     */
-    public int  get () { 
-        return value;
-    }
-    
-}
+public interface EventMapper < STORE_OBJ > extends Mapper<Event, STORE_OBJ> {}

@@ -220,7 +220,6 @@ public class FF4jTest extends AbstractFf4jTest {
 
     @Test
     public void workingWithFeature() {
-
         // Initialize with empty store
         FF4j ff4j = new FF4j();
 

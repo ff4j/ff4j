@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Set; 
 import java.util.TreeSet;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -542,6 +542,8 @@ public final class XmlParser {
         return exportAll(conf.getFeatures(), conf.getProperties());
     }
     
+    
+    
     /**
      * Create dedicated output for Properties.
      *
@@ -677,11 +679,12 @@ public final class XmlParser {
      * @return
      */
     public String escapeXML(String value) {
-        if (value == null) return null;
-        value = value.replaceAll("&", "&amp;");
-        value = value.replaceAll(">", "&gt;");
-        value = value.replaceAll("<", "&lt;");
-        return value;
+        if (value == null) {
+            return null;
+        }
+        return value.replaceAll("&", "&amp;")
+                    .replaceAll(">", "&gt;")
+                    .replaceAll("<", "&lt;");
     }
     
 

@@ -1,10 +1,10 @@
-package org.ff4j.audit.graph;
+package org.ff4j.audit.chart;
 
 /*
  * #%L
  * ff4j-core
  * %%
- * Copyright (C) 2013 - 2014 Ff4J
+ * Copyright (C) 2013 - 2016 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,11 +23,11 @@ package org.ff4j.audit.graph;
 import java.io.Serializable;
 
 /**
- * Sector of PieChart.
+ * Chart item.
  *
- * @author Cedrick Lunven (@clunven)
+ * @author Cedrick LUNVEN (@clunven)
  */
-public class PieSector implements Serializable {
+public class Serie < V > implements Serializable {
     
     /** serial. */
     private static final long serialVersionUID = 4114123301942844821L;
@@ -36,10 +36,19 @@ public class PieSector implements Serializable {
     private String label = "n/a";
     
     /** value. */
-    private double value = 0.0;
+    private V value;
     
     /** color. */
     private String color = "FFFFFF";
+    
+    /**
+     * Initialization throughlabel
+     *
+     * @param l
+     */
+    public Serie(String l) {
+        this.label = l;
+    }
     
     /**
      * Constructor.
@@ -49,8 +58,8 @@ public class PieSector implements Serializable {
      * @param v
      *      value
      */
-    public PieSector(String l, double v) {
-        this.label = l;
+    public Serie(String l, V v) {
+        this(l);
         this.value = v;
     }
 
@@ -62,21 +71,21 @@ public class PieSector implements Serializable {
      * @param v
      *      value
      */
-    public PieSector(String l, double v, String color) {
+    public Serie(String l, V v, String color) {
         this(l,v);
         this.color = color;
     }
-
+    
     /** {@inheritDoc} */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("{ \"label\" : \"" + getLabel() + "\", ");
-        sb.append(" \"hitcount\" : " + getValue() + ", ");
+        sb.append(" \"value\" : " + getValue() + ", ");
         sb.append(" \"color\" : \"#" + getColor() + "\" }");
         return sb.toString();
     }
-
+    
     /**
      * Getter accessor for attribute 'label'.
      *
@@ -90,7 +99,7 @@ public class PieSector implements Serializable {
     /**
      * Setter accessor for attribute 'label'.
      * @param label
-     * 		new value for 'label '
+     *      new value for 'label '
      */
     public void setLabel(String label) {
         this.label = label;
@@ -102,16 +111,16 @@ public class PieSector implements Serializable {
      * @return
      *       current value of 'value'
      */
-    public double getValue() {
+    public V getValue() {
         return value;
     }
 
     /**
      * Setter accessor for attribute 'value'.
      * @param value
-     * 		new value for 'value '
+     *      new value for 'value '
      */
-    public void setValue(double value) {
+    public void setValue(V value) {
         this.value = value;
     }
 
@@ -128,10 +137,13 @@ public class PieSector implements Serializable {
     /**
      * Setter accessor for attribute 'color'.
      * @param color
-     * 		new value for 'color '
+     *      new value for 'color '
      */
     public void setColor(String color) {
         this.color = color;
     }   
+
+    
+    
 
 }

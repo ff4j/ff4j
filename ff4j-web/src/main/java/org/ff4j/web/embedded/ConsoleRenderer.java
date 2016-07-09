@@ -403,7 +403,7 @@ public final class ConsoleRenderer {
     	StringBuilder sb = new StringBuilder();
     	EventRepository er = ff4j.getEventRepository();
     	EventQueryDefinition query = new EventQueryDefinition();
-    	for (Event event : er.search(query)) {
+    	for (Event event : er.searchFeatureUsageEvents(query)) {
     		sb.append("<tr>" + END_OF_LINE);
         	sb.append("<td>" + SDF.format(new Date(event.getTimestamp())) + "</td>");
         	sb.append("<td>" + event.getType() + "</td>");

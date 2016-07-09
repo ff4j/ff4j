@@ -89,7 +89,7 @@ public class FF4j {
     private final String version = getClass().getPackage().getImplementationVersion();
     
     /** Source of initialization (JAVA_API, WEBAPI, SSH, CONSOLE...). */
-    private final String source =  SOURCE_JAVA;
+    private static final String source =  SOURCE_JAVA;
     
     /** Storage to persist feature within {@link FeatureStore}. */
     private FeatureStore fstore = new InMemoryFeatureStore();
@@ -431,6 +431,28 @@ public class FF4j {
     }
     
     /**
+     * Read property in Store
+     * 
+     * @param featureID
+     *            target feature ID
+     * @return target feature.
+     */
+    public synchronized Property<?> getProperty(String propertyName) {
+       return getPropertiesStore().readProperty(propertyName);
+    }
+    
+    /**
+     * Read property in Store
+     * 
+     * @param featureID
+     *            target feature ID
+     * @return target feature.
+     */
+    public synchronized String getPropertyAsString(String propertyName) {
+       return getProperty(propertyName).asString();
+    }
+    
+    /**
      * Help to import features.
      * 
      * @param features
@@ -543,6 +565,7 @@ public class FF4j {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("{");
         long uptime = System.currentTimeMillis() - startTime;
@@ -697,7 +720,9 @@ public class FF4j {
      * @return current store
      */
     public FeatureStore getFeatureStore() {
-        if (!initialized) init();
+        if (!initialized) {
+            init();
+        }
         return fstore;
     }
     
@@ -708,7 +733,9 @@ public class FF4j {
      * @return current value of 'eventPublisher'
      */
     public synchronized EventPublisher getEventPublisher() {
-        if (!initialized) init();
+        if (!initialized) { 
+            init();
+        }
         return eventPublisher;
     }
     
@@ -719,7 +746,9 @@ public class FF4j {
      *       current value of 'pStore'
      */
     public PropertyStore getPropertiesStore() {
-        if (!initialized) init();
+        if (!initialized) {
+            init();
+        }
         return pStore;
     }
     
@@ -730,7 +759,9 @@ public class FF4j {
      *      get current context
      */
     public FlippingExecutionContext getCurrentContext() {
-        if (!initialized) init();
+        if (!initialized) {
+            init();
+        }
         
         if (null == this.currentExecutionContext.get()) {
             this.currentExecutionContext.set(new FlippingExecutionContext());
@@ -812,8 +843,8 @@ public class FF4j {
      * @param fname
      *      target name
      */
-    public void setFileName(String fname) { }
-    public void setAuthManager(String mnger) { }
+    public void setFileName(String fname)    { /** empty setter for Spring framework */ }
+    public void setAuthManager(String mnger) { /** empty setter for Spring framework */}
 
     /**
      * Shuts down the event publisher if we actually started it (As opposed to

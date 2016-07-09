@@ -24,6 +24,7 @@ import java.lang.reflect.Constructor;
 
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -65,7 +66,6 @@ public class UtilTest {
     
     @Test
     public void testConstants() throws Exception {
-    	 
     	 Constructor<JdbcStoreConstants> ce = JdbcStoreConstants.class.getDeclaredConstructor();
 	     ce.setAccessible(true);
 	     ce.newInstance();
@@ -73,8 +73,19 @@ public class UtilTest {
 	     Constructor<EventConstants> de = EventConstants.class.getDeclaredConstructor();
 	     de.setAccessible(true);
 	     de.newInstance();
-	     
-	     
     }
+    
+    @Test
+    public void testGradient() {
+        List < String > tips = Util.generateHSVGradient("ee1100", "442299", 9);
+        System.out.println(tips);
+        //List < String > tips = Util.generateRGBGradient("ee1100", "442299", 17);
+        
+        
+        for (String tip : tips) {
+            System.out.println("<div style=\"background-color:#" + tip + ";width:40px;height:10px\" ></div>");
+        }
+    }
+    
 
 }

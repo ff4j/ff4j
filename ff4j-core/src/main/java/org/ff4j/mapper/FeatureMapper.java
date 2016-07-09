@@ -1,11 +1,4 @@
-/**
- * Provide a set of graphics item to display metrics.
- * <p>
- *
- * @author Cedrick Lunven (@clunven)</a>
- * @version 1.2
- */
-package org.ff4j.audit.graph;
+package org.ff4j.mapper;
 
 /*
  * #%L
@@ -26,3 +19,15 @@ package org.ff4j.audit.graph;
  * limitations under the License.
  * #L%
  */
+
+import org.ff4j.core.Feature;
+
+/**
+ * Specialization of the interface.
+ *
+ * @author Cedrick LUNVEN (@clunven)
+ *
+ * @param <STORE_OBJ>
+ *      target driver object.
+ */
+public interface FeatureMapper <STORE_OBJ> extends Mapper< Feature, STORE_OBJ> {}

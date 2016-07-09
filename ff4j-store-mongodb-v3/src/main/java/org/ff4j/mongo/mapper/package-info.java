@@ -1,10 +1,10 @@
 /**
- * Implementation of FeatureStore to persist data into MONGODBe.
+ * Describe feature within mongoDB.
  * <p>
  *
  * @author Cedrick Lunven (@clunven)</a>
  */
-package org.ff4j.store;
+package org.ff4j.mongo.mapper;
 
 /*
  * #%L

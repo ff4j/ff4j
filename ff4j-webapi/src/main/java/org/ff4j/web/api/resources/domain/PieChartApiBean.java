@@ -23,8 +23,8 @@ package org.ff4j.web.api.resources.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.ff4j.audit.graph.PieChart;
-import org.ff4j.audit.graph.PieSector;
+import org.ff4j.audit.chart.PieChart;
+import org.ff4j.audit.chart.PieSector;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;

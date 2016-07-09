@@ -1,10 +1,8 @@
 package org.ff4j.audit.repository;
 
-import static org.ff4j.audit.EventConstants.TITLE_BARCHAR_HIT;
 import static org.ff4j.audit.EventConstants.TITLE_PIE_HITCOUNT;
 import static org.ff4j.store.JdbcStoreConstants.COL_EVENT_ACTION;
 import static org.ff4j.store.JdbcStoreConstants.COL_EVENT_NAME;
-import static org.ff4j.store.JdbcStoreConstants.COL_EVENT_TIME;
 
 /*
  * #%L ff4j-core %% Copyright (C) 2013 - 2015 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -26,22 +24,22 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.sql.DataSource;
 
 import org.ff4j.audit.Event;
-import org.ff4j.audit.graph.BarChart;
-import org.ff4j.audit.graph.BarSeries;
-import org.ff4j.audit.graph.PieChart;
-import org.ff4j.audit.graph.PieSector;
+import org.ff4j.audit.EventQueryDefinition;
+import org.ff4j.audit.EventSeries;
+import org.ff4j.audit.MutableHitCount;
+import org.ff4j.audit.chart.PieChart;
+import org.ff4j.audit.chart.Serie;
+import org.ff4j.audit.chart.TimeSeriesChart;
 import org.ff4j.exception.AuditAccessException;
 import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.store.JdbcQueryBuilder;
@@ -99,10 +97,7 @@ public class JdbcEventRepository extends AbstractEventRepository {
 
     /** {@inheritDoc} */
     public boolean saveEvent(Event evt) {
-        Util.assertNotNull(evt);
-        Util.assertHasLength(evt.getName());
-        Util.assertHasLength(evt.getType());
-        Util.assertHasLength(evt.getAction());
+        Util.assertEvent(evt);
         
         Connection        sqlConn = null;
         PreparedStatement stmt = null;
@@ -194,6 +189,76 @@ public class JdbcEventRepository extends AbstractEventRepository {
     }
     
     /** {@inheritDoc} */
+    @Override
+    public Map<String, MutableHitCount> getFeatureUsageHitCount(long startTime, long endTime) {
+        return new HashMap<String, MutableHitCount>();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public TimeSeriesChart getFeatureUsageHistory(long startTime, long endTime, TimeUnit tu) {
+        return new TimeSeriesChart();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public TimeSeriesChart getFeatureUsageHistory(long startTime, long endTime, TimeUnit tu, Set<String> filteredFeatures) {
+        return new TimeSeriesChart();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public EventSeries searchFeatureUsageEvents(EventQueryDefinition query) {
+        return new EventSeries();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void purgeFeatureUsage(long starTime, long endTime) {
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, MutableHitCount> getHostHitCount(long startTime, long endTime) {
+        return new HashMap<String, MutableHitCount>();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, MutableHitCount> getUserHitCount(long startTime, long endTime) {
+        return new HashMap<String, MutableHitCount>();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, MutableHitCount> getSourceHitCount(long startTime, long endTime) {
+        return new HashMap<String, MutableHitCount>();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public TimeSeriesChart getAverageResponseTime(long startTime, long endTime, TimeUnit tu) {
+        return new TimeSeriesChart();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public TimeSeriesChart getAverageResponseTime(long startTime, long endTime, TimeUnit tu, Set<String> filteredFeatures) {
+        return new TimeSeriesChart();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public EventSeries getAuditTrail(long startTime, long endTime) {
+        return new EventSeries();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void purgeAuditTrail(long starTime, long endTime) {
+    }
+    
+    /** {@inheritDoc} */
     public PieChart featuresListDistributionPie(long startTime, long endTime) {
         PieChart pieGraph = new PieChart(TITLE_PIE_HITCOUNT);
         Connection sqlConn = null;
@@ -216,7 +281,7 @@ public class JdbcEventRepository extends AbstractEventRepository {
             int idx = 0;
             for (Map.Entry < String, Integer > featNameEntry : freq.entrySet()) {
                 pieGraph.getSectors().add(
-                        new PieSector(featNameEntry.getKey(), featNameEntry.getValue(), colors.get(idx)));
+                        new Serie<Integer>(featNameEntry.getKey(), featNameEntry.getValue(), colors.get(idx)));
                 idx++;
             }
             
@@ -231,7 +296,7 @@ public class JdbcEventRepository extends AbstractEventRepository {
         return pieGraph;
     }
     
-    /** {@inheritDoc} */
+    /** {@inheritDoc} *
     public BarChart getFeaturesUsageOverTime(Set<String> featNameSet, long startTime, long endTime, int nbslot) {
         
         // Build Labels
@@ -274,7 +339,7 @@ public class JdbcEventRepository extends AbstractEventRepository {
             closeConnection(sqlConn);
         }
         return barChart;
-    }
+    }*/
 
     /** {@inheritDoc} */
     public PieChart featureDistributionPie(String featureId, long startTime, long endTime) {
@@ -299,7 +364,7 @@ public class JdbcEventRepository extends AbstractEventRepository {
             List < String > colors = Util.getColorsGradient(freq.size());
             int idx = 0;
             for (Map.Entry < String, Integer > actionEntry : freq.entrySet()) {
-                pieGraph.getSectors().add(new PieSector(actionEntry.getKey(), actionEntry.getValue(), colors.get(idx)));
+                pieGraph.getSectors().add(new Serie<Integer>(actionEntry.getKey(), actionEntry.getValue(), colors.get(idx)));
                 idx++;
             }
             return pieGraph;
@@ -348,5 +413,6 @@ public class JdbcEventRepository extends AbstractEventRepository {
 	 */
 	public void setQueryBuilder(JdbcQueryBuilder queryBuilder) {
 		this.queryBuilder = queryBuilder;
-	}
+	}    
+    
 }

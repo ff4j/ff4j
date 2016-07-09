@@ -20,27 +20,26 @@ package org.ff4j.audit.repository;
  * #L%
  */
 
-import java.util.ArrayList;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import org.ff4j.audit.Event;
+import org.ff4j.audit.EventConstants;
 import org.ff4j.audit.EventQueryDefinition;
-import org.ff4j.audit.graph.BarChart;
-import org.ff4j.audit.graph.BarSeries;
-import org.ff4j.audit.graph.MutableInt;
-import org.ff4j.audit.graph.PieChart;
-import org.ff4j.audit.graph.PieSector;
+import org.ff4j.audit.EventSeries;
+import org.ff4j.audit.MutableHitCount;
+import org.ff4j.audit.chart.Serie;
+import org.ff4j.audit.chart.TimeSeriesChart;
 import org.ff4j.utils.Util;
-
-import static org.ff4j.audit.EventConstants.*;
 
 /**
  * Implementation of in memory {@link EventRepository} with limited events.
@@ -48,17 +47,22 @@ import static org.ff4j.audit.EventConstants.*;
  * @author Cedrick Lunven (@clunven)
  */
 public class InMemoryEventRepository extends AbstractEventRepository {
-    
+
     /** default retention. */
     private static final int DEFAULT_QUEUE_CAPACITY = 100000;
 
     /** current capacity. */
     private int queueCapacity = DEFAULT_QUEUE_CAPACITY;
 
-    /** Store : < TARGET | UID | Event > */
-    private final Map<String, Map < String, Queue<Event> > > events = 
-            new ConcurrentHashMap<String,  Map < String, Queue<Event>>>();
-    
+    /** Event <YYYYMMDD> / <featureUID> -> <Event> list (only action CHECK_ON) */
+    private Map<String, Map<String, EventSeries>> featureUsageEvents = new ConcurrentHashMap<String, Map<String, EventSeries>>();
+
+    /** Event <YYYYMMDD> -> <featureUID> -> <Event> list (only action CHECK_OFF) */
+    private Map<String, Map<String, EventSeries>> checkOffEvents = new ConcurrentHashMap<String, Map<String, EventSeries>>();
+
+    /** Event <YYYYMMDD> -> Event related to user action in console (not featureUsage, not check OFF). */
+    private Map<String, EventSeries> auditTrailEvents = new ConcurrentHashMap<String, EventSeries>();
+
     /**
      * Default constructor with default capacity to 100.000
      */
@@ -77,177 +81,327 @@ public class InMemoryEventRepository extends AbstractEventRepository {
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean saveEvent(Event e) {
-        Queue<Event> myQueue = getQueue(e);
-        if (myQueue.size() >= queueCapacity) {
-            myQueue.poll();
+        Util.assertEvent(e);
+        if (EventConstants.ACTION_CHECK_OK.equalsIgnoreCase(e.getAction())) {
+            return saveEvent(e, featureUsageEvents);
+        } else if (EventConstants.ACTION_CHECK_OFF.equalsIgnoreCase(e.getAction())) {
+            return saveEvent(e, checkOffEvents);
         }
-        return myQueue.offer(e);
+        String key = getKeyDate(e.getTimestamp());
+        if (!auditTrailEvents.containsKey(key)) {
+            auditTrailEvents.put(key, new EventSeries(this.queueCapacity));
+        }
+        return auditTrailEvents.get(key).add(e);
     }
 
     /** {@inheritDoc} */
     @Override
-	public List<Event> search(EventQueryDefinition query) {
-		List < Event > targetEvents = new ArrayList<Event>();
-		if (query != null) {
-			// Loop over all events
-			for (Map.Entry<String , Map < String, Queue<Event> > > entry : events.entrySet()) {
-				for(Map.Entry<String ,  Queue<Event> > entry2 : entry.getValue().entrySet()) {
-					for (Event evt : entry2.getValue()) {
-						targetEvents.add(evt);
-					}
-				}
-				/* Filter over target if exist
-				if (query.getTargetsFilter() == null || 
-					query.getTargetsFilter().isEmpty() ||  
-					query.getTargetsFilter().contains(entry.getKey())) {
-					
-					Map < String, Queue<Event> > elements = entry.getValue();
-					for(Map.Entry<String ,  Queue<Event> > entry2 : elements.entrySet()) {
-						
-						// Filter over UID if exist
-						if (query.getNamesFilter() == null || 
-							query.getNamesFilter().isEmpty() ||  
-							query.getNamesFilter().contains(entry2.getKey())) {
-							
-							// Loop in the Queue
-				            for (Event evt : entry2.getValue()) {
-				            	
-				            	// Filter over Action if expected
-				            	if (query.getActionFilter() == null || 
-										query.getActionFilter().isEmpty() ||  
-										query.getActionFilter().contains(evt.getAction())) {
-				            		
-				            		// Filter overTime
-				            		if (isEventInInterval(query, evt)) {
-				            			targetEvents.add(evt);
-				            		}
-				            	}
-				            }
-						}
-					}
-				}*/
-			}
-		}
-		return targetEvents;
-	}
+    public Map<String, MutableHitCount> getFeatureUsageHitCount(long startTime, long endTime) {
+        Map<String, MutableHitCount> hitRatio = new TreeMap<String, MutableHitCount>();
+        for (Event event : searchFeatureUsageEvents(new EventQueryDefinition(startTime, endTime))) {
+            if (!hitRatio.containsKey(event.getName())) {
+                hitRatio.put(event.getName(), new MutableHitCount());
+             }
+             hitRatio.get(event.getName()).inc();
+        }
+        return hitRatio;
+    }
     
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, MutableHitCount> getHostHitCount(long startTime, long endTime) {
+        Map<String, MutableHitCount> hitRatio = new TreeMap<String, MutableHitCount>();
+        for (Event event : searchFeatureUsageEvents(new EventQueryDefinition(startTime, endTime))) {
+            if (!hitRatio.containsKey(event.getHostName())) {
+                hitRatio.put(event.getHostName(), new MutableHitCount());
+             }
+             hitRatio.get(event.getHostName()).inc();
+        }
+        return hitRatio;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, MutableHitCount> getSourceHitCount(long startTime, long endTime) {
+        Map<String, MutableHitCount> hitRatio = new TreeMap<String, MutableHitCount>();
+        for (Event event : searchFeatureUsageEvents(new EventQueryDefinition(startTime, endTime))) {
+            if (!hitRatio.containsKey(event.getSource())) {
+                hitRatio.put(event.getSource(), new MutableHitCount());
+             }
+             hitRatio.get(event.getSource()).inc();
+        }
+        return hitRatio;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, MutableHitCount> getUserHitCount(long startTime, long endTime) {
+        Map<String, MutableHitCount> hitRatio = new TreeMap<String, MutableHitCount>();
+        for (Event event : searchFeatureUsageEvents(new EventQueryDefinition(startTime, endTime))) {
+            String user = Util.hasLength(event.getUser()) ? event.getUser() : "anonymous";
+            if (!hitRatio.containsKey(user)) {
+                hitRatio.put(user, new MutableHitCount());
+             }
+             hitRatio.get(user).inc();
+        }
+        return hitRatio;
+    }
+    
+
     /**
-     * Retrieve event for same feature and name.
+     * Save event to target (based on ACTION).
      *
      * @param e
-     *      current event
-     * @return
-     *      nouvel queue
+     *            current event
+     * @param target
+     *            target list
+     * @return if the evetn is stored
      */
-    private Queue<Event> getQueue(Event e) {
-        if (!events.containsKey(e.getType())) {
-            events.put(e.getType(), new ConcurrentHashMap<String, Queue<Event>>());
+    private boolean saveEvent(Event e, Map<String, Map<String, EventSeries>> target) {
+        String key = getKeyDate(e.getTimestamp());
+        String uid = e.getName();
+        if (!target.containsKey(key)) {
+            target.put(key, new ConcurrentHashMap<String, EventSeries>());
         }
-        Map < String, Queue<Event>> mapOfQueues = events.get(e.getType());
-        if (!mapOfQueues.containsKey(e.getName())) {
-            mapOfQueues.put(e.getName(), new ArrayBlockingQueue<Event>(queueCapacity));
+        if (!target.get(key).containsKey(uid)) {
+            target.get(key).put(uid, new EventSeries(this.queueCapacity));
         }
-        return mapOfQueues.get(e.getName());
+        return target.get(key).get(uid).add(e);
+    }
+    
+    /**
+     * Create slots and initiate data structure.
+     *
+     * @param startTime
+     *      period start date
+     * @param endTime
+     *      period end date
+     * @param units
+     *      current units
+     * @return
+     * 
+     */
+    private TimeSeriesChart initSlots(long startTime, long endTime, TimeUnit units) {
+        TimeSeriesChart tsc = new TimeSeriesChart();
+        long slotWitdh = 0;
+        switch (units) {
+            case MINUTES:
+                slotWitdh = 1000 * 60;
+                tsc.setSdf(new SimpleDateFormat("yyyyMMdd-HH:mm"));
+            break;
+            case HOURS:
+                slotWitdh = 1000 * 60 * 60;
+                tsc.setSdf(new SimpleDateFormat("yyyyMMdd-HH"));
+            break;
+            case DAYS:
+                slotWitdh = 1000 * 60 * 60 * 24;
+                tsc.setSdf(new SimpleDateFormat("yyyyMMdd"));
+            break;
+            default:
+                slotWitdh = 1000;
+                tsc.setSdf(new SimpleDateFormat("yyyyMMdd-HH:mm:ss"));
+            break;
+        }
+        // Create slots for the timeSeries base ones
+        int nbslot = new Long(1 + (endTime - startTime) / slotWitdh).intValue();
+        for (int i = 0; i < nbslot; i++) {
+            tsc.getTimeSlots().add(tsc.getSdf().format(new Date(startTime + slotWitdh * i)));
+        }
+        return tsc;
     }
     
     /** {@inheritDoc} */
-    public PieChart featuresListDistributionPie(long startTime, long endTime) {
-        PieChart pieGraph = new PieChart(TITLE_PIE_HITCOUNT);
-        Map < String, Queue<Event>> eventsFeatures = events.get(TARGET_FEATURE);
-        if (eventsFeatures != null) {
-            List < String > colors   = Util.getColorsGradient(eventsFeatures.size());
-            List < String > features = new ArrayList<String>(eventsFeatures.keySet());
-            for(int idx = 0; idx < eventsFeatures.size();idx++) {
-                Queue< Event > qEvents = eventsFeatures.get(features.get(idx));
-                int counter = 0;
-                for (Event evt : qEvents) {
-                    if (isEventOK(evt, startTime, endTime)) {
-                        counter++;
+    @Override
+    public TimeSeriesChart getFeatureUsageHistory(long startTime, long endTime, TimeUnit tu) {
+        return getFeatureUsageHistory(startTime, endTime, tu, null);
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public TimeSeriesChart getFeatureUsageHistory(long startTime, long endTime, TimeUnit units, Set<String> filteredFeatures) {
+        TimeSeriesChart tsc = initSlots(startTime, endTime, units);
+
+        for (String currentDay : getCandidateDays(startTime, endTime)) {
+            // There are some event this day
+            if (featureUsageEvents.containsKey(currentDay)) {
+                for (Map.Entry<String, EventSeries> entry : featureUsageEvents.get(currentDay).entrySet()) {
+                    // Filter feature names if required
+                    if (filteredFeatures == null || filteredFeatures.isEmpty() || filteredFeatures.contains(entry.getKey())) {
+                        // Loop over events
+                        for (Event evt : entry.getValue()) {
+                            // Between bounds (keydate not enough)
+                            if (isEventInInterval(evt, startTime, endTime)) {
+                                // Create new serie if new feature Name
+                                if (!tsc.getSeries().containsKey((entry.getKey()))) {
+                                    tsc.createNewSerie(entry.getKey());
+                                }
+
+                                // Get correct slot
+                                String evtKeyDate = tsc.getSdf().format(new Date(evt.getTimestamp()));
+
+                                // match featureName, match slot, increment
+                                tsc.getSeries().get(entry.getKey()).getValue().get(evtKeyDate).inc();
+                            }
+                        }
                     }
                 }
-                pieGraph.getSectors().add(new PieSector(features.get(idx), counter, colors.get(idx)));
-            }
-        }
-        return pieGraph;
-    }
-    
-    /** {@inheritDoc} */
-    public PieChart featureDistributionPie(String uid, long startTime, long endTime) {
-        Queue< Event > queueOfEvents = events.get(TARGET_FEATURE).get(uid);
-        
-        // Loop over event and keep those in the time windows
-        Map < String , MutableInt > freq = new HashMap<String, MutableInt>();
-        for (Event evt : queueOfEvents) {
-            if (evt.getTimestamp() > startTime && evt.getTimestamp() < endTime) {
-                MutableInt count = freq.get(evt.getAction());
-                if (count == null) {
-                    freq.put(evt.getAction(), new MutableInt());
-                }
-                else {
-                    count.inc();
-                }
             }
         }
         
-        // Create PieCharts
-        PieChart pieGraph = new PieChart("Hits Count for " + uid);
-        List < String > colors = Util.getColorsGradient(freq.size());
-        int idx = 0;
-        for (Map.Entry<java.lang.String, org.ff4j.audit.graph.MutableInt> actionEntry : freq.entrySet()) {
-            pieGraph.getSectors().add(new PieSector(actionEntry.getKey(), actionEntry.getValue().get(), colors.get(idx)));
-            idx++;
+        // Recolor series
+        List < String > colors = Util.getColorsGradient(tsc.getSeries().size());
+        int idxColor = 0;
+        for (Map.Entry<String, Serie<Map<String, MutableHitCount>>> serie : tsc.getSeries().entrySet()) {
+            serie.getValue().setColor(colors.get(idxColor));
+            idxColor++;
         }
-        return pieGraph;
+        return tsc;
     }
-    
+
     /** {@inheritDoc} */
-    public BarChart getFeaturesUsageOverTime(Set < String > featNameSet, long startTime, long endTime, int nbslot) {
-        
-        // Build Labels
-        BarChart barChart = initFeaturesOverTimeBarchart(featNameSet, startTime, endTime, nbslot);
+    @Override
+    public TimeSeriesChart getAverageResponseTime(long startTime, long endTime, TimeUnit tu) {
+        return getAverageResponseTime(startTime, endTime, tu, null);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public TimeSeriesChart getAverageResponseTime(long startTime, long endTime, TimeUnit tu, Set<String> filteredFeatures) {
+        // Create the chart (empty slots)
+        TimeSeriesChart tsc = initSlots(startTime, endTime, tu);
+
+        // Temporary element featureName -> slotKey -> List points
+        Map < String , Map < String, EventSeries > > mapOfValues = new HashMap<String, Map<String, EventSeries > >();
        
-        // Build Statistics, loop over each serie
-        Map < String, Queue< Event > > eventsPerFeatures = events.get(TARGET_FEATURE);
+        for (String currentDay : getCandidateDays(startTime, endTime)) {
+            if (featureUsageEvents.containsKey(currentDay)) {
+                for (Map.Entry<String, EventSeries> entry : featureUsageEvents.get(currentDay).entrySet()) {
+                    // Filter feature names if required
+                    if (filteredFeatures == null || filteredFeatures.isEmpty() || filteredFeatures.contains(currentDay)) {
+                        // Loop over events
+                        for (Event evt : entry.getValue()) {
+                            // Between bounds (keydate not enough)
+                            if (isEventInInterval(evt, startTime, endTime)) {
+                                // Get correct slot
+                                if (!mapOfValues.containsKey(entry.getKey()) ) {
+                                    mapOfValues.put(entry.getKey(), new HashMap<String, EventSeries>()); 
+                                }
+                                String slotKey = tsc.getSdf().format(new Date(evt.getTimestamp()));
+                                if (!mapOfValues.get(entry.getKey()).containsKey(slotKey) ) {
+                                    mapOfValues.get(entry.getKey()).put(slotKey, new EventSeries());
+                                }
+                                mapOfValues.get(entry.getKey()).get(slotKey).add(evt);
+                            }
+                        }
+                    }
+                }
+            }
+        }
         
-        if (eventsPerFeatures != null) {
-            long slotWitdh = (endTime - startTime) / nbslot;
-            for (Map.Entry < String, Queue< Event > > nameEntry : eventsPerFeatures.entrySet()) {
-                
-              // Retrieve events for target feature
-              Queue<Event> myQueue = nameEntry.getValue();
-              
-              // Create series for this feature (even if not present)
-              BarSeries currentSeries = barChart.getSeries().get(nameEntry.getKey());
-              if (myQueue != null) {
-                  for (Iterator<Event> itEvt = myQueue.iterator(); itEvt.hasNext();) {
-                     Event evt = itEvt.next();
-                     long t = evt.getTimestamp();
-                     if (isEventOK(evt, startTime, endTime)) {
-                          currentSeries.incrCount((int) ((t - startTime) / slotWitdh));
-                     }   
-                  }
-               }
+        // Calculate AVG
+        for(String featureName : mapOfValues.keySet()) {
+            if (!tsc.getSeries().containsKey(featureName)) {
+                tsc.createNewSerie(featureName);
+            }
+            for(Map.Entry<String, EventSeries > entryValue : mapOfValues.get(featureName).entrySet()) {
+                int average = new Double(entryValue.getValue().getAverageDuration()).intValue();
+                tsc.getSeries().get(featureName).getValue().put(entryValue.getKey(), new MutableHitCount(average));
             }
         }
-        return barChart;
+        
+        // Update Colors
+        return tsc;
+    }
+
+    
+    /** {@inheritDoc} */
+    @Override
+    public EventSeries getAuditTrail(long startTime, long endTime) {
+        EventSeries resultSeries = new EventSeries(10000);
+        for (String currentDay : getCandidateDays(startTime, endTime)) {
+            if (auditTrailEvents.containsKey(currentDay)) {
+                Iterator<Event> iterEvents = auditTrailEvents.get(currentDay).iterator();
+                while (iterEvents.hasNext()) {
+                    Event evt = iterEvents.next();
+                    if (isEventInInterval(evt, startTime, endTime)) {
+                        resultSeries.add(evt);
+                    }
+                }
+            }
+        }
+        return resultSeries;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void purgeAuditTrail(long startTime, long endTime) {
+        for (String currentDay : getCandidateDays(startTime, endTime)) {
+            if (auditTrailEvents.containsKey(currentDay)) {
+                Iterator<Event> iterEvents = auditTrailEvents.get(currentDay).iterator();
+                while (iterEvents.hasNext()) {
+                    Event evt = iterEvents.next();
+                    if (isEventInInterval(evt, startTime, endTime)) {
+                        auditTrailEvents.get(currentDay).remove(evt);
+                    }
+                }
+                if (auditTrailEvents.get(currentDay).isEmpty()) {
+                    auditTrailEvents.remove(currentDay);
+                }
+            }
+        }
     }
 
     /** {@inheritDoc} */
-    public int getTotalEventCount() {
-        int total = 0;
-        for(Map.Entry<String, Map < String, Queue<Event> > > evtEntry : events.entrySet()) {
-            for(String name : evtEntry.getValue().keySet()) {
-                total += evtEntry.getValue().get(name).size();
+    @Override
+    public void purgeFeatureUsage(long startTime, long endTime) {
+        Set<String> candidateDates = getCandidateDays(startTime, endTime);
+        for (String currentDay : candidateDates) {
+            if (featureUsageEvents.containsKey(currentDay)) {
+                Map<String, EventSeries> currentDayEvents = featureUsageEvents.get(currentDay);
+                for (String currentFeature : currentDayEvents.keySet()) {
+                    Iterator<Event> iterEvents = currentDayEvents.get(currentFeature).iterator();
+                        while (iterEvents.hasNext()) {
+                            Event evt = iterEvents.next();
+                            if (isEventInInterval(evt, startTime, endTime)) {
+                                currentDayEvents.remove(evt);
+                            }
+                        }
+                }
+                // Remove list if empty
+                if (currentDayEvents.isEmpty()) {
+                    featureUsageEvents.remove(currentDay);
+                }
             }
         }
-        return total;
     }
+    
 
     /** {@inheritDoc} */
-    public Set<String> getFeatureNames() {
-        if (!events.containsKey(TARGET_FEATURE)) return new HashSet<String>();
-        return events.get(TARGET_FEATURE).keySet();
+    @Override
+    public EventSeries searchFeatureUsageEvents(EventQueryDefinition query) {
+        EventSeries es = new EventSeries(1000000);
+        for (String currentDay : getCandidateDays(query.getFrom(), query.getTo())) {
+            if (featureUsageEvents.containsKey(currentDay)) {
+                Map<String, EventSeries> currentDayEvents = featureUsageEvents.get(currentDay);
+                for (String currentFeature : currentDayEvents.keySet()) {
+                    // Check Names if required
+                    if (query.getNamesFilter() == null || 
+                        query.getNamesFilter().isEmpty() || 
+                        query.getNamesFilter().contains(currentFeature)) {
+                        Iterator<Event> iterEvents = currentDayEvents.get(currentFeature).iterator();
+                        // Loop over events
+                        while (iterEvents.hasNext()) {
+                            Event evt = iterEvents.next();
+                            if (isEventInInterval(evt, query.getFrom(), query.getTo())) {
+                                es.add(evt);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return es;
     }
-	
 }

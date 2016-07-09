@@ -141,8 +141,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
     }
 
     /** {@inheritDoc} */
-    @SuppressWarnings("resource")
-	public Feature read(String uid) {
+   public Feature read(String uid) {
     	assertFeatureExist(uid);
         Connection          sqlConn = null;
         PreparedStatement   ps = null;
@@ -247,8 +246,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
     }
 
     /** {@inheritDoc} */
-    @SuppressWarnings("resource")
-	public void delete(String uid) {
+    public void delete(String uid) {
     	assertFeatureExist(uid);
         Connection sqlConn = null;
         PreparedStatement ps = null;
@@ -448,8 +446,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
     }
 
     /** {@inheritDoc} */
-    @SuppressWarnings("resource")
-	public void clear() {
+    public void clear() {
         Connection sqlConn = null;
         PreparedStatement ps = null;
         try {

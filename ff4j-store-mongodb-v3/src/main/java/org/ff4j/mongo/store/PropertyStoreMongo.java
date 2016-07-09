@@ -1,4 +1,6 @@
-package org.ff4j.store;
+package org.ff4j.mongo.store;
+
+import static org.ff4j.mongo.MongoDbConstants.MONGO_SET;
 
 /*
  * #%L
@@ -26,31 +28,31 @@ import java.util.Set;
 
 import org.bson.Document;
 import org.ff4j.exception.PropertyAlreadyExistException;
+import org.ff4j.mongo.MongoDbConstants;
+import org.ff4j.mongo.mapper.MongoPropertyMapper;
+import org.ff4j.mongo.mapper.PropertyDocumentBuilder;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.AbstractPropertyStore;
-import org.ff4j.store.mongodb.FeatureDocumentMapper;
-import org.ff4j.store.mongodb.PropertyDocumentBuilder;
 import org.ff4j.utils.Util;
 
 import com.mongodb.client.MongoCollection;
-
-import static org.ff4j.store.mongodb.FeatureStoreMongoConstants.*;
+import com.mongodb.client.MongoDatabase;
 
 /**
  * PropertyStore based on MongoDB database.
  *
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class PropertyStoreMongoCollection extends AbstractPropertyStore {
-
-    /** MongoDB collection. */
-    private final MongoCollection<Document> collection;
+public class PropertyStoreMongo extends AbstractPropertyStore {
     
     /** Property mapper. */
-    private FeatureDocumentMapper MAPPER = new FeatureDocumentMapper();
+    private MongoPropertyMapper PMAPPER = new MongoPropertyMapper();
     
     /** Build fields. */
     private static final PropertyDocumentBuilder BUILDER = new PropertyDocumentBuilder();
+
+    /** MongoDB collection. */
+    private final MongoCollection<Document> collection;
     
     /**
      * Parameterized constructor with collection.
@@ -58,7 +60,27 @@ public class PropertyStoreMongoCollection extends AbstractPropertyStore {
      * @param collection
      *            the collection to set
      */
-    public PropertyStoreMongoCollection(MongoCollection<Document> collection) {
+    public PropertyStoreMongo(MongoDatabase db) {
+        this(db, MongoDbConstants.DEFAULT_PROPERTY_COLLECTION);
+    }
+    
+    /**
+     * Parameterized constructor with collection.
+     * 
+     * @param collection
+     *            the collection to set
+     */
+    public PropertyStoreMongo(MongoDatabase db, String collectionName) {
+        this.collection = db.getCollection(collectionName);
+    }
+    
+    /**
+     * Parameterized constructor with collection.
+     * 
+     * @param collection
+     *            the collection to set
+     */
+    public PropertyStoreMongo(MongoCollection<Document> collection) {
         this.collection = collection;
     }
     
@@ -68,7 +90,7 @@ public class PropertyStoreMongoCollection extends AbstractPropertyStore {
      * @param collection
      *            the collection to set
      */
-    public PropertyStoreMongoCollection(MongoCollection<Document> collection, String xmlConfFile) {
+    public PropertyStoreMongo(MongoCollection<Document> collection, String xmlConfFile) {
         this(collection);
         importPropertiesFromXmlFile(xmlConfFile);
     }
@@ -87,14 +109,14 @@ public class PropertyStoreMongoCollection extends AbstractPropertyStore {
         if (existProperty(prop.getName())) {
             throw new PropertyAlreadyExistException(prop.getName());
         }
-        collection.insertOne(MAPPER.fromProperty2DBObject(prop));
+        collection.insertOne(PMAPPER.toStore(prop));
     }
 
     /** {@inheritDoc} */
     public Property<?> readProperty(String name) {
         assertPropertyName(name);
         Document object = collection.find(BUILDER.getName(name)).first();
-        return MAPPER.mapProperty(object);
+        return PMAPPER.fromStore(object);
     }
     
     /** {@inheritDoc} */
@@ -130,7 +152,7 @@ public class PropertyStoreMongoCollection extends AbstractPropertyStore {
     public Map<String, Property<?>> readAllProperties() {
         LinkedHashMap<String, Property<?>> mapP = new LinkedHashMap<String, Property<?>>();
         for(Document document : collection.find()) {
-            Property<?> prop = MAPPER.mapProperty(document);
+            Property<?> prop = PMAPPER.fromStore(document);
             mapP.put(prop.getName(), prop);
         }
         return mapP;

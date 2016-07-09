@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 import org.bson.Document;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.store.FeatureStoreMongoCollection;
+import org.ff4j.mongo.store.FeatureStoreMongo;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -45,7 +45,7 @@ public class FeatureStoreMongoCollectionCore1Test extends FeatureStoreTestSuppor
     /** {@inheritDoc} */
     @Override
     protected FeatureStore initStore() {
-        return new FeatureStoreMongoCollection(fongoRule.getDatabase().getCollection("ff4j"), "ff4j.xml");
+        return new FeatureStoreMongo(fongoRule.getDatabase().getCollection("ff4j"), "ff4j.xml");
         
         // Could initialize this way
         //storeMongoDB.importFeaturesFromXmlFile("ff4j.xml");
@@ -84,7 +84,7 @@ public class FeatureStoreMongoCollectionCore1Test extends FeatureStoreTestSuppor
     public void emptyListAttributes() throws UnknownHostException {
         MongoCollection<Document> features = getMongoClient().getDatabase("FF4J").getCollection("feature");
         // When
-        FeatureStore mongoStore = new FeatureStoreMongoCollection(features, "ff4j.xml");
+        FeatureStore mongoStore = new FeatureStoreMongo(features, "ff4j.xml");
         // Then (no error)
         Assert.assertTrue(mongoStore.readAll().keySet().size() > 0);
     }

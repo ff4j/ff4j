@@ -52,6 +52,18 @@ public class EventConstants {
 	public static final String SOURCE_WEB      = "EMBEDDED_SERVLET";
 	public static final String SOURCE_WEBAPI   = "WEB_API";
 	public static final String SOURCE_SSH      = "SSH";
+	
+	/** ATTRIBUTES. */
+	public static final String ATTRIBUTE_ID       = "id";
+	public static final String ATTRIBUTE_TIME     = "timestamp";
+    public static final String ATTRIBUTE_HOST     = "hostName";
+    public static final String ATTRIBUTE_SOURCE   = "source";
+    public static final String ATTRIBUTE_NAME     = "name";
+    public static final String ATTRIBUTE_TYPE     = "type"; 
+    public static final String ATTRIBUTE_ACTION   = "action";
+    public static final String ATTRIBUTE_DURATION = "duration";
+    public static final String ATTRIBUTE_USER     = "user";
+    public static final String ATTRIBUTE_KEYS     = "customKeys";
 
 	/** total hit count. */
 	public static final String TITLE_PIE_HITCOUNT = "Total Hit Counts";

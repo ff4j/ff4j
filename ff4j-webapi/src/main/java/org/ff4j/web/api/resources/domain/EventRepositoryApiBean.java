@@ -23,9 +23,9 @@ package org.ff4j.web.api.resources.domain;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.ff4j.audit.graph.BarChart;
-import org.ff4j.audit.graph.PieChart;
-import org.ff4j.audit.graph.PieSector;
+import org.ff4j.audit.chart.BarChart;
+import org.ff4j.audit.chart.PieChart;
+import org.ff4j.audit.chart.PieSector;
 import org.ff4j.audit.repository.EventRepository;
 
 import com.fasterxml.jackson.annotation.JsonProperty;

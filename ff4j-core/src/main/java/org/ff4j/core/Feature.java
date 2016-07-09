@@ -182,8 +182,13 @@ public class Feature implements Serializable {
         // Custom Properties
         if (f.getCustomProperties() != null && !f.getCustomProperties().isEmpty()) {
             for(Property<?> p : f.getCustomProperties().values()) {
-                Property<?> targetProp = 
-                        PropertyFactory.createProperty(p.getName(), p.getType(), p.asString(), p.getDescription(), null);
+                Property<?> targetProp = PropertyFactory.createProperty(
+                        p.getName(), p.getType(), p.asString(), p.getDescription(), null);
+                if (p.getFixedValues() != null) {
+                    for(Object o : p.getFixedValues()) {
+                        targetProp.add2FixedValueFromString(o.toString());
+                    }
+                }
                 this.getCustomProperties().put(targetProp.getName(), targetProp);
             }
         }

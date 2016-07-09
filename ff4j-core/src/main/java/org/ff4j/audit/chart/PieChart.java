@@ -1,4 +1,4 @@
-package org.ff4j.audit.graph;
+package org.ff4j.audit.chart;
 
 /*
  * #%L
@@ -29,16 +29,13 @@ import java.util.List;
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class PieChart implements Serializable {
+public class PieChart extends AbstractChart implements Serializable {
     
     /** serial. */
     private static final long serialVersionUID = -6019282228665603275L;
-
-    /** title of the graph. */
-    private String title = "n/a";
-    
+   
     /** sector for the graph. */
-    private List < PieSector > sectors = new ArrayList<PieSector>();
+    private List < Serie < Integer > > sectors = new ArrayList<Serie < Integer >>();
 
     /**
      * Constructor with title.
@@ -47,7 +44,7 @@ public class PieChart implements Serializable {
      *      target title.
      */
     public PieChart(String t) {
-        this.title = t;
+        super(t);
     }
 
     /** {@inheritDoc} */
@@ -57,7 +54,7 @@ public class PieChart implements Serializable {
         sb.append(" \"sectors\" : [");
         if (null != sectors) {
             boolean first = true;
-            for (PieSector pieSector : sectors) {
+            for (Serie < Integer > pieSector : sectors) {
                 if (!first) {
                     sb.append(", ");
                 }
@@ -76,41 +73,12 @@ public class PieChart implements Serializable {
     }
 
     /**
-     * Getter accessor for attribute 'title'.
-     *
-     * @return
-     *       current value of 'title'
-     */
-    public String getTitle() {
-        return title;
-    }
-
-    /**
-     * Setter accessor for attribute 'title'.
-     * @param title
-     * 		new value for 'title '
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    /**
      * Getter accessor for attribute 'sectors'.
      *
      * @return
      *       current value of 'sectors'
      */
-    public List<PieSector> getSectors() {
+    public List<Serie < Integer >> getSectors() {
         return sectors;
     }
-
-    /**
-     * Setter accessor for attribute 'sectors'.
-     * @param sectors
-     * 		new value for 'sectors '
-     */
-    public void setSectors(List<PieSector> sectors) {
-        this.sectors = sectors;
-    }
-    
 }

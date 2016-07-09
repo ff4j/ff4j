@@ -23,8 +23,8 @@ package org.ff4j.web.api.resources.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.ff4j.audit.graph.BarChart;
-import org.ff4j.audit.graph.BarSeries;
+import org.ff4j.audit.chart.BarChart;
+import org.ff4j.audit.chart.BarSeries;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

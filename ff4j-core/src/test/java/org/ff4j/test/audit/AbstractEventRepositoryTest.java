@@ -4,7 +4,7 @@ package org.ff4j.test.audit;
  * #%L
  * ff4j-core
  * %%
- * Copyright (C) 2013 - 2015 Ff4J
+ * Copyright (C) 2013 - 2016 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,19 +20,25 @@ package org.ff4j.test.audit;
  * #L%
  */
 
-import java.util.Set;
+
+import static org.ff4j.audit.EventConstants.ACTION_CHECK_OK;
+import static org.ff4j.audit.EventConstants.SOURCE_JAVA;
+import static org.ff4j.audit.EventConstants.TARGET_FEATURE;
+
+import java.util.ArrayList;
 
 import org.ff4j.audit.Event;
+import org.ff4j.audit.EventConstants;
 import org.ff4j.audit.EventPublisher;
-import org.ff4j.audit.graph.BarChart;
-import org.ff4j.audit.graph.PieChart;
-import org.ff4j.audit.graph.PieSector;
+import org.ff4j.audit.EventSeries;
 import org.ff4j.audit.repository.EventRepository;
+import org.ff4j.core.Feature;
+import org.ff4j.store.InMemoryFeatureStore;
+import org.ff4j.utils.Util;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.ff4j.audit.EventConstants.*;
 
 /**
  * Superclass to test {@link EventRepository}.
@@ -41,6 +47,9 @@ import static org.ff4j.audit.EventConstants.*;
  */
 public abstract class AbstractEventRepositoryTest {
     
+    /** Feature List. */
+    protected ArrayList<Feature> features;
+
     /** Target {@link EventRepository}. */
     protected EventRepository repo;
     
@@ -50,12 +59,38 @@ public abstract class AbstractEventRepositoryTest {
     /** {@inheritDoc} */
     @Before
     public void setUp() throws Exception {
-        repo = initRepository();
+        repo      = initRepository();
         publisher = new EventPublisher(repo);
+        features  = new ArrayList<Feature>(new InMemoryFeatureStore("ff4j.xml").readAll().values());
+    }
+   
+    // Utility to generate event
+    protected Event generateFeatureUsageEvent(String uid) {
+        return new Event(SOURCE_JAVA, TARGET_FEATURE, uid, ACTION_CHECK_OK);
     }
     
-    protected Event generateEvent(String uid, String action) {
-        return new Event(SOURCE_JAVA, TARGET_FEATURE, uid, action);
+    // Generate a random event during the period
+    protected Event generateFeatureUsageEvent(String uid, long timestamp) {
+        Event event = generateFeatureUsageEvent(uid);
+        event.setTimestamp(timestamp);
+        return event;
+    }
+    
+    // Generate a random event during the period
+    protected Event generateFeatureUsageEvent(String uid, long from, long to) {
+        return generateFeatureUsageEvent(uid, from + (long) (Math.random() * (to-from)));
+    }
+    
+    // Generate a random event during the period
+    protected Event generateRandomFeatureUsageEvent(long from, long to) {
+        return generateFeatureUsageEvent(Util.getRandomElement(features).getUid(), from , to);
+    }
+    
+    // Populate repository for test
+    protected void populateRepository(long from, long to, int totalEvent) throws InterruptedException {
+        for (int i = 0; i < totalEvent; i++) {
+            repo.saveEvent(generateRandomFeatureUsageEvent(from, to));
+        }
     }
     
     /**
@@ -68,18 +103,108 @@ public abstract class AbstractEventRepositoryTest {
     protected abstract EventRepository initRepository();
     
     @Test
+    @Ignore
+    public void testSaveEventUnit() {
+        long start = System.currentTimeMillis();
+        Assert.assertEquals(0, repo.getFeatureUsageTotalHitCount(start, System.currentTimeMillis()));
+        repo.saveEvent(generateFeatureUsageEvent("f1"));
+        Assert.assertEquals(1, repo.getFeatureUsageTotalHitCount(start, System.currentTimeMillis()));
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testSaveEventNull() {
+        Assert.assertFalse(repo.saveEvent(null));
+    }
+    
+    @Test
+    @Ignore
+    public void testSaveAuditTrail() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        Event evt1 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CREATE);
+        Assert.assertTrue(repo.saveEvent(evt1));
+        Thread.sleep(100);
+        Assert.assertEquals(1, repo.getAuditTrail(start, System.currentTimeMillis()).size());
+    }
+    
+    @Test
+    public void testSaveCheckOff() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        Event evt1 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CHECK_OFF);
+        Assert.assertTrue(repo.saveEvent(evt1));
+        Thread.sleep(100);
+        Assert.assertEquals(0, repo.getFeatureUsageTotalHitCount(start, System.currentTimeMillis()));
+        Assert.assertEquals(0, repo.getAuditTrail(start, System.currentTimeMillis()).size());
+    }
+    
+    @Test
+    public void testLimitEventSeries() throws InterruptedException {
+        EventSeries es = new EventSeries(5);
+        for(int i=0;i<10;i++) {
+            Thread.sleep(10);
+            es.add(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CREATE));
+        }
+        Assert.assertEquals(5, es.size());
+    }
+    
+    public void testgetFeatureUsageHitCount() {
+        long start = System.currentTimeMillis();
+        Assert.assertEquals(0, repo.getFeatureUsageTotalHitCount(start, System.currentTimeMillis()));
+        generateFeatureUsageEvent("x", start, System.currentTimeMillis());
+        Assert.assertEquals(1, repo.getFeatureUsageTotalHitCount(start, System.currentTimeMillis()));
+    }
+    
+    /*
+    @Test
     public void testSaveEvent() throws InterruptedException {
         // Given
-        Assert.assertEquals(0, repo.getTotalEventCount());
+        long xNow = System.currentTimeMillis();
+        long x12HoursAgo = System.currentTimeMillis() - 1000 * 3600 * 12;
+        Assert.assertEquals(0, repo.getFeatureUsageTotalHitCount(x12HoursAgo, xNow));
         // When
-        int limit = 50;
-        for (int i = 0; i < limit; i++) {
+        int totalEvent = 50;
+        for (int i = 0; i < totalEvent; i++) {
             Thread.sleep(2);
-            repo.saveEvent(generateEvent("aer", ACTION_CHECK_OK));
+            Event rdmEvent = generateRandomEvent(12);
+            repo.saveEvent(rdmEvent);
         }
         // Then
-        Assert.assertEquals(limit, repo.getTotalEventCount());
+        Thread.sleep(200);
+        Assert.assertEquals(totalEvent, 
+                repo.getFeatureUsageTotalHitCount(x12HoursAgo, System.currentTimeMillis()));
+       
+        // When
+        BarChart bc = (repo.getFeatureUsageBarChart(x12HoursAgo, System.currentTimeMillis()));
+        // Then, check that the sum is the total
+        Assert.assertEquals(features.size(), bc.getChartBars().size());
+        int totalHit = 0;
+        for (Bar bar : bc.getChartBars()) {
+            totalHit += bar.getValue();
+        }
+        Assert.assertEquals(totalEvent, totalHit);
+        
     }
+    
+    /*
+    @Test
+    public void testGetTotalCount() throws InterruptedException {
+        // Given
+        long xNow = System.currentTimeMillis();
+        long x12HoursAgo = System.currentTimeMillis() - 1000 * 3600 * 12;
+        Assert.assertEquals(0, repo.getFeatureUsageTotalHitCount(x12HoursAgo, xNow));
+        // When
+        int totalEvent = 50;
+        for (int i = 0; i < totalEvent; i++) {
+            Thread.sleep(2);
+            Event rdmEvent = generateRandomEvent(12);
+            repo.saveEvent(rdmEvent);
+        }
+        // Then
+        Thread.sleep(200);
+        Assert.assertEquals(totalEvent, 
+                repo.getFeatureUsageTotalHitCount(x12HoursAgo, System.currentTimeMillis()));
+    }
+    
+   
     
     @Test
     public void testSaveEventThroughPublisher() throws InterruptedException {
@@ -207,7 +332,7 @@ public abstract class AbstractEventRepositoryTest {
                 (System.currentTimeMillis() - 10000), (System.currentTimeMillis() + 10000));
         Assert.assertEquals(3, pie2.getSectors().size());
     }
-    
+    */
 
 
 }
