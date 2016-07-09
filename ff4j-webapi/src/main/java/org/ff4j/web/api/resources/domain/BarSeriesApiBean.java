@@ -1,29 +1,6 @@
 package org.ff4j.web.api.resources.domain;
 
-/*
- * #%L
- * ff4j-web
- * %%
- * Copyright (C) 2013 - 2014 Ff4J
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
- */
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.ff4j.audit.chart.BarSeries;
+import org.ff4j.audit.chart.Serie;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -51,7 +28,7 @@ public class BarSeriesApiBean {
     /** value. */
     @ApiModelProperty( value = "target values", required = false )
     @JsonProperty("values")
-    private List < Double > values = new ArrayList<Double>();
+    private Double value = 0D;
     
     /**
      * Constructor by copy.
@@ -59,10 +36,10 @@ public class BarSeriesApiBean {
      * @param barSeries
      *      barSeries.
      */
-    public BarSeriesApiBean(BarSeries barSeries) {
+    public BarSeriesApiBean(Serie<Double> barSeries) {
         this.label = barSeries.getLabel();
         this.color = barSeries.getColor();
-        this.values = barSeries.getValues();
+        this.value = barSeries.getValue();
     }
 
     /**
@@ -101,25 +78,6 @@ public class BarSeriesApiBean {
      */
     public void setColor(String color) {
         this.color = color;
-    }
-
-    /**
-     * Getter accessor for attribute 'values'.
-     *
-     * @return
-     *       current value of 'values'
-     */
-    public List<Double> getValues() {
-        return values;
-    }
-
-    /**
-     * Setter accessor for attribute 'values'.
-     * @param values
-     * 		new value for 'values '
-     */
-    public void setValues(List<Double> values) {
-        this.values = values;
     }
 
 }

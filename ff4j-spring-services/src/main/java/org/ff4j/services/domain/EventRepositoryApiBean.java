@@ -1,34 +1,11 @@
 package org.ff4j.services.domain;
 
-/*
- * #%L
- * ff4j-spring-services
- * %%
- * Copyright (C) 2013 - 2016 FF4J
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
- */
-
-
-import org.ff4j.audit.graph.BarChart;
-import org.ff4j.audit.graph.PieChart;
-import org.ff4j.audit.graph.PieSector;
-import org.ff4j.audit.repository.EventRepository;
-
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
+
+import org.ff4j.audit.chart.Serie;
+import org.ff4j.audit.repository.EventRepository;
 
 
 /**
@@ -72,13 +49,13 @@ public class EventRepositoryApiBean implements Serializable {
             computedEnd = c2.getTimeInMillis();
         }
         // Create PIE
-        PieChart pie = evtRepository.featuresListDistributionPie(computedStart, computedEnd);
+        org.ff4j.audit.chart.PieChart pie = evtRepository.getFeatureUsagePieChart(computedStart, computedEnd);
         eventsPie = new PieChartApiBean(pie);
         // Create BARCHART
-        BarChart bc = evtRepository.getFeaturesUsageOverTime(computedStart, computedEnd, 24);
+        org.ff4j.audit.chart.BarChart bc = evtRepository.getFeatureUsageBarChart(computedStart, computedEnd);
         barChart = new BarChartApiBean(bc);
         // Total Count
-        for (PieSector sector : pie.getSectors()) {
+        for (Serie<Integer> sector : pie.getSectors()) {
             hitCount += sector.getValue();
         }
     }

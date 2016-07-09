@@ -48,6 +48,7 @@ public class PropertyStoreServices {
         return new PropertyStoreApiBean(ff4j.getPropertiesStore());
     }
 
+    @SuppressWarnings("rawtypes")
     public List<PropertyApiBean> getAllProperties() {
         List<PropertyApiBean> properties;
         Map<String, Property<?>> propertyMap = ff4j.getPropertiesStore().readAllProperties();

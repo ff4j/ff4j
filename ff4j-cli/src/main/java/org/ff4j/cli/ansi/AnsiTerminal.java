@@ -36,7 +36,7 @@ import org.fusesource.jansi.AnsiConsole;
 public class AnsiTerminal implements AnsiConstants {
 	
 	/** Default log format. */
-	private static final SimpleDateFormat SDF = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+	private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	/**
 	 * Hide default  constructor.

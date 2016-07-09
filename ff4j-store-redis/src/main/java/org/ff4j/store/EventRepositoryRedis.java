@@ -1,35 +1,20 @@
 package org.ff4j.store;
 
-/*
- * #%L
- * ff4j-store-redis
- * %%
- * Copyright (C) 2013 - 2016 FF4J
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
- */
+import static org.ff4j.redis.RedisContants.KEY_EVENT;
 
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.ff4j.audit.Event;
-import org.ff4j.audit.graph.BarChart;
-import org.ff4j.audit.graph.PieChart;
+import org.ff4j.audit.EventQueryDefinition;
+import org.ff4j.audit.EventSeries;
+import org.ff4j.audit.MutableHitCount;
+import org.ff4j.audit.chart.TimeSeriesChart;
 import org.ff4j.audit.repository.AbstractEventRepository;
 import org.ff4j.redis.RedisConnection;
 
 import redis.clients.jedis.Jedis;
-import static org.ff4j.redis.RedisContants.KEY_EVENT;
 
 /**
  * Persist audit events into REDIS storage technology.
@@ -102,33 +87,6 @@ public class EventRepositoryRedis extends AbstractEventRepository {
 	            }
 	        }
 	}
-
-	/** {@inheritDoc} */
-	public Set<String> getFeatureNames() {
-		
-		// Cle composite EVENTYPE => EVENTNAME
-		return null;
-	}
-
-	/** {@inheritDoc} */
-	public int getTotalEventCount() {
-		return 0;
-	}
-
-    /** {@inheritDoc} */
-    public PieChart featuresListDistributionPie(long startTime, long endTime) {
-        return null;
-    }
-
-    /** {@inheritDoc} */
-    public PieChart featureDistributionPie(String uid, long startTime, long endTime) {
-        return null;
-    }
-
-    /** {@inheritDoc} */
-    public BarChart getFeaturesUsageOverTime(Set<String> featNameSet, long startTime, long endTime, int nbslot) {
-        return null;
-    }
     
     /**
      * Safe acces to Jedis, avoid JNPE.
@@ -145,5 +103,77 @@ public class EventRepositoryRedis extends AbstractEventRepository {
             throw new IllegalArgumentException("Cannot found any jedis connection, please build connection");
         }
         return jedis;
+    }
+
+    @Override
+    public Map<String, MutableHitCount> getFeatureUsageHitCount(long startTime, long endTime) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TimeSeriesChart getFeatureUsageHistory(long startTime, long endTime, TimeUnit tu) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TimeSeriesChart getFeatureUsageHistory(long startTime, long endTime, TimeUnit tu, Set<String> filteredFeatures) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public EventSeries searchFeatureUsageEvents(EventQueryDefinition query) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void purgeFeatureUsage(long starTime, long endTime) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public Map<String, MutableHitCount> getHostHitCount(long startTime, long endTime) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Map<String, MutableHitCount> getUserHitCount(long startTime, long endTime) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Map<String, MutableHitCount> getSourceHitCount(long startTime, long endTime) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TimeSeriesChart getAverageResponseTime(long startTime, long endTime, TimeUnit tu) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TimeSeriesChart getAverageResponseTime(long startTime, long endTime, TimeUnit tu, Set<String> filteredFeatures) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public EventSeries getAuditTrail(long startTime, long endTime) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void purgeAuditTrail(long starTime, long endTime) {
+        // TODO Auto-generated method stub
+        
     }
 }

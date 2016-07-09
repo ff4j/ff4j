@@ -1,5 +1,12 @@
 package org.ff4j.services.domain;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.ff4j.audit.chart.PieChart;
+import org.ff4j.audit.chart.Serie;
+
 /*
  * #%L
  * ff4j-spring-services
@@ -20,12 +27,6 @@ package org.ff4j.services.domain;
  * #L%
  */
 
-import org.ff4j.audit.graph.PieChart;
-import org.ff4j.audit.graph.PieSector;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -45,7 +46,7 @@ public class PieChartApiBean implements Serializable {
 
     public PieChartApiBean(PieChart pie) {
         title = pie.getTitle();
-        for (PieSector sector : pie.getSectors()) {
+        for (Serie<Integer> sector : pie.getSectors()) {
             sectors.add(new PieSectorApiBean(sector));
         }
     }

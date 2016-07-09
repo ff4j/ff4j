@@ -1,5 +1,8 @@
 package org.ff4j.web.api.resources;
 
+import static org.ff4j.web.FF4jWebConstants.PARAM_END;
+import static org.ff4j.web.FF4jWebConstants.PARAM_START;
+
 /*
  * #%L
  * ff4j-web
@@ -33,11 +36,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.ff4j.exception.FeatureNotFoundException;
-import org.ff4j.utils.Util;
-import org.ff4j.web.api.resources.domain.BarChartApiBean;
 import org.ff4j.web.api.resources.domain.EventRepositoryApiBean;
 import org.ff4j.web.api.resources.domain.FeatureMonitoringApiBean;
-import org.ff4j.web.api.resources.domain.PieChartApiBean;
 import org.ff4j.web.api.resources.domain.PieSectorApiBean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
@@ -47,8 +47,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-
-import static org.ff4j.web.FF4jWebConstants.*;
 
 /**
  * Monitoring Resource.
@@ -125,8 +123,6 @@ public class MonitoringResource extends AbstractResource {
         }
         // Build response
         FeatureMonitoringApiBean fmab = new FeatureMonitoringApiBean(uid);
-        fmab.setEventsPie(new PieChartApiBean(getRepo().featureDistributionPie(uid, start, end)));
-        fmab.setBarChart(new BarChartApiBean(getRepo().getFeaturesUsageOverTime(Util.set(uid), start, end, 24)));
         int hitcount = 0;
         for (PieSectorApiBean sec : fmab.getEventsPie().getSectors()) {
             hitcount+= sec.getValue();

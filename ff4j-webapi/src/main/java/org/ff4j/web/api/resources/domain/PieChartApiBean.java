@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.ff4j.audit.chart.PieChart;
-import org.ff4j.audit.chart.PieSector;
+import org.ff4j.audit.chart.Serie;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -60,7 +60,7 @@ public class PieChartApiBean {
      */
     public PieChartApiBean(PieChart pie) {
         title = pie.getTitle();
-        for (PieSector pieSector : pie.getSectors()) {
+        for (Serie<Integer> pieSector : pie.getSectors()) {
             sectors.add(new PieSectorApiBean(pieSector));
         }
     }

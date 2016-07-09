@@ -25,7 +25,7 @@ import java.util.Date;
 
 import org.ff4j.audit.chart.BarChart;
 import org.ff4j.audit.chart.PieChart;
-import org.ff4j.audit.chart.PieSector;
+import org.ff4j.audit.chart.Serie;
 import org.ff4j.audit.repository.EventRepository;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -93,13 +93,13 @@ public class EventRepositoryApiBean {
             end = c2.getTimeInMillis();
         }
         // Create PIE
-        PieChart pie = evtRepository.featuresListDistributionPie(start, end);
+        PieChart pie = evtRepository.getFeatureUsagePieChart(start, end);
         eventsPie = new PieChartApiBean(pie);
         // Create BARCHART
-        BarChart bc = evtRepository.getFeaturesUsageOverTime(start, end, 24);
+        BarChart bc = evtRepository.getFeatureUsageBarChart(start, end);
         barChart = new BarChartApiBean(bc);
         // Total Count
-        for(PieSector sector : pie.getSectors()) {
+        for(Serie<Integer> sector : pie.getSectors()) {
             hitCount += sector.getValue();
         }
     }

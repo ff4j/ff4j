@@ -1,5 +1,8 @@
 package org.ff4j.services;
 
+import java.util.HashSet;
+import java.util.Map;
+
 /*
  * #%L
  * ff4j-spring-services
@@ -33,9 +36,6 @@ import org.ff4j.services.validator.FeatureValidator;
 import org.ff4j.utils.MappingUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.Map;
 
 /**
  * @author <a href="mailto:paul58914080@gmail.com">Paul Williams</a>
@@ -71,6 +71,7 @@ public class FeatureServices {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void initProperties(FeatureApiBean featureApiBean, Feature feature) {
         Map<String, PropertyApiBean> mapProperties = featureApiBean.getCustomProperties();
         if (mapProperties != null) {

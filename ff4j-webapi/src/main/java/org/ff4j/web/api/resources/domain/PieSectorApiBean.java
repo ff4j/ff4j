@@ -1,6 +1,6 @@
 package org.ff4j.web.api.resources.domain;
 
-import org.ff4j.audit.chart.PieSector;
+import org.ff4j.audit.chart.Serie;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -39,7 +39,7 @@ public class PieSectorApiBean {
      * @param sector
      *      sector.
      */
-    public PieSectorApiBean(PieSector sector) {
+    public PieSectorApiBean(Serie<Integer> sector) {
         this.label = sector.getLabel();
         this.value = sector.getValue();
         this.color = sector.getColor();

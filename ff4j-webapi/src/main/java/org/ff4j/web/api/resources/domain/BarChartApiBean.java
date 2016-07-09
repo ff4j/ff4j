@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.ff4j.audit.chart.BarChart;
-import org.ff4j.audit.chart.BarSeries;
+import org.ff4j.audit.chart.Serie;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -44,15 +44,10 @@ public class BarChartApiBean  {
     @JsonProperty("title")
     private String title = null;
     
-    /** Labels on X axis. */
-    @ApiModelProperty( value = "labels of the graph", required = false )
-    @JsonProperty("labels")
-    private List < String > labels = new ArrayList<String>();
-    
     /** Data to be displayed. */
     @ApiModelProperty( value = "series of the graph", required = false )
     @JsonProperty("series")
-    private List < BarSeriesApiBean > series = new ArrayList<BarSeriesApiBean>();
+    private List < Serie<Integer> > series = new ArrayList<Serie<Integer> >();
     
     /**
      * Copy constructor.
@@ -62,10 +57,7 @@ public class BarChartApiBean  {
      */
     public BarChartApiBean(BarChart barChart) {
         this.title = barChart.getTitle();
-        this.labels = barChart.getLabels();
-        for(BarSeries bs : barChart.getSeries().values()) {
-            series.add(new BarSeriesApiBean(bs));
-        }
+        this.series = barChart.getChartBars();
     }
 
     /**
@@ -88,31 +80,12 @@ public class BarChartApiBean  {
     }
 
     /**
-     * Getter accessor for attribute 'labels'.
-     *
-     * @return
-     *       current value of 'labels'
-     */
-    public List<String> getLabels() {
-        return labels;
-    }
-
-    /**
-     * Setter accessor for attribute 'labels'.
-     * @param labels
-     * 		new value for 'labels '
-     */
-    public void setLabels(List<String> labels) {
-        this.labels = labels;
-    }
-
-    /**
      * Getter accessor for attribute 'series'.
      *
      * @return
      *       current value of 'series'
      */
-    public List<BarSeriesApiBean> getSeries() {
+    public List<Serie<Integer>> getSeries() {
         return series;
     }
 
@@ -121,8 +94,7 @@ public class BarChartApiBean  {
      * @param series
      * 		new value for 'series '
      */
-    public void setSeries(List<BarSeriesApiBean> series) {
+    public void setSeries(List<Serie<Integer>> series) {
         this.series = series;
     }
-    
 }

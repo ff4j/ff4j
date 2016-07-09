@@ -1,5 +1,9 @@
 package org.ff4j.services.domain;
 
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
 /*
  * #%L
  * ff4j-spring-services
@@ -24,10 +28,6 @@ package org.ff4j.services.domain;
 import org.ff4j.property.BasePropertyBean;
 import org.ff4j.property.Property;
 import org.ff4j.property.util.PropertyFactory;
-
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author <a href="mailto:paul58914080@gmail.com">Paul Williams</a>
@@ -56,6 +56,7 @@ public class PropertyApiBean extends BasePropertyBean implements Serializable {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     public Property asProperty() {
         return PropertyFactory.createProperty(name, type, value, description, fixedValues);
     }
