@@ -28,12 +28,14 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.store.FeatureStoreJCache;
 import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.After;
+import org.junit.Ignore;
 
 /**
  * Test to work with Redis as a store.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
+@Ignore
 public class FeatureStoreJCacheTestHazelCast extends FeatureStoreTestSupport {
    
     /** {@inheritDoc} */

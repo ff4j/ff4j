@@ -13,58 +13,7 @@ Feature: Provides RESTful api's to do the following
       | uid   | enable | description    | group | permissions          |
       | admin | false  | the admin page | admin | ROLE_ADMIN           |
       | login | true   | the login page | user  | ROLE_ADMIN,ROLE_USER |
-
-  # Provide core information on ff4J and available sub resources
-  Scenario: When the user tries to retrieve the ff4j information
-    Given the feature store has the following security information
-      | currentUserPermissions | allPermissions                    |
-      | ROLE_USER              | ROLE_USER,ROLE_SUPPORT,ROLE_ADMIN |
-    When the user requests for a feature by "/ff4j" by "GET" http method and content type as "application/json"
-    Then the user gets the response with response code "200"
-    And the response body as
-    """
-    {
-      "autocreate": false,
-      "featuresStore": {
-        "type": "org.ff4j.store.InMemoryFeatureStore",
-        "numberOfFeatures": 2,
-        "numberOfGroups": 2,
-        "features": [
-          "admin",
-          "login"
-        ],
-        "groups": [
-          "admin",
-          "user"
-        ],
-        "cache": null
-      },
-      "eventRepository": {
-        "type": "org.ff4j.audit.repository.InMemoryEventRepository",
-        "hitCount": 0,
-        "eventsPie": {
-          "title": "Total Hit Counts",
-          "sectors": []
-        },
-        "barChart": {
-          "title": "HitCounts Distribution",
-          "labels": [
-            "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00",
-            "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"
-          ],
-          "series": []
-        }
-      },
-      "authorizationsManager": {
-        "permissions": [
-          "ROLE_SUPPORT",
-          "ROLE_USER",
-          "ROLE_ADMIN"
-        ]
-      }
-    }
-    """
-
+  
   # Display security resources
   Scenario: When the user tries to retrieve security information and there is no security defined
     When the user requests for a feature by "/ff4j/security" by "GET" http method and content type as "application/json"

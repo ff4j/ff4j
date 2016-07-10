@@ -19,6 +19,7 @@ import org.ff4j.ehcache.FF4jEhCacheWrapper;
 import org.ff4j.store.FeatureStoreEhCache;
 import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.After;
+import org.junit.Ignore;
 
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.Configuration;
@@ -30,7 +31,10 @@ import net.sf.ehcache.config.TerracottaConfiguration;
  * Test to work with Redis as a store.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * 
+ * Working but quite slow to test all on each build
  */
+@Ignore
 public class FeatureStoreTerracottaTestIT extends FeatureStoreTestSupport {
 
     /** Terracotta URL. */

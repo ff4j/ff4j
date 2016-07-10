@@ -1,5 +1,37 @@
 package org.ff4j.spring.boot.web.api.resources;
 
+import static org.ff4j.services.constants.FeatureConstants.PARAM_GROUP;
+import static org.ff4j.services.constants.FeatureConstants.PARAM_ROLE;
+import static org.ff4j.services.constants.FeatureConstants.PATH_PARAM_GROUP;
+import static org.ff4j.services.constants.FeatureConstants.PATH_PARAM_ROLE;
+import static org.ff4j.services.constants.FeatureConstants.PATH_PARAM_UID;
+import static org.ff4j.services.constants.FeatureConstants.RESOURCE_FF4J_STORE_FEATURES;
+import static org.ff4j.services.constants.FeatureConstants.ROOT;
+import static org.ff4j.web.FF4jWebConstants.OPERATION_ADDGROUP;
+import static org.ff4j.web.FF4jWebConstants.OPERATION_DISABLE;
+import static org.ff4j.web.FF4jWebConstants.OPERATION_ENABLE;
+import static org.ff4j.web.FF4jWebConstants.OPERATION_GRANTROLE;
+import static org.ff4j.web.FF4jWebConstants.OPERATION_REMOVEGROUP;
+import static org.ff4j.web.FF4jWebConstants.OPERATION_REMOVEROLE;
+import static org.ff4j.web.FF4jWebConstants.PARAM_UID;
+import static org.springframework.http.HttpStatus.ACCEPTED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+
+import org.ff4j.services.FeatureServices;
+import org.ff4j.services.domain.FeatureApiBean;
+import org.ff4j.spring.boot.web.api.utils.FeatureWebUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 /*
  * #%L
  * ff4j-spring-boot-web-api
@@ -9,9 +41,9 @@ package org.ff4j.spring.boot.web.api.resources;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,22 +55,6 @@ package org.ff4j.spring.boot.web.api.resources;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.ff4j.services.FeatureServices;
-import org.ff4j.services.domain.FeatureApiBean;
-import org.ff4j.spring.boot.web.api.utils.FeatureWebUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import static org.ff4j.services.constants.FeatureConstants.*;
-import static org.ff4j.web.FF4jWebConstants.*;
-import static org.springframework.http.HttpStatus.ACCEPTED;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 /**
  * @author <a href="mailto:paul58914080@gmail.com">Paul Williams</a>

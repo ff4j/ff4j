@@ -1,5 +1,8 @@
 package org.ff4j.services.monitoring;
 
+import org.junit.Ignore;
+import org.junit.runner.RunWith;
+
 /*
  * #%L
  * ff4j-spring-services
@@ -22,7 +25,6 @@ package org.ff4j.services.monitoring;
 
 import cucumber.api.CucumberOptions;
 import cucumber.api.junit.Cucumber;
-import org.junit.runner.RunWith;
 
 /**
  * @author <a href="mailto:paul58914080@gmail.com">Paul Williams</a>
@@ -31,5 +33,6 @@ import org.junit.runner.RunWith;
 @CucumberOptions(features = "classpath:features/MonitoringServices.feature", strict = true,
         plugin = {"json:target/cucumber/MonitoringServices.json", "junit:target/cucumber/MonitoringServices.xml"},
         glue = "classpath:org/ff4j/services/monitoring", tags = "@MonitoringServices")
+@Ignore
 public class RunCucumberMonitoringServicesTest {
 }
