@@ -10,17 +10,15 @@
 [![Join the chat at https://gitter.im/clun/ff4j](https://badges.gitter.im/clun/ff4j.svg)](https://gitter.im/clun/ff4j?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![License Apache2](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
+**WARNING:** From 10/07 to 16/07 the test coverage could be lower as the audit model is under heavy development.
 
 FF4J is a proposition of [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html). 
-You can enable and disable features through configuration at runtime with dedicated consoles or Web API but also __monitor__ features usage. You can also define any __Property__ and change its value at runtime with 
-the exact same web console.
+You can enable and disable features at runtime with dedicated consoles and REST API but also __monitor__ features usage. You can also define any __Property__ and change its value at runtime. (configuration)
 
-More information at [ff4j.org](http://ff4j.org) or [reference guide](https://github.com/clun/ff4j-extra/raw/master/ff4j-reference-guide-1.3.pdf). To access a demo please click [here] (http://cannys.com/ff4j-demo)
+More information at [ff4j.org](http://ff4j.org) or [Reference Documentation ](https://github.com/clun/ff4j/wiki) in the wiki. To access demo please click [DEMO] (http://cannys.com/ff4j-demo)
 
  <p align="center">
   <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/ff4j-console.png?raw=true" />
-  <br>
-  <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/stack3.png?raw=true" />
 </p>
 
 
