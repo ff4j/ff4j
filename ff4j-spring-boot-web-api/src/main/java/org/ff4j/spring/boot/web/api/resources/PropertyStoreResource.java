@@ -68,6 +68,7 @@ public class PropertyStoreResource {
         return propertyStoreServices.getAllProperties();
     }
 
+    @SuppressWarnings("rawtypes")
     @RequestMapping(value = ROOT + STORE_CLEAR, method = DELETE)
     @ApiOperation(value = "Delete all <b>Properties</b> in store")
     @ApiResponses(@ApiResponse(code = 204, message = "all properties have been deleted", response = ResponseEntity.class))
@@ -84,6 +85,7 @@ public class PropertyStoreResource {
         return propertyStoreServices.getPropertiesFromCache();
     }
 
+    @SuppressWarnings("rawtypes")
     @RequestMapping(value = FeatureConstants.RESOURCE_CLEAR_CACHE, method = DELETE)
     @ApiOperation(value = "Clear cache", response = ResponseEntity.class)
     @ApiResponses({@ApiResponse(code = 204, message = "cache is cleared"),

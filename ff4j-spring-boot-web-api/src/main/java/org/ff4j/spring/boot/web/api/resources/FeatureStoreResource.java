@@ -80,6 +80,7 @@ public class FeatureStoreResource {
         return featureStoreService.getAllGroups();
     }
 
+    @SuppressWarnings("rawtypes")
     @RequestMapping(value = ROOT + STORE_CLEAR, method = RequestMethod.DELETE)
     @ApiOperation(value = "Delete all <b>Features</b> in store")
     @ApiResponses(@ApiResponse(code = 204, message = "all feature have been deleted"))
@@ -96,6 +97,7 @@ public class FeatureStoreResource {
         return featureStoreService.getFeaturesFromCache();
     }
 
+    @SuppressWarnings("rawtypes")
     @RequestMapping(value = ROOT + RESOURCE_CLEAR_CACHE, method = RequestMethod.DELETE)
     @ApiOperation(value = "Clear cache", response = ResponseEntity.class)
     @ApiResponses({@ApiResponse(code = 204, message = "cache is cleared"),

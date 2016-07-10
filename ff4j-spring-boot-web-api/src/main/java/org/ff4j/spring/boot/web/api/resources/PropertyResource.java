@@ -58,6 +58,7 @@ public class PropertyResource {
         return propertyServices.getProperty(propertyName);
     }
 
+    @SuppressWarnings("rawtypes")
     @RequestMapping(method = PUT, produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create or update a property", response = ResponseEntity.class)
     @ApiResponses({
@@ -69,6 +70,7 @@ public class PropertyResource {
         return FeatureWebUtils.getBooleanResponseEntityByHttpStatus(propertyServices.createOrUpdateProperty(propertyName, propertyApiBean));
     }
 
+    @SuppressWarnings("rawtypes")
     @RequestMapping(method = DELETE, produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Delete a property", response = ResponseEntity.class)
     @ApiResponses({
@@ -80,6 +82,7 @@ public class PropertyResource {
         return new ResponseEntity(NO_CONTENT);
     }
 
+    @SuppressWarnings("rawtypes")
     @RequestMapping(value = ROOT + OPERATION_UPDATE + ROOT + PATH_PARAM_VALUE, method = POST, produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Update value of a property", response = ResponseEntity.class)
     @ApiResponses({

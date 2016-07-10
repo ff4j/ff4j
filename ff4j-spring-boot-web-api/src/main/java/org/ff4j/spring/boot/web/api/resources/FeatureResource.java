@@ -83,6 +83,7 @@ public class FeatureResource {
         return FeatureWebUtils.getBooleanResponseEntityByHttpStatus(featureServices.createOrUpdateFeature(featureUID, featureApiBean));
     }
 
+    @SuppressWarnings("rawtypes")
     @RequestMapping(method = DELETE, consumes = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Delete a feature", response = ResponseEntity.class)
     @ApiResponses({
@@ -94,6 +95,7 @@ public class FeatureResource {
         return new ResponseEntity(NO_CONTENT);
     }
 
+    @SuppressWarnings("rawtypes")
     @RequestMapping(value = ROOT + OPERATION_ENABLE, method = POST, consumes = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Enable a feature", response = ResponseEntity.class)
     @ApiResponses({
@@ -104,6 +106,7 @@ public class FeatureResource {
         return new ResponseEntity(ACCEPTED);
     }
 
+    @SuppressWarnings("rawtypes")
     @RequestMapping(value = ROOT + OPERATION_DISABLE, method = POST, consumes = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Disable a feature", response = ResponseEntity.class)
     @ApiResponses({
@@ -114,6 +117,7 @@ public class FeatureResource {
         return new ResponseEntity(ACCEPTED);
     }
 
+    @SuppressWarnings("rawtypes")
     @RequestMapping(value = ROOT + OPERATION_GRANTROLE + ROOT + PATH_PARAM_ROLE, method = POST, consumes = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Grant a permission to a feature", response = ResponseEntity.class)
     @ApiResponses({
@@ -125,6 +129,7 @@ public class FeatureResource {
         return new ResponseEntity(ACCEPTED);
     }
 
+    @SuppressWarnings("rawtypes")
     @RequestMapping(value = ROOT + OPERATION_REMOVEROLE + ROOT + PATH_PARAM_ROLE, method = POST, consumes = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Remove a permission from a feature", response = ResponseEntity.class)
     @ApiResponses({
@@ -135,6 +140,7 @@ public class FeatureResource {
         return new ResponseEntity(ACCEPTED);
     }
 
+    @SuppressWarnings("rawtypes")
     @RequestMapping(value = ROOT + OPERATION_ADDGROUP + ROOT + PATH_PARAM_GROUP, method = POST, consumes = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Define the group of the feature", response = ResponseEntity.class)
     @ApiResponses({
@@ -151,6 +157,7 @@ public class FeatureResource {
     @ApiResponses({
             @ApiResponse(code = 204, message = "Group has been removed"),
             @ApiResponse(code = 404, message = "Feature not found")})
+    @SuppressWarnings("rawtypes")
     public ResponseEntity removeGroupFromFeature(@PathVariable(value = PARAM_UID) String featureUID, @PathVariable(value = PARAM_GROUP) String groupName) {
         featureServices.removeGroupFromFeature(featureUID, groupName);
         return new ResponseEntity(ACCEPTED);

@@ -105,14 +105,14 @@ public abstract class AbstractStepDef {
 
     protected void createProperties(List<PropertyPojo> properties) {
         for (PropertyPojo propertyPojo : properties) {
-            Property property = asProperty(propertyPojo.getName(), propertyPojo.getType(), propertyPojo.getValue(),
+            Property<?> property = asProperty(propertyPojo.getName(), propertyPojo.getType(), propertyPojo.getValue(),
                     propertyPojo.getDescription(),
                     StringUtils.isNotBlank(propertyPojo.getFixedValueCSV()) ? new HashSet<String>(Arrays.asList(propertyPojo.getFixedValueCSV().split(","))) : null);
             createProperty(property);
         }
     }
 
-    private void createProperty(Property property) {
+    private void createProperty(Property<?> property) {
         ff4j.createProperty(property);
     }
 
@@ -143,7 +143,7 @@ public abstract class AbstractStepDef {
         assertThat(response.getContentAsString()).contains(expectedResponse);
     }
 
-    protected Property asProperty(String name, String type, String value, String description, Set<String> fixedValues) {
+    protected Property<?> asProperty(String name, String type, String value, String description, Set<String> fixedValues) {
         return PropertyFactory.createProperty(name, getType(type), value, description, fixedValues);
     }
 
