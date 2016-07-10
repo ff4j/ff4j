@@ -91,7 +91,6 @@
         <version.commons-fileupload>1.3.1</version.commons-fileupload>
         <version.commons-cli>1.3.1</version.commons-cli>
 
-
         <version.servlet-api>2.5</version.servlet-api>
         <version.jsp-api>2.2</version.jsp-api>
         <version.jstl>1.2</version.jstl>
@@ -147,6 +146,7 @@
     <modules>
         <module>ff4j-core</module>
         <module>ff4j-aop</module>
+        <module>ff4j-archaius</module>
         <module>ff4j-test</module>
         <module>ff4j-cli</module>
         <module>ff4j-jmx</module>
@@ -162,14 +162,16 @@
 
         <!-- nosql -->
         <module>ff4j-store-springjdbc</module>
+
+        <module>ff4j-store-cassandra</module>
+        <module>ff4j-store-ehcache</module>
+        <module>ff4j-store-elastic</module>
+        <module>ff4j-store-jcache</module>
         <module>ff4j-store-mongodb</module>
         <module>ff4j-store-mongodb-v3</module>
-        <module>ff4j-store-jcache</module>
-        <module>ff4j-store-ehcache</module>
-        <module>ff4j-store-redis</module>
         <module>ff4j-store-neo4j</module>
-        <!-- <module>ff4j-shell</module> -->
-        <!-- <module>ff4j-metrics</module> -->
+        <module>ff4j-store-redis</module>
+        
         <!-- spring-boot-starter -->
         <module>ff4j-spring-services</module>
         <module>ff4j-spring-boot-web-api</module>
