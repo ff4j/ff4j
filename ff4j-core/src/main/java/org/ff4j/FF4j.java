@@ -563,6 +563,37 @@ public class FF4j {
         getPropertiesStore().deleteProperty(propertyName);
         return this;
     }
+    
+    /**
+     * Enable a cache proxy.
+     * 
+     * @param cm
+     *      current cache manager
+     * @return
+     *      current ff4j bean
+     */
+    public FF4j cache(FF4JCacheManager cm) {
+        FF4jCacheProxy cp = new FF4jCacheProxy(getFeatureStore(), getPropertiesStore(), cm);
+        setFeatureStore(cp);
+        setPropertiesStore(cp);
+        return this;
+    }
+    
+    /**
+     * Parse configuration file.
+     *
+     * @param fileName
+     *      target file
+     * @return
+     *      current configuration as XML
+     */
+    public XmlConfig parseXmlConfig(String fileName) {
+        InputStream xmlIN = getClass().getClassLoader().getResourceAsStream(fileName);
+        if (xmlIN == null) {
+            throw new IllegalArgumentException("Cannot parse XML file " + fileName + " - file not found");
+        }
+        return new XmlParser().parseConfigurationFile(xmlIN);
+    }
 
     /** {@inheritDoc} */
     @Override
