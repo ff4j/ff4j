@@ -191,6 +191,7 @@ public class JdbcEventRepository extends AbstractEventRepository {
     /** {@inheritDoc} */
     @Override
     public Map<String, MutableHitCount> getFeatureUsageHitCount(long startTime, long endTime) {
+        
         return new HashMap<String, MutableHitCount>();
     }
 
@@ -267,7 +268,6 @@ public class JdbcEventRepository extends AbstractEventRepository {
         try {
             // Returns features
             sqlConn = dataSource.getConnection();
-            
             
             ps = sqlConn.prepareStatement(getQueryBuilder().getFeaturesPieAudit());
             ps.setTimestamp(1, new Timestamp(startTime));

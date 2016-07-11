@@ -36,6 +36,12 @@
 			<artifactId>ff4j-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
+		<!-- Driver Cassandra -->
+		<dependency>
+		    <groupId>com.datastax.cassandra</groupId>
+		    <artifactId>cassandra-driver-core</artifactId>
+		</dependency>
 
 		<!-- Tests -->
 		<dependency>
