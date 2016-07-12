@@ -22,7 +22,11 @@ package org.ff4j.audit;
 
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
+
+import org.ff4j.utils.TimeUtils;
+import org.ff4j.utils.Util;
 
 /**
  * Sample Query into Event Repository.
@@ -34,15 +38,24 @@ public class EventQueryDefinition implements Serializable {
 	/** Serial. */
 	private static final long serialVersionUID = -1649081647715140190L;
 
-	/** bound bottom. */
-	private Long from;
+	/** Bound bottom. */
+	private long from = TimeUtils.getTodayMidnightTime();
 	
-	/** bound top. */
-	private Long to;
+	/** Bound top. */
+	private long to = TimeUtils.getTomorrowMidnightTime();
 	
-	/** filter about names. */
-	private Set < String > namesFilter = null;
+	/** Filter about names (feature uid, property name). */
+	private Set < String > namesFilter = new HashSet<String>();
 	
+	/** Filter on action @see {@link EventConstants}. */
+	private Set < String > actionFilters = new HashSet<String>();
+	
+	/** Filter on source @see {@link EventConstants}. */
+    private Set < String > sourceFilters = new HashSet<String>();
+    
+    /** Filter on source @see {@link EventConstants}. */
+    private Set < String > hostFilters = new HashSet<String>();
+    
 	/**
 	 * Default constucot
 	 */
@@ -50,13 +63,66 @@ public class EventQueryDefinition implements Serializable {
 	}
 	
 	/**
-	 * Default constucot
+	 * Constructor for a slot.
 	 */
 	public EventQueryDefinition(long from, long to) {
 		this.from = from;
 		this.to = to;
 	}
+	
+	public EventQueryDefinition addFilterName(String name) {
+	    this.namesFilter.add(name);
+	    return this;
+	}
+	
+	public EventQueryDefinition addFilterAction(String action) {
+        this.actionFilters.add(action);
+        return this;
+    }
+	
+	public EventQueryDefinition addFilterSource(String source) {
+        this.sourceFilters.add(source);
+        return this;
+    }
+	
+	public EventQueryDefinition addFilterHost(String host) {
+        this.hostFilters.add(host);
+        return this;
+    }
 
+	/**
+	 * Match Event.
+	 *
+	 * @param evt
+	 *         current event over this query
+	 * @return
+	 *         if event is valid         
+	 */
+	public boolean match(Event evt) {
+	    return (evt.getTimestamp() >= from) && 
+	           (evt.getTimestamp() <= to)   &&
+	           matchAction(evt.getAction()) && 
+	           matchSource(evt.getSource()) &&
+	           matchHost(evt.getHostName()) &&
+	           matchName(evt.getName());
+	}
+	
+	public boolean matchAction(String action) {
+	    return (actionFilters.isEmpty()) || (Util.hasLength(action) && actionFilters.contains(action));
+	}
+	
+	public boolean matchSource(String source) {
+	    return (sourceFilters.isEmpty()) || (Util.hasLength(source) && sourceFilters.contains(source));
+    }
+    
+    public boolean matchHost(String host) {
+        return (hostFilters.isEmpty()) || (Util.hasLength(host) && hostFilters.contains(host));
+    }
+	
+    public boolean matchName(String name) {
+        return (namesFilter.isEmpty()) || (Util.hasLength(name) && namesFilter.contains(name));
+    }
+	
 	/**
 	 * Getter accessor for attribute 'from'.
 	 *
@@ -115,4 +181,79 @@ public class EventQueryDefinition implements Serializable {
 	public void setNamesFilter(Set<String> namesFilter) {
 		this.namesFilter = namesFilter;
 	}
+
+    /**
+     * Getter accessor for attribute 'actionFilters'.
+     *
+     * @return
+     *       current value of 'actionFilters'
+     */
+    public Set<String> getActionFilters() {
+        return actionFilters;
+    }
+
+    /**
+     * Setter accessor for attribute 'actionFilters'.
+     * @param actionFilters
+     * 		new value for 'actionFilters '
+     */
+    public void setActionFilters(Set<String> actionFilters) {
+        this.actionFilters = actionFilters;
+    }
+
+    /**
+     * Getter accessor for attribute 'sourceFilters'.
+     *
+     * @return
+     *       current value of 'sourceFilters'
+     */
+    public Set<String> getSourceFilters() {
+        return sourceFilters;
+    }
+
+    /**
+     * Setter accessor for attribute 'sourceFilters'.
+     * @param sourceFilters
+     * 		new value for 'sourceFilters '
+     */
+    public void setSourceFilters(Set<String> sourceFilters) {
+        this.sourceFilters = sourceFilters;
+    }
+
+    /**
+     * Getter accessor for attribute 'hostFilters'.
+     *
+     * @return
+     *       current value of 'hostFilters'
+     */
+    public Set<String> getHostFilters() {
+        return hostFilters;
+    }
+
+    /**
+     * Setter accessor for attribute 'hostFilters'.
+     * @param hostFilters
+     * 		new value for 'hostFilters '
+     */
+    public void setHostFilters(Set<String> hostFilters) {
+        this.hostFilters = hostFilters;
+    }
+
+    /**
+     * Setter accessor for attribute 'from'.
+     * @param from
+     * 		new value for 'from '
+     */
+    public void setFrom(long from) {
+        this.from = from;
+    }
+
+    /**
+     * Setter accessor for attribute 'to'.
+     * @param to
+     * 		new value for 'to '
+     */
+    public void setTo(long to) {
+        this.to = to;
+    }
 }

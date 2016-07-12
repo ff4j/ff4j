@@ -95,12 +95,12 @@ public class InMemoryEventRepository extends AbstractEventRepository {
         }
         return auditTrailEvents.get(key).add(e);
     }
-
+    
     /** {@inheritDoc} */
     @Override
-    public Map<String, MutableHitCount> getFeatureUsageHitCount(long startTime, long endTime) {
+    public Map<String, MutableHitCount> getFeatureUsageHitCount(EventQueryDefinition query) {
         Map<String, MutableHitCount> hitRatio = new TreeMap<String, MutableHitCount>();
-        for (Event event : searchFeatureUsageEvents(new EventQueryDefinition(startTime, endTime))) {
+        for (Event event : searchFeatureUsageEvents(query)) {
             if (!hitRatio.containsKey(event.getName())) {
                 hitRatio.put(event.getName(), new MutableHitCount());
              }
@@ -111,22 +111,9 @@ public class InMemoryEventRepository extends AbstractEventRepository {
     
     /** {@inheritDoc} */
     @Override
-    public Map<String, MutableHitCount> getHostHitCount(long startTime, long endTime) {
+    public Map<String, MutableHitCount> getSourceHitCount(EventQueryDefinition query) {
         Map<String, MutableHitCount> hitRatio = new TreeMap<String, MutableHitCount>();
-        for (Event event : searchFeatureUsageEvents(new EventQueryDefinition(startTime, endTime))) {
-            if (!hitRatio.containsKey(event.getHostName())) {
-                hitRatio.put(event.getHostName(), new MutableHitCount());
-             }
-             hitRatio.get(event.getHostName()).inc();
-        }
-        return hitRatio;
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public Map<String, MutableHitCount> getSourceHitCount(long startTime, long endTime) {
-        Map<String, MutableHitCount> hitRatio = new TreeMap<String, MutableHitCount>();
-        for (Event event : searchFeatureUsageEvents(new EventQueryDefinition(startTime, endTime))) {
+        for (Event event : searchFeatureUsageEvents(query)) {
             if (!hitRatio.containsKey(event.getSource())) {
                 hitRatio.put(event.getSource(), new MutableHitCount());
              }
@@ -137,9 +124,22 @@ public class InMemoryEventRepository extends AbstractEventRepository {
     
     /** {@inheritDoc} */
     @Override
-    public Map<String, MutableHitCount> getUserHitCount(long startTime, long endTime) {
+    public Map<String, MutableHitCount> getHostHitCount(EventQueryDefinition query) {
         Map<String, MutableHitCount> hitRatio = new TreeMap<String, MutableHitCount>();
-        for (Event event : searchFeatureUsageEvents(new EventQueryDefinition(startTime, endTime))) {
+        for (Event event : searchFeatureUsageEvents(query)) {
+            if (!hitRatio.containsKey(event.getHostName())) {
+                hitRatio.put(event.getSource(), new MutableHitCount());
+             }
+             hitRatio.get(event.getHostName()).inc();
+        }
+        return hitRatio;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, MutableHitCount> getUserHitCount(EventQueryDefinition query) {
+        Map<String, MutableHitCount> hitRatio = new TreeMap<String, MutableHitCount>();
+        for (Event event : searchFeatureUsageEvents(query)) {
             String user = Util.hasLength(event.getUser()) ? event.getUser() : "anonymous";
             if (!hitRatio.containsKey(user)) {
                 hitRatio.put(user, new MutableHitCount());
@@ -183,7 +183,7 @@ public class InMemoryEventRepository extends AbstractEventRepository {
      * @return
      * 
      */
-    private TimeSeriesChart initSlots(long startTime, long endTime, TimeUnit units) {
+    private TimeSeriesChart initSlots(EventQueryDefinition query, TimeUnit units) {
         TimeSeriesChart tsc = new TimeSeriesChart();
         long slotWitdh = 0;
         switch (units) {
@@ -205,34 +205,29 @@ public class InMemoryEventRepository extends AbstractEventRepository {
             break;
         }
         // Create slots for the timeSeries base ones
-        int nbslot = new Long(1 + (endTime - startTime) / slotWitdh).intValue();
+        int nbslot = new Long(1 + (query.getTo() - query.getFrom()) / slotWitdh).intValue();
         for (int i = 0; i < nbslot; i++) {
-            tsc.getTimeSlots().add(tsc.getSdf().format(new Date(startTime + slotWitdh * i)));
+            tsc.getTimeSlots().add(tsc.getSdf().format(new Date(query.getFrom() + slotWitdh * i)));
         }
         return tsc;
     }
     
     /** {@inheritDoc} */
     @Override
-    public TimeSeriesChart getFeatureUsageHistory(long startTime, long endTime, TimeUnit tu) {
-        return getFeatureUsageHistory(startTime, endTime, tu, null);
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public TimeSeriesChart getFeatureUsageHistory(long startTime, long endTime, TimeUnit units, Set<String> filteredFeatures) {
-        TimeSeriesChart tsc = initSlots(startTime, endTime, units);
+    public TimeSeriesChart getFeatureUsageHistory(EventQueryDefinition query, TimeUnit units) {
+        TimeSeriesChart tsc = initSlots(query, units);
 
-        for (String currentDay : getCandidateDays(startTime, endTime)) {
+        for (String currentDay : getCandidateDays(query.getFrom(), query.getTo())) {
             // There are some event this day
             if (featureUsageEvents.containsKey(currentDay)) {
                 for (Map.Entry<String, EventSeries> entry : featureUsageEvents.get(currentDay).entrySet()) {
                     // Filter feature names if required
+                    Set < String > filteredFeatures = query.getNamesFilter();
                     if (filteredFeatures == null || filteredFeatures.isEmpty() || filteredFeatures.contains(entry.getKey())) {
                         // Loop over events
                         for (Event evt : entry.getValue()) {
                             // Between bounds (keydate not enough)
-                            if (isEventInInterval(evt, startTime, endTime)) {
+                            if (isEventInInterval(evt, query.getFrom(), query.getTo())) {
                                 // Create new serie if new feature Name
                                 if (!tsc.getSeries().containsKey((entry.getKey()))) {
                                     tsc.createNewSerie(entry.getKey());
@@ -262,38 +257,27 @@ public class InMemoryEventRepository extends AbstractEventRepository {
 
     /** {@inheritDoc} */
     @Override
-    public TimeSeriesChart getAverageResponseTime(long startTime, long endTime, TimeUnit tu) {
-        return getAverageResponseTime(startTime, endTime, tu, null);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public TimeSeriesChart getAverageResponseTime(long startTime, long endTime, TimeUnit tu, Set<String> filteredFeatures) {
+    public TimeSeriesChart getAverageResponseTime(EventQueryDefinition query, TimeUnit tu) {
         // Create the chart (empty slots)
-        TimeSeriesChart tsc = initSlots(startTime, endTime, tu);
+        TimeSeriesChart tsc = initSlots(query, tu);
 
         // Temporary element featureName -> slotKey -> List points
         Map < String , Map < String, EventSeries > > mapOfValues = new HashMap<String, Map<String, EventSeries > >();
        
-        for (String currentDay : getCandidateDays(startTime, endTime)) {
+        for (String currentDay : getCandidateDays(query.getFrom(), query.getTo())) {
             if (featureUsageEvents.containsKey(currentDay)) {
                 for (Map.Entry<String, EventSeries> entry : featureUsageEvents.get(currentDay).entrySet()) {
-                    // Filter feature names if required
-                    if (filteredFeatures == null || filteredFeatures.isEmpty() || filteredFeatures.contains(currentDay)) {
-                        // Loop over events
-                        for (Event evt : entry.getValue()) {
-                            // Between bounds (keydate not enough)
-                            if (isEventInInterval(evt, startTime, endTime)) {
-                                // Get correct slot
-                                if (!mapOfValues.containsKey(entry.getKey()) ) {
-                                    mapOfValues.put(entry.getKey(), new HashMap<String, EventSeries>()); 
-                                }
-                                String slotKey = tsc.getSdf().format(new Date(evt.getTimestamp()));
-                                if (!mapOfValues.get(entry.getKey()).containsKey(slotKey) ) {
-                                    mapOfValues.get(entry.getKey()).put(slotKey, new EventSeries());
-                                }
-                                mapOfValues.get(entry.getKey()).get(slotKey).add(evt);
+                    for (Event evt : entry.getValue()) {
+                        if (query.match(evt)) {
+                            // Get correct slot
+                            if (!mapOfValues.containsKey(entry.getKey()) ) {
+                                mapOfValues.put(entry.getKey(), new HashMap<String, EventSeries>()); 
                             }
+                            String slotKey = tsc.getSdf().format(new Date(evt.getTimestamp()));
+                            if (!mapOfValues.get(entry.getKey()).containsKey(slotKey) ) {
+                                mapOfValues.get(entry.getKey()).put(slotKey, new EventSeries());
+                            }
+                            mapOfValues.get(entry.getKey()).get(slotKey).add(evt);
                         }
                     }
                 }
@@ -318,14 +302,14 @@ public class InMemoryEventRepository extends AbstractEventRepository {
     
     /** {@inheritDoc} */
     @Override
-    public EventSeries getAuditTrail(long startTime, long endTime) {
+    public EventSeries getAuditTrail(EventQueryDefinition q) {
         EventSeries resultSeries = new EventSeries(10000);
-        for (String currentDay : getCandidateDays(startTime, endTime)) {
+        for (String currentDay : getCandidateDays(q.getFrom(), q.getTo())) {
             if (auditTrailEvents.containsKey(currentDay)) {
                 Iterator<Event> iterEvents = auditTrailEvents.get(currentDay).iterator();
                 while (iterEvents.hasNext()) {
                     Event evt = iterEvents.next();
-                    if (isEventInInterval(evt, startTime, endTime)) {
+                    if (q.match(evt)) {
                         resultSeries.add(evt);
                     }
                 }
@@ -336,13 +320,13 @@ public class InMemoryEventRepository extends AbstractEventRepository {
     
     /** {@inheritDoc} */
     @Override
-    public void purgeAuditTrail(long startTime, long endTime) {
-        for (String currentDay : getCandidateDays(startTime, endTime)) {
+    public void purgeAuditTrail(EventQueryDefinition q) {
+        for (String currentDay : getCandidateDays(q.getFrom(), q.getTo())) {
             if (auditTrailEvents.containsKey(currentDay)) {
                 Iterator<Event> iterEvents = auditTrailEvents.get(currentDay).iterator();
                 while (iterEvents.hasNext()) {
                     Event evt = iterEvents.next();
-                    if (isEventInInterval(evt, startTime, endTime)) {
+                    if (q.match(evt)) {
                         auditTrailEvents.get(currentDay).remove(evt);
                     }
                 }
@@ -355,8 +339,8 @@ public class InMemoryEventRepository extends AbstractEventRepository {
 
     /** {@inheritDoc} */
     @Override
-    public void purgeFeatureUsage(long startTime, long endTime) {
-        Set<String> candidateDates = getCandidateDays(startTime, endTime);
+    public void purgeFeatureUsage(EventQueryDefinition q) {
+        Set<String> candidateDates = getCandidateDays(q.getFrom(), q.getTo());
         for (String currentDay : candidateDates) {
             if (featureUsageEvents.containsKey(currentDay)) {
                 Map<String, EventSeries> currentDayEvents = featureUsageEvents.get(currentDay);
@@ -364,7 +348,7 @@ public class InMemoryEventRepository extends AbstractEventRepository {
                     Iterator<Event> iterEvents = currentDayEvents.get(currentFeature).iterator();
                         while (iterEvents.hasNext()) {
                             Event evt = iterEvents.next();
-                            if (isEventInInterval(evt, startTime, endTime)) {
+                            if (q.match(evt)) {
                                 currentDayEvents.remove(evt);
                             }
                         }
@@ -376,7 +360,6 @@ public class InMemoryEventRepository extends AbstractEventRepository {
             }
         }
     }
-    
 
     /** {@inheritDoc} */
     @Override
@@ -386,15 +369,12 @@ public class InMemoryEventRepository extends AbstractEventRepository {
             if (featureUsageEvents.containsKey(currentDay)) {
                 Map<String, EventSeries> currentDayEvents = featureUsageEvents.get(currentDay);
                 for (String currentFeature : currentDayEvents.keySet()) {
-                    // Check Names if required
-                    if (query.getNamesFilter() == null || 
-                        query.getNamesFilter().isEmpty() || 
-                        query.getNamesFilter().contains(currentFeature)) {
+                    if (query.matchName(currentFeature)) {
                         Iterator<Event> iterEvents = currentDayEvents.get(currentFeature).iterator();
                         // Loop over events
                         while (iterEvents.hasNext()) {
                             Event evt = iterEvents.next();
-                            if (isEventInInterval(evt, query.getFrom(), query.getTo())) {
+                            if (query.match(evt)) {
                                 es.add(evt);
                             }
                         }
@@ -404,4 +384,5 @@ public class InMemoryEventRepository extends AbstractEventRepository {
         }
         return es;
     }
+   
 }

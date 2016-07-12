@@ -1,28 +1,6 @@
 package org.ff4j.mongo.store;
 
-/*
- * #%L
- * ff4j-store-mongodb-v3
- * %%
- * Copyright (C) 2013 - 2016 FF4J
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
- */
-
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.bson.Document;
@@ -92,74 +70,63 @@ public class EventRepositoryMongo extends AbstractEventRepository {
         return true;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public Map<String, MutableHitCount> getFeatureUsageHitCount(long startTime, long endTime) {
-        return new HashMap<String, MutableHitCount>();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public TimeSeriesChart getFeatureUsageHistory(long startTime, long endTime, TimeUnit tu) {
+    public Map<String, MutableHitCount> getFeatureUsageHitCount(EventQueryDefinition query) {
+        // TODO Auto-generated method stub
         return null;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public TimeSeriesChart getFeatureUsageHistory(long startTime, long endTime, TimeUnit tu, Set<String> filteredFeatures) {
+    public TimeSeriesChart getFeatureUsageHistory(EventQueryDefinition query, TimeUnit tu) {
+        // TODO Auto-generated method stub
         return null;
     }
 
-    /** {@inheritDoc} */
     @Override
     public EventSeries searchFeatureUsageEvents(EventQueryDefinition query) {
+        // TODO Auto-generated method stub
         return null;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public void purgeFeatureUsage(long starTime, long endTime) {
+    public void purgeFeatureUsage(EventQueryDefinition query) {
+        // TODO Auto-generated method stub
+        
     }
 
-    /** {@inheritDoc} */
     @Override
-    public Map<String, MutableHitCount> getHostHitCount(long startTime, long endTime) {
+    public Map<String, MutableHitCount> getHostHitCount(EventQueryDefinition query) {
+        // TODO Auto-generated method stub
         return null;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public Map<String, MutableHitCount> getUserHitCount(long startTime, long endTime) {
+    public Map<String, MutableHitCount> getUserHitCount(EventQueryDefinition query) {
+        // TODO Auto-generated method stub
         return null;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public Map<String, MutableHitCount> getSourceHitCount(long startTime, long endTime) {
+    public Map<String, MutableHitCount> getSourceHitCount(EventQueryDefinition query) {
+        // TODO Auto-generated method stub
         return null;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public TimeSeriesChart getAverageResponseTime(long startTime, long endTime, TimeUnit tu) {
+    public TimeSeriesChart getAverageResponseTime(EventQueryDefinition query, TimeUnit tu) {
+        // TODO Auto-generated method stub
         return null;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public TimeSeriesChart getAverageResponseTime(long startTime, long endTime, TimeUnit tu, Set<String> filteredFeatures) {
+    public EventSeries getAuditTrail(EventQueryDefinition query) {
+        // TODO Auto-generated method stub
         return null;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public EventSeries getAuditTrail(long startTime, long endTime) {
-        return null;
+    public void purgeAuditTrail(EventQueryDefinition query) {
+        // TODO Auto-generated method stub
+        
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public void purgeAuditTrail(long starTime, long endTime) {
-    }
-
 }

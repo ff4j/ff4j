@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import org.ff4j.audit.Event;
 import org.ff4j.audit.EventConstants;
 import org.ff4j.audit.EventPublisher;
+import org.ff4j.audit.EventQueryDefinition;
 import org.ff4j.audit.EventSeries;
 import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.core.Feature;
@@ -106,9 +107,9 @@ public abstract class AbstractEventRepositoryTest {
     @Ignore
     public void testSaveEventUnit() {
         long start = System.currentTimeMillis();
-        Assert.assertEquals(0, repo.getFeatureUsageTotalHitCount(start, System.currentTimeMillis()));
+        Assert.assertEquals(0, repo.getFeatureUsageTotalHitCount(new EventQueryDefinition(start, System.currentTimeMillis())));
         repo.saveEvent(generateFeatureUsageEvent("f1"));
-        Assert.assertEquals(1, repo.getFeatureUsageTotalHitCount(start, System.currentTimeMillis()));
+        Assert.assertEquals(1, repo.getFeatureUsageTotalHitCount(new EventQueryDefinition(start, System.currentTimeMillis())));
     }
     
     @Test(expected = IllegalArgumentException.class)
@@ -123,7 +124,7 @@ public abstract class AbstractEventRepositoryTest {
         Event evt1 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CREATE);
         Assert.assertTrue(repo.saveEvent(evt1));
         Thread.sleep(100);
-        Assert.assertEquals(1, repo.getAuditTrail(start, System.currentTimeMillis()).size());
+        Assert.assertEquals(1, repo.getAuditTrail(new EventQueryDefinition(start, System.currentTimeMillis())).size());
     }
     
     @Test
@@ -132,8 +133,8 @@ public abstract class AbstractEventRepositoryTest {
         Event evt1 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CHECK_OFF);
         Assert.assertTrue(repo.saveEvent(evt1));
         Thread.sleep(100);
-        Assert.assertEquals(0, repo.getFeatureUsageTotalHitCount(start, System.currentTimeMillis()));
-        Assert.assertEquals(0, repo.getAuditTrail(start, System.currentTimeMillis()).size());
+        Assert.assertEquals(0, repo.getFeatureUsageTotalHitCount(new EventQueryDefinition(start, System.currentTimeMillis())));
+        Assert.assertEquals(0, repo.getAuditTrail(new EventQueryDefinition(start, System.currentTimeMillis())).size());
     }
     
     @Test
@@ -148,9 +149,9 @@ public abstract class AbstractEventRepositoryTest {
     
     public void testgetFeatureUsageHitCount() {
         long start = System.currentTimeMillis();
-        Assert.assertEquals(0, repo.getFeatureUsageTotalHitCount(start, System.currentTimeMillis()));
+        Assert.assertEquals(0, repo.getFeatureUsageTotalHitCount(new EventQueryDefinition(start, System.currentTimeMillis())));
         generateFeatureUsageEvent("x", start, System.currentTimeMillis());
-        Assert.assertEquals(1, repo.getFeatureUsageTotalHitCount(start, System.currentTimeMillis()));
+        Assert.assertEquals(1, repo.getFeatureUsageTotalHitCount(new EventQueryDefinition(start, System.currentTimeMillis())));
     }
     
     /*

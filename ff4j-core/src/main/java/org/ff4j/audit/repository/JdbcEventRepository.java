@@ -189,77 +189,6 @@ public class JdbcEventRepository extends AbstractEventRepository {
     }
     
     /** {@inheritDoc} */
-    @Override
-    public Map<String, MutableHitCount> getFeatureUsageHitCount(long startTime, long endTime) {
-        
-        return new HashMap<String, MutableHitCount>();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public TimeSeriesChart getFeatureUsageHistory(long startTime, long endTime, TimeUnit tu) {
-        return new TimeSeriesChart();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public TimeSeriesChart getFeatureUsageHistory(long startTime, long endTime, TimeUnit tu, Set<String> filteredFeatures) {
-        return new TimeSeriesChart();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public EventSeries searchFeatureUsageEvents(EventQueryDefinition query) {
-        return new EventSeries();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void purgeFeatureUsage(long starTime, long endTime) {
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Map<String, MutableHitCount> getHostHitCount(long startTime, long endTime) {
-        return new HashMap<String, MutableHitCount>();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Map<String, MutableHitCount> getUserHitCount(long startTime, long endTime) {
-        return new HashMap<String, MutableHitCount>();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Map<String, MutableHitCount> getSourceHitCount(long startTime, long endTime) {
-        return new HashMap<String, MutableHitCount>();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public TimeSeriesChart getAverageResponseTime(long startTime, long endTime, TimeUnit tu) {
-        return new TimeSeriesChart();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public TimeSeriesChart getAverageResponseTime(long startTime, long endTime, TimeUnit tu, Set<String> filteredFeatures) {
-        return new TimeSeriesChart();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public EventSeries getAuditTrail(long startTime, long endTime) {
-        return new EventSeries();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void purgeAuditTrail(long starTime, long endTime) {
-    }
-    
-    /** {@inheritDoc} */
     public PieChart featuresListDistributionPie(long startTime, long endTime) {
         PieChart pieGraph = new PieChart(TITLE_PIE_HITCOUNT);
         Connection sqlConn = null;
@@ -413,6 +342,66 @@ public class JdbcEventRepository extends AbstractEventRepository {
 	 */
 	public void setQueryBuilder(JdbcQueryBuilder queryBuilder) {
 		this.queryBuilder = queryBuilder;
-	}    
+	}
+
+    @Override
+    public Map<String, MutableHitCount> getFeatureUsageHitCount(EventQueryDefinition query) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TimeSeriesChart getFeatureUsageHistory(EventQueryDefinition query, TimeUnit tu) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public EventSeries searchFeatureUsageEvents(EventQueryDefinition query) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void purgeFeatureUsage(EventQueryDefinition query) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public Map<String, MutableHitCount> getHostHitCount(EventQueryDefinition query) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Map<String, MutableHitCount> getUserHitCount(EventQueryDefinition query) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Map<String, MutableHitCount> getSourceHitCount(EventQueryDefinition query) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TimeSeriesChart getAverageResponseTime(EventQueryDefinition query, TimeUnit tu) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public EventSeries getAuditTrail(EventQueryDefinition query) {
+        // TODO Auto-generated method stub
+        return new EventSeries();
+    }
+
+    @Override
+    public void purgeAuditTrail(EventQueryDefinition query) {
+        // TODO Auto-generated method stub
+        
+    }    
     
 }

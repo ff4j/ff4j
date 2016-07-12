@@ -22,7 +22,6 @@ package org.ff4j.audit.repository;
 
 
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.ff4j.audit.Event;
@@ -58,7 +57,7 @@ public interface EventRepository {
      *          end time
      * @return
      */
-    Map < String, MutableHitCount > getFeatureUsageHitCount(long startTime, long endTime);
+    Map < String, MutableHitCount > getFeatureUsageHitCount(EventQueryDefinition query);
     
     /**
      * Draw a pie chart where each sector is for a feature. The value of each sector is the
@@ -72,7 +71,7 @@ public interface EventRepository {
      *            end time of window
      * @return
      */
-    PieChart getFeatureUsagePieChart(long startTime, long endTime);
+    PieChart getFeatureUsagePieChart(EventQueryDefinition query);
     
     /**
      * Get hit curves.
@@ -87,7 +86,7 @@ public interface EventRepository {
      *            endtime for measure
      * @return map of curves
      */
-    BarChart getFeatureUsageBarChart(long startTime, long endTime);
+    BarChart getFeatureUsageBarChart(EventQueryDefinition query);
     
     /**
      * Create measure over time.
@@ -102,29 +101,14 @@ public interface EventRepository {
      *      if you want to filtered feature usage
      * @return
      */
-    TimeSeriesChart getFeatureUsageHistory(long startTime, long endTime, TimeUnit tu);
-    
-    /**
-     * Create measure over time.
-     *
-     * @param startTime
-     *      time to begin measures
-     * @param endTime
-     *      time to end measures
-     * @param nbPoints
-     *      number of points.
-     * @param filteredFeatures
-     *      if you want to filtered feature usage
-     * @return
-     */
-    TimeSeriesChart getFeatureUsageHistory(long startTime, long endTime, TimeUnit tu, Set <String> filteredFeatures);
+    TimeSeriesChart getFeatureUsageHistory(EventQueryDefinition query, TimeUnit tu);
     
     /**
      * Get all events.
      * 
      * @return all event in the repository
      */
-    int getFeatureUsageTotalHitCount(long startTime, long endTime);
+    int getFeatureUsageTotalHitCount(EventQueryDefinition query);
     
     /**
      * Search over events.
@@ -142,7 +126,7 @@ public interface EventRepository {
      * @param endTime
      *      end time
      */
-    void purgeFeatureUsage(long starTime, long endTime);
+    void purgeFeatureUsage(EventQueryDefinition query);
     
     /**
      * Count hit for each host.
@@ -153,7 +137,7 @@ public interface EventRepository {
      *      end time
      * return the hitcount
      */
-    Map < String, MutableHitCount > getHostHitCount(long startTime, long endTime);
+    Map < String, MutableHitCount > getHostHitCount(EventQueryDefinition query);
     
     /**
      * Use hit getHostHitCount() to draw a pie chart.
@@ -164,7 +148,7 @@ public interface EventRepository {
      *      end time
      * return target Pie
      */
-    PieChart getHostPieChart(long startTime, long endTime);
+    PieChart getHostPieChart(EventQueryDefinition query);
     
     /**
      * Use hit getHostHitCount() to draw a bar chart.
@@ -175,7 +159,7 @@ public interface EventRepository {
      *      end time
      * return target bar
      */
-    BarChart getHostBarChart(long startTime, long endTime);
+    BarChart getHostBarChart(EventQueryDefinition query);
     
     /**
      * Count hit for each host.
@@ -186,7 +170,7 @@ public interface EventRepository {
      *      end time
      * return the hitcount
      */
-    Map < String, MutableHitCount > getUserHitCount(long startTime, long endTime);
+    Map < String, MutableHitCount > getUserHitCount(EventQueryDefinition query);
     
     /**
      * Use hit getHostHitCount() to draw a pie chart.
@@ -197,7 +181,7 @@ public interface EventRepository {
      *      end time
      * return target Pie
      */
-    PieChart getUserPieChart(long startTime, long endTime);
+    PieChart getUserPieChart(EventQueryDefinition query);
     
     /**
      * Use hit getHostHitCount() to draw a bar chart.
@@ -208,7 +192,7 @@ public interface EventRepository {
      *      end time
      * return target bar
      */
-    BarChart getUserBarChart(long startTime, long endTime);
+    BarChart getUserBarChart(EventQueryDefinition query);
     
     /**
      * Count hit for each source (api...).
@@ -219,7 +203,7 @@ public interface EventRepository {
      *      end time
      * return the hitcount
      */
-    Map < String, MutableHitCount > getSourceHitCount(long startTime, long endTime);
+    Map < String, MutableHitCount > getSourceHitCount(EventQueryDefinition query);
     
     /**
      * Use hit getSourceHitCount() to draw a pie chart.
@@ -230,7 +214,7 @@ public interface EventRepository {
      *      end time
      * return target Pie
      */
-    PieChart getSourcePieChart(long startTime, long endTime);
+    PieChart getSourcePieChart(EventQueryDefinition query);
     
     /**
      * Use hit getSourceHitCount() to draw a bar chart.
@@ -241,7 +225,7 @@ public interface EventRepository {
      *      end time
      * return target bar
      */
-    BarChart getSourceBarChart(long startTime, long endTime);
+    BarChart getSourceBarChart(EventQueryDefinition query);
    
     /**
      * Through AOP we can have the response time.
@@ -255,10 +239,7 @@ public interface EventRepository {
      * @return
      *      time serie
      */
-    TimeSeriesChart getAverageResponseTime(long startTime, long endTime, TimeUnit tu);
-    
-    TimeSeriesChart getAverageResponseTime(long startTime, long endTime, TimeUnit tu, Set <String> filteredFeatures);
-    
+    TimeSeriesChart getAverageResponseTime(EventQueryDefinition query, TimeUnit tu);
     
     /**
      * Display audit trail as list of Event.
@@ -270,7 +251,7 @@ public interface EventRepository {
      * @return
      *      target list of event
      */
-    EventSeries getAuditTrail(long startTime, long endTime);
+    EventSeries getAuditTrail(EventQueryDefinition query);
     
     /**
      * Purge audit trail.
@@ -280,6 +261,5 @@ public interface EventRepository {
      * @param endTime
      *      end time
      */
-    void purgeAuditTrail(long starTime, long endTime);
-  
+    void purgeAuditTrail(EventQueryDefinition query);
 }

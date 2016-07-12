@@ -24,7 +24,6 @@ package org.ff4j.store;
 import static org.ff4j.redis.RedisContants.KEY_EVENT;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.ff4j.audit.Event;
@@ -127,19 +126,13 @@ public class EventRepositoryRedis extends AbstractEventRepository {
     }
 
     @Override
-    public Map<String, MutableHitCount> getFeatureUsageHitCount(long startTime, long endTime) {
+    public Map<String, MutableHitCount> getFeatureUsageHitCount(EventQueryDefinition query) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public TimeSeriesChart getFeatureUsageHistory(long startTime, long endTime, TimeUnit tu) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public TimeSeriesChart getFeatureUsageHistory(long startTime, long endTime, TimeUnit tu, Set<String> filteredFeatures) {
+    public TimeSeriesChart getFeatureUsageHistory(EventQueryDefinition query, TimeUnit tu) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -151,49 +144,43 @@ public class EventRepositoryRedis extends AbstractEventRepository {
     }
 
     @Override
-    public void purgeFeatureUsage(long starTime, long endTime) {
+    public void purgeFeatureUsage(EventQueryDefinition query) {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public Map<String, MutableHitCount> getHostHitCount(long startTime, long endTime) {
+    public Map<String, MutableHitCount> getHostHitCount(EventQueryDefinition query) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Map<String, MutableHitCount> getUserHitCount(long startTime, long endTime) {
+    public Map<String, MutableHitCount> getUserHitCount(EventQueryDefinition query) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Map<String, MutableHitCount> getSourceHitCount(long startTime, long endTime) {
+    public Map<String, MutableHitCount> getSourceHitCount(EventQueryDefinition query) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public TimeSeriesChart getAverageResponseTime(long startTime, long endTime, TimeUnit tu) {
+    public TimeSeriesChart getAverageResponseTime(EventQueryDefinition query, TimeUnit tu) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public TimeSeriesChart getAverageResponseTime(long startTime, long endTime, TimeUnit tu, Set<String> filteredFeatures) {
+    public EventSeries getAuditTrail(EventQueryDefinition query) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public EventSeries getAuditTrail(long startTime, long endTime) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void purgeAuditTrail(long starTime, long endTime) {
+    public void purgeAuditTrail(EventQueryDefinition query) {
         // TODO Auto-generated method stub
         
     }

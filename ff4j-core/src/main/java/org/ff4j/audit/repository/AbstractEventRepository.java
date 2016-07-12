@@ -23,8 +23,6 @@ package org.ff4j.audit.repository;
 
 import static org.ff4j.audit.EventConstants.TITLE_BARCHAR_HIT;
 import static org.ff4j.audit.EventConstants.TITLE_PIE_HITCOUNT;
-import static org.ff4j.utils.TimeUtils.getTodayMidnightTime;
-import static org.ff4j.utils.TimeUtils.getTomorrowMidnightTime;
 
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -37,6 +35,7 @@ import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 import org.ff4j.audit.Event;
+import org.ff4j.audit.EventQueryDefinition;
 import org.ff4j.audit.MutableHitCount;
 import org.ff4j.audit.chart.BarChart;
 import org.ff4j.audit.chart.PieChart;
@@ -53,35 +52,39 @@ public abstract class AbstractEventRepository implements EventRepository {
     /** Create key. */
     protected static final SimpleDateFormat KDF = new SimpleDateFormat("yyyyMMdd");
     
+    protected String getTitle(EventQueryDefinition q) {
+        return " FROM " + getKeyDate(q.getFrom()) + " TO " + getKeyDate(q.getTo());
+    }
+    
     /** {@inheritDoc} */
     @Override
-    public PieChart getFeatureUsagePieChart(long startTime, long endTime) {
-        PieChart pieGraph = renderPieChartRainBow(getFeatureUsageHitCount(startTime, endTime));
-        pieGraph.setTitle(TITLE_PIE_HITCOUNT + " FROM " + getKeyDate(startTime) + " TO " + getKeyDate(endTime));
+    public PieChart getFeatureUsagePieChart(EventQueryDefinition q) {
+        PieChart pieGraph = renderPieChartRainBow(getFeatureUsageHitCount(q));
+        pieGraph.setTitle(TITLE_PIE_HITCOUNT + getTitle(q));
         return pieGraph;
     }
     
     /** {@inheritDoc} */
     @Override
-    public PieChart getHostPieChart(long startTime, long endTime) {
-        PieChart pieGraph = renderPieChartGreenGradient(getHostHitCount(startTime, endTime));
-        pieGraph.setTitle("HitCount HOST FROM " + getKeyDate(startTime) + " TO " + getKeyDate(endTime));
+    public PieChart getHostPieChart(EventQueryDefinition q) {
+        PieChart pieGraph = renderPieChartGreenGradient(getHostHitCount(q));
+        pieGraph.setTitle("HitCount HOST FROM " + getTitle(q));
         return pieGraph;
     }
     
     /** {@inheritDoc} */
     @Override
-    public PieChart getSourcePieChart(long startTime, long endTime) {
-        PieChart pieGraph = renderPieChartGreenGradient(getSourceHitCount(startTime, endTime));
-        pieGraph.setTitle("HitCount SOURCE FROM " + getKeyDate(startTime) + " TO " + getKeyDate(endTime));
+    public PieChart getSourcePieChart(EventQueryDefinition q) {
+        PieChart pieGraph = renderPieChartGreenGradient(getSourceHitCount(q));
+        pieGraph.setTitle("HitCount SOURCE FROM "  + getTitle(q));
         return pieGraph;
     }
     
     /** {@inheritDoc} */
     @Override
-    public PieChart getUserPieChart(long startTime, long endTime) {
-        PieChart pieGraph = renderPieChartGreenGradient(getUserHitCount(startTime, endTime));
-        pieGraph.setTitle("HitCount USER FROM " + getKeyDate(startTime) + " TO " + getKeyDate(endTime));
+    public PieChart getUserPieChart(EventQueryDefinition q) {
+        PieChart pieGraph = renderPieChartGreenGradient(getUserHitCount(q));
+        pieGraph.setTitle("HitCount USER FROM " + getTitle(q));
         return pieGraph;
     }
     
@@ -94,8 +97,8 @@ public abstract class AbstractEventRepository implements EventRepository {
      *      pie chart
      */
     protected PieChart renderPieChartGreenGradient(Map < String, MutableHitCount > hitRatio) {
-        List < String > colors = Util.getColorsGradient(hitRatio.size());
-        return renderPieChart(hitRatio, colors);
+        List < String > colors = Util.getColorsGradient(hitRatio.size() + 1);
+        return renderPieChart(hitRatio, colors.subList(1, colors.size()));
     }
     
     /**
@@ -171,41 +174,41 @@ public abstract class AbstractEventRepository implements EventRepository {
     
     /** {@inheritDoc} */
     @Override
-    public BarChart getFeatureUsageBarChart(long startTime, long endTime) {
-        BarChart barChart = renderBarChartRainbow(getFeatureUsageHitCount(startTime, endTime));
-        barChart.setTitle(TITLE_BARCHAR_HIT +" FROM " + getKeyDate(startTime) + " TO " + getKeyDate(endTime));
+    public BarChart getFeatureUsageBarChart(EventQueryDefinition q) {
+        BarChart barChart = renderBarChartRainbow(getFeatureUsageHitCount(q));
+        barChart.setTitle(TITLE_BARCHAR_HIT + getTitle(q));
         orderBarDecrecent(barChart);
         return barChart;
     }
     
     /** {@inheritDoc} */
     @Override
-    public BarChart getHostBarChart(long startTime, long endTime) {
-        BarChart barChart = renderBarChartGreenGradient(getHostHitCount(startTime, endTime));
-        barChart.setTitle("BarChart 'host' FROM " + getKeyDate(startTime) + " TO " + getKeyDate(endTime));
+    public BarChart getHostBarChart(EventQueryDefinition q) {
+        BarChart barChart = renderBarChartGreenGradient(getHostHitCount(q));
+        barChart.setTitle("BarChart 'host' FROM "  + getTitle(q));
         return barChart;
     }
     
     /** {@inheritDoc} */
     @Override
-    public BarChart getSourceBarChart(long startTime, long endTime) {
-        BarChart barChart = renderBarChartGreenGradient(getSourceHitCount(startTime, endTime));
-        barChart.setTitle("BarChart 'Source' FROM " + getKeyDate(startTime) + " TO " + getKeyDate(endTime));
+    public BarChart getSourceBarChart(EventQueryDefinition q) {
+        BarChart barChart = renderBarChartGreenGradient(getSourceHitCount(q));
+        barChart.setTitle("BarChart 'Source' FROM " + getTitle(q));
         return barChart;
     }
     
     /** {@inheritDoc} */
     @Override
-    public BarChart getUserBarChart(long startTime, long endTime) {
-        BarChart barChart = renderBarChartGreenGradient(getUserHitCount(startTime, endTime));
-        barChart.setTitle("BarChart 'User' FROM " + getKeyDate(startTime) + " TO " + getKeyDate(endTime));
+    public BarChart getUserBarChart(EventQueryDefinition q) {
+        BarChart barChart = renderBarChartGreenGradient(getUserHitCount(q));
+        barChart.setTitle("BarChart 'User' FROM "  + getTitle(q));
         return barChart;
     }
     
     /** {@inheritDoc} */
     @Override
-    public int getFeatureUsageTotalHitCount(long startTime, long endTime) {
-        Map < String, MutableHitCount > hitRatio = getFeatureUsageHitCount(startTime, endTime);
+    public int getFeatureUsageTotalHitCount(EventQueryDefinition q) {
+        Map < String, MutableHitCount > hitRatio = getFeatureUsageHitCount(q);
         int total = 0;
         if (hitRatio != null) {
             for (MutableHitCount hc : hitRatio.values()) {
@@ -221,12 +224,11 @@ public abstract class AbstractEventRepository implements EventRepository {
     public String toString() {
         StringBuilder sb = new StringBuilder("{");
         sb.append("\"type\":\"" + this.getClass().getCanonicalName() + "\"");
-        long start = getTodayMidnightTime();
-        long end   = getTomorrowMidnightTime();
-        sb.append(",\"todayHitsPieChart\": " + getFeatureUsagePieChart(start, end).toJson());
-        sb.append(",\"todayHitsBarChart\": " + getFeatureUsageBarChart(start, end).toJson());
-        getFeatureUsageHistory(start, end, TimeUnit.HOURS);
-        sb.append(",\"todayTotalHitCount\":" + getFeatureUsageTotalHitCount(start, end));
+        EventQueryDefinition q = new EventQueryDefinition();
+        sb.append(",\"todayHitsPieChart\": " + getFeatureUsagePieChart(q).toJson());
+        sb.append(",\"todayHitsBarChart\": " + getFeatureUsageBarChart(q).toJson());
+        getFeatureUsageHistory(q, TimeUnit.HOURS);
+        sb.append(",\"todayTotalHitCount\":" + getFeatureUsageTotalHitCount(q));
         sb.append("}");
         return sb.toString();
     }
