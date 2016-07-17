@@ -1,94 +1,69 @@
 package org.ff4j.cassandra.store;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
 import org.ff4j.audit.Event;
-import org.ff4j.audit.EventQueryDefinition;
-import org.ff4j.audit.EventSeries;
-import org.ff4j.audit.MutableHitCount;
-import org.ff4j.audit.chart.TimeSeriesChart;
 import org.ff4j.audit.repository.AbstractEventRepository;
+import org.ff4j.cassandra.CassandraConnection;
 
-public class EventRepositoryCassandra extends AbstractEventRepository {
-
+/**
+ * Implementation of audit into Cassandra DB
+ *
+ * @Abstract as note implemented yet.
+ * 
+ * @author Cedrick LUNVEN (@clunven)
+ */
+public abstract class EventRepositoryCassandra extends AbstractEventRepository {
+    
+    /** TLL to working with ' expiring columns' if positive number. */
+    private int ttl = -1;
+    
+    /** Connection to store Cassandra. */
+    private CassandraConnection conn;
+    
+    /** {@inheritDoc} */
     @Override
     public boolean saveEvent(Event e) {
-        // TODO Auto-generated method stub
-        return false;
+        String query =  "INSERT INTO...";
+        if (ttl > 0) {
+            query += "USING TTL " + ttl;
+        }
+        return true;
     }
 
-    @Override
-    public Map<String, MutableHitCount> getFeatureUsageHitCount(long startTime, long endTime) {
-        // TODO Auto-generated method stub
-        return null;
+    /**
+     * Getter accessor for attribute 'ttl'.
+     *
+     * @return
+     *       current value of 'ttl'
+     */
+    public int getTtl() {
+        return ttl;
     }
 
-    @Override
-    public TimeSeriesChart getFeatureUsageHistory(long startTime, long endTime, TimeUnit tu) {
-        // TODO Auto-generated method stub
-        return null;
+    /**
+     * Setter accessor for attribute 'ttl'.
+     * @param ttl
+     * 		new value for 'ttl '
+     */
+    public void setTtl(int ttl) {
+        this.ttl = ttl;
     }
 
-    @Override
-    public TimeSeriesChart getFeatureUsageHistory(long startTime, long endTime, TimeUnit tu, Set<String> filteredFeatures) {
-        // TODO Auto-generated method stub
-        return null;
+    /**
+     * Getter accessor for attribute 'conn'.
+     *
+     * @return
+     *       current value of 'conn'
+     */
+    public CassandraConnection getConn() {
+        return conn;
     }
 
-    @Override
-    public EventSeries searchFeatureUsageEvents(EventQueryDefinition query) {
-        // TODO Auto-generated method stub
-        return null;
+    /**
+     * Setter accessor for attribute 'conn'.
+     * @param conn
+     * 		new value for 'conn '
+     */
+    public void setConn(CassandraConnection conn) {
+        this.conn = conn;
     }
-
-    @Override
-    public void purgeFeatureUsage(long starTime, long endTime) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public Map<String, MutableHitCount> getHostHitCount(long startTime, long endTime) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Map<String, MutableHitCount> getUserHitCount(long startTime, long endTime) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Map<String, MutableHitCount> getSourceHitCount(long startTime, long endTime) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public TimeSeriesChart getAverageResponseTime(long startTime, long endTime, TimeUnit tu) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public TimeSeriesChart getAverageResponseTime(long startTime, long endTime, TimeUnit tu, Set<String> filteredFeatures) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public EventSeries getAuditTrail(long startTime, long endTime) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void purgeAuditTrail(long starTime, long endTime) {
-        // TODO Auto-generated method stub
-        
-    }
-
 }

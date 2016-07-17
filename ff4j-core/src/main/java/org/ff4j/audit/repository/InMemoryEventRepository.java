@@ -128,7 +128,7 @@ public class InMemoryEventRepository extends AbstractEventRepository {
         Map<String, MutableHitCount> hitRatio = new TreeMap<String, MutableHitCount>();
         for (Event event : searchFeatureUsageEvents(query)) {
             if (!hitRatio.containsKey(event.getHostName())) {
-                hitRatio.put(event.getSource(), new MutableHitCount());
+                hitRatio.put(event.getHostName(), new MutableHitCount());
              }
              hitRatio.get(event.getHostName()).inc();
         }

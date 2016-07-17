@@ -218,6 +218,7 @@ public class Util {
      */
     public static List < String > generateRGBGradient(String codeFrom, String codeTo, int nbDivision) {
         List < String > colors = new ArrayList<String>();
+        nbDivision++;
         if (nbDivision > 0) {
             int r1 = Integer.parseInt(codeFrom.substring(0, 2), 16);
             int g1 = Integer.parseInt(codeFrom.substring(2, 4), 16);
@@ -235,7 +236,7 @@ public class Util {
                 colors.add(red + green + blue);
             }
         }
-        return colors;
+        return colors.subList(1, colors.size());
     }
     
     public static List < String > generateHSVGradient(String codeFrom, String codeTo, int nbDivision) {

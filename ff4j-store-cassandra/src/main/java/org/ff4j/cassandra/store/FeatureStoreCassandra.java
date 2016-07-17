@@ -1,23 +1,74 @@
 package org.ff4j.cassandra.store;
 
+import static org.ff4j.cassandra.CassandraConstants.CQL_EXIST_FEATURE;
+
 import java.util.Map;
 import java.util.Set;
 
+import org.ff4j.cassandra.CassandraConnection;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.store.AbstractFeatureStore;
-
+import org.ff4j.utils.Util;
 /**
  * Implementation of {@link FeatureStore} to work with Cassandra Storage.
+ * 
+ * Minimize the Number of Writes : 
+ * Writes in Cassandra aren’t free, but they’re awfully cheap. Cassandra is optimized for high write throughput, 
+ * and almost all writes are equally efficient [1]. If you can perform extra writes to improve the efficiency of
+ * your read queries, it’s almost always a good tradeoff. Reads tend to be more expensive and are much more 
+ * difficult to tune.
+ * 
+ * Minimize Data Duplication
+ * Denormalization and duplication of data is a fact of life with Cassandra. Don’t be afraid of it. Disk space 
+ * is generally the cheapest resource (compared to CPU, memory, disk IOPs, or network), and Cassandra is 
+ * architected around that fact. In order to get the most efficient reads, you often need to duplicate data.
+ * 
+ * Rule 1: Spread Data Evenly Around the Cluster
+ * Rule 2: Minimize the Number of Partitions Read
  *
  * @author Cedrick Lunven (@clunven)
  */
 public class FeatureStoreCassandra extends AbstractFeatureStore {
+    
+    /** Connection to store Cassandra. */
+    private CassandraConnection conn;
+    
+    /**
+     * Default constructor.
+     */
+    public FeatureStoreCassandra() {
+    }
+    
+    /**
+     * Initialization through {@link CassandraConnection}.
+     *
+     * @param conn
+     *      current client to cassandra db
+     */
+    public FeatureStoreCassandra(CassandraConnection conn) {
+        this.conn = conn;
+    }
 
     /** {@inheritDoc} */
     @Override
-    public void enable(String featureID) {
-        throw new UnsupportedOperationException("Not yet ready");
+    public boolean exist(String uid) {
+        Util.assertHasLength(uid);
+        return 1 == conn.getSession().execute(CQL_EXIST_FEATURE, uid) //
+                        .iterator().next() //
+                        .getInt("NB");
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void enable(String uid) {
+        Util.assertHasLength(uid);
+        if (!exist(uid)) {
+            throw new FeatureNotFoundException(uid);
+        }
+        
+        // update
     }
 
     /** {@inheritDoc} */
@@ -26,11 +77,7 @@ public class FeatureStoreCassandra extends AbstractFeatureStore {
         throw new UnsupportedOperationException("Not yet ready");
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public boolean exist(String featId) {
-        throw new UnsupportedOperationException("Not yet ready");
-    }
+    
 
     /** {@inheritDoc} */
     @Override
@@ -111,5 +158,24 @@ public class FeatureStoreCassandra extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public void clear() {
+    }
+
+    /**
+     * Getter accessor for attribute 'conn'.
+     *
+     * @return
+     *       current value of 'conn'
+     */
+    public CassandraConnection getConn() {
+        return conn;
+    }
+
+    /**
+     * Setter accessor for attribute 'conn'.
+     * @param conn
+     * 		new value for 'conn '
+     */
+    public void setConn(CassandraConnection conn) {
+        this.conn = conn;
     }
 }

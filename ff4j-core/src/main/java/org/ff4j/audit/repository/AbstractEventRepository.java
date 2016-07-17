@@ -52,40 +52,28 @@ public abstract class AbstractEventRepository implements EventRepository {
     /** Create key. */
     protected static final SimpleDateFormat KDF = new SimpleDateFormat("yyyyMMdd");
     
-    protected String getTitle(EventQueryDefinition q) {
-        return " FROM " + getKeyDate(q.getFrom()) + " TO " + getKeyDate(q.getTo());
-    }
-    
     /** {@inheritDoc} */
     @Override
     public PieChart getFeatureUsagePieChart(EventQueryDefinition q) {
-        PieChart pieGraph = renderPieChartRainBow(getFeatureUsageHitCount(q));
-        pieGraph.setTitle(TITLE_PIE_HITCOUNT + getTitle(q));
-        return pieGraph;
+        return renderPieChartRainBow(TITLE_PIE_HITCOUNT + getTitle(q), getFeatureUsageHitCount(q));
     }
     
     /** {@inheritDoc} */
     @Override
     public PieChart getHostPieChart(EventQueryDefinition q) {
-        PieChart pieGraph = renderPieChartGreenGradient(getHostHitCount(q));
-        pieGraph.setTitle("HitCount HOST FROM " + getTitle(q));
-        return pieGraph;
+        return renderPieChartGradient("HostName Pie FROM " + getTitle(q), getHostHitCount(q), "00AB8B", "EEFFEE");
     }
     
     /** {@inheritDoc} */
     @Override
     public PieChart getSourcePieChart(EventQueryDefinition q) {
-        PieChart pieGraph = renderPieChartGreenGradient(getSourceHitCount(q));
-        pieGraph.setTitle("HitCount SOURCE FROM "  + getTitle(q));
-        return pieGraph;
+       return renderPieChartGradient("Sources Pie FROM "  + getTitle(q), getSourceHitCount(q), "AB008B", "FFEEEE");
     }
     
     /** {@inheritDoc} */
     @Override
     public PieChart getUserPieChart(EventQueryDefinition q) {
-        PieChart pieGraph = renderPieChartGreenGradient(getUserHitCount(q));
-        pieGraph.setTitle("HitCount USER FROM " + getTitle(q));
-        return pieGraph;
+       return renderPieChartGradient("User Pie FROM " + getTitle(q), getUserHitCount(q), "008BAB", "EEEEFF");
     }
     
     /**
@@ -96,9 +84,8 @@ public abstract class AbstractEventRepository implements EventRepository {
      * @return
      *      pie chart
      */
-    protected PieChart renderPieChartGreenGradient(Map < String, MutableHitCount > hitRatio) {
-        List < String > colors = Util.getColorsGradient(hitRatio.size() + 1);
-        return renderPieChart(hitRatio, colors.subList(1, colors.size()));
+    protected PieChart renderPieChartGradient(String title, Map < String, MutableHitCount > hitRatio, String fromColor, String toColor) {
+       return renderPieChart(title, hitRatio, Util.generateRGBGradient(fromColor, toColor, hitRatio.size()));
     }
     
     /**
@@ -109,9 +96,8 @@ public abstract class AbstractEventRepository implements EventRepository {
      * @return
      *      pie chart
      */
-    protected PieChart renderPieChartRainBow(Map < String, MutableHitCount > hitRatio) {
-        List < String > colors = Util.generateHSVGradient("ee1100", "442299", hitRatio.size());
-        return renderPieChart(hitRatio, colors);
+    protected PieChart renderPieChartRainBow(String title, Map < String, MutableHitCount > hitRatio) {
+        return renderPieChart(title, hitRatio, Util.generateHSVGradient("ee1100", "442299", hitRatio.size()));
     }
     
     /**
@@ -122,8 +108,8 @@ public abstract class AbstractEventRepository implements EventRepository {
      * @return
      *      pie chart
      */
-    private PieChart renderPieChart(Map < String, MutableHitCount > hitRatio, List < String > colors) {
-        PieChart pieChart = new PieChart("n/a");
+    private PieChart renderPieChart(String title, Map < String, MutableHitCount > hitRatio, List < String > colors) {
+        PieChart pieChart = new PieChart(title);
         int idxColor = 0;
         for (String key : hitRatio.keySet()) {
             Serie<Integer> ps = new Serie<Integer>(key, hitRatio.get(key).get(), colors.get(idxColor));
@@ -133,14 +119,25 @@ public abstract class AbstractEventRepository implements EventRepository {
         return pieChart;
     }
     
-    public BarChart renderBarChartRainbow(Map < String, MutableHitCount > hitRatio) {
-        List < String > colors = Util.generateHSVGradient("ee1100", "442299", hitRatio.size());
-        return renderBarChart(hitRatio, colors);
+    
+    protected BarChart renderBarChartRainbow(String title, Map < String, MutableHitCount > hitRatio) {
+        return renderBarChart(title, hitRatio, Util.generateHSVGradient("ee1100", "442299", hitRatio.size()));
     }
     
-    public BarChart renderBarChartGreenGradient(Map < String, MutableHitCount > hitRatio) {
-        List < String > colors = Util.getColorsGradient(hitRatio.size());
-        return renderBarChart(hitRatio, colors);
+    protected BarChart renderBarChartGradient(String title, Map < String, MutableHitCount > hitRatio, String colorFrom, String colorTo) {
+        return renderBarChart(title, hitRatio, Util.generateRGBGradient(colorFrom, colorTo, hitRatio.size()));
+    }
+    
+    /**
+     * Generation of title.
+     *
+     * @param q
+     *      current query
+     * @return
+     *      title formated with slot.
+     */
+    protected String getTitle(EventQueryDefinition q) {
+        return " FROM " + getKeyDate(q.getFrom()) + " TO " + getKeyDate(q.getTo());
     }
             
     /**
@@ -151,14 +148,15 @@ public abstract class AbstractEventRepository implements EventRepository {
      * @return
      *      pie chart
      */
-    private BarChart renderBarChart(Map < String, MutableHitCount > hitRatio, List < String > colors) {
-        BarChart barChart = new BarChart("n/a");
+    private BarChart renderBarChart(String title, Map < String, MutableHitCount > hitRatio, List < String > colors) {
+        BarChart barChart = new BarChart(title);
         int idxColor = 0;
         for (String key : hitRatio.keySet()) {
             Serie<Integer> bar = new Serie<Integer>(key, new Double(hitRatio.get(key).get()).intValue(), colors.get(idxColor));
             barChart.getChartBars().add(bar);
             idxColor++;
         }
+        orderBarDecrecent(barChart);
         return barChart;
     }
 
@@ -175,34 +173,25 @@ public abstract class AbstractEventRepository implements EventRepository {
     /** {@inheritDoc} */
     @Override
     public BarChart getFeatureUsageBarChart(EventQueryDefinition q) {
-        BarChart barChart = renderBarChartRainbow(getFeatureUsageHitCount(q));
-        barChart.setTitle(TITLE_BARCHAR_HIT + getTitle(q));
-        orderBarDecrecent(barChart);
-        return barChart;
+        return renderBarChartRainbow(TITLE_BARCHAR_HIT + getTitle(q), getFeatureUsageHitCount(q));
     }
     
     /** {@inheritDoc} */
     @Override
     public BarChart getHostBarChart(EventQueryDefinition q) {
-        BarChart barChart = renderBarChartGreenGradient(getHostHitCount(q));
-        barChart.setTitle("BarChart 'host' FROM "  + getTitle(q));
-        return barChart;
+        return renderBarChartGradient("BarChart 'host' FROM "  + getTitle(q), getHostHitCount(q), "00AB8B", "EEFFEE");
     }
     
     /** {@inheritDoc} */
     @Override
     public BarChart getSourceBarChart(EventQueryDefinition q) {
-        BarChart barChart = renderBarChartGreenGradient(getSourceHitCount(q));
-        barChart.setTitle("BarChart 'Source' FROM " + getTitle(q));
-        return barChart;
+        return renderBarChartGradient("BarChart 'Source' FROM " + getTitle(q), getSourceHitCount(q), "AB008B", "FFEEEE");
     }
     
     /** {@inheritDoc} */
     @Override
     public BarChart getUserBarChart(EventQueryDefinition q) {
-        BarChart barChart = renderBarChartGreenGradient(getUserHitCount(q));
-        barChart.setTitle("BarChart 'User' FROM "  + getTitle(q));
-        return barChart;
+        return renderBarChartGradient("BarChart 'User' FROM " + getTitle(q), getUserHitCount(q),  "008BAB", "EEEEFF");
     }
     
     /** {@inheritDoc} */
