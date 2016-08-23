@@ -49,6 +49,18 @@ public interface EventRepository {
     boolean saveEvent(Event e);
     
     /**
+     * Retrieve an event by its unique identifer.
+     *
+     * @param uuid
+     *      get detail from a single event by its ID
+     * @param timestamp
+     *      help to find the UUID (optional).
+     * @return
+     *      target event detail
+     */
+    Event getEventByUUID(String uuid, Long timestamp);
+    
+    /**
      * Count hit ratio of features between 2 dates. This will be used for different charts.
      *
      * @param startTime

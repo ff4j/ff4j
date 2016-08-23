@@ -80,16 +80,6 @@ public class JdbcEventRepositoryTest extends AbstractEventRepositoryTest {
         return new JdbcEventRepository(db);
     }
     
-    @Test(expected = AuditAccessException.class)
-    public void testJdbcSpec2() throws SQLException {
-        JdbcEventRepository jrepo = (JdbcEventRepository) repo;
-        DataSource mockDS = Mockito.mock(DataSource.class);
-        Mockito.doThrow(new SQLException()).when(mockDS).getConnection();
-        jrepo.setDataSource(mockDS);
-        jrepo.getTotalEventCount();
-        
-    }
-    
     @Ignore
     @Test(expected = AuditAccessException.class)
     public void testJdbcSaveEventKO()  throws SQLException {

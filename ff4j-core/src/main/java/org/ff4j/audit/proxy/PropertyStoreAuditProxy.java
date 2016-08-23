@@ -4,6 +4,7 @@ import static org.ff4j.audit.EventConstants.ACTION_CLEAR;
 import static org.ff4j.audit.EventConstants.ACTION_CREATE;
 import static org.ff4j.audit.EventConstants.ACTION_DELETE;
 import static org.ff4j.audit.EventConstants.ACTION_UPDATE;
+import static org.ff4j.audit.EventConstants.TARGET_PROPERTY;
 import static org.ff4j.audit.EventConstants.TARGET_PSTORE;
 
 import java.util.Collection;
@@ -158,8 +159,7 @@ public class PropertyStoreAuditProxy implements PropertyStore {
      *      new builder
      */
     private EventBuilder builder(String action) {
-        EventBuilder eb = new EventBuilder(ff4j);
-        return eb.action(action);
+        return new EventBuilder(ff4j).type(TARGET_PROPERTY).action(action);
     }
     
     /**

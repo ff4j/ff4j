@@ -182,6 +182,7 @@ public class FF4j {
         if (flipped && fp.getFlippingStrategy() != null) {
             flipped = fp.getFlippingStrategy().evaluate(featureID, getFeatureStore(), executionContext);
         }
+        
         // Update current context
         currentExecutionContext.set(executionContext);
         
@@ -417,7 +418,7 @@ public class FF4j {
      *            target feature ID
      * @return target feature.
      */
-    public synchronized Feature getFeature(String featureID) {
+    public Feature getFeature(String featureID) {
         Feature fp = null;
         try {
             fp = getFeatureStore().read(featureID);
@@ -439,7 +440,7 @@ public class FF4j {
      *            target feature ID
      * @return target feature.
      */
-    public synchronized Property<?> getProperty(String propertyName) {
+    public Property<?> getProperty(String propertyName) {
        return getPropertiesStore().readProperty(propertyName);
     }
     
@@ -450,7 +451,7 @@ public class FF4j {
      *            target feature ID
      * @return target feature.
      */
-    public synchronized String getPropertyAsString(String propertyName) {
+    public String getPropertyAsString(String propertyName) {
        return getProperty(propertyName).asString();
     }
     
@@ -765,7 +766,7 @@ public class FF4j {
      * 
      * @return current value of 'eventPublisher'
      */
-    public synchronized EventPublisher getEventPublisher() {
+    public EventPublisher getEventPublisher() {
         if (!initialized) { 
             init();
         }
@@ -941,6 +942,23 @@ public class FF4j {
      */
     public PropertyStore getConcretePropertyStore() {
         return getConcretePropertyStore(getPropertiesStore());
+    }
+    
+    /**
+     * try to fetch CacheProxy (cannot handled proxy CGLIB, ASM or any bytecode manipulation).
+     *
+     * @return
+     */
+    public FF4jCacheProxy getCacheProxy() {
+        FeatureStore fs = getFeatureStore();
+        // Pass through audit proxy if exists
+        if (fs instanceof FeatureStoreAuditProxy) {
+            fs = ((FeatureStoreAuditProxy) fs).getTarget();
+        }
+        if (fs instanceof FF4jCacheProxy) {
+            return (FF4jCacheProxy) fs;
+        }
+        return null;
     }
     
     /**

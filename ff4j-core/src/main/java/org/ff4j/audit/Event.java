@@ -21,6 +21,7 @@ package org.ff4j.audit;
  */
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -168,6 +169,15 @@ public class Event implements Serializable, Comparable < Event > {
      */
     public long getTimestamp() {
         return timestamp;
+    }
+    
+    /**
+     * Getter accessor for attribute 'timestamp'.
+     * 
+     * @return current value of 'timestamp'
+     */
+    public Date getDate() {
+        return new Date(getTimestamp());
     }
     
     /**

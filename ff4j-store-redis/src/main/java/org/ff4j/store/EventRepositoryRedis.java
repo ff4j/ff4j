@@ -184,4 +184,10 @@ public class EventRepositoryRedis extends AbstractEventRepository {
         // TODO Auto-generated method stub
         
     }
+
+    @Override
+    public Event getEventByUUID(String uuid, Long timestamp) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

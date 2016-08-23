@@ -7,6 +7,7 @@ import static org.ff4j.audit.EventConstants.ACTION_TOGGLE_OFF;
 import static org.ff4j.audit.EventConstants.ACTION_TOGGLE_ON;
 import static org.ff4j.audit.EventConstants.ACTION_UPDATE;
 import static org.ff4j.audit.EventConstants.TARGET_FSTORE;
+import static org.ff4j.audit.EventConstants.TARGET_FEATURE;
 
 import java.util.Collection;
 
@@ -179,8 +180,7 @@ public class FeatureStoreAuditProxy implements FeatureStore {
      *      new builder
      */
     private EventBuilder builder(String action) {
-        EventBuilder eb = new EventBuilder(ff4j);
-        return eb.action(action);
+        return new EventBuilder(ff4j).type(TARGET_FEATURE).action(action);
     }
     
     /**

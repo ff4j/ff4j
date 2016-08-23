@@ -24,6 +24,7 @@ package org.ff4j.audit.repository;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -365,15 +366,18 @@ public class InMemoryEventRepository extends AbstractEventRepository {
     @Override
     public EventSeries searchFeatureUsageEvents(EventQueryDefinition query) {
         EventSeries es = new EventSeries(1000000);
+        // Dates are the keys of the storage map, compute list of keys and loop over them
         for (String currentDay : getCandidateDays(query.getFrom(), query.getTo())) {
+            // There are some events with the current date
             if (featureUsageEvents.containsKey(currentDay)) {
                 Map<String, EventSeries> currentDayEvents = featureUsageEvents.get(currentDay);
                 for (String currentFeature : currentDayEvents.keySet()) {
+                    // query can have filters for names, here we limite the number of map to scan
                     if (query.matchName(currentFeature)) {
                         Iterator<Event> iterEvents = currentDayEvents.get(currentFeature).iterator();
-                        // Loop over events
                         while (iterEvents.hasNext()) {
                             Event evt = iterEvents.next();
+                            // use other filter (host, action, timestamp....)
                             if (query.match(evt)) {
                                 es.add(evt);
                             }
@@ -383,6 +387,110 @@ public class InMemoryEventRepository extends AbstractEventRepository {
             }
         }
         return es;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public Event getEventByUUID(String uuid, Long timestamp) {
+        // Limited Search by key
+        if (timestamp != null) {
+            String targetDate = KDF.format(new Date(timestamp.longValue()));
+            return searchEventById(uuid, targetDate);
+            
+        } else {
+            // Full search
+            Set < String > searchedDate = new HashSet<String>();
+            for(String currentDate : auditTrailEvents.keySet()) {
+                if (!searchedDate.contains(currentDate)) {
+                    Event evt = searchEventById(uuid, currentDate);
+                    if (evt != null) {
+                        return evt;
+                    }
+                }
+                searchedDate.add(currentDate);
+            }
+            for(String currentDate : featureUsageEvents.keySet()) {
+                if (!searchedDate.contains(currentDate)) {
+                    Event evt = searchEventById(uuid, currentDate);
+                    if (evt != null) {
+                        return evt;
+                    }
+                }
+                searchedDate.add(currentDate);
+            }
+            for(String currentDate : checkOffEvents.keySet()) {
+                if (!searchedDate.contains(currentDate)) {
+                    Event evt = searchEventById(uuid, currentDate);
+                    if (evt != null) {
+                        return evt;
+                    }
+                }
+                searchedDate.add(currentDate);
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Given a date fetch in all the list to find the Event.
+     *
+     * @param uuid
+     *      current event unique identifier
+     * @param targetDate
+     *      target date
+     * @return
+     *      event if found
+     */
+    private Event searchEventById(String uuid, String targetDate) {
+        Util.assertNotNull(targetDate, uuid);
+        // Audit
+        Event evt = getFromEventSeries(auditTrailEvents.get(targetDate), uuid);
+        if (evt != null) { 
+            return evt;
+        }
+        // FeatureUsage
+        Map < String, EventSeries > maOfFeaturesIsages= featureUsageEvents.get(targetDate);
+        if (maOfFeaturesIsages != null ) {
+            for (EventSeries es : maOfFeaturesIsages.values()) {
+                evt = getFromEventSeries(es, uuid);
+                if (evt != null) { 
+                    return evt;
+                }
+            }
+        }
+        // CheckOff
+        Map < String, EventSeries > maOfChecKoff = checkOffEvents.get(targetDate);
+        if (maOfFeaturesIsages != null ) {
+            for (EventSeries es : maOfChecKoff.values()) {
+                evt = getFromEventSeries(es, uuid);
+                if (evt != null) { 
+                    return evt;
+                }
+             }
+        }
+        return evt;
+    }
+    
+    /**
+     * Search event by its id in the eventSeries.
+     *
+     * @param es
+     *      current event series
+     * @param uuid
+     *      current unique identifier
+     * @return
+     *      event if found, null if not
+     */
+    private Event getFromEventSeries(EventSeries es, String uuid) {
+        Util.assertNotNull(es, uuid);
+        Iterator<Event> iterEvents = es.iterator();
+        while (iterEvents.hasNext()) {
+            Event evt = iterEvents.next();
+            if (evt.getUuid().equalsIgnoreCase(uuid)) {
+                return evt;
+            }
+        }
+        return null;
     }
    
 }

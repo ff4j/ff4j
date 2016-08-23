@@ -61,6 +61,10 @@ public class JdbcQueryBuilder {
 		return tablePrefix + coreName + tableSuffix;
 	}
 	
+	public String getAuditTableName() {
+        return getTableName("AUDIT");
+    }
+	
 	public String getAllFeatures() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT FEAT_UID,ENABLE,DESCRIPTION,STRATEGY,EXPRESSION,GROUPNAME FROM ");

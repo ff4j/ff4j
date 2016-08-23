@@ -53,8 +53,7 @@ import org.ff4j.utils.Util;
 public class JdbcEventRepository extends AbstractEventRepository {
 
 	/** error message. */
-    public static final String CANNOT_BUILD_PIE_CHART_FROM_REPOSITORY = 
-    		"Cannot build PieChart from repository, ";
+    public static final String CANNOT_BUILD_PIE_CHART_FROM_REPOSITORY = "Cannot build PieChart from repository, ";
     
     /** Access to storage. */
     private DataSource dataSource;
@@ -73,29 +72,6 @@ public class JdbcEventRepository extends AbstractEventRepository {
     }
     
     /** {@inheritDoc} */
-    public int getTotalEventCount() {
-        Connection        sqlConn = null;
-        PreparedStatement stmt = null;
-        ResultSet         rs = null;
-        int totalEvent = 0;
-        try {
-            // Get collection from Pool
-            sqlConn = dataSource.getConnection();
-            stmt = sqlConn.prepareStatement(getQueryBuilder().countAudit());
-            rs = stmt.executeQuery();
-            rs.next();
-            totalEvent =  rs.getInt(1);
-        } catch(Exception exc) {
-            throw new AuditAccessException("Cannot read audit information from database ", exc);
-        } finally {
-           closeResultSet(rs);
-           closeStatement(stmt);
-           closeConnection(sqlConn);
-        }
-        return totalEvent;
-    }
-
-    /** {@inheritDoc} */
     public boolean saveEvent(Event evt) {
         Util.assertEvent(evt);
         
@@ -110,8 +86,7 @@ public class JdbcEventRepository extends AbstractEventRepository {
             int idx = 9;
             Map < Integer, String > statementParams = new HashMap<Integer, String>();
             
-            StringBuilder sb = new StringBuilder("INSERT INTO " +
-            		getQueryBuilder().getTableName("AUDIT") + 
+            StringBuilder sb = new StringBuilder("INSERT INTO " + getQueryBuilder().getAuditTableName() + 
             		"(EVT_UUID,EVT_TIME,EVT_TYPE,EVT_NAME,EVT_ACTION,EVT_HOSTNAME,EVT_SOURCE,EVT_DURATION");
             if (Util.hasLength(evt.getUser())) {
                 sb.append(", EVT_USER");
@@ -344,64 +319,68 @@ public class JdbcEventRepository extends AbstractEventRepository {
 		this.queryBuilder = queryBuilder;
 	}
 
+    /** {@inheritDoc} */
     @Override
     public Map<String, MutableHitCount> getFeatureUsageHitCount(EventQueryDefinition query) {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public TimeSeriesChart getFeatureUsageHistory(EventQueryDefinition query, TimeUnit tu) {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public EventSeries searchFeatureUsageEvents(EventQueryDefinition query) {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void purgeFeatureUsage(EventQueryDefinition query) {
-        // TODO Auto-generated method stub
-        
     }
 
+    /** {@inheritDoc} */
     @Override
     public Map<String, MutableHitCount> getHostHitCount(EventQueryDefinition query) {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Map<String, MutableHitCount> getUserHitCount(EventQueryDefinition query) {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Map<String, MutableHitCount> getSourceHitCount(EventQueryDefinition query) {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public TimeSeriesChart getAverageResponseTime(EventQueryDefinition query, TimeUnit tu) {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public EventSeries getAuditTrail(EventQueryDefinition query) {
-        // TODO Auto-generated method stub
         return new EventSeries();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void purgeAuditTrail(EventQueryDefinition query) {
-        // TODO Auto-generated method stub
-        
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Event getEventByUUID(String uuid, Long timestamp) {
+        return null;
     }    
     
 }
