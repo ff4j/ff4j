@@ -108,18 +108,21 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void enable(String uid) {
     	assertFeatureExist(uid);
         update(getQueryBuilder().enableFeature(), uid);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void disable(String uid) {
     	assertFeatureExist(uid);
         update(getQueryBuilder().disableFeature(), uid);
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean exist(String uid) {
     	assertHasLength(uid);
         Connection          sqlConn = null;
@@ -141,6 +144,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
     }
 
     /** {@inheritDoc} */
+   @Override
    public Feature read(String uid) {
     	assertFeatureExist(uid);
         Connection          sqlConn = null;
@@ -154,7 +158,15 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             Feature f = null;
             if (rs.next()) {
                 f = JDBC_FEATURE_MAPPER.mapFeature(rs);
+                closeResultSet(rs);
+                rs = null;
+                closeStatement(ps);
+                ps = null;
             } else {
+                closeResultSet(rs);
+                rs = null;
+                closeStatement(ps);
+                ps = null;
                 throw new FeatureNotFoundException(uid);
             }
 
@@ -165,6 +177,10 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             while (rs.next()) {
                 f.getPermissions().add(rs.getString("ROLE_NAME"));
             }
+            closeResultSet(rs);
+            rs = null;
+            closeStatement(ps);
+            ps = null;
 
             // Enrich with properties 3d request to get custom properties by uid
             ps = sqlConn.prepareStatement(getQueryBuilder().getFeatureProperties());
@@ -185,6 +201,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void create(Feature fp) {
     	assertFeatureNotNull(fp);
     	Connection sqlConn = null;
@@ -215,6 +232,8 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             ps.setString(5, expressionColumn);
             ps.setString(6, fp.getGroup());
             ps.executeUpdate();
+            closeStatement(ps);
+            ps = null;
 
             // Create roles
             if (fp.getPermissions() != null) {
@@ -223,6 +242,8 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
                     ps.setString(1, fp.getUid());
                     ps.setString(2, role);
                     ps.executeUpdate();
+                    closeStatement(ps);
+                    ps = null;
                 }
             }
 
@@ -230,6 +251,8 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             if (fp.getCustomProperties() != null && !fp.getCustomProperties().isEmpty()) {
                 for (Property<?> pp : fp.getCustomProperties().values()) {
                     ps = createCustomProperty(sqlConn, fp.getUid(), pp);
+                    closeStatement(ps);
+                    ps = null;
                 }
             }
 
@@ -246,6 +269,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void delete(String uid) {
     	assertFeatureExist(uid);
         Connection sqlConn = null;
@@ -263,6 +287,8 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
                     ps.setString(1, property);
                     ps.setString(2, fp.getUid());
                     ps.executeUpdate();
+                    closeStatement(ps);
+                    ps = null;
                 }
             }
 
@@ -273,6 +299,8 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
                     ps.setString(1, fp.getUid());
                     ps.setString(2, role);
                     ps.executeUpdate();
+                    closeStatement(ps);
+                    ps = null;
                 }
             }
 
@@ -280,6 +308,8 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             ps = sqlConn.prepareStatement(getQueryBuilder().deleteFeature());
             ps.setString(1, fp.getUid());
             ps.executeUpdate();
+            closeStatement(ps);
+            ps = null;
 
             // Commit
             sqlConn.commit();
@@ -294,6 +324,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void grantRoleOnFeature(String uid, String roleName) {
     	assertFeatureExist(uid);
         assertHasLength(roleName);
@@ -301,6 +332,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void removeRoleFromFeature(String uid, String roleName) {
     	assertFeatureExist(uid);
         assertHasLength(roleName);
@@ -308,6 +340,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public Map<String, Feature> readAll() {
         LinkedHashMap<String, Feature> mapFP = new LinkedHashMap<String, Feature>();
         Connection sqlConn = null;
@@ -323,14 +356,22 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
                 Feature f = JDBC_FEATURE_MAPPER.mapFeature(rs);
                 mapFP.put(f.getUid(), f);
             }
+            closeResultSet(rs);
+            rs = null;
+            closeStatement(ps);
+            ps = null;
 
             // Returns Roles
-            rs = ps.getConnection().prepareStatement(
-            		getQueryBuilder().getAllRoles()).executeQuery();
+            ps = sqlConn.prepareStatement(getQueryBuilder().getAllRoles());
+            rs = ps.executeQuery();
             while (rs.next()) {
                 String uid = rs.getString(COL_ROLE_FEATID);
                 mapFP.get(uid).getPermissions().add(rs.getString(COL_ROLE_ROLENAME));
             }
+            closeResultSet(rs);
+            rs = null;
+            closeStatement(ps);
+            ps = null;
 
             // Read custom properties for each feature
             for (Feature f : mapFP.values()) {
@@ -346,6 +387,11 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
                     Property<?> property = JDBC_PROPERTY_MAPPER.map(rs);
                     f.getCustomProperties().put(property.getName(), property);
                 }
+
+                closeResultSet(rs);
+                rs = null;
+                closeStatement(ps);
+                ps = null;
             }
 
             return mapFP;
@@ -360,6 +406,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public Set<String> readAllGroups() {
         Set<String> setOFGroup = new HashSet<String>();
         Connection sqlConn = null;
@@ -387,6 +434,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void update(Feature fp) {
     	assertFeatureNotNull(fp);
         Connection sqlConn = null;
@@ -446,6 +494,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void clear() {
         Connection sqlConn = null;
         PreparedStatement ps = null;
@@ -455,12 +504,18 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
 
             ps = sqlConn.prepareStatement(getQueryBuilder().deleteAllCustomProperties());
             ps.executeUpdate();
+            closeStatement(ps);
+            ps = null;
 
             ps = sqlConn.prepareStatement(getQueryBuilder().deleteAllRoles());
             ps.executeUpdate();
+            closeStatement(ps);
+            ps = null;
 
             ps = sqlConn.prepareStatement(getQueryBuilder().deleteAllFeatures());
             ps.executeUpdate();
+            closeStatement(ps);
+            ps = null;
 
         } catch (SQLException sqlEX) {
             throw new FeatureAccessException(CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE, sqlEX);
@@ -494,6 +549,8 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             // Queries
             for (Property<?> pp : props) {
                 ps = createCustomProperty(sqlConn, uid, pp);
+                closeStatement(ps);
+                ps = null;
             }
 
             // End TX
@@ -540,6 +597,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean existGroup(String groupName) {
     	assertHasLength(groupName);
         Connection sqlConn = null;
@@ -562,18 +620,21 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void enableGroup(String groupName) {
     	assertGroupExist(groupName);
         update(getQueryBuilder().enableGroup(), groupName);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void disableGroup(String groupName) {
     	assertGroupExist(groupName);
         update(getQueryBuilder().disableGroup(), groupName);
     }
 
     /** {@inheritDoc} */
+    @Override
     public Map<String, Feature> readGroup(String groupName) {
     	assertGroupExist(groupName);
         LinkedHashMap<String, Feature> mapFP = new LinkedHashMap<String, Feature>();
@@ -593,10 +654,14 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
                 Feature f = JDBC_FEATURE_MAPPER.mapFeature(rs);
                 mapFP.put(f.getUid(), f);
             }
+            closeResultSet(rs);
+            rs = null;
+            closeStatement(ps);
+            ps = null;
 
             // Returns Roles
-            rs = ps.getConnection().prepareStatement(
-            		getQueryBuilder().getAllRoles()).executeQuery();
+            ps = sqlConn.prepareStatement(getQueryBuilder().getAllRoles());
+            rs = ps.executeQuery();
             while (rs.next()) {
                 String uid = rs.getString(COL_ROLE_FEATID);
                 // only feature in the group must be processed
@@ -604,6 +669,10 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
                     mapFP.get(uid).getPermissions().add(rs.getString(COL_ROLE_ROLENAME));
                 }
             }
+            closeResultSet(rs);
+            rs = null;
+            closeStatement(ps);
+            ps = null;
 
             // Read custom properties for each feature
             for (Feature f : mapFP.values()) {
@@ -619,6 +688,11 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
                     Property<?> property = JDBC_PROPERTY_MAPPER.map(rs);
                     f.getCustomProperties().put(property.getName(), property);
                 }
+
+                closeResultSet(rs);
+                rs = null;
+                closeStatement(ps);
+                ps = null;
             }
 
             return mapFP;
@@ -633,6 +707,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void addToGroup(String uid, String groupName) {
     	assertFeatureExist(uid);
         assertHasLength(groupName);
@@ -640,6 +715,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void removeFromGroup(String uid, String groupName) {
     	assertFeatureExist(uid);
         assertGroupExist(groupName);
