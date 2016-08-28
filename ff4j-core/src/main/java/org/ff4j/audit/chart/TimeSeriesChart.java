@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.ff4j.audit.MutableHitCount;
+import org.ff4j.utils.JsonUtils;
 
 /*
  * #%L
@@ -64,7 +65,41 @@ public class TimeSeriesChart extends AbstractChart {
             val.put(slot, new MutableHitCount());
         }
         newSerie.setValue(val);
+        series.put(idSerie, newSerie);
     }
+    
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("{");
+        sb.append("\"slots\" : " + JsonUtils.collectionAsJson(timeSlots));
+        StringBuilder sbNames  = new StringBuilder("[");
+        StringBuilder sbColors = new StringBuilder("[");
+        StringBuilder sbValues = new StringBuilder("[");
+        boolean first = true;
+        for (Serie< Map < String, MutableHitCount >> serie : series.values()) {
+            // Name
+            sbNames.append(first ? "" : ",");
+            sbNames.append(JsonUtils.valueAsJson(serie.getLabel()));
+            // Color
+            sbColors.append(first ? "" : ",");
+            sbColors.append(JsonUtils.valueAsJson("#" + serie.getColor()));
+            // Values
+            sbValues.append(first ? "" : ",");
+            sbValues.append(serie.getValue().values().toString());
+            first = false;
+        }
+        sbNames.append("]");
+        sbColors.append("]");
+        sbValues.append("]");
+        sb.append(", \"serieNames\" : " + sbNames.toString());
+        sb.append(", \"serieColors\" : " + sbColors.toString());
+        sb.append(", \"serieValues\" : " + sbValues.toString());
+        sb.append("}");
+        return sb.toString();
+    }
+
     
     /**
      * Getter accessor for attribute 'sdf'.
@@ -122,6 +157,5 @@ public class TimeSeriesChart extends AbstractChart {
     public void setSeries(Map<String, Serie<Map<String, MutableHitCount>>> series) {
         this.series = series;
     }
-    
     
 }

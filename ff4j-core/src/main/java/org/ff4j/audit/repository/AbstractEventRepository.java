@@ -61,19 +61,19 @@ public abstract class AbstractEventRepository implements EventRepository {
     /** {@inheritDoc} */
     @Override
     public PieChart getHostPieChart(EventQueryDefinition q) {
-        return renderPieChartGradient("HostName Pie FROM " + getTitle(q), getHostHitCount(q), "00AB8B", "EEFFEE");
+        return renderPieChartGradient("HostNames " + getTitle(q), getHostHitCount(q), "00AB8B", "EEFFEE");
     }
     
     /** {@inheritDoc} */
     @Override
     public PieChart getSourcePieChart(EventQueryDefinition q) {
-       return renderPieChartGradient("Sources Pie FROM "  + getTitle(q), getSourceHitCount(q), "AB008B", "FFEEEE");
+       return renderPieChartGradient("Sources "  + getTitle(q), getSourceHitCount(q), "AB008B", "FFEEEE");
     }
     
     /** {@inheritDoc} */
     @Override
     public PieChart getUserPieChart(EventQueryDefinition q) {
-       return renderPieChartGradient("User Pie FROM " + getTitle(q), getUserHitCount(q), "008BAB", "EEEEFF");
+       return renderPieChartGradient("Users " + getTitle(q), getUserHitCount(q), "008BAB", "EEEEFF");
     }
     
     /**
@@ -137,7 +137,7 @@ public abstract class AbstractEventRepository implements EventRepository {
      *      title formated with slot.
      */
     protected String getTitle(EventQueryDefinition q) {
-        return " FROM " + getKeyDate(q.getFrom()) + " TO " + getKeyDate(q.getTo());
+        return " FROM <b>" + getKeyDate(q.getFrom()) + "</b> TO <b>" + getKeyDate(q.getTo()) + "</b>";
     }
             
     /**

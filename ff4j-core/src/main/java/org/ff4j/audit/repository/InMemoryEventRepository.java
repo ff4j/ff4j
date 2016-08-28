@@ -187,6 +187,7 @@ public class InMemoryEventRepository extends AbstractEventRepository {
     private TimeSeriesChart initSlots(EventQueryDefinition query, TimeUnit units) {
         TimeSeriesChart tsc = new TimeSeriesChart();
         long slotWitdh = 0;
+        
         switch (units) {
             case MINUTES:
                 slotWitdh = 1000 * 60;
@@ -208,7 +209,9 @@ public class InMemoryEventRepository extends AbstractEventRepository {
         // Create slots for the timeSeries base ones
         int nbslot = new Long(1 + (query.getTo() - query.getFrom()) / slotWitdh).intValue();
         for (int i = 0; i < nbslot; i++) {
-            tsc.getTimeSlots().add(tsc.getSdf().format(new Date(query.getFrom() + slotWitdh * i)));
+            long startSlotTime = query.getFrom() + slotWitdh * i;
+            String slotLabel   = tsc.getSdf().format(new Date(startSlotTime));
+            tsc.getTimeSlots().add(slotLabel);
         }
         return tsc;
     }
@@ -216,29 +219,34 @@ public class InMemoryEventRepository extends AbstractEventRepository {
     /** {@inheritDoc} */
     @Override
     public TimeSeriesChart getFeatureUsageHistory(EventQueryDefinition query, TimeUnit units) {
+        // Create the interval depending on units
         TimeSeriesChart tsc = initSlots(query, units);
-
+        
         for (String currentDay : getCandidateDays(query.getFrom(), query.getTo())) {
             // There are some event this day
             if (featureUsageEvents.containsKey(currentDay)) {
                 for (Map.Entry<String, EventSeries> entry : featureUsageEvents.get(currentDay).entrySet()) {
+                    String currentFeatureName = entry.getKey();
                     // Filter feature names if required
                     Set < String > filteredFeatures = query.getNamesFilter();
-                    if (filteredFeatures == null || filteredFeatures.isEmpty() || filteredFeatures.contains(entry.getKey())) {
+                    if (filteredFeatures == null || filteredFeatures.isEmpty() || filteredFeatures.contains(currentFeatureName)) {
                         // Loop over events
                         for (Event evt : entry.getValue()) {
                             // Between bounds (keydate not enough)
                             if (isEventInInterval(evt, query.getFrom(), query.getTo())) {
                                 // Create new serie if new feature Name
-                                if (!tsc.getSeries().containsKey((entry.getKey()))) {
-                                    tsc.createNewSerie(entry.getKey());
+                                if (!tsc.getSeries().containsKey((currentFeatureName))) {
+                                    tsc.createNewSerie(currentFeatureName);
                                 }
-
-                                // Get correct slot
-                                String evtKeyDate = tsc.getSdf().format(new Date(evt.getTimestamp()));
-
-                                // match featureName, match slot, increment
-                                tsc.getSeries().get(entry.getKey()).getValue().get(evtKeyDate).inc();
+                                // Match FeatureName
+                                Serie < Map<String , MutableHitCount > > serie = tsc.getSeries().get(currentFeatureName);
+                                // Match SlotName
+                                String slotName = tsc.getSdf().format(new Date(evt.getTimestamp()));
+                                // Should be always 'true' as the tsc.getsdf().format() will get a slotName.
+                                if (serie.getValue().containsKey(slotName)) {
+                                    // Fast Increment
+                                    serie.getValue().get(slotName).inc();
+                                }
                             }
                         }
                     }
@@ -247,7 +255,7 @@ public class InMemoryEventRepository extends AbstractEventRepository {
         }
         
         // Recolor series
-        List < String > colors = Util.getColorsGradient(tsc.getSeries().size());
+        List < String > colors = Util.generateHSVGradient("ee1100", "442299", tsc.getSeries().size());
         int idxColor = 0;
         for (Map.Entry<String, Serie<Map<String, MutableHitCount>>> serie : tsc.getSeries().entrySet()) {
             serie.getValue().setColor(colors.get(idxColor));

@@ -68,4 +68,10 @@ public final class MutableHitCount {
         return value;
     }
     
+    /** {@inheritDoc} */
+    public String toString() {
+        return String.valueOf(get());
+    }
+
+    
 }

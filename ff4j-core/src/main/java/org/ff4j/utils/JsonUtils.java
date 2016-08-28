@@ -1,5 +1,7 @@
 package org.ff4j.utils;
 
+import java.util.Collection;
+
 /*
  * #%L
  * ff4j-core
@@ -22,7 +24,6 @@ package org.ff4j.utils;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.core.FlippingStrategy;
@@ -36,6 +37,65 @@ import org.ff4j.property.Property;
 public class JsonUtils {
  
     private JsonUtils() {
+    }
+    
+    /**
+     * Target primitive displayed as JSON.
+     *
+     * @param value
+     *      object value
+     * @return
+     *      target json expression
+     */
+    public static final String valueAsJson(Object value) {
+        if (value == null )          return "null";
+        if (value instanceof String) return "\"" + value + "\"";
+        return value.toString();
+    }
+    
+    /**
+     * Serialize a collection of object as Json. Element should eventually override <code>toString()</code> to produce JSON.
+     *
+     * @param pCollec
+     *      input collection
+     * @return
+     *      collection as String
+     */
+    public static final <T> String collectionAsJson(final Collection < T > pCollec) {
+        if (pCollec == null)   return "null";
+        if (pCollec.isEmpty()) return "[]";
+        StringBuilder json = new StringBuilder("[");
+        boolean first = true;
+        for (T element : pCollec) {
+            json.append(first ? "" : ",");
+            json.append(valueAsJson(element));
+            first = false;
+        }
+        json.append("]");
+        return json.toString();
+    }
+
+    /**
+     * Serialize a map of objects as Json. Elements should override <code>toString()</code> to produce JSON.
+     *
+     * @param customProperties
+     *      target properties
+     * @return
+     *      target json expression
+     */
+    public static final <K,V> String mapAsJson(final Map<K,V> pMap) {
+        if (pMap == null)   return "null";
+        if (pMap.isEmpty()) return "{}";
+        StringBuilder json = new StringBuilder("{");
+        boolean first = true;
+        for (Map.Entry<K,V> mapEntry : pMap.entrySet()) {
+            json.append(first ? "" : ",");
+            json.append(valueAsJson(mapEntry.getKey()) + ":");
+            json.append(valueAsJson(mapEntry.getValue()));
+            first = false;
+        }
+        json.append("}");
+        return json.toString();
     }
     
     /**
@@ -66,22 +126,7 @@ public class JsonUtils {
      *      flippling strategy as json.     
      */
     public static final String permissionsAsJson(final Set<String> permissions) {
-        StringBuilder json = new StringBuilder();
-        if (null != permissions) {
-            json.append("[");
-            if (!permissions.isEmpty()) {
-                boolean first = true;
-                for (String auth : permissions) {
-                    json.append(first ? "" : ",");
-                    json.append("\"" + auth + "\"");
-                    first = false;
-                }
-            }
-            json.append("]");
-        } else {
-            json.append("null");
-        }
-        return json.toString();
+        return collectionAsJson(permissions);
     }
     
     /**
@@ -91,24 +136,13 @@ public class JsonUtils {
      *      flippling strategy as json.     
      */
     public static final String flippingStrategyAsJson(final FlippingStrategy flippingStrategy) {
-        StringBuilder json = new StringBuilder();
-        if (null != flippingStrategy) {
-            json.append("{\"initParams\":{");
-            Map < String , String> iparams = flippingStrategy.getInitParams();
-            if (iparams != null && !iparams.isEmpty()) {
-                boolean first = true;
-                for (Entry<String, String> param : iparams.entrySet()) {
-                    json.append(first ? "" : ",");
-                    json.append("\"" + param.getKey() + "\":\"" + param.getValue() + "\"");
-                    first = false;
-                }
-            }
-            json.append("},\"type\":\"");
-            json.append(flippingStrategy.getClass().getCanonicalName());
-            json.append("\"}");
-        } else {
-            json.append("null");
-        }
+        if (flippingStrategy == null) return "null";
+        StringBuilder json = new StringBuilder("{");
+        json.append(valueAsJson("initParams") + ":");
+        json.append(mapAsJson(flippingStrategy.getInitParams()));
+        json.append("," + valueAsJson("type")  + ":");
+        json.append(valueAsJson(flippingStrategy.getClass().getCanonicalName()));
+        json.append("}");
         return json.toString();
     }
     
@@ -121,17 +155,7 @@ public class JsonUtils {
      *      target json expression
      */
     public static final String customPropertiesAsJson(final Map<String, ? extends Property<?>> customProperties) {
-        StringBuilder json = new StringBuilder("{");
-        if (null != customProperties && !customProperties.isEmpty()) {
-            boolean first = true;
-            for (Map.Entry<String, ? extends Property<?>> key : customProperties.entrySet()) {
-                json.append(first ? "" : ",");
-                json.append("\"" + key.getKey() + "\":" + key.getValue().toJson());
-                first = false;
-            }
-        }
-        json.append("}");
-        return json.toString();
+        return mapAsJson(customProperties);
     }
 
 }
