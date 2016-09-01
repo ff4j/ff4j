@@ -24,12 +24,14 @@ package org.ff4j.test.property;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
+import java.util.Date;
 
 import org.ff4j.property.PropertyBigDecimal;
 import org.ff4j.property.PropertyBigInteger;
 import org.ff4j.property.PropertyBoolean;
 import org.ff4j.property.PropertyByte;
 import org.ff4j.property.PropertyCalendar;
+import org.ff4j.property.PropertyClass;
 import org.ff4j.property.PropertyDate;
 import org.ff4j.property.PropertyDouble;
 import org.ff4j.property.PropertyFloat;
@@ -201,9 +203,22 @@ public class PropertyTest {
         PropertyDate d0 = new PropertyDate();
         d0.fromString("2015-01-02 13:00:00");
         PropertyDate d1 = new PropertyDate("d1");
-        PropertyDate d2 = new PropertyDate("d2", "2015-01-02 13:00:00");
         Assert.assertNotNull(d1.getName());
+        PropertyDate d2 = new PropertyDate("d2", "2015-01-02 13:00:00");
         Assert.assertNotNull(d2.getName());
+        Date dd = null;
+        PropertyDate d3 = new PropertyDate("d3", dd);
+        Assert.assertNull(d3.asString());
+    }
+    
+    @Test
+    public void tesInitPropertyClass() {
+        PropertyClass c0 = new PropertyClass();
+        c0.fromString(String.class.getName());
+        new PropertyClass("c1");
+        new PropertyClass("c2", String.class.getName());
+        PropertyClass c3 = new PropertyClass("c3", String.class);
+        Assert.assertEquals(String.class.getName(), c3.asString());
     }
     
     @Test(expected = IllegalArgumentException.class)

@@ -1,5 +1,25 @@
 package org.ff4j.store;
 
+import static org.ff4j.audit.EventConstants.ACTION_CHECK_OK;
+import static org.ff4j.audit.EventConstants.ACTION_CLEAR;
+import static org.ff4j.audit.EventConstants.ACTION_CONNECT;
+import static org.ff4j.audit.EventConstants.ACTION_CREATE;
+import static org.ff4j.audit.EventConstants.ACTION_DELETE;
+import static org.ff4j.audit.EventConstants.ACTION_DISCONNECT;
+import static org.ff4j.audit.EventConstants.ACTION_TOGGLE_OFF;
+import static org.ff4j.audit.EventConstants.ACTION_TOGGLE_ON;
+import static org.ff4j.audit.EventConstants.ACTION_UPDATE;
+import static org.ff4j.store.JdbcStoreConstants.COL_EVENT_ACTION;
+import static org.ff4j.store.JdbcStoreConstants.COL_EVENT_HOSTNAME;
+import static org.ff4j.store.JdbcStoreConstants.COL_EVENT_NAME;
+import static org.ff4j.store.JdbcStoreConstants.COL_EVENT_SOURCE;
+import static org.ff4j.store.JdbcStoreConstants.COL_EVENT_TIME;
+import static org.ff4j.store.JdbcStoreConstants.COL_EVENT_TYPE;
+import static org.ff4j.store.JdbcStoreConstants.COL_EVENT_UUID;
+import static org.ff4j.store.JdbcStoreConstants.COL_EVENT_USER;
+
+import java.util.Collection;
+
 /*
  * #%L
  * ff4j-core
@@ -22,8 +42,7 @@ package org.ff4j.store;
 
 
 import org.ff4j.audit.EventConstants;
-
-import static org.ff4j.store.JdbcStoreConstants.*;
+import org.ff4j.audit.EventQueryDefinition;
 
 /**
  * Create JDBC queries for FF4J with capabilities to 
@@ -347,55 +366,148 @@ public class JdbcQueryBuilder {
 	}
 	
     // ------- AUDIT -------------
-     
-    public String countAudit() {
-    	StringBuilder sb = new StringBuilder();
-		sb.append("SELECT COUNT(*) FROM ");
-		sb.append(getTableName("AUDIT"));
-		return sb.toString();
+	
+	public String getEventByUuidQuery() {
+	     StringBuilder sb = new StringBuilder();
+	     sb.append("SELECT * FROM ");
+	     sb.append(getAuditTableName());
+	     sb.append(" WHERE " + COL_EVENT_UUID + " LIKE ?");
+	     return sb.toString();
+	}
+	
+	public String getPurgeFeatureUsageQuery(EventQueryDefinition eqd) {
+	    StringBuilder sb = new StringBuilder();
+        sb.append("DELETE FROM ");
+        sb.append(getAuditTableName());
+        sb.append(buildWhereClause(eqd, true, false));
+        return sb.toString();
+	}
+	
+	public String getSelectFeatureUsageQuery(EventQueryDefinition eqd) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT * FROM ");
+        sb.append(getAuditTableName());
+        sb.append(buildWhereClause(eqd, true, false));
+        return sb.toString();
     }
-    
-    public String listFeaturesAudit() {
-    	StringBuilder sb = new StringBuilder();
-		sb.append("SELECT DISTINCT " + COL_EVENT_NAME + " FROM ");
-		sb.append(getTableName("AUDIT"));
-		sb.append(" WHERE " + COL_EVENT_TYPE + " LIKE '" + EventConstants.TARGET_FEATURE + "'");
-		return sb.toString();
+	
+    public String getPurgeAuditTrailQuery(EventQueryDefinition eqd) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("DELETE FROM ");
+        sb.append(getAuditTableName());
+        sb.append(buildWhereClause(eqd, false, true));
+        return sb.toString();
     }
-    
-    public String getFeaturesPieAudit() {
-    	StringBuilder sb = new StringBuilder();
-		sb.append("SELECT count(" + COL_EVENT_UUID + ") as NB, " + COL_EVENT_NAME + " FROM ");
-		sb.append(getTableName("AUDIT"));
-		sb.append(" WHERE (" + COL_EVENT_TYPE   + " LIKE '" + EventConstants.TARGET_FEATURE  + "') ");
-		sb.append(" AND   (" + COL_EVENT_ACTION + " LIKE '" + EventConstants.ACTION_CHECK_OK + "') ");
-		sb.append(" AND   (" + COL_EVENT_TIME + "> ?) ");
-		sb.append(" AND   (" + COL_EVENT_TIME + "< ?)");
-		sb.append(" GROUP BY " + COL_EVENT_NAME);
-		return sb.toString();
+	
+	public String getSelectAuditTrailQuery(EventQueryDefinition eqd) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT * FROM ");
+        sb.append(getAuditTableName());
+        sb.append(buildWhereClause(eqd, false, true));
+        return sb.toString();
     }
+	
+	public String getHitCount(String columName) {
+	    StringBuilder sb = new StringBuilder();
+        sb.append("SELECT count(" + COL_EVENT_UUID + ") as NB, " + columName + " FROM ");
+        sb.append(getTableName("AUDIT"));
+        sb.append(" WHERE (" + COL_EVENT_TYPE   + " LIKE '" + EventConstants.TARGET_FEATURE  + "') ");
+        sb.append(" AND   (" + COL_EVENT_ACTION + " LIKE '" + EventConstants.ACTION_CHECK_OK + "') ");
+        sb.append(" AND   (" + COL_EVENT_TIME + "> ?) ");
+        sb.append(" AND   (" + COL_EVENT_TIME + "< ?)");
+        sb.append(" GROUP BY " + columName);
+        return sb.toString();
+	}
+	
+	public String getFeaturesHitCount() {
+	    return getHitCount(COL_EVENT_NAME);
+    }
+	
+	public String getHostHitCount() {
+	    return getHitCount(COL_EVENT_HOSTNAME);
+    }
+	
+	public String getUserHitCount() {
+	    return getHitCount(COL_EVENT_USER);
+    }
+	
+	public String getSourceHitCount() {
+        return getHitCount(COL_EVENT_SOURCE);
+    }
+	
+	// -------
    
     public String getFeatureDistributionAudit() {
-    	StringBuilder sb = new StringBuilder();
-		sb.append("SELECT count(" + COL_EVENT_UUID + ") as NB, " + COL_EVENT_ACTION + " FROM ");
-		sb.append(getTableName("AUDIT"));
-		sb.append(" WHERE (" + COL_EVENT_TYPE + " LIKE '" + EventConstants.TARGET_FEATURE  + "') ");
-		sb.append(" AND   (" + COL_EVENT_NAME + " LIKE ?) ");
-		sb.append(" AND   (" + COL_EVENT_TIME + "> ?) ");
-		sb.append(" AND   (" + COL_EVENT_TIME + "< ?)");
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT count(" + COL_EVENT_UUID + ") as NB, " + COL_EVENT_ACTION + " FROM ");
+        sb.append(getTableName("AUDIT"));
+        sb.append(" WHERE (" + COL_EVENT_TYPE + " LIKE '" + EventConstants.TARGET_FEATURE  + "') ");
+        sb.append(" AND   (" + COL_EVENT_NAME + " LIKE ?) ");
+        sb.append(" AND   (" + COL_EVENT_TIME + "> ?) ");
+        sb.append(" AND   (" + COL_EVENT_TIME + "< ?)");
         sb.append(" GROUP BY " + COL_EVENT_ACTION);
-		return sb.toString();
+        return sb.toString();
     }
    
-    public String getAllEventsFeatureAudit() {
-    	StringBuilder sb = new StringBuilder();
-		sb.append("SELECT * FROM ");
-		sb.append(getTableName("AUDIT"));
-		sb.append(" WHERE (" + COL_EVENT_TYPE + " LIKE '" + EventConstants.TARGET_FEATURE  + "') ");
-		sb.append(" AND   (" + COL_EVENT_NAME + " LIKE ? )");
-		sb.append(" AND   (" + COL_EVENT_TIME + "> ?)");
-		sb.append(" AND   (" + COL_EVENT_TIME + "< ?)");
-		return sb.toString();
+    
+	private String buildClauseIn(Collection < String> elements) {
+	    boolean first = true;
+	    StringBuilder sb = new StringBuilder("(");
+	    for (String el : elements) {
+	        if (!first) {
+	            sb.append(",");
+	        }
+	        sb.append("'");
+	        sb.append(el);
+	        sb.append("'");
+            first = false;
+        }
+	    sb.append(")");
+	    return sb.toString();
+	}
+	
+    public String buildWhereClause(EventQueryDefinition qDef, boolean filterForCheck, boolean filterAuditTrail) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" WHERE (" + COL_EVENT_TIME + "> ?) ");
+        sb.append(" AND   (" + COL_EVENT_TIME + "< ?) ");
+        // If a dedicated filter is there use it
+        if (qDef.getActionFilters().isEmpty()) {
+            if (filterForCheck) {
+                qDef.getActionFilters().add(ACTION_CHECK_OK);
+            }
+            if (filterAuditTrail) {
+                qDef.getActionFilters().add(ACTION_CONNECT);
+                qDef.getActionFilters().add(ACTION_DISCONNECT);
+                qDef.getActionFilters().add(ACTION_TOGGLE_ON);
+                qDef.getActionFilters().add(ACTION_TOGGLE_OFF);
+                qDef.getActionFilters().add(ACTION_CREATE);
+                qDef.getActionFilters().add(ACTION_DELETE);
+                qDef.getActionFilters().add(ACTION_UPDATE);
+                qDef.getActionFilters().add(ACTION_CLEAR);
+            }
+        }
+        if (qDef.getActionFilters() != null && !qDef.getActionFilters().isEmpty()) {
+            sb.append(" AND (" + COL_EVENT_ACTION + " IN ");
+            sb.append(buildClauseIn(qDef.getActionFilters()));
+            sb.append(")");
+        }
+        if (qDef.getHostFilters() != null && !qDef.getHostFilters().isEmpty()) {
+            sb.append(" AND (" + COL_EVENT_HOSTNAME + " IN ");
+            sb.append(buildClauseIn(qDef.getHostFilters()));
+            sb.append(")");
+            
+        }
+        if (qDef.getNamesFilter() != null && !qDef.getNamesFilter().isEmpty()) {
+            sb.append(" AND (" + COL_EVENT_NAME + " IN ");
+            sb.append(buildClauseIn(qDef.getNamesFilter()));
+            sb.append(")");
+        }
+        if (qDef.getSourceFilters() != null && !qDef.getSourceFilters().isEmpty()) {
+            sb.append(" AND (" + COL_EVENT_SOURCE + " IN ");
+            sb.append(buildClauseIn(qDef.getSourceFilters()));
+            sb.append(")");
+        }
+        return sb.toString();
     }
 	
 }

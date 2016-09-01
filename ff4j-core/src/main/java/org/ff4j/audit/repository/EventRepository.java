@@ -238,21 +238,7 @@ public interface EventRepository {
      * return target bar
      */
     BarChart getSourceBarChart(EventQueryDefinition query);
-   
-    /**
-     * Through AOP we can have the response time.
-     * 
-     * @param starTime
-     *      begin date
-     * @param endTime
-     *      end time
-     * @param tu
-     *      current timeUnit
-     * @return
-     *      time serie
-     */
-    TimeSeriesChart getAverageResponseTime(EventQueryDefinition query, TimeUnit tu);
-    
+  
     /**
      * Display audit trail as list of Event.
      *

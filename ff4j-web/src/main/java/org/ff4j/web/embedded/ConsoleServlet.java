@@ -12,7 +12,6 @@ import static org.ff4j.web.embedded.ConsoleConstants.OP_CREATE_FEATURE;
 import static org.ff4j.web.embedded.ConsoleConstants.OP_CREATE_PROPERTY;
 import static org.ff4j.web.embedded.ConsoleConstants.OP_DELETE_FIXEDVALUE;
 import static org.ff4j.web.embedded.ConsoleConstants.OP_DISABLE;
-import static org.ff4j.web.embedded.ConsoleConstants.OP_EDIT_FEATURE;
 import static org.ff4j.web.embedded.ConsoleConstants.OP_EDIT_PROPERTY;
 import static org.ff4j.web.embedded.ConsoleConstants.OP_ENABLE;
 import static org.ff4j.web.embedded.ConsoleConstants.OP_EXPORT;
@@ -27,7 +26,6 @@ import static org.ff4j.web.embedded.ConsoleOperations.createFeature;
 import static org.ff4j.web.embedded.ConsoleOperations.createProperty;
 import static org.ff4j.web.embedded.ConsoleOperations.exportFile;
 import static org.ff4j.web.embedded.ConsoleOperations.importFile;
-import static org.ff4j.web.embedded.ConsoleOperations.updateFeatureDescription;
 import static org.ff4j.web.embedded.ConsoleOperations.updateProperty;
 import static org.ff4j.web.embedded.ConsoleRenderer.msg;
 import static org.ff4j.web.embedded.ConsoleRenderer.renderMessageBox;
@@ -66,7 +64,7 @@ import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
 import org.ff4j.web.ApiConfig;
-import org.ff4j.web.FF4jInitServlet;
+import org.ff4j.web.FF4jServlet;
 import org.ff4j.web.console.ImageProvider;
 import org.ff4j.web.console.ImageProvider.ImageType;
 import org.slf4j.Logger;
@@ -78,7 +76,7 @@ import org.thymeleaf.context.WebContext;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class ConsoleServlet extends FF4jInitServlet {
+public class ConsoleServlet extends FF4jServlet {
 
     /** serial number. */
     private static final long serialVersionUID = -3982043895954284269L;
@@ -291,11 +289,7 @@ public class ConsoleServlet extends FF4jInitServlet {
                 LOGGER.info("POST - op=" + operation + " feat=" + uid);
                 if (operation != null && !operation.isEmpty()) {
 
-                    if (OP_EDIT_FEATURE.equalsIgnoreCase(operation)) {
-                        updateFeatureDescription(getFf4j(), req);
-                        message = msg(uid, "UPDATED");
-
-                    } else if (OP_EDIT_PROPERTY.equalsIgnoreCase(operation)) {
+                    if (OP_EDIT_PROPERTY.equalsIgnoreCase(operation)) {
                         updateProperty(getFf4j(), req);
                         message = renderMsgProperty(uid, "UPDATED");
                        

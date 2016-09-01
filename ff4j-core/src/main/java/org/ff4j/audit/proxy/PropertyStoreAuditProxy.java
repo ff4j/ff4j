@@ -115,6 +115,12 @@ public class PropertyStoreAuditProxy implements PropertyStore {
     }
     
     /** {@inheritDoc} */
+    @Override
+    public Property<?> readProperty(String name, Property<?> defaultValue) {
+        return target.readProperty(name, defaultValue);
+    }
+    
+    /** {@inheritDoc} */
     public Map<String, Property<?>> readAllProperties() {
         return target.readAllProperties();
     }
@@ -181,5 +187,7 @@ public class PropertyStoreAuditProxy implements PropertyStore {
 	public PropertyStore getTarget() {
 		return target;
 	}
+
+   
 
 }

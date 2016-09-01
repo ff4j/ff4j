@@ -137,6 +137,14 @@ public abstract class AbstractPropertyStore implements PropertyStore {
             }
         }
     }
-
+    
+    /** {@inheritDoc} */
+    public Property<?> readProperty(String name, Property < ? > defaultValue) {
+        try {
+            return readProperty(name);
+        } catch(PropertyNotFoundException pnf) {
+            return defaultValue;
+        }
+    }
     
 }

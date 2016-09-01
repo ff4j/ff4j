@@ -23,22 +23,25 @@ package org.ff4j.test.audit;
 
 import static org.ff4j.audit.EventConstants.ACTION_CHECK_OK;
 import static org.ff4j.audit.EventConstants.SOURCE_JAVA;
+import static org.ff4j.audit.EventConstants.SOURCE_WEB;
 import static org.ff4j.audit.EventConstants.TARGET_FEATURE;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.ff4j.audit.Event;
 import org.ff4j.audit.EventConstants;
 import org.ff4j.audit.EventPublisher;
 import org.ff4j.audit.EventQueryDefinition;
 import org.ff4j.audit.EventSeries;
+import org.ff4j.audit.MutableHitCount;
+import org.ff4j.audit.chart.BarChart;
 import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.core.Feature;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.utils.Util;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -104,12 +107,11 @@ public abstract class AbstractEventRepositoryTest {
     protected abstract EventRepository initRepository();
     
     @Test
-    @Ignore
     public void testSaveEventUnit() {
         long start = System.currentTimeMillis();
         Assert.assertEquals(0, repo.getFeatureUsageTotalHitCount(new EventQueryDefinition(start, System.currentTimeMillis())));
         repo.saveEvent(generateFeatureUsageEvent("f1"));
-        Assert.assertEquals(1, repo.getFeatureUsageTotalHitCount(new EventQueryDefinition(start, System.currentTimeMillis())));
+        Assert.assertEquals(1, repo.getFeatureUsageTotalHitCount(new EventQueryDefinition(start-10, System.currentTimeMillis())));
     }
     
     @Test(expected = IllegalArgumentException.class)
@@ -118,14 +120,57 @@ public abstract class AbstractEventRepositoryTest {
     }
     
     @Test
-    @Ignore
     public void testSaveAuditTrail() throws InterruptedException {
         long start = System.currentTimeMillis();
         Event evt1 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CREATE);
         Assert.assertTrue(repo.saveEvent(evt1));
-        Thread.sleep(100);
-        Assert.assertEquals(1, repo.getAuditTrail(new EventQueryDefinition(start, System.currentTimeMillis())).size());
+        Thread.sleep(200);
+        Assert.assertEquals(1, repo.getAuditTrail(new EventQueryDefinition(start-10, System.currentTimeMillis())).size());
     }
+    
+    @Test
+    public void testFeatureUsageBarCharts() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        // Create Event
+        repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CREATE));
+        for(int i = 0;i<8;i++) {
+            Thread.sleep(100);
+            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CHECK_OK));
+            repo.saveEvent(new Event(SOURCE_WEB, TARGET_FEATURE,  "f2", ACTION_CHECK_OK));
+        }
+        
+        // Assert bar chart (2 bars with 8 and 8)
+        EventQueryDefinition testQuery = new EventQueryDefinition(start-10, System.currentTimeMillis()+10);
+        BarChart bChart = repo.getFeatureUsageBarChart(testQuery);
+        Assert.assertEquals(2, bChart.getChartBars().size());
+        Assert.assertEquals(new Integer(8), bChart.getChartBars().get(0).getValue());
+        Assert.assertEquals(new Integer(8), bChart.getChartBars().get(1).getValue());
+        Assert.assertNotNull(bChart.getChartBars().get(0).getColor());
+        Assert.assertNotNull(bChart.getChartBars().get(1).getColor());
+    }
+    
+    @Test
+    public void testFeatureUsageHitCount() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        // Create Event
+        repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CREATE));
+        for(int i = 0;i<8;i++) {
+            Thread.sleep(100);
+            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CHECK_OK));
+            repo.saveEvent(new Event(SOURCE_WEB, TARGET_FEATURE, "f2", EventConstants.ACTION_CHECK_OK));
+        }
+        Thread.sleep(100);
+        
+        // Assert bar chart (2 bars with 8 and 8)
+        EventQueryDefinition testQuery = new EventQueryDefinition(start, System.currentTimeMillis());
+        // Assert Pie Chart (2 sectors with 8 and 8)
+        Map < String, MutableHitCount > mapOfHit = repo.getFeatureUsageHitCount(testQuery);
+        Assert.assertEquals(2, mapOfHit.size());
+        Assert.assertTrue(mapOfHit.containsKey("f1"));
+        Assert.assertTrue(mapOfHit.containsKey("f2"));
+        Assert.assertEquals(8, mapOfHit.get("f1").get());
+    }
+    
     
     @Test
     public void testSaveCheckOff() throws InterruptedException {

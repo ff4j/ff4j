@@ -133,12 +133,6 @@ public class EventRepositoryMongo extends AbstractEventRepository {
     }
 
     @Override
-    public TimeSeriesChart getAverageResponseTime(EventQueryDefinition query, TimeUnit tu) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public EventSeries getAuditTrail(EventQueryDefinition query) {
         // TODO Auto-generated method stub
         return null;

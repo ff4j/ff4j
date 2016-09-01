@@ -62,6 +62,16 @@ public interface PropertyStore {
     Property<?> readProperty(String name);
     
     /**
+     * Read property value and if not found return the default value
+     * 
+     * @param name
+     *      target property name
+     * @return
+     *      property of exist
+     */
+    Property<?> readProperty(String name, Property < ? > defaultValue);
+    
+    /**
      * Update existing property.
      *
      * @param name

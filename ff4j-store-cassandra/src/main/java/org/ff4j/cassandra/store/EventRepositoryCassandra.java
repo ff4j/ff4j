@@ -47,6 +47,7 @@ public abstract class EventRepositoryCassandra extends AbstractEventRepository {
         if (ttl > 0) {
             query += "USING TTL " + ttl;
         }
+        System.out.println(query);
         return true;
     }
 

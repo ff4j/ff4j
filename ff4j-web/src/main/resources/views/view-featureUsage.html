@@ -1,0 +1,213 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="header :: head"></head>
+
+<link rel="stylesheet" type="text/css" media="all" href="" th:href="@{static/js/jqplot/jquery.jqplot.min.css}" />
+
+<script type="text/javascript" src="" th:src="@{static/js/jqplot/jquery.jqplot.min.js}"></script>
+<script type="text/javascript" src="" th:src="@{static/js/jqplot/plugins/jqplot.barRenderer.min.js}"></script>
+<script type="text/javascript" src="" th:src="@{static/js/jqplot/plugins/jqplot.pieRenderer.min.js}"></script>
+<script type="text/javascript" src="" th:src="@{static/js/jqplot/plugins/jqplot.highlighter.min.js}"></script>
+<script type="text/javascript" src="" th:src="@{static/js/jqplot/plugins/jqplot.categoryAxisRenderer.min.js}"></script>
+<script type="text/javascript" src="" th:src="@{static/js/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js}"></script>
+<script type="text/javascript" src="" th:src="@{static/js/jqplot/plugins/jqplot.canvasTextRenderer.min.js}"></script>
+<script type="text/javascript" src="" th:src="@{static/js/jqplot/plugins/jqplot.dateAxisRenderer.min.js}"></script>
+<script type="text/javascript" src="" th:src="@{static/js/jqplot/plugins/jqplot.pointLabels.min.js}"></script>
+
+<!-- Date Picker -->
+<script type="text/javascript" src="" th:src="@{static/js/bootstrap-datetimepicker.min.js}"></script>
+<link rel="stylesheet" type="text/css" media="all" href="" th:href="@{static/css/bootstrap-datetimepicker.min.css}" />
+
+<body>
+  
+<div class="navbar navbar-fixed-top" th:include="navbar :: navbar"></div>
+
+<div class="subnavbar" th:include="navbar :: subnavbarsupervision"></div>
+
+<div id="wrapper" class="container" >
+ <div class="row">
+  <div class="span9"> 
+   <div id="content" class="clearfix" >
+    <div class="main-inner" style="margin-top:60px">
+     <div class="container">
+
+        <div class="row">
+       <div class="span12">     
+        <div class="widget">
+       
+        <div class="widget-header">
+         <i class="icon-bar-chart"></i>
+         <h3>Audit</h3>
+        </div>
+       
+        <div class="widget-content" style="text-align:center">
+        
+         <form class="form-horizontal" action="" th:action="@{featureUsage}" method="POST">
+    <h4 style="color:#00AB8B">
+      <div id="datetimepickerFrom1" class="input-append date">
+         &nbsp; From : &nbsp;
+        <input data-format="MM/dd/yyyy hh:mm:ss" type="text" name="slotfrom" id="slotfrom" th:value="${from}"></input>
+        <span class="add-on" style="background-color:#00AB8B;margin-left:-6px">
+         <i class="icon-calendar" style="width:40px;color:white"></i>
+        </span>
+      </div>
+      <div id="datetimepickerTo1" class="input-append date">
+         &nbsp; TO : &nbsp;
+        <input data-format="MM/dd/yyyy hh:mm:ss" type="text" name="slotto" id="slotto" th:value="${to}"></input>
+        <span class="add-on" style="background-color:#00AB8B;margin-left:-6px">
+         <i class="icon-calendar" style="width:40px;color:white"></i>
+        </span>
+      </div>
+      &nbsp;
+      <button class="btn " type="submit" style="background-color:#00AB8B;color:white;">
+        &nbsp;<span th:text="#{modal.button.validate}"></span>
+      </button>
+   </h4>
+ </form>
+ 
+        
+     </div>
+     </div>
+     </div>
+     </div>
+     
+        <div class="row">
+        
+         <div class="span4">
+
+ <div class="widget widget-nopad">
+  <div class="widget-header">
+   <i class="icon-bar-chart"></i>
+   <h3>Feature Usage</h3>
+  </div>
+  <div class="widget-content" style="padding:15x;">
+   <div id="pie" class="divpie" style="margin:20px"></div>
+    <script th:inline="javascript">
+        var startTime = /*[[${fromJS}]]*/ null;
+        var endTime   = /*[[${toJS}]]*/ null;
+        $(document).ready(ff4j_renderPie('pie', 
+        		ff4j_computePieHitRatio('api/featureUsage/pieHitRatio', startTime, endTime)));
+    </script>  
+   </div>
+</div>
+</div>
+                        
+ <div class="span8">
+  <div class="widget widget-nopad">
+   <div class="widget-header">
+    <i class="icon-bar-chart"></i>
+    <h3>Feature Usage</h3>
+   </div>
+   <div class="widget-content" style="padding:15x;">
+   <div id="featureUsageBar" style="margin:20px"></div>
+   <script>
+   
+   $(document).ready(function() {
+     var barChart = ff4j_getBarHitRatio(startTime, endTime);
+	 
+     $('#featureUsageBar').jqplot([barChart.data], {
+	   title: barChart.title,
+	   seriesColors: barChart.color,
+	   seriesDefaults:{
+	      renderer:        $.jqplot.BarRenderer,
+	      pointLabels:     { show: true },
+	      rendererOptions: { 
+	    	  varyBarColor: true,
+	    	  barWidth: 25,
+              barPadding: -25,
+              barMargin: 0,
+              highlightMouseOver: false
+	      }
+	    },
+	    axesDefaults: {
+	        tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+	        tickOptions: {
+	          angle: -20,
+	          fontSize: '8pt'
+	        }
+	    },
+	    axes:{
+	      xaxis:{
+	        renderer: $.jqplot.CategoryAxisRenderer
+	      },
+	      yaxis: {
+              min:0
+	      }
+	    },
+	 });
+   });
+   </script>
+   
+   </div>
+  </div>
+ </div>
+
+</div>
+<div class="row">
+                    
+<div class="span4">
+ <div class="widget widget-nopad">
+  <div class="widget-header">
+   <i class="icon-bar-chart"></i>
+   <h3>Repartition per User</h3>
+  </div>
+  <div class="widget-content">
+   <div id="pie-user" class="divpie"></div>
+    <script  type="text/javascript">
+        $(document).ready(ff4j_renderPie('pie-user',  
+                ff4j_computePieHitRatio('api/featureUsage/pieUserRatio', startTime, endTime)));
+    </script> 
+  </div>
+ </div>
+</div>
+
+<div class="span4">
+ <div class="widget widget-nopad">
+  <div class="widget-header">
+   <i class="icon-bar-chart"></i>
+   <h3>Repartition per Host</h3>
+  </div>
+  <div class="widget-content">
+   <div id="pie-host" class="divpie"></div>
+     <script  type="text/javascript">
+        $(document).ready(ff4j_renderPie('pie-host',  
+                ff4j_computePieHitRatio('api/featureUsage/pieHostRatio', startTime, endTime)));
+    </script>  
+  </div>
+ </div>
+</div>
+
+<div class="span4">
+ <div class="widget widget-nopad">
+  <div class="widget-header">
+   <i class="icon-bar-chart"></i>
+   <h3>Repartition per Source</h3>
+  </div>
+  <div class="widget-content">
+    <div id="pie-source" class="divpie"></div>
+   <script  type="text/javascript">
+        $(document).ready(ff4j_renderPie('pie-source',  
+                ff4j_computePieHitRatio('api/featureUsage/pieSourceRatio', startTime, endTime)));
+    </script> 
+  </div>
+ </div>
+</div>
+
+</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+ <script type="text/javascript">
+  $(document).ready(function() {
+    $('#datetimepickerFrom1').datetimepicker({});
+    $('#datetimepickerTo1').datetimepicker({});
+  });
+</script>
+   
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="header :: head"></head>
+<body>
+  
+<div class="navbar navbar-fixed-top" th:include="navbar :: navbar"></div>
+
+<div class="subnavbar" th:include="navbar :: subnavbar"></div>
+
+<div id="wrapper" class="container" >
+ <div class="row">
+  <div class="span9"> 
+   <div id="content" class="clearfix" >
+    <div class="main-inner" style="margin-top:60px">
+     <div class="container">
+      <div class="row">
+        <div class="span6">
+        
+          <!--  General Informations -->
+          <div class="widget widget-nopad">
+            <div class="widget-header">
+              <i class="icon-dashboard"></i>
+              <h3><span th:text="#{home.general.title}">Home</span></h3>
+            </div>
+           
+            <div class="widget-content">
+              <div class="widget big-stats-container">
+                <div class="widget-content">
+                	    	
+	 <div class="ff4jstores">
+	   
+	   <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;FeatureStore</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-} + ${homebean.featureStore} + '.png'" style="width:50px" />
+      	<br/><span th:text="${homebean.featureStore}">---</span>
+      	<br/>(<span th:text="${homebean.nbFeature}"></span>)
+   		</p>
+       </div>
+       
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;PropertyStore</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-} + ${homebean.propertyStore} + '.png'" style="width:50px" />
+      	<br/><span th:text="${homebean.propertyStore}">---</span>
+      	<br/>(<span th:text="${homebean.nbProperties}"></span>)
+   		</p>
+   		
+       </div>
+       
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;EventRepository</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-} + ${homebean.monitoring} + '.png'" style="width:50px" />
+      	<br/><span th:text="${homebean.monitoring}">---</span>
+   		</p>
+       </div>
+       
+       <p/>
+       
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;Permissions</span>
+        <br/><p class="circle">
+        <span th:if="${homebean.security} eq 'disabled'">
+          <br/><img src="" th:src="@{static/img/disabled.png}" style="width:45px" />
+          <br/><span th:text="#{home.store.undefined}">Home</span>
+        </span>
+        <span th:unless="${homebean.security} eq 'disabled'">
+          <br/><img src="" th:src="@{static/img/secu/} + ${homebean.security} + '.png'" style="width:50px" />
+          <br/><span th:text="${homebean.security}">---</span>
+        </span>
+        </p>
+       </div>
+       
+        <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;CacheManager</span>
+        <br/><p class="circle">
+         <span th:if="${homebean.caching} eq 'disabled'">
+          <br/><img src="" th:src="@{static/img/disabled.png}" style="width:45px" />
+          <br/><span th:text="#{home.store.undefined}">Home</span>
+        </span>
+        <span th:unless="${homebean.caching} eq 'disabled'">
+          <br/><img src="" th:src="@{static/img/db-} + ${homebean.caching} + '.png'" style="width:50px" />
+          <br/><span th:text="${homebean.caching}">---</span>
+        </span>
+        </p>
+       </div>
+              
+    </div>
+                  
+	</div>
+	</div>
+	</div>
+	</div>
+	
+	</div> <!-- span6 -->
+	
+	<div class="span6">
+	
+          <div class="widget">
+            <div class="widget-header"> <i class="icon-wrench"></i>
+              <h3><span th:text="#{home.admin.title}">Administration</span></h3>
+            </div>
+            <!-- /widget-header -->
+            <div class="widget-content">
+              <div class="shortcuts">
+              
+              	<a data-toggle="modal" href="#modalImport" class="shortcut open-ImportDialog">
+              	 <i class="shortcut-icon icon-upload-alt"></i>  
+           		 <span class="shortcut-label" th:text="#{home.admin.importXML}">Import XML</span>
+              	</a>
+              	
+              	<a href="" th:href="@{api/export}" class="shortcut">
+              	 <i class="shortcut-icon icon-download-alt"></i>  
+           		 <span class="shortcut-label" th:text="#{home.admin.exportXML}">Export XML</span>
+              	</a>
+              	
+                <span th:if="${homebean.caching} neq 'disabled'">
+	              <a href="" th:href="@{clearCache}" class="shortcut">
+	                 <i class="shortcut-icon icon-magic"></i>
+	                 <span class="shortcut-label">ClearCache</span>
+	              </a>
+                </span>
+                                                   
+              </div>
+              <!-- /shortcuts --> 
+            </div>
+            <!-- /widget-content --> 
+          </div>
+          
+          </div>
+	
+	</div>
+	</div>
+	</div>
+	
+	
+   </div>
+  </div>
+ </div>
+</div>
+   
+<div th:include="modal-features :: modal-import"></div>
+   
+
+</body>
+</html>

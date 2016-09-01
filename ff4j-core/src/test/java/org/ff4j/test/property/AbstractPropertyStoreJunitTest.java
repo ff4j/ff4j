@@ -1,6 +1,7 @@
 package org.ff4j.test.property;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -419,6 +420,57 @@ public abstract class AbstractPropertyStoreJunitTest {
         }
     }
     
+    /** TDD. */
+    @Test
+    public void importPropertiesNull() {
+        // Given
+        Assert.assertNotNull(testedStore);
+        // When
+        testedStore.importProperties(null);
+        // Then, no issue
+    }
     
+    /** TDD. */
+    @Test
+    public void importPropertiesOK() {
+        // Given
+        Assert.assertNotNull(testedStore);
+        Assert.assertFalse(testedStore.existProperty("titi1"));
+        Assert.assertFalse(testedStore.existProperty("titi2"));
+        Assert.assertTrue(testedStore.existProperty("a"));
+        
+        // When
+        Set < Property<?>> setOfProperty = new HashSet<Property<?>>();
+        setOfProperty.add(new PropertyLogLevel("a", LogLevel.INFO));
+        setOfProperty.add(new PropertyLogLevel("titi1", LogLevel.INFO));
+        setOfProperty.add(new PropertyLogLevel("titi2", LogLevel.INFO));
+        testedStore.importProperties(setOfProperty);
+        
+        // Then
+        Assert.assertTrue(testedStore.existProperty("titi1"));
+        Assert.assertTrue(testedStore.existProperty("titi2"));
+        Assert.assertTrue(testedStore.existProperty("a"));
+    }
+    
+    /** TDD. */
+    @Test
+    public void readPropertyDefaultExist() {
+        // Given
+        Assert.assertTrue(testedStore.existProperty("a"));
+        // When
+        Property<?> defaultA = new PropertyString("a", "GLOUGLOU");
+        // Then
+        Assert.assertEquals("AMER", testedStore.readProperty("a", defaultA).getValue());
+    }
+    
+    /** TDD. */
+    @Test
+    public void readPropertyDefaultNotExist() {
+        Property<?> defaultA = new PropertyString("aaaa", "GLOUGLOU");
+        // Given
+        Assert.assertFalse(testedStore.existProperty("aaaa"));
+        // Then
+        Assert.assertEquals("GLOUGLOU", testedStore.readProperty("aaaa", defaultA).getValue());
+    }
     
 }

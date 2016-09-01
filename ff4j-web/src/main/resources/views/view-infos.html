@@ -1,0 +1,234 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="header :: head"></head>
+<body>
+  
+<div class="navbar navbar-fixed-top" th:include="navbar :: navbar"></div>
+
+<div class="subnavbar" th:include="navbar :: subnavbarback"></div>
+
+<div id="wrapper" class="container" >
+ <div class="row">
+  <div class="span9"> 
+   <div id="content" class="clearfix" >
+    <div class="main-inner" style="margin-top:60px">
+     <div class="container">
+     
+      <div class="row">
+        <div class="span6">
+        
+          <!--  General Informations -->
+          <div class="widget widget-nopad">
+            <div class="widget-header">
+              <i class="icon-wrench"></i>
+              <h3><span th:text="#{infos.techs.title}">Integrated Technologies</span></h3>
+            </div>
+           
+            <div class="widget-content">
+          		
+          		 <div class="ff4jstores">
+	   
+	   <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;NoSQL</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-neo4j.png}" style="width:50px" />
+      	<br/><a href="https://neo4j.com/">Neo4j</a>
+   		</p>
+       </div>
+       
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;NoSQL</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-mongo.png}" style="width:50px" />
+      	<br/><a href="https://www.mongodb.com/">MongoDB</a>
+   		</p>
+       </div>
+       
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;NoSQL</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-elastic.png}" style="width:50px" />
+      	<br/><a href="https://www.elastic.co/">ElasticSearch</a>
+   		</p>
+       </div>
+       
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;NoSQL</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-cassandra.png}" style="width:50px" />
+      	<br/><a href="http://cassandra.apache.org/">Cassandra</a>
+   		</p>
+       </div>
+       
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#008bab">&nbsp;RDBMS</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-oracle.png}" style="width:50px" />
+      	<br/><a href="https://www.oracle.com/database/index.html">Oracle</a>
+   		</p>
+       </div>
+       
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#008bab">&nbsp;RDBMS</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-sqlserver.png}" style="width:50px" />
+      	<br/><a href="http://www.microsoft.com/sql">SQLServer</a>
+   		</p>
+       </div>
+
+		<div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#008bab">&nbsp;RDBMS</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-maria.png}" style="width:50px" />
+      	<br/><a href="https://mariadb.com/">MariaDB</a>
+   		</p>
+       </div> 
+       
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#008bab">&nbsp;RDBMS</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-postgres.png}" style="width:50px" />
+      	<br/><a href="https://www.postgresql.org/">PostGreSQL</a>
+   		</p>
+       </div> 
+       
+        <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#ab008b">&nbsp;Cache</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-redis.png}" style="width:50px" />
+      	<br/><a href="http://redis.io/">Redis</a>
+   		</p>
+       </div>
+       
+        <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#ab008b">&nbsp;Cache</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-hazelcast.png}" style="width:50px" />
+      	<br/><a href="https://hazelcast.com/">Hazelcast</a>
+   		</p>
+       </div>
+       
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#ab008b">&nbsp;Cache</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-ehcache.png}" style="width:50px" />
+      	<br/><a href="http://www.ehcache.org/">EHCache</a>
+   		</p>
+       </div>
+       
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#ab008b">&nbsp;Cache</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-terracotta.png}" style="width:50px" />
+      	<br/><a href="https://www.terracotta.org/">Terracotta</a>
+   		</p>
+       </div>
+       
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#8b8b8b">&nbsp;Security</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/secu/SpringSecurity.png}" style="width:50px" />
+      	<br/><a href="http://projects.spring.io/spring-security/">SpringSecurity</a>
+   		</p>
+       </div>
+       
+         <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#8b8b8b">&nbsp;JDK</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-inmemory.png}" style="width:50px" />
+      	<br/>In-Memory
+   		</p>
+       </div>
+       
+    </div>
+    
+    
+          	</div>
+          	
+          	
+          </div>
+          </div>
+          
+          <div class="span6">
+          
+          <div class="widget">
+            <div class="widget-header">
+              <i class="icon-heart-empty"></i>
+              <h3><span th:text="#{infos.donation.title}">Donation</span></h3>
+            </div>
+            <!-- /widget-header -->
+            <div class="widget-content">
+             <p style="text-align:justify">
+             The FF4J team has been working very hard to provide a powerful  <span style="color:#00ab8b">Feature Toggle solution</span> which is stable, highly tested, as well as easy to configure and use.
+			 We always make every effort to respond to all support and request queries in a timely manner and work with users to help resolve their problems quickly.
+			 All of this requires a surprising amount of time.</p>
+			 
+			 <p style="text-align:justify">As open source application, it is free and <span style="color:#00ab8b">will always remain free.</span>
+			 However, if you enjoy using <b>ff4j</b> or find that it is improving the value of a product or service that 
+			 your organization provides, we urge you to consider donating.</p>
+             
+             <p>
+	             <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+					<input type="hidden" name="cmd" value="_s-xclick" />
+					<input type="hidden" name="hosted_button_id" value="XD2BQ9KDJ7SGU" />
+					<input type="image" 
+						th:src="@{static/img/btn_donate_LG.gif}"
+						src="https://www.paypalobjects.com/en_GB/i/btn/btn_donate_LG.gif"
+						 border="0" name="submit" alt="Donate to FF4J" />
+					<img alt="" border="0" 
+						src="https://www.paypalobjects.com/fr_FR/i/scr/pixel.gif" width="1" height="1" 
+						th:src="@{static/img/pixel.gif}"/>
+				 </form>
+			 </p>
+
+            </div>
+            
+            </div>
+            
+            <div class="widget">
+            <div class="widget-header">
+              <i class="icon-envelope-alt"></i>
+              <h3><span th:text="#{infos.contact.title}">Donation</span></h3>
+            </div>
+            <!-- /widget-header -->
+            <div class="widget-content">
+            
+            <p>
+              <i class="icon-globe"></i>&nbsp;&nbsp;<a href="ff4j.org">ff4j.org</a> is the official website where you'll find any documentation and informations.
+            </p>
+            
+             <p>
+              <i class="icon-twitter"></i>&nbsp;&nbsp;If you like FF4J, please speak about it on Twitter with 
+              <a href="https://twitter.com/hashtag/ff4j?src=hash"><b>#FF4J</b></a> hashtag or contact the founder with 
+              <a href="https://twitter.com/clunven">@clunven</a>.
+             </p>
+             
+             <p>
+               <i class="icon-github"></i>&nbsp;&nbsp;The framework is hosted and maintained on 
+               <a href="https://github.com/clun/ff4j">github</a>, you can browse and fork the source code.
+			 </p>
+
+			 <p>
+			   <i class=" icon-question-sign"></i>&nbsp;&nbsp;If you have any question regarding FF4J please contact us by 
+			   <a HREF="mailto:admin@ff4j.org?subject=Question FF4J">email</a> and post your question on the 
+			   <a href="https://groups.google.com/forum/?hl=fr#!forum/ff4j">forum. </a>
+			 </p>
+            </div>
+            
+            </div>
+            
+            </div>
+          
+          
+          
+          </div><!-- ROW -->
+          
+	 </div>
+	</div>
+   </div>
+  </div>
+ </div>
+</div>
+   
+</body>
+</html>

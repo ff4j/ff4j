@@ -1,0 +1,503 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- ********************* -->
+<!-- IMPORT XML FILE MODAL -->
+<!-- ********************* -->
+ <div th:fragment="modal-import">
+ <form class="form-horizontal" action="" th:action="@{home}" method="POST" enctype="multipart/form-data" >
+  <div class="modal hide fade" id="modalImport" tabindex="-1" role="dialog" 
+  	   aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">   
+      <button class="close" data-dismiss="modal">x</button>   
+      <h4 id="myModalLabel"><i class="icon-upload-alt"></i>&nbsp;
+      <span th:text="#{modal.importxml.title}" >Import XML</span></h4>
+    </div>
+    <div class="modal-body">
+      <p><span th:text="#{modal.importxml.desc}" >Choose XML file</span></p>
+      <input type="hidden" name="op"        value="import" />
+      <input type="file"   name="flipFile"  />
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn" data-dismiss="modal">
+        <i class="icon-remove" ></i>
+        &nbsp;<span th:text="#{modal.button.cancel}">Cancel</span>
+       </button>
+      <button class="btn btn-green" type="submit">
+        <i class="icon-file icon-white" ></i>
+        &nbsp;<span th:text="#{modal.button.validate}">Importer</span>
+      </button>
+    </div>
+  </div>
+</form>
+</div>
+
+<!-- ******************* -->
+<!-- EDIT FEAtURE MODAL  -->
+<!-- ******************* -->
+<div th:fragment="modal-edit">
+
+<form class="form-horizontal" th:action="@{features}" action="" method="POST" >
+  <div class="modal hide fade" id="modalEdit" 
+        tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">    
+    <div class="modal-header">
+      <button class="close" data-dismiss="modal">x</button>
+      <h4 id="myModalLabel">
+      <i class="icon-pencil"></i>&nbsp;
+      <span th:text="#{modal.editfeature.title}" >Edit Feature</span></h4>
+    </div>
+    
+  <!-- Body -->
+  <div class="modal-body" style="height:500px;">    
+    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px"> 
+      <label class="control-label" for="uid" 
+             style="color:#687684;font-style:normal;font-weight:normal;"
+             th:text="#{modal.createfeature.featurename}" >Feature Name</label>
+      <div class="controls">   
+        <input type="text" name="uid" id="uid" 
+            style="width:350px;height:18px;color:#008bab;background-color:white" required="required" readonly="true"/>  
+      </div>
+    </div>
+
+    <!-- Description --> 
+    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">   
+      <label class="control-label" for="desc" 
+             style="color:#687684;font-style:normal"
+             th:text="#{modal.createfeature.description}" >Description</label>  
+      <div class="controls">
+        <textarea class="field span4" style="width:350px;color:#008bab"
+            name="desc" id="desc" rows="2" cols="30"></textarea>
+      </div>
+    </div>
+
+    <!-- Group --> 
+    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">   
+      <label class="control-label" for="group"
+             style="color:#687684;font-style:normal"
+             th:text="#{modal.editfeature.group}" >Group</label>  
+        <div class="controls">
+          <div class="btn-group">
+            <input type="text" name="groupName" id="groupName" style="width:350px;height:18px;color:#008bab" />
+            <button type="button" class="btn btn-green dropdown-toggle" data-toggle="dropdown" style="float:right;margin-left:-5px">
+              <span class="caret"></span>
+              <span class="sr-only"><i class="icon-inbox icon-white" ></i></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" style="width:350px;font-style:normal;color:#696969">
+              <li th:each="group : ${groupList}">
+                <a href="#" th:onclick="'$(\'#modalEdit #groupName\').val(\'' + ${group} + '\');'">
+                    <span th:text="${group}">group</span>
+                </a>
+               </li>
+               <li class="divider"></li>
+              <li><a href="#" onclick="javascript:$('#groupName').val('');">None</a></li>
+            </ul>
+          </div> <!-- btn-group -->     
+        </div> <!-- controls -->
+      </div> <!-- control-group -->
+
+    <!-- Strategy --> 
+    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">   
+      <label class="control-label" for="strategy" 
+             style="color:#687684;font-style:normal"
+             th:text="#{modal.editfeature.strategy}" >Strategy</label>  
+      <div class="controls">
+        <div class="btn-group">
+            <input type="text" name="strategy" id="strategy" style="width:350px;height:18px;font-style:normal;color:#008bab" />
+            <button type="button" class="btn btn-green dropdown-toggle" data-toggle="dropdown" style="float:right;margin-left:-5px">
+              <span class="caret"></span>
+              <span class="sr-only"><i class="icon-cog icon-white" ></i></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" style="width:250px;">
+                <li><a href="#" onclick="javascript:
+                    $('#modalEdit #strategy').val('org.ff4j.strategy.el.ExpressionFlipStrategy');
+                    $('#modalEdit #stratlist').show();
+                    $('#modalEdit #initParams').val('expression=dummy OR foo')">Expression</a>
+                </li>
+              <li><a href="#" onclick="javascript:
+                    $('#modalEdit #strategy').val('org.ff4j.strategy.PonderationStrategy');
+                    $('#modalEdit #stratlist').show();
+                    $('#modalEdit #initParams').val('weight=0.5')">Ponderation</a></li>
+                <li><a href="#" onclick="javascript:
+                    $('#modalEdit #strategy').val('org.ff4j.strategy.time.ReleaseDateFlipStrategy');
+                    $('#modalEdit #stratlist').show();
+                    $('#modalEdit #initParams').val('releaseDate=2013-07-14-14:00')">ReleaseDate</a></li>
+              <li><a href="#" onclick="javascript:
+                    $('#modalEdit #strategy').val('org.ff4j.strategy.ClientFilterStrategy');
+                    $('#modalEdit #stratlist').show();
+                    $('#modalEdit #initParams').val('grantedClients=c1,c2,c3')">ClientFilter</a></li>
+              <li><a href="#" onclick="javascript:
+                    $('#modalEdit #strategy').val('org.ff4j.strategy.ServerFilterStrategy');
+                    $('#modalEdit #stratlist').show();
+                    $('#modalEdit #initParams').val('grantedServers=s1,s2,s3')">ServerFilter</a></li>
+              <li class="divider"></li>
+              <li><a href="#" onclick="javascript:
+                    $('#modalEdit #strategy').val('');
+                    $('#modalEdit #stratlist').hide();
+                    $('#modalEdit #startparam').val('')">None</a></li>
+            </ul>
+          </div>
+        </div>
+         <div id="stratlist" class="controls hide" style="font-style:normal">
+          <input type="text" name="initParams" id="initParams" style="margin-top:8px;width:345px;height:18px;font-style:normal" />
+      </div>
+      </div>
+
+    <!-- Permissions --> 
+    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">   
+      <label class="control-label" for="permission" 
+             style="color:#687684;font-style:normal"
+             th:text="#{modal.editfeature.permissions}" >Permissions</label>  
+      <div class="controls">
+        <div class="btn-group">
+            <input type="text" name="permission" id="permission" style="width:350px;height:18px;font-style:normal;color:#008bab" 
+            value="Public" readonly="readonly" />
+            <button type="button" class="btn btn-green dropdown-toggle" data-toggle="dropdown" style="float:right;margin-left:-5px">
+              <span class="caret"></span>
+              <span class="sr-only"><i class="icon-user icon-white" ></i></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" style="width:350px;font-style:normal">
+                <li><a href="#" onclick="javascript:ff4j_clearPermissionsForFeature($('#modalEdit #uid').val());" >
+                    <i class="icon-off" ></i>&nbsp;No Permisssions</a></li>
+                <li><a href="#" onclick="javascript:$('#modalEdit #permission').val('Define roles...');$('#modalEdit #permlist').show();">
+                    <i class="icon-user" ></i>&nbsp;Define roles...</a></li>
+            </ul>
+        </div>
+      </div>
+      <div id="permlist" class="controls hide" style="font-style:normal">
+        <table class="table table-bordered table-condensed" style="margin-top:8px;width:345px">
+         <tbody id="modalEditFeaturePermissions">
+         </tbody>
+        </table>
+      </div>
+     </div><!-- Control group -->
+     
+     
+    <!-- Properties --> 
+    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">   
+      <label class="control-label" for="properties" style="color:#00ab8b;font-style:normal">Properties</label>  
+      <div class="controls"  id="propertyList">
+        <table class="table table-bordered table-condensed" style="margin-top:8px;width:345px">
+         <tbody id="modalEditFeatureProperties">
+         </tbody>
+        </table>
+      </div>
+     </div><!-- Control group -->
+     
+    </div> <!-- Modal-body -->
+    
+    <div class="modal-footer" >
+    <button class="btn btn" data-dismiss="modal">
+      <i class="icon-remove" ></i>&nbsp;
+      <span th:text="#{modal.button.cancel}">Cancel</span>
+    </button>
+    <button class="btn btn-green" type="submit">
+      <i class="icon-ok icon-white" ></i>&nbsp;
+      <span th:text="#{modal.button.validate}">Validate</span></button>
+    </div>
+      
+    <input type="hidden" name="op" value="update"  />
+  </div>
+</form>
+
+<script type="text/javascript" >
+ $(document).on("click", ".open-EditFlipDialog", function () {
+	 ff4j_updateModalEditFeature($(this).data('id'));
+ });
+</script>
+
+</div>
+
+<!-- ******************* -->
+<!-- FORM CREATE FEATURE -->
+<!-- ******************* -->
+<div th:fragment="modal-create">
+
+<!-- Creation FORM -->
+<form class="form-horizontal" th:action="@{features}" action="" method="POST" >
+ <div class="modal hide fade" id="modalCreate" tabindex="-1" 
+       role="dialog" aria-labelledby="labelCreate" aria-hidden="true">
+   <div class="modal-header">
+      <button class="close" data-dismiss="modal">x</button>
+      <h4 id="labelCreate">
+      <i class="icon-file"></i>&nbsp;
+      <span th:text="#{modal.createfeature.title}" >Create Feature</span></h4>
+   </div>
+   
+  <!-- Body -->
+  <div class="modal-body" style="height:150px;">    
+    
+    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px"> 
+      <label class="control-label" for="uid" 
+        style="color:#687684;font-style:normal;font-weight:normal;" th:text="#{modal.createfeature.featurename}" >Feature Name</label>
+      <div class="controls">   
+        <input type="text" name="uid" id="uid" 
+            style="width:350px;height:18px;color:#008bab;background-color:white" required="required" />  
+      </div>
+    </div>
+   
+   <!-- Description --> 
+    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">   
+      <label class="control-label" for="desc" style="color:#687684;font-style:normal" th:text="#{modal.createfeature.description}">Description</label>  
+      <div class="controls">
+        <textarea class="field span4" style="width:350px;color:#008bab"
+            name="desc" id="desc" rows="2" cols="30"></textarea>
+      </div>
+    </div>
+
+    <!-- Message --> 
+    <div class="control-group" style="margin-left:50px;float:left">
+     <span style="color:#008bab;font-style:italic" th:text="#{modal.createfeature.comment}">
+       Once created, you will access all attributes through edit button
+     </span>
+    </div>
+
+    </div> <!-- modeal body -->
+
+   <div class="modal-footer" >
+    <button class="btn btn" data-dismiss="modal">
+      <i class="icon-remove" ></i>&nbsp;
+      <span th:text="#{modal.button.cancel}">Cancel</span>
+    </button>
+    <button class="btn btn-green" type="submit">
+      <i class="icon-ok icon-white" ></i>&nbsp;
+      <span th:text="#{modal.button.create}">Create</span></button>
+  </div>
+
+   <script type="text/javascript" >
+    $.fn.modal.Constructor.prototype.enforceFocus = function () {};
+    $(document).on("click", ".open-AddFlipDialog", function () { $(".modal-body #uid").focus();});
+   </script>
+
+   <input type="hidden" name="op" value="create"  />
+ </div>
+</form>
+
+</div>
+
+<!-- ******************** -->
+<!-- FORM TOGGLE GROUP -->
+<!-- ******************* -->
+<div th:fragment="modal-toggle">
+
+<form class="form-horizontal" th:action="@{features}" action="" method="POST" >
+
+  <div class="modal hide fade" id="modalToggle" tabindex="-1" 
+       role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    
+    <div class="modal-header">   
+      <button class="close" data-dismiss="modal">x</button>   
+      <h4 id="myModalLabel">
+      <i class="icon-th-list icon-white"></i>&nbsp;
+      <span th:text="#{modal.togglegroup.title}" > Toggle a group of features</span>
+      </h4>
+    </div>
+
+    <div class="modal-body" style="height:120px">
+    
+     <!-- Group --> 
+    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">   
+      <label class="control-label" for="group" style="color:#687684;font-style:normal">
+       <span th:text="#{modal.togglegroup.list}" >Toggle a group of features</span>
+      </label>  
+        <div class="controls">
+          <div class="btn-group">
+            <input type="text" name="groupName" id="groupName" style="width:350px;height:18px;color:#008bab" />
+            <button type="button" class="btn btn-green dropdown-toggle" data-toggle="dropdown" style="float:right;margin-left:-5px">
+              <span class="caret"></span>
+              <span class="sr-only"><i class="icon-inbox icon-white" ></i></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" style="width:350px;font-style:normal;color:#696969">
+              <li th:each="group : ${groupList}">
+                <a href="#" th:onclick="'$(\'#modalToggle #groupName\').val(\'' + ${group} + '\');'">
+                    <span th:text="${group}">group</span>
+                </a>
+               </li>
+               <li class="divider"></li>
+              <li><a href="#" onclick="javascript:$('#modalToggle #groupName').val('');">None</a></li>
+            </ul>
+          </div> <!-- btn-group -->     
+        </div> <!-- controls -->
+      </div> <!-- control-group -->
+      
+       <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">   
+      <label class="control-label" for="ope" style="color:#687684;font-style:normal">
+       <span th:text="#{modal.togglegroup.operation}" >Operation</span>
+      </label>  
+      <div class="controls">
+        <div class="btn-group">
+            <input type="text" name="ope" id="ope" style="width:350px;height:18px;color:#008bab;background-color:white" readonly="readonly" />
+            <button type="button" class="btn btn-green dropdown-toggle" data-toggle="dropdown" style="float:right;margin-left:-5px">
+              <span class="caret"></span>
+              <span class="sr-only"><i class="icon-cog icon-white" ></i></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" style="width:250px;">
+                <li><a href="#" onclick="javascript:$('#modalToggle #ope').val('enable');">enable</a></li>
+                <li><a href="#" onclick="javascript:$('#modalToggle #ope').val('disable');">disable</a></li>
+            </ul>
+          </div>
+        </div>
+        </div>
+    </div>
+    
+     <div class="modal-footer" >
+    <button class="btn btn" data-dismiss="modal">
+      <i class="icon-remove" ></i>&nbsp;
+      <span th:text="#{modal.button.cancel}">Cancel</span>
+    </button>
+    <button class="btn btn-green" type="submit">
+      <i class="icon-ok icon-white" ></i>&nbsp;
+      <span th:text="#{modal.button.validate}">Validate</span></button>
+  </div>
+    
+    
+   <input type="hidden" name="op" value="toggleGroup"  />
+
+  </div>
+</form>
+
+</div>
+
+<!-- ******************** -->
+<!-- MODAL RENAME FEATURE -->
+<!-- ******************** -->
+<div th:fragment="modal-rename">
+
+<form class="form-horizontal" th:action="@{features}" action="" method="POST" >
+
+  <div class="modal hide fade" id="modalRenameFeature" tabindex="-1" 
+       role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    
+    <div class="modal-header">   
+      <button class="close" data-dismiss="modal">x</button>   
+      <h4 id="myModalLabel">
+      <i class="icon-th-list icon-white"></i>&nbsp;
+      <span th:text="#{modal.renamefeature.title}" >Rename Feature</span>
+      </h4>
+    </div>
+
+    <div class="modal-body" style="height:120px">
+    
+    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">   
+      <label class="control-label" for="group" style="color:#687684;font-style:normal">
+        <span th:text="#{modal.renamefeature.list}" >Feature List</span>
+      </label> 
+        <div class="controls">
+          <div class="btn-group">
+            <input type="text" name="uid" id="uid" style="width:350px;height:18px;color:#008bab" />
+            <button type="button" class="btn btn-green dropdown-toggle" data-toggle="dropdown" style="float:right;margin-left:-5px">
+              <span class="caret"></span>
+              <span class="sr-only"><i class="icon-inbox icon-white" ></i></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" style="width:350px;font-style:normal;color:#696969">
+              <li th:each="feature : ${listOfFeatures}">
+                <a href="#" th:onclick="'$(\'#modalRenameFeature #uid\').val(\'' + ${feature.uid} + '\');'">
+                    <span th:text="${feature.uid}">Feature</span>
+                </a>
+               </li>
+            </ul>
+          </div> <!-- btn-group -->     
+        </div> <!-- controls -->
+      </div> <!-- control-group -->      
+    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px"> 
+      <label class="control-label" for="uid" 
+        style="color:#687684;font-style:normal;font-weight:normal;" th:text="#{modal.renamefeature.new}" >New Name </label>
+      <div class="controls">   
+        <input type="text" name="newname" id="newname" 
+            style="width:350px;height:18px;color:#008bab;background-color:white" required="required" />  
+      </div>
+    </div> 
+    </div>
+    
+     <div class="modal-footer" >
+    <button class="btn btn" data-dismiss="modal">
+      <i class="icon-remove" ></i>&nbsp;
+      <span th:text="#{modal.button.cancel}">Cancel</span>
+    </button>
+    <button class="btn btn-green" type="submit">
+      <i class="icon-ok icon-white" ></i>&nbsp;
+      <span th:text="#{modal.button.validate}">Validate</span></button>
+  </div>
+    
+   <input type="hidden" name="op" value="renameFeature"  />
+
+  </div>
+</form>
+
+
+</div>
+
+<!-- ******************** -->
+<!-- MODAL COPY FEATURE -->
+<!-- ******************** -->
+<div th:fragment="modal-copy">
+
+<form class="form-horizontal" th:action="@{features}" action="" method="POST" >
+
+  <div class="modal hide fade" id="modalCopyFeature" tabindex="-1" 
+       role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    
+    <div class="modal-header">   
+      <button class="close" data-dismiss="modal">x</button>   
+      <h4 id="myModalLabel">
+      <i class="icon-th-list icon-white"></i>&nbsp;
+      <span th:text="#{modal.copyfeature.title}" >Copy Feature</span>
+      </h4>
+    </div>
+
+    <div class="modal-body" style="height:120px">
+    
+    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">   
+      <label class="control-label" for="group" style="color:#687684;font-style:normal">
+        <span th:text="#{modal.copyfeature.list}" >Feature List</span>
+      </label> 
+        <div class="controls">
+          <div class="btn-group">
+            <input type="text" name="uid" id="uid" style="width:350px;height:18px;color:#008bab" />
+            <button type="button" class="btn btn-green dropdown-toggle" data-toggle="dropdown" style="float:right;margin-left:-5px">
+              <span class="caret"></span>
+              <span class="sr-only"><i class="icon-inbox icon-white" ></i></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" style="width:350px;font-style:normal;color:#696969">
+              <li th:each="feature : ${listOfFeatures}">
+                <a href="#" th:onclick="'$(\'#modalCopyFeature #uid\').val(\'' + ${feature.uid} + '\');'">
+                    <span th:text="${feature.uid}">Feature</span>
+                </a>
+               </li>
+            </ul>
+          </div> <!-- btn-group -->     
+        </div> <!-- controls -->
+      </div> <!-- control-group -->      
+    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px"> 
+      <label class="control-label" for="uid" 
+        style="color:#687684;font-style:normal;font-weight:normal;" th:text="#{modal.copyfeature.new}" >New Name </label>
+      <div class="controls">   
+        <input type="text" name="newname" id="newname" 
+            style="width:350px;height:18px;color:#008bab;background-color:white" required="required" />  
+      </div>
+    </div> 
+    </div>
+    
+     <div class="modal-footer" >
+    <button class="btn btn" data-dismiss="modal">
+      <i class="icon-remove" ></i>&nbsp;
+      <span th:text="#{modal.button.cancel}">Cancel</span>
+    </button>
+    <button class="btn btn-green" type="submit">
+      <i class="icon-ok icon-white" ></i>&nbsp;
+      <span th:text="#{modal.button.validate}">Validate</span></button>
+  </div>
+    
+   <input type="hidden" name="op" value="copyFeature"  />
+
+  </div>
+</form>
+
+
+</div>
+
+
+
+    
+</body>
+</html>

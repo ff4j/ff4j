@@ -61,6 +61,12 @@ public class MockPropertyStore implements PropertyStore {
         if ("a".equals(name)) return new PropertyString("a", "AMER");
         return null;
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public Property<?> readProperty(String name, Property<?> defaultValue) {
+        return readProperty(name);
+    }
 
     /** {@inheritDoc} */
     public void updateProperty(String name, String newValue) {
@@ -105,6 +111,6 @@ public class MockPropertyStore implements PropertyStore {
     /** {@inheritDoc} */
     public void importProperties(Collection<Property<?>> properties) {
         LOGGER.debug("MOCK [importProperties]");
-    }
+    }  
 
 }

@@ -1,0 +1,18 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="messagebar">
+ 
+ <div th:if="${msgInfo} != null">
+  <div class="alert" th:class="'alert alert-' + ${msgType}" style="margin-left:50px;margin-right:20px">
+   <button type="button" class="close" data-dismiss="alert">&times;</button>
+   <span style="font-style:normal;color:#696969" th:text="${msgInfo}">---</span>
+  </div>
+ </div>
+ <div id="message" >&nbsp;</div>
+ 
+</div>
+    
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="header :: head">
+</head>
+<!-- DataTables -->
+<script type="text/javascript" src="" th:src="@{static/js/jquery.dataTables.min.js}"></script>
+<link rel="stylesheet" type="text/css" media="all" href="" th:href="@{static/css/jquery.dataTables.min.css}" />
+
+<body>
+  
+<div class="navbar navbar-fixed-top" th:include="navbar :: navbar"></div>
+
+<div class="subnavbar" th:include="navbar :: subnavbarfeatures"></div>
+
+<div id="wrapper" class="container" >
+ <div class="row">
+  <div class="span9"> 
+   <div id="content" class="clearfix" >
+    <div class="main-inner" style="margin-top:60px;margin-left:-30px">
+     <div class="container">
+     
+  <div th:include="messages :: messagebar"></div>
+    
+  <div class="span12">
+   <div class="widget widget-nopad">
+    <div class="widget-header">
+	 <i class="icon-th-list"></i>
+	 <h3><span th:text="#{feature.title}" >Features</span></h3>
+    </div>
+    <div class="widget-content" style="padding:10px;">
+   
+   <script type="text/javascript">
+    $(document).ready(function(){
+        $('#featureTable').DataTable();
+    });
+ </script>
+ 
+	<table id="featureTable" name="featureTable" 
+	       class="table table-striped table-bordered" style="margin-top:10px">
+     <thead>
+      <tr>
+       <th style="width:200px;text-align:center"><span th:text="#{feature.table.name}">Feature</span></th>
+       <th style="width:15%;text-align:center"><span th:text="#{feature.table.group}">Group</span></th>
+       <th style="width:15%;text-align:center"><span th:text="#{feature.table.role}">Permissions</span></th>
+       <th style="width:22%;text-align:center"><span th:text="#{feature.table.strategy}">Strategy</span></th>
+       <th style="width:18%;text-align:center"><span th:text="#{feature.table.properties}">Properties</span></th>
+       <th style="width:8%;text-align:center"><span th:text="#{feature.table.toggle}">Toggle</span></th>
+       <th style="width:5%;text-align:center">E</th>
+       <th style="width:5%;text-align:center">D</th>
+      </tr>
+    </thead>
+    <tbody>
+     <tr th:each="feat,indexFeat : ${listOfFeatures}">
+	  <td>
+	    <!-- FeatureName -->
+	    <a class="ff4j-tooltip" tooltip="" th:attr="tooltip=${feat.description}" style="color:#008bab;font-weight:bold">
+	    <span th:text="${feat.uid}">uid</span></a>
+	  </td>
+	  <td style="text-align:center">
+	   <span style="color:#008bab" th:text="${feat.group}">---</span>
+	  </td>
+	  <td>
+	    <!-- Permissions -->
+	    <div th:if="${not #sets.isEmpty(feat.permissions)}" >
+	      <span style="float:left;" 
+            th:text="${#sets.size(feat.permissions)} + ' items'">x</span>
+           <a th:id="'linkPerm-' + ${indexFeat.count}"
+             style="color:#00ab8b;float:left;" 
+             th:href="'javascript:showFeaturePermissions(' + ${indexFeat.count} + ')'">
+             &nbsp;(<i class="icon-eye-open"></i>)
+         </a>
+         <a th:id="'linkhidePerm-' + ${indexFeat.count}"
+             style="float:left;" 
+             th:href="'javascript:hideFeaturePermissions(' + ${indexFeat.count} + ')'"
+             class="hide">
+             &nbsp;(<i class="icon-eye-close"></i>)</a>
+           <p><br/>
+           <div id="detail" th:id="'detailPerm-' + ${indexFeat.count}" class="hide">
+             <span th:each="perm : ${feat.permissions}">
+              <li type="square"><span style="color:#008bab" th:text="${perm}">x</span></li>
+             </span>
+           </div></p>
+	    </div>
+	  </td>
+	 <td style="word-break: break-all;">
+	   <!-- FlippingStrategy -->
+	   <span th:if="${feat.flippingStrategy} != null">
+	     <b><span th:text="${feat.flippingStrategy.class.simpleName}">---</span></b>
+	     <span th:each="initParam : ${feat.flippingStrategy.initParams}">
+            <li type="square">
+            <span th:text="${initParam.key}"></span>=
+            <span style="color:#008bab" th:text="${initParam.value}"></span>
+            </li>
+         </span>
+       </span>
+	 </td>
+	 <td>
+	  <!-- CustomProperties -->
+	  <div th:if="${not #maps.isEmpty(feat.customProperties)}" >
+         <span style="float:left;" 
+         th:text="${#maps.size(feat.customProperties)} + ' items '">x</span>
+         <a th:id="'linkCustomP-' + ${indexFeat.count}"
+             style="color:#00ab8b;float:left;" 
+             th:href="'javascript:showCustomProperties(' + ${indexFeat.count} + ')'">
+             (<i class="icon-eye-open"></i>)
+         </a>
+         <a th:id="'linkhideCustomP-' + ${indexFeat.count}"
+             style="color:#00ab8b;float:left;" 
+             th:href="'javascript:hideCustomProperties(' + ${indexFeat.count} + ')'"
+             class="hide">
+             (<i class="icon-eye-close"></i>)</a>
+        </div>
+        <div id="detail" th:id="'detailCustomP-' + ${indexFeat.count}" class="hide">
+           <p><br/>
+           <span th:each="customProperty : ${feat.customProperties}">
+	            <li type="square">
+	             <span th:text="${customProperty.key}"></span>=
+	             <span style="color:#008bab" th:text="${customProperty.value.value}"></span>
+	            </li>
+	        </span>
+	        </p>
+        </div>
+     </td>
+	 <td style="width:8%;text-align:center">
+	  <label class="switch switch-green">
+	   <input th:attr="id=${feat.uid}" id="x" 
+	   		  type="checkbox" class="switch-input" onclick="javascript:toggle(this)" th:checked="${feat.enable}"/>
+		<span class="switch-label" data-on="On" data-off="Off"></span>
+		<span class="switch-handle"></span>
+	  </label>
+	 </td>
+	 <td style="width:5%;text-align:center">
+	  <a data-toggle="modal" href="#modalEdit" 
+	     th:attr="data-id=${feat.uid}"
+		 style="width:6px:margin-left:-3px;color:white;background-color:#008bab" 
+		 class="open-EditFlipDialog btn">
+       <i class="icon-pencil"></i>
+	  </a>
+	 </td>
+	 <td style="width:5%;text-align:center">
+	 	<a href="" style="width:6px:margin-left:-3px;color:white;background-color:#ab0000" 
+	 	     class="btn" th:href="@{features} + '?op=delete&amp;uid=' + ${feat.uid}">
+	     <i class="icon-trash"></i>
+	    </a>
+	 </td>
+	</tr>
+	</tbody>
+    </table>
+    </div>
+   </div>
+  </div>
+     
+	 </div>
+	</div>
+   </div>
+  </div>
+ </div>
+</div>
+   
+<div th:include="modal-features :: modal-edit"></div>
+
+<div th:include="modal-features :: modal-create"></div>
+
+<div th:include="modal-features :: modal-toggle"></div>
+
+<div th:include="modal-features :: modal-rename"></div>
+
+<div th:include="modal-features :: modal-copy"></div>
+
+<div th:include="modal-properties :: modal-createProperty"></div>
+
+<div th:include="modal-properties :: modal-updateProperty"></div>
+
+</body>
+</html>

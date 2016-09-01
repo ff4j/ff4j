@@ -1,10 +1,16 @@
 package org.ff4j.test.cache;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.ff4j.cache.FF4JCacheManager;
 import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.cache.InMemoryCacheManager;
+import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
+import org.ff4j.property.PropertyLogLevel;
 import org.ff4j.property.PropertyString;
+import org.ff4j.property.PropertyLogLevel.LogLevel;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.junit.Assert;
@@ -59,6 +65,12 @@ public class CacheProxyTest {
         proxy.createProperty(new PropertyString("p1", "v1"));
         Assert.assertTrue(proxy.existProperty("p1"));
         Assert.assertFalse(proxy.existProperty("p2"));
+        
+        proxy.setTargetFeatureStore(new InMemoryFeatureStore());
+        Set < Feature> setOfFeatures = new HashSet<Feature>();
+        setOfFeatures.add(new Feature("f1"));
+        setOfFeatures.add(new Feature("f2"));
+        proxy.importFeatures(setOfFeatures);
     }
     
     @Test
@@ -74,13 +86,20 @@ public class CacheProxyTest {
         proxy.getTargetPropertyStore().createProperty(new PropertyString("p2"));
         proxy.readProperty("p2");
         
-        
         proxy.updateProperty("p1", "v2");
         proxy.updateProperty(p1);
         Assert.assertTrue(proxy.isEmpty());
         Assert.assertFalse(proxy.listPropertyNames().isEmpty());
         proxy.deleteProperty("p1");
         proxy.clear();
+        
+        Set < Property<?>> setOfProperty = new HashSet<Property<?>>();
+        setOfProperty.add(new PropertyLogLevel("a", LogLevel.INFO));
+        setOfProperty.add(new PropertyLogLevel("titi1", LogLevel.INFO));
+        proxy.importProperties(setOfProperty);
+        
+        proxy.readProperty("p1", p1);
+        proxy.readProperty("p2", p1);
     }
 
 }

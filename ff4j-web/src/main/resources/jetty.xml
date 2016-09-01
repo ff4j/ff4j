@@ -1,0 +1,14 @@
+<!DOCTYPE configuration>
+<New id="httpConfig" class="org.eclipse.jetty.server.HttpConfiguration">
+  <Set name="port"><Property name="jetty.port" default="8080"/></Set>
+  
+  <Set name="secureScheme">https</Set>
+  <Set name="securePort"><Property name="jetty.secure.port" default="8443" /></Set>  
+  <Set name="outputBufferSize">32768</Set>
+  <Set name="requestHeaderSize">8192</Set>
+  <Set name="responseHeaderSize">8192</Set>
+  <Set name="sendServerVersion">true</Set>
+  <Set name="sendDateHeader">false</Set>
+  <Set name="headerCacheSize">512</Set>
+  
+</New>

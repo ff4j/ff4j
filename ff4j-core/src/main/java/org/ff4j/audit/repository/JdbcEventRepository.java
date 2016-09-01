@@ -1,7 +1,6 @@
 package org.ff4j.audit.repository;
 
-import static org.ff4j.audit.EventConstants.TITLE_PIE_HITCOUNT;
-import static org.ff4j.store.JdbcStoreConstants.COL_EVENT_ACTION;
+
 import static org.ff4j.store.JdbcStoreConstants.COL_EVENT_NAME;
 
 /*
@@ -25,10 +24,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.sql.DataSource;
@@ -37,12 +34,12 @@ import org.ff4j.audit.Event;
 import org.ff4j.audit.EventQueryDefinition;
 import org.ff4j.audit.EventSeries;
 import org.ff4j.audit.MutableHitCount;
-import org.ff4j.audit.chart.PieChart;
-import org.ff4j.audit.chart.Serie;
 import org.ff4j.audit.chart.TimeSeriesChart;
 import org.ff4j.exception.AuditAccessException;
 import org.ff4j.exception.FeatureAccessException;
+import org.ff4j.store.JdbcEventMapper;
 import org.ff4j.store.JdbcQueryBuilder;
+import org.ff4j.utils.MappingUtil;
 import org.ff4j.utils.Util;
 
 /**
@@ -51,6 +48,9 @@ import org.ff4j.utils.Util;
  * @author Cedrick Lunven (@clunven)
  */
 public class JdbcEventRepository extends AbstractEventRepository {
+    
+    /** Error message 1. */
+    public static final String CANNOT_READ_AUDITTABLE =  "Cannot read audit table from DB";
 
 	/** error message. */
     public static final String CANNOT_BUILD_PIE_CHART_FROM_REPOSITORY = "Cannot build PieChart from repository, ";
@@ -60,6 +60,9 @@ public class JdbcEventRepository extends AbstractEventRepository {
     
     /** Query builder. */
     private JdbcQueryBuilder queryBuilder;
+    
+    /** Mapper to read from SQL result. */
+    private static final JdbcEventMapper EVENT_MAPPER = new JdbcEventMapper();
 
     /**
      * Constructor from DataSource.
@@ -72,6 +75,7 @@ public class JdbcEventRepository extends AbstractEventRepository {
     }
     
     /** {@inheritDoc} */
+    @Override
     public boolean saveEvent(Event evt) {
         Util.assertEvent(evt);
         
@@ -100,7 +104,7 @@ public class JdbcEventRepository extends AbstractEventRepository {
             }
             if (!evt.getCustomKeys().isEmpty()) {
                 sb.append(", EVT_KEYS");
-                statementParams.put(idx, evt.getCustomKeys().toString());
+                statementParams.put(idx, MappingUtil.fromMap(evt.getCustomKeys()));
                 idx++;
             }
             
@@ -138,24 +142,47 @@ public class JdbcEventRepository extends AbstractEventRepository {
         }
         return true;
     }
-
+    
     /** {@inheritDoc} */
-    public Set < String > getFeatureNames() {
-        Set < String> listOfFeatureNames = new HashSet<String>();
-        Connection sqlConn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+    @Override
+    public Event getEventByUUID(String uuid, Long timestamp) {
+        Util.assertHasLength(uuid);
+        Connection          sqlConn = null;
+        PreparedStatement   ps = null;
+        ResultSet           rs = null;
         try {
-            // Returns features
-            sqlConn = dataSource.getConnection();
-            ps = sqlConn.prepareStatement(getQueryBuilder().listFeaturesAudit());
+            sqlConn = getDataSource().getConnection();
+            ps = sqlConn.prepareStatement(getQueryBuilder().getEventByUuidQuery());
+            ps.setString(1, uuid);
             rs = ps.executeQuery();
-            while (rs.next()) {
-                listOfFeatureNames.add(rs.getString(COL_EVENT_NAME));
+            if (rs.next()) {
+               return EVENT_MAPPER.mapEvent(rs);
             }
-            return listOfFeatureNames;
+            return null;
         } catch (SQLException sqlEX) {
-            throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
+            throw new IllegalStateException("CANNOT_READ_AUDITTABLE", sqlEX);
+        } finally {
+            closeResultSet(rs);
+            closeStatement(ps);
+            closeConnection(sqlConn);
+        }
+    }
+     
+    /** {@inheritDoc} */
+    @Override
+    public void purgeAuditTrail(EventQueryDefinition qDef) {
+        Util.assertNotNull(qDef);
+        Connection          sqlConn = null;
+        PreparedStatement   ps = null;
+        ResultSet           rs = null;
+        try {
+           sqlConn = getDataSource().getConnection();
+            ps = sqlConn.prepareStatement(getQueryBuilder().getPurgeAuditTrailQuery(qDef));
+            ps.setLong(1, qDef.getFrom());
+            ps.setLong(2, qDef.getTo());
+            ps.executeUpdate();
+        } catch (SQLException sqlEX) {
+            throw new IllegalStateException("CANNOT_READ_AUDITTABLE", sqlEX);
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
@@ -164,31 +191,68 @@ public class JdbcEventRepository extends AbstractEventRepository {
     }
     
     /** {@inheritDoc} */
-    public PieChart featuresListDistributionPie(long startTime, long endTime) {
-        PieChart pieGraph = new PieChart(TITLE_PIE_HITCOUNT);
-        Connection sqlConn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+    @Override
+    public void purgeFeatureUsage(EventQueryDefinition qDef) {
+        Util.assertNotNull(qDef);
+        Connection          sqlConn = null;
+        PreparedStatement   ps = null;
+        ResultSet           rs = null;
+        try {
+           sqlConn = getDataSource().getConnection();
+            ps = sqlConn.prepareStatement(getQueryBuilder().getPurgeFeatureUsageQuery(qDef));
+            ps.setLong(1, qDef.getFrom());
+            ps.setLong(2, qDef.getTo());
+            ps.executeUpdate();
+        } catch (SQLException sqlEX) {
+            throw new IllegalStateException("CANNOT_READ_AUDITTABLE", sqlEX);
+        } finally {
+            closeResultSet(rs);
+            closeStatement(ps);
+            closeConnection(sqlConn);
+        }
+    }
+    
+    /** {@inheritDoc} */
+    private EventSeries searchEvents(String sqlQuery, long from, long to) {
+        Connection          sqlConn = null;
+        PreparedStatement   ps = null;
+        ResultSet           rs = null;
+        EventSeries         es = new EventSeries();
+        try {
+            sqlConn = getDataSource().getConnection();
+            ps = sqlConn.prepareStatement(sqlQuery);
+            ps.setTimestamp(1, new Timestamp(from));
+            ps.setTimestamp(2, new Timestamp(to));
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                es.add(EVENT_MAPPER.mapEvent(rs));
+            }
+        } catch (SQLException sqlEX) {
+            throw new IllegalStateException("CANNOT_READ_AUDITTABLE", sqlEX);
+        } finally {
+            closeResultSet(rs);
+            closeStatement(ps);
+            closeConnection(sqlConn);
+        }
+        return es;
+    }
+    
+    /** {@inheritDoc} */
+    private  Map<String, MutableHitCount> computeHitCount(String sqlQuery, long from, long to) {
+        Connection          sqlConn = null;
+        PreparedStatement   ps = null;
+        ResultSet           rs = null;
+        Map<String, MutableHitCount>  hitCount = new HashMap<String, MutableHitCount>();
         try {
             // Returns features
             sqlConn = dataSource.getConnection();
-            
-            ps = sqlConn.prepareStatement(getQueryBuilder().getFeaturesPieAudit());
-            ps.setTimestamp(1, new Timestamp(startTime));
-            ps.setTimestamp(2, new Timestamp(endTime));
+            ps = sqlConn.prepareStatement(sqlQuery);
+            ps.setTimestamp(1, new Timestamp(from));
+            ps.setTimestamp(2, new Timestamp(to));
             rs = ps.executeQuery();
-            Map < String, Integer > freq = new HashMap<String, Integer>();
             while (rs.next()) {
-                freq.put(rs.getString(COL_EVENT_NAME), rs.getInt("NB"));
-            }
-            List < String > colors  = Util.getColorsGradient(freq.size());
-            int idx = 0;
-            for (Map.Entry < String, Integer > featNameEntry : freq.entrySet()) {
-                pieGraph.getSectors().add(
-                        new Serie<Integer>(featNameEntry.getKey(), featNameEntry.getValue(), colors.get(idx)));
-                idx++;
-            }
-            
+                hitCount.put(rs.getString(COL_EVENT_NAME), new MutableHitCount(rs.getInt("NB")));
+            } 
         } catch (SQLException sqlEX) {
             throw new FeatureAccessException(CANNOT_BUILD_PIE_CHART_FROM_REPOSITORY, sqlEX);
         } finally {
@@ -196,93 +260,59 @@ public class JdbcEventRepository extends AbstractEventRepository {
             closeStatement(ps);
             closeConnection(sqlConn);
         }
-       
-        return pieGraph;
+        return hitCount;
     }
     
-    /** {@inheritDoc} *
-    public BarChart getFeaturesUsageOverTime(Set<String> featNameSet, long startTime, long endTime, int nbslot) {
-        
-        // Build Labels
-        long slotWitdh = (endTime - startTime) / nbslot;
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        List <String> labels = new ArrayList<String>();
-        for (int i = 0; i < nbslot; i++) {
-            labels.add(sdf.format(new Date(startTime + slotWitdh * i)));
-        }
-        
-        // Build SeriesNames
-        BarChart barChart = new BarChart(TITLE_BARCHAR_HIT, labels, new ArrayList<String>(featNameSet));
-        
-        Connection sqlConn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            // Returns features
-            sqlConn = dataSource.getConnection();
-            
-            for (String featName : getFeatureNames()) {
-                ps = sqlConn.prepareStatement(getQueryBuilder().getAllEventsFeatureAudit());
-                ps.setString(1, featName);
-                ps.setTimestamp(2, new Timestamp(startTime));
-                ps.setTimestamp(3, new Timestamp(endTime));
-                rs = ps.executeQuery();
-                
-                BarSeries currentSeries = barChart.getSeries().get(featName);
-                while (rs.next()) {
-                    long timestamp   = rs.getTimestamp(COL_EVENT_TIME).getTime();
-                    currentSeries.incrCount((int) ((timestamp - startTime) / slotWitdh));
-                }
-            }
-                
-        } catch (SQLException sqlEX) {
-            throw new AuditAccessException(CANNOT_BUILD_PIE_CHART_FROM_REPOSITORY, sqlEX);
-        } finally {
-            closeResultSet(rs);
-            closeStatement(ps);
-            closeConnection(sqlConn);
-        }
-        return barChart;
-    }*/
+    /** {@inheritDoc} */
+    @Override
+    public EventSeries getAuditTrail(EventQueryDefinition qDef) {
+        return searchEvents(getQueryBuilder().getSelectAuditTrailQuery(qDef), qDef.getFrom(), qDef.getTo());
+    }
 
     /** {@inheritDoc} */
-    public PieChart featureDistributionPie(String featureId, long startTime, long endTime) {
-        PieChart pieGraph = new PieChart("Hits Count for " + featureId);
-        
-        Connection sqlConn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            // Returns features
-            sqlConn = dataSource.getConnection();
-            ps = sqlConn.prepareStatement(getQueryBuilder().getFeatureDistributionAudit());
-            ps.setString(1, featureId);
-            ps.setTimestamp(2, new Timestamp(startTime));
-            ps.setTimestamp(3, new Timestamp(endTime));
-            rs = ps.executeQuery();
-            
-            Map < String, Integer > freq = new HashMap<String, Integer>();
-            while (rs.next()) {
-                freq.put(rs.getString(COL_EVENT_ACTION), rs.getInt("NB"));
-            }
-            List < String > colors = Util.getColorsGradient(freq.size());
-            int idx = 0;
-            for (Map.Entry < String, Integer > actionEntry : freq.entrySet()) {
-                pieGraph.getSectors().add(new Serie<Integer>(actionEntry.getKey(), actionEntry.getValue(), colors.get(idx)));
-                idx++;
-            }
-            return pieGraph;
-                
-        } catch (SQLException sqlEX) {
-            throw new AuditAccessException(CANNOT_BUILD_PIE_CHART_FROM_REPOSITORY, sqlEX);
-        } finally {
-            closeResultSet(rs);
-            closeStatement(ps);
-            closeConnection(sqlConn);
-        }
-        
+    @Override
+    public EventSeries searchFeatureUsageEvents(EventQueryDefinition qDef) {
+        return searchEvents(getQueryBuilder().getSelectFeatureUsageQuery(qDef), qDef.getFrom(), qDef.getTo());
     }
-  
+        
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, MutableHitCount> getFeatureUsageHitCount(EventQueryDefinition query) {
+        return computeHitCount(getQueryBuilder().getFeaturesHitCount(), query.getFrom(), query.getTo());
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, MutableHitCount> getHostHitCount(EventQueryDefinition query) {
+        return computeHitCount(getQueryBuilder().getHostHitCount(), query.getFrom(), query.getTo());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, MutableHitCount> getUserHitCount(EventQueryDefinition query) {
+        return computeHitCount(getQueryBuilder().getUserHitCount(), query.getFrom(), query.getTo());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, MutableHitCount> getSourceHitCount(EventQueryDefinition query) {
+        return computeHitCount(getQueryBuilder().getSourceHitCount(), query.getFrom(), query.getTo());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public TimeSeriesChart getFeatureUsageHistory(EventQueryDefinition query, TimeUnit units) {
+        // Create the interval depending on units
+        TimeSeriesChart tsc = new TimeSeriesChart(query.getFrom(), query.getTo(), units);
+        // Search All events
+        Iterator<Event> iterEvent = searchFeatureUsageEvents(query).iterator();
+        // Dispatch events into time slots
+        while (iterEvent.hasNext()) {
+            tsc.addEvent(iterEvent.next());
+        }
+        return tsc;
+    }
+   
     /**
      * Getter accessor for attribute 'dataSource'.
      *
@@ -318,69 +348,4 @@ public class JdbcEventRepository extends AbstractEventRepository {
 	public void setQueryBuilder(JdbcQueryBuilder queryBuilder) {
 		this.queryBuilder = queryBuilder;
 	}
-
-    /** {@inheritDoc} */
-    @Override
-    public Map<String, MutableHitCount> getFeatureUsageHitCount(EventQueryDefinition query) {
-        return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public TimeSeriesChart getFeatureUsageHistory(EventQueryDefinition query, TimeUnit tu) {
-        return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public EventSeries searchFeatureUsageEvents(EventQueryDefinition query) {
-        return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void purgeFeatureUsage(EventQueryDefinition query) {
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Map<String, MutableHitCount> getHostHitCount(EventQueryDefinition query) {
-        return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Map<String, MutableHitCount> getUserHitCount(EventQueryDefinition query) {
-        return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Map<String, MutableHitCount> getSourceHitCount(EventQueryDefinition query) {
-        return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public TimeSeriesChart getAverageResponseTime(EventQueryDefinition query, TimeUnit tu) {
-        return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public EventSeries getAuditTrail(EventQueryDefinition query) {
-        return new EventSeries();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void purgeAuditTrail(EventQueryDefinition query) {
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Event getEventByUUID(String uuid, Long timestamp) {
-        return null;
-    }    
-    
 }

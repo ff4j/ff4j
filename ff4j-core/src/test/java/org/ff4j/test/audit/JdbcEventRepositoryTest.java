@@ -1,9 +1,5 @@
 package org.ff4j.test.audit;
 
-import java.sql.SQLException;
-
-import javax.sql.DataSource;
-
 /*
  * #%L
  * ff4j-core
@@ -26,13 +22,8 @@ import javax.sql.DataSource;
 
 import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.audit.repository.JdbcEventRepository;
-import org.ff4j.exception.AuditAccessException;
-import org.ff4j.exception.FeatureAccessException;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.mockito.Mockito;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -71,60 +62,12 @@ public class JdbcEventRepositoryTest extends AbstractEventRepositoryTest {
     /** {@inheritDoc} */
     @Override
     protected EventRepository initRepository() {
-        //sqlDataSource = JdbcTestHelper.createInMemoryHQLDataSource();
-         builder = new EmbeddedDatabaseBuilder();
-         db = builder.setType(EmbeddedDatabaseType.HSQL).//
+        builder = new EmbeddedDatabaseBuilder();
+        db = builder.setType(EmbeddedDatabaseType.HSQL).//
                  addScript("classpath:schema-ddl.sql").//
                  addScript("classpath:ff-store.sql").//
                  build();
         return new JdbcEventRepository(db);
-    }
-    
-    @Ignore
-    @Test(expected = AuditAccessException.class)
-    public void testJdbcSaveEventKO()  throws SQLException {
-        JdbcEventRepository jrepo = (JdbcEventRepository) repo;
-        DataSource mockDS = Mockito.mock(DataSource.class);
-        Mockito.doThrow(new SQLException()).when(mockDS).getConnection();
-        jrepo.setDataSource(mockDS);
-        //jrepo.saveEvent(generateEvent("aer", ACTION_CREATE));
-    }
-    
-    @Test(expected = FeatureAccessException.class)
-    public void testJdbcFeatureNamesKO()  throws SQLException {
-        JdbcEventRepository jrepo = (JdbcEventRepository) repo;
-        DataSource mockDS = Mockito.mock(DataSource.class);
-        Mockito.doThrow(new SQLException()).when(mockDS).getConnection();
-        jrepo.setDataSource(mockDS);
-        jrepo.getFeatureNames();
-    }
-    
-    @Test(expected = FeatureAccessException.class)
-    public void testJdbcHitPieCharts()  throws SQLException {
-        JdbcEventRepository jrepo = (JdbcEventRepository) repo;
-        DataSource mockDS = Mockito.mock(DataSource.class);
-        Mockito.doThrow(new SQLException()).when(mockDS).getConnection();
-        jrepo.setDataSource(mockDS);
-        jrepo.featuresListDistributionPie(0, 1);
-    }
-    
-    @Test(expected = AuditAccessException.class)
-    @Ignore
-    public void testJdbcHitBarCharts()  throws SQLException {
-        JdbcEventRepository jrepo = (JdbcEventRepository) repo;
-        DataSource mockDS = Mockito.mock(DataSource.class);
-        Mockito.doThrow(new SQLException()).when(mockDS).getConnection();
-        jrepo.setDataSource(mockDS);
-        //jrepo.getFeaturesUsageOverTime(Util.set("1"), 0, 1, 2);
-    }
-    
-    @Test(expected = AuditAccessException.class)
-    public void testgetFeatureHitsPieKo()  throws SQLException {
-        JdbcEventRepository jrepo = (JdbcEventRepository) repo;
-        DataSource mockDS = Mockito.mock(DataSource.class);
-        Mockito.doThrow(new SQLException()).when(mockDS).getConnection();
-        jrepo.setDataSource(mockDS);
-        jrepo.featureDistributionPie("f1", 0, 1);
     }
 
 }

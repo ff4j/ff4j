@@ -2,10 +2,13 @@ package org.ff4j.audit.chart;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import org.ff4j.audit.Event;
 import org.ff4j.audit.MutableHitCount;
 import org.ff4j.utils.JsonUtils;
 
@@ -45,9 +48,85 @@ public class TimeSeriesChart extends AbstractChart {
     /** Init Once. */
     private List < String > timeSlots = new ArrayList<String>();
     
-    /** SerieID -> Serie (label/color) + 1 point per slot. */
-    private Map < String, Serie< Map < String, MutableHitCount >>> series = 
+    /** SerieID -> Serie (label/color/value) value=<slotID, nombre de point> */
+    private Map < String, Serie < Map < String, MutableHitCount >>> series = 
             new HashMap<String, Serie<Map<String,MutableHitCount>>>();
+    
+    /**
+     * Default constuctor
+     */
+    public TimeSeriesChart() {
+    }
+    
+    /**
+     * Parameterized constructor.
+     *
+     * @param from
+     *      starting date
+     * @param to
+     *      ending date
+     * @param units
+     *      time slot
+     */
+    public TimeSeriesChart(long from, long to, TimeUnit units) {
+        this.initSlots(from, to, units);
+    }
+    
+    /**
+     * Create slots and initiate data structure.
+     *
+     * @param startTime
+     *      period start date
+     * @param endTime
+     *      period end date
+     * @param units
+     *      current units
+     * @return
+     * 
+     */
+    public void initSlots(long from, long to, TimeUnit units) {
+        long slotWitdh = 0;
+        switch (units) {
+            case MINUTES:
+                slotWitdh = 1000 * 60;
+                this.sdf = new SimpleDateFormat("yyyyMMdd-HH:mm");
+            break;
+            case HOURS:
+                slotWitdh = 1000 * 60 * 60;
+                this.sdf = new SimpleDateFormat("yyyyMMdd-HH");
+            break;
+            case DAYS:
+                slotWitdh = 1000 * 60 * 60 * 24;
+                this.sdf =  new SimpleDateFormat("yyyyMMdd");
+            break;
+            default:
+                slotWitdh = 1000;
+                this.sdf = new SimpleDateFormat("yyyyMMdd-HH:mm:ss");
+            break;
+        }
+        // Create slots for the timeSeries base ones
+        int nbslot = new Long(1 + (to - from) / slotWitdh).intValue();
+        for (int i = 0; i < nbslot; i++) {
+            long startSlotTime = from + slotWitdh * i;
+            String slotLabel   = sdf.format(new Date(startSlotTime));
+            getTimeSlots().add(slotLabel);
+        }
+    }
+    
+    /**
+     * Add Event to chart.
+     *
+     * @param evt
+     *      current event
+     */
+    public void addEvent(Event evt) {
+        if (series.containsKey(evt.getName())) {
+            createNewSerie(evt.getName());
+        }
+        String targetSlot = sdf.format(new Date(evt.getTimestamp()));
+        series.get(evt.getName()).getValue().get(targetSlot).inc();
+    }
+    
     
     /**
      * Create new Serie with existing slots.

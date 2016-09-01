@@ -21,9 +21,7 @@ package org.ff4j.audit.repository;
  */
 
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -172,55 +170,13 @@ public class InMemoryEventRepository extends AbstractEventRepository {
         return target.get(key).get(uid).add(e);
     }
     
-    /**
-     * Create slots and initiate data structure.
-     *
-     * @param startTime
-     *      period start date
-     * @param endTime
-     *      period end date
-     * @param units
-     *      current units
-     * @return
-     * 
-     */
-    private TimeSeriesChart initSlots(EventQueryDefinition query, TimeUnit units) {
-        TimeSeriesChart tsc = new TimeSeriesChart();
-        long slotWitdh = 0;
-        
-        switch (units) {
-            case MINUTES:
-                slotWitdh = 1000 * 60;
-                tsc.setSdf(new SimpleDateFormat("yyyyMMdd-HH:mm"));
-            break;
-            case HOURS:
-                slotWitdh = 1000 * 60 * 60;
-                tsc.setSdf(new SimpleDateFormat("yyyyMMdd-HH"));
-            break;
-            case DAYS:
-                slotWitdh = 1000 * 60 * 60 * 24;
-                tsc.setSdf(new SimpleDateFormat("yyyyMMdd"));
-            break;
-            default:
-                slotWitdh = 1000;
-                tsc.setSdf(new SimpleDateFormat("yyyyMMdd-HH:mm:ss"));
-            break;
-        }
-        // Create slots for the timeSeries base ones
-        int nbslot = new Long(1 + (query.getTo() - query.getFrom()) / slotWitdh).intValue();
-        for (int i = 0; i < nbslot; i++) {
-            long startSlotTime = query.getFrom() + slotWitdh * i;
-            String slotLabel   = tsc.getSdf().format(new Date(startSlotTime));
-            tsc.getTimeSlots().add(slotLabel);
-        }
-        return tsc;
-    }
+   
     
     /** {@inheritDoc} */
     @Override
     public TimeSeriesChart getFeatureUsageHistory(EventQueryDefinition query, TimeUnit units) {
         // Create the interval depending on units
-        TimeSeriesChart tsc = initSlots(query, units);
+        TimeSeriesChart tsc = new TimeSeriesChart(query.getFrom(), query.getTo(), units);
         
         for (String currentDay : getCandidateDays(query.getFrom(), query.getTo())) {
             // There are some event this day
@@ -263,51 +219,6 @@ public class InMemoryEventRepository extends AbstractEventRepository {
         }
         return tsc;
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public TimeSeriesChart getAverageResponseTime(EventQueryDefinition query, TimeUnit tu) {
-        // Create the chart (empty slots)
-        TimeSeriesChart tsc = initSlots(query, tu);
-
-        // Temporary element featureName -> slotKey -> List points
-        Map < String , Map < String, EventSeries > > mapOfValues = new HashMap<String, Map<String, EventSeries > >();
-       
-        for (String currentDay : getCandidateDays(query.getFrom(), query.getTo())) {
-            if (featureUsageEvents.containsKey(currentDay)) {
-                for (Map.Entry<String, EventSeries> entry : featureUsageEvents.get(currentDay).entrySet()) {
-                    for (Event evt : entry.getValue()) {
-                        if (query.match(evt)) {
-                            // Get correct slot
-                            if (!mapOfValues.containsKey(entry.getKey()) ) {
-                                mapOfValues.put(entry.getKey(), new HashMap<String, EventSeries>()); 
-                            }
-                            String slotKey = tsc.getSdf().format(new Date(evt.getTimestamp()));
-                            if (!mapOfValues.get(entry.getKey()).containsKey(slotKey) ) {
-                                mapOfValues.get(entry.getKey()).put(slotKey, new EventSeries());
-                            }
-                            mapOfValues.get(entry.getKey()).get(slotKey).add(evt);
-                        }
-                    }
-                }
-            }
-        }
-        
-        // Calculate AVG
-        for(String featureName : mapOfValues.keySet()) {
-            if (!tsc.getSeries().containsKey(featureName)) {
-                tsc.createNewSerie(featureName);
-            }
-            for(Map.Entry<String, EventSeries > entryValue : mapOfValues.get(featureName).entrySet()) {
-                int average = new Double(entryValue.getValue().getAverageDuration()).intValue();
-                tsc.getSeries().get(featureName).getValue().put(entryValue.getKey(), new MutableHitCount(average));
-            }
-        }
-        
-        // Update Colors
-        return tsc;
-    }
-
     
     /** {@inheritDoc} */
     @Override
@@ -379,7 +290,7 @@ public class InMemoryEventRepository extends AbstractEventRepository {
             // There are some events with the current date
             if (featureUsageEvents.containsKey(currentDay)) {
                 Map<String, EventSeries> currentDayEvents = featureUsageEvents.get(currentDay);
-                for (String currentFeature : currentDayEvents.keySet()) {
+               for (String currentFeature : currentDayEvents.keySet()) {
                     // query can have filters for names, here we limite the number of map to scan
                     if (query.matchName(currentFeature)) {
                         Iterator<Event> iterEvents = currentDayEvents.get(currentFeature).iterator();

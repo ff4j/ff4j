@@ -58,7 +58,6 @@ public class CassandraConstants {
     /** CQL to work with features. */
     public static final String CQL_EXIST_FEATURE = "SELECT COUNT(*) AS NB FROM ff4j.features WHERE FEAT_UID = ?";
     
-    
     /** Remove public constructor. */
     private CassandraConstants() {
     }

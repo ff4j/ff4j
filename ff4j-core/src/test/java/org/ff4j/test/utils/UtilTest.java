@@ -31,6 +31,7 @@ import java.util.Set;
 import org.ff4j.audit.EventConstants;
 import org.ff4j.store.JdbcStoreConstants;
 import org.ff4j.utils.Util;
+import org.ff4j.web.FF4jWebConstants;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -73,6 +74,10 @@ public class UtilTest {
 	     Constructor<EventConstants> de = EventConstants.class.getDeclaredConstructor();
 	     de.setAccessible(true);
 	     de.newInstance();
+	     
+	     Constructor<FF4jWebConstants> ee = FF4jWebConstants.class.getDeclaredConstructor();
+	     ee.setAccessible(true);
+	     ee.newInstance();
     }
     
     @Test

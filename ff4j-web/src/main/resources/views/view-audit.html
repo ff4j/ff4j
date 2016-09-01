@@ -1,0 +1,136 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="header :: head"></head>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+<script type="text/javascript" src="" th:src="@{static/js/bootstrap-datetimepicker.min.js}"></script>
+<link rel="stylesheet" type="text/css" media="all" href="" th:href="@{static/css/bootstrap-datetimepicker.min.css}" />
+
+<!-- DataTables -->
+<script type="text/javascript" src="" th:src="@{static/js/jquery.dataTables.min.js}"></script>
+<link rel="stylesheet" type="text/css" media="all" href="" th:href="@{static/css/jquery.dataTables.min.css}" />
+ 
+<body>
+  
+<div class="navbar navbar-fixed-top" th:include="navbar :: navbar"></div>
+
+<div class="subnavbar" th:include="navbar :: subnavbaraudit"></div>
+
+<div id="wrapper" class="container" >
+
+ <div th:include="messages :: messagebar" style="margin-top:60px"></div>
+ 
+ <div class="row">
+  <div class="span9"> 
+   <div id="content" class="clearfix" >
+    <div class="main-inner" >
+     <div class="container">
+ 
+      <div class="row">
+       <div class="span12">     
+        <div class="widget">
+       
+        <div class="widget-header">
+         <i class="icon-bar-chart"></i>
+         <h3>Audit</h3>
+        </div>
+       
+        <div class="widget-content" style="text-align:center"> 
+
+  
+  <form class="form-horizontal" action="" th:action="@{audit}" method="POST">
+  <h4 style="color:#00AB8B">
+      <div id="datetimepickerFrom1" class="input-append date">
+	     &nbsp; From : &nbsp;
+	    <input data-format="MM/dd/yyyy hh:mm:ss" type="text" name="slotfrom" id="slotfrom" th:value="${from}"></input>
+	    <span class="add-on" style="background-color:#00AB8B;margin-left:-6px">
+	     <i class="icon-calendar" style="width:40px;color:white"></i>
+	    </span>
+	  </div>
+	  <div id="datetimepickerTo1" class="input-append date">
+	     &nbsp; TO : &nbsp;
+	    <input data-format="MM/dd/yyyy hh:mm:ss" type="text" name="slotto" id="slotto" th:value="${to}"></input>
+	    <span class="add-on" style="background-color:#00AB8B;margin-left:-6px">
+	     <i class="icon-calendar" style="width:40px;color:white"></i>
+	    </span>
+	  </div>
+	  &nbsp;
+	  <button class="btn " type="submit" style="background-color:#00AB8B;color:white;">
+	    &nbsp;<span th:text="#{modal.button.validate}"></span>
+	  </button>
+   </h4>
+ </form>
+ 
+ <script type="text/javascript">
+  $(function() {
+    $('#datetimepickerFrom1').datetimepicker({});
+    $('#datetimepickerTo1').datetimepicker({});
+  });
+</script>
+     
+ <script type="text/javascript">
+ $(document).ready(function(){
+	    $('#auditTable').DataTable();
+	});
+ </script>
+                    
+    <table id="auditTable" name="auditTable" 
+           class="table table-striped table-bordered" 
+           style="margin-top:10px;">
+     <thead>
+      <tr>
+       <th style="width:23%;text-align:center">Date</th>
+       <th style="width:23%;text-align:center">Action</th>
+       <th style="width:23%;text-align:center">Owner</th>
+       <th style="width:23%;text-align:center">Tech</th>
+       <th>&nbsp;</th>
+       </tr>
+       </thead>
+        <tbody>
+            <tr th:each="event : ${auditTrail}">
+            <td>
+                <span th:text="${#dates.format(event.date,'MM/dd/YYYY HH:mm:ss')}">---</span>
+            </td>
+            
+            <td>
+                <span style="color:#008bab" th:text="${event.action}">---</span>
+                <span th:text="${event.type}">---</span>
+                <b><span th:text="${event.name}">---</span></b>
+             </td>
+             <td><span th:text="${event.user}">---</span></td>
+             
+             <td>
+               <li>HostName : <span th:text="${event.hostName}">---</span></li>
+               <li>Source :  <span th:text="${event.source}">---</span></li></td>
+              <td style="width:5%;text-align:center">
+                <a target="new"
+                   th:href="@{api} + '/audit/' + ${event.uuid} + '?key=' + ${event.timestamp}"
+                   style="width:6px:margin-left:-3px;color:white;background-color:#008bab" class="btn">
+		         <i class="icon-zoom-in"></i>
+		        </a>
+		     </td>
+            </tr>
+            </tbody>
+        <!-- FeatureName -->
+       </table>
+                             
+                            </div>
+                            <!-- /widget-content -->
+                        </div>
+                        <!-- /widget -->
+                    </div>
+                    <!-- /span6 -->
+                </div>
+                <!-- /row -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+   
+</body>
+</html>

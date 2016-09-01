@@ -1,0 +1,109 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="header :: head"></head>
+
+<script type="text/javascript" src="" th:src="@{static/js/jqplot/jquery.jqplot.min.js}"></script>
+<script type="text/javascript" src="" th:src="@{static/js/jqplot/plugins/jqplot.barRenderer.min.js}"></script>
+<script type="text/javascript" src="" th:src="@{static/js/jqplot/plugins/jqplot.cursor.min.js}"></script>
+<script type="text/javascript" src="" th:src="@{static/js/jqplot/plugins/jqplot.pieRenderer.min.js}"></script>
+<script type="text/javascript" src="" th:src="@{static/js/jqplot/plugins/jqplot.highlighter.min.js}"></script>
+<script type="text/javascript" src="" th:src="@{static/js/jqplot/plugins/jqplot.categoryAxisRenderer.min.js}"></script>
+<script type="text/javascript" src="" th:src="@{static/js/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js}"></script>
+<script type="text/javascript" src="" th:src="@{static/js/jqplot/plugins/jqplot.canvasTextRenderer.min.js}"></script>
+<script type="text/javascript" src="" th:src="@{static/js/jqplot/plugins/jqplot.dateAxisRenderer.min.js}"></script>
+<script type="text/javascript" src="" th:src="@{static/js/jqplot/plugins/jqplot.BezierCurveRenderer.min.js}"></script>
+<script type="text/javascript" src="" th:src="@{static/js/jqplot/plugins/jqplot.enhancedLegendRenderer.min.js}"></script>
+
+<script type="text/javascript" src="" th:src="@{static/js/jqplot/plugins/jqplot.pointLabels.min.js}"></script>
+
+<script type="text/javascript" src="" th:src="@{static/js/bootstrap-datetimepicker.min.js}"></script>
+<link rel="stylesheet" type="text/css" media="all" href="" th:href="@{static/css/bootstrap-datetimepicker.min.css}" />
+<link rel="stylesheet" type="text/css" media="all" href="" th:href="@{static/js/jqplot/jquery.jqplot.min.css}" />
+<body>
+  
+<div class="navbar navbar-fixed-top" th:include="navbar :: navbar"></div>
+
+<div class="subnavbar" th:include="navbar :: subnavbartimeseries"></div>
+
+<div id="wrapper" class="container" >
+ <div class="row">
+  <div class="span9"> 
+   <div id="content" class="clearfix" >
+    <div class="main-inner" style="margin-top:60px">
+     <div class="container">
+ 
+      <div class="row">
+       <div class="span12">     
+        <div class="widget">
+         <div class="widget-header">
+         <i class="icon-bar-chart"></i>
+         <h3>Audit</h3>
+         </div>
+         <div class="widget-content" style="text-align:center">
+          <form class="form-horizontal" action="" th:action="@{timeSeries}" method="POST">
+           <h4 style="color:#00AB8B">
+            <div id="datetimepickerFrom1" class="input-append date">
+             &nbsp; From : &nbsp;
+             <input data-format="MM/dd/yyyy hh:mm:ss" type="text" name="slotfrom" id="slotfrom" th:value="${from}"></input>
+             <span class="add-on" style="background-color:#00AB8B;margin-left:-6px">
+              <i class="icon-calendar" style="width:40px;color:white"></i>
+             </span>
+            </div>
+            <div id="datetimepickerTo1" class="input-append date">
+             &nbsp; TO : &nbsp;
+             <input data-format="MM/dd/yyyy hh:mm:ss" type="text" name="slotto" id="slotto" th:value="${to}"></input>
+             <span class="add-on" style="background-color:#00AB8B;margin-left:-6px">
+              <i class="icon-calendar" style="width:40px;color:white"></i>
+             </span>
+            </div>
+            &nbsp;
+            <button class="btn " type="submit" style="background-color:#00AB8B;color:white;">
+             &nbsp;<span th:text="#{modal.button.validate}"></span>
+            </button>
+           </h4>
+          </form>
+          <script type="text/javascript">
+            $(function() {
+               $('#datetimepickerFrom1').datetimepicker({});
+               $('#datetimepickerTo1').datetimepicker({});
+            });
+          </script>
+         </div> <!-- content -->
+        </div> <!--  widget -->
+       </div> <!-- span12 -->
+      </div> <!-- row -->
+
+      <div class="row">
+       <div class="span12">     
+        <div class="widget">
+         <div class="widget-header">
+          <i class="icon-bar-chart"></i>
+          <h3>TimeSeries</h3>
+         </div>
+         <div class="widget-content">
+          
+          <p>Click on serie name in Legend to toggle on/off series.</p>
+          
+          <div id="maincurve" class="maincurveStyle"></div>
+           <script th:inline="javascript">
+            var startTime = /*[[${fromJS}]]*/ null;
+            var endTime   = /*[[${toJS}]]*/ null;
+            console.log(startTime);
+            $(document).ready(
+            		ff4j_renderSparkline('maincurve', 
+            				ff4j_computeSparkline('api/timeSeries', startTime, endTime)));
+           </script>
+         </div>
+        </div>
+       </div>
+      </div>
+      
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+   
+</body>
+</html>

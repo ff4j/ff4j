@@ -382,7 +382,9 @@ public class Event implements Serializable, Comparable < Event > {
     /** {@inheritDoc} */
     @Override
     public int compareTo(Event evt) {
-        return new Long(this.getTimestamp() - evt.getTimestamp()).intValue();
+        int myTime = new Long(this.getTimestamp() - evt.getTimestamp()).intValue();
+        // Not equals even if same timestamp (of course...)
+        return (myTime != 0) ? myTime : evt.getUuid().compareTo(getUuid());
     }
 
 }

@@ -69,6 +69,7 @@ public class PropertyClass extends Property< Class<?> > {
     public PropertyClass(String uid, Class<?> value) {
        super(uid, value);
     }
+    
     /** {@inheritDoc} */
     @Override
     public Class<?> fromString(String v) {
@@ -77,6 +78,20 @@ public class PropertyClass extends Property< Class<?> > {
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException("The target class has not been found", e);
         }
+    }
+    
+    /** 
+     * Serialized value as String
+     *
+     * @return
+     *      current value as a string or null
+     */
+    @Override
+    public String asString() {
+        if (value == null) {
+            return null;
+        }
+        return value.getName();
     }
 
 }
