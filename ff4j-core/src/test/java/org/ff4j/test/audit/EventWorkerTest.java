@@ -1,5 +1,9 @@
 package org.ff4j.test.audit;
 
+import static org.ff4j.audit.EventConstants.ACTION_CHECK_OFF;
+import static org.ff4j.audit.EventConstants.ACTION_CHECK_OK;
+import static org.ff4j.audit.EventConstants.SOURCE_JAVA;
+import static org.ff4j.audit.EventConstants.TARGET_FEATURE;
 import static org.mockito.Mockito.doThrow;
 
 /*
@@ -27,13 +31,12 @@ import static org.mockito.Mockito.when;
 
 import org.ff4j.audit.Event;
 import org.ff4j.audit.EventPublisher;
+import org.ff4j.audit.EventRejectedExecutionHandler;
 import org.ff4j.audit.EventWorker;
 import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.audit.repository.InMemoryEventRepository;
 import org.junit.Assert;
 import org.junit.Test;
-
-import static org.ff4j.audit.EventConstants.*;
 
 public class EventWorkerTest {
     
@@ -69,6 +72,11 @@ public class EventWorkerTest {
         EventPublisher evtPublisher = new EventPublisher(er);
         evtPublisher.publish(evt);
         Assert.assertNotNull(evt);
+    }
+    
+    @Test
+    public void testEventRejected() {
+        Assert.assertFalse(EventRejectedExecutionHandler.isMock());
     }
 
 }

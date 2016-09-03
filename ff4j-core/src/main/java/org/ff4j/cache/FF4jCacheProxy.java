@@ -305,10 +305,7 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
         // Or in cache but with different value that default
         if (null == fp) {
             fp = getTargetPropertyStore().readProperty(name, defaultValue);
-            // Put only if not default value
-            if(fp.getValue() != defaultValue.getValue()) {
-                getCacheManager().putProperty(fp);
-            }
+            getCacheManager().putProperty(fp);
         }
         return fp;
     }
@@ -350,8 +347,7 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
     /** {@inheritDoc} */
     @Override
     public boolean isEmpty() {
-        Set<String> pNames = listPropertyNames();
-        return pNames != null && !pNames.isEmpty();
+        return listPropertyNames().isEmpty() && readAll().isEmpty();
     }
 
     /** {@inheritDoc} */

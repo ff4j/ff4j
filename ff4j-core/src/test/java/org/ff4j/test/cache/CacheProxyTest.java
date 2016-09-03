@@ -3,14 +3,15 @@ package org.ff4j.test.cache;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.ff4j.FF4j;
 import org.ff4j.cache.FF4JCacheManager;
 import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.cache.InMemoryCacheManager;
 import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
 import org.ff4j.property.PropertyLogLevel;
-import org.ff4j.property.PropertyString;
 import org.ff4j.property.PropertyLogLevel.LogLevel;
+import org.ff4j.property.PropertyString;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.junit.Assert;
@@ -79,8 +80,12 @@ public class CacheProxyTest {
         proxy.setTargetPropertyStore(new InMemoryPropertyStore());
         proxy.setTargetFeatureStore(new InMemoryFeatureStore());
         proxy.setCacheManager(new InMemoryCacheManager());
+        Assert.assertTrue(proxy.isEmpty());
+        
+        proxy.create(new Feature("a"));
+        Assert.assertFalse(proxy.isEmpty());
+        
         proxy.createProperty(new PropertyString("p1", "v1"));
-       
         Property<?> p1 = proxy.readProperty("p1");
         proxy.readProperty("p1");
         proxy.getTargetPropertyStore().createProperty(new PropertyString("p2"));
@@ -88,7 +93,8 @@ public class CacheProxyTest {
         
         proxy.updateProperty("p1", "v2");
         proxy.updateProperty(p1);
-        Assert.assertTrue(proxy.isEmpty());
+        Assert.assertFalse(proxy.isEmpty());
+        
         Assert.assertFalse(proxy.listPropertyNames().isEmpty());
         proxy.deleteProperty("p1");
         proxy.clear();
@@ -98,8 +104,29 @@ public class CacheProxyTest {
         setOfProperty.add(new PropertyLogLevel("titi1", LogLevel.INFO));
         proxy.importProperties(setOfProperty);
         
+        // Already in cache, but not same value
+        proxy.createProperty(new PropertyString("cacheNStore", "cacheNStore"));
+        proxy.readProperty("cacheNStore", p1);
+        
+        // Not in cache, but in store, but not same default value
+        proxy.getTargetPropertyStore().createProperty(new PropertyString("p4", "v4"));
         proxy.readProperty("p1", p1);
-        proxy.readProperty("p2", p1);
+        
+        proxy.readProperty("p1", p1);
+        // Nowhere, return default
+        proxy.readProperty("p2", new PropertyString("p2"));
+        proxy.readProperty("p1", new PropertyString("p3"));
+    }
+    
+    @Test
+    public void testCacheProxy() {
+        FF4j myFF4J = new FF4j();
+        Assert.assertNull(myFF4J.getCacheProxy());
+        myFF4J.setEnableAudit(true);
+        Assert.assertNull(myFF4J.getCacheProxy());
+        Assert.assertNotNull(myFF4J.getConcreteFeatureStore());
+        
+        
     }
 
 }

@@ -32,6 +32,7 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.property.Property;
 import org.ff4j.property.PropertyInt;
+import org.ff4j.property.PropertyLong;
 import org.ff4j.property.PropertyString;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.utils.JdbcUtils;
@@ -137,8 +138,19 @@ public class MappingUtilsTest {
         
         // Property -> Primitive
         Assert.assertEquals(PropertyInt.class.getName(), MappingUtil.mapPropertyType("int"));
+    }
+    
+    @Test
+    public void testMapSimpleClass() {
+        String className = null;
+        Assert.assertNull(MappingUtil.mapSimpleType(className));
+        Assert.assertEquals(Property.class.getName(), MappingUtil.mapSimpleType(Property.class.getName()));
+        Assert.assertEquals("long", MappingUtil.mapSimpleType(PropertyLong.class.getName()));
         
-        
+        Class<?> classType = null;
+        Assert.assertNull(MappingUtil.mapSimpleType(classType));
+        Assert.assertEquals(Property.class.getName(), MappingUtil.mapSimpleType(Property.class));
+        Assert.assertEquals("long", MappingUtil.mapSimpleType(PropertyLong.class));
     }
 
 }

@@ -1,5 +1,7 @@
 package org.ff4j.test.utils;
 
+import java.io.File;
+
 /*
  * #%L
  * ff4j-core
@@ -61,6 +63,8 @@ public class GenerationUtilTest {
         // Then
         Assert.assertTrue(data.contains("FEATURE"));
         Assert.assertTrue(data.contains("interface"));
+        Assert.assertNotNull(GeneratorUtils.exportInterfaceConstants(ff4j));
+        GeneratorUtils.generateInterfaceConstantFile(ff4j, new File("./target"));
     }    
     
     

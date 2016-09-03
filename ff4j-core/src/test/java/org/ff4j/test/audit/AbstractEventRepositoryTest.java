@@ -107,11 +107,12 @@ public abstract class AbstractEventRepositoryTest {
     protected abstract EventRepository initRepository();
     
     @Test
-    public void testSaveEventUnit() {
+    public void testSaveEventUnit() throws InterruptedException {
         long start = System.currentTimeMillis();
         Assert.assertEquals(0, repo.getFeatureUsageTotalHitCount(new EventQueryDefinition(start, System.currentTimeMillis())));
         repo.saveEvent(generateFeatureUsageEvent("f1"));
-        Assert.assertEquals(1, repo.getFeatureUsageTotalHitCount(new EventQueryDefinition(start-10, System.currentTimeMillis())));
+        Thread.sleep(100);
+        Assert.assertEquals(1, repo.getFeatureUsageTotalHitCount(new EventQueryDefinition(start-20, System.currentTimeMillis())));
     }
     
     @Test(expected = IllegalArgumentException.class)

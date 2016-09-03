@@ -34,13 +34,16 @@ import org.ff4j.FF4j;
 import org.ff4j.audit.Event;
 import org.ff4j.audit.EventConstants;
 import org.ff4j.audit.EventPublisher;
+import org.ff4j.audit.proxy.PropertyStoreAuditProxy;
 import org.ff4j.audit.repository.InMemoryEventRepository;
+import org.ff4j.cache.InMemoryCacheManager;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.property.Property;
 import org.ff4j.property.PropertyString;
 import org.ff4j.store.InMemoryFeatureStore;
+import org.ff4j.strategy.PonderationStrategy;
 import org.ff4j.strategy.el.ExpressionFlipStrategy;
 import org.ff4j.utils.Util;
 import org.junit.Assert;
@@ -283,6 +286,8 @@ public class FF4jTest extends AbstractFf4jTest {
         Assert.assertTrue(ff4j.checkOveridingStrategy("coco", mockFlipStrategy));
         Assert.assertTrue(ff4j.checkOveridingStrategy("coco", null, null));
         Assert.assertFalse(ff4j.checkOveridingStrategy("cocorico", mockFlipStrategy));
+        // Update Coverage
+        ff4j.setAuthManager("something");
     }
     
     @Test
@@ -370,6 +375,63 @@ public class FF4jTest extends AbstractFf4jTest {
         ff4j.importProperties(null);
     }
     
+    @Test
+    public void testInitWithEventPublisher() {
+        Assert.assertNotNull(new FF4j().getEventPublisher());
+    }
     
+    @Test
+    public void testEmptyPermission() {
+        FF4j ff4j = new FF4j();
+        ff4j.createFeature("f1", true);
+        ff4j.setAuthorizationsManager(new DefinedPermissionSecurityManager("a", new HashSet<String>()));
+        Assert.assertTrue(ff4j.checkOveridingStrategy("f1", new PonderationStrategy(1d)));
+        Assert.assertTrue(ff4j.isAllowed(ff4j.getFeature("f1")));
+    }
+    
+    @Test
+    public void testgetProperty() {
+        FF4j ff4j = new FF4j();
+        ff4j.createProperty(new PropertyString("p1", "v1"));
+        Assert.assertNotNull(ff4j.getProperty("p1"));
+        Assert.assertNotNull(ff4j.getPropertyAsString("p1"));
+        Assert.assertEquals("v1", ff4j.getPropertyAsString("p1"));
+    }
+    
+    @Test
+    public void testParseXmlConfigOK() {
+        Assert.assertNotNull(new FF4j().parseXmlConfig("test-featureXmlParserTest-ok.xml"));        
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testParseXmlConfigKO() {
+        Assert.assertNotNull(new FF4j().parseXmlConfig("do-not-ext.xml"));        
+    }
+    
+    @Test
+    public void testInitCache() {
+        FF4j ff4j = new FF4j();
+        ff4j.cache(new InMemoryCacheManager());
+    }
+
+    @Test
+    public void testInitAuditProxy() {
+        FF4j ff4j = new FF4j();
+        ff4j.setEnableAudit(true);
+        ff4j.getFeatureStore();
+        ff4j.setEnableAudit(false);
+        ff4j.getFeatureStore();
+    }
+    
+    @Test
+    public void getConcreteFeatureStore() {
+        FF4j ff4j = new FF4j();
+        ff4j.cache(new InMemoryCacheManager());
+        Assert.assertNotNull(ff4j.getCacheProxy());
+        Assert.assertNotNull(ff4j.getConcreteFeatureStore());
+        Assert.assertNotNull(ff4j.getConcretePropertyStore());
+        ff4j.setPropertiesStore(new PropertyStoreAuditProxy(ff4j, ff4j.getPropertiesStore()));
+        Assert.assertNotNull(ff4j.getConcretePropertyStore());
+    }
 
 }

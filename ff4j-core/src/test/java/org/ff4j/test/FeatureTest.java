@@ -23,6 +23,7 @@ import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.PropertyString;
 import org.ff4j.strategy.PonderationStrategy;
+import org.ff4j.utils.Util;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -93,6 +94,22 @@ public class FeatureTest {
 
         // To String with a whole object
         Assert.assertTrue(empty.toString().contains("OK"));
+    }
+    
+    @Test
+    public void testCopyConstructorFeature() {
+        Feature f = new Feature("abc", true, "samething", "groupA", Util.set("a", "b"));
+        f.getPermissions().add("USER");
+        f.setFlippingStrategy(new PonderationStrategy(0.5d));
+        f.getCustomProperties().put("p1", new PropertyString("p1","v1"));
+        f.getCustomProperties().put("p2", new PropertyString("p1","v1", Util.set("v1", "v2")));
+        
+        Feature f2 = new Feature(f);
+        Assert.assertEquals(f2.getUid(),  f.getUid());
+        Assert.assertEquals(f2.getPermissions(),  f.getPermissions());
+        
+        new Feature("f3", true, "samething", "groupA", Util.set("a", "b"), null);
+        new Feature(new Feature("f4", true));
     }
     
     @Test

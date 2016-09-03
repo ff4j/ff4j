@@ -36,6 +36,7 @@ public class IOUtilsTest {
     public void testResolveOK() throws Exception {
         IOUtil.setUseInetAddress(true);
         IOUtil.resolveHostName();
+        Assert.assertTrue(IOUtil.isUseInetAddress());
     }
     
     @Test(expected = IllegalArgumentException.class)

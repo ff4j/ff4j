@@ -67,29 +67,27 @@ public class UtilTest {
     
     @Test
     public void testConstants() throws Exception {
-    	 Constructor<JdbcStoreConstants> ce = JdbcStoreConstants.class.getDeclaredConstructor();
-	     ce.setAccessible(true);
-	     ce.newInstance();
-	     
-	     Constructor<EventConstants> de = EventConstants.class.getDeclaredConstructor();
-	     de.setAccessible(true);
-	     de.newInstance();
-	     
-	     Constructor<FF4jWebConstants> ee = FF4jWebConstants.class.getDeclaredConstructor();
-	     ee.setAccessible(true);
-	     ee.newInstance();
+         Constructor<JdbcStoreConstants> ce = JdbcStoreConstants.class.getDeclaredConstructor();
+         ce.setAccessible(true);
+         ce.newInstance();
+         
+         Constructor<EventConstants> de = EventConstants.class.getDeclaredConstructor();
+         de.setAccessible(true);
+         de.newInstance();
+         
+         Constructor<FF4jWebConstants> ee = FF4jWebConstants.class.getDeclaredConstructor();
+         ee.setAccessible(true);
+         ee.newInstance();
     }
     
     @Test
     public void testGradient() {
-        List < String > tips = Util.generateHSVGradient("ee1100", "442299", 9);
-        System.out.println(tips);
-        //List < String > tips = Util.generateRGBGradient("ee1100", "442299", 17);
-        
-        
-        for (String tip : tips) {
-            System.out.println("<div style=\"background-color:#" + tip + ";width:40px;height:10px\" ></div>");
-        }
+        List < String > g1 = Util.generateHSVGradient("ee1100", "442299", 9);
+        Util.generateHSVGradient("442299", "ee1100", 9);
+        Util.generateRGBGradient("ee1100", "442299", 9);
+        Util.generateRGBGradient("442299", "ee1100", 9);
+        Assert.assertNotNull(Util.getRandomElement(g1));
+        Util.getColorsGradient(9);
     }
     
 

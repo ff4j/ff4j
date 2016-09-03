@@ -31,8 +31,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.audit.repository.InMemoryEventRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of repository.
@@ -40,10 +38,7 @@ import org.slf4j.LoggerFactory;
  * @author Cedrick Lunven (@clunven)
  */
 public class EventPublisher {
-
-    /** Logger for the class. */
-    private static final Logger LOG = LoggerFactory.getLogger(EventPublisher.class);
-
+   
     /** DEFAULT. */
     public static final int DEFAULT_QUEUE_CAPACITY = 100;
     
@@ -135,7 +130,8 @@ public class EventPublisher {
             final Future<Boolean> check = executor.submit(ew);
             check.get(submitTimeout, TimeUnit.MILLISECONDS);
         } catch (Exception e1) {
-            LOG.error("Cannot publish event " + e1.getMessage(), e1);
+            // Do not propagate error, it's monitoring (aside business logic)
+            System.err.println("Cannot publish event " + e1.getMessage());
         }
     }
 

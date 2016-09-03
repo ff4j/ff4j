@@ -29,10 +29,10 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.Property;
-import org.ff4j.property.PropertyString;
 import org.ff4j.property.PropertyDate;
 import org.ff4j.property.PropertyLogLevel;
 import org.ff4j.property.PropertyLogLevel.LogLevel;
+import org.ff4j.property.PropertyString;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.junit.Assert;
@@ -69,6 +69,11 @@ public abstract class AbstractPropertyStoreJunitTest {
     
     
     // --------------- exist -----------
+    
+    @Test
+    public void testEmptyStore() {
+        Assert.assertFalse(testedStore.isEmpty());
+    }
     
     /** TDD. */
     @Test(expected = IllegalArgumentException.class)

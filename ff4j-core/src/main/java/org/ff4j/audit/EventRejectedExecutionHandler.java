@@ -21,9 +21,6 @@ package org.ff4j.audit;
  */
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -33,10 +30,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @author Cedrick Lunven (@clunven)</a>
  */
 public class EventRejectedExecutionHandler implements RejectedExecutionHandler {
-
-    /** Logger for the class. */
-    private static final Logger LOG = LoggerFactory.getLogger(EventRejectedExecutionHandler.class);
-
+ 
     /** Simulate Interrupted. */
     private static boolean mock = false;
     
@@ -48,7 +42,8 @@ public class EventRejectedExecutionHandler implements RejectedExecutionHandler {
             // try once again
             executor.execute(r);
         } catch (InterruptedException e) {
-            LOG.error("Event reject has been interrupted", e);
+            // Trace error
+            System.err.println("Cannot send Audit Event");
         }
     }
     

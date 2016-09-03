@@ -219,6 +219,15 @@ public class PropertyTest {
         new PropertyClass("c2", String.class.getName());
         PropertyClass c3 = new PropertyClass("c3", String.class);
         Assert.assertEquals(String.class.getName(), c3.asString());
+        
+        Class<?> cc = null;
+        PropertyClass c4 = new PropertyClass("c3", cc);
+        Assert.assertNull(c4.asString());
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void tesInitPropertyClass2() {
+       new PropertyClass("c3", "existPas");
     }
     
     @Test(expected = IllegalArgumentException.class)
@@ -236,11 +245,16 @@ public class PropertyTest {
         Assert.assertNotNull(d1.getName());
         Assert.assertNotNull(d2.getName());
         Assert.assertNotNull(d3.getName());
+        d3.asString();
         d0.setName("d0");
         d0.fromString("2015-01-02 13:00");
         d0.setDescription("OK");
         d0.setType(PropertyCalendar.class.getName());
         Assert.assertNotNull(d0.toJson());
+        
+        Calendar cc = null;
+        PropertyCalendar d4 = new PropertyCalendar("d4", cc);
+        Assert.assertNull(d4.asString());
     }
     
     @Test(expected = IllegalArgumentException.class)

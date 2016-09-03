@@ -155,20 +155,13 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             ps = sqlConn.prepareStatement(getQueryBuilder().getFeature());
             ps.setString(1, uid);
             rs = ps.executeQuery();
-            Feature f = null;
-            if (rs.next()) {
-                f = JDBC_FEATURE_MAPPER.mapFeature(rs);
-                closeResultSet(rs);
-                rs = null;
-                closeStatement(ps);
-                ps = null;
-            } else {
-                closeResultSet(rs);
-                rs = null;
-                closeStatement(ps);
-                ps = null;
-                throw new FeatureNotFoundException(uid);
-            }
+            // Existence is tested before
+            rs.next();
+            Feature f = JDBC_FEATURE_MAPPER.mapFeature(rs);
+            closeResultSet(rs);
+            rs = null;
+            closeStatement(ps);
+            ps = null;
 
             // Enrich to get roles 2nd request
             ps = sqlConn.prepareStatement(getQueryBuilder().getRoles());

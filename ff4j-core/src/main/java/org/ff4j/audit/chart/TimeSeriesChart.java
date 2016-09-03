@@ -120,11 +120,17 @@ public class TimeSeriesChart extends AbstractChart {
      *      current event
      */
     public void addEvent(Event evt) {
-        if (series.containsKey(evt.getName())) {
+        if (!series.containsKey(evt.getName())) {
             createNewSerie(evt.getName());
         }
         String targetSlot = sdf.format(new Date(evt.getTimestamp()));
-        series.get(evt.getName()).getValue().get(targetSlot).inc();
+        Serie < Map <String, MutableHitCount > > targetSerie = series.get(evt.getName());
+        if (targetSerie != null) {
+            MutableHitCount mhc = targetSerie.getValue().get(targetSlot);
+            if (mhc != null) {
+                mhc.inc();
+            }
+        }
     }
     
     

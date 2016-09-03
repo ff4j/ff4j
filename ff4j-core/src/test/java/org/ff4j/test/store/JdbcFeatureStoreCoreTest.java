@@ -1,5 +1,7 @@
 package org.ff4j.test.store;
 
+import org.ff4j.audit.EventQueryDefinition;
+
 /*
  * #%L ff4j-core %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not use
  * this file except in compliance with the License. You may obtain a copy of the License at
@@ -12,7 +14,9 @@ package org.ff4j.test.store;
  */
 
 import org.ff4j.core.FeatureStore;
+import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.store.JdbcFeatureStore;
+import org.ff4j.store.JdbcQueryBuilder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,5 +65,36 @@ public class JdbcFeatureStoreCoreTest extends FStoreTestSupport {
     @Test(expected = IllegalArgumentException.class)
     public void testRemoveFromGroupInvalidGroup() {
         testedStore.removeFromGroup(F4, G0);
+    }
+    
+    @Test(expected = FeatureNotFoundException.class)
+    public void readDoesNotExist() {
+        testedStore.read("dont-exist");
+    }
+    
+    @Test
+    public void testQueryBuilder() {
+        JdbcQueryBuilder builder = new JdbcQueryBuilder();
+        builder.getFeatureDistributionAudit();
+        EventQueryDefinition eqd = new EventQueryDefinition();
+        builder.getPurgeFeatureUsageQuery(eqd);
+        builder.getSelectFeatureUsageQuery(eqd);
+        builder.getPurgeAuditTrailQuery(eqd);
+        builder.removeFeatureFromGroup();
+        builder.deleteRoles();
+        builder.getFeatureProperty();
+        builder.getEventByUuidQuery();
+        builder.getHostHitCount();
+        builder.getUserHitCount();
+        builder.getSourceHitCount();
+        
+        EventQueryDefinition e1 = new EventQueryDefinition();
+        builder.buildWhereClause(e1, true, false);
+        builder.buildWhereClause(e1, false, false);
+        e1.getHostFilters().add("localhost");
+        e1.getNamesFilter().add("aaa");
+        e1.getSourceFilters().add("java");
+        builder.buildWhereClause(e1, true, false);
+        
     }
 }
