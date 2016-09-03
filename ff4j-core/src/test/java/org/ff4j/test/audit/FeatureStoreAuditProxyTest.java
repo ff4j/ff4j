@@ -24,8 +24,9 @@ import org.ff4j.FF4j;
 import org.ff4j.audit.proxy.FeatureStoreAuditProxy;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
+import org.ff4j.test.store.FStoreTestSupport;
 
-public class FeatureStoreAuditProxyTest extends FeatureStoreTestSupport {
+public class FeatureStoreAuditProxyTest extends FStoreTestSupport {
 
     /** {@inheritDoc} */
     @Override
@@ -36,7 +37,5 @@ public class FeatureStoreAuditProxyTest extends FeatureStoreTestSupport {
         ff4j.setFeatureStore(imfs);
         return new FeatureStoreAuditProxy(ff4j, imfs);
     }
-    
-    
 
 }
