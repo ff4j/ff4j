@@ -32,6 +32,15 @@
 			<groupId>org.ff4j</groupId>
 			<version>${project.version}</version>
 		</dependency>
+		
+		<dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
 	
 		<!-- Support for tests -->
 		<dependency>
