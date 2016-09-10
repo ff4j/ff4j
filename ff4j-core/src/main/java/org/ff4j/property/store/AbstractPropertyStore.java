@@ -69,6 +69,7 @@ public abstract class AbstractPropertyStore implements PropertyStore {
     }
     
     /** {@inheritDoc} */
+    @Override
     public boolean isEmpty() {
         Set < String > pNames = listPropertyNames();
         return pNames == null || pNames.isEmpty();
@@ -107,6 +108,7 @@ public abstract class AbstractPropertyStore implements PropertyStore {
     }
     
     /** {@inheritDoc} */
+    @Override
     public <T> void updateProperty(Property<T> prop) {
         Util.assertNotNull(prop);
         // Delete
@@ -116,6 +118,7 @@ public abstract class AbstractPropertyStore implements PropertyStore {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void updateProperty(String name, String newValue) {
         // Read from redis, feature not found if no present
         Property<?> p = readProperty(name);
@@ -126,6 +129,7 @@ public abstract class AbstractPropertyStore implements PropertyStore {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void importProperties(Collection<Property<?>> properties) {
         // Do not use target as the delete/create operation will be traced
         if (properties != null) {
@@ -139,6 +143,7 @@ public abstract class AbstractPropertyStore implements PropertyStore {
     }
     
     /** {@inheritDoc} */
+    @Override
     public Property<?> readProperty(String name, Property < ? > defaultValue) {
         try {
             return readProperty(name);

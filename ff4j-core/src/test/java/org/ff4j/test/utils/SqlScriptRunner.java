@@ -53,12 +53,8 @@ import org.ff4j.exception.FeatureAccessException;
  *
  * Extract from stack Overflow : 
  * http://stackoverflow.com/questions/1497569/how-to-execute-sql-script-file-using-jdbc
- */
-
-/**
+ * 
  * Use to test simple JDBC script.
- *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public class SqlScriptRunner {
 
@@ -138,12 +134,11 @@ public class SqlScriptRunner {
                 String trimmedLine = line.trim();
                 if (trimmedLine.startsWith("--")) {
                     println(trimmedLine);
-                } else if (trimmedLine.length() < 1
-                        || trimmedLine.startsWith("//")) {
+                /*
+                } else if (trimmedLine.length() < 1 || trimmedLine.startsWith("//")) {
                     // Do nothing
-                } else if (trimmedLine.length() < 1
-                        || trimmedLine.startsWith("--")) {
-                    // Do nothing
+                } else if (trimmedLine.length() < 1 || trimmedLine.startsWith("--")) {
+                    // Do nothing*/
                 } else if (!fullLineDelimiter && trimmedLine.endsWith(getDelimiter())
                         || fullLineDelimiter  && trimmedLine.equals(getDelimiter())) {
                     command.append(line.substring(0, line.lastIndexOf(getDelimiter())));

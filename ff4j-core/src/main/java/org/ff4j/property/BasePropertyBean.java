@@ -41,11 +41,7 @@ public class BasePropertyBean {
 
     /** Fixed values as String. */
     protected Set< String > fixedValues = null;
-
-    public BasePropertyBean() {
-        super();
-    }
-
+   
     /**
      * Getter accessor for attribute 'name'.
      *

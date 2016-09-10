@@ -35,33 +35,31 @@ public class GettingStartedCode {
     
     @Test
     public void helloWorld() {
-
-    	FF4j ff4j = new FF4j("ff4j.xml").autoCreate(true);
-
         // ff4j initialization.....
-
+        FF4j ff4j = new FF4j("ff4j.xml").autoCreate(true);
         if (ff4j.check("sayHello")) {
             // Enhanced Behaviour
             System.out.println("Hello World !");
         } else {
             // Previous Behaviour
+            System.out.println("Do not work");
         }
-
     }
 
     @Test
     public void helloWorld2() {
-
         FF4j ff4j = new FF4j("ff4j.xml");
 
         // Work with it
         if (ff4j.check("AwesomeFeature")) {
-            // System.out.println("Hello the feature is enabled");
+            System.out.println("Hello the feature is enabled");
         }
 
         // Its does not exist
         try {
-            if (ff4j.check("do-not-exit")) {}
+            if (ff4j.check("do-not-exit")) {
+                System.out.println("Unreachable...");
+            }
         } catch (FeatureNotFoundException fnfe) {
             // System.out.println(fnfe.getMessage());
         }

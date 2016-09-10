@@ -22,14 +22,11 @@ public class JdbcFeatureStoreXmlTest extends FStoreTestSupport {
 
     /** DataBase. */
     private EmbeddedDatabase db;
-
-    /** Builder. */
-    private EmbeddedDatabaseBuilder builder = null;
-
+    
     /** {@inheritDoc} */
     @Override
     protected FeatureStore initStore() {
-        builder = new EmbeddedDatabaseBuilder();
+        EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
         db = builder.setType(EmbeddedDatabaseType.HSQL).addScript("classpath:schema-ddl.sql").build();
         return new JdbcFeatureStore(db, "ff4j.xml");
     }

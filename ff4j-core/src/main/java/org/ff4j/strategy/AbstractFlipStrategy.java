@@ -38,10 +38,14 @@ public abstract class AbstractFlipStrategy implements FlippingStrategy {
 
     /** ClassType. */
     private final String type = getClass().getCanonicalName();
+    
+    /** Feature Name reference. */
+    protected String featureUid;
 
     /** {@inheritDoc} */
     @Override
     public void init(String featureName, Map<String, String> initParam) {
+        this.featureUid = featureName;
         this.initParams = initParam;
     }
 
@@ -77,6 +81,16 @@ public abstract class AbstractFlipStrategy implements FlippingStrategy {
      */
     public String getType() {
         return type;
+    }
+
+    /**
+     * Getter accessor for attribute 'featureUid'.
+     *
+     * @return
+     *       current value of 'featureUid'
+     */
+    public String getFeatureUid() {
+        return featureUid;
     }
 
 }

@@ -35,6 +35,12 @@
 			<artifactId>ff4j-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+            <groupId>org.ff4j</groupId>
+            <artifactId>ff4j-test</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
 	
         <!-- Archaius -->
         <dependency>
