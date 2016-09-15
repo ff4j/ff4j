@@ -42,17 +42,22 @@ import com.netflix.config.PolledConfigurationSource;
 public class PropertyStoreAsArchaiusInputTest {
     
     @BeforeClass
-    public static void initArchauisWithFF4j() {
+    public static void initArchauisWithFF4j() throws InterruptedException {
         // Sample FF4J Store
         PropertyStore ff4jStore = new InMemoryPropertyStore("ff4j-properties.xml");
         // FF4Store as polling Source for Archiaus
-        PolledConfigurationSource ff4jSource = new FF4jConfigurationSource(ff4jStore);
+        PolledConfigurationSource ff4jSource = new FF4jPolledConfigurationSource(ff4jStore);
         // Working Thread (polling from ff4j => Archaius)
-        AbstractPollingScheduler scheduler = new FixedDelayPollingScheduler(0, 100000, true);
+        AbstractPollingScheduler scheduler = new FixedDelayPollingScheduler(0, 100, true);
         // Define configuration with polling and source
         DynamicConfiguration configuration = new DynamicConfiguration(ff4jSource,scheduler);
         // Init configuration
         ConfigurationManager.install(configuration);
+        // Other initialization mechanism
+        FF4jPolledConfigurationSource conf2 = new FF4jPolledConfigurationSource();
+        conf2.setFf4jStore(ff4jStore);
+        // Must invoke poll
+        Thread.sleep(100);
     }
     
     @Test

@@ -184,6 +184,75 @@ public class Util {
     }
     
     /**
+     * Serialize collection elements with a delimiter.
+     *
+     * @param collec
+     *      collection (a,b,c)
+     * @param delimiter
+     *      delimiter char (e.g : ",")
+     * @return
+     *      the list : a,b,c
+     */
+    public static <T> String join(Collection < T > collec, String delimiter) {
+        assertNotNull(delimiter);
+        if (collec == null) return null;
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (T t : collec) {
+            if (!first) {
+                sb.append(",");
+            }
+            sb.append(t.toString());
+            first = false;
+        }
+        return sb.toString();
+    }
+    
+    /**
+     * Check if a current class can be cast to collection.
+     * 
+     * @param c
+     *      current class
+     * @return
+     *      flag if it's a collection
+     */
+    public static boolean isClassCollection(Class<?> c) {
+        return Collection.class.isAssignableFrom(c) || Map.class.isAssignableFrom(c);
+    }
+    
+    /**
+     * Check if a current object can be cast to collection.
+     * 
+     * @param ob
+     *      current object
+     * @return
+     *      flag if it's a collection
+     */
+    public static boolean isCollection(Object ob) {
+        return ob != null && isClassCollection(ob.getClass());
+    }
+    
+    /**
+     * Downcast as collection or return error.
+     *
+     * @param ob
+     *      target object
+     * @return
+     *      if can ve converted to collection.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Collection < T > asCollection(Object ob) {
+        if (ob == null) return null;
+        if (ob.getClass().isArray()) {
+            return Arrays.asList((T[]) ob);
+        }
+        if (!isCollection(ob)) {
+            throw new IllegalArgumentException("Target Object is not collection");
+        }
+        return (Collection<T>) ob;
+    }
+    
+    /**
      * Get a random offset within map.
      *
      * @param size

@@ -37,7 +37,7 @@ import org.junit.Test;
  *
  * @author Cedrick LUNVEN (@clunven)
  */
-public class ProperyStoreCommonsConfigTest extends PropertyStoreTestSupport {
+public class PropertyStoreCommonsConfigTest extends PropertyStoreTestSupport {
     
     /** {@inheritDoc} */
     @Override

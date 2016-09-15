@@ -92,7 +92,9 @@ public class PropertyFactory {
                     String.valueOf(value), null, null);
         }
         if (value instanceof Date) {
-            return PropertyFactory.createProperty(pName, PropertyDate.class.getName(), PropertyDate.SDF.format(value), null, null);
+            return PropertyFactory.createProperty(pName, 
+                    PropertyDate.class.getName(),
+                    PropertyDate.SDF.format(value), null, null);
         }
         if (value instanceof Calendar) {
             Date valueDate = ((Calendar) value).getTime();
@@ -103,8 +105,13 @@ public class PropertyFactory {
         if (value instanceof Property<?>) {
             return (Property<?>) value;
         }
-        
-        throw new IllegalArgumentException("Cannot create property with input type "  + value.getClass());
+        // String Value
+        if (value.getClass().isArray() || Util.isCollection(value)) {
+            return PropertyFactory.createProperty(pName, 
+                    PropertyString.class.getName(), 
+                    Util.join(Util.asCollection(value), ","), null, null);
+        }
+        throw new IllegalArgumentException("Cannot create property with input type "  + value.getClass() + value.toString());
     }
     
     /**

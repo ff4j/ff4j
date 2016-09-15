@@ -101,6 +101,18 @@ public class FF4JConfigurationTest {
     }
     
     @Test
+    public void testAddPropertyDirect() {
+        // Given
+        Assert.assertFalse(ff4jConf.containsKey("myNewProp"));
+        // When
+        ff4jConf.addPropertyDirect("myNewProp", "hello");
+        // Then
+        Assert.assertTrue(ff4jConf.containsKey("myNewProp"));
+        Assert.assertTrue(pStore.existProperty("myNewProp"));
+        Assert.assertEquals("hello", pStore.readProperty("myNewProp").asString());
+    }
+    
+    @Test
     public void testSetPropertyOK() {
         // Given
         Assert.assertTrue(ff4jConf.containsKey("propInt"));

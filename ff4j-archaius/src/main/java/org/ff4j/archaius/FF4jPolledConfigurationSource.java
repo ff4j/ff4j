@@ -38,7 +38,7 @@ import com.netflix.config.PolledConfigurationSource;
  * 
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class FF4jConfigurationSource implements PolledConfigurationSource {
+public class FF4jPolledConfigurationSource implements PolledConfigurationSource {
     
     /**
      * Source
@@ -48,7 +48,7 @@ public class FF4jConfigurationSource implements PolledConfigurationSource {
     /**
      * Default constructor.
      */
-    public FF4jConfigurationSource() {
+    public FF4jPolledConfigurationSource() {
     }
             
     /**
@@ -57,7 +57,7 @@ public class FF4jConfigurationSource implements PolledConfigurationSource {
      * @param ff4jPropertyStore
      *      default store.
      */
-    public FF4jConfigurationSource(PropertyStore ff4jPropertyStore) {
+    public FF4jPolledConfigurationSource(PropertyStore ff4jPropertyStore) {
         this.ff4jStore = ff4jPropertyStore;
     }
     
@@ -65,12 +65,13 @@ public class FF4jConfigurationSource implements PolledConfigurationSource {
     @Override
     public PollResult poll(boolean check, Object arg1) throws Exception {
         if (getFf4jStore() == null) {
-            return PollResult.createFull(null);
+            throw new IllegalStateException("PropertyStore should not be null (to poll it !)");
         }
         // Cannot convert to Map < String, Object >
         Map < String, Object > properties = new HashMap<String, Object>();
         for(Map.Entry<String, Property<?>> property : getFf4jStore().readAllProperties().entrySet()) {
-            properties.put(property.getKey(), property.getValue().getValue());   
+            // All properties are String in commons-configuration
+            properties.put(property.getKey(), property.getValue().asString());   
         }
         return PollResult.createFull(properties);
     }
@@ -93,6 +94,5 @@ public class FF4jConfigurationSource implements PolledConfigurationSource {
     public void setFf4jStore(PropertyStore ff4jStore) {
         this.ff4jStore = ff4jStore;
     }
-
    
 }

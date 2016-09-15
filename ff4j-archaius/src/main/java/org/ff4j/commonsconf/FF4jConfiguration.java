@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.configuration.AbstractConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.ff4j.exception.InvalidPropertyTypeException;
 import org.ff4j.property.Property;
@@ -45,7 +46,7 @@ import org.ff4j.utils.Util;
  * 
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class FF4jConfiguration implements Configuration {
+public class FF4jConfiguration extends AbstractConfiguration {
     
     /** Target delimiter for multivalued. */
     private static final String DELIMITER = ",";
@@ -118,9 +119,18 @@ public class FF4jConfiguration implements Configuration {
     }
     
     /** {@inheritDoc} */
+    @Override
+    protected void addPropertyDirect(String key, Object value) {
+        ff4jStore().createProperty(PropertyFactory.createProperty(key, value));
+    }
+    
+    /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     @Override
     public void setProperty(String key, Object value) {
+        if (!ff4jStore.existProperty(key)) {
+            addProperty(key, value);
+        }
         Property<Object> ap = (Property<Object>) ff4jStore().readProperty(key);
         ap.setValue(String.valueOf(value));
         ff4jStore().updateProperty(ap);
@@ -169,7 +179,7 @@ public class FF4jConfiguration implements Configuration {
      */
     private Object getValue(String key) {
         Util.assertHasLength(key);
-        return ff4jStore().readProperty(key).getValue();
+        return ff4jStore().readProperty(key).asString();
     }
 
     /** {@inheritDoc} */

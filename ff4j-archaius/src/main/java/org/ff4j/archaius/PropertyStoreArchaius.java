@@ -1,5 +1,6 @@
 package org.ff4j.archaius;
 
+import org.apache.commons.configuration.AbstractConfiguration;
 import org.ff4j.commonsconf.PropertyStoreCommonsConfig;
 
 /*
@@ -39,9 +40,11 @@ public class PropertyStoreArchaius extends PropertyStoreCommonsConfig {
      * @param dc
      *      archiaus {@link DynamicConfiguration} settings
      */
-    public PropertyStoreArchaius(DynamicConfiguration dc) {
+    public PropertyStoreArchaius(AbstractConfiguration dc) {
         super(dc);
-        ConfigurationManager.install(dc);
+        if (!ConfigurationManager.isConfigurationInstalled()) {
+            ConfigurationManager.install(dc);
+        }
     }
     
 }

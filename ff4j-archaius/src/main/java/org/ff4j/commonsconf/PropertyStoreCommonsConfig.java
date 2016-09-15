@@ -117,6 +117,9 @@ public class PropertyStoreCommonsConfig extends AbstractPropertyStore {
     @Override
     public Property<?> readProperty(String name) {
         Util.assertHasLength(name);
+        if ("g".equals(name)) {
+            System.out.println("x");
+        }
         String value = conf().getString(name);
         if (value == null) {
             throw new PropertyNotFoundException(name);
