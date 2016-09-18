@@ -98,9 +98,6 @@ public final class ConsoleRenderer {
     /** Cache for page blocks. */
     private static String htmlTemplate = null;
 
-    /** Cache for page blocks. */
-    private static String htmlTemplateMonitoring = null;
-
     /** Load CSS. */
     private static String cssContent = null;
 
@@ -183,30 +180,6 @@ public final class ConsoleRenderer {
         final String permissions = renderPermissionList(ff4j);
         htmlContent = htmlContent.replaceAll("\\{" + KEY_PERMISSIONLIST + "\\}", permissions);
 
-        out.println(htmlContent);
-    }
-
-
-    /**
-     * Render the ff4f console webpage through different block.
-     *
-     * @param req
-     *            http request (with parameters)
-     * @param res
-     *            http response (with outouput test)
-     * @param message
-     *            text in the information box (blue/green/orange/red)
-     * @param messagetype
-     *            type of informatice message (info,success,warning,error)
-     * @throws IOException
-     *             error during populating http response
-     */
-    public static void renderPageMonitoring(FF4j ff4j, HttpServletRequest req, HttpServletResponse res, String msg, String msgType) throws IOException {
-        res.setContentType(CONTENT_TYPE_HTML);
-        PrintWriter out = res.getWriter();
-        String htmlContent = renderTemplateMonitoring(req);
-        htmlContent = htmlContent.replaceAll("\\{" + KEY_ALERT_MESSAGE + "\\}", renderMessageBox(msg, msgType));
-        htmlContent = htmlContent.replaceAll("\\{" + KEY_AUDIT_ROWS + "\\}", renderAuditRows(ff4j , req));
         out.println(htmlContent);
     }
 

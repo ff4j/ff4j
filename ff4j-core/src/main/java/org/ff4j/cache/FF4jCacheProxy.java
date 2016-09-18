@@ -40,6 +40,9 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
 
     /** cache manager. */
     private FF4JCacheManager cacheManager;
+    
+    /** Daemon to fetch data from target store to cache on a fixed delay basis. */
+    private Store2CachePollingScheduler store2CachePoller = null;
 
     /**
      * Allow Ioc and defeine default constructor.
@@ -55,9 +58,30 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
      *            cache manager to limit overhead of store
      */
     public FF4jCacheProxy(FeatureStore fStore, PropertyStore pStore, FF4JCacheManager cache) {
-        this.cacheManager = cache;
-        this.targetFeatureStore = fStore;
+        this.cacheManager        = cache;
+        this.targetFeatureStore  = fStore;
         this.targetPropertyStore = pStore;
+        this.store2CachePoller   = new Store2CachePollingScheduler(fStore, pStore, cache);
+    }
+    
+    /**
+     * Start the polling of target store is required.
+     */
+    public void startPolling(long delay) {
+        if (store2CachePoller == null) {
+            throw new IllegalStateException("The poller has not been initialize, please check");
+        }
+        getStore2CachePoller().start(delay);
+    }
+    
+    /**
+     * Stop the polling of target store is required.
+     */
+    public void stopPolling() {
+        if (store2CachePoller == null) {
+            throw new IllegalStateException("The poller has not been initialize, please check");
+        }
+        getStore2CachePoller().stop();
     }
 
     /** {@inheritDoc} */
@@ -398,6 +422,25 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
      */
     public void setTargetPropertyStore(PropertyStore targetPropertyStore) {
         this.targetPropertyStore = targetPropertyStore;
+    }
+
+    /**
+     * Getter accessor for attribute 'store2CachePoller'.
+     *
+     * @return
+     *       current value of 'store2CachePoller'
+     */
+    public Store2CachePollingScheduler getStore2CachePoller() {
+        return store2CachePoller;
+    }
+
+    /**
+     * Setter accessor for attribute 'store2CachePoller'.
+     * @param store2CachePoller
+     * 		new value for 'store2CachePoller '
+     */
+    public void setStore2CachePoller(Store2CachePollingScheduler store2CachePoller) {
+        this.store2CachePoller = store2CachePoller;
     }
     
 }
