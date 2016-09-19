@@ -1,31 +1,10 @@
 package org.ff4j.web.embedded;
 
-import static org.ff4j.web.embedded.ConsoleConstants.CONTENT_TYPE_HTML;
-import static org.ff4j.web.embedded.ConsoleConstants.CONTENT_TYPE_JSON;
-import static org.ff4j.web.embedded.ConsoleConstants.FEATID;
-import static org.ff4j.web.embedded.ConsoleConstants.FLIPFILE;
-import static org.ff4j.web.embedded.ConsoleConstants.GROUPNAME;
-import static org.ff4j.web.embedded.ConsoleConstants.NAME;
-import static org.ff4j.web.embedded.ConsoleConstants.OPERATION;
-import static org.ff4j.web.embedded.ConsoleConstants.OP_ADD_FIXEDVALUE;
-import static org.ff4j.web.embedded.ConsoleConstants.OP_CREATE_FEATURE;
-import static org.ff4j.web.embedded.ConsoleConstants.OP_CREATE_PROPERTY;
-import static org.ff4j.web.embedded.ConsoleConstants.OP_DELETE_FIXEDVALUE;
-import static org.ff4j.web.embedded.ConsoleConstants.OP_DISABLE;
-import static org.ff4j.web.embedded.ConsoleConstants.OP_EDIT_PROPERTY;
-import static org.ff4j.web.embedded.ConsoleConstants.OP_ENABLE;
-import static org.ff4j.web.embedded.ConsoleConstants.OP_EXPORT;
-import static org.ff4j.web.embedded.ConsoleConstants.OP_READ_FEATURE;
-import static org.ff4j.web.embedded.ConsoleConstants.OP_READ_PROPERTY;
-import static org.ff4j.web.embedded.ConsoleConstants.OP_RMV_FEATURE;
-import static org.ff4j.web.embedded.ConsoleConstants.OP_RMV_PROPERTY;
-import static org.ff4j.web.embedded.ConsoleConstants.OP_TOGGLE_GROUP;
-import static org.ff4j.web.embedded.ConsoleConstants.PARAM_FIXEDVALUE;
-import static org.ff4j.web.embedded.ConsoleConstants.SUBOPERATION;
 import static org.ff4j.web.embedded.ConsoleOperations.createFeature;
 import static org.ff4j.web.embedded.ConsoleOperations.createProperty;
 import static org.ff4j.web.embedded.ConsoleOperations.exportFile;
 import static org.ff4j.web.embedded.ConsoleOperations.importFile;
+import static org.ff4j.web.embedded.ConsoleOperations.updateFeatureDescription;
 import static org.ff4j.web.embedded.ConsoleOperations.updateProperty;
 import static org.ff4j.web.embedded.ConsoleRenderer.msg;
 import static org.ff4j.web.embedded.ConsoleRenderer.renderMessageBox;
@@ -33,6 +12,7 @@ import static org.ff4j.web.embedded.ConsoleRenderer.renderMsgGroup;
 import static org.ff4j.web.embedded.ConsoleRenderer.renderMsgProperty;
 import static org.ff4j.web.embedded.ConsoleRenderer.renderPage;
 import static org.ff4j.web.embedded.ConsoleRenderer.renderPageMonitoring;
+import static org.ff4j.web.embedded.ConsoleConstants.*;
 
 /*
  * #%L AdministrationConsoleServlet.java (ff4j-web) by Cedrick LUNVEN %% Copyright (C) 2013 Ff4J %% Licensed under the Apache
@@ -47,12 +27,11 @@ import static org.ff4j.web.embedded.ConsoleRenderer.renderPageMonitoring;
  */
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
-import javax.servlet.ServletContext;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -63,20 +42,16 @@ import org.apache.commons.io.FilenameUtils;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
-import org.ff4j.web.ApiConfig;
-import org.ff4j.web.FF4jServlet;
-import org.ff4j.web.console.ImageProvider;
-import org.ff4j.web.console.ImageProvider.ImageType;
+import org.ff4j.web.FF4JProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.thymeleaf.context.WebContext;
 
 /**
  * Unique Servlet to manage FlipPoints and security
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class ConsoleServlet extends FF4jServlet {
+public class ConsoleServlet extends HttpServlet {
 
     /** serial number. */
     private static final long serialVersionUID = -3982043895954284269L;
@@ -85,46 +60,60 @@ public class ConsoleServlet extends FF4jServlet {
     public static final Logger LOGGER = LoggerFactory.getLogger(ConsoleServlet.class);
     
     /** Error Message. */
-    private static final String ERROR = "error";
-    private static final String AN_ERROR_OCCURED = "An error occured ";
+    public static final String ERROR = "error";
 
+    /** instance of ff4j. */
+    private FF4j ff4j = null;
+
+    /** initializing ff4j provider. */
+    private FF4JProvider ff4jProvider = null;
+
+    /**
+     * Servlet initialization, init FF4J from "ff4jProvider" attribute Name.
+     *
+     * @param servletConfig
+     *            current {@link ServletConfig} context
+     * @throws ServletException
+     *             error during servlet initialization
+     */
+    public void init(ServletConfig servletConfig) throws ServletException {
+        LOGGER.info("  __  __ _  _   _ ");
+        LOGGER.info(" / _|/ _| || | (_)");
+        LOGGER.info("| |_| |_| || |_| |");
+        LOGGER.info("|  _|  _|__   _| |");
+        LOGGER.info("|_| |_|    |_|_/ |");
+        LOGGER.info("             |__/   Embedded Console - v" + getClass().getPackage().getImplementationVersion());
+        LOGGER.info(" ");
+        
+        if (ff4j == null) {
+            String className = servletConfig.getInitParameter(PROVIDER_PARAM_NAME);
+            try {
+                Class<?> c = Class.forName(className);
+                Object o = c.newInstance();
+                ff4jProvider = (FF4JProvider) o;
+                LOGGER.info("ff4j context has been successfully initialized - {} feature(s)", ff4jProvider.getFF4j().getFeatures().size());
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException("Cannot load ff4jProvider as " + ff4jProvider, e);
+            } catch (InstantiationException e) {
+                throw new IllegalArgumentException("Cannot instantiate  " + ff4jProvider + " as ff4jProvider", e);
+            } catch (IllegalAccessException e) {
+                throw new IllegalArgumentException("No public constructor for  " + ff4jProvider + " as ff4jProvider", e);
+            } catch (ClassCastException ce) {
+                throw new IllegalArgumentException("ff4jProvider expected instance of " + FF4JProvider.class, ce);
+            }
+
+            // Put the FF4J in ApplicationScope (useful for tags)
+            ff4j = ff4jProvider.getFF4j();
+            servletConfig.getServletContext().setAttribute(FF4J_SESSIONATTRIBUTE_NAME, ff4j);
+            LOGGER.debug("Servlet has been initialized and ff4j store in session with {} ", ff4j.getFeatures().size());
+        } else {
+            LOGGER.debug("Servlet has been initialized, ff4j was injected");
+        }
+    }
 
     /** {@inheritDoc} */
     public void doGet(HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException {
-        try {
-            if (ConsoleRenderer.renderResources(req, res)) return;
-
-            // Sample Context
-            ServletContext sc = req.getSession().getServletContext();
-            WebContext ctx = new WebContext(req, res, sc, req.getLocale());
-            ctx.setVariable("CHAINE", "Sample Valeur");
-            ApiConfig api = new ApiConfig();
-            api.setHost("HOST_X");
-            ctx.setVariable("BEAN", api);
-            ctx.setVariable("today", Calendar.getInstance());
-
-            // Load image, put in cache, return as base64
-            ImageProvider.getInstance().addImageToContext(ctx, "flagFrance", ImageType.png);
-
-            List<ApiConfig> listA = new ArrayList<ApiConfig>();
-            listA.add(new ApiConfig());
-            listA.add(new ApiConfig());
-            listA.add(api);
-            ctx.setVariable("apis", listA);
-
-            templateEngine.process("home", ctx, res.getWriter());
-        } catch (Exception e) {
-            LOGGER.error("Exception in ConsolServlet doGet() method.", e);
-        }
-    	/*
-    	if (ff4j.check("ff4j.admin.secure")) {
-    		 	PropertyStringList listOfUsers = (PropertyStringList) 
-    				ff4j.getPropertiesStore().readProperty("authorizedUsers");
-    		if (!listOfUsers.contains(ff4j.getAuthorizationsManager().getCurrentUserName())) {
-    			// Forbidden
-    		}
-    	}
     	
     	String targetView = req.getParameter(VIEW);
     	
@@ -133,11 +122,11 @@ public class ConsoleServlet extends FF4jServlet {
     	
     	} else if ("monitoring".equals(targetView)) {
     		pageMonitoring(req, res);
-    	}*/
+    	}
     }
     
     public void pageMonitoring(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        String message = null;
+    	String message = null;
         String messagetype = "info";
         try {
         	
@@ -147,13 +136,13 @@ public class ConsoleServlet extends FF4jServlet {
             // Any Error is trapped and display in the console
             messagetype = ERROR;
             message = e.getMessage();
-            LOGGER.error(AN_ERROR_OCCURED, e);
+            LOGGER.error("An error occured ", e);
         }
         renderPageMonitoring(getFf4j(), req, res, message, messagetype);
     }
     
     public void pageCore(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        String message = null;
+    	String message = null;
         String messagetype = "info";
         try {
             
@@ -249,7 +238,7 @@ public class ConsoleServlet extends FF4jServlet {
             // Any Error is trapped and display in the console
             messagetype = ERROR;
             message = e.getMessage();
-            LOGGER.error(AN_ERROR_OCCURED, e);
+            LOGGER.error("An error occured ", e);
         }
 
         // Default page rendering (table)
@@ -289,7 +278,11 @@ public class ConsoleServlet extends FF4jServlet {
                 LOGGER.info("POST - op=" + operation + " feat=" + uid);
                 if (operation != null && !operation.isEmpty()) {
 
-                    if (OP_EDIT_PROPERTY.equalsIgnoreCase(operation)) {
+                    if (OP_EDIT_FEATURE.equalsIgnoreCase(operation)) {
+                        updateFeatureDescription(getFf4j(), req);
+                        message = msg(uid, "UPDATED");
+
+                    } else if (OP_EDIT_PROPERTY.equalsIgnoreCase(operation)) {
                         updateProperty(getFf4j(), req);
                         message = renderMsgProperty(uid, "UPDATED");
                        
@@ -330,13 +323,9 @@ public class ConsoleServlet extends FF4jServlet {
         } catch (Exception e) {
             messagetype = ERROR;
             message = e.getMessage();
-            LOGGER.error(AN_ERROR_OCCURED, e);
+            LOGGER.error("An error occured ", e);
         }
-        try {
-            renderPage(ff4j, req, res, message, messagetype);
-        } catch (Exception e) {
-            LOGGER.error("Exception in ConsolServlet doPost() method.", e);
-        }
+        renderPage(ff4j, req, res, message, messagetype);
     }
 
     /**

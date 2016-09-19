@@ -51,13 +51,13 @@ public class ConsoleConstants {
     public static final String RESOURCE_CSS_PARAM = "css";
 
     /** static resource file. */
-    public static final String RESOURCE_CSS_FILE = "ff4j-embedded-css.dat";
+    public static final String RESOURCE_CSS_FILE = "ff4j-embedded.css";
 
     /** static resource param value. */
     public static final String RESOURCE_JS_PARAM = "js";
 
     /** static resource file. */
-    public static final String RESOURCE_JS_FILE = "ff4j-embedded-js.dat";
+    public static final String RESOURCE_JS_FILE = "ff4j-embedded.js";
 
 
     // -------- OPERATIONS ------------------------------
@@ -123,10 +123,10 @@ public class ConsoleConstants {
     // -------- TEMPLATING ------------------------------
 
     /** Header. */
-    public static final String TEMPLATE_FILE = "ff4j-template.dat";
+    public static final String TEMPLATE_FILE = "ff4j-template.html";
     
     /** Monitoring. */
-    public static final String TEMPLATE_FILE_MONITORING = "ff4j-monitoring.dat";
+    public static final String TEMPLATE_FILE_MONITORING = "ff4j-monitoring.html";
 
     /** templating. */
     public static final String KEY_SERVLET_CONTEXT = "SERVLET_CONTEXT";
@@ -157,9 +157,6 @@ public class ConsoleConstants {
 
     /** templating. */
     public static final String KEY_PERMISSIONLIST = "PERMISSIONS";
-    
-    /** custom css if defined in web.xml. */
-    public static final String KEY_CSS_URL = "URL_CSS";
 
 
     // -------- FORM PARAM ------------------------------
@@ -203,16 +200,10 @@ public class ConsoleConstants {
     public static final int BUFFER_SIZE = 4096;
 
     /** servlet init param. */
-    public static final String SERVLETPARAM_FF4JPROVIDER = "ff4jProvider";
-    
-    /** servlet init param. */
-    public static final String SERVLETPARAM_CSS = "customCSS";
-    
+    public static final String PROVIDER_PARAM_NAME = "ff4jProvider";
+
     /** attribute name. */
     public static final String FF4J_SESSIONATTRIBUTE_NAME = "FF4J";
-    
-    /** attribute name. */
-    public static final String CSS_SESSIONATTRIBUTE_NAME = "customCSS";
 
     /** attribute name. */
     public static final String PREFIX_CHECKBOX = "perm-check-";

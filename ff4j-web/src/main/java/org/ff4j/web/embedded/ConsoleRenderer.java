@@ -1,57 +1,47 @@
 package org.ff4j.web.embedded;
 
-import static org.ff4j.web.bean.WebConstants.CONTENT_TYPE_CSS;
-import static org.ff4j.web.bean.WebConstants.CONTENT_TYPE_HTML;
-import static org.ff4j.web.bean.WebConstants.CONTENT_TYPE_JS;
-import static org.ff4j.web.bean.WebConstants.CSS_SESSIONATTRIBUTE_NAME;
-import static org.ff4j.web.bean.WebConstants.FEATID;
-import static org.ff4j.web.bean.WebConstants.KEY_ALERT_MESSAGE;
-import static org.ff4j.web.bean.WebConstants.KEY_AUDIT_ROWS;
-import static org.ff4j.web.bean.WebConstants.KEY_CSS_URL;
-import static org.ff4j.web.bean.WebConstants.KEY_FEATURE_ROWS;
-import static org.ff4j.web.bean.WebConstants.KEY_GROUP_LIST_CREATE;
-import static org.ff4j.web.bean.WebConstants.KEY_GROUP_LIST_EDIT;
-import static org.ff4j.web.bean.WebConstants.KEY_GROUP_LIST_TOGGLE;
-import static org.ff4j.web.bean.WebConstants.KEY_PERMISSIONLIST;
-import static org.ff4j.web.bean.WebConstants.KEY_PROPERTIES_ROWS;
-import static org.ff4j.web.bean.WebConstants.KEY_SERVLET_CONTEXT;
-import static org.ff4j.web.bean.WebConstants.KEY_VERSION;
-import static org.ff4j.web.bean.WebConstants.MODAL_CREATE;
-import static org.ff4j.web.bean.WebConstants.MODAL_EDIT;
-import static org.ff4j.web.bean.WebConstants.MODAL_TOGGLE;
-import static org.ff4j.web.bean.WebConstants.NEW_LINE;
-import static org.ff4j.web.bean.WebConstants.OP_RMV_FEATURE;
-import static org.ff4j.web.bean.WebConstants.OP_RMV_PROPERTY;
-import static org.ff4j.web.bean.WebConstants.PREFIX_CHECKBOX;
-import static org.ff4j.web.bean.WebConstants.RESOURCE;
-import static org.ff4j.web.bean.WebConstants.RESOURCE_CSS_FILE;
-import static org.ff4j.web.bean.WebConstants.RESOURCE_CSS_PARAM;
-import static org.ff4j.web.bean.WebConstants.RESOURCE_JS_FILE;
-import static org.ff4j.web.bean.WebConstants.RESOURCE_JS_PARAM;
-import static org.ff4j.web.bean.WebConstants.TEMPLATE_FILE;
-import static org.ff4j.web.bean.WebConstants.TEMPLATE_FILE_MONITORING;
-import static org.ff4j.web.bean.WebConstants.UTF8_ENCODING;
+import static org.ff4j.web.embedded.ConsoleConstants.CONTENT_TYPE_CSS;
+import static org.ff4j.web.embedded.ConsoleConstants.CONTENT_TYPE_HTML;
+import static org.ff4j.web.embedded.ConsoleConstants.CONTENT_TYPE_JS;
+import static org.ff4j.web.embedded.ConsoleConstants.FEATID;
+import static org.ff4j.web.embedded.ConsoleConstants.KEY_ALERT_MESSAGE;
+import static org.ff4j.web.embedded.ConsoleConstants.KEY_AUDIT_ROWS;
+import static org.ff4j.web.embedded.ConsoleConstants.KEY_FEATURE_ROWS;
+import static org.ff4j.web.embedded.ConsoleConstants.KEY_GROUP_LIST_CREATE;
+import static org.ff4j.web.embedded.ConsoleConstants.KEY_GROUP_LIST_EDIT;
+import static org.ff4j.web.embedded.ConsoleConstants.KEY_GROUP_LIST_TOGGLE;
+import static org.ff4j.web.embedded.ConsoleConstants.KEY_PERMISSIONLIST;
+import static org.ff4j.web.embedded.ConsoleConstants.KEY_PROPERTIES_ROWS;
+import static org.ff4j.web.embedded.ConsoleConstants.KEY_SERVLET_CONTEXT;
+import static org.ff4j.web.embedded.ConsoleConstants.KEY_VERSION;
+import static org.ff4j.web.embedded.ConsoleConstants.MODAL_CREATE;
+import static org.ff4j.web.embedded.ConsoleConstants.MODAL_EDIT;
+import static org.ff4j.web.embedded.ConsoleConstants.MODAL_TOGGLE;
+import static org.ff4j.web.embedded.ConsoleConstants.NEW_LINE;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_RMV_FEATURE;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_RMV_PROPERTY;
+import static org.ff4j.web.embedded.ConsoleConstants.PREFIX_CHECKBOX;
+import static org.ff4j.web.embedded.ConsoleConstants.RESOURCE;
+import static org.ff4j.web.embedded.ConsoleConstants.RESOURCE_CSS_FILE;
+import static org.ff4j.web.embedded.ConsoleConstants.RESOURCE_CSS_PARAM;
+import static org.ff4j.web.embedded.ConsoleConstants.RESOURCE_JS_FILE;
+import static org.ff4j.web.embedded.ConsoleConstants.RESOURCE_JS_PARAM;
+import static org.ff4j.web.embedded.ConsoleConstants.TEMPLATE_FILE;
+import static org.ff4j.web.embedded.ConsoleConstants.TEMPLATE_FILE_MONITORING;
+import static org.ff4j.web.embedded.ConsoleConstants.UTF8_ENCODING;
 
 import java.io.IOException;
 
 /*
- * #%L
- * AdministrationConsoleRenderer.java (ff4j-web) by Cedrick LUNVEN
- * %%
- * Copyright (C) 2013 Ff4J
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * #%L AdministrationConsoleRenderer.java (ff4j-web) by Cedrick LUNVEN %% Copyright (C) 2013 Ff4J %% Licensed under the Apache
+ * License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. #L%
  */
 
 import java.io.InputStream;
@@ -90,13 +80,16 @@ import org.ff4j.utils.Util;
 
 /**
  * Used to build GUI Interface for feature flip servlet. It contains gui component render and parmeters
- *
+ * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public final class ConsoleRenderer {
 
     /** Cache for page blocks. */
     private static String htmlTemplate = null;
+    
+    /** Cache for page blocks. */
+    private static String htmlTemplateMonitoring = null;
 
     /** Load CSS. */
     private static String cssContent = null;
@@ -112,13 +105,13 @@ public final class ConsoleRenderer {
 
     /** Get version of the component. */
     static final String FF4J_VERSION = ConsoleRenderer.class.getPackage().getImplementationVersion();
-
+    
     /** Display audit log date. */
-    static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
-
+    static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss"); 
+    
     /** Mapping from simple 'String' <=> 'org.ff4j.property.PropertyString'. */
     private static Map < String , String > uxTypes = new HashMap< String , String>();
-
+    
     /**
      * Initialized Primitive to work with Properties.
      */
@@ -135,12 +128,12 @@ public final class ConsoleRenderer {
         uxTypes.put("LogLevel", PropertyLogLevel.class.getName());
         uxTypes.put(String.class.getSimpleName(), PropertyString.class.getName());
     }
-
+    
     private ConsoleRenderer() {}
-
+    
     /**
      * Render the ff4f console webpage through different block.
-     *
+     * 
      * @param req
      *            http request (with parameters)
      * @param res
@@ -164,10 +157,10 @@ public final class ConsoleRenderer {
 
         // Subsctitution FEATURE_ROWS
         htmlContent = htmlContent.replaceAll("\\{" + KEY_FEATURE_ROWS + "\\}", renderFeatureRows(ff4j, req));
-
+        
         // substitution PROPERTIES_ROWS
         htmlContent = htmlContent.replaceAll("\\{" + KEY_PROPERTIES_ROWS + "\\}", renderPropertiesRows(ff4j, req));
-
+        
         // Substitution GROUP_LIST
         String groups = ConsoleRenderer.renderGroupList(ff4j, MODAL_EDIT);
         htmlContent = htmlContent.replaceAll("\\{" + KEY_GROUP_LIST_EDIT + "\\}", groups);
@@ -182,10 +175,34 @@ public final class ConsoleRenderer {
 
         out.println(htmlContent);
     }
+    
+    
+    /**
+     * Render the ff4f console webpage through different block.
+     * 
+     * @param req
+     *            http request (with parameters)
+     * @param res
+     *            http response (with outouput test)
+     * @param message
+     *            text in the information box (blue/green/orange/red)
+     * @param messagetype
+     *            type of informatice message (info,success,warning,error)
+     * @throws IOException
+     *             error during populating http response
+     */
+    public static void renderPageMonitoring(FF4j ff4j, HttpServletRequest req, HttpServletResponse res, String msg, String msgType) throws IOException {
+        res.setContentType(CONTENT_TYPE_HTML);
+        PrintWriter out = res.getWriter();
+        String htmlContent = renderTemplateMonitoring(req);
+        htmlContent = htmlContent.replaceAll("\\{" + KEY_ALERT_MESSAGE + "\\}", renderMessageBox(msg, msgType));
+        htmlContent = htmlContent.replaceAll("\\{" + KEY_AUDIT_ROWS + "\\}", renderAuditRows(ff4j , req));
+        out.println(htmlContent);
+    }
 
     /**
      * Build info messages.
-     *
+     * 
      * @param featureName
      *            target feature name
      * @param operationd
@@ -193,12 +210,12 @@ public final class ConsoleRenderer {
      * @return
      */
     public static String msg(String featureName, String operationId) {
-        return String.format("Feature %s has been successfully %s", featureName, operationId);
+        return String.format("Feature <b>%s</b> has been successfully %s", featureName, operationId);
     }
-
+    
     /**
      * Build info messages.
-     *
+     * 
      * @param featureName
      *            target feature name
      * @param operationd
@@ -211,7 +228,7 @@ public final class ConsoleRenderer {
 
     /**
      * Build info messages.
-     *
+     * 
      * @param featureName
      *            target feature name
      * @param operationd
@@ -221,10 +238,10 @@ public final class ConsoleRenderer {
     public static String renderMsgGroup(String groupName, String operationId) {
         return String.format("Group <b>%s</b> has been successfully %s", groupName, operationId);
     }
-
+    
     /**
      * Deliver CSS and Javascript files/
-     *
+     * 
      * @param req
      *            request
      * @param res
@@ -249,10 +266,10 @@ public final class ConsoleRenderer {
         }
         return false;
     }
-
+    
     /**
      * Display message box if message.
-     *
+     * 
      * @param message
      *            target message to display
      * @param type
@@ -272,36 +289,27 @@ public final class ConsoleRenderer {
         }
         return sb.toString();
     }
-
+    
     /**
      * Load HTML template file and substitute by current URL context path
-     *
+     * 
      * @param req
      *            current http request
      * @return current text part as string
      */
      private static final String renderTemplate(HttpServletRequest req) {
-    	if (htmlTemplate == null || htmlTemplate.isEmpty()) {
+        if (htmlTemplate == null || htmlTemplate.isEmpty()) {
             String ctx = req.getContextPath() + req.getServletPath() + "";
             htmlTemplate = loadFileAsString(TEMPLATE_FILE);
             htmlTemplate = htmlTemplate.replaceAll("\\{" + KEY_SERVLET_CONTEXT + "\\}", ctx);
             htmlTemplate = htmlTemplate.replaceAll("\\{" + KEY_VERSION + "\\}", FF4J_VERSION);
-
-            // Customization of the CSS
-            String targetCss = ctx + "?rsc=css";
-            String cssAttribute = (String) req.getSession()
-            			.getServletContext().getAttribute(CSS_SESSIONATTRIBUTE_NAME);
-            if (cssAttribute != null) {
-            	targetCss = cssAttribute;
-            }
-            htmlTemplate = htmlTemplate.replaceAll("\\{" + KEY_CSS_URL + "\\}", targetCss);
         }
         return htmlTemplate;
     }
-
+     
      /**
       * Load HTML template file and substitute by current URL context path
-      *
+      * 
       * @param req
       *            current http request
       * @return current text part as string
@@ -315,14 +323,14 @@ public final class ConsoleRenderer {
          }
          return htmlTemplateMonitoring;
      }
-
+    
     private static final String renderPropertiesRows(FF4j ff4j, HttpServletRequest req) {
         StringBuilder sb = new StringBuilder();
         final Map < String, Property<?>> mapOfProperties = ff4j.getProperties();
         for(Map.Entry<String,Property<?>> uid : mapOfProperties.entrySet()) {
             Property<?> currentProperty = uid.getValue();
             sb.append("<tr>" + END_OF_LINE);
-
+            
             // Column with uid and description as tooltip
             sb.append("<td><a class=\"ff4j-properties\" ");
             if (null != currentProperty.getDescription()) {
@@ -333,7 +341,7 @@ public final class ConsoleRenderer {
             sb.append(">");
             sb.append(currentProperty.getName());
             sb.append("</a>");
-
+           
             // Colonne Value
             sb.append("</td><td>");
             if (null != currentProperty.asString()) {
@@ -341,7 +349,7 @@ public final class ConsoleRenderer {
             } else {
                 sb.append("--");
             }
-
+            
             // Colonne Type
             sb.append("</td><td>");
             if (uxTypes.containsValue(currentProperty.getType())) {
@@ -349,7 +357,7 @@ public final class ConsoleRenderer {
             } else {
                 sb.append(currentProperty.getType());
             }
-
+            
             // Colonne Fixed Value
             sb.append("</td><td>");
             if (null != currentProperty.getFixedValues()) {
@@ -359,7 +367,7 @@ public final class ConsoleRenderer {
             } else {
                 sb.append("--");
             }
-
+            
             // Colonne Button Edit
             sb.append("</td><td style=\"width:5%;text-align:center\">");
             sb.append("<a data-toggle=\"modal\" href=\"#modalEditProperty\" data-pname=\"" + currentProperty.getName() + "\" ");
@@ -394,7 +402,7 @@ public final class ConsoleRenderer {
 		}
     	return sb.toString();
     }
-
+    
     /**
      * Produce the rows of the Feature Table.
      *
@@ -407,7 +415,7 @@ public final class ConsoleRenderer {
         for(Map.Entry<String,Feature> uid : mapOfFeatures.entrySet()) {
             Feature currentFeature = uid.getValue();
             sb.append("<tr>" + END_OF_LINE);
-
+            
             // Column with uid and description as tooltip
             sb.append("<td><a class=\"ff4j-tooltip\" ");
             if (null != currentFeature.getDescription()) {
@@ -418,7 +426,7 @@ public final class ConsoleRenderer {
             sb.append(">");
             sb.append(currentFeature.getUid());
             sb.append("</a>");
-
+            
             // Colonne Group
             sb.append("</td><td>");
             if (null != currentFeature.getGroup()) {
@@ -426,7 +434,7 @@ public final class ConsoleRenderer {
             } else {
                 sb.append("--");
             }
-
+            
             // Colonne Permissions
             sb.append("</td><td>");
             Set < String > permissions = currentFeature.getPermissions();
@@ -442,7 +450,7 @@ public final class ConsoleRenderer {
             } else {
                 sb.append("--");
             }
-
+            
             // Colonne Strategy
             sb.append("</td><td style=\"word-break: break-all;\">");
             FlippingStrategy fs = currentFeature.getFlippingStrategy();
@@ -454,7 +462,7 @@ public final class ConsoleRenderer {
             } else {
                 sb.append("--");
             }
-
+            
             // Colonne 'Holy' Toggle
             sb.append("</td><td style=\"width:8%;text-align:center\">");
             sb.append("<label class=\"switch switch-green\">");
@@ -467,7 +475,7 @@ public final class ConsoleRenderer {
             sb.append("<span class=\"switch-label\" data-on=\"On\" data-off=\"Off\"></span>");
             sb.append("<span class=\"switch-handle\"></span>");
             sb.append("</label>");
-
+            
             // Colonne Button Edit
             sb.append("</td><td style=\"width:5%;text-align:center\">");
             sb.append("<a data-toggle=\"modal\" href=\"#modalEdit\" data-id=\"" + currentFeature.getUid() + "\" ");
@@ -504,7 +512,7 @@ public final class ConsoleRenderer {
 
     /**
      * Render group list block.
-     *
+     * 
      * @param ff4j
      *            target ff4j.
      * @return list of group

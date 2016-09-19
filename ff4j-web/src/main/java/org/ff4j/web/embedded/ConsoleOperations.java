@@ -1,15 +1,5 @@
 package org.ff4j.web.embedded;
 
-import static org.ff4j.web.bean.WebConstants.BUFFER_SIZE;
-import static org.ff4j.web.bean.WebConstants.DESCRIPTION;
-import static org.ff4j.web.bean.WebConstants.FEATID;
-import static org.ff4j.web.bean.WebConstants.GROUPNAME;
-import static org.ff4j.web.bean.WebConstants.PERMISSION;
-import static org.ff4j.web.bean.WebConstants.PERMISSION_RESTRICTED;
-import static org.ff4j.web.bean.WebConstants.PREFIX_CHECKBOX;
-import static org.ff4j.web.bean.WebConstants.STRATEGY;
-import static org.ff4j.web.bean.WebConstants.STRATEGY_INIT;
-
 /*
  * #%L
  * ff4j-web
@@ -52,10 +42,10 @@ import org.ff4j.core.FlippingStrategy;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.property.util.PropertyFactory;
-import org.ff4j.utils.Util;
-import org.ff4j.web.bean.WebConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.ff4j.web.embedded.ConsoleConstants.*;
 
 public final class ConsoleOperations {
     
@@ -149,27 +139,36 @@ public final class ConsoleOperations {
         String type         = req.getParameter("pType");
         String description  = req.getParameter("desc");
         String value        = req.getParameter("pValue");
-        String featureUid   = req.getParameter(WebConstants.FEATURE_UID);
+        String uid          = req.getParameter("uid");
         
-        Property<?> ap = PropertyFactory.createProperty(name, type, value);
-        ap.setDescription(description);
-        
-        // Update Property for a Feature
-        if (Util.hasLength(featureUid) && ff4j.getFeatureStore().exist(featureUid)) {
-           Feature relfeat = ff4j.getFeatureStore().read(featureUid);
-           relfeat.addProperty(ap);
-           ff4j.getFeatureStore().update(relfeat);
-        
-        // Update Property standalone
-        } else if (ff4j.getPropertiesStore().existProperty(name)) {
-           Property<?> old = ff4j.getPropertiesStore().readProperty(name);
-           if (old.getType().equalsIgnoreCase(type)) {
-               old.setDescription(description);
-               old.setValueFromString(value);
-               ff4j.getPropertiesStore().updateProperty(old);
-           } else {
-               ff4j.getPropertiesStore().updateProperty(ap);
-           }
+        Property<?> ap;
+        if (ff4j.getPropertiesStore().existProperty(uid)) {
+            // Do not change name, just and update
+            if (uid.equalsIgnoreCase(name)) {
+                ap = ff4j.getPropertiesStore().readProperty(uid);
+                // just an update for the value
+                if (ap.getType().equalsIgnoreCase(type)) {
+                    ap.setDescription(description);
+                    ap.setValueFromString(value);
+                    ff4j.getPropertiesStore().updateProperty(ap);
+                } else {
+                    ap = PropertyFactory.createProperty(name, type, value);
+                    ap.setDescription(description);
+                    // Note : Fixed Values are LOST if type changed => cannot cast ? to T
+                    LOGGER.warn("By changing property type you loose the fixedValues, cannot evaluate ? at runtime");
+                    ff4j.getPropertiesStore().deleteProperty(name);
+                    ff4j.getPropertiesStore().createProperty(ap);
+                }
+                
+            } else {
+                // Name change delete and create a new
+                ap = PropertyFactory.createProperty(name, type, value);
+                ap.setDescription(description);
+                // Note : Fixed Values are LOST if name changed => cannot cast ? to T
+                LOGGER.warn("By changing property name you loose the fixedValues, cannot evaluate generics at runtime (type inference)");
+                ff4j.getPropertiesStore().deleteProperty(uid);
+                ff4j.getPropertiesStore().createProperty(ap);
+            }
         }
     }
     
@@ -186,22 +185,92 @@ public final class ConsoleOperations {
         String type         = req.getParameter("pType");
         String description  = req.getParameter("desc");
         String value        = req.getParameter("pValue");
-        String featureUid   = req.getParameter(WebConstants.FEATURE_UID);
-        
         Property<?> ap = PropertyFactory.createProperty(name, type, value);
         ap.setDescription(description);
+        ff4j.getPropertiesStore().createProperty(ap);
+    }
+
+    private static void updateFlippingStrategy(Feature fp, String strategy, String strategyParams) {
         
-        // Create Property for a Feature
-        if (Util.hasLength(featureUid) && ff4j.getFeatureStore().exist(featureUid)) {
-            Feature relfeat = ff4j.getFeatureStore().read(featureUid);
-            relfeat.addProperty(ap);
-            ff4j.getFeatureStore().update(relfeat);
-        } else {
-            ff4j.getPropertiesStore().createProperty(ap);
+        if (null != strategy && !strategy.isEmpty()) {
+            try {
+                Class<?> strategyClass = Class.forName(strategy);
+                FlippingStrategy fstrategy = (FlippingStrategy) strategyClass.newInstance();
+               
+                if (null != strategyParams && !strategyParams.isEmpty()) {
+                    Map<String, String> initParams = new HashMap<String, String>();
+                    String[] params = strategyParams.split(";");
+                    for (String currentP : params) {
+                        String[] cur = currentP.split("=");
+                        if (cur.length < 2) {
+                            throw new IllegalArgumentException("Invalid Syntax : param1=val1,val2;param2=val3,val4");
+                        }
+                        initParams.put(cur[0], cur[1]);
+                    }
+                    fstrategy.init(fp.getUid(), initParams);
+                }
+                fp.setFlippingStrategy(fstrategy);
+
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException("Cannot find strategy class", e);
+            } catch (InstantiationException e) {
+                throw new IllegalArgumentException("Cannot instantiate strategy", e);
+            } catch (IllegalAccessException e) {
+                throw new IllegalArgumentException("Cannot instantiate : no public constructor", e);
+            }
         }
     }
     
-   
+    /**
+     * User action to update a target feature's description.
+     * 
+     * @param req
+     *            http request containing operation parameters
+     */
+    public static void updateFeatureDescription(FF4j ff4j, HttpServletRequest req) {
+        // uid
+        final String featureId = req.getParameter(FEATID);
+        if (featureId != null && !featureId.isEmpty()) {
+            // https://github.com/clun/ff4j/issues/66
+            Feature old = ff4j.getFeatureStore().read(featureId);
+            Feature fp = new Feature(featureId, old.isEnable());
+            // <--
+            
+            // Description
+            final String featureDesc = req.getParameter(DESCRIPTION);
+            if (null != featureDesc && !featureDesc.isEmpty()) {
+                fp.setDescription(featureDesc);
+            }
+
+            // GroupName
+            final String groupName = req.getParameter(GROUPNAME);
+            if (null != groupName && !groupName.isEmpty()) {
+                fp.setGroup(groupName);
+            }
+
+            // Strategy
+            updateFlippingStrategy(fp, req.getParameter(STRATEGY), req.getParameter(STRATEGY_INIT));
+
+            // Permissions
+            final String permission = req.getParameter(PERMISSION);
+            if (null != permission && PERMISSION_RESTRICTED.equals(permission)) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> parameters = req.getParameterMap();
+                Set<String> permissions = new HashSet<String>();
+                for (String key : parameters.keySet()) {
+                    if (key.startsWith(PREFIX_CHECKBOX)) {
+                        permissions.add(key.replace(PREFIX_CHECKBOX, ""));
+                    }
+                }
+                fp.setPermissions(permissions);
+            }
+
+            // Creation
+            ff4j.getFeatureStore().update(fp);
+            LOGGER.info(featureId + " has been updated");
+        }
+    }
+
     /**
      * User action to import Features from a properties files.
      * 
@@ -234,7 +303,7 @@ public final class ConsoleOperations {
                 pstore.createProperty(p.getValue());
             }
         }
-        LOGGER.info(mapsOfProperties.size() + " properties have been imported.");
+        LOGGER.info(mapsOfProperties.size() + " features have been imported.");
     }
     
     /**
