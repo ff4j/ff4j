@@ -1,5 +1,35 @@
 package org.ff4j.neo4j.store;
 
+import static org.ff4j.neo4j.FF4jNeo4jConstants.NODEFEATURE_ATT_UID;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.NODEGROUP_ATT_NAME;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_ADDTO_GROUP;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_ADD_ROLE;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_ALIAS;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_COUNT_FEATURE_OF_GROUP;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_DELETE_ALLFEATURE;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_DELETE_ALLSINGLEFEATURE;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_DELETE_FEATURE;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_DELETE_GROUP;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_DELETE_GROUP_FEATURE;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_DELETE_PROPERTIES_FEATURE;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_DELETE_STRATEGY_FEATURE;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_DISABLE;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_DISABLE_GROUP;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_ENABLE;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_ENABLE_GROUP;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_EXISTS;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_EXISTS_GROUP;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_GETGROUPNAME;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_GET_FLIPPINGSTRATEGY;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_NORELATIONSHIPS;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_READ_ALL;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_READ_FEATURE;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_READ_FEATURES_OF_GROUP;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_READ_SINGLE;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_REMOVEFROMGROUP;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_CYPHER_UPDATE_ROLE;
+import static org.ff4j.neo4j.FF4jNeo4jConstants.QUERY_READ_GROUPS;
+
 /*
  * #%L
  * ff4j-store-neo4j
@@ -42,8 +72,7 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
-
-import static org.ff4j.neo4j.FF4jNeo4jConstants.*;
+import org.neo4j.graphdb.schema.Schema;
 
 /**
  * Implementatino of NEO4J Store.
@@ -647,6 +676,24 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
         graphDb.execute(QUERY_CYPHER_DELETE_ALLSINGLEFEATURE);
         tx.success();
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        try (Transaction tx = graphDb.beginTx() ) {
+            if (!graphDb.schema().getConstraints(FF4jNeo4jLabels.FF4J_FEATURE).iterator().hasNext()) {
+                graphDb.schema().constraintFor(FF4jNeo4jLabels.FF4J_FEATURE)//
+                        .assertPropertyIsUnique(NODEFEATURE_ATT_UID)//
+                        .create();
+            }
+            if (!graphDb.schema().getConstraints(FF4jNeo4jLabels.FF4J_FEATURE_GROUP).iterator().hasNext()) {
+                graphDb.schema().constraintFor(FF4jNeo4jLabels.FF4J_FEATURE_GROUP)//
+                    .assertPropertyIsUnique(NODEGROUP_ATT_NAME )//
+                    .create();
+            }
+            tx.success();
+        }
+    }
 
     /**
      * Getter accessor for attribute 'graphDb'.
@@ -665,17 +712,6 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
      */
     public void setGraphDb(GraphDatabaseService graphDb) {
         this.graphDb = graphDb;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void createSchema() {
-        // Nodes and vertex in the graph are dynamic
-        // Still we can add indexes
-        //CREATE INDEX ON :FF4J_FEATURE(uid);
-        //CREATE INDEX ON :FF4J_FEATURE_GROUP(name);
-    
-        
     }
 
 }

@@ -53,13 +53,6 @@ public class PropertyStoreEhCache extends AbstractPropertyStore {
     public PropertyStoreEhCache() {
         wrapper = new FF4jEhCacheWrapper();
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public void createSchema() {
-        // Nothing to do, cache has no schema
-        return;
-    }
     
     /**
      * Default Constructor.

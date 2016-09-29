@@ -64,14 +64,6 @@ public class PropertyStoreCommonsConfig extends AbstractPropertyStore {
         this.configuration = configuration;
     }
     
-    /** {@inheritDoc} */
-    @Override
-    public void createSchema() {
-        if (configuration == null) {
-            this.configuration = new MapConfiguration(new Properties());
-        }
-    }
-    
     /**
      * Read not null configuration.
      *

@@ -32,6 +32,7 @@ public class CassandraConnectionTest {
     public void testConnection() {
         CassandraConnection conn = new CassandraConnection();
         
+        
         FF4j ff4j = new FF4j();
         ff4j.setFeatureStore(new FeatureStoreCassandra(conn));
 

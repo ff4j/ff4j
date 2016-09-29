@@ -263,10 +263,4 @@ public class PropertyStoreRedis extends AbstractPropertyStore {
         return jedis;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void createSchema() {
-        // There is no schema to create, it's key value (flat) and keys are create FF4J_FEATURE_${FEATUREID}
-        return;
-    }
 }

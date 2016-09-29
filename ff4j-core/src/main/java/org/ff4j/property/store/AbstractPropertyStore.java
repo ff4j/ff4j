@@ -152,4 +152,15 @@ public abstract class AbstractPropertyStore implements PropertyStore {
         }
     }
     
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        /* 
+         * In most of cases there is nothing to do. The feature and properties are createdat runtime.
+         * But not always (JDBC, Mongo, Cassandra)... this is the reason why the dedicated store must 
+         * override this method. It a default implementation (Pattern Adapter).
+         */
+        return;
+    }
+    
 }

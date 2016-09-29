@@ -273,13 +273,6 @@ public class InMemoryFeatureStore extends AbstractFeatureStore {
     public Map<String, Feature> readAll() {
         return featuresMap;
     }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void createSchema() {
-        // Nothing to create here
-        return;
-    }
 
     /** {@inheritDoc} */
     @Override

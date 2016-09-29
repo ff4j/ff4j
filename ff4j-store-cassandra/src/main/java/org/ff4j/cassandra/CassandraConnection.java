@@ -47,7 +47,7 @@ public class CassandraConnection {
     
     /** Default. */
     public CassandraConnection() {
-        this(CassandraConstants.DEFAULT_HOST));
+        this(CassandraConstants.DEFAULT_HOST);
     }
     
     /**

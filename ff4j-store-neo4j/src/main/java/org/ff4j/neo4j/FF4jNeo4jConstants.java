@@ -252,14 +252,6 @@ public class FF4jNeo4jConstants {
     public static final String QUERY_CYPHER_DELETE_ALLPROPERTY =
             MATCH_P + FF4jNeo4jLabels.FF4J_PROPERTY + ") DETACH DELETE p;";
     
-    /** Cypher query. */
-    public static final String QUERY_CYPHER_INDEX_FEATURE = 
-            "CREATE INDEX ON :FF4J_FEATURE(uid);";
-    
-    /** Cypher query. */
-    public static final String QUERY_CYPHER_INDEX_FEATURE_GROUP = 
-            "CREATE INDEX ON :FF4J_FEATURE_GROUP(name);";
-    
     /**
      * Hide default constructor.
      */

@@ -64,6 +64,17 @@ public abstract class AbstractFeatureStore implements FeatureStore {
         return features;
     }
     
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        /* 
+         * In most of cases there is nothing to do. The feature and properties are createdat runtime.
+         * But not always (JDBC, Mongo, Cassandra)... this is the reason why the dedicated store must 
+         * override this method. It a default implementation (Pattern Adapter).
+         */
+        return;
+    }
+    
     /**
      * Import features from a set of feature.
      *
@@ -154,6 +165,6 @@ public abstract class AbstractFeatureStore implements FeatureStore {
         if (feature == null) {
             throw new IllegalArgumentException("Feature cannot be null nor empty");
         }
-    }
+    } 
     
 }
