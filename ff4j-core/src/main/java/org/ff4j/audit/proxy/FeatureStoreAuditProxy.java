@@ -3,6 +3,7 @@ package org.ff4j.audit.proxy;
 import static org.ff4j.audit.EventConstants.ACTION_CLEAR;
 import static org.ff4j.audit.EventConstants.ACTION_CREATE;
 import static org.ff4j.audit.EventConstants.ACTION_DELETE;
+import static org.ff4j.audit.EventConstants.ACTION_CREATESCHEMA;
 import static org.ff4j.audit.EventConstants.ACTION_TOGGLE_OFF;
 import static org.ff4j.audit.EventConstants.ACTION_TOGGLE_ON;
 import static org.ff4j.audit.EventConstants.ACTION_UPDATE;
@@ -61,6 +62,13 @@ public class FeatureStoreAuditProxy implements FeatureStore {
     public FeatureStoreAuditProxy(FF4j pFF4j, FeatureStore pTarget) {
         this.target = pTarget;
         this.ff4j   = pFF4j;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        target.createSchema();
+        publish(builder(ACTION_CREATESCHEMA).feature("For Features"));
     }
     
     /** {@inheritDoc} */

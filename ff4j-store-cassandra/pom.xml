@@ -68,6 +68,28 @@
 		
 
 	</dependencies>
+	
+	<!-- 	<build>
+	<plugins>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>cassandra-maven-plugin</artifactId>
+            <version>3.5</version>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>start</goal>
+                        <goal>flush</goal>
+                        <goal>cleanup</goal>
+                    </goals>
+                    <phase>compile</phase>
+                </execution>
+            </executions>
+        </plugin>
+     <plugins>
+     
+</build>
+ -->
 
 
 </project>

@@ -1,8 +1,8 @@
-package org.ff4j.cassandra;
+package org.ff4j.jmx;
 
 /*
  * #%L
- * ff4j-store-cassandra
+ * ff4j-jmx
  * %%
  * Copyright (C) 2013 - 2016 FF4J
  * %%
@@ -20,24 +20,6 @@ package org.ff4j.cassandra;
  * #L%
  */
 
-import org.ff4j.FF4j;
-import org.ff4j.cassandra.store.FeatureStoreCassandra;
-import org.junit.Ignore;
-import org.junit.Test;
+public class FeatureStoreMBean {
 
-public class CassandraConnectionTest {
-
-    @Ignore
-    @Test
-    public void testConnection() {
-        CassandraConnection conn = new CassandraConnection();
-        
-        FF4j ff4j = new FF4j();
-        ff4j.setFeatureStore(new FeatureStoreCassandra(conn));
-
-        ff4j.getFeatureStore().exist("f1");
-        
-        conn.close();
-    }
-    
 }

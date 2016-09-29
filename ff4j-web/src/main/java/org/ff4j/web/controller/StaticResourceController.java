@@ -24,6 +24,7 @@ import static org.ff4j.web.bean.WebConstants.CONTENT_TYPE_CSS;
 import static org.ff4j.web.bean.WebConstants.CONTENT_TYPE_JS;
 import static org.ff4j.web.bean.WebConstants.CONTENT_TYPE_TEXT;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -101,39 +102,36 @@ public class StaticResourceController extends AbstractController {
     	}
 	}
 
-	/* 
-	 * Load CSS Files
-	 */
-	private void serveCss(HttpServletResponse res, String pathInfo, String resourceName)
-	throws IOException {
-		// if first access put it into cache
-		if (!cssFiles.containsKey(resourceName)) {
-        	cssFiles.put(resourceName,FileUtils.loadFileAsString(pathInfo));
-		}
-		if (null == cssFiles.get(resourceName)) {
-			notFound(res, pathInfo);
-		} else {
-			res.setContentType(CONTENT_TYPE_CSS);
-	        res.getWriter().println(cssFiles.get(resourceName));
-		}
-	}
-	
+    /*
+     * Load CSS Files
+     */
+    private void serveCss(HttpServletResponse res, String pathInfo, String resourceName) throws IOException {
+        try {
+            if (!cssFiles.containsKey(resourceName)) {
+                cssFiles.put(resourceName, FileUtils.loadFileAsString(pathInfo));
+            }
+            res.setContentType(CONTENT_TYPE_CSS);
+            res.getWriter().println(cssFiles.get(resourceName));
+        } catch (FileNotFoundException fnf) {
+            notFound(res, "CSS File " + pathInfo + "(" + resourceName + ")");
+        }
+    }
+
 	/*
 	 * Load font files
 	 */
 	private void serveFont(HttpServletResponse res, String pathInfo, String resourceName)
 	throws IOException {
-		if (!fontFiles.containsKey(resourceName)) {
-			fontFiles.put(resourceName, FileUtils.loadFileAsByteArray(pathInfo));
-		}
-		if (null == fontFiles.get(resourceName)) {
-			notFound(res, pathInfo);
-		} else {
-			MimetypesFileTypeMap mimetypesFileTypeMap=new MimetypesFileTypeMap();
-	        res.setContentType(mimetypesFileTypeMap.getContentType(resourceName));
-	        res.getOutputStream().write(fontFiles.get(resourceName));
-		}
-		
+	    try {
+            if (!fontFiles.containsKey(resourceName)) {
+                fontFiles.put(resourceName, FileUtils.loadFileAsByteArray(pathInfo));
+            }
+            MimetypesFileTypeMap mimetypesFileTypeMap=new MimetypesFileTypeMap();
+            res.setContentType(mimetypesFileTypeMap.getContentType(resourceName));
+            res.getOutputStream().write(fontFiles.get(resourceName));
+        } catch (FileNotFoundException fnf) {
+            notFound(res, "fontFiles  " + pathInfo + "(" + resourceName + ")");
+        }
 	}
 	
 	/*
@@ -141,15 +139,15 @@ public class StaticResourceController extends AbstractController {
 	 */
 	private void serveJs(HttpServletResponse res, String pathInfo, String resourceName)
 	throws IOException {
-		if (!jsFiles.containsKey(resourceName)) {
-			jsFiles.put(resourceName, FileUtils.loadFileAsString(pathInfo));
-		}
-		if (null == jsFiles.get(resourceName)) {
-			notFound(res, pathInfo);
-		} else {
-			res.setContentType(CONTENT_TYPE_JS);
-			res.getWriter().println(jsFiles.get(resourceName));
-		}
+	    try {
+            if (!jsFiles.containsKey(resourceName)) {
+                jsFiles.put(resourceName, FileUtils.loadFileAsString(pathInfo));
+            }
+            res.setContentType(CONTENT_TYPE_JS);
+            res.getWriter().println(jsFiles.get(resourceName));
+        } catch (FileNotFoundException fnf) {
+            notFound(res, "CSS File " + pathInfo + "(" + resourceName + ")");
+        }
 	}
 	
 	/*
@@ -157,15 +155,15 @@ public class StaticResourceController extends AbstractController {
 	 */
 	private void serveImage(HttpServletResponse res, String pathInfo, String resourceName)
 	throws IOException {
-		if (!images.containsKey(resourceName)) {
-			images.put(resourceName, FileUtils.loadFileAsByteArray(pathInfo));
-		}
-		if (null == images.get(resourceName)) {
-			notFound(res, pathInfo);
-		} else {
-			MimetypesFileTypeMap mimetypesFileTypeMap=new MimetypesFileTypeMap();
+	    try {
+	        if (!images.containsKey(resourceName)) {
+	            images.put(resourceName, FileUtils.loadFileAsByteArray(pathInfo));
+		    }
+		    MimetypesFileTypeMap mimetypesFileTypeMap=new MimetypesFileTypeMap();
 	        res.setContentType(mimetypesFileTypeMap.getContentType(resourceName));
 	        res.getOutputStream().write(images.get(resourceName));
+	    } catch(FileNotFoundException fnf) {
+	        notFound(res, pathInfo);
 		}
 	}
 	

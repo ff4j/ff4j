@@ -28,7 +28,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.ff4j.core.FeatureStore;
 import org.ff4j.property.store.PropertyStore;
-import org.ff4j.utils.Util;
 
 /**
  * Poll target stores on a fixed delay basis and fill cache to avoid reaching TTL of key.

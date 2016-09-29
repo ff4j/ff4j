@@ -21,7 +21,7 @@ package org.ff4j.jmx.client;
  */
 
 
-import org.ff4j.jmx.gateway.FeatureStoreJmxGateway;
+import org.ff4j.jmx.FeatureStoreMBeanSpring;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -30,7 +30,7 @@ public class FeatureStoreJmxClientTest {
     @Test
     public void testInit() {
         Assert.assertNotNull(new FeatureStoreJmxClient());
-        Assert.assertNotNull(new FeatureStoreJmxGateway());
+        Assert.assertNotNull(new FeatureStoreMBeanSpring());
     }
 
 }

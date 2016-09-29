@@ -91,6 +91,11 @@ public class EventRepositoryRedis extends AbstractEventRepository {
     
 	/** {@inheritDoc} */
 	public boolean saveEvent(Event evt) {
+	    // The key will be : FF4J_EVENTS_FEAUID_YYYYMMDD to be able to group and search
+	    // The key will be : FF4J_EVENTS_AUDITTRAIL_YYYYMMDD to be able to group and search
+        
+	    
+	    // Then, the value will be a sorted SET and algortihms will look like InMemory
 		 if (evt == null) {
 			 throw new IllegalArgumentException("Event cannot be null nor empty");
 	     }
@@ -125,63 +130,80 @@ public class EventRepositoryRedis extends AbstractEventRepository {
         return jedis;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        // There is no schema to create, it's key value (flat) and keys are create FF4J_FEATURE_${FEATUREID}
+        return;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Event getEventByUUID(String uuid, Long timestamp) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /** {@inheritDoc} */
     @Override
     public Map<String, MutableHitCount> getFeatureUsageHitCount(EventQueryDefinition query) {
         // TODO Auto-generated method stub
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public TimeSeriesChart getFeatureUsageHistory(EventQueryDefinition query, TimeUnit tu) {
         // TODO Auto-generated method stub
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public EventSeries searchFeatureUsageEvents(EventQueryDefinition query) {
         // TODO Auto-generated method stub
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void purgeFeatureUsage(EventQueryDefinition query) {
         // TODO Auto-generated method stub
         
     }
 
+    /** {@inheritDoc} */
     @Override
     public Map<String, MutableHitCount> getHostHitCount(EventQueryDefinition query) {
         // TODO Auto-generated method stub
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Map<String, MutableHitCount> getUserHitCount(EventQueryDefinition query) {
         // TODO Auto-generated method stub
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Map<String, MutableHitCount> getSourceHitCount(EventQueryDefinition query) {
         // TODO Auto-generated method stub
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public EventSeries getAuditTrail(EventQueryDefinition query) {
         // TODO Auto-generated method stub
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void purgeAuditTrail(EventQueryDefinition query) {
         // TODO Auto-generated method stub
         
-    }
-
-    @Override
-    public Event getEventByUUID(String uuid, Long timestamp) {
-        // TODO Auto-generated method stub
-        return null;
     }
 }

@@ -55,6 +55,7 @@ public class InMemoryFeatureStore extends AbstractFeatureStore {
             throw new IllegalArgumentException(
                     "fileName is required, cannot be null nor empty : the file must exist in classpath");
         }
+        createSchema();
         loadConfFile(fileName);
     }
 
@@ -65,6 +66,7 @@ public class InMemoryFeatureStore extends AbstractFeatureStore {
      *            fileName present in classPath or on fileSystem.
      */
     public InMemoryFeatureStore(InputStream xmlIN) {
+        createSchema();
         loadConf(xmlIN);
     }
 
@@ -74,6 +76,7 @@ public class InMemoryFeatureStore extends AbstractFeatureStore {
      * @param maps
      */
     public InMemoryFeatureStore(Map<String, Feature> maps) {
+        createSchema();
         this.featuresMap = maps;
         buildGroupsFromFeatures();
     }
@@ -260,16 +263,26 @@ public class InMemoryFeatureStore extends AbstractFeatureStore {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void clear() {
        featuresMap.clear();
     }
 
     /** {@inheritDoc} */
+    @Override
     public Map<String, Feature> readAll() {
         return featuresMap;
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        // Nothing to create here
+        return;
+    }
 
     /** {@inheritDoc} */
+    @Override
     public String toJson() {
         String json = super.toJson();
         // Remove last } to enrich the json document
@@ -302,5 +315,5 @@ public class InMemoryFeatureStore extends AbstractFeatureStore {
     public String getFileName() {
         return fileName;
     }
-   
+    
 }

@@ -2,6 +2,7 @@ package org.ff4j.audit.proxy;
 
 import static org.ff4j.audit.EventConstants.ACTION_CLEAR;
 import static org.ff4j.audit.EventConstants.ACTION_CREATE;
+import static org.ff4j.audit.EventConstants.ACTION_CREATESCHEMA;
 import static org.ff4j.audit.EventConstants.ACTION_DELETE;
 import static org.ff4j.audit.EventConstants.ACTION_UPDATE;
 import static org.ff4j.audit.EventConstants.TARGET_PROPERTY;
@@ -158,6 +159,13 @@ public class PropertyStoreAuditProxy implements PropertyStore {
         }
     }
     
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        target.createSchema();
+        publish(builder(ACTION_CREATESCHEMA).feature("For Properties"));
+    }
+    
     /**
      * Init a new builder;
      *
@@ -188,6 +196,6 @@ public class PropertyStoreAuditProxy implements PropertyStore {
 		return target;
 	}
 
-   
+       
 
 }

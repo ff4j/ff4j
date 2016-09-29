@@ -22,9 +22,13 @@ package org.ff4j.utils;
 
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+
+import javax.sql.DataSource;
 
 import org.ff4j.exception.FeatureAccessException;
 
@@ -36,6 +40,56 @@ import org.ff4j.exception.FeatureAccessException;
 public class JdbcUtils {
     
     private JdbcUtils() {
+    }
+    
+    /**
+     * Check if target Table exist.
+     *
+     * @param tableName
+     *      table to create
+     * @return
+     *      if the table exist or not
+     */
+    public static boolean isTableExist(DataSource ds, String tableName) {
+        Util.assertHasLength(tableName);
+        Connection          sqlConn = null;
+        ResultSet           rs = null;
+        try {
+            sqlConn = ds.getConnection();
+            DatabaseMetaData dbmd = sqlConn.getMetaData();
+            rs = dbmd.getTables(null, null, tableName, new String[] {"TABLE"});
+            return rs.next();
+        } catch (SQLException sqlEX) {
+            throw new FeatureAccessException("Cannot check table existence", sqlEX);
+        } finally {
+            closeResultSet(rs);
+            closeConnection(sqlConn);
+        }
+    }
+    
+    
+    /**
+     * Create table based on SQL.
+     *
+     * @param sqlQuery
+     *      sql query
+     */
+    public static void executeUpdate(DataSource ds, String sqlQuery) {
+        Util.assertHasLength(sqlQuery);
+        Connection sqlConn = null;
+        Statement  sqlStmt = null;
+        try {
+            // Create connection
+            sqlConn = ds.getConnection();
+            sqlStmt = sqlConn.createStatement();
+            sqlStmt.executeUpdate(sqlQuery);
+        } catch (SQLException sqlEX) {
+            rollback(sqlConn);
+            throw new FeatureAccessException("Cannot execute SQL " + sqlQuery, sqlEX);
+        } finally {
+            closeStatement(sqlStmt);
+            closeConnection(sqlConn);
+        }
     }
     
     /**
@@ -83,6 +137,23 @@ public class JdbcUtils {
      * 
      */
     public static void closeStatement(PreparedStatement ps) {
+        try {
+            if (ps != null) {
+                ps.close();
+            }
+        } catch (SQLException e) {
+            throw new FeatureAccessException("An error occur when closing statement", e);
+        }
+    }
+    
+
+    /**
+     * Utility method to close statement properly.
+     * 
+     * @param ps
+     * 
+     */
+    public static void closeStatement(Statement ps) {
         try {
             if (ps != null) {
                 ps.close();

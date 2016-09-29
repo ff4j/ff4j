@@ -273,5 +273,12 @@ public class FeatureStoreJCache extends AbstractFeatureStore {
     public void setCacheManager(FF4jJCacheManager cacheManager) {
         this.cacheManager = cacheManager;
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        // Nothing to init, Caches are created at startup
+        return;
+    }
    
 }

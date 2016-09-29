@@ -156,10 +156,19 @@ public final class ConsoleRenderer {
         htmlContent = htmlContent.replaceAll("\\{" + KEY_ALERT_MESSAGE + "\\}", renderMessageBox(msg, msgType));
 
         // Subsctitution FEATURE_ROWS
-        htmlContent = htmlContent.replaceAll("\\{" + KEY_FEATURE_ROWS + "\\}", renderFeatureRows(ff4j, req));
-        
+        try {
+            htmlContent = htmlContent.replaceAll("\\{" + KEY_FEATURE_ROWS + "\\}", renderFeatureRows(ff4j, req));
+        } catch(IllegalArgumentException ieo) {
+            htmlContent = htmlContent.replaceAll("\\{" + KEY_FEATURE_ROWS + "\\}", 
+                    "Cannot render Features please check names (no $) '" + ieo.getMessage() + "'");
+        }
         // substitution PROPERTIES_ROWS
-        htmlContent = htmlContent.replaceAll("\\{" + KEY_PROPERTIES_ROWS + "\\}", renderPropertiesRows(ff4j, req));
+        try {
+            htmlContent = htmlContent.replaceAll("\\{" + KEY_PROPERTIES_ROWS + "\\}", renderPropertiesRows(ff4j, req));
+        } catch(IllegalArgumentException ieo) {
+            htmlContent = htmlContent.replaceAll("\\{" + KEY_PROPERTIES_ROWS + "\\}", 
+                    "Cannot render propertie please check names (no $) '" + ieo.getMessage() + "'");
+        }
         
         // Substitution GROUP_LIST
         String groups = ConsoleRenderer.renderGroupList(ff4j, MODAL_EDIT);
@@ -323,6 +332,19 @@ public final class ConsoleRenderer {
          }
          return htmlTemplateMonitoring;
      }
+      
+    public static String renderValue(String source, int column) {
+        StringBuilder sb = new StringBuilder();
+        source = source.replaceAll("\\\\", "/");
+        source = source.replaceAll("\\$", "&dollar;");
+        while (source.length() > column) {
+            sb.append(source.substring(0,  column));
+            sb.append("\r\n<br>");
+            source = source.substring(column);
+        }
+        sb.append(source);
+        return sb.toString();
+    }
     
     private static final String renderPropertiesRows(FF4j ff4j, HttpServletRequest req) {
         StringBuilder sb = new StringBuilder();
@@ -339,16 +361,16 @@ public final class ConsoleRenderer {
                 sb.append("\"");
             }
             sb.append(">");
-            sb.append(currentProperty.getName());
+            sb.append(renderValue(currentProperty.getName(), 50));
             sb.append("</a>");
            
             // Colonne Value
             sb.append("</td><td>");
             if (null != currentProperty.asString()) {
-                sb.append(currentProperty.asString());
+                sb.append(renderValue(currentProperty.asString(), 60));
             } else {
                 sb.append("--");
-            }
+            }    
             
             // Colonne Type
             sb.append("</td><td>");
@@ -455,10 +477,12 @@ public final class ConsoleRenderer {
             sb.append("</td><td style=\"word-break: break-all;\">");
             FlippingStrategy fs = currentFeature.getFlippingStrategy();
             if (null != fs) {
-                // Escape $ caracter within className
-                sb.append(fs.getClass().getCanonicalName().replaceAll("\\$", "_"));
-                String initParams = "<br/>&nbsp;" + fs.getInitParams();
-                sb.append(initParams.replaceAll("\\$", "_"));
+                sb.append(renderValue(fs.getClass().getCanonicalName(), 50));
+                if (fs.getInitParams() != null) {
+                    for (Map.Entry<String, String> entry : fs.getInitParams().entrySet()) {
+                        sb.append("<li>" + renderValue(entry.getKey() + " =  " + entry.getValue(), 40));     
+                    } 
+                }
             } else {
                 sb.append("--");
             }

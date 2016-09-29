@@ -74,4 +74,11 @@ public class PropertyStoreCassandra extends AbstractPropertyStore {
     public void clear() {
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

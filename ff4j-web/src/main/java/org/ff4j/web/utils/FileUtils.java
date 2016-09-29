@@ -26,6 +26,7 @@ import static org.ff4j.web.bean.WebConstants.UTF8_ENCODING;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
@@ -55,9 +56,11 @@ public class FileUtils {
      * @param fileName
      *            target file Name.
      * @return target file content as String
+	 * @throws FileNotFoundException 
      */
-    public static String loadFileAsString(String fileName) {
-        InputStream in = FileUtils.class.getClassLoader().getResourceAsStream(fileName);
+    public static String loadFileAsString(String fileName)
+    throws FileNotFoundException {
+        InputStream in = getResourceAsStream(fileName);
         if (in == null) return null;
         Scanner currentScan = null;
         StringBuilder strBuilder = new StringBuilder();
@@ -76,6 +79,35 @@ public class FileUtils {
     }
     
     /**
+     * Fetch everywhere in the classpath for a resource.
+     *
+     * @param fileName
+     *      current file path
+     * @return
+     *      input stream for this file
+     * @throws FileNotFoundException
+     *      file is not found anywhere
+     */
+    private static InputStream getResourceAsStream(String fileName)
+    throws FileNotFoundException {
+        InputStream is = FileUtils.class.getResourceAsStream(fileName);
+        if (is == null) {
+            // Fetch absolute classloader path
+            is =  FileUtils.class.getClassLoader().getResourceAsStream(fileName);
+            System.out.println("Check classloader");
+        }
+        if (is == null) {
+            // Thread
+            is =  Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
+            System.out.println("Check Thread");
+        }
+        if (is == null) {
+            throw new FileNotFoundException("Cannot load file " + fileName + " please check");
+        }
+        return is;
+    }
+    
+    /**
      * Load with Buffer.
      *
      * @param fileName
@@ -84,8 +116,8 @@ public class FileUtils {
      * 		file as String
      * @throws IOException
      */
-    public final String loadFileAsStringWithBuffer(String fileName) throws IOException {
-    	InputStream in = FileUtils.class.getClassLoader().getResourceAsStream(fileName);
+    public final static String loadFileAsStringWithBuffer(String fileName) throws IOException {
+    	InputStream in = getResourceAsStream(fileName);
         StringBuffer out = new StringBuffer();
         byte[] b = new byte[BUFFER_SIZE];
         int n = 0;
@@ -125,13 +157,13 @@ public class FileUtils {
 	 * @param image The image to encode
 	 * @param type jpeg, bmp, ...
 	 * @return encoded string
+	 * @throws FileNotFoundException 
 	 */
 	public static ByteArrayOutputStream loadAndResizeImage(String fileName) {
-		InputStream is = FileUtils.class.getClassLoader().getResourceAsStream(fileName);
-		if (is == null) return null;
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		try {
-			// Reading
+	    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try {
+		    InputStream is = getResourceAsStream(fileName);
+	        // Reading
 			BufferedImage image = ImageIO.read(is);
 			// Resizing
 			BufferedImage resizedImage = new BufferedImage(130, 180, image.getType());
@@ -142,7 +174,9 @@ public class FileUtils {
 			ImageIO.write(resizedImage, getFileExtension(fileName), bos);
 			// Convert to base64
 			return bos;
-		} catch (IOException e) {
+		} catch (FileNotFoundException e) {
+            throw new IllegalArgumentException("Invalid image the file cannot be load", e);
+        } catch (IOException e) {
 			throw new IllegalArgumentException("Cannot convert image to base64", e);
 		} finally {
 			try {
@@ -151,8 +185,20 @@ public class FileUtils {
 		}
 	}
 	
-	public static ByteArrayOutputStream loadFileAsOutputStream(String fileName) {
-		InputStream is = FileUtils.class.getClassLoader().getResourceAsStream(fileName); 
+	/**
+	 * Load file fro mrelative path.
+	 *
+	 * @param fileName
+	 *     current fileName.
+	 * @return
+	 *     Stream of data from file
+	 * @throws FileNotFoundException
+	 *     the file does no exist in the classpath
+	 */
+	public static ByteArrayOutputStream loadFileAsOutputStream(String fileName)
+	throws FileNotFoundException {
+	    // Best in application server
+		InputStream is = getResourceAsStream(fileName);
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try {
 			byte[] buf = new byte[8192];
@@ -182,8 +228,10 @@ public class FileUtils {
 	 * @param image The image to encode
 	 * @param type jpeg, bmp, ...
 	 * @return encoded string
+	 * @throws FileNotFoundException 
 	 */
-	public static byte[] loadFileAsByteArray(String fileName) {
+	public static byte[] loadFileAsByteArray(String fileName) 
+	throws FileNotFoundException {
 		ByteArrayOutputStream baos = loadFileAsOutputStream(fileName);
 		return (baos != null) ? baos.toByteArray() : null;
 	}

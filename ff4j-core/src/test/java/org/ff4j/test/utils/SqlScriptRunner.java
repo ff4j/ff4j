@@ -34,21 +34,9 @@ import java.sql.Statement;
 import org.ff4j.exception.FeatureAccessException;
 
 /**
- *  Copyright 2004 Clinton Begin
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *  
- *  Slightly modified version of the com.ibatis.common.jdbc.ScriptRunner class
+ * Copyright 2004 Clinton Begin
+ * 
+ * Modified version of the com.ibatis.common.jdbc.ScriptRunner class
  * from the iBATIS Apache project.
  *
  * Extract from stack Overflow : 
@@ -134,11 +122,6 @@ public class SqlScriptRunner {
                 String trimmedLine = line.trim();
                 if (trimmedLine.startsWith("--")) {
                     println(trimmedLine);
-                /*
-                } else if (trimmedLine.length() < 1 || trimmedLine.startsWith("//")) {
-                    // Do nothing
-                } else if (trimmedLine.length() < 1 || trimmedLine.startsWith("--")) {
-                    // Do nothing*/
                 } else if (!fullLineDelimiter && trimmedLine.endsWith(getDelimiter())
                         || fullLineDelimiter  && trimmedLine.equals(getDelimiter())) {
                     command.append(line.substring(0, line.lastIndexOf(getDelimiter())));

@@ -38,6 +38,8 @@ public class EventConstants {
 	public static final String ACTION_CLEAR 		= "clear";
 	public static final String ACTION_CHECK_OK      = "checkOn";
 	public static final String ACTION_CHECK_OFF     = "checkOff";
+	public static final String ACTION_CREATESCHEMA  = "create-schema";
+	
     
 	/** TARGETS. */
 	public static final String TARGET_FEATURE 	= "feature";

@@ -115,6 +115,14 @@
            		 <span class="shortcut-label" th:text="#{home.admin.exportXML}">Export XML</span>
               	</a>
               	
+              	
+                <a href="" th:href="@{api/export}" class="shortcut">
+                 <i class="shortcut-icon icon-table"></i>  
+                 <span class="shortcut-label" th:text="#{home.admin.createSchema}">Create Schema</span>
+                </a>
+              	
+              
+              	
                 <span th:if="${homebean.caching} neq 'disabled'">
 	              <a href="" th:href="@{clearCache}" class="shortcut">
 	                 <i class="shortcut-icon icon-magic"></i>

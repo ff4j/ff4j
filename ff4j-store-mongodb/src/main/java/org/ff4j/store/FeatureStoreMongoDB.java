@@ -1,5 +1,10 @@
 package org.ff4j.store;
 
+import static org.ff4j.store.mongodb.FeatureStoreMongoConstants.DEFAULT_COLLECTIONAME_FEATURES;
+import static org.ff4j.store.mongodb.FeatureStoreMongoConstants.DEFAULT_DBNAME;
+import static org.ff4j.store.mongodb.FeatureStoreMongoConstants.GROUPNAME;
+import static org.ff4j.store.mongodb.FeatureStoreMongoConstants.MONGO_SET;
+
 /*
  * #%L ff4j-store-jdbc %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of the License at
@@ -29,28 +34,73 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
-
-import static org.ff4j.store.mongodb.FeatureStoreMongoConstants.*;
+import com.mongodb.MongoClient;
 
 /**
  * Implementation of {@link FeatureStore} to work with MongoDB.
  * 
- * @author William Delanoue (@twillouer) </a>
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author William Delanoue (@twillouer)
+ * @author Cedrick LUNVEN (@clunven)
  */
 public class FeatureStoreMongoDB extends AbstractFeatureStore {
+
+    /** Build fields. */
+    public static final String FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY = "Feature identifier cannot be null nor empty";
+    
+    /** Build fields. */
+    public static final String GROUPNAME_CANNOT_BE_NULL_NOR_EMPTY = "Groupname cannot be null nor empty";
 
     /** Map from DBObject to Feature. */
     private static final FeatureDBObjectMapper MAPPER = new FeatureDBObjectMapper();
 
     /** Build fields. */
     private static final FeatureDBObjectBuilder BUILDER = new FeatureDBObjectBuilder();
-    public static final String FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY = "Feature identifier cannot be null nor empty";
-    public static final String GROUPNAME_CANNOT_BE_NULL_NOR_EMPTY = "Groupname cannot be null nor empty";
-
+    
+    /** Feature collection Name. */
+    private String collectionName = DEFAULT_COLLECTIONAME_FEATURES;
+    
+    /** Database name. */
+    private String dbName = DEFAULT_DBNAME;
+    
+    /** Mongo Client. */
+    private MongoClient mongoClient;
+   
     /** MongoDB collection. */
-    private final DBCollection collection;
-
+    private DBCollection featuresCollection;
+    
+    /**
+     * Parameterized constructor with collection.
+     * 
+     * @param collection
+     *            the collection to set
+     */
+    public FeatureStoreMongoDB() {
+    }
+    
+    /**
+     * Parameterized constructor with collection.
+     * 
+     * @param collection
+     *            the collection to set
+     */
+    public FeatureStoreMongoDB(MongoClient client) {
+        this.mongoClient = client;
+        this.featuresCollection = getFeaturesCollection();
+    }
+            
+    /**
+     * Parameterized constructor with collection.
+     * 
+     * @param collection
+     *            the collection to set
+     */
+    public FeatureStoreMongoDB(MongoClient client, String dbName, String collectionName) {
+        this.mongoClient        = client;
+        this.collectionName     = collectionName;
+        this.dbName             = dbName;
+        this.featuresCollection = getFeaturesCollection();
+    }
+    
     /**
      * Parameterized constructor with collection.
      * 
@@ -58,7 +108,9 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore {
      *            the collection to set
      */
     public FeatureStoreMongoDB(DBCollection collection) {
-        this.collection = collection;
+        this.featuresCollection = collection;
+        this.collectionName     = featuresCollection.getName();
+        this.dbName             = featuresCollection.getDB().getName();
     }
     
     /**
@@ -93,22 +145,20 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore {
      *            enabler
      */
     private void updateStatus(String uid, boolean enable) {
-        if (uid == null || uid.isEmpty()) {
-            throw new IllegalArgumentException(FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY);
-        }
+        Util.assertParamHasLength(uid, "uid (feature identifier");
         if (!exist(uid)) {
             throw new FeatureNotFoundException(uid);
         }
         DBObject target = BUILDER.getFeatUid(uid);
         Object enabledd = BUILDER.getEnable(enable);
-        collection.update(target, BasicDBObjectBuilder.start(MONGO_SET, enabledd).get());
+        getFeaturesCollection().update(target, BasicDBObjectBuilder.start(MONGO_SET, enabledd).get());
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean exist(String featId) {
         Util.assertHasLength(featId);
-        return 1 == collection.count(BUILDER.getFeatUid(featId));
+        return 1 == getFeaturesCollection().count(BUILDER.getFeatUid(featId));
     }
 
     /** {@inheritDoc} */
@@ -117,7 +167,7 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore {
         if (uid == null || uid.isEmpty()) {
             throw new IllegalArgumentException(FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY);
         }
-        DBObject object = collection.findOne(BUILDER.getFeatUid(uid));
+        DBObject object = getFeaturesCollection().findOne(BUILDER.getFeatUid(uid));
         if (object==null) {
             throw new FeatureNotFoundException(uid);
         }
@@ -133,7 +183,7 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore {
         if (exist(fp.getUid())) {
             throw new FeatureAlreadyExistException(fp.getUid());
         }
-        collection.save(MAPPER.toDBObject(fp));
+        getFeaturesCollection().save(MAPPER.toDBObject(fp));
     }
 
     /** {@inheritDoc} */
@@ -145,7 +195,7 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore {
         if (!exist(uid)) {
             throw new FeatureNotFoundException(uid);
         }
-        collection.remove(BUILDER.getFeatUid(uid));
+        getFeaturesCollection().remove(BUILDER.getFeatUid(uid));
     }
 
     /** {@inheritDoc} */
@@ -160,7 +210,7 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore {
         if (!exist(uid)) {
             throw new FeatureNotFoundException(uid);
         }
-        collection.update(BUILDER.getFeatUid(uid), new BasicDBObject("$addToSet", BUILDER.getRoles(roleName)));
+        getFeaturesCollection().update(BUILDER.getFeatUid(uid), new BasicDBObject("$addToSet", BUILDER.getRoles(roleName)));
     }
 
     /** {@inheritDoc} */
@@ -175,14 +225,14 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore {
         if (!exist(uid)) {
             throw new FeatureNotFoundException(uid);
         }
-        collection.update(BUILDER.getFeatUid(uid), new BasicDBObject("$pull", BUILDER.getRoles(roleName)));
+        getFeaturesCollection().update(BUILDER.getFeatUid(uid), new BasicDBObject("$pull", BUILDER.getRoles(roleName)));
     }
 
     /** {@inheritDoc} */
     @Override
     public Map<String, Feature> readAll() {
         LinkedHashMap<String, Feature> mapFP = new LinkedHashMap<String, Feature>();
-        for(DBObject dbObject : collection.find()) {
+        for(DBObject dbObject : getFeaturesCollection().find()) {
             Feature feature = MAPPER.mapFeature(dbObject);
             mapFP.put(feature.getUid(), feature);
         }
@@ -196,7 +246,7 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore {
             throw new IllegalArgumentException("Feature cannot be null nor empty");
         }
         read(fp.getUid());
-        collection.save(MAPPER.toDBObject(fp));
+        getFeaturesCollection().save(MAPPER.toDBObject(fp));
     }
 
     /** {@inheritDoc} */
@@ -205,14 +255,14 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore {
         if (groupName == null || groupName.isEmpty()) {
             throw new IllegalArgumentException(GROUPNAME_CANNOT_BE_NULL_NOR_EMPTY);
         }
-        return collection.count(BUILDER.getGroupName(groupName)) > 0;
+        return getFeaturesCollection().count(BUILDER.getGroupName(groupName)) > 0;
     }
 
     /** {@inheritDoc} */
     @Override
     public Set<String> readAllGroups() {
         Set<String> setOfGroups = new HashSet<String>();
-        for (DBObject dbObject : collection.find()) {
+        for (DBObject dbObject : getFeaturesCollection().find()) {
             setOfGroups.add((String) dbObject.get(GROUPNAME));
         }
         setOfGroups.remove(null);
@@ -230,7 +280,7 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore {
             throw new GroupNotFoundException(groupName);
         }
         LinkedHashMap<String, Feature> mapFP = new LinkedHashMap<String, Feature>();
-        for (DBObject dbObject : collection.find(BUILDER.getGroupName(groupName))) {
+        for (DBObject dbObject : getFeaturesCollection().find(BUILDER.getGroupName(groupName))) {
             Feature feature = MAPPER.mapFeature(dbObject);
             mapFP.put(feature.getUid(), feature);
         }
@@ -246,9 +296,9 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore {
         if (!existGroup(groupName)) {
             throw new GroupNotFoundException(groupName);
         }
-        for (DBObject dbObject : collection.find(BUILDER.getGroupName(groupName))) {
+        for (DBObject dbObject : getFeaturesCollection().find(BUILDER.getGroupName(groupName))) {
             Object enabledd = BUILDER.getEnable(true);
-            collection.update(dbObject, BasicDBObjectBuilder.start(MONGO_SET, enabledd).get());
+            getFeaturesCollection().update(dbObject, BasicDBObjectBuilder.start(MONGO_SET, enabledd).get());
         }
     }
 
@@ -261,9 +311,9 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore {
         if (!existGroup(groupName)) {
             throw new GroupNotFoundException(groupName);
         }
-        for (DBObject dbObject : collection.find(BUILDER.getGroupName(groupName))) {
+        for (DBObject dbObject : getFeaturesCollection().find(BUILDER.getGroupName(groupName))) {
             Object enabledd = BUILDER.getEnable(false);
-            collection.update(dbObject, BasicDBObjectBuilder.start(MONGO_SET, enabledd).get());
+            getFeaturesCollection().update(dbObject, BasicDBObjectBuilder.start(MONGO_SET, enabledd).get());
         }
     }
 
@@ -281,7 +331,7 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore {
         }
         DBObject target = BUILDER.getFeatUid(uid);
         DBObject nGroupName = BUILDER.getGroupName(groupName);
-        collection.update(target, BasicDBObjectBuilder.start(MONGO_SET, nGroupName).get());
+        getFeaturesCollection().update(target, BasicDBObjectBuilder.start(MONGO_SET, nGroupName).get());
     }
 
     /** {@inheritDoc} */
@@ -301,13 +351,41 @@ public class FeatureStoreMongoDB extends AbstractFeatureStore {
         }
         DBObject target = BUILDER.getFeatUid(uid);
         DBObject nGroupName = BUILDER.getGroupName("");
-        collection.update(target, BasicDBObjectBuilder.start(MONGO_SET, nGroupName).get());
+        getFeaturesCollection().update(target, BasicDBObjectBuilder.start(MONGO_SET, nGroupName).get());
     }
     
     /** {@inheritDoc} */
     @Override
     public void clear() {
-        collection.remove(BasicDBObjectBuilder.start().get());
+        getFeaturesCollection().remove(BasicDBObjectBuilder.start().get());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        if (!mongoClient.getDB(dbName).collectionExists(collectionName)) {
+            BasicDBObject options =  new BasicDBObject();
+            options.put("size", 10000);
+            featuresCollection = mongoClient.getDB(dbName).createCollection(collectionName, options);
+        }
+        featuresCollection = mongoClient.getDB(dbName).getCollection(collectionName);
+    }
+
+    /**
+     * Getter accessor for attribute 'featuresCollection'.
+     *
+     * @return
+     *       current value of 'featuresCollection'
+     */
+    public DBCollection getFeaturesCollection() {
+        if (featuresCollection == null) {
+            if (mongoClient != null) {
+                createSchema();
+            } else {
+                throw new IllegalStateException("Cannot initialize Features collection : no mongo client defined");
+            }
+        }
+        return featuresCollection;
     }
 
 }

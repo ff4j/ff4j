@@ -4,6 +4,10 @@ import static org.ff4j.store.JdbcStoreConstants.COL_FEAT_GROUPNAME;
 import static org.ff4j.store.JdbcStoreConstants.COL_ROLE_FEATID;
 import static org.ff4j.store.JdbcStoreConstants.COL_ROLE_ROLENAME;
 import static org.ff4j.utils.JdbcUtils.buildStatement;
+import static org.ff4j.utils.JdbcUtils.executeUpdate;
+import static org.ff4j.utils.JdbcUtils.isTableExist;
+
+
 
 /*
  * #%L
@@ -104,6 +108,22 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
     public JdbcFeatureStore(DataSource jdbcDS, String xmlConfFile) {
         this(jdbcDS);
         importFeaturesFromXmlFile(xmlConfFile);
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        DataSource       ds = getDataSource();
+        JdbcQueryBuilder qb = getQueryBuilder();
+        if (!isTableExist(ds, qb.getTableNameFeatures())) {
+            executeUpdate(ds, qb.sqlCreateTableFeatures());
+        }
+        if (!isTableExist(ds, qb.getTableNameCustomProperties())) {
+            executeUpdate(ds, qb.sqlCreateTableCustomProperties());
+        }
+        if (!isTableExist(ds, qb.getTableNameRoles())) {
+            executeUpdate(ds, qb.sqlCreateTableRoles());
+        }
     }
 
     /** {@inheritDoc} */

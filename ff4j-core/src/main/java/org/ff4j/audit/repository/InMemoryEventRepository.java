@@ -78,6 +78,13 @@ public class InMemoryEventRepository extends AbstractEventRepository {
     public InMemoryEventRepository(int queueCapacity) {
         this.queueCapacity = queueCapacity;
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        // There is nothing to create for inMemeory store
+        return;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -411,5 +418,7 @@ public class InMemoryEventRepository extends AbstractEventRepository {
         }
         return null;
     }
+
+    
    
 }

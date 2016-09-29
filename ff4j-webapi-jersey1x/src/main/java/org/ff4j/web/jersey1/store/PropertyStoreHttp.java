@@ -158,7 +158,20 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
         throw new PropertyAccessException("Cannot check existence of property, an HTTP error " + 
                 cRes.getStatus() + " occured : " + cRes.getEntityInputStream());
     }
-
+    
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        WebResource wr = client.resource(url).path(RESOURCE_STORE).path(STORE_CREATESCHEMA);
+        if (null != authorization) {
+            wr.header(HEADER_AUTHORIZATION, authorization);
+        }
+        ClientResponse cRes = wr.post(ClientResponse.class);
+        if (Status.OK.getStatusCode() != cRes.getStatus()) {
+            throw new FeatureAccessException("Cannot create schema for property store - " + cRes.getStatus());
+        }
+    }
+    
     /** {@inheritDoc} */
     public <T> void createProperty(Property<T> value) {
         Util.assertNotNull(value);
@@ -229,7 +242,7 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
         }
         ClientResponse cRes = wr.post(ClientResponse.class);
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
-            throw new FeatureAccessException("Cannot clear feature store - " + cRes.getStatus());
+            throw new FeatureAccessException("Cannot clear property store - " + cRes.getStatus());
         }
     }
 

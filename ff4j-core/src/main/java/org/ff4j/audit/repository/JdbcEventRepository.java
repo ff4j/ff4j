@@ -17,6 +17,8 @@ import static org.ff4j.store.JdbcStoreConstants.COL_EVENT_NAME;
 import static org.ff4j.utils.JdbcUtils.closeConnection;
 import static org.ff4j.utils.JdbcUtils.closeResultSet;
 import static org.ff4j.utils.JdbcUtils.closeStatement;
+import static org.ff4j.utils.JdbcUtils.executeUpdate;
+import static org.ff4j.utils.JdbcUtils.isTableExist;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -76,6 +78,16 @@ public class JdbcEventRepository extends AbstractEventRepository {
     
     /** {@inheritDoc} */
     @Override
+    public void createSchema() {
+        DataSource       ds = getDataSource();
+        JdbcQueryBuilder qb = getQueryBuilder();
+        if (!isTableExist(ds, qb.getTableNameAudit())) {
+            executeUpdate(ds, qb.sqlCreateTableAudit());
+        }
+    }
+    
+    /** {@inheritDoc} */
+    @Override
     public boolean saveEvent(Event evt) {
         Util.assertEvent(evt);
         
@@ -90,7 +102,7 @@ public class JdbcEventRepository extends AbstractEventRepository {
             int idx = 9;
             Map < Integer, String > statementParams = new HashMap<Integer, String>();
             
-            StringBuilder sb = new StringBuilder("INSERT INTO " + getQueryBuilder().getAuditTableName() + 
+            StringBuilder sb = new StringBuilder("INSERT INTO " + getQueryBuilder().getTableNameAudit() + 
             		"(EVT_UUID,EVT_TIME,EVT_TYPE,EVT_NAME,EVT_ACTION,EVT_HOSTNAME,EVT_SOURCE,EVT_DURATION");
             if (Util.hasLength(evt.getUser())) {
                 sb.append(", EVT_USER");

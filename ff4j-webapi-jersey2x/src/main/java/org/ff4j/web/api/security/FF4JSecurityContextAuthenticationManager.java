@@ -58,12 +58,12 @@ public class FF4JSecurityContextAuthenticationManager extends AbstractAuthorizat
                 return ((FF4jSecurityContext) sc).getUserRoles();
             }
         }
-        return new HashSet<>();
+        return new HashSet<String>();
     }
 
     /** {@inheritDoc} */
     public Set<String> listAllPermissions() {
-        Set < String > vars = new HashSet<>();
+        Set < String > vars = new HashSet<String>();
         if (FF4jAuthenticationFilter.getApiConfig() != null) {
             Map < String, Set<String > > perms = FF4jAuthenticationFilter.getApiConfig().getPermissions();
             for (Map.Entry<String,Set<String>> var : perms.entrySet()) {

@@ -62,6 +62,13 @@ public class PropertyStoreJCache extends AbstractPropertyStore {
     
     /** {@inheritDoc} */
     @Override
+    public void createSchema() {
+        // Nothing to init, Caches are created at startup
+        return;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
     public boolean existProperty(String name) {
         Util.assertParamHasLength(name, "Property name");
         return getCacheManager().getProperty(name) != null;

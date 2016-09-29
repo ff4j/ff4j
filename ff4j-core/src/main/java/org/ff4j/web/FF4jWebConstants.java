@@ -86,6 +86,9 @@ public class FF4jWebConstants {
     
     /** relative path for cache. */
     public static final String STORE_CLEAR = "clear";
+    
+    /** relative path for cache. */
+    public static final String STORE_CREATESCHEMA = "createSchema";
 
     /** relative path. */
     public static final String RESOURCE_FF4J = "ff4j";

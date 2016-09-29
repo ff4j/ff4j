@@ -67,6 +67,18 @@ public class FeatureStoreMongoConstants {
     public static final String ROLES = "roles";
 
     public static final String MONGO_SET = "$set";
+    
+    /** Default mon dg name (use ff4j). */
+    public static final String DEFAULT_DBNAME = "ff4j";
+    
+    /** Default collection name for features. */
+    public static final String DEFAULT_COLLECTIONAME_FEATURES = "feature";
+    
+    /** Default collection name for properties. */
+    public static final String DEFAULT_COLLECTIONAME_PROPERTIES = "property";
 
+    /**
+     * Hide default constructor.
+     */
     private FeatureStoreMongoConstants() {}
 }

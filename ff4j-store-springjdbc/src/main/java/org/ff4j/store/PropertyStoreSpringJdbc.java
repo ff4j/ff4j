@@ -1,5 +1,8 @@
 package org.ff4j.store;
 
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -30,17 +33,20 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
+import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.AbstractPropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.store.rowmapper.CustomPropertyRowMapper;
+import org.ff4j.utils.JdbcUtils;
 import org.ff4j.utils.Util;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Implementation of {@link PropertyStore} with SpringJDBC.
@@ -187,5 +193,29 @@ public class PropertyStoreSpringJdbc extends AbstractPropertyStore {
 	public void setQueryBuilder(JdbcQueryBuilder queryBuilder) {
 		this.queryBuilder = queryBuilder;
 	}
+
+	/** {@inheritDoc} */
+    @Override
+    @Transactional
+    public void createSchema() {
+        JdbcQueryBuilder qb = getQueryBuilder();
+        if (!isTableExist(qb.getTableNameProperties())) {
+            getJdbcTemplate().update(qb.sqlCreateTableProperties());
+        }
+    }
+    
+    public boolean isTableExist(String tableName) {
+        ResultSet rs = null;
+        try {
+            DatabaseMetaData dbmd = 
+                    getJdbcTemplate().getDataSource().getConnection().getMetaData();
+            rs = dbmd.getTables(null, null, tableName, new String[] {"TABLE"});
+            return rs.next();
+        } catch (SQLException sqlEX) {
+            throw new FeatureAccessException("Cannot check table existence", sqlEX);
+        } finally {
+            JdbcUtils.closeResultSet(rs);
+        }
+    }
 
 }

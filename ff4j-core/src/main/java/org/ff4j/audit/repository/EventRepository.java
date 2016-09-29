@@ -260,4 +260,9 @@ public interface EventRepository {
      *      end time
      */
     void purgeAuditTrail(EventQueryDefinition query);
+    
+    /**
+     * Initialize target database with expected schema if needed.
+     */
+    void createSchema();
 }

@@ -68,6 +68,8 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
 
     /** String constants */
     private static final String OCCURED = " occured.";
+    
+    /** constant. */
     private static final String CANNOT_GRANT_ROLE_ON_FEATURE_AN_HTTP_ERROR = "Cannot grant role on feature, an HTTP error ";
 
     /** Jersey Client. */
@@ -239,7 +241,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
        
         String resEntity = (String) cRes.readEntity(String.class);
         Feature[] fArray = parseFeatureArray(resEntity);
-        Map<String, Feature> features = new HashMap<>();
+        Map<String, Feature> features = new HashMap<String, Feature>();
         for (Feature feature : fArray) {
             features.put(feature.getUid(), feature);
         }
@@ -375,7 +377,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
         }
         String resEntity = cRes.readEntity(String.class);
         Feature[] fArray = parseFeatureArray(resEntity);
-        Map<String, Feature> features = new HashMap<>();
+        Map<String, Feature> features = new HashMap<String, Feature>();
         for (Feature feature : fArray) {
             features.put(feature.getUid(), feature);
         }
@@ -405,7 +407,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
             throw new FeatureAccessException("Cannot read groups, an HTTP error " + cRes.getStatus() + OCCURED);
         }
-        Set < String > groupNames = new HashSet<>();
+        Set < String > groupNames = new HashSet<String>();
         for (Map <String, String > currentGroup : groupList) {
             groupNames.add(currentGroup.get("groupName"));
         }
@@ -420,6 +422,17 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
             throw new FeatureAccessException("Cannot clear feature store - " + cRes.getStatus());
         }
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        WebTarget wr = client.target(url).path(RESOURCE_STORE).path(STORE_CREATESCHEMA);
+        Response cRes = post(wr);
+        if (Status.OK.getStatusCode() != cRes.getStatus()) {
+            throw new FeatureAccessException("Cannot create feature store - " + cRes.getStatus());
+        }
+        
     }
     
     // ------- Static for authentication -------
@@ -473,6 +486,6 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
      */
     public void setUrl(String url) {
         this.url = url;
-    }
+    }   
 
 }

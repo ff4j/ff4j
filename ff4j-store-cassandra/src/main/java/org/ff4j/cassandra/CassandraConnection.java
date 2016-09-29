@@ -47,7 +47,7 @@ public class CassandraConnection {
     
     /** Default. */
     public CassandraConnection() {
-        this(Cluster.builder().addContactPoint(CassandraConstants.DEFAULT_HOST).build());
+        this(CassandraConstants.DEFAULT_HOST));
     }
     
     /**
@@ -88,14 +88,7 @@ public class CassandraConnection {
         }
         this.session = cluster.connect();  
     }
-    
-    /**
-     * Read CQL from ddl-create file and initialize DB.
-     */
-    public void createSchema() {
-        // TODO
-    }
-    
+   
     /** Close cluster. */  
     public void close() {
        session.close();

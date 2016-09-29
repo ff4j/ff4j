@@ -93,6 +93,16 @@ public class PropertyStoreResource  extends AbstractResource {
         return new PropertyStoreApiBean(ff4j.getPropertiesStore());
     }
     
+    @POST
+    @Path("/" + STORE_CREATESCHEMA)
+    @ApiOperation(value= "Create underlying DB schema for store")
+    @ApiResponses(@ApiResponse(code = 200, message= "status of current ff4j bean", response=PropertyStoreApiBean.class))
+    @Produces(MediaType.APPLICATION_JSON)
+    public PropertyStoreApiBean createSchema() {
+        getPropertyStore().createSchema();
+        return new PropertyStoreApiBean(ff4j.getPropertiesStore());
+    }
+    
     /**
      * Allows to retrieve feature by its id.
      * 

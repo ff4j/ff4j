@@ -1,7 +1,9 @@
 package org.ff4j.archaius;
 
 import org.apache.commons.configuration.AbstractConfiguration;
+import org.ff4j.commonsconf.FF4jConfiguration;
 import org.ff4j.commonsconf.PropertyStoreCommonsConfig;
+import org.ff4j.property.store.PropertyStore;
 
 /*
  * #%L
@@ -45,6 +47,16 @@ public class PropertyStoreArchaius extends PropertyStoreCommonsConfig {
         if (!ConfigurationManager.isConfigurationInstalled()) {
             ConfigurationManager.install(dc);
         }
+    }
+    
+    /**
+     * Register with source property store.
+     *
+     * @param source
+     *      current property store
+     */
+    public PropertyStoreArchaius(PropertyStore source) {
+        this(new FF4jConfiguration(source));
     }
     
 }

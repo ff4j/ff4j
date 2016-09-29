@@ -31,6 +31,9 @@ public class MongoDbConstants {
     /** Default event name. */
     public static final String DEFAULT_PROPERTY_COLLECTION = "ff4j_property";
     
+    /** Default mon dg name (use ff4j). */
+    public static final String DEFAULT_DBNAME = "ff4j";
+    
     /** Identifier */
     public static final String FEATURE_UUID = "_id";
 

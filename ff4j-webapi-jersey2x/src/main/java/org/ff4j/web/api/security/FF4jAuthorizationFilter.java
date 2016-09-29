@@ -111,7 +111,7 @@ public class FF4jAuthorizationFilter implements ContainerRequestFilter {
     }
     
     private Set < String > getRoles() {
-        Set < String > roles = new HashSet<>();
+        Set < String > roles = new HashSet<String>();
         RolesAllowed ra1 = info.getResourceClass().getAnnotation(RolesAllowed.class);
         if (ra1 != null) {
             roles.addAll(Arrays.asList(ra1.value()));

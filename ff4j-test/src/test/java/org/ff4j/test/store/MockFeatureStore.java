@@ -148,4 +148,10 @@ public class MockFeatureStore implements FeatureStore {
         LOGGER.debug("MOCK [importFeatures]");
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        LOGGER.debug("MOCK [createSchema]");
+    }
+
 }

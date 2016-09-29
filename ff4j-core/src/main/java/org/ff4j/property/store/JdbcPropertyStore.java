@@ -1,29 +1,5 @@
 package org.ff4j.property.store;
 
-import static org.ff4j.utils.JdbcUtils.closeConnection;
-import static org.ff4j.utils.JdbcUtils.closeResultSet;
-import static org.ff4j.utils.JdbcUtils.closeStatement;
-import static org.ff4j.utils.JdbcUtils.buildStatement;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-
-import javax.sql.DataSource;
-
-import org.ff4j.exception.PropertyAccessException;
-import org.ff4j.exception.PropertyAlreadyExistException;
-import org.ff4j.exception.PropertyNotFoundException;
-import org.ff4j.property.Property;
-import org.ff4j.store.JdbcQueryBuilder;
-import org.ff4j.utils.Util;
-
-import static org.ff4j.store.JdbcStoreConstants.*;
 /*
  * #%L
  * ff4j-core
@@ -43,6 +19,31 @@ import static org.ff4j.store.JdbcStoreConstants.*;
  * limitations under the License.
  * #L%
  */
+import static org.ff4j.store.JdbcStoreConstants.COL_PROPERTY_ID;
+import static org.ff4j.utils.JdbcUtils.buildStatement;
+import static org.ff4j.utils.JdbcUtils.closeConnection;
+import static org.ff4j.utils.JdbcUtils.closeResultSet;
+import static org.ff4j.utils.JdbcUtils.closeStatement;
+import static org.ff4j.utils.JdbcUtils.executeUpdate;
+import static org.ff4j.utils.JdbcUtils.isTableExist;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+
+import javax.sql.DataSource;
+
+import org.ff4j.exception.PropertyAccessException;
+import org.ff4j.exception.PropertyAlreadyExistException;
+import org.ff4j.exception.PropertyNotFoundException;
+import org.ff4j.property.Property;
+import org.ff4j.store.JdbcQueryBuilder;
+import org.ff4j.utils.Util;
 
 /**
  * Access information related to properties within database.
@@ -73,7 +74,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore {
         this.dataSource = jdbcDS;
     }
     
-    /**
+    /**s
      * Constructor from DataSource.
      * 
      * @param jdbcDS
@@ -82,6 +83,17 @@ public class JdbcPropertyStore extends AbstractPropertyStore {
     public JdbcPropertyStore(DataSource jdbcDS, String xmlConfFile) {
         this(jdbcDS);
         importPropertiesFromXmlFile(xmlConfFile);
+    }
+    
+
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        DataSource       ds = getDataSource();
+        JdbcQueryBuilder qb = getQueryBuilder();
+        if (!isTableExist(ds, qb.getTableNameProperties())) {
+            executeUpdate(ds, qb.sqlCreateTableProperties());
+        }
     }
      
     /** {@inheritDoc} */

@@ -18,6 +18,7 @@ import java.util.Arrays;
 
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.FeatureStoreMongoDB;
+import org.ff4j.store.PropertyStoreMongoDB;
 import org.ff4j.store.mongodb.FeatureStoreMongoConstants;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -47,7 +48,6 @@ public class FeatureStoreMongoDBCore1Test extends FeatureStoreTestSupport {
     @Override
     protected FeatureStore initStore() {
         return new FeatureStoreMongoDB(fongoRule.getDB().getCollection("ff4j"), "ff4j.xml");
-        
         // Could initialize this way
         //storeMongoDB.importFeaturesFromXmlFile("ff4j.xml");
         
@@ -75,6 +75,31 @@ public class FeatureStoreMongoDBCore1Test extends FeatureStoreTestSupport {
         MongoCredential credential = MongoCredential.createMongoCRCredential("username", "FF4J", "password".toCharArray());
         ServerAddress adr = new ServerAddress("localhost", 22012);
         return new MongoClient(adr, Arrays.asList(credential));
+    }
+    
+    
+    /**
+     * Integration Test
+     * @throws UnknownHostException 
+     */
+    @Test
+    @Ignore
+    public void testCreateSchema() throws UnknownHostException {
+       // Given
+        MongoClient client = new MongoClient( new ServerAddress("localhost", 27017));
+        // Given
+        Assert.assertFalse(client.getDatabaseNames().contains(FeatureStoreMongoConstants.DEFAULT_DBNAME));
+        // When
+        new FeatureStoreMongoDB(client).createSchema();
+        new PropertyStoreMongoDB(client).createSchema();
+        // Then
+        Assert.assertTrue(client.getDatabaseNames()
+                .contains(FeatureStoreMongoConstants.DEFAULT_DBNAME));
+        Assert.assertTrue(client.getDB(FeatureStoreMongoConstants.DEFAULT_DBNAME)
+                .collectionExists(FeatureStoreMongoConstants.DEFAULT_COLLECTIONAME_FEATURES));
+        Assert.assertTrue(client.getDB(FeatureStoreMongoConstants.DEFAULT_DBNAME)
+                .collectionExists(FeatureStoreMongoConstants.DEFAULT_COLLECTIONAME_PROPERTIES));
+        
     }
     
     /**

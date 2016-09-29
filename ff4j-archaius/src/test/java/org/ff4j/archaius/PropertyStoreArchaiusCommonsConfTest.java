@@ -46,6 +46,13 @@ public class PropertyStoreArchaiusCommonsConfTest extends PropertyStoreTestSuppo
         return new PropertyStoreArchaius(new FF4jConfiguration(ff4jStore));
     }
     
+    /** {@inheritDoc} */
+    @Test
+    public void testInitPropertyStore2() {
+        PropertyStore sourceStore   = new InMemoryPropertyStore("ff4j-properties.xml");
+        PropertyStore archaiusStore = new PropertyStoreArchaius(sourceStore);
+        Assert.assertTrue(archaiusStore.existProperty("a"));
+    }
 
     @Test(expected = IllegalStateException.class)
     public void initializationKO() {

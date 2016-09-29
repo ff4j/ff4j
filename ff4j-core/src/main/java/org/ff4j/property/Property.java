@@ -38,6 +38,9 @@ public abstract class Property < T > implements Serializable {
     
     /** serial. */
     private static final long serialVersionUID = 4987351300418126366L;
+    
+    /** Some store do not allow property edition. */
+    protected boolean readOnly = false;
 
     /** Unique name for property. */
     protected String name;
@@ -317,6 +320,25 @@ public abstract class Property < T > implements Serializable {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+     * Getter accessor for attribute 'readOnly'.
+     *
+     * @return
+     *       current value of 'readOnly'
+     */
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
+    /**
+     * Setter accessor for attribute 'readOnly'.
+     * @param readOnly
+     * 		new value for 'readOnly '
+     */
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
     }
 
 }

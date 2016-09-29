@@ -2,6 +2,8 @@ package org.ff4j.mongo.store;
 
 import static org.ff4j.mongo.MongoDbConstants.MONGO_SET;
 
+import java.util.HashSet;
+
 /*
  * #%L
  * ff4j-store-mongodb-v3
@@ -35,6 +37,7 @@ import org.ff4j.property.Property;
 import org.ff4j.property.store.AbstractPropertyStore;
 import org.ff4j.utils.Util;
 
+import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
@@ -52,7 +55,49 @@ public class PropertyStoreMongo extends AbstractPropertyStore {
     private static final PropertyDocumentBuilder BUILDER = new PropertyDocumentBuilder();
 
     /** MongoDB collection. */
-    private final MongoCollection<Document> collection;
+    private MongoCollection<Document> propertiesCollection;
+    
+    /** Feature collection Name. */
+    private String collectionName = MongoDbConstants.DEFAULT_PROPERTY_COLLECTION;
+    
+    /** Database name. */
+    private String dbName = MongoDbConstants.DEFAULT_DBNAME;
+    
+    /** Current mongo client. */
+    private MongoClient mongoClient;
+    
+    /**
+     * Parameterized constructor with collection.
+     * 
+     * @param collection
+     *            the collection to set
+     */
+    public PropertyStoreMongo() {
+    }
+    
+    /**
+     * Parameterized constructor with collection.
+     * 
+     * @param collection
+     *            the collection to set
+     */
+    public PropertyStoreMongo(MongoClient client) {
+        this.mongoClient = client;
+        this.propertiesCollection = getPropertiesCollection();
+    }
+    
+    /**
+     * Parameterized constructor with collection.
+     * 
+     * @param collection
+     *            the collection to set
+     */
+    public PropertyStoreMongo(MongoClient client, String dbName, String collectionName) {
+        this.mongoClient        = client;
+        this.collectionName     = collectionName;
+        this.dbName             = dbName;
+        this.propertiesCollection = getPropertiesCollection();
+    }
     
     /**
      * Parameterized constructor with collection.
@@ -71,7 +116,8 @@ public class PropertyStoreMongo extends AbstractPropertyStore {
      *            the collection to set
      */
     public PropertyStoreMongo(MongoDatabase db, String collectionName) {
-        this.collection = db.getCollection(collectionName);
+        this.propertiesCollection = db.getCollection(collectionName);
+        this.dbName = db.getName();
     }
     
     /**
@@ -81,7 +127,7 @@ public class PropertyStoreMongo extends AbstractPropertyStore {
      *            the collection to set
      */
     public PropertyStoreMongo(MongoCollection<Document> collection) {
-        this.collection = collection;
+        this.propertiesCollection = collection;
     }
     
     /**
@@ -98,7 +144,7 @@ public class PropertyStoreMongo extends AbstractPropertyStore {
     /** {@inheritDoc} */
     public boolean existProperty(String name) {
         Util.assertHasLength(name);
-        return 1 == collection.count(BUILDER.getName(name));
+        return 1 == getPropertiesCollection().count(BUILDER.getName(name));
     }
 
     /** {@inheritDoc} */
@@ -109,25 +155,25 @@ public class PropertyStoreMongo extends AbstractPropertyStore {
         if (existProperty(prop.getName())) {
             throw new PropertyAlreadyExistException(prop.getName());
         }
-        collection.insertOne(PMAPPER.toStore(prop));
+        getPropertiesCollection().insertOne(PMAPPER.toStore(prop));
     }
 
     /** {@inheritDoc} */
     public Property<?> readProperty(String name) {
         assertPropertyName(name);
-        Document object = collection.find(BUILDER.getName(name)).first();
+        Document object = getPropertiesCollection().find(BUILDER.getName(name)).first();
         return PMAPPER.fromStore(object);
     }
     
     /** {@inheritDoc} */
     public void deleteProperty(String name) {
         assertPropertyName(name);
-        collection.deleteOne(BUILDER.getName(name));
+        getPropertiesCollection().deleteOne(BUILDER.getName(name));
     }
     
     /** {@inheritDoc} */
     public void clear() {
-        collection.deleteMany(new Document());
+        getPropertiesCollection().deleteMany(new Document());
     }
 
     /** {@inheritDoc} */
@@ -136,7 +182,7 @@ public class PropertyStoreMongo extends AbstractPropertyStore {
         readProperty(name).fromString(newValue);
         Document query = BUILDER.getName(name);
         Document update = BUILDER.getValue(newValue);
-        collection.updateOne(query, new Document(MONGO_SET, update));
+        getPropertiesCollection().updateOne(query, new Document(MONGO_SET, update));
     }
 
     /** {@inheritDoc} */
@@ -151,7 +197,7 @@ public class PropertyStoreMongo extends AbstractPropertyStore {
     /** {@inheritDoc} */
     public Map<String, Property<?>> readAllProperties() {
         LinkedHashMap<String, Property<?>> mapP = new LinkedHashMap<String, Property<?>>();
-        for(Document document : collection.find()) {
+        for(Document document : getPropertiesCollection().find()) {
             Property<?> prop = PMAPPER.fromStore(document);
             mapP.put(prop.getName(), prop);
         }
@@ -163,4 +209,33 @@ public class PropertyStoreMongo extends AbstractPropertyStore {
         return readAllProperties().keySet();
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        if (!mongoClient.getDatabase(dbName)
+                .listCollectionNames()
+                .into(new HashSet<String>())
+                .contains(collectionName)) {
+            mongoClient.getDatabase(dbName).createCollection(collectionName);
+        }
+        propertiesCollection = mongoClient.getDatabase(dbName).getCollection(collectionName);
+    }
+    
+    /**
+     * Getter accessor for attribute 'featuresCollection'.
+     *
+     * @return
+     *       current value of 'featuresCollection'
+     */
+    public MongoCollection<Document> getPropertiesCollection() {
+        if (propertiesCollection == null) {
+            if (mongoClient != null) {
+                createSchema();
+            } else {
+                throw new IllegalStateException("Cannot initialize Properties collection : no mongo client defined");
+            }
+        }
+        return propertiesCollection;
+    }
+    
 }

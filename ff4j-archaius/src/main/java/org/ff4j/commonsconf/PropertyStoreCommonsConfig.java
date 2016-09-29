@@ -25,9 +25,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.MapConfiguration;
 import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.Property;
@@ -60,6 +62,14 @@ public class PropertyStoreCommonsConfig extends AbstractPropertyStore {
      */
     public PropertyStoreCommonsConfig(Configuration configuration) {
         this.configuration = configuration;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        if (configuration == null) {
+            this.configuration = new MapConfiguration(new Properties());
+        }
     }
     
     /**
@@ -162,5 +172,5 @@ public class PropertyStoreCommonsConfig extends AbstractPropertyStore {
      */
     public void setConfiguration(Configuration configuration) {
         this.configuration = configuration;
-    }   
+    }       
 }

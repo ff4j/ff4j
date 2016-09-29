@@ -149,4 +149,11 @@ public class EventRepositoryMongo extends AbstractEventRepository {
         // TODO Auto-generated method stub
         return null;
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        // TODO Auto-generated method stub
+        
+    }
 }

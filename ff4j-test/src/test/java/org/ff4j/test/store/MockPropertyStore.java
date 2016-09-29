@@ -109,8 +109,15 @@ public class MockPropertyStore implements PropertyStore {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void importProperties(Collection<Property<?>> properties) {
         LOGGER.debug("MOCK [importProperties]");
-    }  
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        LOGGER.debug("MOCK [createSchema]");
+    }    
 
 }

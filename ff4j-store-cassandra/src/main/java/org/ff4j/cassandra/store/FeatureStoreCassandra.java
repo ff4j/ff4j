@@ -48,6 +48,9 @@ import org.ff4j.utils.Util;
  * 
  * Rule 1: Spread Data Evenly Around the Cluster
  * Rule 2: Minimize the Number of Partitions Read
+ * 
+ * Ces familles de colonnes contiennent des colonnes ainsi qu'un ensemble de colonnes connexes qui sont identifiées par une clé de ligne
+ * 
  *
  * @author Cedrick Lunven (@clunven)
  */
@@ -198,5 +201,12 @@ public class FeatureStoreCassandra extends AbstractFeatureStore {
      */
     public void setConn(CassandraConnection conn) {
         this.conn = conn;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        // TODO Auto-generated method stub
+        
     }
 }

@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8" />
   <title>ff4j</title>
-  <link href="{URL_CSS}" rel="stylesheet">
+  <link href="{SERVLET_CONTEXT}?rsc=css" rel="stylesheet">
   <script type="text/javascript" charset="utf-8" src="{SERVLET_CONTEXT}?rsc=js"></script>
 </head>
 
@@ -34,12 +34,6 @@
           <a href="{SERVLET_CONTEXT}?op=export">
             <i class="shortcut-icon icon-download-alt"></i>
            <span><u><b>E</b></u>xport XML</span>
-          </a>
-        </li>
-        <li>
-          <a href="{SERVLET_CONTEXT}?view=monitoring">
-            <i class="shortcut-icon icon-signal"></i>
-           <span><u><b>A</b></u>udit</span>
           </a>
         </li>
         <li style="background-color:white"/>
@@ -109,7 +103,7 @@
       </tr>
     </thead>
     <tbody>
-     {PROPERTIES_ROWS}
+    {PROPERTIES_ROWS}
     </tbody>
     </table>
   </div>

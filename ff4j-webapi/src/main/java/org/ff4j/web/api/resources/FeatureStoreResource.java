@@ -40,6 +40,7 @@ import org.ff4j.web.api.resources.domain.CacheApiBean;
 import org.ff4j.web.api.resources.domain.FeatureApiBean;
 import org.ff4j.web.api.resources.domain.FeatureStoreApiBean;
 import org.ff4j.web.api.resources.domain.GroupDescApiBean;
+import org.ff4j.web.api.resources.domain.PropertyStoreApiBean;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -127,6 +128,16 @@ public class FeatureStoreResource extends AbstractResource {
     @Produces(MediaType.APPLICATION_JSON)
     public FeatureStoreApiBean clearFeatures() {
         getFeatureStore().clear();
+        return new FeatureStoreApiBean(ff4j.getFeatureStore());
+    }
+    
+    @POST
+    @Path("/" + STORE_CREATESCHEMA)
+    @ApiOperation(value= "Create underlying DB schema for store")
+    @ApiResponses(@ApiResponse(code = 200, message= "status of current ff4j bean", response=PropertyStoreApiBean.class))
+    @Produces(MediaType.APPLICATION_JSON)
+    public FeatureStoreApiBean createSchema() {
+        getFeatureStore().createSchema();
         return new FeatureStoreApiBean(ff4j.getFeatureStore());
     }
     

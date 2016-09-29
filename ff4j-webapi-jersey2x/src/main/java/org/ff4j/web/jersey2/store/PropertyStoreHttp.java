@@ -227,6 +227,16 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
             throw new PropertyAccessException("Cannot clear property store - " + cRes.getStatus());
         }
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        WebTarget wr = client.target(url).path(RESOURCE_PROPERTYSTORE).path(STORE_CREATESCHEMA);
+        Response cRes = post(wr);
+        if (Status.OK.getStatusCode() != cRes.getStatus()) {
+            throw new PropertyAccessException("Cannot clear property store - " + cRes.getStatus());
+        }
+    }
 
     /**
      * Build Authorization header for technical user.
@@ -265,6 +275,6 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
             invocationBuilder.header(HEADER_AUTHORIZATION, authorization);
         }
         return invocationBuilder.post(Entity.text(""));
-    }
+    }    
     
 }

@@ -53,7 +53,9 @@ import static org.ff4j.neo4j.FF4jNeo4jConstants.*;
 public class FeatureStoreNeo4J extends AbstractFeatureStore {
 
     public static final String GROUPNAME = "GROUPNAME";
+    
     public static final String GROUP_NAME = "groupName";
+    
     /** Persistent storage. */
     private GraphDatabaseService graphDb;
     
@@ -663,6 +665,17 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
      */
     public void setGraphDb(GraphDatabaseService graphDb) {
         this.graphDb = graphDb;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        // Nodes and vertex in the graph are dynamic
+        // Still we can add indexes
+        //CREATE INDEX ON :FF4J_FEATURE(uid);
+        //CREATE INDEX ON :FF4J_FEATURE_GROUP(name);
+    
+        
     }
 
 }

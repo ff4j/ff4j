@@ -111,6 +111,15 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
         }
         return true;
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        // Create table for features but not only
+        getTargetFeatureStore().createSchema();
+        // Also create tables for properties
+        getTargetPropertyStore().createSchema();
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -441,6 +450,5 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
      */
     public void setStore2CachePoller(Store2CachePollingScheduler store2CachePoller) {
         this.store2CachePoller = store2CachePoller;
-    }
-    
+    }    
 }

@@ -211,4 +211,11 @@ public class PropertyStoreNeo4j extends AbstractPropertyStore {
         this.graphDb = graphDb;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

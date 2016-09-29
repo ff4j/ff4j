@@ -203,4 +203,11 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
         this.fileName = fileName;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        // There is nothing to create here
+        return;
+    }
+
 }

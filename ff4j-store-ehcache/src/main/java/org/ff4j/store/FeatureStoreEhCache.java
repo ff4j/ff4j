@@ -281,5 +281,12 @@ public class FeatureStoreEhCache extends AbstractFeatureStore {
     public void clear() {
         wrapper.getCacheFeatures().removeAll();
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        // Nothing to do, cache has no schema
+        return;
+    }
     
 }

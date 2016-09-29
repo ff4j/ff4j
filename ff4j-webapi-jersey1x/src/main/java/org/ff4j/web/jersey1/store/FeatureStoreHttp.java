@@ -22,6 +22,19 @@ package org.ff4j.web.jersey1.store;
 
 import static org.ff4j.utils.json.FeatureJsonParser.parseFeature;
 import static org.ff4j.utils.json.FeatureJsonParser.parseFeatureArray;
+import static org.ff4j.web.FF4jWebConstants.HEADER_AUTHORIZATION;
+import static org.ff4j.web.FF4jWebConstants.OPERATION_ADDGROUP;
+import static org.ff4j.web.FF4jWebConstants.OPERATION_DISABLE;
+import static org.ff4j.web.FF4jWebConstants.OPERATION_ENABLE;
+import static org.ff4j.web.FF4jWebConstants.OPERATION_GRANTROLE;
+import static org.ff4j.web.FF4jWebConstants.OPERATION_REMOVEGROUP;
+import static org.ff4j.web.FF4jWebConstants.OPERATION_REMOVEROLE;
+import static org.ff4j.web.FF4jWebConstants.PARAM_AUTHKEY;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_FEATURES;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_GROUPS;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_STORE;
+import static org.ff4j.web.FF4jWebConstants.STORE_CLEAR;
+import static org.ff4j.web.FF4jWebConstants.STORE_CREATESCHEMA;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,8 +65,6 @@ import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.core.util.Base64;
-
-import static org.ff4j.web.FF4jWebConstants.*;
 
 /**
  * Implementation of store using {@link HttpClient} connection.
@@ -466,6 +477,20 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
             throw new FeatureAccessException("Cannot clear feature store - " + cRes.getStatus());
         }
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        WebResource wr = client.resource(url).path(RESOURCE_STORE).path(STORE_CREATESCHEMA);
+        if (null != authorization) {
+            wr.header(HEADER_AUTHORIZATION, authorization);
+        }
+        ClientResponse cRes = wr.post(ClientResponse.class);
+        if (Status.OK.getStatusCode() != cRes.getStatus()) {
+            throw new FeatureAccessException("Cannot create schema for feature store - " + cRes.getStatus());
+        }
+    }
+
     
     // ------- Static for authentication -------
     
@@ -511,6 +536,5 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
     public void setUrl(String url) {
         this.url = url;
     }
-
 
 }

@@ -51,7 +51,7 @@ public class ApiKeyValidatorFilter implements ContainerRequestFilter {
     private static Map < String, ApiKey > validApiKeysMap;
     
     /**
-     * Instanciation through introspection
+     * Instantiation through introspection
      */
     public ApiKeyValidatorFilter() {
     }

@@ -160,6 +160,20 @@ public class Util {
             throw new IllegalArgumentException("Missing Parameter '" + paramName + "' must not be null nor empty");
         }
     }
+    
+    /**
+     * Parameter validation.
+     *
+     * @param param
+     *      current parameter
+     * @param paramName
+     *      current parameter name
+     */
+    public static void assertParamHasNotNull(Object param, String paramName) {
+        if (param == null) {
+            throw new IllegalArgumentException("Missing Parameter '" + paramName + "' must not be null nor empty");
+        }
+    }
 
     /**
      * Create an HashSet.
@@ -169,6 +183,7 @@ public class Util {
      * @return
      */
 	public static <T> Set<T> set(T... els) {
+	    if (els == null) return null;
         return new HashSet<T>(Arrays.asList(els));
     }
 	
@@ -180,6 +195,7 @@ public class Util {
      * @return
      */
     public static <T> List<T> list(T... els) {
+        if (els == null) return null;
         return new ArrayList<T>(Arrays.asList(els));
     }
     
@@ -230,6 +246,18 @@ public class Util {
      */
     public static boolean isCollection(Object ob) {
         return ob != null && isClassCollection(ob.getClass());
+    }
+    
+    /**
+     * Check if a current object is empty
+     * 
+     * @param ob
+     *      current collection
+     * @return
+     *      flag if it's an empty collection
+     */
+    public static boolean isEmpty(Collection<?> ob) {
+        return (ob == null) || ob.isEmpty();
     }
     
     /**

@@ -135,4 +135,9 @@ public interface PropertyStore {
      *      a set of properties
      */
     void importProperties(Collection<Property<?>> properties);
+    
+    /**
+     * Initialize target database with expected schema if needed.
+     */
+    void createSchema();
 }

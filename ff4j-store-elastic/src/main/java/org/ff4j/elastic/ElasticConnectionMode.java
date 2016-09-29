@@ -1,14 +1,8 @@
-/**
- * Exposing stores onto JMX technology.
- * <p>
- *
- * @author Cedrick Lunven (@clunven)</a>
- */
-package org.ff4j.jmx.gateway;
+package org.ff4j.elastic;
 
 /*
  * #%L
- * ff4j-core
+ * ff4j-store-elastic
  * %%
  * Copyright (C) 2013 - 2016 FF4J
  * %%
@@ -25,3 +19,13 @@ package org.ff4j.jmx.gateway;
  * limitations under the License.
  * #L%
  */
+
+public enum ElasticConnectionMode {
+    
+    NATIVE_CLIENT, 
+    
+    TRANSPORT_CLIENT, 
+    
+    JEST_CLIENT; 
+
+}
