@@ -67,6 +67,19 @@ public class PropertyStoreSpringJdbc extends AbstractPropertyStore {
     
     /** Query builder. */
     private JdbcQueryBuilder queryBuilder;
+    
+    /**
+     * Default constructor.
+     */
+    public PropertyStoreSpringJdbc() {
+    }
+    
+    /**
+     * Default constructor.
+     */
+    public PropertyStoreSpringJdbc(DataSource ds) {
+        this.dataSource = ds;
+    }
 
     /** {@inheritDoc} */
     public boolean existProperty(String name) {

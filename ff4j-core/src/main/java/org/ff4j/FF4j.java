@@ -77,13 +77,7 @@ import org.ff4j.store.InMemoryFeatureStore;
  * @author Cedrick Lunven (@clunven)
  */
 public class FF4j {
-
-    /** Do not through {@link FeatureNotFoundException} exception and but feature is required. */
-    private boolean autocreate = false;
     
-    /** Capture informations relative to audit. */
-    private boolean enableAudit = false;
-
     /** Intialisation. */
     private final long startTime = System.currentTimeMillis();
 
@@ -91,33 +85,43 @@ public class FF4j {
     private final String version = getClass().getPackage().getImplementationVersion();
     
     /** Source of initialization (JAVA_API, WEBAPI, SSH, CONSOLE...). */
-    private static final String source =  SOURCE_JAVA;
+    private String source =  SOURCE_JAVA;
     
+    // -- Stores --
+
     /** Storage to persist feature within {@link FeatureStore}. */
     private FeatureStore fstore = new InMemoryFeatureStore();
     
     /** Storage to persist properties within {@link PropertyStore}. */
     private PropertyStore pStore = new InMemoryPropertyStore();
-
+    
+    /** Do not through {@link FeatureNotFoundException} exception and but feature is required. */
+    private boolean autocreate = false;
+   
     /** Security policy to limit access through ACL with {@link AuthorizationsManager}. */
     private AuthorizationsManager authorizationsManager = null;
 
+    // -- Audit --
+    
+    /** Capture informations relative to audit. */
+    private boolean enableAudit = false;
+   
     /** Repository for audit event. */
     private EventRepository eventRepository = new InMemoryEventRepository();
 
     /** Event Publisher (threadpool, executor) to send data into {@link EventRepository} */
     private EventPublisher eventPublisher = null;
+   
+    /** This attribute indicates to stop the event publisher. */
+    private volatile boolean shutdownEventPublisher;
+
+    // -- Settings --
     
     /** Post Processing like audit enable. */
     private boolean initialized = false;
 
     /** Hold flipping execution context as Thread-safe data. */
     private ThreadLocal<FlippingExecutionContext> currentExecutionContext = new ThreadLocal<FlippingExecutionContext>();
-
-    /**
-     * This attribute indicates to stop the event publisher.
-     */
-    private volatile boolean shutdownEventPublisher;
     
     /**
      * This attribute indicates when call the alter bean throw de {@link InvocationTargetException}
@@ -724,7 +728,7 @@ public class FF4j {
         eventPublisher = new EventPublisher(eventRepository);
         this.shutdownEventPublisher = true;
         
-        // Audit is enabled, proxified for auditing
+        // Audit is enabled, proxified stores for auditing
         if (isEnableAudit()) {
         	
         	if (fstore != null && !(fstore instanceof FeatureStoreAuditProxy)) {
@@ -749,6 +753,21 @@ public class FF4j {
     }
     
     /**
+     * Create tables/collections/columns in DB (if required).
+     */
+    public void createSchema() {
+        if (null != getFeatureStore()) {
+            getFeatureStore().createSchema();
+        }
+        if (null != getPropertiesStore()) {
+            getPropertiesStore().createSchema();
+        }
+        if (null != getEventRepository()) {
+            getEventRepository().createSchema();
+        }
+    }
+    
+    /**
      * Access store as static way (single store).
      * 
      * @return current store
@@ -759,7 +778,6 @@ public class FF4j {
         }
         return fstore;
     }
-    
     
     /**
      * Getter accessor for attribute 'eventPublisher'.
@@ -867,7 +885,7 @@ public class FF4j {
     public void setEnableAudit(boolean enableAudit) {
     	this.enableAudit = enableAudit;
     	
-    	// if you disable the audit you should remove the auditProxy
+    	// if you disable the audit : the auditProxy must be destroy and use targets
     	initialized = false;
     }
     

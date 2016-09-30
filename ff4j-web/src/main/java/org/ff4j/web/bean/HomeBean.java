@@ -87,7 +87,7 @@ public class HomeBean implements Serializable {
         this.version = ff4j.getVersion();
         
         setUptime(ff4j.getStartTime());
-        
+
         // Feature Store
         if (ff4j.getFeatureStore() != null) {
             FeatureStore fs = ff4j.getConcreteFeatureStore();

@@ -37,6 +37,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 import org.ff4j.FF4j;
 import org.ff4j.web.bean.HomeBean;
+import org.ff4j.web.bean.WebConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
@@ -65,6 +66,7 @@ public class HomeController extends AbstractController {
     throws Exception {
         String msg       = null;
         String msgType   = "success";
+        String operation = req.getParameter(WebConstants.OPERATION);
         
         // Upload XML File
         if (ServletFileUpload.isMultipartContent(req)) {
@@ -85,10 +87,21 @@ public class HomeController extends AbstractController {
                     }
                 }
             }
+        } else if (WebConstants.OP_CREATE_SCHEMA.equalsIgnoreCase(operation)) {
+            try {
+                getFf4j().createSchema();
+                msg = "Schema has been created in DB (if required).";
+                ctx.setVariable("msgType", msgType);
+                ctx.setVariable("msgInfo", msg);
+                get(req, res, ctx);
+            } catch(RuntimeException re) {
+                ctx.setVariable("msgType", ERROR);
+                ctx.setVariable("msgInfo", "Cannot create Schema:" + re.getMessage());
+                ctx.setVariable(KEY_TITLE, "Home");
+                ctx.setVariable("today", Calendar.getInstance());
+                ctx.setVariable("homebean", new HomeBean());
+            }
         }
-        ctx.setVariable("msgType", msgType);
-        ctx.setVariable("msgInfo", msg);
-        get(req, res, ctx);
     }
     
     /** {@inheritDoc} */
@@ -96,7 +109,19 @@ public class HomeController extends AbstractController {
 	throws Exception {
 		ctx.setVariable(KEY_TITLE, "Home");
 		ctx.setVariable("today", Calendar.getInstance());
-        ctx.setVariable("homebean", new HomeBean(ff4j));
+		HomeBean hb = new HomeBean();
+		try {
+		    hb = new HomeBean(ff4j);
+		} catch(RuntimeException e) {
+		    ctx.setVariable("msgType", ERROR);
+	        ctx.setVariable("msgInfo", "Cannot read store:" + e.getMessage());
+		}
+		ctx.setVariable("homebean", hb);
 	}
+    
+    private void renderPage(HttpServletRequest req, HttpServletResponse res, WebContext ctx) {
+        
+        
+    }
 
 }

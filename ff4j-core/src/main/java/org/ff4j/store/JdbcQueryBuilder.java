@@ -147,13 +147,13 @@ public class JdbcQueryBuilder {
     public String sqlCreateTableFeatures() {
         StringBuilder sb = new StringBuilder("CREATE TABLE ");
         sb.append(getTableNameFeatures());
-        sb.append("( \"FEAT_UID\"    VARCHAR(100), "
-                  + "\"ENABLE\"      INTEGER NOT NULL, "
-                  + "\"DESCRIPTION\" VARCHAR(1000), "
-                  + "\"STRATEGY\"    VARCHAR(1000), "
-                  + "\"EXPRESSION\"  VARCHAR(255), "
-                  + "\"GROUPNAME\"   VARCHAR(100), "
-                  + "PRIMARY KEY(\"FEAT_UID\"));");
+        sb.append("( FEAT_UID    VARCHAR(100), "
+                  + "ENABLE      INTEGER NOT NULL, "
+                  + "DESCRIPTION VARCHAR(1000), "
+                  + "STRATEGY    VARCHAR(1000), "
+                  + "EXPRESSION  VARCHAR(255), "
+                  + "GROUPNAME   VARCHAR(100), "
+                  + "PRIMARY KEY(FEAT_UID));");
         return sb.toString();
     }
     
@@ -166,10 +166,10 @@ public class JdbcQueryBuilder {
     public String sqlCreateTableRoles() {
         StringBuilder sb = new StringBuilder("CREATE TABLE ");
         sb.append(getTableNameRoles());
-        sb.append("( \"FEAT_UID\" VARCHAR(100) REFERENCES " 
-                + getTableNameFeatures() + "(\"FEAT_UID\"), "
-                + "\"ROLE_NAME\"  VARCHAR(100), "
-                + "PRIMARY KEY(\"FEAT_UID\", \"ROLE_NAME\"));");
+        sb.append("( FEAT_UID VARCHAR(100) REFERENCES " 
+                + getTableNameFeatures() + "(FEAT_UID), "
+                + "ROLE_NAME  VARCHAR(100), "
+                + "PRIMARY KEY(FEAT_UID, ROLE_NAME));");
         return sb.toString();
     }
     
@@ -182,13 +182,13 @@ public class JdbcQueryBuilder {
     public String sqlCreateTableCustomProperties() {
         StringBuilder sb = new StringBuilder("CREATE TABLE ");
         sb.append(getTableNameCustomProperties());
-        sb.append("( \"PROPERTY_ID\"  VARCHAR(100) NOT NULL,"
-                 + " \"CLAZZ\"        VARCHAR(255) NOT NULL,"
-                 + " \"CURRENTVALUE\" VARCHAR(255),"
-                 + "\"FIXEDVALUES\"   VARCHAR(1000),"
-                 + "\"DESCRIPTION\"   VARCHAR(1000),"
-                 + "\"FEAT_UID\"      VARCHAR(100) REFERENCES " + getTableNameFeatures() + "(\"FEAT_UID\"),"
-                 + " PRIMARY KEY(\"PROPERTY_ID\", \"FEAT_UID\"));");
+        sb.append("( PROPERTY_ID   VARCHAR(100) NOT NULL,"
+                 + " CLAZZ          VARCHAR(255) NOT NULL,"
+                 + " CURRENTVALUE  VARCHAR(255),"
+                 + " FIXEDVALUES   VARCHAR(1000),"
+                 + " DESCRIPTION   VARCHAR(1000),"
+                 + " FEAT_UID      VARCHAR(100) REFERENCES " + getTableNameFeatures() + "(FEAT_UID),"
+                 + " PRIMARY KEY(PROPERTY_ID, FEAT_UID));");
         return sb.toString();
     }
     
@@ -201,12 +201,12 @@ public class JdbcQueryBuilder {
     public String sqlCreateTableProperties() {
         StringBuilder sb = new StringBuilder("CREATE TABLE ");
         sb.append(getTableNameProperties());
-        sb.append("( \"PROPERTY_ID\"  VARCHAR(100) NOT NULL,"
-                 + " \"CLAZZ\"        VARCHAR(255) NOT NULL,"
-                 + " \"CURRENTVALUE\" VARCHAR(255),"
-                 + " \"FIXEDVALUES\"  VARCHAR(1000),"
-                 + " \"DESCRIPTION\"  VARCHAR(1000),"
-                 + " PRIMARY KEY(\"PROPERTY_ID\"));");
+        sb.append("( PROPERTY_ID  VARCHAR(100) NOT NULL,"
+                 + " CLAZZ        VARCHAR(255) NOT NULL,"
+                 + " CURRENTVALUE VARCHAR(255),"
+                 + " FIXEDVALUES  VARCHAR(1000),"
+                 + " DESCRIPTION  VARCHAR(1000),"
+                 + " PRIMARY KEY(PROPERTY_ID));");
         return sb.toString();
     }
     
@@ -219,18 +219,18 @@ public class JdbcQueryBuilder {
     public String sqlCreateTableAudit() {
         StringBuilder sb = new StringBuilder("CREATE TABLE ");
         sb.append(getTableNameAudit());
-        sb.append("( \"EVT_UUID\"   VARCHAR(40)  NOT NULL,"
-                + " \"EVT_TIME\"     TIMESTAMP    NOT NULL,"
-                + " \"EVT_TYPE\"     VARCHAR(30)  NOT NULL,"
-                + " \"EVT_NAME\"     VARCHAR(30)  NOT NULL,"
-                + " \"EVT_ACTION\"   VARCHAR(30)  NOT NULL,"
-                + " \"EVT_HOSTNAME\" VARCHAR(100)  NOT NULL,"
-                + " \"EVT_SOURCE\"   VARCHAR(30)  NOT NULL,"
-                + " \"EVT_DURATION\" INTEGER,"
-                + " \"EVT_USER\"     VARCHAR(30),"
-                + " \"EVT_VALUE\"    VARCHAR(100),"
-                + " \"EVT_KEYS\"     VARCHAR(255),"
-                + "PRIMARY KEY(\"EVT_UUID\", \"EVT_TIME\"));");
+        sb.append("( EVT_UUID    VARCHAR(40)  NOT NULL,"
+                + " EVT_TIME     TIMESTAMP    NOT NULL,"
+                + " EVT_TYPE     VARCHAR(30)  NOT NULL,"
+                + " EVT_NAME     VARCHAR(30)  NOT NULL,"
+                + " EVT_ACTION   VARCHAR(30)  NOT NULL,"
+                + " EVT_HOSTNAME VARCHAR(100) NOT NULL,"
+                + " EVT_SOURCE   VARCHAR(30)  NOT NULL,"
+                + " EVT_DURATION INTEGER,"
+                + " EVT_USER     VARCHAR(30),"
+                + " EVT_VALUE    VARCHAR(100),"
+                + " EVT_KEYS     VARCHAR(255),"
+                + "PRIMARY KEY(EVT_UUID, EVT_TIME));");
          return sb.toString();
     }
     

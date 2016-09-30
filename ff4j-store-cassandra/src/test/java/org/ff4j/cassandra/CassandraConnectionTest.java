@@ -27,7 +27,6 @@ import org.junit.Test;
 
 public class CassandraConnectionTest {
 
-    @Ignore
     @Test
     public void testConnection() {
         CassandraConnection conn = new CassandraConnection();

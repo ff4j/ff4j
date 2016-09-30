@@ -13,6 +13,10 @@
    <div id="content" class="clearfix" >
     <div class="main-inner" style="margin-top:60px">
      <div class="container">
+     
+     
+     <div th:include="messages :: messagebar" style="margin-top:60px"></div>
+ 
       <div class="row">
         <div class="span6">
         
@@ -31,19 +35,33 @@
 	   
 	   <div class="ff4jstore" >
         <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;FeatureStore</span>
-        <br/><p class="circle">
-	  	<br/><img src="" th:src="@{static/img/db/db-} + ${homebean.featureStore} + '.png'" style="width:50px" />
-      	<br/><span th:text="${homebean.featureStore}">---</span>
-      	<br/>(<span th:text="${homebean.nbFeature}"></span>)
-   		</p>
+        <br/>
+        <p class="circle">
+        <span th:if="${homebean.featureStore} eq 'disabled'">
+          <br/><img src="" th:src="@{static/img/disabled.png}" style="width:45px" />
+          <br/>ERROR
+        </span>
+        <span th:unless="${homebean.featureStore} eq 'disabled'">
+         <br/><img src="" th:src="@{static/img/db/db-} + ${homebean.featureStore} + '.png'" style="width:50px" />
+         <br/><span th:text="${homebean.featureStore}">---</span>
+         <br/>(<span th:text="${homebean.nbFeature}"></span>)
+        </span>
+        </p>
+	  	
        </div>
        
        <div class="ff4jstore" >
         <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;PropertyStore</span>
         <br/><p class="circle">
+        <span th:if="${homebean.propertyStore} eq 'disabled'">
+          <br/><img src="" th:src="@{static/img/disabled.png}" style="width:45px" />
+          <br/>ERROR
+        </span>
+        <span th:unless="${homebean.propertyStore} eq 'disabled'">
 	  	<br/><img src="" th:src="@{static/img/db/db-} + ${homebean.propertyStore} + '.png'" style="width:50px" />
       	<br/><span th:text="${homebean.propertyStore}">---</span>
       	<br/>(<span th:text="${homebean.nbProperties}"></span>)
+      	</span>
    		</p>
    		
        </div>
@@ -51,8 +69,14 @@
        <div class="ff4jstore" >
         <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;EventRepository</span>
         <br/><p class="circle">
-	  	<br/><img src="" th:src="@{static/img/db/db-} + ${homebean.monitoring} + '.png'" style="width:50px" />
-      	<br/><span th:text="${homebean.monitoring}">---</span>
+        <span th:if="${homebean.monitoring} eq 'disabled'">
+          <br/><img src="" th:src="@{static/img/disabled.png}" style="width:45px" />
+          <br/><span th:text="#{home.store.undefined}">PropertyStore</span>
+        </span>
+        <span th:unless="${homebean.monitoring} eq 'disabled'">
+         <br/><img src="" th:src="@{static/img/db/db-} + ${homebean.monitoring} + '.png'" style="width:50px" />
+      	 <br/><span th:text="${homebean.monitoring}">---</span>
+      	</span>
    		</p>
        </div>
        
@@ -116,12 +140,10 @@
               	</a>
               	
               	
-                <a href="" th:href="@{api/export}" class="shortcut">
+                <a data-toggle="modal" href="#modalCreateSchema" class="shortcut">
                  <i class="shortcut-icon icon-table"></i>  
                  <span class="shortcut-label" th:text="#{home.admin.createSchema}">Create Schema</span>
                 </a>
-              	
-              
               	
                 <span th:if="${homebean.caching} neq 'disabled'">
 	              <a href="" th:href="@{clearCache}" class="shortcut">
@@ -149,6 +171,8 @@
 </div>
    
 <div th:include="modal-features :: modal-import"></div>
+
+<div th:include="modal-home :: modal-createSchema"></div>
    
 
 </body>

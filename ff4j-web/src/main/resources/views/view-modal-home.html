@@ -1,0 +1,35 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+
+ <div th:fragment="modal-createSchema">
+ <form class="form-horizontal" action="" th:action="@{home}" method="POST"  >
+  <div class="modal hide fade" id="modalCreateSchema" tabindex="-1" role="dialog" 
+  	   aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">   
+      <button class="close" data-dismiss="modal">x</button>   
+      <h4 id="myModalLabel"><i class="icon-upload-alt"></i>&nbsp;
+      <span th:text="#{modal.createschema.title}" >Create Schema</span></h4>
+    </div>
+    <div class="modal-body">
+      <p><span th:text="#{modal.createschema.message}" >Do you want to create DB schema ?</span></p>
+      <input type="hidden" name="op" value="createSchema" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn" data-dismiss="modal">
+        <i class="icon-remove" ></i>
+        &nbsp;<span th:text="#{modal.button.cancel}">Cancel</span>
+       </button>
+      <button class="btn btn-green" type="submit">
+        <i class="icon-file icon-white" ></i>
+        &nbsp;<span th:text="#{modal.button.validate}">Importer</span>
+      </button>
+    </div>
+  </div>
+</form>
+</div>
+
+    
+</body>
+</html>

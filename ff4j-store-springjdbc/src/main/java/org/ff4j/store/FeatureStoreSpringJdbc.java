@@ -71,6 +71,19 @@ public class FeatureStoreSpringJdbc extends AbstractFeatureStore {
     
     /** Query builder. */
     private JdbcQueryBuilder queryBuilder;
+    
+    /**
+     * Default constructor.
+     */
+    public FeatureStoreSpringJdbc() {
+    }
+    
+    /**
+     * Default constructor.
+     */
+    public FeatureStoreSpringJdbc(DataSource ds) {
+        this.dataSource = ds;
+    }
 
     /** {@inheritDoc} */
     public void enable(String uid) {

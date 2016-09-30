@@ -126,6 +126,9 @@ public class WebConstants {
 
     /** User operation. */
     public static final String OP_CREATE_PROPERTY = "createProperty";
+    
+    /** User operation. */
+    public static final String OP_CREATE_SCHEMA = "createSchema";
 
     /** User operation. */
     public static final String OP_EDIT_FEATURE = "update";
