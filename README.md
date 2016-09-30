@@ -10,8 +10,6 @@
 [![Join the chat at https://gitter.im/clun/ff4j](https://badges.gitter.im/clun/ff4j.svg)](https://gitter.im/clun/ff4j?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![License Apache2](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
-**WARNING:** From 10/07 to 16/07 the test coverage could be lower as the audit model is under heavy development.
-
 FF4J is a proposition of [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html). 
 You can enable and disable features at runtime with dedicated consoles and REST API but also __monitor__ features usage. You can also define any __Property__ and change its value at runtime. (configuration)
 
