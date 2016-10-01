@@ -14,9 +14,7 @@ package org.ff4j.aop;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import javax.lang.model.type.NullType;
 
@@ -32,7 +30,6 @@ import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
@@ -45,20 +42,16 @@ import org.springframework.stereotype.Service;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 @Component("ff.advisor")
-public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, ApplicationContextAware {
+public class FeatureAdvisor implements MethodInterceptor, ApplicationContextAware {
 
     /** String constants */
     private static final String FF4J_AOP_CANNOT_INVOKE = "ff4j-aop: Cannot invoke ";
+    
     private static final String ON_ALTERBEAN = " on alterbean ";
 
     /** Log with target className. */
     private final Logger logger = LoggerFactory.getLogger(FeatureAdvisor.class);
     
-    //private final Map<String, Logger> targetLoggers = new HashMap<String, Logger>();
-
-    /** Processed Interfaces. */
-    private final Set<String> targetInterfacesNames = new HashSet<String>();
-
     /** Strategies should be instantiate only once, keep references */
     private final Map<String, FlippingStrategy> strategySingletons = new HashMap<String, FlippingStrategy>();
 
@@ -73,7 +66,8 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
     @Override
     public Object invoke(final MethodInvocation pMInvoc) throws Throwable {
         Method method = pMInvoc.getMethod();
-        //Logger targetLogger = getLogger(method);
+        
+        // Check if method (or class) got annotation @Flip
         Flip ff = null;
         if (method.isAnnotationPresent(Flip.class)) {
             ff = method.getAnnotation(Flip.class);
@@ -81,13 +75,15 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
             ff = method.getDeclaringClass().getAnnotation(Flip.class);
         }
 
+        // The annotation is present, flip at runtime
         if (ff != null) {
             FlippingExecutionContext context = retrieveContext(ff, pMInvoc);
             if (shouldFlip(ff, context)) {
 
                 // Required parameters
                 if (!assertRequiredParams(ff)) {
-                    String msg = String.format("alterBeanName or alterClazz is required for {%s}", method.getDeclaringClass());
+                    String msg = String.format("alterBeanName or alterClazz is required for {%s}", 
+                            method.getDeclaringClass());
                     throw new IllegalArgumentException(msg);
                 }
                 if (shouldCallAlterBeanMethod(pMInvoc, ff.alterBean())) {
@@ -99,10 +95,21 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
                 }
             }
         }
+        
         // do not catch throwable
         return pMInvoc.proceed();
     }
-
+    
+    /**
+     * Retrieve execution context from attribut contextLocation in annotation.
+     * 
+     * @param ff
+     *      current annotation
+     * @param methodInvocation
+     *      current method to invoke
+     * @return
+     *      the flipping execution context
+     */
     private FlippingExecutionContext retrieveContext(Flip ff, MethodInvocation methodInvocation) {
         FlippingExecutionContext context = null;
         if (ff.contextLocation() == ContextLocation.FF4J) {
@@ -136,30 +143,6 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
         boolean alterBeanPresent = ff.alterBean() != null && !ff.alterBean().isEmpty();
         boolean alterClazPresent = (ff.alterClazz() != null) && (ff.alterClazz() != NullType.class);
         return alterBeanPresent || alterClazPresent;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) {
-        // Before Initializing allow to check Annotations
-        Class<?> target = bean.getClass();
-        // Scan interface only once.
-        if (!target.isInterface() && target.getInterfaces() != null) {
-            // Get Interface
-            for (Class<?> currentInterface : target.getInterfaces()) {
-                String currentInterfaceName = currentInterface.getCanonicalName();
-                if (!currentInterfaceName.startsWith("java.") && !targetInterfacesNames.contains(currentInterfaceName)) {
-                    targetInterfacesNames.add(currentInterfaceName);
-                }
-            }
-        }
-        return bean;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) {
-        return bean;
     }
     
     /**
@@ -275,9 +258,9 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
             if(!ff4j.isAlterBeanThrowInvocationTargetException() && invocationTargetException.getCause() != null) {
                 throw invocationTargetException.getCause();
             }
-            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke method " + method.getName() + " on bean " + alterBean, invocationTargetException);
+            throw new IllegalArgumentException("ff4j-aop: Cannot invoke method " + method.getName() + " on bean " + alterBean, invocationTargetException);
         } catch (Exception exception) {
-            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke method " + method.getName() + " on bean " + alterBean, exception);
+            throw new IllegalArgumentException("ff4j-aop: Cannot invoke method " + method.getName() + " on bean " + alterBean, exception);
         }
     }
 
@@ -314,22 +297,18 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
         try {
             return method.invoke(targetBean, pMInvoc.getArguments());
         } catch (IllegalAccessException e) {
-            throw makeIllegalArgumentException(FF4J_AOP_CANNOT_INVOKE + method.getName() + ON_ALTERBEAN + declaringClass
+            throw new IllegalArgumentException(FF4J_AOP_CANNOT_INVOKE + method.getName() + ON_ALTERBEAN + declaringClass
                     + " please check visibility", e);
         } catch (InvocationTargetException invocationTargetException) {
             if(!ff4j.isAlterBeanThrowInvocationTargetException() && invocationTargetException.getCause() != null) {
                 throw invocationTargetException.getCause();
             }
-            throw makeIllegalArgumentException(FF4J_AOP_CANNOT_INVOKE + method.getName() + ON_ALTERBEAN + declaringClass
+            throw new IllegalArgumentException(FF4J_AOP_CANNOT_INVOKE + method.getName() + ON_ALTERBEAN + declaringClass
                     + " please check signatures", invocationTargetException);
         } catch (Exception exception) {
-            throw makeIllegalArgumentException(FF4J_AOP_CANNOT_INVOKE + method.getName() + ON_ALTERBEAN + declaringClass
+            throw new IllegalArgumentException(FF4J_AOP_CANNOT_INVOKE + method.getName() + ON_ALTERBEAN + declaringClass
                     + " please check signatures", exception);
         }
-    }
-
-    private IllegalArgumentException makeIllegalArgumentException(String message, Exception exception) {
-        return new IllegalArgumentException(message, exception);
     }
 
     protected boolean isBeanAProxyOfAlterClass(Object proxy, Class<?> alterClass) {
@@ -346,7 +325,7 @@ public class FeatureAdvisor implements MethodInterceptor, BeanPostProcessor, App
         }
     }
 
-    /** {@inheritDoc} */
+    /** {@inheritDoc} */ 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.appCtx = applicationContext;
