@@ -338,20 +338,6 @@ public class FF4jTest extends AbstractFf4jTest {
     }
 
     @Test
-    public void testEnableAlterBeanThrowInvocationTargetException() {
-        FF4j ff4j = new FF4j();
-        ff4j.enableAlterBeanThrowInvocationTargetException();
-        Assert.assertTrue(ff4j.isAlterBeanThrowInvocationTargetException());
-    }
-
-    @Test
-    public void testDisableAlterBeanThrowInvocationTargetException() {
-        FF4j ff4j = new FF4j();
-        ff4j.disableAlterBeanThrowInvocationTargetException();
-        Assert.assertFalse(ff4j.isAlterBeanThrowInvocationTargetException());
-    }
-
-    @Test
     public void testImportFeatures() {
         FF4j ff4j = new FF4j();
         List < Feature > listOfFeatures = new ArrayList<Feature>();

@@ -2,60 +2,57 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~     COORDINATES          ~ -->
+	<!-- ~         COORDINATES      ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<artifactId>ff4j-jmx</artifactId>
+	<artifactId>ff4j-store-cassandra</artifactId>
 	<packaging>jar</packaging>
-	<name>ff4j-jmx</name>
-	
-	<description>
-		This project provides MBEANs to work upon features through JMX.
-	</description>
-	
+	<name>ff4j-store-cassandra</name>
+
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~   PARENT                 ~ -->
+	<!-- ~         PARENT           ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<parent>
 		<groupId>org.ff4j</groupId>
 		<artifactId>ff4j-parent</artifactId>
-		<version>1.6-SNAPSHOT</version>
+		<version>1.5.2-SNAPSHOT</version>
 	</parent>
-	
+
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~        PROPERTIES        ~ -->
+	<!-- ~      PROPERTIES          ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<properties>
-	 	<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
+		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
+		
 	</properties>
-	
+
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~      DEPENDENCIES        ~ -->
+	<!-- ~       DEPENDENCIES       ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<dependencies>
-	
-		<!--  core -->
+
+		<!-- logger -->
 		<dependency>
-			<artifactId>ff4j-core</artifactId>
 			<groupId>org.ff4j</groupId>
+			<artifactId>ff4j-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		
-		<!-- JMX -->
+		<!-- Driver Cassandra -->
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
+		    <groupId>com.datastax.cassandra</groupId>
+		    <artifactId>cassandra-driver-core</artifactId>
 		</dependency>
-		
-		<!-- test -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
+
+		<!-- Tests -->
 		<dependency>
 			<artifactId>ff4j-test</artifactId>
 			<groupId>org.ff4j</groupId>
 			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -68,12 +65,31 @@
 			<artifactId>logback-classic</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<scope>test</scope>
-		</dependency>
 		
+
 	</dependencies>
+	
+	<!-- 	<build>
+	<plugins>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>cassandra-maven-plugin</artifactId>
+            <version>3.5</version>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>start</goal>
+                        <goal>flush</goal>
+                        <goal>cleanup</goal>
+                    </goals>
+                    <phase>compile</phase>
+                </execution>
+            </executions>
+        </plugin>
+     <plugins>
+     
+</build>
+ -->
+
 
 </project>

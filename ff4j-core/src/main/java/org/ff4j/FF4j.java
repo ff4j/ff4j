@@ -26,7 +26,6 @@ import static org.ff4j.audit.EventConstants.SOURCE_JAVA;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;

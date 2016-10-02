@@ -1,5 +1,7 @@
 package org.ff4j.aop;
 
+import java.lang.reflect.InvocationTargetException;
+
 /*
  * #%L
  * ff4j-aop
@@ -21,7 +23,6 @@ package org.ff4j.aop;
  */
 
 import org.ff4j.FF4j;
-import org.ff4j.aop.test.exception.ApplicationException;
 import org.ff4j.aop.test.goodbye.GoodbyeService;
 import org.ff4j.aop.test.greeting.GreetingService;
 import org.junit.After;
@@ -34,8 +35,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.lang.reflect.InvocationTargetException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:applicationContext-ff4j-aop-test.xml")
