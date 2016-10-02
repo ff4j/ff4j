@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * @author <a href="mailto:paul58914080@gmail.com">Paul Williams</a>
  */
-@ControllerAdvice
+@ControllerAdvice(basePackages = {"org.ff4j.spring.boot.web.api.resources"})
 public class FF4jExceptionHandler {
     @ExceptionHandler(value = IllegalArgumentException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "bad request")
