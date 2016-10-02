@@ -118,10 +118,5 @@ public class HomeController extends AbstractController {
 		}
 		ctx.setVariable("homebean", hb);
 	}
-    
-    private void renderPage(HttpServletRequest req, HttpServletResponse res, WebContext ctx) {
-        
-        
-    }
 
 }

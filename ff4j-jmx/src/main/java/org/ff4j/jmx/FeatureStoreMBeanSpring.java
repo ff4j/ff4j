@@ -6,7 +6,6 @@ import java.util.Set;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedOperationParameter;
 import org.springframework.jmx.export.annotation.ManagedOperationParameters;
