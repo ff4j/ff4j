@@ -1,5 +1,7 @@
 package org.ff4j.aop.test.noannotation;
 
+import org.ff4j.aop.Flip;
+
 /*
  * #%L
  * ff4j-aop
@@ -30,5 +32,15 @@ public class GreetingServiceEnglishImpl2 implements GreetingService2 {
 	public String sayHelloWithClass(String name) {
 		return "Hi " + name;
 	}
+	
+	@Flip(name = "language-french", alterClazz = GreetingServiceGermanImpl.class)
+    public String sayGerman() {
+	    return "Salut";
+	}
+
+    @Override
+    public String sayHallow(String name) {
+        return sayGerman();
+    }
 
 }

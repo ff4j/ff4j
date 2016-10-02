@@ -19,22 +19,20 @@ package org.ff4j.aop.test.noannotation;
  * limitations under the License.
  * #L%
  */
-
-
-public class GreetingServiceFrenchImpl2 implements GreetingService2 {
+public class GreetingServiceGermanImpl implements GreetingService2 {
 
     @Override
     public String sayHello(String name) {
-        return "Bonjour " + name;
+        return "Guten Tag " + name;
     }
 
 	@Override
 	public String sayHelloWithClass(String name) {
-		return "Salut " + name;
+		return "Hallo " + name;
 	}
 
     @Override
-    public String sayHallow(String name) {
+    public String sayHallow(String name) { 
         return sayHelloWithClass(name);
     }
 

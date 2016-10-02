@@ -29,5 +29,8 @@ public interface GreetingService2 {
 
 	@Flip(name = "language-french", alterClazz = GreetingServiceFrenchImpl2.class)
 	String sayHelloWithClass(String name);
-
+	
+	@Flip(name = "language-german", alterClazz = GreetingServiceGermanImpl.class)
+    String sayHallow(String name);
+	
 }

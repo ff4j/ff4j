@@ -39,9 +39,10 @@ public class AopWithoutAnnotationTest {
     @Autowired
     @Qualifier("greeting.noannotation.english")
     private GreetingService2 greeting;
-
+    
     @Test
     public void testAOP() {
+        ff4j.disable("language-french");
         Assert.assertTrue(greeting.sayHello("CLU").startsWith("Hello"));
         ff4j.enable("language-french");
         
@@ -49,6 +50,20 @@ public class AopWithoutAnnotationTest {
         ff4j.disable("language-french");
         
         Assert.assertTrue(greeting.sayHello("CLU").startsWith("Hello"));
+    }
+    
+    @Test
+    public void testAOPAlterClassSpring() {
+        Assert.assertTrue(greeting.sayHelloWithClass("CLU").startsWith("Hi"));
+        ff4j.enable("language-french");
+        Assert.assertTrue(greeting.sayHelloWithClass("CLU").startsWith("Salut"));
+    }
+    
+    @Test
+    public void testAOPAlterClass() {
+        Assert.assertTrue(greeting.sayHallow("CLU").startsWith("Salut"));
+        ff4j.enable("language-german");
+        Assert.assertTrue(greeting.sayHallow("CLU").startsWith("Hallo"));
     }
 
 }

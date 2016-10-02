@@ -88,7 +88,6 @@ public class FeatureAdvisorTest {
     @Test
     public void testAnnotatedFlippingifqualifiedimplementationisnotthefirstclassqualifiednameinnaturalordering() {
         Assert.assertTrue(goodbye.sayGoodbye("CLU").startsWith("Au revoir"));
-
         ff4j.enable("language-english");
         Assert.assertTrue("Service did not flipped", goodbye.sayGoodbye("CLU").startsWith("Goodbye"));
     }
@@ -97,35 +96,18 @@ public class FeatureAdvisorTest {
     @Ignore
     public void testAnnotatedFlippingwithalterClazzifqualifiedimplementationisnotthefirstclassqualifiednameinnaturalordering() {
         Assert.assertTrue(goodbye.sayGoodbyeWithClass("CLU").startsWith("A plus"));
-
         ff4j.enable("language-english");
         Assert.assertTrue("Service did not flipped", goodbye.sayGoodbyeWithClass("CLU").startsWith("See you"));
     }
 
-    @Test(expected = ApplicationException.class)
-    public void testAlterBeanInvokeThrowApplicationException() {
-        ff4j.disableAlterBeanThrowInvocationTargetException();
-        ff4j.enable("language-english");
-        goodbye.sayGoodbyeThrowException();
-    }
-
-    @Test(expected = ApplicationException.class)
-    public void testAlterClazzInvokeThrowApplicationException() {
-        ff4j.disableAlterBeanThrowInvocationTargetException();
-        ff4j.enable("language-english");
-        goodbye.sayGoodbyeWithClassThrowException();
-    }
-
     @Test(expected = IllegalArgumentException.class)
     public void testAlterBeanInvokeThrowInvocationTargetExceptionNull() throws Exception {
-        ff4j.enableAlterBeanThrowInvocationTargetException();
         ff4j.enable("language-english");
         goodbye.sayGoodbyeInvocationTargetExceptionNull();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testAlterClazzInvokeThrowInvocationTargetExceptionNull() throws InvocationTargetException {
-        ff4j.enableAlterBeanThrowInvocationTargetException();
         ff4j.enable("language-english");
         goodbye.sayGoodbyeWithClassInvocationTargetExceptionNull();
     }

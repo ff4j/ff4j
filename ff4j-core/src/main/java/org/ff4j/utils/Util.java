@@ -30,6 +30,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.lang.model.type.NullType;
+
 import java.util.Set;
 
 import org.ff4j.audit.Event;
@@ -58,6 +61,16 @@ public class Util {
      */
     public static boolean hasLength(String expression) {
         return expression != null && !"".equals(expression);
+    }
+    
+    /**
+     * Check that class is valid.
+     * 
+     * @param expression
+     *            expression to evaluate
+     */
+    public static boolean isValidClass(Class<?> clazz) {
+        return (clazz != null) && (clazz != NullType.class);
     }
     
    /**

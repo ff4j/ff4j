@@ -45,8 +45,15 @@ public @interface Flip {
      * 
      * @return target Flipping Strategy
      */
-    Class<?> strategy() default NullType.class;
+    Class<?> flippingStrategy() default NullType.class;
 
+    /**
+     * Overriding Fliping Strategy init param as JSON
+     * 
+     * @return target Flipping Strategy
+     */
+    String flippingInitParams() default "";
+    
     /**
      * Location of the flipping execution context.
      *
