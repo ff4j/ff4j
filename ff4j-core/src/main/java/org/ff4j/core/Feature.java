@@ -223,6 +223,10 @@ public class Feature implements Serializable {
         return json.toString();
     }
     
+    public static Feature fromJson(String jsonString) {
+        return null;
+    }
+    
     /**
      * Enable target feature
      */

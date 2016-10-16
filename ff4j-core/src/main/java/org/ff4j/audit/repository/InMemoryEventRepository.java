@@ -296,7 +296,7 @@ public class InMemoryEventRepository extends AbstractEventRepository {
         for (String currentDay : getCandidateDays(query.getFrom(), query.getTo())) {
             // There are some events with the current date
             if (featureUsageEvents.containsKey(currentDay)) {
-                Map<String, EventSeries> currentDayEvents = featureUsageEvents.get(currentDay);
+               Map<String, EventSeries> currentDayEvents = featureUsageEvents.get(currentDay);
                for (String currentFeature : currentDayEvents.keySet()) {
                     // query can have filters for names, here we limite the number of map to scan
                     if (query.matchName(currentFeature)) {

@@ -29,6 +29,7 @@ import org.ff4j.conf.XmlConfig;
 import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.utils.JsonUtils;
@@ -139,6 +140,19 @@ public abstract class AbstractFeatureStore implements FeatureStore {
         Util.assertHasLength(uid);
         if (!exist(uid)) {
             throw new FeatureNotFoundException(uid);
+        }
+    }
+    
+    /**
+     * Check that current feature does not exist.
+     *
+     * @param uid
+     *      current feature identifier.s
+     */
+    protected void assertFeatureNotExist(String uid) {
+        Util.assertHasLength(uid);
+        if (exist(uid)) {
+            throw new FeatureAlreadyExistException(uid);
         }
     }
     

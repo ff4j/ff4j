@@ -1,9 +1,9 @@
 /**
- * Provide all pojo beans to work with Properties.
+ * Provides beans to work with ff4j types Property<?>.
  * <p>
  *
  * @author Cedrick Lunven (@clunven)</a>
- * @version 1.3
+ * @since 1.3
  */
 package org.ff4j.property;
 

@@ -37,13 +37,16 @@ import org.ff4j.property.Property;
  * @param <C>
  *      current collection type
  */
-public abstract class AbstractPropertyMultiValued < T, C extends Collection< T>> extends Property < C > implements Collection< T > {
+public abstract class AbstractPropertyMultiValued < T, C extends Collection< T >> extends Property < C > implements Collection< T > {
 
     /** Serial. */
     private static final long serialVersionUID = 1L;
     
+    /** Delimiter for lists. */
+    protected static final String DEFAULT_DELIMETER = ",";
+    
     /** required if should be splip. */
-    private String listDelimiter = ",";
+    private String listDelimiter = DEFAULT_DELIMETER;
     
     /**
      * Default constructor.
@@ -103,6 +106,18 @@ public abstract class AbstractPropertyMultiValued < T, C extends Collection< T>>
     public boolean add(T e) {
         return (null != getValue()) ? getValue().add(e) : false;
     }
+    
+    /**
+     * Add values to target collections.
+     *
+     * @param values
+     *      target values
+     */
+    public void addAll(T... values) {
+        if ((null != value) && (null != getValue())) {
+            getValue().addAll(Arrays.asList(values));
+        }
+    }
    
     /**
      * Getter accessor for attribute 'separator'.
@@ -112,7 +127,7 @@ public abstract class AbstractPropertyMultiValued < T, C extends Collection< T>>
      */
     public String getListDelimiter() {
         if (null == listDelimiter) {
-            listDelimiter = ",";
+            listDelimiter = DEFAULT_DELIMETER;
         }
         return listDelimiter;
     }

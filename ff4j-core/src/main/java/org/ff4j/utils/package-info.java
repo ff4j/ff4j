@@ -1,5 +1,5 @@
 /**
- * Provide utilities classes
+ * Provides utilities static classes (File, IO, Time...)
  * <p>
  *
  * @author Cedrick Lunven (@clunven)</a>

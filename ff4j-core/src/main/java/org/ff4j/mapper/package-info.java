@@ -1,10 +1,11 @@
 /**
- * Provides flipping strategies time-oriented (ReleaseDate, OfficeHours..) 
+ * Provides interfaces and abstraction to implement mapping from beans to storage technology.
  * <p>
  *
  * @author Cedrick Lunven (@clunven)</a>
+ * @version 1.0
  */
-package org.ff4j.strategy.time;
+package org.ff4j.mapper;
 
 /*
  * #%L

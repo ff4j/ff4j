@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.ff4j.core.FlippingStrategy;
+import org.ff4j.utils.JsonUtils;
 import org.ff4j.utils.MappingUtil;
 
 /**
@@ -69,6 +70,17 @@ public abstract class AbstractFlipStrategy implements FlippingStrategy {
     public String toString() {
         return this.getType() + "," + MappingUtil.fromMap(getInitParams());
     }
+    
+    /**
+     * Convert {@link FlippingStrategy} as Json.
+     *
+     * @return
+     *      the relative string
+     */
+    public String toJson() {
+        return JsonUtils.flippingStrategyAsJson(this);
+    }
+    
 
     /**
      * Getter accessor for attribute 'classType'.

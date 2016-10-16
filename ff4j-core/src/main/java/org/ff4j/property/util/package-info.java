@@ -1,11 +1,7 @@
 /**
+ * Provides utilities classes for Properties (Factory, Json).
  * 
- */
-/**
- * Class to TODO
- *
  * @author Cedrick Lunven (@clunven)</a>
- *
  */
 package org.ff4j.property.util;
 

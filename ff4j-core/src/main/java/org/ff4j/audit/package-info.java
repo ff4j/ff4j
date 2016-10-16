@@ -1,5 +1,5 @@
 /**
- * Provide audit and monitoring capabilities.
+ * Provides Audit and monitoring related to feature toggle
  *
  * @author Cedrick Lunven (@clunven)</a>
  * @version 1.2

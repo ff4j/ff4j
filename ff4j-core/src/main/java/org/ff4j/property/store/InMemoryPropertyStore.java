@@ -130,14 +130,14 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
     /** {@inheritDoc} */
     @Override
     public Property<?> readProperty(String name) {
-        assertPropertyName(name);
+        assertPropertyExist(name);
         return properties.get(name);
     }
     
     /** {@inheritDoc} */
     @Override
     public void deleteProperty(String name) {
-        assertPropertyName(name);
+        assertPropertyExist(name);
         // Delete
         properties.remove(name);
     }

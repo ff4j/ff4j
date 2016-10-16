@@ -1,5 +1,13 @@
 package org.ff4j.test.audit;
 
+import static org.ff4j.audit.EventConstants.ACTION_CHECK_OK;
+import static org.ff4j.audit.EventConstants.SOURCE_JAVA;
+import static org.ff4j.audit.EventConstants.SOURCE_WEB;
+import static org.ff4j.audit.EventConstants.TARGET_FEATURE;
+
+import java.util.ArrayList;
+import java.util.Map;
+
 /*
  * #%L
  * ff4j-test
@@ -21,19 +29,250 @@ package org.ff4j.test.audit;
  */
 
 import org.ff4j.FF4j;
+import org.ff4j.audit.Event;
+import org.ff4j.audit.EventConstants;
+import org.ff4j.audit.EventPublisher;
+import org.ff4j.audit.EventQueryDefinition;
+import org.ff4j.audit.EventSeries;
+import org.ff4j.audit.MutableHitCount;
+import org.ff4j.audit.chart.BarChart;
 import org.ff4j.audit.repository.EventRepository;
+import org.ff4j.core.Feature;
+import org.ff4j.property.store.InMemoryPropertyStore;
+import org.ff4j.store.InMemoryFeatureStore;
+import org.ff4j.utils.Util;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Event Repository test support.
  *
  * @author Cedrick LUNVEN (@clunven)
  */
-public class EventRepositoryTestSupport {
+public abstract class EventRepositoryTestSupport {
     
     /** Initialize */
     protected FF4j ff4j = null;
     
-    /** Tested Store. */
+    /** Feature List. */
+    protected ArrayList<Feature> features;
+
+    /** Target {@link EventRepository}. */
     protected EventRepository repo;
+    
+    /** Target publisher. */
+    protected EventPublisher publisher;
+    
+    /** {@inheritDoc} */
+    @Before
+    public void setUp() throws Exception {
+        ff4j = new FF4j();
+        ff4j.setFeatureStore(new InMemoryFeatureStore("test-ff4j-features.xml"));
+        ff4j.setPropertiesStore(new InMemoryPropertyStore("test-ff4j-features.xml"));
+        ff4j.setEventRepository(initRepository());
+        repo = ff4j.getEventRepository();
+    }
+   
+    /**
+     * Event generation.
+     * 
+     * @param uid
+     *      target unique identifier
+     * @return
+     *      unique event
+     */
+    protected Event generateFeatureUsageEvent(String uid) {
+        return new Event(SOURCE_JAVA, TARGET_FEATURE, uid, ACTION_CHECK_OK);
+    }
+    
+    /**
+     * Event generation.
+     *
+     * @param uid
+     *      target unique identifier
+     * @param timestamp
+     *      current event time
+     * @return
+     */
+    protected Event generateFeatureUsageEvent(String uid, long timestamp) {
+        Event event = generateFeatureUsageEvent(uid);
+        event.setTimestamp(timestamp);
+        return event;
+    }
+    
+    /**
+     * Generate random event.
+     *
+     * @param uid
+     *      event uid
+     * @param from
+     *      time slot in
+     * @param to
+     *      time slot to
+     * @return
+     *      target event
+     */
+    protected Event generateRandomFeatureUsageEvent(String uid, long from, long to) {
+        return generateFeatureUsageEvent(uid, from + (long) (Math.random() * (to-from)));
+    }
+    
+    /**
+     * Generate random event.
+     *
+     * @param uid
+     *      event uid
+     * @param from
+     *      time slot in
+     * @param to
+     *      time slot to
+     * @return
+     *      target event
+     */
+    protected Event generateRandomFeatureUsageEvent(long from, long to) {
+        return generateRandomFeatureUsageEvent(Util.getRandomElement(features).getUid(), from , to);
+    }
+    
+    /**
+     * Generate random events for.
+     */
+    protected void populateRepository(long from, long to, int totalEvent) throws InterruptedException {
+        for (int i = 0; i < totalEvent; i++) {
+            repo.saveEvent(generateRandomFeatureUsageEvent(from, to));
+        }
+    }
+    
+    /**
+     * Any store test will declare its store through this callback.
+     * 
+     * @return working feature store
+     * @throws Exception
+     *             error during building feature store
+     */
+    protected abstract EventRepository initRepository();
+    
+    /** TDD. */
+    @Test
+    public void testSaveEventUnit() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        // Given
+        EventQueryDefinition eqd = new EventQueryDefinition(start, System.currentTimeMillis());
+        Assert.assertEquals(0, repo.getFeatureUsageTotalHitCount(eqd));
+        // When
+        repo.saveEvent(generateFeatureUsageEvent("f1"));
+        // Wait for the event to be effectively store
+        Thread.sleep(100);
+        // Then
+        EventQueryDefinition eqd2 = new EventQueryDefinition(start-20, System.currentTimeMillis());
+        Assert.assertEquals(1, repo.getFeatureUsageTotalHitCount(eqd2));
+    }
+    
+    /** TDD. */
+    @Test(expected = IllegalArgumentException.class)
+    public void testSaveEventNull() {
+        Assert.assertFalse(repo.saveEvent(null));
+    }
+    
+    /** TDD. */
+    @Test
+    public void testSaveAuditTrail() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        // Given
+        Event evt1 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CREATE);
+        // When
+        repo.saveEvent(evt1);
+        // Wait for the event to be effectively store
+        Thread.sleep(200);
+        EventQueryDefinition eqd2 =new EventQueryDefinition(start-200, System.currentTimeMillis());
+        Assert.assertEquals(1, repo.getAuditTrail(eqd2).size());
+    }
+    
+    /** TDD. */
+    @Test
+    public void testFeatureUsageBarCharts() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        // Given empty event repository
+        // When
+        repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CREATE));
+        for(int i = 0;i<8;i++) {
+            Thread.sleep(100);
+            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CHECK_OK));
+            repo.saveEvent(new Event(SOURCE_WEB, TARGET_FEATURE,  "f2", ACTION_CHECK_OK));
+        }
+        // Then : Assert bar chart (2 bars with 8 and 8)
+        EventQueryDefinition testQuery = new EventQueryDefinition(start-10, System.currentTimeMillis()+10);
+        BarChart bChart = repo.getFeatureUsageBarChart(testQuery);
+        
+        Assert.assertEquals(2, bChart.getChartBars().size());
+        Assert.assertEquals(new Integer(8), bChart.getChartBars().get(0).getValue());
+        Assert.assertEquals(new Integer(8), bChart.getChartBars().get(1).getValue());
+        Assert.assertNotNull(bChart.getChartBars().get(0).getColor());
+        Assert.assertNotNull(bChart.getChartBars().get(1).getColor());
+    }
+    
+    /** TDD. */
+    @Test
+    public void testFeatureUsageHitCount() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        // Given empty event repository
+        // When
+        repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CREATE));
+        for(int i = 0;i<8;i++) {
+            Thread.sleep(100);
+            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CHECK_OK));
+            repo.saveEvent(new Event(SOURCE_WEB, TARGET_FEATURE, "f2", EventConstants.ACTION_CHECK_OK));
+        }
+        Thread.sleep(100);
+        
+        // Then
+        EventQueryDefinition testQuery = new EventQueryDefinition(start, System.currentTimeMillis());
+        // Assert Pie Chart (2 sectors with 8 and 8)
+        Map < String, MutableHitCount > mapOfHit = repo.getFeatureUsageHitCount(testQuery);
+        Assert.assertEquals(2, mapOfHit.size());
+        Assert.assertTrue(mapOfHit.containsKey("f1"));
+        Assert.assertTrue(mapOfHit.containsKey("f2"));
+        Assert.assertEquals(8, mapOfHit.get("f1").get());
+    }
+    
+    /** TDD. */
+    @Test
+    public void testSaveCheckOff() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        // Given
+        Event evt1 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CHECK_OFF);
+        // When
+        Assert.assertTrue(repo.saveEvent(evt1));
+        Thread.sleep(100);
+        // Then
+        Assert.assertEquals(0, repo.getFeatureUsageTotalHitCount(new EventQueryDefinition(start, System.currentTimeMillis())));
+        Assert.assertEquals(0, repo.getAuditTrail(new EventQueryDefinition(start, System.currentTimeMillis())).size());
+    }
+    
+    /** TDD. */
+    @Test
+    public void testLimitEventSeries() throws InterruptedException {
+        EventSeries es = new EventSeries(5);
+        for(int i=0;i<10;i++) {
+            Thread.sleep(10);
+            es.add(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CREATE));
+        }
+        Assert.assertEquals(5, es.size());
+    }
+    
+    /** TDD. */
+    @Test
+    public void testGetEventByUID() throws InterruptedException {
+        // Given
+        String dummyId = "1234-5678-9012-3456";
+        Event evt1 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CHECK_OFF);
+        evt1.setUuid(dummyId);
+        // When
+        repo.saveEvent(evt1);
+        // Let the store to be updated
+        Thread.sleep(100);
+        // Then
+        Event evt = repo.getEventByUUID(dummyId, System.currentTimeMillis());
+        Assert.assertNotNull(evt);
+    }
 
 }

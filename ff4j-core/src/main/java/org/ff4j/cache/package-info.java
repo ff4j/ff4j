@@ -1,5 +1,5 @@
 /**
- * Provide a cache abstraction to limit overhead of looking for features in external storages.
+ * Provides a cache proxy in ordre to limit overhead when reading Feature or Pro^perties in external storages.
  * <p>
  *
  * @author Cedrick Lunven (@clunven)</a>

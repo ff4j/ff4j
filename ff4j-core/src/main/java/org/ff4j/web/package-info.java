@@ -1,5 +1,5 @@
 /**
- * Publish RESTFul WebAPI to work on features
+ * Provides bean definitions to work with web (API).
  * <p>
  *
  * @author Cedrick Lunven (@clunven)</a>

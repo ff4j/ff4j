@@ -1,5 +1,5 @@
 /**
- * Custom strategies to flip (checked if and only if status is enabled and roles granted)
+ * Provides ad-hoc flipping strategies for business and infrastructure Toggles.
  * <p>
  *
  * @author Cedrick Lunven (@clunven)</a>

@@ -1,5 +1,5 @@
 /**
- * Provide a repository for metrics and events
+ * Provides repositories (inmemory, jdbc) to store audit metrics and events.
  * <p>
  *
  * @author Cedrick Lunven (@clunven)</a>

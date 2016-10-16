@@ -1,5 +1,5 @@
 /**
- * Provide all pojo beans to work with MutliValued Properties.
+ * Provides beans to work with ff4j multivalued types :Property<? extends Collection<?>>.
  * <p>
  *
  * @author Cedrick Lunven (@clunven)</a>

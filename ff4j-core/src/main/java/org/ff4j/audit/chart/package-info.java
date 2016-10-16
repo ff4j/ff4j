@@ -1,5 +1,5 @@
 /**
- * Provide a set of graphics item to display metrics.
+ * Provides a set of beans to display feature toggle metrics graphically (bar, pie, serie...) 
  * <p>
  *
  * @author Cedrick Lunven (@clunven)</a>

@@ -1,8 +1,14 @@
-package org.ff4j.cassandra;
+/**
+ * Provides Proxies class for stores, they update audit on each operation.
+ *
+ * @author Cedrick Lunven (@clunven)</a>
+ * @version 1.2
+ */
+package org.ff4j.audit.proxy;
 
 /*
  * #%L
- * ff4j-store-cassandra
+ * ff4j-core
  * %%
  * Copyright (C) 2013 - 2016 FF4J
  * %%
@@ -19,26 +25,3 @@ package org.ff4j.cassandra;
  * limitations under the License.
  * #L%
  */
-
-import org.ff4j.FF4j;
-import org.ff4j.cassandra.store.FeatureStoreCassandra;
-import org.junit.Ignore;
-import org.junit.Test;
-
-public class CassandraConnectionTest {
-
-    @Test
-    @Ignore
-    public void testConnection() {
-        CassandraConnection conn = new CassandraConnection();
-        
-        
-        FF4j ff4j = new FF4j();
-        ff4j.setFeatureStore(new FeatureStoreCassandra(conn));
-
-        ff4j.getFeatureStore().exist("f1");
-        
-        conn.close();
-    }
-    
-}

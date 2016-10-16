@@ -160,14 +160,14 @@ public class PropertyStoreMongo extends AbstractPropertyStore {
 
     /** {@inheritDoc} */
     public Property<?> readProperty(String name) {
-        assertPropertyName(name);
+        assertPropertyExist(name);
         Document object = getPropertiesCollection().find(BUILDER.getName(name)).first();
         return PMAPPER.fromStore(object);
     }
     
     /** {@inheritDoc} */
     public void deleteProperty(String name) {
-        assertPropertyName(name);
+        assertPropertyExist(name);
         getPropertiesCollection().deleteOne(BUILDER.getName(name));
     }
     
@@ -178,7 +178,7 @@ public class PropertyStoreMongo extends AbstractPropertyStore {
 
     /** {@inheritDoc} */
     public void updateProperty(String name, String newValue) {
-        assertPropertyName(name);
+        assertPropertyExist(name);
         readProperty(name).fromString(newValue);
         Document query = BUILDER.getName(name);
         Document update = BUILDER.getValue(newValue);

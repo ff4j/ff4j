@@ -1,5 +1,5 @@
 /**
- * Provide the custom unchecked exceptions raised.
+ * Provides custom unchecked (Runtime) exceptions raised by the framework (e.g FeatureNotFoundException).
  * <p>
  *
  * @author Cedrick Lunven (@clunven)</a>

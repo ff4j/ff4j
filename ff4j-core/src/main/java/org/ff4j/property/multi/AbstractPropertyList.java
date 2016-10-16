@@ -22,6 +22,7 @@ package org.ff4j.property.multi;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
@@ -78,6 +79,21 @@ public abstract class AbstractPropertyList < T > extends AbstractPropertyMultiVa
     public AbstractPropertyList(String uid, List<T> value) {
        super(uid, value);
     }
+    
+    /**
+     * Constructor by T expression.
+     *
+     * @param uid
+     *      unique name
+     * @param lvl
+     *      current double value
+     */
+    public AbstractPropertyList(String uid, T... value) {
+       super(uid, Arrays.asList(value));
+    }
+    
+    
+    
     
     /** {@inheritDoc} */
     @Override

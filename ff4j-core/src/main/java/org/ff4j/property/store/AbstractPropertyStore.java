@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.ff4j.conf.XmlConfig;
 import org.ff4j.conf.XmlParser;
+import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.Property;
 import org.ff4j.utils.Util;
@@ -100,10 +101,35 @@ public abstract class AbstractPropertyStore implements PropertyStore {
      * @param uid
      *      target uid
      */
-    protected void assertPropertyName(String name) {
+    protected void assertPropertyExist(String name) {
         Util.assertHasLength(name);
         if (!existProperty(name)) {
             throw new PropertyNotFoundException(name);
+        }
+    }
+    
+    /**
+     * Check that current feature does not exist.
+     *
+     * @param uid
+     *      current feature identifier.s
+     */
+    protected void assertPropertyNotExist(String uid) {
+        Util.assertHasLength(uid);
+        if (existProperty(uid)) {
+            throw new PropertyAlreadyExistException(uid);
+        }
+    }
+    
+    /**
+     * Validate feature uid.
+     *
+     * @param uid
+     *      target uid
+     */
+    protected void assertPropertyNotNull(Property<?> property) {
+        if (property == null) {
+            throw new IllegalArgumentException("Property cannot be null nor empty");
         }
     }
     

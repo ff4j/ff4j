@@ -1,5 +1,6 @@
 /**
- * Implementation of a expression interpretor with boolean algebra 
+ * Provides a flipping strategy with a expression language analyzer (Boole Algebra). 
+ * 
  * <p>
  *
  * @author Cedrick Lunven (@clunven)</a>

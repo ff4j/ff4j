@@ -25,7 +25,7 @@ package org.ff4j.property;
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class PropertyDouble extends Property< Double > {
+public class PropertyDouble extends Property < Double > {
 
     /** serial. */
     private static final long serialVersionUID = -134543098672660987L;

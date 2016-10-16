@@ -1,5 +1,5 @@
 /**
- * Provide stores to persist properties (default is in InMemory).
+ * Provides definitions for security (permissions) in Feature Toggle
  * <p>
  *
  * @author Cedrick Lunven (@clunven)</a>

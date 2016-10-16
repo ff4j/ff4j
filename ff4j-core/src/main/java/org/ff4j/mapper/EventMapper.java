@@ -24,6 +24,7 @@ import org.ff4j.audit.Event;
 
 /**
  * Specialization of mapper for Events
+ * 
  * @author Cedrick LUNVEN (@clunven)
  *
  * @param <STORE_OBJ>

@@ -114,7 +114,7 @@ public class PropertyStoreNeo4j extends AbstractPropertyStore {
 
     /** {@inheritDoc} */
     public Property<?> readProperty(String name) {
-        assertPropertyName(name);
+        assertPropertyExist(name);
         Property<?> pro;
         Transaction tx = graphDb.beginTx();
         Map<String, Object> queryParameters = new HashMap<>();
@@ -129,7 +129,7 @@ public class PropertyStoreNeo4j extends AbstractPropertyStore {
 
     /** {@inheritDoc} */
     public void updateProperty(String name, String newValue) {
-        assertPropertyName(name);
+        assertPropertyExist(name);
         // Check new value validity
         readProperty(name).fromString(newValue);
         Transaction tx = graphDb.beginTx();
@@ -151,7 +151,7 @@ public class PropertyStoreNeo4j extends AbstractPropertyStore {
 
     /** {@inheritDoc} */
     public void deleteProperty(String name) {
-        assertPropertyName(name);
+        assertPropertyExist(name);
         Map<String, Object> paramUID = new HashMap<>();
         paramUID.put("name", name);
         Transaction tx = graphDb.beginTx();

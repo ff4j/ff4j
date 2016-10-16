@@ -147,7 +147,7 @@ public class PropertyStoreRedis extends AbstractPropertyStore {
 
     /** {@inheritDoc} */
     public Property<?> readProperty(String name) {
-        assertPropertyName(name);
+        assertPropertyExist(name);
         Jedis jedis = null;
         try {
             jedis = getJedis();
@@ -161,7 +161,7 @@ public class PropertyStoreRedis extends AbstractPropertyStore {
 
     /** {@inheritDoc} */
     public void deleteProperty(String name) {
-        assertPropertyName(name);
+        assertPropertyExist(name);
         Jedis jedis = null;
         try {
             jedis = getJedis();

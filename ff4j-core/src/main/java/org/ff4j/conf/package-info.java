@@ -1,9 +1,9 @@
 /**
- * Provides Configuration beans to initialize the framework.
+ * Provides parsers to initialize the framework with xml definition files.
  * <p>
  *
  * @author Cedrick Lunven (@clunven)</a>
- * @version 1.2
+ * @since 1.2
  */
 package org.ff4j.conf;
 

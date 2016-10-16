@@ -1,5 +1,5 @@
 /**
- *Provide stores to persist features (default is in InMemory)s .
+ * Provides default stores to persist Properties (InMemory and JDBC).
  * <p>
  *
  * @author Cedrick Lunven (@clunven)</a>

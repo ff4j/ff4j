@@ -1,5 +1,5 @@
 /**
- *  Main class to use and administrate Features and Properties.
+ *  Main classes to use and administrate Features and Properties.
  *
  * @author Cedrick Lunven (@clunven)</a>
  * @version 1.0
