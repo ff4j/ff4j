@@ -119,6 +119,7 @@ public class PropertyStoreEhCacheTest extends PropertyStoreTestSupport {
     @Test
     @Override
     public void addPropertyOKsimple() {
+        System.out.println("Property simple");
     }
     
 

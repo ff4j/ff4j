@@ -27,6 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.ff4j.FF4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -36,7 +38,10 @@ import org.thymeleaf.context.WebContext;
  * @author Cedrick LUNVEN (@clunven)
  */
 public class InfosController extends AbstractController {
-	
+    
+    /** Logger for this class. */
+    public static final Logger LOGGER = LoggerFactory.getLogger(InfosController.class);
+    
 	/** View name. */
 	private static final String VIEW_INFOS = "infos";
 	
@@ -48,6 +53,7 @@ public class InfosController extends AbstractController {
 	/** {@inheritDoc} */
     public void post(HttpServletRequest req, HttpServletResponse res, WebContext ctx)
     throws IOException {
+        LOGGER.warn("Nothing implemented as POST");
     }
     
     /** {@inheritDoc} */

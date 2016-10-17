@@ -3,6 +3,7 @@ package org.ff4j.test.audit;
 import static org.ff4j.audit.EventConstants.ACTION_CHECK_OK;
 import static org.ff4j.audit.EventConstants.SOURCE_JAVA;
 import static org.ff4j.audit.EventConstants.SOURCE_WEB;
+import static org.ff4j.audit.EventConstants.SOURCE_WEBAPI;
 import static org.ff4j.audit.EventConstants.TARGET_FEATURE;
 
 import java.util.ArrayList;
@@ -232,6 +233,91 @@ public abstract class EventRepositoryTestSupport {
         Assert.assertTrue(mapOfHit.containsKey("f1"));
         Assert.assertTrue(mapOfHit.containsKey("f2"));
         Assert.assertEquals(8, mapOfHit.get("f1").get());
+    }
+    
+    @Test
+    public void testSearchFeatureUsageEvents() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CREATE));
+        for(int i = 0;i<8;i++) {
+            Thread.sleep(100);
+            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CHECK_OK));
+            repo.saveEvent(new Event(SOURCE_WEB, TARGET_FEATURE, "f2", EventConstants.ACTION_CHECK_OK));
+        }
+        Thread.sleep(100);
+        
+        // Then
+        EventQueryDefinition testQuery = new EventQueryDefinition(start-20, System.currentTimeMillis());
+        EventSeries es = repo.searchFeatureUsageEvents(testQuery);
+        Assert.assertEquals(16, es.size());
+    }
+    
+    /** TDD. */
+    @Test
+    public void testSourceHitCount() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        // When
+        for(int i = 0;i<8;i++) {
+            Thread.sleep(100);
+            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CHECK_OK));
+            repo.saveEvent(new Event(SOURCE_WEB,  TARGET_FEATURE, "f2", EventConstants.ACTION_CHECK_OK));
+        }
+        Thread.sleep(200);
+        repo.saveEvent(new Event(SOURCE_WEBAPI, TARGET_FEATURE, "f1", EventConstants.ACTION_CHECK_OK));
+        Thread.sleep(200);
+        
+        // Then
+        EventQueryDefinition testQuery = new EventQueryDefinition(start-20, System.currentTimeMillis());
+        Map < String, MutableHitCount > mapOfHit = repo.getSourceHitCount(testQuery);
+        Assert.assertEquals(3, mapOfHit.size());
+        Assert.assertTrue(mapOfHit.containsKey(SOURCE_JAVA));
+        Assert.assertTrue(mapOfHit.containsKey(SOURCE_WEB));
+        Assert.assertEquals(1, mapOfHit.get(SOURCE_WEBAPI).get());
+    }
+    
+    /** TDD. */
+    @Test
+    public void testUserHitCount() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        // When
+        for(int i = 0;i<8;i++) {
+            Event e1 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CHECK_OK);
+            e1.setUser("JOHN");
+            repo.saveEvent(e1);
+            Thread.sleep(100);
+            
+            Event e2 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CHECK_OK);
+            e2.setUser("BOB");
+            repo.saveEvent(e2);
+            Thread.sleep(100);
+        }
+        Thread.sleep(200);
+        
+        // Then
+        EventQueryDefinition testQuery = new EventQueryDefinition(start-20, System.currentTimeMillis());
+        Map < String, MutableHitCount > mapOfHit = repo.getUserHitCount(testQuery);
+        Assert.assertEquals(2, mapOfHit.size());
+        Assert.assertTrue(mapOfHit.containsKey("JOHN"));
+        Assert.assertTrue(mapOfHit.containsKey("BOB"));
+        Assert.assertEquals(8, mapOfHit.get("BOB").get());
+    }
+    
+    /** TDD. */
+    @Test
+    public void testHostHitCount() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        // When
+        for(int i = 0;i<8;i++) {
+            Thread.sleep(100);
+            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CHECK_OK));
+        }
+        Thread.sleep(200);
+        
+        // Then
+        EventQueryDefinition testQuery = new EventQueryDefinition(start, System.currentTimeMillis());
+        Map < String, MutableHitCount > mapOfHit = repo.getHostHitCount(testQuery);
+        Assert.assertEquals(1, mapOfHit.size());
+        Assert.assertEquals(1, mapOfHit.values().size());
     }
     
     /** TDD. */

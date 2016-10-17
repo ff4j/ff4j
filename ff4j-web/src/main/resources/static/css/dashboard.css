@@ -211,7 +211,7 @@
 h6.bigstats{
 	margin			: 20px;
 	padding-bottom	: 10px;
-	margin-bottom	: 0px;
+	margin-bottom	: 0;
 }
 
 #big_stats .stat h4
@@ -305,7 +305,7 @@ h6.bigstats{
     text-align:right;
     color:#687684;
     background-color:#f9f6f1;
-    padding:0px;
+    padding:0;
     padding-right:8px;
     height:20px;
     -webkit-border-radius: 5px;

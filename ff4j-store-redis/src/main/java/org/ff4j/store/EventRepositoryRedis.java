@@ -23,16 +23,20 @@ package org.ff4j.store;
 
 import static org.ff4j.redis.RedisContants.KEY_EVENT;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.ff4j.audit.Event;
+import org.ff4j.audit.EventConstants;
 import org.ff4j.audit.EventQueryDefinition;
 import org.ff4j.audit.EventSeries;
 import org.ff4j.audit.MutableHitCount;
 import org.ff4j.audit.chart.TimeSeriesChart;
 import org.ff4j.audit.repository.AbstractEventRepository;
 import org.ff4j.redis.RedisConnection;
+import org.ff4j.redis.RedisContants;
 
 import redis.clients.jedis.Jedis;
 
@@ -45,6 +49,9 @@ public class EventRepositoryRedis extends AbstractEventRepository {
 	
     /** Wrapping of redis connection (isolation). */
     private RedisConnection redisConnection;
+    
+    /** Patternt to create KEY. */
+    private static final SimpleDateFormat SDF_KEY = new SimpleDateFormat("yyyyMMdd_HHmm");
     
 	/**
      * Default Constructor.
@@ -89,58 +96,45 @@ public class EventRepositoryRedis extends AbstractEventRepository {
         this(new RedisConnection(host, port, password));
     }
     
-	/** {@inheritDoc} */
-	public boolean saveEvent(Event evt) {
-	    // The key will be : FF4J_EVENTS_FEAUID_YYYYMMDD to be able to group and search
-	    // The key will be : FF4J_EVENTS_AUDITTRAIL_YYYYMMDD to be able to group and search
-        
-	    
-	    // Then, the value will be a sorted SET and algortihms will look like InMemory
-		 if (evt == null) {
-			 throw new IllegalArgumentException("Event cannot be null nor empty");
-	     }
-		 Jedis jedis = null;
-	     try {
-	         jedis = getJedis();
-    		 String uid = KEY_EVENT + "-" + evt.getTimestamp() + "-" + evt.getUuid();
-    	     jedis.set(uid, evt.toJson());
-    	     jedis.persist(uid);
-    		 return true;
-	        } finally {
-	            if (jedis != null) {
-	                jedis.close();
-	            }
-	        }
-	}
-    
-    /**
-     * Safe acces to Jedis, avoid JNPE.
-     *
-     * @return
-     *      access jedis
-     */
-    public Jedis getJedis() {
-        if (redisConnection == null) {
-            throw new IllegalArgumentException("Cannot found any redisConnection");
-        }
-        Jedis jedis = redisConnection.getJedis();
-        if (jedis == null) {
-            throw new IllegalArgumentException("Cannot found any jedis connection, please build connection");
-        }
-        return jedis;
-    }
-
     /** {@inheritDoc} */
     @Override
     public void createSchema() {
-        // There is no schema to create, it's key value (flat) and keys are create FF4J_FEATURE_${FEATUREID}
-        return;
+        // Keys are automatically generated and created
     }
-
+    
+	/** {@inheritDoc} */
+	public boolean saveEvent(Event evt) {
+	    if (evt == null) {
+            throw new IllegalArgumentException("Event cannot be null nor empty");
+        }
+	    
+	    Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            String uid = KEY_EVENT;
+            if (EventConstants.ACTION_CHECK_OK.equalsIgnoreCase(evt.getAction())) {
+                // will be : FF4J_EVENTS_FEATUID_YYYYMMDD_HH to be able to group and search
+                uid += evt.getName();
+    	    } else {
+    	        // will be : FF4J_EVENTS_AUDITTRAIL_YYYYMMDD_HH to be able to group and search
+    	        uid += RedisContants.KEY_EVENT_AUDIT;
+    	    }
+            uid+= "_" + SDF_KEY.format(new Date(evt.getTimestamp()));
+            jedis.lpush(uid, evt.toJson());
+	        jedis.persist(uid);
+    		return true;
+	    } finally {
+	        if (jedis != null) {
+	            jedis.close();
+	        }
+	    }
+	}
+    
     /** {@inheritDoc} */
     @Override
     public Event getEventByUUID(String uuid, Long timestamp) {
-        // TODO Auto-generated method stub
+        // Check in AUDITTRAIL
+        // Check in any Key with FF4J_EVENT_*****_YYMMDD
         return null;
     }
 
@@ -165,12 +159,7 @@ public class EventRepositoryRedis extends AbstractEventRepository {
         return null;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void purgeFeatureUsage(EventQueryDefinition query) {
-        // TODO Auto-generated method stub
-        
-    }
+   
 
     /** {@inheritDoc} */
     @Override
@@ -203,7 +192,29 @@ public class EventRepositoryRedis extends AbstractEventRepository {
     /** {@inheritDoc} */
     @Override
     public void purgeAuditTrail(EventQueryDefinition query) {
-        // TODO Auto-generated method stub
-        
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void purgeFeatureUsage(EventQueryDefinition query) {
+    }
+    
+    /**
+     * Safe acces to Jedis, avoid JNPE.
+     *
+     * @return
+     *      access jedis
+     */
+    public Jedis getJedis() {
+        if (redisConnection == null) {
+            throw new IllegalArgumentException("Cannot found any redisConnection");
+        }
+        Jedis jedis = redisConnection.getJedis();
+        if (jedis == null) {
+            throw new IllegalArgumentException("Cannot found any jedis connection, please build connection");
+        }
+        return jedis;
+    }
+
+    
 }

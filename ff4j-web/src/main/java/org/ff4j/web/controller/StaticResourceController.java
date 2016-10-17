@@ -65,6 +65,7 @@ public class StaticResourceController extends AbstractController {
 	/** {@inheritDoc} */
     public void post(HttpServletRequest req, HttpServletResponse res, WebContext ctx)
     throws IOException {
+        LOGGER.warn("Nothing to implement in POST");
     }
 	
 	/** {@inheritDoc} */

@@ -47,18 +47,6 @@ import org.junit.Test;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public class PropertyStoreJCacheTest {
-   
-    /** {@inheritDoc} */
-    protected PropertyStore initPropertyStore() {
-        PropertyStoreJCache riCacheStore = new PropertyStoreJCache(EhcacheCachingProvider.class.getName());
-        riCacheStore.importPropertiesFromXmlFile("ff4j.xml");
-        return riCacheStore;
-    }
-    
-    @Test
-    public void testRequired() {
-        Assert.assertNotNull(testedStore);
-    }
     
     /** Tested Store. */
     protected PropertyStore testedStore;
@@ -70,6 +58,18 @@ public class PropertyStoreJCacheTest {
     @Before
     public void setUp() throws Exception {
         testedStore = initPropertyStore();
+    }
+    
+    /** {@inheritDoc} */
+    protected PropertyStore initPropertyStore() {
+        PropertyStoreJCache riCacheStore = new PropertyStoreJCache(EhcacheCachingProvider.class.getName());
+        riCacheStore.importPropertiesFromXmlFile("ff4j.xml");
+        return riCacheStore;
+    }
+    
+    @Test
+    public void testRequired() {
+        Assert.assertNotNull(testedStore);
     }
     
     // --------------- exist -----------

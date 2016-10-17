@@ -68,6 +68,15 @@ import org.junit.Test;
  */
 public class FeatureStoreJCacheTest {
    
+    /** Initialize */
+    protected FF4j ff4j = null;
+    
+    /** Tested Store. */
+    protected FeatureStore testedStore;
+
+    /** Test Values */
+    protected AssertFf4j assertFf4j;
+    
     /** {@inheritDoc} */
     protected FeatureStore initStore() {
         FeatureStoreJCache ehcacheStore = new FeatureStoreJCache(EhcacheCachingProvider.class.getName());
@@ -86,16 +95,7 @@ public class FeatureStoreJCacheTest {
             testedStore.delete(key);
         }
     }
-    
-    /** Initialize */
-    protected FF4j ff4j = null;
-    
-    /** Tested Store. */
-    protected FeatureStore testedStore;
-
-    /** Test Values */
-    protected AssertFf4j assertFf4j;
-
+   
     /** Default InMemoryStore for test purposes. */
     protected FeatureStore defaultStore = new InMemoryFeatureStore(TEST_FEATURES_FILE);
 

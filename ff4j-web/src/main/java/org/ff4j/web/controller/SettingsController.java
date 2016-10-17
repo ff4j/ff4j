@@ -58,6 +58,7 @@ public class SettingsController extends AbstractController {
 	/** {@inheritDoc} */
     public void post(HttpServletRequest req, HttpServletResponse res, WebContext ctx)
     throws IOException {
+        LOGGER.warn("Nothing implemented as POST");
     }
     
     /** {@inheritDoc} */
@@ -67,18 +68,16 @@ public class SettingsController extends AbstractController {
 		String operation = req.getParameter(WebConstants.OPERATION);
         String msgType = "success";
         String msg = null;
-        if (Util.hasLength(operation)) {
-          if (TOGGLE_AUDIT.equalsIgnoreCase(operation)) {
-              if (getFf4j().isEnableAudit()) {
-                  getFf4j().audit(false);
-                  msg = "Audit is now DISABLED";
-                  LOGGER.info("Audit has been disabled");
-              } else {
-                  getFf4j().audit(true);
-                  msg = "Audit is now ENABLED";
-                  LOGGER.info("Audit has been enabled");
-              }
-          }
+        if (Util.hasLength(operation) && TOGGLE_AUDIT.equalsIgnoreCase(operation)) {
+            if (getFf4j().isEnableAudit()) {
+                getFf4j().audit(false);
+                msg = "Audit is now DISABLED";
+                LOGGER.info("Audit has been disabled");
+            } else {
+                getFf4j().audit(true);
+                msg = "Audit is now ENABLED";
+                LOGGER.info("Audit has been enabled");
+            }
         }
         ctx.setVariable(KEY_AUDITENABLE, getFf4j().isEnableAudit());
         ctx.setVariable("msgType", msgType);

@@ -61,8 +61,7 @@ public class EventRepositoryCassandraTest extends EventRepositoryTestSupport {
         repoCassandra.setTtl(repoCassandra.getTtl());
         repoCassandra.setConn(repoCassandra.getConn());
         repoCassandra.setBuilder(repoCassandra.getBuilder());
-        
-        EventRepositoryCassandra dummy = new EventRepositoryCassandra();
+        new EventRepositoryCassandra();
     }
 
 }

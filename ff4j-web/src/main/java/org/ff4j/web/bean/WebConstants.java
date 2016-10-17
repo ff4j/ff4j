@@ -27,13 +27,7 @@ package org.ff4j.web.bean;
  * @author Cedrick LUNVEN (@clunven)
  */
 public class WebConstants {
-
-	/**
-	 * Hide defaulf constructor.
-	 */
-	private WebConstants() {
-	}
-
+	
 	// -------- HTTP STATUS ------------------------------
     
 	/** http status. */
@@ -386,5 +380,12 @@ public class WebConstants {
     
     /** Picture name for empty field. */
     public static final String PIC_DISABLE = "disabled";
+    
+    /**
+     * Hide defaulf constructor.
+     */
+    private WebConstants() {
+    }
+
   
 }

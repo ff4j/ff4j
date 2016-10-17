@@ -42,17 +42,12 @@ public class CassandraTest {
     
     @BeforeClass
     public static void startEmbeddedCassandra() throws Exception {
-        // Use a real server
-        // conn = new CassandraConnection();
-        // <--
-        
-        // Use Cassandra-Unit 
         EmbeddedCassandraServerHelper.startEmbeddedCassandra(15000);
         conn = new CassandraConnection("127.0.0.1", 9142);
-        // <--
         conn.createKeySpace();
     }
     
+    /** TDD. */
     @Test
     public void testCassandraConstant() throws Exception {
         Constructor<CassandraConstants> ce = CassandraConstants.class.getDeclaredConstructor();
@@ -60,6 +55,7 @@ public class CassandraTest {
         ce.newInstance();
     }
     
+    /** TDD. */
     @Test
     public void testCassandraMapper() throws Exception {
         Constructor<CassandraMapper> ce = CassandraMapper.class.getDeclaredConstructor();
@@ -68,6 +64,7 @@ public class CassandraTest {
         Assert.assertNull(CassandraMapper.mapEvent(null));
     }
     
+    /** TDD. */
     @Test
     public void testCassandraConnection() {
         Assert.assertNotNull(conn.getCluster());
@@ -79,25 +76,28 @@ public class CassandraTest {
         conn.createKeySpace("KS1", 5);
         conn.setReplicationFactor(3);
         conn.dropSchema();
+        conn.close();
     }
     
+    /** TDD. */
     @Test(expected = NoHostAvailableException.class)
     public void testCassandraNoHost() {
         new CassandraConnection();
     }
     
+    /** TDD. */
     @Test(expected = NoHostAvailableException.class)
     public void testCassandraNoHost2() {
         new CassandraConnection("username", "password");
     }
     
+    /** TDD. */
     @Test(expected = IllegalStateException.class)
     public void testCassandraNoHost3() {
         Cluster ccc = null;
         new CassandraConnection(ccc);
     }
     
-
     /** Ff4j
     private static FF4j ff4j; 
     
