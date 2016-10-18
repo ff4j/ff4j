@@ -23,6 +23,8 @@ package org.ff4j.cassandra;
 import java.lang.reflect.Constructor;
 
 import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
+import org.ff4j.audit.EventConstants;
+import org.ff4j.audit.EventQueryDefinition;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -61,7 +63,24 @@ public class CassandraTest {
         Constructor<CassandraMapper> ce = CassandraMapper.class.getDeclaredConstructor();
         ce.setAccessible(true);
         ce.newInstance();
-        Assert.assertNull(CassandraMapper.mapEvent(null));
+        
+    }
+    
+    @Test
+    public void testCassandraQueryBuilder() {
+        CassandraConnection   cc  = new CassandraConnection();
+        CassandraQueryBuilder cqb = new CassandraQueryBuilder(cc);
+
+        // Mapping with a whole set of filters
+        EventQueryDefinition eqd = new EventQueryDefinition();
+        eqd.addFilterAction(EventConstants.ACTION_CLEAR);
+        eqd.addFilterHost("localhost");
+        eqd.addFilterName("TOTO");
+        eqd.addFilterName("TATA");
+        eqd.addFilterSource("JAVA");
+        // Create dedicated 
+        Assert.assertNotNull(cqb.cqlUserHitCount(eqd));
+        Assert.assertNotNull(cqb.cqlCreateEvent(20));
     }
     
     /** TDD. */
@@ -79,20 +98,37 @@ public class CassandraTest {
         conn.close();
     }
     
-    /** TDD. */
     @Test(expected = NoHostAvailableException.class)
-    public void testCassandraNoHost() {
-        new CassandraConnection();
+    public void testCassandraConnectionEmpty() {
+        Cluster cluster = Cluster.builder().addContactPoint("localhost").build();
+        CassandraConnection cc = new CassandraConnection(cluster);
+        cc.initSession();
     }
     
-    /** TDD. */
     @Test(expected = NoHostAvailableException.class)
-    public void testCassandraNoHost2() {
+    public void testCassandraConnectionAuth() {
+        CassandraConnection cc = new CassandraConnection();
+        cc.setUserName("sample");
+        cc.initSession();
+    }
+    
+    
+    /** TDD. */
+    @Test
+    public void testCassandraNoHost() {
+        CassandraConnection cc = new CassandraConnection();
+        cc.setUserName(cc.getUserName());
+        cc.setUserPassword(cc.getUserPassword());
+        cc.setHostName(cc.getHostName());
+        cc.setPort(cc.getPort());
+        cc.setReplicationFactor(cc.getReplicationFactor());
+        cc.setCluster(null);
+        
         new CassandraConnection("username", "password");
     }
     
     /** TDD. */
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testCassandraNoHost3() {
         Cluster ccc = null;
         new CassandraConnection(ccc);

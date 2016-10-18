@@ -8,6 +8,7 @@ import static org.ff4j.audit.EventConstants.TARGET_FEATURE;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /*
  * #%L
@@ -37,6 +38,7 @@ import org.ff4j.audit.EventQueryDefinition;
 import org.ff4j.audit.EventSeries;
 import org.ff4j.audit.MutableHitCount;
 import org.ff4j.audit.chart.BarChart;
+import org.ff4j.audit.chart.TimeSeriesChart;
 import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.core.Feature;
 import org.ff4j.property.store.InMemoryPropertyStore;
@@ -250,6 +252,26 @@ public abstract class EventRepositoryTestSupport {
         EventQueryDefinition testQuery = new EventQueryDefinition(start-20, System.currentTimeMillis());
         EventSeries es = repo.searchFeatureUsageEvents(testQuery);
         Assert.assertEquals(16, es.size());
+        
+        // Then
+        
+    }
+    
+    @Test
+    public void testGetFeatureUsageHistory() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CREATE));
+        for(int i = 0;i<8;i++) {
+            Thread.sleep(100);
+            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CHECK_OK));
+            repo.saveEvent(new Event(SOURCE_WEB, TARGET_FEATURE, "f2", EventConstants.ACTION_CHECK_OK));
+        }
+        Thread.sleep(100);
+        
+        // Then
+        EventQueryDefinition testQuery = new EventQueryDefinition(start-20, System.currentTimeMillis());
+        TimeSeriesChart  tsc = repo.getFeatureUsageHistory(testQuery, TimeUnit.HOURS);
+        Assert.assertEquals(1, tsc.getTimeSlots().size());
     }
     
     /** TDD. */
@@ -359,6 +381,31 @@ public abstract class EventRepositoryTestSupport {
         // Then
         Event evt = repo.getEventByUUID(dummyId, System.currentTimeMillis());
         Assert.assertNotNull(evt);
+    }
+    
+    
+    /** TDD. */
+    @Test
+    public void testPurgeEvents() throws InterruptedException {
+        // Given, 2 events in the repo
+        long topStart = System.currentTimeMillis();
+        Event evtAudit = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CREATE);
+        evtAudit.setUuid("1234-5678-9012-3456");
+        Event evtFeatureUsage = new Event(SOURCE_JAVA, TARGET_FEATURE, "f2", EventConstants.ACTION_CHECK_OK);
+        evtFeatureUsage.setUuid("1234-5678-9012-3457");
+        repo.saveEvent(evtAudit);
+        repo.saveEvent(evtFeatureUsage);
+        Thread.sleep(100);
+        Assert.assertNotNull(repo.getEventByUUID(evtAudit.getUuid(), System.currentTimeMillis()));
+        Assert.assertNotNull(repo.getEventByUUID(evtFeatureUsage.getUuid(), System.currentTimeMillis()));
+        // When
+        EventQueryDefinition testQuery = new EventQueryDefinition(topStart-100, System.currentTimeMillis());
+        repo.purgeAuditTrail(testQuery);
+
+        // Then
+        Assert.assertNull(repo.getEventByUUID(evtAudit.getUuid(), System.currentTimeMillis()));
+        repo.purgeFeatureUsage(testQuery);
+        Assert.assertNull(repo.getEventByUUID(evtFeatureUsage.getUuid(), System.currentTimeMillis()));
     }
 
 }

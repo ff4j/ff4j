@@ -183,14 +183,5 @@ public class PropertyStoreCassandra extends AbstractPropertyStore {
         }
         return builder;
     }
-
-    /**
-     * Setter accessor for attribute 'builder'.
-     * @param builder
-     *      new value for 'builder '
-     */
-    public void setBuilder(CassandraQueryBuilder builder) {
-        this.builder = builder;
-    }
     
 }

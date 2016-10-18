@@ -149,9 +149,6 @@ public class EventRepositoryCassandra extends AbstractEventRepository {
         Map < String, MutableHitCount > hitCount = new HashMap<String, MutableHitCount>();
         for (Row row : rs.all()) {
             String user = row.getString(COL_EVENT_USER);
-            if (null == user) {
-                user = "Anonymous";
-            }
             if (hitCount.containsKey(user)) {
                 hitCount.get(user).inc();
             } else {
@@ -170,9 +167,6 @@ public class EventRepositoryCassandra extends AbstractEventRepository {
         Map < String, MutableHitCount > hitCount = new HashMap<String, MutableHitCount>();
         for (Row row : rs.all()) {
             String hostName = row.getString(COL_EVENT_HOSTNAME);
-            if (null == hostName) {
-                hostName = "N-A";
-            }
             if (hitCount.containsKey(hostName)) {
                 hitCount.get(hostName).inc();
             } else {
@@ -191,9 +185,6 @@ public class EventRepositoryCassandra extends AbstractEventRepository {
         Map < String, MutableHitCount > hitCount = new HashMap<String, MutableHitCount>();
         for (Row row : rs.all()) {
             String source = row.getString(COL_EVENT_SOURCE);
-            if (null == source) {
-                source = "N-A";
-            }
             if (hitCount.containsKey(source)) {
                 hitCount.get(source).inc();
             } else {

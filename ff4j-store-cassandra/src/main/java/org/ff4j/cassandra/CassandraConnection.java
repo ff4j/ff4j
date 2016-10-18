@@ -1,8 +1,10 @@
 package org.ff4j.cassandra;
 
 import static org.ff4j.cassandra.CassandraConstants.CQL_CREATEKEYSPACE;
+import static org.ff4j.cassandra.CassandraConstants.DEFAULT_HOST;
 import static org.ff4j.cassandra.CassandraConstants.DEFAULT_KEYSPACE;
 import static org.ff4j.cassandra.CassandraConstants.DEFAULT_REPLICATION_FACTOR;
+import static org.ff4j.cassandra.CassandraConstants.PORT_CQL_NATIVE;
 
 import java.text.MessageFormat;
 
@@ -51,13 +53,22 @@ public class CassandraConnection {
     private static final Logger LOGGER = LoggerFactory.getLogger(CassandraConnection.class);
     
     /** Cassandra cluster. */
-    private final Cluster cluster;
+    private Cluster cluster = null;
     
     /** Cassandra Session. */
-    private Session session;
+    private Session session = null;
     
-    /** Cassandra usersanem. */
-    private String userName;
+    /** Cassandra userusername. */
+    private String userName = null;
+    
+    /** Cassandra password if authentication enabled. */
+    private String userPassword = null;
+    
+    /** Cassandra server hostname. */
+    private String hostName = DEFAULT_HOST;
+    
+    /** Cassandra server listening port. */
+    private int port = PORT_CQL_NATIVE;
     
     /** Target keySpace. */
     private String keySpace = DEFAULT_KEYSPACE;
@@ -67,7 +78,6 @@ public class CassandraConnection {
     
     /** Default. */
     public CassandraConnection() {
-        this(CassandraConstants.DEFAULT_HOST, CassandraConstants.PORT_CQL_NATIVE, null, null);
     }
     
     /**
@@ -79,7 +89,8 @@ public class CassandraConnection {
      *      password to connect to DB
      */
     public CassandraConnection(String userName, String password) {
-        this(CassandraConstants.DEFAULT_HOST, CassandraConstants.PORT_CQL_NATIVE, userName, password);
+        this.userName     = userName;
+        this.userPassword = password;
     }
     
     /**
@@ -103,13 +114,10 @@ public class CassandraConnection {
      *      current port
      */
     public CassandraConnection(String host, int port, String userName, String password) {
-        Builder builder = Cluster.builder().addContactPoint(host).withPort(port);
-        if (Util.hasLength(userName)) {
-            this.userName = userName;
-            builder.withCredentials(userName, password);
-        }
-        this.cluster = builder.build();
-        initCluster();
+        this.hostName     = host;
+        this.port         = port;
+        this.userName     = userName;
+        this.userPassword = password;
     }
     
     /**
@@ -118,16 +126,22 @@ public class CassandraConnection {
      * @param definedCluster
      */
     public CassandraConnection(Cluster definedCluster) {
+        if (definedCluster == null) {
+            throw new IllegalArgumentException("Cluster cannot be null");
+        }
         this.cluster = definedCluster;
-        initCluster();
     }
    
     /**
      * Init Cassandra session from Cluster.s
      */
-    private void initCluster() {
+    public void initSession() {
         if (null == cluster) {
-            throw new IllegalStateException("Cluster Cassandra has not be well defined");
+            Builder builder = Cluster.builder().addContactPoint(hostName).withPort(port);
+            if (Util.hasLength(userName)) {
+                builder.withCredentials(userName, userPassword);
+            }
+            this.cluster = builder.build();
         }
         Metadata metadata = cluster.getMetadata();
         LOGGER.info("Connecting to cluster... '{}'",  metadata.getClusterName());
@@ -142,7 +156,7 @@ public class CassandraConnection {
      * Create keySpace with default value.
      */
     public void createKeySpace() {
-        session.execute(MessageFormat.format(CQL_CREATEKEYSPACE, keySpace, replicationFactor));
+        getSession().execute(MessageFormat.format(CQL_CREATEKEYSPACE, keySpace, replicationFactor));
     }
     
     /**
@@ -150,9 +164,9 @@ public class CassandraConnection {
      */
     public void dropSchema() {
         CassandraQueryBuilder cqb = new CassandraQueryBuilder(this);
-        session.execute(cqb.cqlDropAudit());
-        session.execute(cqb.cqlDropFeatures());
-        session.execute(cqb.cqlDropProperties());
+        getSession().execute(cqb.cqlDropAudit());
+        getSession().execute(cqb.cqlDropFeatures());
+        getSession().execute(cqb.cqlDropProperties());
     }
     
     /**
@@ -178,15 +192,15 @@ public class CassandraConnection {
      *      if the column exist
      */
     public boolean isColumnFamilyExist(String columnName) {
-        KeyspaceMetadata ks = cluster.getMetadata().getKeyspace(getKeySpace());
+        KeyspaceMetadata ks = getCluster().getMetadata().getKeyspace(getKeySpace());
         TableMetadata table = ks.getTable(columnName);
         return table != null;
     }
     
     /** Close cluster. */  
     public void close() {
-       session.close();
-       cluster.close();  
+       getSession().close();
+       getCluster().close();  
     }
 
     /**
@@ -196,6 +210,9 @@ public class CassandraConnection {
      *       current value of 'cluster'
      */
     public Cluster getCluster() {
+        if (cluster == null) {
+            initSession();
+        }
         return cluster;
     }
 
@@ -206,6 +223,9 @@ public class CassandraConnection {
      *       current value of 'session'
      */
     public Session getSession() {
+        if (session == null) {
+            initSession();
+        }
         return session;
     }
 
@@ -255,6 +275,81 @@ public class CassandraConnection {
      */
     public void setReplicationFactor(int replicationFactor) {
         this.replicationFactor = replicationFactor;
+    }
+
+    /**
+     * Getter accessor for attribute 'userPassword'.
+     *
+     * @return
+     *       current value of 'userPassword'
+     */
+    public String getUserPassword() {
+        return userPassword;
+    }
+
+    /**
+     * Setter accessor for attribute 'userPassword'.
+     * @param userPassword
+     * 		new value for 'userPassword '
+     */
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
+    }
+
+    /**
+     * Getter accessor for attribute 'hostName'.
+     *
+     * @return
+     *       current value of 'hostName'
+     */
+    public String getHostName() {
+        return hostName;
+    }
+
+    /**
+     * Setter accessor for attribute 'hostName'.
+     * @param hostName
+     * 		new value for 'hostName '
+     */
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
+    }
+
+    /**
+     * Getter accessor for attribute 'port'.
+     *
+     * @return
+     *       current value of 'port'
+     */
+    public int getPort() {
+        return port;
+    }
+
+    /**
+     * Setter accessor for attribute 'port'.
+     * @param port
+     * 		new value for 'port '
+     */
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    /**
+     * Setter accessor for attribute 'cluster'.
+     * @param cluster
+     * 		new value for 'cluster '
+     */
+    public void setCluster(Cluster cluster) {
+        this.cluster = cluster;
+    }
+
+    /**
+     * Setter accessor for attribute 'userName'.
+     * @param userName
+     * 		new value for 'userName '
+     */
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
 }

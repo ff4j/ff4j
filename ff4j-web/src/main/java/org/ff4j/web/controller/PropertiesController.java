@@ -143,30 +143,29 @@ public class PropertiesController extends AbstractController {
 
         String msgType = "success";
         String msg = null;
-        if (Util.hasLength(operation) && Util.hasLength(propertyName)) {
-            if (getFf4j().getPropertiesStore().existProperty(propertyName)) {
-                
-                if (OP_RMV_PROPERTY.equalsIgnoreCase(operation)) {
-                    getFf4j().getPropertiesStore().deleteProperty(propertyName);
-                    msg = msg(propertyName, "DELETED");
-                    LOGGER.info("Property '" + propertyName + "' has been disabled");
-                }
+        if (Util.hasLength(operation) && Util.hasLength(propertyName) && 
+                getFf4j().getPropertiesStore().existProperty(propertyName)) {
 
-                if (OP_DELETE_FIXEDVALUE.equalsIgnoreCase(operation)) {
-                    String fixedValue = req.getParameter(PARAM_FIXEDVALUE);
-                    Property<?> ap = getFf4j().getPropertiesStore().readProperty(propertyName);
-                    ap.getFixedValues().remove(fixedValue);
-                    getFf4j().getPropertiesStore().updateProperty(ap);
-                    LOGGER.info("Property '" + propertyName + "' remove fixedValue '" + fixedValue + "'");
-                }
+            if (OP_RMV_PROPERTY.equalsIgnoreCase(operation)) {
+                getFf4j().getPropertiesStore().deleteProperty(propertyName);
+                msg = msg(propertyName, "DELETED");
+                LOGGER.info("Property '" + propertyName + "' has been disabled");
+            }
 
-                if (OP_ADD_FIXEDVALUE.equalsIgnoreCase(operation)) {
-                    String fixedValue = req.getParameter(PARAM_FIXEDVALUE);
-                    Property<?> ap = getFf4j().getPropertiesStore().readProperty(propertyName);
-                    ap.add2FixedValueFromString(fixedValue);
-                    getFf4j().getPropertiesStore().updateProperty(ap);
-                    LOGGER.info("Property '" + propertyName + "' add fixedValue '" + fixedValue + "'");
-                }
+            if (OP_DELETE_FIXEDVALUE.equalsIgnoreCase(operation)) {
+                String fixedValue = req.getParameter(PARAM_FIXEDVALUE);
+                Property<?> ap = getFf4j().getPropertiesStore().readProperty(propertyName);
+                ap.getFixedValues().remove(fixedValue);
+                getFf4j().getPropertiesStore().updateProperty(ap);
+                LOGGER.info("Property '" + propertyName + "' remove fixedValue '" + fixedValue + "'");
+            }
+
+            if (OP_ADD_FIXEDVALUE.equalsIgnoreCase(operation)) {
+                String fixedValue = req.getParameter(PARAM_FIXEDVALUE);
+                Property<?> ap = getFf4j().getPropertiesStore().readProperty(propertyName);
+                ap.add2FixedValueFromString(fixedValue);
+                getFf4j().getPropertiesStore().updateProperty(ap);
+                LOGGER.info("Property '" + propertyName + "' add fixedValue '" + fixedValue + "'");
             }
         }
         ctx.setVariable("msgType", msgType);

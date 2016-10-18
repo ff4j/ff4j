@@ -382,22 +382,22 @@ public class CassandraQueryBuilder {
             sb.append(" AND (" + COL_EVENT_TYPE + " = '" + type + "')");
         }
         // Filters
-        if (qDef.getActionFilters() != null && !qDef.getActionFilters().isEmpty()) {
+        if (!qDef.getActionFilters().isEmpty()) {
             sb.append(" AND (" + COL_EVENT_ACTION + " IN ");
             sb.append(buildClauseIn(qDef.getActionFilters()));
             sb.append(")");
         }
-        if (qDef.getHostFilters() != null && !qDef.getHostFilters().isEmpty()) {
+        if (!qDef.getHostFilters().isEmpty()) {
             sb.append(" AND (" + COL_EVENT_HOSTNAME + " IN ");
             sb.append(buildClauseIn(qDef.getHostFilters()));
             sb.append(")");
         }
-        if (qDef.getNamesFilter() != null && !qDef.getNamesFilter().isEmpty()) {
+        if (!qDef.getNamesFilter().isEmpty()) {
             sb.append(" AND (" + COL_EVENT_NAME + " IN ");
             sb.append(buildClauseIn(qDef.getNamesFilter()));
             sb.append(")");
         }
-        if (qDef.getSourceFilters() != null && !qDef.getSourceFilters().isEmpty()) {
+        if (!qDef.getSourceFilters().isEmpty()) {
             sb.append(" AND (" + COL_EVENT_SOURCE + " IN ");
             sb.append(buildClauseIn(qDef.getSourceFilters()));
             sb.append(")");

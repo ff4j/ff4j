@@ -319,13 +319,4 @@ public class FeatureStoreCassandra extends AbstractFeatureStore {
         }
         return builder;
     }
-
-    /**
-     * Setter accessor for attribute 'builder'.
-     * @param builder
-     * 		new value for 'builder '
-     */
-    public void setBuilder(CassandraQueryBuilder builder) {
-        this.builder = builder;
-    }
 }

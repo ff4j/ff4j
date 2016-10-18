@@ -24,7 +24,11 @@ import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
 import org.ff4j.cassandra.store.FeatureStoreCassandra;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.test.store.FeatureStoreTestSupport;
+import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Test;
+
+
 
 /**
  * Unit test of {@link FeatureStore} for Cassandra.
@@ -56,6 +60,15 @@ public class FeatureStoreCassandraTest extends FeatureStoreTestSupport {
        cassandraStore.clear();
        cassandraStore.importFeaturesFromXmlFile("ff4j.xml");
        return cassandraStore;
+    }
+    
+    @Test
+    public void testCustoms() {
+        // Dummy
+        CassandraConnection cc = new CassandraConnection();
+        FeatureStoreCassandra cassandraStore = new FeatureStoreCassandra();
+        cassandraStore.setConn(cc);
+        Assert.assertNotNull(cassandraStore.getConn());
     }
     
 }

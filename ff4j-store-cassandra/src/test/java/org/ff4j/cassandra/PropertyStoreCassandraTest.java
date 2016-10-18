@@ -21,10 +21,13 @@ package org.ff4j.cassandra;
  */
 
 import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
+import org.ff4j.cassandra.store.FeatureStoreCassandra;
 import org.ff4j.cassandra.store.PropertyStoreCassandra;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
+import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Test for property store.
@@ -52,4 +55,12 @@ public class PropertyStoreCassandraTest extends PropertyStoreTestSupport {
         return cassandraStore;
     }
     
+    @Test
+    public void testCustoms() {
+        // Dummy
+        CassandraConnection cc = new CassandraConnection();
+        PropertyStoreCassandra cassandraStore = new PropertyStoreCassandra();
+        cassandraStore.setConn(cc);
+        Assert.assertNotNull(cassandraStore.getConn());
+    }
 }

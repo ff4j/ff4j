@@ -114,12 +114,9 @@ public class ConsoleServlet extends HttpServlet {
     /** {@inheritDoc} */
     public void doGet(HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException {
-    	
     	String targetView = req.getParameter(VIEW);
-    	
     	if (targetView == null || "".equals(targetView)) {
     		pageCore(req, res);
-    	
     	} else if ("monitoring".equals(targetView)) {
     		pageMonitoring(req, res);
     	}
@@ -128,16 +125,6 @@ public class ConsoleServlet extends HttpServlet {
     public void pageMonitoring(HttpServletRequest req, HttpServletResponse res) throws IOException {
     	String message = null;
         String messagetype = "info";
-        try {
-        	
-        	
-        	
-        } catch (Exception e) {
-            // Any Error is trapped and display in the console
-            messagetype = ERROR;
-            message = e.getMessage();
-            LOGGER.error("An error occured ", e);
-        }
         renderPageMonitoring(getFf4j(), req, res, message, messagetype);
     }
     
@@ -163,74 +150,12 @@ public class ConsoleServlet extends HttpServlet {
                 
                 // Work on a feature ID
                 if ((featureId != null) && (!featureId.isEmpty())) {
-                    
                     if (getFf4j().getFeatureStore().exist(featureId)) {
-                    
-                        if (OP_DISABLE.equalsIgnoreCase(operation)) {
-                            getFf4j().disable(featureId);
-                            res.setContentType(CONTENT_TYPE_HTML);
-                            res.getWriter().println(renderMessageBox(msg(featureId, "DISABLED"), "info"));
-                            LOGGER.info(featureId + " has been disabled");
-                            return;
-                        } 
-                        
-                        if (OP_ENABLE.equalsIgnoreCase(operation)) {
-                            getFf4j().enable(featureId);
-                            res.setContentType(CONTENT_TYPE_HTML);
-                            res.getWriter().println(renderMessageBox(msg(featureId, "ENABLED"), "info"));
-                            LOGGER.info("Feature '" + featureId + "' has been successfully enabled");
-                            return;
-                        }
-                        
-                        if (OP_READ_FEATURE.equalsIgnoreCase(operation)) {
-                            Feature f = getFf4j().getFeatureStore().read(featureId);
-                            res.setContentType(CONTENT_TYPE_JSON);
-                            res.getWriter().println(f.toJson());
-                            return;
-                        }
-                        
-                        // As no return the page is draw
-                        if (OP_RMV_FEATURE.equalsIgnoreCase(operation)) {
-                            getFf4j().getFeatureStore().delete(featureId);
-                            message = msg(featureId, "DELETED");
-                            LOGGER.info(featureId + " has been deleted");
-                        }
-                        
+                        message = workWithFeature(res, operation, featureId);
                     }
-                    
                     if (getFf4j().getPropertiesStore().existProperty(featureId)) {
-                    
-                        if (OP_RMV_PROPERTY.equalsIgnoreCase(operation)) {
-                            getFf4j().getPropertiesStore().deleteProperty(featureId);
-                            message = renderMsgProperty(featureId, "DELETED");
-                            LOGGER.info("Property '" + featureId + "' has been deleted");
-                        }
-                        
-                        if (OP_READ_PROPERTY.equalsIgnoreCase(operation)) {
-                            Property<?> ap = getFf4j().getPropertiesStore().readProperty(featureId);
-                            res.setContentType(CONTENT_TYPE_JSON);
-                            res.getWriter().println(ap.toString());
-                            return;
-                        }
-                        
-                        if (OP_DELETE_FIXEDVALUE.equalsIgnoreCase(operation)) {
-                            String fixedValue = req.getParameter(PARAM_FIXEDVALUE);
-                            Property<?> ap = getFf4j().getPropertiesStore().readProperty(featureId);
-                            ap.getFixedValues().remove(fixedValue);
-                            getFf4j().getPropertiesStore().updateProperty(ap);
-                            return;
-                        }
-                        
-                        if (OP_ADD_FIXEDVALUE.equalsIgnoreCase(operation)) {
-                            String fixedValue = req.getParameter(PARAM_FIXEDVALUE);
-                            Property<?> ap = getFf4j().getPropertiesStore().readProperty(featureId);
-                            ap.add2FixedValueFromString(fixedValue);
-                            getFf4j().getPropertiesStore().updateProperty(ap);
-                            return;
-                        }
-                        
+                        message = workWithProperties(res, req, operation, featureId);
                     }
-                 
                 }
             }
 
@@ -243,6 +168,97 @@ public class ConsoleServlet extends HttpServlet {
 
         // Default page rendering (table)
         renderPage(getFf4j(), req, res, message, messagetype);
+    }
+    
+    /**
+     * Execute operation on properties when needed.
+     *
+     * @param res
+     *      target response
+     * @param req
+     *      current request
+     * @param operation
+     *      operation to be completed on properties
+     * @param uid
+     *      unique property identifier
+     * @return
+     *      targte message to be displayed
+     * @throws IOException
+     *      error occurs when filling the output page
+     */
+    private String workWithProperties(HttpServletResponse res, HttpServletRequest req, String operation, String uid) 
+    throws IOException {
+        String message = null;
+        if (OP_RMV_PROPERTY.equalsIgnoreCase(operation)) {
+            getFf4j().getPropertiesStore().deleteProperty(uid);
+            LOGGER.info("Property '" + uid + "' has been deleted");
+            message = renderMsgProperty(uid, "DELETED");
+        }
+        
+        if (OP_READ_PROPERTY.equalsIgnoreCase(operation)) {
+            Property<?> ap = getFf4j().getPropertiesStore().readProperty(uid);
+            res.setContentType(CONTENT_TYPE_JSON);
+            res.getWriter().println(ap.toString());
+        }
+        
+        if (OP_DELETE_FIXEDVALUE.equalsIgnoreCase(operation)) {
+            String fixedValue = req.getParameter(PARAM_FIXEDVALUE);
+            Property<?> ap = getFf4j().getPropertiesStore().readProperty(uid);
+            ap.getFixedValues().remove(fixedValue);
+            getFf4j().getPropertiesStore().updateProperty(ap);
+        }
+        
+        if (OP_ADD_FIXEDVALUE.equalsIgnoreCase(operation)) {
+            String fixedValue = req.getParameter(PARAM_FIXEDVALUE);
+            Property<?> ap = getFf4j().getPropertiesStore().readProperty(uid);
+            ap.add2FixedValueFromString(fixedValue);
+            getFf4j().getPropertiesStore().updateProperty(ap);
+        }
+        return message;
+    }
+    
+    /**
+     * Operations relative to features.
+     *
+     * @param res
+     *      http response
+     * @param operation
+     *      operation to execute on features
+     * @param uid
+     *      unique feature identifier
+     * @throws IOException
+     *      an error occur when fill the output
+     */
+    private String workWithFeature(HttpServletResponse res, String operation, String uid)
+    throws IOException {
+        String message = null;
+        if (OP_DISABLE.equalsIgnoreCase(operation)) {
+            getFf4j().disable(uid);
+            res.setContentType(CONTENT_TYPE_HTML);
+            res.getWriter().println(renderMessageBox(msg(uid, "DISABLED"), "info"));
+            LOGGER.info(uid + " has been disabled");
+        } 
+        
+        if (OP_ENABLE.equalsIgnoreCase(operation)) {
+            getFf4j().enable(uid);
+            res.setContentType(CONTENT_TYPE_HTML);
+            res.getWriter().println(renderMessageBox(msg(uid, "ENABLED"), "info"));
+            LOGGER.info("Feature '" + uid + "' has been successfully enabled");
+        }
+        
+        if (OP_READ_FEATURE.equalsIgnoreCase(operation)) {
+            Feature f = getFf4j().getFeatureStore().read(uid);
+            res.setContentType(CONTENT_TYPE_JSON);
+            res.getWriter().println(f.toJson());
+        }
+        
+        // As no return the page is draw
+        if (OP_RMV_FEATURE.equalsIgnoreCase(operation)) {
+            getFf4j().getFeatureStore().delete(uid);
+            LOGGER.info(uid + " has been deleted");
+            message = msg(uid, "DELETED");
+        }
+        return message;
     }
     
     /** {@inheritDoc} */
