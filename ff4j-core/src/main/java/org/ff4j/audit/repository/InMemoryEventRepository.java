@@ -273,17 +273,30 @@ public class InMemoryEventRepository extends AbstractEventRepository {
                 Map<String, EventSeries> currentDayEvents = featureUsageEvents.get(currentDay);
                 for (String currentFeature : currentDayEvents.keySet()) {
                     Iterator<Event> iterEvents = currentDayEvents.get(currentFeature).iterator();
-                        while (iterEvents.hasNext()) {
-                            Event evt = iterEvents.next();
-                            if (q.match(evt)) {
-                                currentDayEvents.remove(evt);
-                            }
+                    while (iterEvents.hasNext()) {
+                        Event evt = iterEvents.next();
+                        if (q.match(evt)) {
+                            removeEventIfPresent(currentDayEvents.get(currentFeature), evt);
                         }
+                        if (currentDayEvents.get(currentFeature).isEmpty()){
+                            currentDayEvents.remove(currentFeature);
+                        }
+                    }
                 }
                 // Remove list if empty
                 if (currentDayEvents.isEmpty()) {
                     featureUsageEvents.remove(currentDay);
                 }
+            }
+        }
+    }
+    
+    private void removeEventIfPresent(EventSeries es, Event evt) {
+        Iterator < Event > iterEvt = es.iterator();
+        while(iterEvt.hasNext()) {
+            Event currentEvent = iterEvt.next();
+            if (currentEvent.getUuid().equalsIgnoreCase(evt.getUuid())) {
+                es.remove(currentEvent);
             }
         }
     }
@@ -386,7 +399,7 @@ public class InMemoryEventRepository extends AbstractEventRepository {
         }
         // CheckOff
         Map < String, EventSeries > maOfChecKoff = checkOffEvents.get(targetDate);
-        if (maOfFeaturesIsages != null ) {
+        if (maOfChecKoff != null) {
             for (EventSeries es : maOfChecKoff.values()) {
                 evt = getFromEventSeries(es, uuid);
                 if (evt != null) { 
@@ -408,7 +421,7 @@ public class InMemoryEventRepository extends AbstractEventRepository {
      *      event if found, null if not
      */
     private Event getFromEventSeries(EventSeries es, String uuid) {
-        Util.assertNotNull(es, uuid);
+        if (es == null) return null;
         Iterator<Event> iterEvents = es.iterator();
         while (iterEvents.hasNext()) {
             Event evt = iterEvents.next();

@@ -1,7 +1,7 @@
 package org.ff4j.audit.repository;
 
 
-import static org.ff4j.store.JdbcStoreConstants.COL_EVENT_NAME;
+import static org.ff4j.store.JdbcStoreConstants.*;
 
 /*
  * #%L ff4j-core %% Copyright (C) 2013 - 2015 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -189,10 +189,10 @@ public class JdbcEventRepository extends AbstractEventRepository {
         ResultSet           rs = null;
         try {
            sqlConn = getDataSource().getConnection();
-            ps = sqlConn.prepareStatement(getQueryBuilder().getPurgeAuditTrailQuery(qDef));
-            ps.setLong(1, qDef.getFrom());
-            ps.setLong(2, qDef.getTo());
-            ps.executeUpdate();
+           ps = sqlConn.prepareStatement(getQueryBuilder().getPurgeAuditTrailQuery(qDef));
+           ps.setTimestamp(1, new java.sql.Timestamp(qDef.getFrom()));
+           ps.setTimestamp(2, new java.sql.Timestamp(qDef.getTo()));
+           ps.executeUpdate();
         } catch (SQLException sqlEX) {
             throw new IllegalStateException("CANNOT_READ_AUDITTABLE", sqlEX);
         } finally {
@@ -212,8 +212,8 @@ public class JdbcEventRepository extends AbstractEventRepository {
         try {
            sqlConn = getDataSource().getConnection();
             ps = sqlConn.prepareStatement(getQueryBuilder().getPurgeFeatureUsageQuery(qDef));
-            ps.setLong(1, qDef.getFrom());
-            ps.setLong(2, qDef.getTo());
+            ps.setTimestamp(1, new java.sql.Timestamp(qDef.getFrom()));
+            ps.setTimestamp(2, new java.sql.Timestamp(qDef.getTo()));
             ps.executeUpdate();
         } catch (SQLException sqlEX) {
             throw new IllegalStateException("CANNOT_READ_AUDITTABLE", sqlEX);
@@ -250,7 +250,7 @@ public class JdbcEventRepository extends AbstractEventRepository {
     }
     
     /** {@inheritDoc} */
-    private  Map<String, MutableHitCount> computeHitCount(String sqlQuery, long from, long to) {
+    private  Map<String, MutableHitCount> computeHitCount(String sqlQuery, String columnName, long from, long to) {
         Connection          sqlConn = null;
         PreparedStatement   ps = null;
         ResultSet           rs = null;
@@ -263,7 +263,7 @@ public class JdbcEventRepository extends AbstractEventRepository {
             ps.setTimestamp(2, new Timestamp(to));
             rs = ps.executeQuery();
             while (rs.next()) {
-                hitCount.put(rs.getString(COL_EVENT_NAME), new MutableHitCount(rs.getInt("NB")));
+                hitCount.put(rs.getString(columnName), new MutableHitCount(rs.getInt("NB")));
             } 
         } catch (SQLException sqlEX) {
             throw new FeatureAccessException(CANNOT_BUILD_PIE_CHART_FROM_REPOSITORY, sqlEX);
@@ -290,25 +290,25 @@ public class JdbcEventRepository extends AbstractEventRepository {
     /** {@inheritDoc} */
     @Override
     public Map<String, MutableHitCount> getFeatureUsageHitCount(EventQueryDefinition query) {
-        return computeHitCount(getQueryBuilder().getFeaturesHitCount(), query.getFrom(), query.getTo());
+        return computeHitCount(getQueryBuilder().getFeaturesHitCount(), COL_EVENT_NAME, query.getFrom(), query.getTo());
     }
     
     /** {@inheritDoc} */
     @Override
     public Map<String, MutableHitCount> getHostHitCount(EventQueryDefinition query) {
-        return computeHitCount(getQueryBuilder().getHostHitCount(), query.getFrom(), query.getTo());
+        return computeHitCount(getQueryBuilder().getHostHitCount(), COL_EVENT_HOSTNAME, query.getFrom(), query.getTo());
     }
 
     /** {@inheritDoc} */
     @Override
     public Map<String, MutableHitCount> getUserHitCount(EventQueryDefinition query) {
-        return computeHitCount(getQueryBuilder().getUserHitCount(), query.getFrom(), query.getTo());
+        return computeHitCount(getQueryBuilder().getUserHitCount(), COL_EVENT_USER, query.getFrom(), query.getTo());
     }
 
     /** {@inheritDoc} */
     @Override
     public Map<String, MutableHitCount> getSourceHitCount(EventQueryDefinition query) {
-        return computeHitCount(getQueryBuilder().getSourceHitCount(), query.getFrom(), query.getTo());
+        return computeHitCount(getQueryBuilder().getSourceHitCount(), COL_EVENT_SOURCE, query.getFrom(), query.getTo());
     }
 
     /** {@inheritDoc} */

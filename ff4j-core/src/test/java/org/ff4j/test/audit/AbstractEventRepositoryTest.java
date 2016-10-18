@@ -1,5 +1,7 @@
 package org.ff4j.test.audit;
 
+import static org.ff4j.audit.EventConstants.ACTION_CHECK_OFF;
+
 /*
  * #%L
  * ff4j-core
@@ -22,12 +24,15 @@ package org.ff4j.test.audit;
 
 
 import static org.ff4j.audit.EventConstants.ACTION_CHECK_OK;
+import static org.ff4j.audit.EventConstants.ACTION_CREATE;
 import static org.ff4j.audit.EventConstants.SOURCE_JAVA;
 import static org.ff4j.audit.EventConstants.SOURCE_WEB;
+import static org.ff4j.audit.EventConstants.SOURCE_WEBAPI;
 import static org.ff4j.audit.EventConstants.TARGET_FEATURE;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.ff4j.audit.Event;
 import org.ff4j.audit.EventConstants;
@@ -36,6 +41,7 @@ import org.ff4j.audit.EventQueryDefinition;
 import org.ff4j.audit.EventSeries;
 import org.ff4j.audit.MutableHitCount;
 import org.ff4j.audit.chart.BarChart;
+import org.ff4j.audit.chart.TimeSeriesChart;
 import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.core.Feature;
 import org.ff4j.store.InMemoryFeatureStore;
@@ -172,215 +178,178 @@ public abstract class AbstractEventRepositoryTest {
         Assert.assertEquals(8, mapOfHit.get("f1").get());
     }
     
+    @Test
+    public void testSearchFeatureUsageEvents() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CREATE));
+        for(int i = 0;i<8;i++) {
+            Thread.sleep(100);
+            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CHECK_OK));
+            repo.saveEvent(new Event(SOURCE_WEB, TARGET_FEATURE, "f2", ACTION_CHECK_OK));
+        }
+        Thread.sleep(100);
+        
+        // Then
+        EventQueryDefinition testQuery = new EventQueryDefinition(start-20, System.currentTimeMillis());
+        EventSeries es = repo.searchFeatureUsageEvents(testQuery);
+        Assert.assertEquals(16, es.size());
+        
+        // Then
+        
+    }
     
+    @Test
+    public void testGetFeatureUsageHistory() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CREATE));
+        for(int i = 0;i<8;i++) {
+            Thread.sleep(100);
+            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CHECK_OK));
+            repo.saveEvent(new Event(SOURCE_WEB, TARGET_FEATURE, "f2", ACTION_CHECK_OK));
+        }
+        Thread.sleep(100);
+        
+        // Then
+        EventQueryDefinition testQuery = new EventQueryDefinition(start-20, System.currentTimeMillis());
+        TimeSeriesChart  tsc = repo.getFeatureUsageHistory(testQuery, TimeUnit.HOURS);
+        Assert.assertEquals(1, tsc.getTimeSlots().size());
+    }
+    
+    /** TDD. */
+    @Test
+    public void testSourceHitCount() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        // When
+        for(int i = 0;i<8;i++) {
+            Thread.sleep(100);
+            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CHECK_OK));
+            repo.saveEvent(new Event(SOURCE_WEB,  TARGET_FEATURE, "f2", ACTION_CHECK_OK));
+        }
+        Thread.sleep(200);
+        repo.saveEvent(new Event(SOURCE_WEBAPI, TARGET_FEATURE, "f1", ACTION_CHECK_OK));
+        Thread.sleep(200);
+        
+        // Then
+        EventQueryDefinition testQuery = new EventQueryDefinition(start-20, System.currentTimeMillis());
+        Map < String, MutableHitCount > mapOfHit = repo.getSourceHitCount(testQuery);
+        Assert.assertEquals(3, mapOfHit.size());
+        Assert.assertTrue(mapOfHit.containsKey(SOURCE_JAVA));
+        Assert.assertTrue(mapOfHit.containsKey(SOURCE_WEB));
+        Assert.assertEquals(1, mapOfHit.get(SOURCE_WEBAPI).get());
+    }
+    
+    /** TDD. */
+    @Test
+    public void testUserHitCount() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        // When
+        for(int i = 0;i<8;i++) {
+            Event e1 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CHECK_OK);
+            e1.setUser("JOHN");
+            repo.saveEvent(e1);
+            Thread.sleep(100);
+            
+            Event e2 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CHECK_OK);
+            e2.setUser("BOB");
+            repo.saveEvent(e2);
+            Thread.sleep(100);
+        }
+        Thread.sleep(200);
+        
+        // Then
+        EventQueryDefinition testQuery = new EventQueryDefinition(start-20, System.currentTimeMillis());
+        Map < String, MutableHitCount > mapOfHit = repo.getUserHitCount(testQuery);
+        Assert.assertEquals(2, mapOfHit.size());
+        Assert.assertTrue(mapOfHit.containsKey("JOHN"));
+        Assert.assertTrue(mapOfHit.containsKey("BOB"));
+        Assert.assertEquals(8, mapOfHit.get("BOB").get());
+    }
+    
+    /** TDD. */
+    @Test
+    public void testHostHitCount() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        // When
+        for(int i = 0;i<8;i++) {
+            Thread.sleep(100);
+            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CHECK_OK));
+        }
+        Thread.sleep(200);
+        
+        // Then
+        EventQueryDefinition testQuery = new EventQueryDefinition(start, System.currentTimeMillis());
+        Map < String, MutableHitCount > mapOfHit = repo.getHostHitCount(testQuery);
+        Assert.assertEquals(1, mapOfHit.size());
+        Assert.assertEquals(1, mapOfHit.values().size());
+    }
+    
+    /** TDD. */
     @Test
     public void testSaveCheckOff() throws InterruptedException {
         long start = System.currentTimeMillis();
-        Event evt1 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CHECK_OFF);
+        // Given
+        Event evt1 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CHECK_OFF);
+        // When
         Assert.assertTrue(repo.saveEvent(evt1));
         Thread.sleep(100);
+        // Then
         Assert.assertEquals(0, repo.getFeatureUsageTotalHitCount(new EventQueryDefinition(start, System.currentTimeMillis())));
         Assert.assertEquals(0, repo.getAuditTrail(new EventQueryDefinition(start, System.currentTimeMillis())).size());
     }
     
+    /** TDD. */
     @Test
     public void testLimitEventSeries() throws InterruptedException {
         EventSeries es = new EventSeries(5);
         for(int i=0;i<10;i++) {
             Thread.sleep(10);
-            es.add(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CREATE));
+            es.add(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CREATE));
         }
         Assert.assertEquals(5, es.size());
     }
     
-    public void testgetFeatureUsageHitCount() {
-        long start = System.currentTimeMillis();
-        Assert.assertEquals(0, repo.getFeatureUsageTotalHitCount(new EventQueryDefinition(start, System.currentTimeMillis())));
-        generateFeatureUsageEvent("x", start, System.currentTimeMillis());
-        Assert.assertEquals(1, repo.getFeatureUsageTotalHitCount(new EventQueryDefinition(start, System.currentTimeMillis())));
-    }
-    
-    /*
+    /** TDD. */
     @Test
-    public void testSaveEvent() throws InterruptedException {
+    public void testGetEventByUID() throws InterruptedException {
         // Given
-        long xNow = System.currentTimeMillis();
-        long x12HoursAgo = System.currentTimeMillis() - 1000 * 3600 * 12;
-        Assert.assertEquals(0, repo.getFeatureUsageTotalHitCount(x12HoursAgo, xNow));
+        String dummyId = "1234-5678-9012-3456";
+        Event evt1 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CREATE);
+        evt1.setUuid(dummyId);
         // When
-        int totalEvent = 50;
-        for (int i = 0; i < totalEvent; i++) {
-            Thread.sleep(2);
-            Event rdmEvent = generateRandomEvent(12);
-            repo.saveEvent(rdmEvent);
-        }
+        repo.saveEvent(evt1);
+        // Let the store to be updated
+        Thread.sleep(100);
         // Then
-        Thread.sleep(200);
-        Assert.assertEquals(totalEvent, 
-                repo.getFeatureUsageTotalHitCount(x12HoursAgo, System.currentTimeMillis()));
-       
-        // When
-        BarChart bc = (repo.getFeatureUsageBarChart(x12HoursAgo, System.currentTimeMillis()));
-        // Then, check that the sum is the total
-        Assert.assertEquals(features.size(), bc.getChartBars().size());
-        int totalHit = 0;
-        for (Bar bar : bc.getChartBars()) {
-            totalHit += bar.getValue();
-        }
-        Assert.assertEquals(totalEvent, totalHit);
-        
+        Event evt = repo.getEventByUUID(dummyId, System.currentTimeMillis());
+        Assert.assertNotNull(evt);
     }
     
-    /*
+    /** TDD. */
     @Test
-    public void testGetTotalCount() throws InterruptedException {
-        // Given
-        long xNow = System.currentTimeMillis();
-        long x12HoursAgo = System.currentTimeMillis() - 1000 * 3600 * 12;
-        Assert.assertEquals(0, repo.getFeatureUsageTotalHitCount(x12HoursAgo, xNow));
+    public void testPurgeEvents() throws InterruptedException {
+        // Given, 2 events in the repo
+        long topStart = System.currentTimeMillis();
+        Event evtAudit = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CREATE);
+        evtAudit.setUuid("1234-5678-9012-3456");
+        Event evtFeatureUsage = new Event(SOURCE_JAVA, TARGET_FEATURE, "f2", ACTION_CHECK_OK);
+        evtFeatureUsage.setUuid("1234-5678-9012-3457");
+        repo.saveEvent(evtAudit);
+        repo.saveEvent(evtFeatureUsage);
+        Thread.sleep(100);
+        Assert.assertNotNull(repo.getEventByUUID(evtAudit.getUuid(), System.currentTimeMillis()));
+        Assert.assertNotNull(repo.getEventByUUID(evtFeatureUsage.getUuid(), System.currentTimeMillis()));
         // When
-        int totalEvent = 50;
-        for (int i = 0; i < totalEvent; i++) {
-            Thread.sleep(2);
-            Event rdmEvent = generateRandomEvent(12);
-            repo.saveEvent(rdmEvent);
-        }
-        // Then
-        Thread.sleep(200);
-        Assert.assertEquals(totalEvent, 
-                repo.getFeatureUsageTotalHitCount(x12HoursAgo, System.currentTimeMillis()));
-    }
-    
-   
-    
-    @Test
-    public void testSaveEventThroughPublisher() throws InterruptedException {
-        
-        // Given
-        int nb = 20;
-        
-        // When
-        for (int i = 0; i < nb; i++) {
-            Event evt = new Event(SOURCE_JAVA, TARGET_FEATURE, "aer", ACTION_CHECK_OK);
-            publisher.publish(evt);
-            Thread.sleep(2);
-        }
-        Thread.sleep(50);
+        EventQueryDefinition testQuery = new EventQueryDefinition(topStart-100, System.currentTimeMillis());
+        repo.purgeFeatureUsage(testQuery);
+        Assert.assertNull(repo.getEventByUUID(evtFeatureUsage.getUuid(), System.currentTimeMillis()));
+        Assert.assertTrue(repo.searchFeatureUsageEvents(testQuery).isEmpty());
         
         // Then
-        Assert.assertEquals(nb, repo.getTotalEventCount());
-    }
-    
-    @Test
-    public void testgetFeatureNames() {
-        
-        // Given
-        Assert.assertEquals(0, repo.getTotalEventCount());
-        Assert.assertTrue(repo.getFeatureNames().isEmpty());
-        
-        // When
-        repo.saveEvent(generateEvent("F1", ACTION_CHECK_OK));
-        repo.saveEvent(generateEvent("F2", ACTION_CHECK_OK));
-        repo.saveEvent(generateEvent("F3", ACTION_CHECK_OK));
-        
-        // Then
-        Set < String > features =  repo.getFeatureNames();
-        Assert.assertEquals(3, repo.getTotalEventCount());
-        Assert.assertNotNull(features);
-        Assert.assertEquals(3, features.size());
-        Assert.assertTrue(features.contains("F1"));
-        Assert.assertFalse(features.contains("F4"));
-    }
-    
-    @Test
-    public void testgetHitsBarChart() throws InterruptedException {
-        
-        // Given
-        int nbEvent = 50;
-        int nbSlot  = 10;
-        
-        // When
-        for (int i = 0; i < nbEvent; i++) {
-            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "evt1", ACTION_CHECK_OK));
-            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "evt2", ACTION_CHECK_OK));
-            Thread.sleep(2);
-        }
-        long endTime = System.currentTimeMillis();
-        long startTime = endTime - (5 * nbEvent);
-        BarChart bc = repo.getFeaturesUsageOverTime(startTime, endTime, nbSlot);
-        
-        // Then
-       
-        // Total events are all EVT1 + all evt2
-        Assert.assertEquals(2*nbEvent, repo.getTotalEventCount());
-        // CHeck that service return a barchart
-        Assert.assertNotNull(bc);
-        // There is only 2 distinct features (evt1 & evt2)
-        Assert.assertEquals(2, bc.getSeries().size());
-        Assert.assertNotNull(bc.getSeries().get("evt1"));
-        Assert.assertNotNull(bc.getSeries().get("evt2"));
-        // There is 10 bar in the chart as expected
-        Assert.assertEquals(nbSlot, bc.getLabels().size());
-        // For a serie, I have the same amount of value than of slots
-        Assert.assertEquals(nbSlot, bc.getSeries().get("evt1").getValues().size());
-        Assert.assertEquals(nbSlot, bc.getSeries().get("evt2").getValues().size());
-    }
-    
-    @Test
-    public void testFeatureHits() throws InterruptedException {
-        // Given
-        int nbEvent = 20;
-        
-        // When
-        for (int i = 0; i < nbEvent; i++) {
-            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "evt1", ACTION_CHECK_OK));
-            if (i%2 == 0)
-                repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "evt1", ACTION_CHECK_OK));
-            if (i%5 == 0)
-                repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "evt1", ACTION_UPDATE));
-            Thread.sleep(2);
-        }
-        long endTime = System.currentTimeMillis();
-        long startTime = endTime - (4 * nbEvent);
-        PieChart pc = repo.featureDistributionPie("evt1", startTime, endTime);
-        
-        // Then
-        Assert.assertEquals(34, repo.getTotalEventCount());
-     
-        if ( pc.getSectors() != null && pc.getSectors().size() > 0) {
-            PieSector checkon = pc.getSectors().get(1);
-            Assert.assertNotNull(checkon);
-        }
-    }
-    
-    @Test
-    public void testDistributionALL() throws InterruptedException {
-        int loopCount = 20;
-        for(int i=0;i<loopCount;i++) {
-            repo.saveEvent(generateEvent("f1", ACTION_CHECK_OK));
-            repo.saveEvent(generateEvent("f2", ACTION_CHECK_OK));
-            repo.saveEvent(generateEvent("f3", ACTION_CHECK_OK));
-            Thread.sleep(100);
-        }
-        
-        PieChart pie1 = repo.featuresListDistributionPie((System.currentTimeMillis() - 5000), 
-                                                  (System.currentTimeMillis()));
-        Assert.assertEquals(3, pie1.getSectors().size());
-        Assert.assertEquals(loopCount, (int) pie1.getSectors().get(1).getValue());
-    }
-    
-    @Test
-    public void testDistribution() throws InterruptedException {
-        repo.saveEvent(generateEvent("f1", ACTION_CHECK_OK));
-        repo.saveEvent(generateEvent("f1", ACTION_UPDATE));
-        repo.saveEvent(generateEvent("f1", ACTION_DELETE));
-        
-        PieChart pie2 = repo.featureDistributionPie("f1", 
-                (System.currentTimeMillis() - 10000), (System.currentTimeMillis() + 10000));
-        Assert.assertEquals(3, pie2.getSectors().size());
-    }
-    */
+        EventQueryDefinition testQuery2 = new EventQueryDefinition(topStart-100, System.currentTimeMillis());
+        repo.purgeAuditTrail(testQuery2);
+        Assert.assertNull(repo.getEventByUUID(evtAudit.getUuid(), System.currentTimeMillis()));
 
+    }
 
 }
 

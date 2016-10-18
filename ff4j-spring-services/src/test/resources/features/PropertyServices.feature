@@ -139,4 +139,4 @@ Feature: This feature enables in providing the user with api's where in the user
 
   Scenario: When the user tries to update value of a property with a wrong value
     When the user requests to update a property with property id as "usernameMinLength" and property value as "invalidValue"
-    Then the user gets an exception "java.lang.IllegalArgumentException"
+    Then the user gets an exception "org.ff4j.exception.InvalidPropertyTypeException"

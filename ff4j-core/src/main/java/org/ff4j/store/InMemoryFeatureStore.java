@@ -23,7 +23,6 @@ import java.util.Set;
 
 import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
-import org.ff4j.exception.FeatureAlreadyExistException;
 
 /**
  * Storing states of feature inmemory with initial values. Could be used mostly for testing purpose.
