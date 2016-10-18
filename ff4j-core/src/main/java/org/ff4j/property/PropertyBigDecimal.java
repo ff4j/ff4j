@@ -2,6 +2,8 @@ package org.ff4j.property;
 
 import java.math.BigDecimal;
 
+import org.ff4j.exception.InvalidPropertyTypeException;
+
 /*
  * #%L
  * ff4j-core
@@ -82,8 +84,11 @@ public class PropertyBigDecimal extends Property< BigDecimal > {
     /** {@inheritDoc} */
     @Override
     public BigDecimal fromString(String v) {
-        return new BigDecimal(v);
+        try {
+            return new BigDecimal(v);
+        } catch(NumberFormatException nbe) {
+            throw new InvalidPropertyTypeException("Cannot cast " + v + "to expected " + BigDecimal.class, nbe);
+        }
     }
-    
 
 }

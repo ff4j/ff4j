@@ -23,6 +23,7 @@ package org.ff4j.test.store;
 
 import static org.ff4j.utils.JdbcUtils.isTableExist;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +31,7 @@ import javax.sql.DataSource;
 
 import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
+import org.ff4j.property.PropertyString;
 import org.ff4j.store.JdbcFeatureStore;
 import org.ff4j.store.JdbcQueryBuilder;
 import org.ff4j.strategy.PonderationStrategy;
@@ -92,6 +94,8 @@ public class JdbcFeatureStoreSchemaTest {
         Assert.assertTrue(isTableExist(ds, qb.getTableNameFeatures()));
         Assert.assertTrue(isTableExist(ds, qb.getTableNameRoles()));
         Assert.assertTrue(isTableExist(ds, qb.getTableNameCustomProperties()));
+        // When (no error)
+        testedStore.createSchema();
     }
     
     @Test
@@ -108,5 +112,31 @@ public class JdbcFeatureStoreSchemaTest {
         testedStore.create(fullFeature);
         // Then
         Assert.assertTrue(testedStore.exist("fx"));
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testCreateCustomProperties() {
+        testedStore.createSchema();
+        
+        // When
+        Feature fullFeature = new Feature("fx", true);
+        fullFeature.setPermissions(Util.set("toto", "tata"));
+        fullFeature.setFlippingStrategy(new PonderationStrategy(0.5d));
+        Map < String , Property<?>> customProperties = new HashMap< String , Property<?>>();
+        fullFeature.setCustomProperties(customProperties);
+        testedStore.create(fullFeature);
+        
+        testedStore.createCustomProperties("fx", null);
+        
+        Property<?> p1 = new PropertyString("p1");
+        p1.setFixedValues(null);
+        
+        Property<String> p2 = new PropertyString("p2");
+        p2.setFixedValues(Util.set("v1","v3"));
+        
+        testedStore.createCustomProperties("fx", Arrays.asList(p2,p1));
+        testedStore.createCustomProperties("fx", null);
+        
     }
 }

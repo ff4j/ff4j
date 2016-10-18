@@ -26,6 +26,7 @@ import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.ff4j.property.Property;
 import org.ff4j.property.PropertyLogLevel;
 import org.ff4j.property.PropertyString;
 import org.ff4j.property.util.PropertyFactory;
@@ -54,6 +55,9 @@ public class PropertyFactoryTest {
         PropertyFactory.createProperty("p1", new Date());
         PropertyFactory.createProperty("p1", "sample");
         PropertyFactory.createProperty("p1", Calendar.getInstance());
+        
+        Property<?> pList = PropertyFactory.createProperty("p1", Util.list("a","b","c"));
+        Assert.assertTrue(pList.getClass().equals(PropertyString.class));
     }
     
     @Test(expected = IllegalArgumentException.class)

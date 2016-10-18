@@ -120,6 +120,7 @@ public class FeatureStoreMongoDBCore1Test extends FeatureStoreTestSupport {
     	Constructor<FeatureStoreMongoConstants> ce = FeatureStoreMongoConstants.class.getDeclaredConstructor();
 	    ce.setAccessible(true);
 	    ce.newInstance();
+	    Assert.assertNotNull(ce);
     }
     
     

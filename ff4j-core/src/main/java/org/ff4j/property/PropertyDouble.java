@@ -1,5 +1,7 @@
 package org.ff4j.property;
 
+import org.ff4j.exception.InvalidPropertyTypeException;
+
 /*
  * #%L
  * ff4j-core
@@ -73,7 +75,11 @@ public class PropertyDouble extends Property < Double > {
     /** {@inheritDoc} */
     @Override
     public Double fromString(String v) {
-        return new Double(v);
+        try {
+            return new Double(v);
+        } catch(NumberFormatException nbe) {
+            throw new InvalidPropertyTypeException("Cannot cast " + v + "to expected " + Double.class, nbe);
+        }
     }
 
 }

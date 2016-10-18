@@ -53,6 +53,7 @@ public class MultiValuedPropertyTest {
         public DemoList(String name) {super(name);}
         public DemoList(String name, String value) { super(name, value); }
         public DemoList(String name, List<String> value) { super(name, value); }
+        public DemoList(String name, String... value) { super(name, value); }
     }
     
     public static final class DemoMap extends AbstractPropertyMap<String , Map<String,String>> {
@@ -90,6 +91,7 @@ public class MultiValuedPropertyTest {
         DemoList ds = new DemoList();
         new DemoList("P1");
         new DemoList("P2", "val1,val2");
+        new DemoList("P3", "val1", "val2");
         new DemoList("P3", Util.list("val1", "val2"));
         String vals = "val1,val2,val3";
         ds.setListDelimiter(",");
@@ -99,6 +101,10 @@ public class MultiValuedPropertyTest {
         ds.add("val");
         ds.add(0, "val2");
         ds.addAll(0, Util.list("val3", "val4"));
+        ds.addAll("val3", "val4");
+        ds.addAll((String[]) null);
+        ds.addAll("");
+        
         ds.addAll(Util.list("val3", "val4"));
         ds.set(1, "val2");
         ds.subList(1, 1);

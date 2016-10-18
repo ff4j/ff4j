@@ -25,6 +25,7 @@ import org.ff4j.audit.proxy.PropertyStoreAuditProxy;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.property.AbstractPropertyStoreJunitTest;
+import org.junit.Test;
 
 public class PropertyStoreAuditProxyTest extends AbstractPropertyStoreJunitTest {
 
@@ -35,6 +36,11 @@ public class PropertyStoreAuditProxyTest extends AbstractPropertyStoreJunitTest 
         PropertyStore ps = new InMemoryPropertyStore("ff4j.xml");
         ff4j.setPropertiesStore(ps);
         return new PropertyStoreAuditProxy(ff4j, ps);
+    }
+    
+    @Test
+    public void testCreateSchema() {
+        testedStore.createSchema();
     }
 
 }

@@ -23,6 +23,8 @@ package org.ff4j.property;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import org.ff4j.exception.InvalidPropertyTypeException;
+
 /**
  * Boolean Property.
  *
@@ -79,6 +81,10 @@ public class PropertyBoolean extends Property< Boolean > {
     /** {@inheritDoc} */
     @Override
     public Boolean fromString(String v) {
+        if (!Boolean.TRUE.toString().equals(v.toLowerCase()) &&
+            !Boolean.FALSE.toString().equals(v) ) {
+            throw new InvalidPropertyTypeException("Cannot cast " + v + "to expected " + Boolean.class);
+        }
         return new Boolean(v);
     }
 

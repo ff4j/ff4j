@@ -25,7 +25,7 @@ import org.junit.Test;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class InMemoryStoreTest extends FStoreTestSupport {
+public class InMemoryFeatureStoreTest extends CoreFeatureStoreTestSupport {
 
     /** {@inheritDoc} */
     @Override

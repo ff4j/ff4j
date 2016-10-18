@@ -1,4 +1,4 @@
-package org.ff4j.test.property.rd;
+package org.ff4j.lab;
 
 /*
  * #%L

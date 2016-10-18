@@ -1,5 +1,7 @@
 package org.ff4j.property;
 
+import org.ff4j.exception.InvalidPropertyTypeException;
+
 /*
  * #%L
  * ff4j-core
@@ -77,8 +79,9 @@ public class PropertyByte extends Property< Byte > {
     @Override
     public Byte fromString(String v) {
         if (v == null) return null;
-        if (v.length() == 0 || v.length()  > 3) 
-            throw new IllegalArgumentException("A byte is a single byte, a single character");
+        if (v.length() == 0 || v.length()  > 3) {
+            throw new InvalidPropertyTypeException("A byte is a single byte, a single character");
+        }
         return v.getBytes()[0];
     }
 

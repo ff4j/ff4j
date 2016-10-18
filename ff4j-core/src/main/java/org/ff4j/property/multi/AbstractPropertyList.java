@@ -92,9 +92,6 @@ public abstract class AbstractPropertyList < T > extends AbstractPropertyMultiVa
        super(uid, Arrays.asList(value));
     }
     
-    
-    
-    
     /** {@inheritDoc} */
     @Override
     public List<T> fromString(String v) {

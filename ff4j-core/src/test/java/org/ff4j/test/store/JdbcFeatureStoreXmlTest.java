@@ -18,7 +18,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
-public class JdbcFeatureStoreXmlTest extends FStoreTestSupport {
+public class JdbcFeatureStoreXmlTest extends CoreFeatureStoreTestSupport {
 
     /** DataBase. */
     private EmbeddedDatabase db;

@@ -64,6 +64,7 @@ public class ClientFilterStrategyTest extends AbstractFf4jTest {
 
         // Then
         Assert.assertTrue(ff4j.check(F1, fex));
+        Assert.assertNotNull(cStra.toJson());
     }
 
     @Test
@@ -136,11 +137,15 @@ public class ClientFilterStrategyTest extends AbstractFf4jTest {
         new WhiteListStrategy();
         new WhiteListStrategy("Pierre");
         
+        // Working
         new BlackListStrategy();
         FlippingStrategy bl2 = new BlackListStrategy("Pierre");
         FlippingExecutionContext context = new FlippingExecutionContext();
         context.putString("clientHostName", "localhost");
-        bl2.evaluate("f1", new InMemoryFeatureStore(), context);
+        Assert.assertTrue(bl2.evaluate("f1", new InMemoryFeatureStore(), context));
+        
+        context.putString("clientHostName", "Pierre");
+        Assert.assertFalse(bl2.evaluate("f1", new InMemoryFeatureStore(), context));
     }
     
     @Test

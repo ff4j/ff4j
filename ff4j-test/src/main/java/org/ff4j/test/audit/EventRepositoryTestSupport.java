@@ -1,6 +1,9 @@
 package org.ff4j.test.audit;
 
+
+import static org.ff4j.audit.EventConstants.ACTION_CREATE;
 import static org.ff4j.audit.EventConstants.ACTION_CHECK_OK;
+import static org.ff4j.audit.EventConstants.ACTION_CHECK_OFF;
 import static org.ff4j.audit.EventConstants.SOURCE_JAVA;
 import static org.ff4j.audit.EventConstants.SOURCE_WEB;
 import static org.ff4j.audit.EventConstants.SOURCE_WEBAPI;
@@ -219,11 +222,11 @@ public abstract class EventRepositoryTestSupport {
         long start = System.currentTimeMillis();
         // Given empty event repository
         // When
-        repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CREATE));
+        repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CREATE));
         for(int i = 0;i<8;i++) {
             Thread.sleep(100);
-            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CHECK_OK));
-            repo.saveEvent(new Event(SOURCE_WEB, TARGET_FEATURE, "f2", EventConstants.ACTION_CHECK_OK));
+            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CHECK_OK));
+            repo.saveEvent(new Event(SOURCE_WEB, TARGET_FEATURE, "f2", ACTION_CHECK_OK));
         }
         Thread.sleep(100);
         
@@ -240,11 +243,11 @@ public abstract class EventRepositoryTestSupport {
     @Test
     public void testSearchFeatureUsageEvents() throws InterruptedException {
         long start = System.currentTimeMillis();
-        repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CREATE));
+        repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CREATE));
         for(int i = 0;i<8;i++) {
             Thread.sleep(100);
-            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CHECK_OK));
-            repo.saveEvent(new Event(SOURCE_WEB, TARGET_FEATURE, "f2", EventConstants.ACTION_CHECK_OK));
+            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CHECK_OK));
+            repo.saveEvent(new Event(SOURCE_WEB, TARGET_FEATURE, "f2", ACTION_CHECK_OK));
         }
         Thread.sleep(100);
         
@@ -260,11 +263,11 @@ public abstract class EventRepositoryTestSupport {
     @Test
     public void testGetFeatureUsageHistory() throws InterruptedException {
         long start = System.currentTimeMillis();
-        repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CREATE));
+        repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CREATE));
         for(int i = 0;i<8;i++) {
             Thread.sleep(100);
-            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CHECK_OK));
-            repo.saveEvent(new Event(SOURCE_WEB, TARGET_FEATURE, "f2", EventConstants.ACTION_CHECK_OK));
+            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CHECK_OK));
+            repo.saveEvent(new Event(SOURCE_WEB, TARGET_FEATURE, "f2", ACTION_CHECK_OK));
         }
         Thread.sleep(100);
         
@@ -281,11 +284,11 @@ public abstract class EventRepositoryTestSupport {
         // When
         for(int i = 0;i<8;i++) {
             Thread.sleep(100);
-            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CHECK_OK));
-            repo.saveEvent(new Event(SOURCE_WEB,  TARGET_FEATURE, "f2", EventConstants.ACTION_CHECK_OK));
+            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CHECK_OK));
+            repo.saveEvent(new Event(SOURCE_WEB,  TARGET_FEATURE, "f2", ACTION_CHECK_OK));
         }
         Thread.sleep(200);
-        repo.saveEvent(new Event(SOURCE_WEBAPI, TARGET_FEATURE, "f1", EventConstants.ACTION_CHECK_OK));
+        repo.saveEvent(new Event(SOURCE_WEBAPI, TARGET_FEATURE, "f1", ACTION_CHECK_OK));
         Thread.sleep(200);
         
         // Then
@@ -303,12 +306,12 @@ public abstract class EventRepositoryTestSupport {
         long start = System.currentTimeMillis();
         // When
         for(int i = 0;i<8;i++) {
-            Event e1 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CHECK_OK);
+            Event e1 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CHECK_OK);
             e1.setUser("JOHN");
             repo.saveEvent(e1);
             Thread.sleep(100);
             
-            Event e2 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CHECK_OK);
+            Event e2 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CHECK_OK);
             e2.setUser("BOB");
             repo.saveEvent(e2);
             Thread.sleep(100);
@@ -331,7 +334,7 @@ public abstract class EventRepositoryTestSupport {
         // When
         for(int i = 0;i<8;i++) {
             Thread.sleep(100);
-            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CHECK_OK));
+            repo.saveEvent(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CHECK_OK));
         }
         Thread.sleep(200);
         
@@ -347,7 +350,7 @@ public abstract class EventRepositoryTestSupport {
     public void testSaveCheckOff() throws InterruptedException {
         long start = System.currentTimeMillis();
         // Given
-        Event evt1 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CHECK_OFF);
+        Event evt1 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CHECK_OFF);
         // When
         Assert.assertTrue(repo.saveEvent(evt1));
         Thread.sleep(100);
@@ -362,7 +365,7 @@ public abstract class EventRepositoryTestSupport {
         EventSeries es = new EventSeries(5);
         for(int i=0;i<10;i++) {
             Thread.sleep(10);
-            es.add(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CREATE));
+            es.add(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CREATE));
         }
         Assert.assertEquals(5, es.size());
     }
@@ -372,7 +375,7 @@ public abstract class EventRepositoryTestSupport {
     public void testGetEventByUID() throws InterruptedException {
         // Given
         String dummyId = "1234-5678-9012-3456";
-        Event evt1 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CHECK_OFF);
+        Event evt1 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CHECK_OFF);
         evt1.setUuid(dummyId);
         // When
         repo.saveEvent(evt1);
@@ -389,9 +392,9 @@ public abstract class EventRepositoryTestSupport {
     public void testPurgeEvents() throws InterruptedException {
         // Given, 2 events in the repo
         long topStart = System.currentTimeMillis();
-        Event evtAudit = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CREATE);
+        Event evtAudit = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CREATE);
         evtAudit.setUuid("1234-5678-9012-3456");
-        Event evtFeatureUsage = new Event(SOURCE_JAVA, TARGET_FEATURE, "f2", EventConstants.ACTION_CHECK_OK);
+        Event evtFeatureUsage = new Event(SOURCE_JAVA, TARGET_FEATURE, "f2", ACTION_CHECK_OK);
         evtFeatureUsage.setUuid("1234-5678-9012-3457");
         repo.saveEvent(evtAudit);
         repo.saveEvent(evtFeatureUsage);

@@ -114,7 +114,7 @@ public abstract class AbstractPropertyMultiValued < T, C extends Collection< T >
      *      target values
      */
     public void addAll(T... values) {
-        if ((null != value) && (null != getValue())) {
+        if (null != values) {
             getValue().addAll(Arrays.asList(values));
         }
     }

@@ -15,6 +15,7 @@ import org.ff4j.audit.EventQueryDefinition;
 
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.store.JdbcFeatureStore;
 import org.ff4j.store.JdbcQueryBuilder;
 import org.junit.After;
@@ -24,7 +25,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
-public class JdbcFeatureStoreCoreTest extends FStoreTestSupport {
+public class JdbcFeatureStoreCoreTest extends CoreFeatureStoreTestSupport {
 
     /** DataBase. */
     private EmbeddedDatabase db;
@@ -95,6 +96,12 @@ public class JdbcFeatureStoreCoreTest extends FStoreTestSupport {
         e1.getNamesFilter().add("aaa");
         e1.getSourceFilters().add("java");
         builder.buildWhereClause(e1, true, false);
-        
     }
+    
+    @Test(expected = GroupNotFoundException.class)
+    public void readGroupDoesNotExist() {
+        testedStore.readGroup("dont-exist");
+    }
+    
+    
 }

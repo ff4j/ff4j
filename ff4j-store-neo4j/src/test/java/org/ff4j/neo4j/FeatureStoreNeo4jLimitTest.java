@@ -89,6 +89,7 @@ public class FeatureStoreNeo4jLimitTest {
         }
         // Remove last
         testedStore.delete("f1");
+        Assert.assertFalse(testedStore.existGroup("g0"));
     }
     
     @Test

@@ -253,25 +253,14 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
         }
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void update(Feature fp) {
-        Util.assertNotNull(fp);
-        Util.assertHasLength(fp.getUid());
-        // Check existence
-        read(fp.getUid());
-
-        // Create or update core Feature as a first TX
-        Transaction tx = graphDb.beginTx();
-        graphDb.execute(createUpdateCoreFeature(fp));
-        tx.success();
-
-        Map<String, Object> queryParameters = new HashMap<>();
-        queryParameters.put("uid", fp.getUid());
-
-        // Create, update or delete Flipping Strategy
+    /**
+     * Create, update or delete Flipping Strategy
+     */
+    private void updateFlippingStrategy(Feature fp) {
         Transaction tx2 = graphDb.beginTx();
         // Create or update FlippingStrategy (as provided)
+        Map<String, Object> queryParameters = new HashMap<>();
+        queryParameters.put("uid", fp.getUid());
         if (fp.getFlippingStrategy() != null) {
             Result flippingNode = graphDb.execute(QUERY_CYPHER_GET_FLIPPINGSTRATEGY, queryParameters);
             if (flippingNode.hasNext()) {
@@ -284,7 +273,15 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
             graphDb.execute(QUERY_CYPHER_DELETE_STRATEGY_FEATURE, queryParameters);
         }
         tx2.success();
-
+    }
+    
+    /**
+     * Update group attribute of feature.
+     *
+     * @param fp
+     *      target feature
+     */
+    private void updateGroups(Feature fp) {
         // Group
         String oldGroupName = getCurrentGroupName(fp.getUid());
         if ((oldGroupName != null) && (fp.getGroup() == null)) {
@@ -300,6 +297,26 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
                 addToGroup(fp.getUid(), fp.getGroup());
             }
         }
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void update(Feature fp) {
+        Util.assertNotNull(fp);
+        Util.assertHasLength(fp.getUid());
+        // Check existence
+        read(fp.getUid());
+
+        // Create or update core Feature as a first TX
+        Transaction tx = graphDb.beginTx();
+        graphDb.execute(createUpdateCoreFeature(fp));
+        tx.success();
+        
+        // Create, update or delete Flipping Strategy
+        updateFlippingStrategy(fp);
+
+        // Update groups
+        updateGroups(fp);
 
         // Properties
         Transaction tx3 = graphDb.beginTx();

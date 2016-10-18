@@ -26,6 +26,7 @@ import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.ff4j.exception.InvalidPropertyTypeException;
 import org.ff4j.property.PropertyBigDecimal;
 import org.ff4j.property.PropertyBigInteger;
 import org.ff4j.property.PropertyBoolean;
@@ -56,6 +57,7 @@ public class PropertyTest {
     public void tesInitPropertyString() {
         new PropertyString();
         PropertyString p1 = new PropertyString("p1");
+        p1.setReadOnly(p1.isReadOnly());
         PropertyString p2 = new PropertyString("p2", "EAST", Util.set("EAST","WEST","SOUTH","NORTH"));
         Assert.assertNotNull(p1.getName());
         Assert.assertNotNull(p2.getFixedValues());
@@ -70,6 +72,46 @@ public class PropertyTest {
         Assert.assertNotNull(d1.getName());
         Assert.assertNotNull(d2.getFixedValues());
         Assert.assertNotNull(d3.getName());
+    }
+    
+    @Test(expected = InvalidPropertyTypeException.class)
+    public void testInitPropertyDoubleInvalid() {
+        new PropertyDouble("d3", "invalid value");
+    }
+    
+    @Test(expected = InvalidPropertyTypeException.class)
+    public void testInitPropertyBigDecimalInvalid() {
+        new PropertyBigDecimal("d3", "invalid value");
+    }
+    
+    @Test(expected = InvalidPropertyTypeException.class)
+    public void testInitPropertyBigIntegerInvalid() {
+        new PropertyBigInteger("d3", "invalid value");
+    }
+    
+    @Test(expected = InvalidPropertyTypeException.class)
+    public void testInitPropertyBooleanInvalid() {
+        new PropertyBoolean("d3", "invalid value");
+    }
+    
+    @Test(expected = InvalidPropertyTypeException.class)
+    public void testInitPropertyFloatInvalid() {
+        new PropertyFloat("d3", "invalid value");
+    }
+    
+    @Test(expected = InvalidPropertyTypeException.class)
+    public void testInitPropertyIntInvalid() {
+        new PropertyInt("d3", "invalid value");
+    }
+    
+    @Test(expected = InvalidPropertyTypeException.class)
+    public void testInitPropertyLongInvalid() {
+        new PropertyLong("d3", "invalid value");
+    }
+    
+    @Test(expected = InvalidPropertyTypeException.class)
+    public void testInitPropertyShortInvalid() {
+        new PropertyShort("d3", "invalid value");
     }
     
     @Test
@@ -158,8 +200,8 @@ public class PropertyTest {
         d1.fromString(null);
     }
     
-    @Test(expected = IllegalArgumentException.class)
-    public void tesInitPropertyByte2() {
+    @Test(expected = InvalidPropertyTypeException.class)
+    public void tesInitPropertyByteInvalidType() {
         PropertyByte d1 = new PropertyByte("d1");
         d1.fromString("Invalide");
     }

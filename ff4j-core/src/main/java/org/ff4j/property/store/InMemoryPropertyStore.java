@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.ff4j.conf.XmlParser;
-import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.property.Property;
 import org.ff4j.utils.Util;
 
@@ -117,12 +116,8 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
     @Override
     public <T> void createProperty(Property<T> value) {
         // Check Params
-        Util.assertNotNull(value);
-        Util.assertHasLength(value.getName());
-        // Check value
-        if (existProperty(value.getName())) {
-            throw new PropertyAlreadyExistException(value.getName());
-        }
+        assertPropertyNotNull(value);
+        assertPropertyNotExist(value.getName());
         // Create
         properties.put(value.getName(), value);
     }

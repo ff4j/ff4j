@@ -23,8 +23,8 @@ import org.ff4j.core.FlippingStrategy;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
-import org.ff4j.property.PropertyString;
 import org.ff4j.property.PropertyInt;
+import org.ff4j.property.PropertyString;
 import org.ff4j.strategy.PonderationStrategy;
 import org.ff4j.test.AssertFf4j;
 import org.ff4j.test.TestConstantsFF4j;
@@ -38,7 +38,7 @@ import org.junit.Test;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public abstract class FStoreTestSupport implements TestConstantsFF4j {
+public abstract class CoreFeatureStoreTestSupport implements TestConstantsFF4j {
 
     /** Initialize */
     protected FF4j ff4j = null;
@@ -1164,6 +1164,6 @@ public abstract class FStoreTestSupport implements TestConstantsFF4j {
                 .getFixedValues();
         Assert.assertEquals(2, fixValues2.size());
     }
-
+    
 
 }

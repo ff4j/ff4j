@@ -1,4 +1,4 @@
-package org.ff4j.test.property.rd;
+package org.ff4j.lab;
 
 /*
  * #%L
@@ -22,27 +22,33 @@ package org.ff4j.test.property.rd;
 
 import org.ff4j.property.Property;
 
-public class SmartProperty<T> extends Property<T> {
+public abstract class ConditionalProperty<T> extends Property<T> {
 
     /** Serial. */
     private static final long serialVersionUID = 1L;
     
-    protected PropertyStrategy<T> strategy;
+    /** Leverage on strategy to evaluate a property. */
+    protected PropertyEvaluationStrategy < T > strategy;
     
     /** {@inheritDoc} */
     @Override
     public T getValue() {
         if (strategy == null) return super.getValue();
-        return strategy.getValue(getName(), null, null);
+        return strategy.getValue(this, null);
     }
     
-    /** {@inheritDoc} */
-    @Override
-    public T fromString(String v) {
-        return null;
+    /**
+     * If an execution is provided evaluate the property value.
+     *
+     * @param pec
+     *      evaluation strategy
+     * @return
+     *      property value
+     */
+    public T getValue(PropertyExecutionContext pec) {
+        if (pec == null)      return getValue();
+        if (strategy == null) return super.getValue();
+        return strategy.getValue(this, pec);
     }
-    
-    
-    
 
 }

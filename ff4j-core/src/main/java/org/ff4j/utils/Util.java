@@ -121,12 +121,13 @@ public class Util {
      *            target object
      */
     public static void assertNotNull(String objectName, Object... params) {
-        if (params != null) {
-            for (int idx = 0; idx < params.length ;idx++) {
-                Object currentparam = params[idx];
-                if (null == currentparam) {
-                    throw new IllegalArgumentException("[Assertion failed] - " + objectName + " must not be null");
-                }
+        if (params == null) {
+            throw new IllegalArgumentException("[Assertion failed] - " + objectName + " must not be null");
+        }
+        for (int idx = 0; idx < params.length ;idx++) {
+            Object currentparam = params[idx];
+            if (null == currentparam) {
+                throw new IllegalArgumentException("[Assertion failed] - " + objectName + " must not be null");
             }
         }
     }
@@ -138,6 +139,9 @@ public class Util {
      *            target object
      */
     public static void assertHasLength(String... params) {
+        if (params == null) {
+            throw new IllegalArgumentException("[Assertion failed] - Parameter #0 (string)  must not be null nor empty");
+        }
         if (params != null) {
             for (int idx = 0; idx < params.length ;idx++) {
                 String currentparam = params[idx];
@@ -328,23 +332,24 @@ public class Util {
      */
     public static List < String > generateRGBGradient(String codeFrom, String codeTo, int nbDivision) {
         List < String > colors = new ArrayList<String>();
+        if (nbDivision <= 0) {
+            throw new IllegalArgumentException("Division number should be positive");
+        }
         nbDivision++;
-        if (nbDivision > 0) {
-            int r1 = Integer.parseInt(codeFrom.substring(0, 2), 16);
-            int g1 = Integer.parseInt(codeFrom.substring(2, 4), 16);
-            int b1 = Integer.parseInt(codeFrom.substring(4, 6), 16);
-            int r2 = Integer.parseInt(codeTo.substring(0, 2), 16);
-            int g2 = Integer.parseInt(codeTo.substring(2, 4), 16);
-            int b2 = Integer.parseInt(codeTo.substring(4, 6), 16);
-            int rDelta = (r2 - r1) / nbDivision;
-            int gDelta = (g2 - g1) / nbDivision;
-            int bDelta = (b2 - b1) / nbDivision;
-            for (int idx = 0;idx < nbDivision;idx++) {
-                String red   = Integer.toHexString(r1 + rDelta * idx);
-                String green = Integer.toHexString(g1 + gDelta * idx);
-                String blue  = Integer.toHexString(b1 + bDelta * idx);
-                colors.add(red + green + blue);
-            }
+        int r1 = Integer.parseInt(codeFrom.substring(0, 2), 16);
+        int g1 = Integer.parseInt(codeFrom.substring(2, 4), 16);
+        int b1 = Integer.parseInt(codeFrom.substring(4, 6), 16);
+        int r2 = Integer.parseInt(codeTo.substring(0, 2), 16);
+        int g2 = Integer.parseInt(codeTo.substring(2, 4), 16);
+        int b2 = Integer.parseInt(codeTo.substring(4, 6), 16);
+        int rDelta = (r2 - r1) / nbDivision;
+        int gDelta = (g2 - g1) / nbDivision;
+        int bDelta = (b2 - b1) / nbDivision;
+        for (int idx = 0;idx < nbDivision;idx++) {
+            String red   = Integer.toHexString(r1 + rDelta * idx);
+            String green = Integer.toHexString(g1 + gDelta * idx);
+            String blue  = Integer.toHexString(b1 + bDelta * idx);
+            colors.add(red + green + blue);
         }
         return colors.subList(1, colors.size());
     }

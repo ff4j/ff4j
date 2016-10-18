@@ -1,6 +1,7 @@
 package org.ff4j.test.utils;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 
 /*
  * #%L
@@ -28,14 +29,91 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.lang.model.type.NullType;
+
 import org.ff4j.audit.EventConstants;
 import org.ff4j.store.JdbcStoreConstants;
+import org.ff4j.utils.TimeUtils;
 import org.ff4j.utils.Util;
 import org.ff4j.web.FF4jWebConstants;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class UtilTest {
+    
+    @Test
+    public void testHasLength() {
+        Assert.assertFalse(Util.hasLength(null));
+        Assert.assertFalse(Util.hasLength(""));
+        Assert.assertTrue(Util.hasLength("OK"));
+    }
+    
+    @Test
+    public void testIsValidClass() {
+        Assert.assertFalse(Util.isValidClass(null));
+        Assert.assertFalse(Util.isValidClass(NullType.class));
+        Assert.assertTrue(Util.isValidClass(String.class));
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testAsserts() {
+        Util.assertNotNull("toto", (Object[]) null);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testAssertsHasLength() {
+        Util.assertHasLength((String[]) null);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testAssertsNotEmpty() {
+        Util.assertNotEmpty(null);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testAssertsNotEmpty2() {
+        Util.assertNotEmpty(new ArrayList<String>());
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testAssertsNotEmptyOK() {
+        // OK
+        Util.assertNotEmpty(Util.set("1","2"));
+        Util.assertParamHasNotNull(null, "sample");
+    }
+    
+    @Test
+    public void testAssertsParams() {
+        // OK
+        Util.assertParamHasNotNull("x", "sample");
+        Assert.assertNull(Util.set((Object[]) null));
+        Assert.assertNull(Util.list((Object[])null));
+        Assert.assertNull(Util.join(null,","));
+    }
+    
+    @Test
+    public void isClassCollection() {
+        Assert.assertTrue(Util.isClassCollection(Set.class));
+        Assert.assertTrue(Util.isClassCollection(HashMap.class));
+        Assert.assertFalse(Util.isClassCollection(String.class));
+        
+        Assert.assertFalse(Util.isCollection(null));
+        Assert.assertFalse(Util.isCollection("toto"));
+        Assert.assertTrue(Util.isCollection(new ArrayList<String>()));
+        
+        Assert.assertTrue(Util.isEmpty(null));
+        Assert.assertTrue(Util.isEmpty(new ArrayList<String>()));
+        Assert.assertFalse(Util.isEmpty(Util.set("1")));
+        
+        Assert.assertNull(Util.asCollection(null));
+        Assert.assertNotNull(Util.asCollection(new String[] {"a"}));
+        Assert.assertNotNull(Util.asCollection(Util.set("1")));
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void asCollectionError() {
+        Util.asCollection("1");
+    }
     
     @Test
     public void testGetKeysByValue() {
@@ -78,6 +156,10 @@ public class UtilTest {
          Constructor<FF4jWebConstants> ee = FF4jWebConstants.class.getDeclaredConstructor();
          ee.setAccessible(true);
          ee.newInstance();
+         
+         Constructor<TimeUtils> ff = TimeUtils.class.getDeclaredConstructor();
+         ff.setAccessible(true);
+         ff.newInstance();
     }
     
     @Test
@@ -88,6 +170,11 @@ public class UtilTest {
         Util.generateRGBGradient("442299", "ee1100", 9);
         Assert.assertNotNull(Util.getRandomElement(g1));
         Util.getColorsGradient(9);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testGradientError() {
+        Util.generateRGBGradient("442299", "ee1100", -20);
     }
     
 

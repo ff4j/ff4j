@@ -136,9 +136,7 @@ public class InMemoryFeatureStore extends AbstractFeatureStore {
     /** {@inheritDoc} */    
     public void create(Feature fp) {
         assertFeatureNotNull(fp);
-        if (exist(fp.getUid())) {
-            throw new FeatureAlreadyExistException(fp.getUid());
-        }
+        assertFeatureNotExist(fp.getUid());
         updateFeature(fp);
     }
 

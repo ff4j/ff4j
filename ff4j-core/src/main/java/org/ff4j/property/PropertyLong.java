@@ -1,5 +1,7 @@
 package org.ff4j.property;
 
+import org.ff4j.exception.InvalidPropertyTypeException;
+
 /*
  * #%L
  * ff4j-core
@@ -80,7 +82,11 @@ public class PropertyLong extends Property< Long > {
     /** {@inheritDoc} */
     @Override
     public Long fromString(String v) {
-        return new Long(v);
+        try {
+            return new Long(v);
+        } catch(NumberFormatException nbe) {
+            throw new InvalidPropertyTypeException("Cannot cast " + v + "to expected " + Long.class, nbe);
+        }
     }
 
 }

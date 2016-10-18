@@ -22,6 +22,7 @@ package org.ff4j.test.store;
 import static org.mockito.Mockito.doThrow;
 
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,10 +34,34 @@ import org.ff4j.property.Property;
 import org.ff4j.property.PropertyString;
 import org.ff4j.store.JdbcFeatureStore;
 import org.ff4j.store.JdbcStoreConstants;
+import org.ff4j.utils.JdbcUtils;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 public class JdbcFeatureStoreErrorTest {
+    
+    @Test(expected = FeatureAccessException.class)
+    public void testExecuteUpdate()  throws SQLException {
+        DataSource mockDS = Mockito.mock(DataSource.class);
+        doThrow(new SQLException()).when(mockDS).getConnection();
+        JdbcUtils.executeUpdate(mockDS, "toto");
+    }
+    
+    @Test(expected = FeatureAccessException.class)
+    public void testgetiStableExist()  throws SQLException {
+        DataSource mockDS = Mockito.mock(DataSource.class);
+        doThrow(new SQLException()).when(mockDS).getConnection();
+        JdbcUtils.isTableExist(mockDS, "toto");
+    }
+
+    @Test(expected = FeatureAccessException.class)
+    public void testJdbcUtilCloseStatement()  throws SQLException {
+        Statement statement = Mockito.mock(Statement.class);
+        doThrow(new SQLException()).when(statement).close();
+        JdbcUtils.closeStatement(null);
+        JdbcUtils.rollback(null);
+        JdbcUtils.closeStatement(statement);
+    }
     
     @Test(expected = FeatureAccessException.class)
     public void testgetExistKO()  throws SQLException {
@@ -51,9 +76,19 @@ public class JdbcFeatureStoreErrorTest {
     public void testgetReadKO()  throws SQLException {
         DataSource mockDS = Mockito.mock(DataSource.class);
         doThrow(new SQLException()).when(mockDS).getConnection();
+        // Exist goes before
         JdbcFeatureStore jrepo = new JdbcFeatureStore(mockDS);
         jrepo.setDataSource(mockDS);
         jrepo.read("xx");
+    }
+    
+    @Test(expected = FeatureAccessException.class)
+    public void testgetReadGroupKO()  throws SQLException {
+        DataSource mockDS = Mockito.mock(DataSource.class);
+        doThrow(new SQLException()).when(mockDS).getConnection();
+        JdbcFeatureStore jrepo = new JdbcFeatureStore(mockDS);
+        jrepo.setDataSource(mockDS);
+        jrepo.readGroup("xx");
     }
     
     @Test(expected = FeatureAccessException.class)

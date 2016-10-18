@@ -79,6 +79,7 @@ public class FeatureStoreEhCacheTest extends FeatureStoreTestSupport {
     	Constructor<FF4JEhCacheConstants> ce = FF4JEhCacheConstants.class.getDeclaredConstructor();
 	    ce.setAccessible(true);
 	    ce.newInstance();
+	    Assert.assertNotNull(ce);
     }
 
 }

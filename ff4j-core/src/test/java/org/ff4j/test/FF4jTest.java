@@ -419,5 +419,17 @@ public class FF4jTest extends AbstractFf4jTest {
         ff4j.setPropertiesStore(new PropertyStoreAuditProxy(ff4j, ff4j.getPropertiesStore()));
         Assert.assertNotNull(ff4j.getConcretePropertyStore());
     }
+    
+    @Test
+    public void testCreateSchema() {
+        FF4j ff4j = new FF4j();
+        ff4j.createSchema();
+        ff4j.setFeatureStore(null);
+        ff4j.setPropertiesStore(null);
+        ff4j.setEventRepository(null);
+        // No error event with null elements
+        ff4j.createSchema();
+        Assert.assertNotNull(ff4j);
+    }
 
 }

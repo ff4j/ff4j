@@ -2,6 +2,8 @@ package org.ff4j.property;
 
 import java.util.Set;
 
+import org.ff4j.exception.InvalidPropertyTypeException;
+
 /*
  * #%L
  * ff4j-core
@@ -94,7 +96,11 @@ public class PropertyInt extends Property< Integer > {
     /** {@inheritDoc} */
     @Override
     public Integer fromString(String v) {
-        return new Integer(v);
+        try {
+            return new Integer(v);
+        } catch(NumberFormatException nbe) {
+            throw new InvalidPropertyTypeException("Cannot cast " + v + "to expected " + Integer.class, nbe);
+        }
     }
     
 

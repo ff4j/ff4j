@@ -40,7 +40,7 @@ import static org.ff4j.store.JdbcStoreConstants.*;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class JdbcFeatureDataSourceTest extends FStoreTestSupport {
+public class JdbcFeatureDataSourceTest extends CoreFeatureStoreTestSupport {
 
     /** SQL DataSource. */
     private DataSource sqlDataSource;

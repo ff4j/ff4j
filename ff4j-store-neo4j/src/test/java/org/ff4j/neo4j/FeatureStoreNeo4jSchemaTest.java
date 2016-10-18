@@ -23,6 +23,7 @@ package org.ff4j.neo4j;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.neo4j.store.FeatureStoreNeo4J;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -59,6 +60,8 @@ public class FeatureStoreNeo4jSchemaTest {
         // WHEN
         fStore.createSchema();
         fStore.createSchema();
-        // No error here
+        // No error here even if calling the method twice
+        Assert.assertNotNull(fStore);
+        
     }    
 }

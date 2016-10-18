@@ -124,7 +124,8 @@ public class CassandraTest {
         cc.setReplicationFactor(cc.getReplicationFactor());
         cc.setCluster(null);
         
-        new CassandraConnection("username", "password");
+        CassandraConnection c2 = new CassandraConnection("username", "password");
+        Assert.assertNotNull(c2.getUserName());
     }
     
     /** TDD. */

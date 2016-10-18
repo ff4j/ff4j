@@ -1,4 +1,4 @@
-package org.ff4j.test.property.rd;
+package org.ff4j.lab;
 
 /*
  * #%L
@@ -22,9 +22,9 @@ package org.ff4j.test.property.rd;
 
 import java.util.Map;
 
-import org.ff4j.property.store.PropertyStore;
+import org.ff4j.property.Property;
 
-public interface PropertyStrategy<T> {
+public interface PropertyEvaluationStrategy<T> {
 
     /**
      * Allow to parameterized Flipping Strategy
@@ -52,7 +52,7 @@ public interface PropertyStrategy<T> {
      *            custom params to make decision
      * @return if flipping should be performed
      */
-    T getValue(String featureName, PropertyStore store, PropertyExecutionContext executionContext);
+    T getValue(Property<?> prop, PropertyExecutionContext executionContext);
 
     
 }
