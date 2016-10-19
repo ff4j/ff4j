@@ -96,7 +96,7 @@ public class FeatureResource {
     }
 
     @SuppressWarnings("rawtypes")
-    @RequestMapping(value = ROOT + OPERATION_ENABLE, method = POST, consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = ROOT + OPERATION_ENABLE, method = POST)
     @ApiOperation(value = "Enable a feature", response = ResponseEntity.class)
     @ApiResponses({
             @ApiResponse(code = 202, message = "Features has been enabled"),
@@ -107,7 +107,7 @@ public class FeatureResource {
     }
 
     @SuppressWarnings("rawtypes")
-    @RequestMapping(value = ROOT + OPERATION_DISABLE, method = POST, consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = ROOT + OPERATION_DISABLE, method = POST)
     @ApiOperation(value = "Disable a feature", response = ResponseEntity.class)
     @ApiResponses({
             @ApiResponse(code = 202, message = "Features has been disabled"),
