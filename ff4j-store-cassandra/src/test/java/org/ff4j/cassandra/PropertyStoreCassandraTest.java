@@ -21,7 +21,6 @@ package org.ff4j.cassandra;
  */
 
 import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
-import org.ff4j.cassandra.store.FeatureStoreCassandra;
 import org.ff4j.cassandra.store.PropertyStoreCassandra;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
