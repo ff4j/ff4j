@@ -30,7 +30,11 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.node.NodeBuilder;
+import org.ff4j.core.Feature;
 import org.ff4j.utils.Util;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestClientFactory;
@@ -43,180 +47,195 @@ import io.searchbox.indices.IndicesExists;
  * Poor design by clun, to be challenged !!
  */
 public class ElasticConnection {
-   
-    private ElasticConnectionMode connectionMode;
-    
-    private Client esClient;
-    
-    private JestClient jestClient;
-    
-    private String indexName;
-    
-    private Set < URL > urlSet;
-    
-    /**
-     * Proposal to initiate a connection to a elastic cluster.
-     *
-     * @param mode
-     *      choose client to be used
-     * @param url
-     *      target nodes of the cluster (optional)
-     */
-    public ElasticConnection(ElasticConnectionMode mode, String indexName, URL...url) {
-        Util.assertParamHasNotNull(mode, "ElasticConnectionMode");
-        Util.assertParamHasNotNull(indexName, "indexName");
-        this.indexName      = indexName;
-        this.connectionMode = mode;
-        this.urlSet         = Util.set(url);
-        
-        try {
-            switch (mode) {
-                case NATIVE_CLIENT    :   initNativeClient();    break;
-                case TRANSPORT_CLIENT :   initTransportClient(); break;
-                default               :   initJestClient();
-            }
-        } catch (IOException e) {
-            // dedicated runtime exception ElasticConnectionException ?
-        }   
-    }
-    
-    private void initTransportClient() {
-        TransportClient tClient = new TransportClient();
-        if (!Util.isEmpty(urlSet)) {
-            for (URL url : urlSet) {
-                tClient.addTransportAddress(new InetSocketTransportAddress(url.getHost(), url.getPort()));
-            }
-        }
-        esClient = tClient;
-    }
-    
-    private void initNativeClient() {
-        esClient = NodeBuilder.nodeBuilder().client(true).node().client();
-        boolean indexExists = esClient.admin().indices().
-                prepareExists(indexName).execute().actionGet().isExists();
-        if (indexExists) {
-            esClient.admin().indices()
-            .prepareDelete(indexName).execute()
-            .actionGet();
-        }
-        esClient.admin().indices()
-        .prepareCreate(indexName).execute().actionGet();
-    }
-    
-    private void initJestClient() throws IOException {
-        JestClientFactory factory = new JestClientFactory();
-        factory.setHttpClientConfig(new HttpClientConfig.Builder(mapUrl()).multiThreaded(true).build());
-        jestClient = factory.getObject();
-        boolean indexExists = jestClient.execute(new IndicesExists.Builder(indexName).build()).isSucceeded();
-        if (indexExists) {
-            jestClient.execute(new DeleteIndex.Builder(indexName).build());
-        }
-        jestClient.execute(new CreateIndex.Builder(indexName).build());
-    }
-    
-    /**
-     * Before Lambda...
-     */
-    private Collection < String > mapUrl() {
-        Collection<String> collec = new HashSet<String>();
-        for (URL url : urlSet) {
-            collec.add(url.toString());
-        }
-        return collec;
-    }
 
-    /**
-     * Getter accessor for attribute 'connectionMode'.
-     *
-     * @return
-     *       current value of 'connectionMode'
-     */
-    public ElasticConnectionMode getConnectionMode() {
-        return connectionMode;
-    }
+	private ElasticConnectionMode connectionMode;
 
-    /**
-     * Setter accessor for attribute 'connectionMode'.
-     * @param connectionMode
-     * 		new value for 'connectionMode '
-     */
-    public void setConnectionMode(ElasticConnectionMode connectionMode) {
-        this.connectionMode = connectionMode;
-    }
+	private Client esClient;
 
-    /**
-     * Getter accessor for attribute 'esClient'.
-     *
-     * @return
-     *       current value of 'esClient'
-     */
-    public Client getEsClient() {
-        return esClient;
-    }
+	private JestClient jestClient;
 
-    /**
-     * Setter accessor for attribute 'esClient'.
-     * @param esClient
-     * 		new value for 'esClient '
-     */
-    public void setEsClient(Client esClient) {
-        this.esClient = esClient;
-    }
+	private String indexName;
 
-    /**
-     * Getter accessor for attribute 'jestClient'.
-     *
-     * @return
-     *       current value of 'jestClient'
-     */
-    public JestClient getJestClient() {
-        return jestClient;
-    }
+	private Set<URL> urlSet;
 
-    /**
-     * Setter accessor for attribute 'jestClient'.
-     * @param jestClient
-     * 		new value for 'jestClient '
-     */
-    public void setJestClient(JestClient jestClient) {
-        this.jestClient = jestClient;
-    }
+	/**
+	 * Proposal to initiate a connection to a elastic cluster.
+	 *
+	 * @param mode
+	 *            choose client to be used
+	 * @param url
+	 *            target nodes of the cluster (optional)
+	 */
+	public ElasticConnection(ElasticConnectionMode mode, String indexName, URL... url) {
+		Util.assertParamHasNotNull(mode, "ElasticConnectionMode");
+		Util.assertParamHasNotNull(indexName, "indexName");
+		Util.assertParamHasNotNull(url, "url");
+		this.indexName = indexName;
+		this.connectionMode = mode;
+		this.urlSet = Util.set(url);
 
-    /**
-     * Getter accessor for attribute 'indexName'.
-     *
-     * @return
-     *       current value of 'indexName'
-     */
-    public String getIndexName() {
-        return indexName;
-    }
+		try {
+			switch (mode) {
+			case NATIVE_CLIENT:
+				initNativeClient();
+				break;
+			case TRANSPORT_CLIENT:
+				initTransportClient();
+				break;
+			case JEST_CLIENT:
+				initJestClient();
+				break;
+			default:
+				initJestClient();
+			}
+		} catch (IOException e) {
+			// dedicated runtime exception ElasticConnectionException ?
+		}
+	}
 
-    /**
-     * Setter accessor for attribute 'indexName'.
-     * @param indexName
-     * 		new value for 'indexName '
-     */
-    public void setIndexName(String indexName) {
-        this.indexName = indexName;
-    }
+	private void initTransportClient() {
+		TransportClient tClient = new TransportClient();
+		if (!Util.isEmpty(urlSet)) {
+			for (URL url : urlSet) {
+				tClient.addTransportAddress(new InetSocketTransportAddress(url.getHost(), url.getPort()));
+			}
+		}
+		esClient = tClient;
+	}
 
-    /**
-     * Getter accessor for attribute 'urlSet'.
-     *
-     * @return
-     *       current value of 'urlSet'
-     */
-    public Set<URL> getUrlSet() {
-        return urlSet;
-    }
+	private void initNativeClient() {
+		esClient = NodeBuilder.nodeBuilder().client(true).node().client();
+		boolean indexExists = esClient.admin().indices().prepareExists(indexName).execute().actionGet().isExists();
+		if (indexExists) {
+			esClient.admin().indices().prepareDelete(indexName).execute().actionGet();
+		}
+		esClient.admin().indices().prepareCreate(indexName).execute().actionGet();
+	}
 
-    /**
-     * Setter accessor for attribute 'urlSet'.
-     * @param urlSet
-     * 		new value for 'urlSet '
-     */
-    public void setUrlSet(Set<URL> urlSet) {
-        this.urlSet = urlSet;
-    }
+	private void initJestClient() throws IOException {
+		JestClientFactory factory = new JestClientFactory();
+
+		// Custom feature converter is required
+		Gson gson = new GsonBuilder() //
+				.registerTypeAdapter(Feature.class, new FeatureConverter()) //
+				.create();
+
+		factory.setHttpClientConfig(new HttpClientConfig.Builder(mapUrl()) //
+				.multiThreaded(true) //
+				.gson(gson) //
+				.build());
+
+		jestClient = factory.getObject();
+		boolean indexExists = jestClient.execute(new IndicesExists.Builder(indexName).build()).isSucceeded();
+		if (indexExists) {
+			jestClient.execute(new DeleteIndex.Builder(indexName).build());
+		}
+		jestClient.execute(new CreateIndex.Builder(indexName).build());
+	}
+
+	/**
+	 * Before Lambda...
+	 */
+	private Collection<String> mapUrl() {
+		Collection<String> collec = new HashSet<String>();
+		for (URL url : urlSet) {
+			collec.add(url.toString());
+		}
+		return collec;
+	}
+
+	/**
+	 * Getter accessor for attribute 'connectionMode'.
+	 *
+	 * @return current value of 'connectionMode'
+	 */
+	public ElasticConnectionMode getConnectionMode() {
+		return connectionMode;
+	}
+
+	/**
+	 * Setter accessor for attribute 'connectionMode'.
+	 * 
+	 * @param connectionMode
+	 *            new value for 'connectionMode '
+	 */
+	public void setConnectionMode(ElasticConnectionMode connectionMode) {
+		this.connectionMode = connectionMode;
+	}
+
+	/**
+	 * Getter accessor for attribute 'esClient'.
+	 *
+	 * @return current value of 'esClient'
+	 */
+	public Client getEsClient() {
+		return esClient;
+	}
+
+	/**
+	 * Setter accessor for attribute 'esClient'.
+	 * 
+	 * @param esClient
+	 *            new value for 'esClient '
+	 */
+	public void setEsClient(Client esClient) {
+		this.esClient = esClient;
+	}
+
+	/**
+	 * Getter accessor for attribute 'jestClient'.
+	 *
+	 * @return current value of 'jestClient'
+	 */
+	public JestClient getJestClient() {
+		return jestClient;
+	}
+
+	/**
+	 * Setter accessor for attribute 'jestClient'.
+	 * 
+	 * @param jestClient
+	 *            new value for 'jestClient '
+	 */
+	public void setJestClient(JestClient jestClient) {
+		this.jestClient = jestClient;
+	}
+
+	/**
+	 * Getter accessor for attribute 'indexName'.
+	 *
+	 * @return current value of 'indexName'
+	 */
+	public String getIndexName() {
+		return indexName;
+	}
+
+	/**
+	 * Setter accessor for attribute 'indexName'.
+	 * 
+	 * @param indexName
+	 *            new value for 'indexName '
+	 */
+	public void setIndexName(String indexName) {
+		this.indexName = indexName;
+	}
+
+	/**
+	 * Getter accessor for attribute 'urlSet'.
+	 *
+	 * @return current value of 'urlSet'
+	 */
+	public Set<URL> getUrlSet() {
+		return urlSet;
+	}
+
+	/**
+	 * Setter accessor for attribute 'urlSet'.
+	 * 
+	 * @param urlSet
+	 *            new value for 'urlSet '
+	 */
+	public void setUrlSet(Set<URL> urlSet) {
+		this.urlSet = urlSet;
+	}
 }
