@@ -67,7 +67,7 @@ public class FeatureResource {
     private FeatureServices featureServices;
 
 
-    @RequestMapping(method = GET, produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(method = GET, produces = APPLICATION_JSON_VALUE)
     public FeatureApiBean getFeatureByUID(@PathVariable(value = PARAM_UID) String featureUID) {
         return featureServices.getFeature(featureUID);
     }
@@ -84,7 +84,7 @@ public class FeatureResource {
     }
 
     @SuppressWarnings("rawtypes")
-    @RequestMapping(method = DELETE, consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(method = DELETE)
     @ApiOperation(value = "Delete a feature", response = ResponseEntity.class)
     @ApiResponses({
             @ApiResponse(code = 204, message = "No content, feature is deleted"),
@@ -96,7 +96,7 @@ public class FeatureResource {
     }
 
     @SuppressWarnings("rawtypes")
-    @RequestMapping(value = ROOT + OPERATION_ENABLE, method = POST, consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = ROOT + OPERATION_ENABLE, method = POST)
     @ApiOperation(value = "Enable a feature", response = ResponseEntity.class)
     @ApiResponses({
             @ApiResponse(code = 202, message = "Features has been enabled"),
@@ -107,7 +107,7 @@ public class FeatureResource {
     }
 
     @SuppressWarnings("rawtypes")
-    @RequestMapping(value = ROOT + OPERATION_DISABLE, method = POST, consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = ROOT + OPERATION_DISABLE, method = POST)
     @ApiOperation(value = "Disable a feature", response = ResponseEntity.class)
     @ApiResponses({
             @ApiResponse(code = 202, message = "Features has been disabled"),
@@ -118,7 +118,7 @@ public class FeatureResource {
     }
 
     @SuppressWarnings("rawtypes")
-    @RequestMapping(value = ROOT + OPERATION_GRANTROLE + ROOT + PATH_PARAM_ROLE, method = POST, consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = ROOT + OPERATION_GRANTROLE + ROOT + PATH_PARAM_ROLE, method = POST)
     @ApiOperation(value = "Grant a permission to a feature", response = ResponseEntity.class)
     @ApiResponses({
             @ApiResponse(code = 202, message = "Permission has been granted"),
@@ -130,7 +130,7 @@ public class FeatureResource {
     }
 
     @SuppressWarnings("rawtypes")
-    @RequestMapping(value = ROOT + OPERATION_REMOVEROLE + ROOT + PATH_PARAM_ROLE, method = POST, consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = ROOT + OPERATION_REMOVEROLE + ROOT + PATH_PARAM_ROLE, method = POST)
     @ApiOperation(value = "Remove a permission from a feature", response = ResponseEntity.class)
     @ApiResponses({
             @ApiResponse(code = 202, message = "Permission has been granted"),
@@ -141,7 +141,7 @@ public class FeatureResource {
     }
 
     @SuppressWarnings("rawtypes")
-    @RequestMapping(value = ROOT + OPERATION_ADDGROUP + ROOT + PATH_PARAM_GROUP, method = POST, consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = ROOT + OPERATION_ADDGROUP + ROOT + PATH_PARAM_GROUP, method = POST)
     @ApiOperation(value = "Define the group of the feature", response = ResponseEntity.class)
     @ApiResponses({
             @ApiResponse(code = 202, message = "Group has been defined"),
@@ -152,7 +152,7 @@ public class FeatureResource {
         return new ResponseEntity(ACCEPTED);
     }
 
-    @RequestMapping(value = ROOT + OPERATION_REMOVEGROUP + ROOT + PATH_PARAM_GROUP, method = POST, consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = ROOT + OPERATION_REMOVEGROUP + ROOT + PATH_PARAM_GROUP, method = POST)
     @ApiOperation(value = "Remove the group of the feature", response = ResponseEntity.class)
     @ApiResponses({
             @ApiResponse(code = 204, message = "Group has been removed"),
