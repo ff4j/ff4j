@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Unique Servlet to manage FlipPoints and security
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick Lunven (@clunven)
  */
 public class FF4jDispatcherServlet extends FF4jServlet {
 

@@ -119,6 +119,7 @@ public class FeatureStoreAuditProxy implements FeatureStore {
     /** {@inheritDoc} */
     @Override
     public void grantRoleOnFeature(String uid, String roleName) {
+        System.out.println("GRANT");
         long start = System.nanoTime();
         target.grantRoleOnFeature(uid, roleName);
         long duration = System.nanoTime() - start;

@@ -171,11 +171,5 @@ public class UtilTest {
         Assert.assertNotNull(Util.getRandomElement(g1));
         Util.getColorsGradient(9);
     }
-    
-    @Test(expected = IllegalArgumentException.class)
-    public void testGradientError() {
-        Util.generateRGBGradient("442299", "ee1100", -20);
-    }
-    
 
 }

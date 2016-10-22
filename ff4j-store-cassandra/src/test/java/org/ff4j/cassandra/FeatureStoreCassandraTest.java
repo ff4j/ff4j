@@ -43,7 +43,7 @@ public class FeatureStoreCassandraTest extends FeatureStoreTestSupport {
     @BeforeClass
     public static void startEmbeddedCassandra() throws Exception {
         // Use a real server
-        // conn = new CassandraConnection();
+        //conn = new CassandraConnection();
         // <--
         
         // Use Cassandra-Unit 

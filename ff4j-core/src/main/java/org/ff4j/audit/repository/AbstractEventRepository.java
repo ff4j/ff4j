@@ -261,9 +261,6 @@ public abstract class AbstractEventRepository implements EventRepository {
      *      list of days
      */
     protected Set < String > getCandidateDays(long startTime, long endTime) {
-        if (startTime > endTime) {
-            throw new IllegalArgumentException("EndTime must be after start time");
-        }
         Set < String > resultKeys = new TreeSet<String>();
         String endKey = getKeyDate(endTime);
         resultKeys.add(endKey);

@@ -44,6 +44,7 @@ public class DomainTest {
         BEAN_TESTER.testBean(EventRepositoryApiBean.class);
         BEAN_TESTER.testBean(CacheApiBean.class);
         BEAN_TESTER.testBean(GroupDescApiBean.class);
+        BEAN_TESTER.testBean(BarSeriesApiBean.class);
     }
 
 }

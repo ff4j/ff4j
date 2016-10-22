@@ -332,8 +332,8 @@ public class Util {
      */
     public static List < String > generateRGBGradient(String codeFrom, String codeTo, int nbDivision) {
         List < String > colors = new ArrayList<String>();
-        if (nbDivision <= 0) {
-            throw new IllegalArgumentException("Division number should be positive");
+        if (nbDivision < 1) {
+           nbDivision = 1;
         }
         nbDivision++;
         int r1 = Integer.parseInt(codeFrom.substring(0, 2), 16);

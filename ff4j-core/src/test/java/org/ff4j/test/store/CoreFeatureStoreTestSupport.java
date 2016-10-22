@@ -53,8 +53,9 @@ public abstract class CoreFeatureStoreTestSupport implements TestConstantsFF4j {
     @Before
     public void setUp() throws Exception {
         ff4j = new FF4j();
-        ff4j.setFeatureStore(initStore());
-        testedStore = ff4j.getFeatureStore();
+        FeatureStore fs = initStore();
+        ff4j.setFeatureStore(fs);
+        testedStore = fs;
         assertFf4j = new AssertFf4j(ff4j);
     }
 

@@ -136,6 +136,25 @@ public abstract class AbstractEventRepositoryTest {
     }
     
     @Test
+    public void testPieChart() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        Event evt1 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CREATE);
+        Assert.assertTrue(repo.saveEvent(evt1));
+        Thread.sleep(200);
+        
+        EventQueryDefinition eqd = new EventQueryDefinition(start-10, System.currentTimeMillis());
+        Assert.assertNotNull(repo.getFeatureUsagePieChart(eqd));
+        Assert.assertNotNull(repo.getHostPieChart(eqd));
+        Assert.assertNotNull(repo.getSourcePieChart(eqd));
+        Assert.assertNotNull(repo.getUserPieChart(eqd));
+        
+        Assert.assertNotNull(repo.getHostBarChart(eqd));
+        Assert.assertNotNull(repo.getSourceBarChart(eqd));
+        Assert.assertNotNull(repo.getUserBarChart(eqd));
+        
+    }
+    
+    @Test
     public void testFeatureUsageBarCharts() throws InterruptedException {
         long start = System.currentTimeMillis();
         // Create Event
@@ -321,6 +340,22 @@ public abstract class AbstractEventRepositoryTest {
         Thread.sleep(100);
         // Then
         Event evt = repo.getEventByUUID(dummyId, System.currentTimeMillis());
+        Assert.assertNotNull(evt);
+    }
+    
+    /** TDD. */
+    @Test
+    public void testGetEventByUID2() throws InterruptedException {
+        // Given
+        String dummyId = "1234-5678-9012-3456";
+        Event evt1 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CREATE);
+        evt1.setUuid(dummyId);
+        // When
+        repo.saveEvent(evt1);
+        // Let the store to be updated
+        Thread.sleep(100);
+        // Then
+        Event evt = repo.getEventByUUID(dummyId, null);
         Assert.assertNotNull(evt);
     }
     
