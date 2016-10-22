@@ -1,5 +1,6 @@
 package org.ff4j.aop;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 /*
@@ -25,6 +26,7 @@ import java.lang.reflect.InvocationTargetException;
 import org.ff4j.FF4j;
 import org.ff4j.aop.test.goodbye.GoodbyeService;
 import org.ff4j.aop.test.greeting.GreetingService;
+import org.ff4j.spring.namespace.FF4jNameSpaceConstants;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -109,5 +111,12 @@ public class FeatureAdvisorTest {
     public void testAlterClazzInvokeThrowInvocationTargetExceptionNull() throws InvocationTargetException {
         ff4j.enable("language-english");
         goodbye.sayGoodbyeWithClassInvocationTargetExceptionNull();
+    }
+    
+    @Test
+    public void testNamespace() throws Exception {
+        Constructor<FF4jNameSpaceConstants> c = FF4jNameSpaceConstants.class.getDeclaredConstructor();
+        c.setAccessible(true);
+        Assert.assertNotNull(c.newInstance());
     }
 }

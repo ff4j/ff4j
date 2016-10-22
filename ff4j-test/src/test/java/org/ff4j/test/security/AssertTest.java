@@ -1,5 +1,7 @@
 package org.ff4j.test.security;
 
+import java.lang.reflect.Constructor;
+
 /*
  * #%L
  * ff4j-test
@@ -25,6 +27,7 @@ import org.ff4j.FF4j;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.test.AssertFf4j;
+import org.ff4j.test.TestsFf4jConstants;
 import org.ff4j.utils.Util;
 import org.junit.Before;
 import org.junit.Test;
@@ -77,5 +80,12 @@ public class AssertTest {
     public void testAssertThatFeatureNotInGroup() {
         assertFF4j.assertThatFeatureNotInGroup("AwesomeFeature", "GRP1");
         assertFF4j.assertThatFeatureNotInGroup("second", "GRP1");
+    }
+    
+    @Test
+    public void eventConstant() throws Exception {
+        Constructor<TestsFf4jConstants> de = TestsFf4jConstants.class.getDeclaredConstructor();
+        de.setAccessible(true);
+        de.newInstance();
     }
 }

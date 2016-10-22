@@ -58,7 +58,7 @@ public class MongoEventMapper implements EventMapper< Document > {
     public Event fromStore(Document bean) {
         Event evt = new Event();
         evt.setAction(bean.getString(ATTRIBUTE_ACTION));
-        evt.setDuration(bean.getLong(ATTRIBUTE_DURATION));
+        evt.setDuration(bean.getInteger(ATTRIBUTE_DURATION));
         evt.setHostName(bean.getString(ATTRIBUTE_HOST));
         evt.setName(bean.getString(ATTRIBUTE_NAME));
         evt.setSource(bean.getString(ATTRIBUTE_SOURCE));

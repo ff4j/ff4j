@@ -1,5 +1,8 @@
 package org.ff4j.test.store;
 
+import org.ff4j.audit.Event;
+import org.ff4j.audit.EventConstants;
+
 /*
  * #%L
  * ff4j-store-mongodb-v3
@@ -22,6 +25,7 @@ package org.ff4j.test.store;
 
 
 import org.ff4j.mongo.mapper.FeatureDocumentBuilder;
+import org.ff4j.mongo.mapper.MongoEventMapper;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -33,6 +37,16 @@ public class DBObjectBuilderTest {
         Assert.assertNotNull(db.getExpression("Value"));
         Assert.assertNotNull(db.getStrategy("Value"));
         Assert.assertNotNull(db.getDescription("Value"));
+    }
+    
+    @Test
+    public void testMongoEventMapper() {
+        Event evt = new Event("JAVA", EventConstants.TARGET_FEATURE, 
+                "toto", EventConstants.ACTION_CHECK_OFF);
+        MongoEventMapper mem = new MongoEventMapper();
+        Event evt2 = mem.fromStore(mem.toStore(evt));
+        Assert.assertEquals(evt.getUuid(), evt2.getUuid());
+        
     }
 
 }
