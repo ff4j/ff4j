@@ -84,7 +84,7 @@ public class FeatureStoreElasticTest extends FeatureStoreTestSupport {
 		} catch (MalformedURLException e) {
 			logger.error(e.getMessage(), e);
 		}
-		return new FeatureStoreElastic(connection, "ff4j.xml");
+		return new FeatureStoreElastic(connection, "test-ff4j-features.xml");
 	}
 
 	// Convenient methods
