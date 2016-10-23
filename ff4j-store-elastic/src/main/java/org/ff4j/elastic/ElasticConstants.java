@@ -22,5 +22,7 @@ package org.ff4j.elastic;
 
 
 public class ElasticConstants {
+    
+    public static final String TYPE_FEATURE = "feature";
 
 }

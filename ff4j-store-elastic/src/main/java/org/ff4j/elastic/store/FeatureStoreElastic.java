@@ -12,7 +12,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.elastic.ElasticConnection;
-import org.ff4j.exception.FeatureAccessException;
+import org.ff4j.elastic.ElasticQueryBuilder;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.store.AbstractFeatureStore;
@@ -20,16 +20,11 @@ import org.ff4j.utils.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.searchbox.client.JestResult;
-import io.searchbox.core.Delete;
 import io.searchbox.core.DocumentResult;
-import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 import io.searchbox.core.SearchResult.Hit;
 import io.searchbox.core.Update;
-import io.searchbox.indices.DeleteIndex;
-import io.searchbox.indices.Flush;
 
 /*
  * #%L
@@ -66,7 +61,10 @@ public class FeatureStoreElastic extends AbstractFeatureStore {
 
 	/** Injection of connection to elastic. */
 	private ElasticConnection connection;
-
+	
+	 /** Connection to store Cassandra. */
+    private ElasticQueryBuilder builder;
+            
 	/**
 	 * Default constructor.
 	 */
@@ -91,389 +89,128 @@ public class FeatureStoreElastic extends AbstractFeatureStore {
 	 */
 	public FeatureStoreElastic(ElasticConnection connection, String xmlFile) {
 		this(connection);
-		
-		try {
-		    importFeaturesFromXmlFile(xmlFile);
-	        Flush flush = new Flush.Builder().addIndex(connection.getIndexName()).build();
-	        getConnection().getJestClient().execute(flush);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			throw new FeatureAccessException("Cannot enforce index clearing", e);
-		}
+		importFeaturesFromXmlFile(xmlFile);
+		getConnection().execute(getBuilder().queryFlushIndex());
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void enable(String uid) {
-		this.updateStatus(uid, true);
+	    assertFeatureExist(uid);
+	    getConnection().execute(getBuilder().queryEnable(uid));
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void disable(String uid) {
-		this.updateStatus(uid, false);
+	    assertFeatureExist(uid);
+	    getConnection().execute(getBuilder().queryDisable(uid));
 	}
-
+	
 	/** {@inheritDoc} */
 	@Override
-	public boolean exist(String featureID) {
-		// Checking featureID is not null
-		Util.assertHasLength(featureID);
-		try {
-		    // Jest request
-	        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-	        searchSourceBuilder.query(QueryBuilders.matchQuery("uid", featureID));
-	        Search search = new Search.Builder(searchSourceBuilder.toString()) //
-	                .addIndex(connection.getIndexName()) //
-	                .addType("feature") //
-	                .build();
-	        
-			SearchResult result = getConnection().getJestClient().execute(search);
-			
-			return (null != result) && result.isSucceeded() &&
-			       (result.getTotal() != null) && (result.getTotal() >= 1);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			throw new FeatureAccessException("Cannot check feature existence", e);
-		}
+	public boolean exist(String uid) {
+		Util.assertHasLength(uid);
+		SearchResult result = getConnection().search(getBuilder().queryGetFeatureById(uid), true);
+		return (result.getTotal() != null) && (result.getTotal() >= 1);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void create(Feature fp) {
-	    // Checking parameter
-        assertFeatureNotNull(fp);
+	    assertFeatureNotNull(fp);
 	    assertFeatureNotExist(fp.getUid());
-	    
-		try {
-		    
-		    // Jest request
-	        Index index = new Index.Builder(fp) //
-	                .index(connection.getIndexName()) //
-	                .type("feature")//
-	                .refresh(true) //
-	                .build();
-	        
-			DocumentResult result = getConnection().getJestClient().execute(index);
-			if (!result.isSucceeded()) {
-				logger.error(result.getErrorMessage());
-				throw new FeatureAccessException("Cannot create feature " + fp.getUid() + " query failed :" + result.getErrorMessage());
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			throw new FeatureAccessException("Cannot create feature " + fp.getUid() + " an exception occured", e);
-		}
+	    getConnection().execute(getBuilder().queryCreateFeature(fp));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Feature read(String featureUid) {
-        // Checking parameter
-	    Util.assertHasLength(featureUid);
-		SearchResult result;
-		
-		try {
-		    // Jest request
-	        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-	        searchSourceBuilder.query(QueryBuilders.matchQuery("uid", featureUid));
-	        Search search = new Search.Builder(searchSourceBuilder.toString()) //
-	                .addIndex(connection.getIndexName()) //
-	                .addType("feature") //
-	                .build();
-
-			result = getConnection().getJestClient().execute(search);
-			if (!result.isSucceeded()) {
-				logger.error(result.getErrorMessage());
-			}
-			if (result.getTotal() == 0) {
-				throw new FeatureNotFoundException(featureUid);
-			}
-		} catch (Exception e) {
-			throw new FeatureNotFoundException(featureUid);
-		}
-
-		return result.getFirstHit(Feature.class).source;
+	public Feature read(String uid) {
+	    assertFeatureExist(uid);
+	    // first hit is ensured as feature exist
+		return getConnection().search(getBuilder().queryGetFeatureById(uid))
+		        .getFirstHit(Feature.class).source;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Map<String, Feature> readAll() {
-
-		// Jest request
-		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		Search search = new Search.Builder(searchSourceBuilder.toString()) //
-				.addIndex(connection.getIndexName()) //
-				.addType("feature") //
-				.build();
-
-		Map<String, Feature> mapFP = new HashMap<String, Feature>();
-		SearchResult result = null;
-		try {
-			result = getConnection().getJestClient().execute(search);
-			if (!result.isSucceeded()) {
-				logger.error(result.getErrorMessage());
-			}
-			List<Hit<Feature, Void>> features = result.getHits(Feature.class);
-			for (Hit<Feature, Void> feature : features) {
-				mapFP.put(feature.source.getUid(), feature.source);
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
+	    
+	    SearchResult result = getConnection().search(getBuilder().queryReadAll(), true);
+	    
+	    Map<String, Feature> mapOfFeatures = new HashMap<String, Feature>();
+        if (null != result && result.isSucceeded()) {
+    		for (Hit<Feature, Void> feature : result.getHits(Feature.class)) {
+    		    mapOfFeatures.put(feature.source.getUid(), feature.source);
+    		}
 		}
-
-		return mapFP;
+		return mapOfFeatures;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void delete(String fpId) {
-
-		// Checking parameter
-		if (fpId == null || fpId.isEmpty()) {
-			throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
-		}
-
-		// Getting metadata
-		String _id = getMetaDataId(fpId);
-		if (_id == null) {
-			throw new FeatureNotFoundException(fpId);
-		}
-
-		try {
-			// Jest request
-			Delete delete = new Delete.Builder(fpId) //
-					.index(connection.getIndexName()) //
-					.type("feature") //
-					.id(_id) //
-					.refresh(true) //
-					.build();
-
-			DocumentResult result = getConnection().getJestClient().execute(delete);
-			if (!result.isSucceeded()) {
-				logger.error(result.getErrorMessage());
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
+	public void delete(String uid) {
+	    assertFeatureExist(uid);
+	    getConnection().execute(getBuilder().queryDeleteFeature(uid));
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void update(Feature fp) {
-
-		// Checking parameter
-		if (fp == null) {
-			throw new IllegalArgumentException("Feature cannot be null nor empty");
-		}
-
-		// Getting metadata
-		String _id = getMetaDataId(fp.getUid());
-		if (_id == null) {
-			throw new FeatureNotFoundException(fp.getUid());
-		}
-
-		// Jest request
-		Index update = new Index.Builder(fp) //
-				.index(connection.getIndexName()) //
-				.type("feature") //
-				.id(_id) //
-				.refresh(true) //
-				.build();
-
-		try {
-			DocumentResult result = getConnection().getJestClient().execute(update);
-			if (!result.isSucceeded()) {
-				logger.error(result.getErrorMessage());
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
+	    assertFeatureNotNull(fp);
+	    assertFeatureExist(fp.getUid());
+	    getConnection().execute(getBuilder().queryUpdateFeature(fp));
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void grantRoleOnFeature(String flipId, String roleName) {
+	    assertFeatureExist(flipId);
+	    Util.assertHasLength(roleName);
 
-		// Checking parameter
-		if (flipId == null || flipId.isEmpty()) {
-			throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
-		}
-
-		if (roleName == null || roleName.isEmpty()) {
-			throw new IllegalArgumentException("Role cannot be null nor empty");
-		}
-
-		// Getting metadata
-		String _id = getMetaDataId(flipId);
-		if (_id == null) {
-			throw new FeatureNotFoundException(flipId);
-		}
-
-		// Updating feature with role
 		Feature feature = read(flipId);
 		feature.getPermissions().add(roleName);
-
-		// Jest request
-		Index update = new Index.Builder(feature) //
-				.index(connection.getIndexName()) //
-				.type("feature") //
-				.id(_id) //
-				.build();
-
-		try {
-			DocumentResult result = getConnection().getJestClient().execute(update);
-			if (!result.isSucceeded()) {
-				logger.error(result.getErrorMessage());
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-
+		getConnection().execute(getBuilder().queryUpdateFeature(feature));
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void removeRoleFromFeature(String flipId, String roleName) {
+	    assertFeatureExist(flipId);
+        Util.assertHasLength(roleName);
 
-		// Checking parameter
-		if (flipId == null || flipId.isEmpty()) {
-			throw new IllegalArgumentException("Feature identifier cannot be null nor empty");
-		}
-
-		if (roleName == null || roleName.isEmpty()) {
-			throw new IllegalArgumentException("Role cannot be null nor empty");
-		}
-
-		// Getting metadata
-		String _id = getMetaDataId(flipId);
-		if (_id == null) {
-			throw new FeatureNotFoundException(flipId);
-		}
-
-		// Updating feature with role
 		Feature feature = read(flipId);
 		feature.getPermissions().remove(roleName);
-
-		// Jest request
-		Index update = new Index.Builder(feature) //
-				.index(connection.getIndexName()) //
-				.type("feature") //
-				.id(_id) //
-				.build();
-
-		try {
-			DocumentResult result = getConnection().getJestClient().execute(update);
-			if (!result.isSucceeded()) {
-				logger.error(result.getErrorMessage());
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
+		getConnection().execute(getBuilder().queryUpdateFeature(feature));
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void enableGroup(String groupName) {
-
-		// Checking parameter
-		if (groupName == null || groupName.isEmpty()) {
-			throw new IllegalArgumentException("Groupname cannot be null nor empty");
-		}
-		if (!existGroup(groupName)) {
-			throw new GroupNotFoundException(groupName);
-		}
-
-		// Getting all feature metadata according to this group
-		Set<String> metadatas = findMetadataByGroup(groupName);
-
-		// Partial group update
-		String partialDoc = "{\n" + //
-				"    \"doc\" : {\n" + //
-				"        \"enable\" : true\n" + //
-				"    }\n" + //
-				"}"; //
-
-		// Jest request
-		try {
-			for (String _id : metadatas) {
-				Update update = new Update.Builder(partialDoc) //
-						.index(connection.getIndexName()) //
-						.type("feature") //
-						.id(_id) //
-						.build();
-				DocumentResult result = getConnection().getJestClient().execute(update);
-				if (!result.isSucceeded()) {
-					logger.error(result.getErrorMessage());
-				}
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
+	    assertGroupExist(groupName);
+	    for (String _id : getBuilder().getFeatureTechIdByGroup(groupName)) {
+		    getConnection().execute(getBuilder().queryEnableWithTechId(_id));
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void disableGroup(String groupName) {
-	    // Controls
-	    Util.assertHasLength(groupName);
-		if (!existGroup(groupName)) {
-			throw new GroupNotFoundException(groupName);
-		}
-
-		// Getting all feature metadata according to this group
-		Set<String> metadatas = findMetadataByGroup(groupName);
-		
-		// Partial group update
-		String partialDoc = "{ \"doc\" : { \"enable\" : false } }";
-
-		// Jest request
-		try {
-			for (String _id : metadatas) {
-				Update update = new Update.Builder(partialDoc) //
-						.index(connection.getIndexName()) //
-						.type("feature") //
-						.id(_id) //
-						.refresh(true) //
-						.build();
-				DocumentResult result = getConnection().getJestClient().execute(update);
-				if (!result.isSucceeded()) {
-					logger.error(result.getErrorMessage());
-				}
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-	}
+	    assertGroupExist(groupName);
+        for (String _id : getBuilder().getFeatureTechIdByGroup(groupName)) {
+            getConnection().execute(getBuilder().queryDisableWithTechId(_id));
+        }
+    }
 
 	/** {@inheritDoc} */
 	@Override
 	public boolean existGroup(String groupName) {
-
-		// Checking parameter
-		if (groupName == null || groupName.isEmpty()) {
-			throw new IllegalArgumentException("Groupname cannot be null nor empty");
-		}
-
-		// Jest request
-		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		searchSourceBuilder.query(QueryBuilders.matchQuery("group", groupName));
-		Search search = new Search.Builder(searchSourceBuilder.toString()) //
-				.addIndex(connection.getIndexName()) //
-				.addType("feature") //
-				.build();
-
-		try {
-			SearchResult result = getConnection().getJestClient().execute(search);
-			if (!result.isSucceeded()) {
-				logger.error(result.getErrorMessage());
-			}
-			return result.getTotal() >= 1;
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-
-		return false;
+	    Util.assertParamHasLength(groupName, "groupName");
+		SearchResult result = getConnection().search(getBuilder().getGroupByGroupName(groupName), true);
+		return (result.getTotal() != null) && (result.getTotal() >= 1);
 	}
+	
+	// TODO.. continuer refactoring
 
 	/** {@inheritDoc} */
 	@Override
@@ -527,7 +264,7 @@ public class FeatureStoreElastic extends AbstractFeatureStore {
 		}
 
 		// Getting metadata id
-		String _id = getMetaDataId(featureId);
+		String _id = getBuilder().getFeatureTechId(featureId);
 		if (_id == null) {
 			throw new FeatureNotFoundException(featureId);
 		}
@@ -569,7 +306,7 @@ public class FeatureStoreElastic extends AbstractFeatureStore {
 		}
 
 		// Getting metadata id
-		String _id = getMetaDataId(featureId);
+		String _id = getBuilder().getFeatureTechId(featureId);
 		if (_id == null) {
 			throw new FeatureNotFoundException(featureId);
 		}
@@ -615,52 +352,19 @@ public class FeatureStoreElastic extends AbstractFeatureStore {
 	            groups.add(entry.getValue().getGroup());
 	        }
         }
-
-	    		// Jest request
-//		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-//		searchSourceBuilder.query(FilterBuilders.boolFilter().must(FilterBuilders.existsFilter("group")).toString());
-//
-//		Search search = new Search.Builder(searchSourceBuilder.toString()) //
-//				.addIndex(connection.getIndexName()) //
-//				.addType("feature") //
-//				.refresh(true) //
-//				.build();
-//
-//		Set<String> groups = new HashSet<String>();
-//		try {
-//			SearchResult result = getConnection().getJestClient().execute(search);
-//			if (!result.isSucceeded()) {
-//				logger.error(result.getErrorMessage());
-//			} else {
-//				List<Hit<Feature, Void>> features = result.getHits(Feature.class);
-//				for (Hit<Feature, Void> feature : features) {
-//					groups.add(feature.source.getGroup());
-//				}
-//			}
-//		} catch (IOException e) {
-//			logger.error(e.getMessage(), e);
-//		}
-
 		return groups;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void clear() {
-		try {
-			DeleteIndex delete = new DeleteIndex.Builder(connection.getIndexName()).build();
-			JestResult result = getConnection().getJestClient().execute(delete);
-			if (!result.isSucceeded()) {
-				logger.error(result.getErrorMessage());
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
+		getConnection().execute(getBuilder().queryClear());
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void createSchema() {
+	    getConnection().execute(getBuilder().queryFlushIndex());
 	}
 
 	/**
@@ -681,107 +385,17 @@ public class FeatureStoreElastic extends AbstractFeatureStore {
 	public void setConnection(ElasticConnection connection) {
 		this.connection = connection;
 	}
-
-	// Convenient methods
-
-	private String getMetaDataId(String featureUID) {
-
-		// No featureUID, then no Metadata ID.
-		if (featureUID == null || featureUID.isEmpty()) {
-			return null;
-		}
-
-		// Jest request
-		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		searchSourceBuilder.query(QueryBuilders.matchQuery("uid", featureUID));
-		Search search = new Search.Builder(searchSourceBuilder.toString()) //
-				.addIndex(connection.getIndexName()) //
-				.addType("feature") //
-				.build();
-
-		String _id = null;
-		try {
-			_id = getConnection().getJestClient().execute(search) //
-					.getHits(Map.class).get(0) //
-							.source.get(JestResult.ES_METADATA_ID)//
-									.toString();
-		} catch (Exception e) {
-			throw new FeatureNotFoundException(featureUID);
-		}
-
-		return _id;
-	}
-
-	@SuppressWarnings({"rawtypes"})
-    public Set<String> findMetadataByGroup(String groupName) {
-	    if (!existGroup(groupName)) {
-			throw new GroupNotFoundException(groupName);
-		}		
-
-		Set<String> metadatas = new HashSet<String>();
-		try {
-		    // Jest request
-	        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-	        searchSourceBuilder.query(QueryBuilders.matchQuery("group", groupName));
-	        Search search = new Search.Builder(searchSourceBuilder.toString()) //
-	                .addIndex(connection.getIndexName()) //
-	                .addType("feature") //
-	                .build();
-	        
-			SearchResult result = getConnection().getJestClient().execute(search);
-			if (!result.isSucceeded()) {
-				logger.error(result.getErrorMessage());
-			}
-			List<Hit<Map, Void>> features = result.getHits(Map.class);
-			for (Hit<Map, Void> hit : features) {
-			    System.out.println(hit);
-			    metadatas.add(hit.source.get(JestResult.ES_METADATA_ID).toString());
-				//metadatas.add(features.get(0).source.get(JestResult.ES_METADATA_ID).toString());
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		return metadatas;
-	}
-
+	
 	/**
-	 * Update status of feature.
-	 * 
-	 * @param uid
-	 *            feature id
-	 * @param enable
-	 *            enabler
-	 */
-	private void updateStatus(String uid, boolean enable) {
-
-		// Checking input parameters
-		Util.assertParamHasLength(uid, "uid (feature identifier)");
-
-		// Getting metadata id
-		String _id = getMetaDataId(uid);
-		if (_id == null) {
-			throw new FeatureNotFoundException(uid);
-		}
-
-		// Partial feature update with metadata id as identifier.
-		String partialDoc = "{\n" + //
-				"    \"doc\" : {\n" + //
-				"        \"enable\" : \"" + enable + "\"\n" + //
-				"    }\n" + //
-				"  }\n" + //
-				"}"; //
-
-		Update update = new Update.Builder(partialDoc) //
-				.index(connection.getIndexName()) //
-				.type("feature") //
-				.id(_id) //
-				.refresh(true) //
-				.build();
-
-		try {
-			getConnection().getJestClient().execute(update);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-	}
+     * Getter accessor for attribute 'builder'.
+     *
+     * @return
+     *       current value of 'builder'
+     */
+    public ElasticQueryBuilder getBuilder() {
+        if (builder == null) {
+            builder = new ElasticQueryBuilder(this.connection);
+        }
+        return builder;
+    }
 }
