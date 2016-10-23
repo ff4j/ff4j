@@ -32,6 +32,7 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.node.NodeBuilder;
 import org.ff4j.core.Feature;
 import org.ff4j.exception.FeatureAccessException;
+import org.ff4j.property.Property;
 import org.ff4j.utils.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,9 +54,9 @@ import io.searchbox.indices.IndicesExists;
  * Poor design by clun, to be challenged !!
  */
 public class ElasticConnection {
-    
-    /** Logger for the class. */
-    private final Logger logger = LoggerFactory.getLogger(ElasticConnection.class);
+
+	/** Logger for the class. */
+	private final Logger logger = LoggerFactory.getLogger(ElasticConnection.class);
 
 	private ElasticConnectionMode connectionMode;
 
@@ -127,6 +128,7 @@ public class ElasticConnection {
 		// Custom feature converter is required
 		Gson gson = new GsonBuilder() //
 				.registerTypeAdapter(Feature.class, new FeatureConverter()) //
+				.registerTypeAdapter(Property.class, new PropertyConverter()) //
 				.create();
 
 		factory.setHttpClientConfig(new HttpClientConfig.Builder(mapUrl()) //
@@ -141,51 +143,52 @@ public class ElasticConnection {
 		}
 		jestClient.execute(new CreateIndex.Builder(indexName).build());
 	}
-	
+
 	/**
 	 * Common behaviour to execute JEST query.
 	 *
 	 * @param request
-	 *     target request
+	 *            target request
 	 * @return
 	 */
 	public <T extends JestResult> JestResult execute(Action<T> request, boolean allowFailure) {
-        JestResult sr = null;
-        try {
-            sr = getJestClient().execute(request);
-            if (null == sr) {
-                throw new FeatureAccessException("Cannot query elastic seach, result was null : check your query");
-            }
-            if (!allowFailure && !sr.isSucceeded()) {
-                throw new FeatureAccessException("Query to Elastic failed - " +  sr.getErrorMessage() + " (query="+ request.toString() + ")");
-            }
-            return sr;
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-            throw new FeatureAccessException("Error with query to Elastic - " + request.toString() + " An exception occured ", e);
-        }
-    }
-	
-	public <T extends JestResult> JestResult execute(Action<T> request) {
-        return execute(request, false);
-    }
-    
-	public <T extends JestResult > SearchResult search(Action<T> request) {
-	    return search(request, false);
+		JestResult sr = null;
+		try {
+			sr = getJestClient().execute(request);
+			if (null == sr) {
+				throw new FeatureAccessException("Cannot query elastic seach, result was null : check your query");
+			}
+			if (!allowFailure && !sr.isSucceeded()) {
+				throw new FeatureAccessException(
+						"Query to Elastic failed - " + sr.getErrorMessage() + " (query=" + request.toString() + ")");
+			}
+			return sr;
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+			throw new FeatureAccessException(
+					"Error with query to Elastic - " + request.toString() + " An exception occured ", e);
+		}
 	}
-	
+
+	public <T extends JestResult> JestResult execute(Action<T> request) {
+		return execute(request, false);
+	}
+
+	public <T extends JestResult> SearchResult search(Action<T> request) {
+		return search(request, false);
+	}
+
 	/**
 	 * Syntax suger to search.
 	 * 
 	 * @param request
-	 *         jest request
-	 * @return
-	 *         jest result
+	 *            jest request
+	 * @return jest result
 	 */
-	public <T extends JestResult > SearchResult search(Action<T> request, boolean allowFailure) {
-	    return (SearchResult) execute(request, allowFailure);
+	public <T extends JestResult> SearchResult search(Action<T> request, boolean allowFailure) {
+		return (SearchResult) execute(request, allowFailure);
 	}
-	
+
 	/**
 	 * Before Lambda...
 	 */

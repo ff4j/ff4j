@@ -1,11 +1,17 @@
 package org.ff4j.elastic.store;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import org.ff4j.elastic.ElasticConnection;
+import org.ff4j.elastic.ElasticQueryBuilder;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.AbstractPropertyStore;
+import org.ff4j.utils.Util;
+
+import io.searchbox.core.SearchResult;
+import io.searchbox.core.SearchResult.Hit;
 
 /*
  * #%L
@@ -27,84 +33,121 @@ import org.ff4j.property.store.AbstractPropertyStore;
  * #L%
  */
 
-
 public class PropertyStoreElastic extends AbstractPropertyStore {
 
-    private ElasticConnection connection;
-    
-    /** {@inheritDoc} */
-    @Override
-    public boolean existProperty(String name) {
-        // TODO Auto-generated method stub
-        return false;
-    }
+	/** Injection of connection to elastic. */
+	private ElasticConnection connection;
 
-    /** {@inheritDoc} */
-    @Override
-    public <T> void createProperty(Property<T> value) {
-        // TODO Auto-generated method stub
-        
-    }
+	/** Connection to store Elastic. */
+	private ElasticQueryBuilder builder;
 
-    /** {@inheritDoc} */
-    @Override
-    public Property<?> readProperty(String name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	/**
+	 * Initialization through {@link ElasticConnection}.
+	 *
+	 * @param connection
+	 *            current client to Elasticsearch database
+	 */
+	public PropertyStoreElastic(ElasticConnection connection) {
+		this.connection = connection;
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public void deleteProperty(String name) {
-        // TODO Auto-generated method stub
-        
-    }
+	public PropertyStoreElastic(ElasticConnection connection, String xmlFile) {
+		this(connection);
+		importPropertiesFromXmlFile(xmlFile);
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public Map<String, Property<?>> readAllProperties() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	/** {@inheritDoc} */
+	@Override
+	public boolean existProperty(String name) {
+		Util.assertHasLength(name);
+		SearchResult result = getConnection().search(getBuilder().queryPropertyByName(name), true);
+		return (result.getTotal() != null) && (result.getTotal() >= 1);
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public Set<String> listPropertyNames() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	/** {@inheritDoc} */
+	@Override
+	public <T> void createProperty(Property<T> property) {
+		assertPropertyNotNull(property);
+		assertPropertyNotExist(property.getName());
+		getConnection().execute(getBuilder().queryCreateProperty(property));
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public void clear() {
-        // TODO Auto-generated method stub
-        
-    }
+	/** {@inheritDoc} */
+	@Override
+	public Property<?> readProperty(String name) {
+		assertPropertyExist(name);
+		SearchResult result = getConnection().search(getBuilder().queryPropertyByName(name), true);
+		return result.getFirstHit(Property.class).source;
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public void createSchema() {
-        // TODO Auto-generated method stub
-        
-    }
+	/** {@inheritDoc} */
+	@Override
+	public void deleteProperty(String name) {
+		assertPropertyExist(name);
+		getConnection().execute(getBuilder().queryDeletePropertyByName(name));
 
-    /**
-     * Getter accessor for attribute 'connection'.
-     *
-     * @return
-     *       current value of 'connection'
-     */
-    public ElasticConnection getConnection() {
-        return connection;
-    }
+	}
 
-    /**
-     * Setter accessor for attribute 'connection'.
-     * @param connection
-     * 		new value for 'connection '
-     */
-    public void setConnection(ElasticConnection connection) {
-        this.connection = connection;
-    }
+	/** {@inheritDoc} */
+	@Override
+	public Map<String, Property<?>> readAllProperties() {
+		SearchResult result = getConnection().search(getBuilder().queryReadAllProperties(), true);
+		Map<String, Property<?>> mapOfProperties = new HashMap<String, Property<?>>();
+		if (null != result && result.isSucceeded()) {
+			for (Hit<Property, Void> property : result.getHits(Property.class)) {
+				mapOfProperties.put(property.source.getName(), property.source);
+			}
+		}
+		return mapOfProperties;
+	}
 
+	/** {@inheritDoc} */
+	@Override
+	public Set<String> listPropertyNames() {
+		return readAllProperties().keySet();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void clear() {
+		getConnection().execute(getBuilder().queryClear());
+
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void createSchema() {
+		getConnection().execute(getBuilder().queryFlushIndex());
+	}
+
+	/**
+	 * Getter accessor for attribute 'connection'.
+	 *
+	 * @return current value of 'connection'
+	 */
+	public ElasticConnection getConnection() {
+		return connection;
+	}
+
+	/**
+	 * Setter accessor for attribute 'connection'.
+	 * 
+	 * @param connection
+	 *            new value for 'connection '
+	 */
+	public void setConnection(ElasticConnection connection) {
+		this.connection = connection;
+	}
+
+	/**
+	 * Getter accessor for attribute 'builder'.
+	 *
+	 * @return current value of 'builder'
+	 */
+	public ElasticQueryBuilder getBuilder() {
+		if (builder == null) {
+			builder = new ElasticQueryBuilder(this.connection);
+		}
+		return builder;
+	}
 }

@@ -20,9 +20,9 @@ package org.ff4j.elastic;
  * #L%
  */
 
-
 public class ElasticConstants {
-    
-    public static final String TYPE_FEATURE = "feature";
+
+	public static final String TYPE_FEATURE = "feature";
+	public static final String TYPE_PROPERTY = "property";
 
 }
