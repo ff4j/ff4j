@@ -89,7 +89,8 @@ public class PropertyStoreElastic extends AbstractPropertyStore {
 	}
 
 	/** {@inheritDoc} */
-	@Override
+	@SuppressWarnings("rawtypes")
+    @Override
 	public Map<String, Property<?>> readAllProperties() {
 		SearchResult result = getConnection().search(getBuilder().queryReadAllProperties(), true);
 		Map<String, Property<?>> mapOfProperties = new HashMap<String, Property<?>>();

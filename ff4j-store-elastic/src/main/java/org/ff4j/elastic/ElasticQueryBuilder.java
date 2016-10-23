@@ -115,7 +115,8 @@ public class ElasticQueryBuilder {
 				.addType(ElasticConstants.TYPE_FEATURE) //
 				.build();
 		// feature existence must have been checked before (technical function)
-		List<Hit<Map, Void>> items = connection.search(search).getHits(Map.class);
+		@SuppressWarnings("rawtypes")
+        List<Hit<Map, Void>> items = connection.search(search).getHits(Map.class);
 		if (null != items && !items.isEmpty()) {
 			return connection.search(search).getHits(Map.class).get(0).source.get(JestResult.ES_METADATA_ID).toString();
 		}
@@ -220,10 +221,39 @@ public class ElasticQueryBuilder {
 				.addIndex(connection.getIndexName()) //
 				.addType(ElasticConstants.TYPE_PROPERTY) //
 				.build();
-		List<Hit<Map, Void>> items = connection.search(search).getHits(Map.class);
+		@SuppressWarnings("rawtypes")
+        List<Hit<Map, Void>> items = connection.search(search).getHits(Map.class);
 		if (null != items && !items.isEmpty()) {
 			return connection.search(search).getHits(Map.class).get(0).source.get(JestResult.ES_METADATA_ID).toString();
 		}
 		return null;
 	}
+	
+	public Search queryReadGroup(String groupName) {
+	    SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.query(QueryBuilders.matchQuery("group", groupName));
+        return new Search.Builder(searchSourceBuilder.toString()) //
+                .addIndex(connection.getIndexName()) //
+                .addType("feature") //
+                .build();
+	}
+	
+	public Update queryAddFeatureToGroup(String uid, String groupName) {
+        String partialDoc = "{ \"doc\" : { \"group\" : \"" + groupName + "\" } }";
+        return new Update.Builder(partialDoc) //
+                .index(connection.getIndexName()) //
+                .type(ElasticConstants.TYPE_FEATURE) //
+                .id(getFeatureTechId(uid)) //
+                .build();
+    }
+	
+	public Update queryRemoveFeatureFromGroup(String uid, String groupName) {
+        String partialDoc = "{ \"doc\" : { \"group\" : \"\" } }";
+        return new Update.Builder(partialDoc) //
+                .index(connection.getIndexName()) //
+                .type(ElasticConstants.TYPE_FEATURE) //
+                .id(getFeatureTechId(uid)) //
+                .build();
+    }
+	
 }
