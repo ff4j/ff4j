@@ -66,7 +66,7 @@ public class FeatureStoreElasticTest extends FeatureStoreTestSupport {
 
 	@AfterClass
 	public static void tearDown() {
-		server.stop();
+		server.close();
 	}
 
 	@Override
