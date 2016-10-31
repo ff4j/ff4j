@@ -9,9 +9,9 @@ package org.ff4j.spring.boot.web.api.exceptions;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,7 @@ package org.ff4j.spring.boot.web.api.exceptions;
  * #L%
  */
 
+import org.ff4j.exception.InvalidPropertyTypeException;
 import org.ff4j.services.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -106,6 +107,12 @@ public class FF4jExceptionHandler {
     @ExceptionHandler(value = PropertyNotFoundException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "property not found")
     public void propertyNotFoundException() {
+        // Not necessary to handle this exception
+    }
+
+    @ExceptionHandler(value = InvalidPropertyTypeException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "bad request")
+    public void propertyValueInvalidException() {
         // Not necessary to handle this exception
     }
 

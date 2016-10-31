@@ -15,7 +15,7 @@ Feature: This feature enables in providing the user with RESTful api's where in 
       | admin | false  | the admin page | admin | ROLE_ADMIN           |
       | login | true   | the login page | user  | ROLE_ADMIN,ROLE_USER |
 
-  # Get monitoring information pertaining to all features
+   # Get monitoring information pertaining to all features
   Scenario: When the user tries to retrieve the monitoring information of all features
     When the user requests for a feature by "/ff4j/monitoring" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
@@ -25,15 +25,10 @@ Feature: This feature enables in providing the user with RESTful api's where in 
       "type": "org.ff4j.audit.repository.InMemoryEventRepository",
       "hitCount": 0,
       "eventsPie": {
-        "title": "Total Hit Counts",
         "sectors": []
       },
       "barChart": {
-        "title": "HitCounts Distribution",
-        "labels": [
-            "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00",
-            "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"
-          ],
+        "labels": [],
         "series": []
       }
     }
