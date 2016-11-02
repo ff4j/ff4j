@@ -1,6 +1,4 @@
-<p align="center">
-<img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/ff4j-logo.png?raw=true" alt="functions" height="120px" />
-</p>
+<img src="http://ff4j.org/images/ff4j.png" height="120px" />
 ## Feature Flipping for Java
 
 [![Build Status](https://travis-ci.org/clun/ff4j.svg?branch=master)](https://travis-ci.org/clun/ff4j)
@@ -10,14 +8,19 @@
 [![Join the chat at https://gitter.im/clun/ff4j](https://badges.gitter.im/clun/ff4j.svg)](https://gitter.im/clun/ff4j?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![License Apache2](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
-FF4J is a proposition of [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html). 
-You can enable and disable features at runtime with dedicated consoles and REST API but also __monitor__ features usage. You can also define any __Property__ and change its value at runtime. (configuration)
+FF4j is an implementation of [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html) pattern : Enable and disable features or your applications at runtime thanks to dedicated **web console, REST API, JMX or even CLI**.
 
-More information at [ff4j.org](http://ff4j.org) or [Reference Documentation ](https://github.com/clun/ff4j/wiki) in the wiki. To access demo please click [DEMO] (http://cannys.com/ff4j-demo)
+It handle also properties and provide generic interfaces to work with **configuration properties**, store them in 10 differents DB and integration with both **Archaius** and **Commons-Configuration**. 
 
- <p align="center">
-  <img src="https://raw.github.com/clun/ff4j/master/src/site/resources/images/ff4j-console.png?raw=true" />
-</p>
+More information can be found at [ff4j.org](http://ff4j.org) or [Reference Documentation](https://github.com/clun/ff4j/wiki) in the wiki.
 
+### Some screen shot of the web-consoles
 
-</p>
+Home Page
+<img src="http://ff4j.org/wiki/console-1.6-home.png" /> 
+
+Features
+<img src="http://ff4j.org/wiki/console-1.6-features.jpg" /> 
+
+Monitoring
+<img src="http://ff4j.org/wiki/console-1.6-monitoring.png" /> 

@@ -64,7 +64,7 @@ public class MonitoringServicesStepDef extends AbstractStepDef {
 
     @Then("^the user gets the response as$")
     public void the_user_gets_the_response_as(String expectedResponse) throws Throwable {
-        assertStrictResponse(expectedResponse);
+        assertLenientResponse(expectedResponse);
     }
 }
 

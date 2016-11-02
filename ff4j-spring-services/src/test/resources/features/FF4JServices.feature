@@ -14,7 +14,42 @@ Feature: Provides api's to do the following
       | admin | false  | the admin page | admin | ROLE_ADMIN           |
       | login | true   | the login page | user  | ROLE_ADMIN,ROLE_USER |
 
- 
+ # Provide core information on ff4J and available sub resources
+  Scenario: When the user tries to retrieve the ff4j information
+    Given the feature store has the following security information
+      | currentUserPermissions | allPermissions                    |
+      | ROLE_USER              | ROLE_USER,ROLE_SUPPORT,ROLE_ADMIN |
+    When the user requests for status
+    Then the user gets the response as
+    """
+    {
+      "autocreate": false,
+      "featuresStore": {
+        "type": "org.ff4j.store.InMemoryFeatureStore",
+        "numberOfFeatures": 2,
+        "numberOfGroups": 2,
+        "features": [
+          "admin",
+          "login"
+        ],
+        "groups": [
+          "admin",
+          "user"
+        ],
+      },
+      "eventRepository": {
+        "type": "org.ff4j.audit.repository.InMemoryEventRepository",
+        "hitCount": 0,
+      },
+      "authorizationsManager": {
+        "permissions": [
+          "ROLE_SUPPORT",
+          "ROLE_USER",
+          "ROLE_ADMIN"
+        ]
+      }
+    }
+    """
 
   # Display security resources
   Scenario: When the user tries to retrieve security information and there is no security defined

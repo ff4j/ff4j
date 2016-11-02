@@ -336,8 +336,8 @@ public class AssertFf4j {
 	 * @return current object
 	 */
 	public AssertFf4j assertThatGroupDoesNotExist(String groupName) {
-		Assert.assertFalse("Group '" + groupName + " ' does no exist", ff4j.getFeatureStore().existGroup(groupName));
-		waitSomeSeconds();
+	    waitSomeSeconds();
+        Assert.assertFalse("Group '" + groupName + " ' does no exist", ff4j.getFeatureStore().existGroup(groupName));
 		return this;
 	}
 

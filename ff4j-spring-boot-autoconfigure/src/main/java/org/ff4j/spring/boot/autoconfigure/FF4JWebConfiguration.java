@@ -35,6 +35,7 @@ package org.ff4j.spring.boot.autoconfigure;
  */
 
 import org.ff4j.FF4j;
+import org.ff4j.web.FF4jDispatcherServlet;
 import org.ff4j.web.embedded.ConsoleServlet;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -50,7 +51,7 @@ import org.springframework.context.annotation.Configuration;
  * @author <a href="mailto:paul58914080@gmail.com">Paul Williams</a>
  */
 @Configuration
-@ConditionalOnClass({ConsoleServlet.class})
+@ConditionalOnClass({ConsoleServlet.class, FF4jDispatcherServlet.class})
 @AutoConfigureAfter(FF4JConfiguration.class)
 public class FF4JWebConfiguration extends SpringBootServletInitializer {
 
@@ -63,6 +64,19 @@ public class FF4JWebConfiguration extends SpringBootServletInitializer {
     @ConditionalOnMissingBean
     public ConsoleServlet getFF4jServlet(FF4j ff4j) {
         ConsoleServlet ff4jConsoleServlet = new ConsoleServlet();
+        ff4jConsoleServlet.setFf4j(ff4j);
+        return ff4jConsoleServlet;
+    }
+
+    @Bean
+    public ServletRegistrationBean ff4jDispatcherServletRegistrationBean(FF4jDispatcherServlet ff4jDispatcherServlet) {
+        return new ServletRegistrationBean(ff4jDispatcherServlet, "/ff4j-web-console/*");
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public FF4jDispatcherServlet getFF4jDispatcherServlet(FF4j ff4j) {
+        FF4jDispatcherServlet ff4jConsoleServlet = new FF4jDispatcherServlet();
         ff4jConsoleServlet.setFf4j(ff4j);
         return ff4jConsoleServlet;
     }

@@ -20,6 +20,7 @@ package org.ff4j.spring.boot.web.api.exceptions;
  * #L%
  */
 
+import org.ff4j.exception.InvalidPropertyTypeException;
 import org.ff4j.services.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -106,6 +107,12 @@ public class FF4jExceptionHandler {
     @ExceptionHandler(value = PropertyNotFoundException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "property not found")
     public void propertyNotFoundException() {
+        // Not necessary to handle this exception
+    }
+
+    @ExceptionHandler(value = InvalidPropertyTypeException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "bad request")
+    public void propertyValueInvalidException() {
         // Not necessary to handle this exception
     }
 

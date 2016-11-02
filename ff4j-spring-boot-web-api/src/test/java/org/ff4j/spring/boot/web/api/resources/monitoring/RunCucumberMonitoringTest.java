@@ -1,6 +1,7 @@
 package org.ff4j.spring.boot.web.api.resources.monitoring;
 
-import org.junit.Ignore;
+import cucumber.api.CucumberOptions;
+import cucumber.api.junit.Cucumber;
 import org.junit.runner.RunWith;
 
 /*
@@ -23,9 +24,6 @@ import org.junit.runner.RunWith;
  * #L%
  */
 
-import cucumber.api.CucumberOptions;
-import cucumber.api.junit.Cucumber;
-
 /**
  * @author <a href="mailto:paul58914080@gmail.com">Paul Williams</a>
  */
@@ -33,6 +31,5 @@ import cucumber.api.junit.Cucumber;
 @CucumberOptions(features = "classpath:features/MonitoringResource.feature", strict = true,
         plugin = {"json:target/cucumber/MonitoringResource.json", "junit:target/cucumber/MonitoringResource.xml"},
         glue = "classpath:org/ff4j/spring/boot/web/api/resources/monitoring", tags = "@MonitoringResource")
-@Ignore
 public class RunCucumberMonitoringTest {
 }

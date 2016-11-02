@@ -1,5 +1,31 @@
 package org.ff4j.web.embedded;
 
+import static org.ff4j.web.embedded.ConsoleConstants.CONTENT_TYPE_HTML;
+import static org.ff4j.web.embedded.ConsoleConstants.CONTENT_TYPE_JSON;
+import static org.ff4j.web.embedded.ConsoleConstants.FEATID;
+import static org.ff4j.web.embedded.ConsoleConstants.FF4J_SESSIONATTRIBUTE_NAME;
+import static org.ff4j.web.embedded.ConsoleConstants.FLIPFILE;
+import static org.ff4j.web.embedded.ConsoleConstants.GROUPNAME;
+import static org.ff4j.web.embedded.ConsoleConstants.NAME;
+import static org.ff4j.web.embedded.ConsoleConstants.OPERATION;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_ADD_FIXEDVALUE;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_CREATE_FEATURE;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_CREATE_PROPERTY;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_DELETE_FIXEDVALUE;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_DISABLE;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_EDIT_FEATURE;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_EDIT_PROPERTY;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_ENABLE;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_EXPORT;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_READ_FEATURE;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_READ_PROPERTY;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_RMV_FEATURE;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_RMV_PROPERTY;
+import static org.ff4j.web.embedded.ConsoleConstants.OP_TOGGLE_GROUP;
+import static org.ff4j.web.embedded.ConsoleConstants.PARAM_FIXEDVALUE;
+import static org.ff4j.web.embedded.ConsoleConstants.PROVIDER_PARAM_NAME;
+import static org.ff4j.web.embedded.ConsoleConstants.SUBOPERATION;
+import static org.ff4j.web.embedded.ConsoleConstants.VIEW;
 import static org.ff4j.web.embedded.ConsoleOperations.createFeature;
 import static org.ff4j.web.embedded.ConsoleOperations.createProperty;
 import static org.ff4j.web.embedded.ConsoleOperations.exportFile;
@@ -12,7 +38,6 @@ import static org.ff4j.web.embedded.ConsoleRenderer.renderMsgGroup;
 import static org.ff4j.web.embedded.ConsoleRenderer.renderMsgProperty;
 import static org.ff4j.web.embedded.ConsoleRenderer.renderPage;
 import static org.ff4j.web.embedded.ConsoleRenderer.renderPageMonitoring;
-import static org.ff4j.web.embedded.ConsoleConstants.*;
 
 /*
  * #%L AdministrationConsoleServlet.java (ff4j-web) by Cedrick LUNVEN %% Copyright (C) 2013 Ff4J %% Licensed under the Apache
@@ -42,7 +67,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
-import org.ff4j.web.FF4JProvider;
+import org.ff4j.web.FF4jProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +91,7 @@ public class ConsoleServlet extends HttpServlet {
     private FF4j ff4j = null;
 
     /** initializing ff4j provider. */
-    private FF4JProvider ff4jProvider = null;
+    private FF4jProvider ff4jProvider = null;
 
     /**
      * Servlet initialization, init FF4J from "ff4jProvider" attribute Name.
@@ -90,7 +115,7 @@ public class ConsoleServlet extends HttpServlet {
             try {
                 Class<?> c = Class.forName(className);
                 Object o = c.newInstance();
-                ff4jProvider = (FF4JProvider) o;
+                ff4jProvider = (FF4jProvider) o;
                 LOGGER.info("ff4j context has been successfully initialized - {} feature(s)", ff4jProvider.getFF4j().getFeatures().size());
             } catch (ClassNotFoundException e) {
                 throw new IllegalArgumentException("Cannot load ff4jProvider as " + ff4jProvider, e);
@@ -99,7 +124,7 @@ public class ConsoleServlet extends HttpServlet {
             } catch (IllegalAccessException e) {
                 throw new IllegalArgumentException("No public constructor for  " + ff4jProvider + " as ff4jProvider", e);
             } catch (ClassCastException ce) {
-                throw new IllegalArgumentException("ff4jProvider expected instance of " + FF4JProvider.class, ce);
+                throw new IllegalArgumentException("ff4jProvider expected instance of " + FF4jProvider.class, ce);
             }
 
             // Put the FF4J in ApplicationScope (useful for tags)

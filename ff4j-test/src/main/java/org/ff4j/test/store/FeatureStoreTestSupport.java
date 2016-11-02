@@ -944,6 +944,7 @@ public abstract class FeatureStoreTestSupport {
 		// When
 		testedStore.removeFromGroup(F2, G0);
 		// Then
+		
 		assertFf4j.assertThatGroupDoesNotExist(G0);
 		// Expected error
 		testedStore.readGroup(G0);

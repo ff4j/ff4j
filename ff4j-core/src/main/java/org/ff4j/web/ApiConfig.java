@@ -1,5 +1,8 @@
 package org.ff4j.web;
 
+import static org.ff4j.web.FF4jWebConstants.ROLE_READ;
+import static org.ff4j.web.FF4jWebConstants.ROLE_WRITE;
+
 /*
  * #%L
  * ff4j-core
@@ -28,14 +31,12 @@ import java.util.Set;
 
 import org.ff4j.FF4j;
 
-import static org.ff4j.web.FF4jWebConstants.*;
-
 /**
  * Bean to configure security for the WebAPI. This custom bean is defined to limit dependencies to Spring security for instance.
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class ApiConfig implements FF4JProvider {
+public class ApiConfig implements FF4jProvider {
     
     /** Configuration of ff4j. */
     private FF4j ff4j;
