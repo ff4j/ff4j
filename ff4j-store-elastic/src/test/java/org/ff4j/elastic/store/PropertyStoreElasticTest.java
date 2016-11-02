@@ -23,12 +23,10 @@ package org.ff4j.elastic.store;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
-import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeBuilder;
 import org.ff4j.elastic.ElasticConnection;
 import org.ff4j.elastic.ElasticConnectionMode;
+import org.ff4j.elastic.server.EmbeddedElasticServer;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
 import org.junit.AfterClass;
@@ -57,11 +55,11 @@ public class PropertyStoreElasticTest extends PropertyStoreTestSupport {
 
 	@BeforeClass
 	public static void setup() {
-		server = EmbeddedElasticServer(folder.getRoot().getPath());
-		server.start();
-		// Display cluster information
-		ClusterHealthResponse healths = server.client().admin().cluster().prepareHealth().get();
-		logger.info(healths.toString());
+		server = EmbeddedElasticServer.builder() //
+				.clusterName("myIntegrationClusterProperty") //
+				.dataDirectory(folder.getRoot().getPath()) //
+				.health(true) //
+				.start();
 	}
 
 	@AfterClass
@@ -81,21 +79,10 @@ public class PropertyStoreElasticTest extends PropertyStoreTestSupport {
 		return new PropertyStoreElastic(connection, "test-ff4j-features.xml");
 	}
 
-	// Convenient methods
-
-	public static Node EmbeddedElasticServer(String dataDirectory) {
-
-		ImmutableSettings.Builder elasticSettings = ImmutableSettings.settingsBuilder() //
-				.put("path.data", dataDirectory);
-
-		return NodeBuilder.nodeBuilder().clusterName("myIntegrationClusterProperties").local(true)
-				.settings(elasticSettings.build()).node();
-	}
-	
 	/** TDD. */
-    @Ignore
-    @Override
-    public void readAllProperties() {}
-	
-	
+	@Ignore
+	@Override
+	public void readAllProperties() {
+	}
+
 }

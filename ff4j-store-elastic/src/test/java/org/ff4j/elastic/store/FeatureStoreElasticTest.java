@@ -3,10 +3,7 @@ package org.ff4j.elastic.store;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
-import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeBuilder;
 
 /*
  * #%L
@@ -31,6 +28,7 @@ import org.elasticsearch.node.NodeBuilder;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.elastic.ElasticConnection;
 import org.ff4j.elastic.ElasticConnectionMode;
+import org.ff4j.elastic.server.EmbeddedElasticServer;
 import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -57,11 +55,11 @@ public class FeatureStoreElasticTest extends FeatureStoreTestSupport {
 
 	@BeforeClass
 	public static void setup() {
-		server = EmbeddedElasticServer(folder.getRoot().getPath());
-		server.start();
-		// Display cluster information
-		ClusterHealthResponse healths = server.client().admin().cluster().prepareHealth().get();
-		logger.info(healths.toString());
+		server = EmbeddedElasticServer.builder() //
+				.clusterName("myIntegrationClusterFeature") //
+				.dataDirectory(folder.getRoot().getPath()) //
+				.health(true) //
+				.start();
 	}
 
 	@AfterClass
@@ -85,16 +83,5 @@ public class FeatureStoreElasticTest extends FeatureStoreTestSupport {
 			logger.error(e.getMessage(), e);
 		}
 		return new FeatureStoreElastic(connection, "test-ff4j-features.xml");
-	}
-
-	// Convenient methods
-
-	public static Node EmbeddedElasticServer(String dataDirectory) {
-
-		ImmutableSettings.Builder elasticSettings = ImmutableSettings.settingsBuilder() //
-				.put("path.data", dataDirectory);
-
-		return NodeBuilder.nodeBuilder().clusterName("myIntegrationCluster").local(true)
-				.settings(elasticSettings.build()).node();
 	}
 }

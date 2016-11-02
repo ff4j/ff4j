@@ -20,17 +20,14 @@ package org.ff4j.elastic.store;
  * #L%
  */
 
-
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
-import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeBuilder;
 import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.elastic.ElasticConnection;
 import org.ff4j.elastic.ElasticConnectionMode;
+import org.ff4j.elastic.server.EmbeddedElasticServer;
 import org.ff4j.test.audit.EventRepositoryTestSupport;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -53,11 +50,11 @@ public class EventRepositoryElasticTest extends EventRepositoryTestSupport {
 
 	@BeforeClass
 	public static void setup() {
-		server = EmbeddedElasticServer(folder.getRoot().getPath());
-		server.start();
-		// Display cluster information
-		ClusterHealthResponse healths = server.client().admin().cluster().prepareHealth().get();
-		logger.info(healths.toString());
+		server = EmbeddedElasticServer.builder() //
+				.clusterName("myIntegrationClusterEvent") //
+				.dataDirectory(folder.getRoot().getPath()) //
+				.health(true) //
+				.start();
 	}
 
 	@AfterClass
@@ -77,16 +74,5 @@ public class EventRepositoryElasticTest extends EventRepositoryTestSupport {
 		EventRepository elasticStore = new EventRepositoryElastic(connection);
 		elasticStore.createSchema();
 		return elasticStore;
-	}
-
-	// Convenient methods
-
-	public static Node EmbeddedElasticServer(String dataDirectory) {
-
-		ImmutableSettings.Builder elasticSettings = ImmutableSettings.settingsBuilder() //
-				.put("path.data", dataDirectory);
-
-		return NodeBuilder.nodeBuilder().clusterName("myIntegrationClusterEvent").local(true)
-				.settings(elasticSettings.build()).node();
 	}
 }
