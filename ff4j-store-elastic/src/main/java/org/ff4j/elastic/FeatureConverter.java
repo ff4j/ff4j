@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 
 import org.ff4j.core.Feature;
@@ -61,46 +62,29 @@ public class FeatureConverter implements JsonSerializer<Feature>, JsonDeserializ
 	public Feature deserialize(JsonElement json, Type type, JsonDeserializationContext context) {
 
 		String uid = json.getAsJsonObject().get("uid").getAsString();
-
 		Feature feature = new Feature(uid);
 
-		// Property "enable"
-		JsonElement enable = json.getAsJsonObject().get("enable");
-		if (enable != null) {
-			feature.setEnable(enable.getAsBoolean());
-		}
+		// Properties
 
-		// Description
-		JsonElement description = json.getAsJsonObject().get("description");
-		if (description != null) {
-			feature.setDescription(description.getAsString());
-		}
-
-		// Group
-		JsonElement group = json.getAsJsonObject().get("group");
-		if (group != null) {
-			feature.setGroup(group.getAsString());
-		}
+		Optional.ofNullable(json.getAsJsonObject().get("enable")).ifPresent(c -> feature.setEnable(c.getAsBoolean()));
+		Optional.ofNullable(json.getAsJsonObject().get("description"))
+				.ifPresent(c -> feature.setDescription(c.getAsString()));
+		Optional.ofNullable(json.getAsJsonObject().get("group")).ifPresent(c -> feature.setGroup(c.getAsString()));
 
 		// Permissions
-		JsonElement permissions = json.getAsJsonObject().get("permissions");
-		if (permissions != null) {
-			Set<String> auths = gson.fromJson(permissions, new TypeToken<HashSet<String>>() {
-			}.getType());
-			feature.setPermissions(auths);
-		}
+		Optional.ofNullable(json.getAsJsonObject().get("permissions"))
+				.ifPresent(c -> feature.setPermissions(gson.fromJson(c, new TypeToken<HashSet<String>>() {
+				}.getType())));
 
 		// Flipping strategy
-		JsonElement flippingStrategy = json.getAsJsonObject().get("flippingStrategy");
-		if (flippingStrategy != null && !flippingStrategy.isJsonNull()) {
-			Map<String, ?> flippingStrategyParameters = gson.fromJson(flippingStrategy,
+		Optional.ofNullable(json.getAsJsonObject().get("flippingStrategy")).ifPresent(c -> {
+			Map<String, ?> flippingStrategyParameters = gson.fromJson(c.getAsJsonObject(),
 					new TypeToken<HashMap<String, ?>>() {
 					}.getType());
 			String flippingStrategyType = flippingStrategyParameters.get("type").toString();
 			Map<String, String> initParams = (Map<String, String>) flippingStrategyParameters.get("initParams");
-			// Adding flipping strategy
 			feature.setFlippingStrategy(MappingUtil.instanceFlippingStrategy(uid, flippingStrategyType, initParams));
-		}
+		});
 
 		// Custom properties
 		JsonElement customProperties = json.getAsJsonObject().get("customProperties");

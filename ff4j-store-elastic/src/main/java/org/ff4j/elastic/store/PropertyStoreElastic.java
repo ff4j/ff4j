@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.ff4j.elastic.ElasticConnection;
 import org.ff4j.elastic.ElasticQueryBuilder;
+import org.ff4j.elastic.utils.ResultUtils;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.AbstractPropertyStore;
 import org.ff4j.utils.Util;
@@ -61,7 +62,7 @@ public class PropertyStoreElastic extends AbstractPropertyStore {
 	public boolean existProperty(String name) {
 		Util.assertHasLength(name);
 		SearchResult result = getConnection().search(getBuilder().queryPropertyByName(name), true);
-		return (result.getTotal() != null) && (result.getTotal() >= 1);
+		return ResultUtils.exists(result);
 	}
 
 	/** {@inheritDoc} */
@@ -90,11 +91,11 @@ public class PropertyStoreElastic extends AbstractPropertyStore {
 
 	/** {@inheritDoc} */
 	@SuppressWarnings("rawtypes")
-    @Override
+	@Override
 	public Map<String, Property<?>> readAllProperties() {
 		SearchResult result = getConnection().search(getBuilder().queryReadAllProperties(), true);
 		Map<String, Property<?>> mapOfProperties = new HashMap<String, Property<?>>();
-		if (null != result && result.isSucceeded()) {
+		if (ResultUtils.isSucceeded(result)) {
 			for (Hit<Property, Void> property : result.getHits(Property.class)) {
 				mapOfProperties.put(property.source.getName(), property.source);
 			}

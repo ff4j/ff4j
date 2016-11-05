@@ -62,6 +62,7 @@ public class PropertyConverter implements JsonSerializer<Property<?>>, JsonDeser
 		String pType = obj.get("type") != null ? obj.get("type").getAsString() : null;
 		String pValue = obj.get("value") != null ? obj.get("value").getAsString() : null;
 		JsonArray values = obj.get("fixedValues") != null ? obj.get("fixedValues").getAsJsonArray() : null;
+
 		Set<String> pFixedValues = new HashSet<String>();
 		if (values != null) {
 			for (JsonElement jsonElement : values) {

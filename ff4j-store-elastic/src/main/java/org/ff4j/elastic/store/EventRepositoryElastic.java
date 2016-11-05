@@ -20,7 +20,6 @@ package org.ff4j.elastic.store;
  * #L%
  */
 
-
 import static org.ff4j.audit.EventConstants.ACTION_CLEAR;
 import static org.ff4j.audit.EventConstants.ACTION_CREATE;
 import static org.ff4j.audit.EventConstants.ACTION_DELETE;
@@ -45,18 +44,27 @@ import org.ff4j.audit.chart.TimeSeriesChart;
 import org.ff4j.audit.repository.AbstractEventRepository;
 import org.ff4j.elastic.ElasticConnection;
 import org.ff4j.elastic.ElasticQueryBuilder;
+import org.ff4j.elastic.utils.ResultUtils;
 import org.ff4j.utils.Util;
 
 import io.searchbox.client.JestResult;
 import io.searchbox.core.SearchResult;
 import io.searchbox.core.SearchResult.Hit;
 
+/**
+ * @author <a href="mailto:andre.blaszczyk@gmail.com">Andre Blaszczyk</a>
+ *
+ */
 public class EventRepositoryElastic extends AbstractEventRepository {
 
 	private ElasticConnection connection;
 
 	/** Connection to ElasticSearch query builder */
 	private ElasticQueryBuilder builder;
+
+	private static Set<String> candidates = Util.set(ACTION_DISCONNECT, //
+			ACTION_TOGGLE_ON, ACTION_TOGGLE_OFF, ACTION_CREATE, //
+			ACTION_DELETE, ACTION_UPDATE, ACTION_CLEAR);
 
 	public EventRepositoryElastic(ElasticConnection connection) {
 		this.connection = connection;
@@ -66,7 +74,7 @@ public class EventRepositoryElastic extends AbstractEventRepository {
 	public boolean saveEvent(Event event) {
 		Util.assertEvent(event);
 		JestResult result = getConnection().execute(getBuilder().queryCreateEvent(event));
-		return (result != null && result.isSucceeded());
+		return ResultUtils.isSucceeded(result);
 	}
 
 	@Override
@@ -80,14 +88,7 @@ public class EventRepositoryElastic extends AbstractEventRepository {
 				.execute(getBuilder().queryGetEventQueryDefinition(query, EventConstants.ACTION_CHECK_OK));
 		List<Event> events = result.getSourceAsObjectList(Event.class);
 		Map<String, MutableHitCount> hitCount = new HashMap<String, MutableHitCount>();
-		for (Event event : events) {
-			String name = event.getName();
-			if (hitCount.containsKey(name)) {
-				hitCount.get(name).inc();
-			} else {
-				hitCount.put(name, new MutableHitCount(1));
-			}
-		}
+		events.stream().forEach(c -> hitCount.computeIfAbsent(c.getName(), f -> new MutableHitCount()).inc());
 		return hitCount;
 	}
 
@@ -110,9 +111,7 @@ public class EventRepositoryElastic extends AbstractEventRepository {
 				.execute(getBuilder().queryGetEventQueryDefinition(query, EventConstants.ACTION_CHECK_OK));
 		List<Event> events = result.getSourceAsObjectList(Event.class);
 		EventSeries es = new EventSeries();
-		for (Event event : events) {
-			es.add(event);
-		}
+		events.stream().forEach(c -> es.add(c));
 		return es;
 	}
 
@@ -127,14 +126,7 @@ public class EventRepositoryElastic extends AbstractEventRepository {
 				.execute(getBuilder().queryGetEventQueryDefinition(query, EventConstants.ACTION_CHECK_OK));
 		List<Event> events = result.getSourceAsObjectList(Event.class);
 		Map<String, MutableHitCount> hitCount = new HashMap<String, MutableHitCount>();
-		for (Event event : events) {
-			String hostName = event.getHostName();
-			if (hitCount.containsKey(hostName)) {
-				hitCount.get(hostName).inc();
-			} else {
-				hitCount.put(hostName, new MutableHitCount(1));
-			}
-		}
+		events.stream().forEach(c -> hitCount.computeIfAbsent(c.getHostName(), f -> new MutableHitCount()).inc());
 		return hitCount;
 	}
 
@@ -144,14 +136,7 @@ public class EventRepositoryElastic extends AbstractEventRepository {
 				.execute(getBuilder().queryGetEventQueryDefinition(query, EventConstants.ACTION_CHECK_OK));
 		List<Event> events = result.getSourceAsObjectList(Event.class);
 		Map<String, MutableHitCount> hitCount = new HashMap<String, MutableHitCount>();
-		for (Event event : events) {
-			String user = event.getUser();
-			if (hitCount.containsKey(user)) {
-				hitCount.get(user).inc();
-			} else {
-				hitCount.put(user, new MutableHitCount(1));
-			}
-		}
+		events.stream().forEach(c -> hitCount.computeIfAbsent(c.getUser(), f -> new MutableHitCount()).inc());
 		return hitCount;
 	}
 
@@ -161,14 +146,7 @@ public class EventRepositoryElastic extends AbstractEventRepository {
 				.execute(getBuilder().queryGetEventQueryDefinition(query, EventConstants.ACTION_CHECK_OK));
 		List<Event> events = result.getSourceAsObjectList(Event.class);
 		Map<String, MutableHitCount> hitCount = new HashMap<String, MutableHitCount>();
-		for (Event event : events) {
-			String source = event.getSource();
-			if (hitCount.containsKey(source)) {
-				hitCount.get(source).inc();
-			} else {
-				hitCount.put(source, new MutableHitCount(1));
-			}
-		}
+		events.stream().forEach(c -> hitCount.computeIfAbsent(c.getSource(), f -> new MutableHitCount()).inc());
 		return hitCount;
 	}
 
@@ -177,20 +155,14 @@ public class EventRepositoryElastic extends AbstractEventRepository {
 		JestResult result = getConnection().execute(getBuilder().queryGetEventQueryDefinition(query));
 		List<Event> events = result.getSourceAsObjectList(Event.class);
 		EventSeries es = new EventSeries();
-		Set<String> candidates = Util.set(ACTION_DISCONNECT, //
-				ACTION_TOGGLE_ON, ACTION_TOGGLE_OFF, ACTION_CREATE, //
-				ACTION_DELETE, ACTION_UPDATE, ACTION_CLEAR);
-		for (Event event : events) {
-			if (candidates.contains(event.getAction()))
-				es.add(event);
-		}
+		events.stream().filter(p -> candidates.contains(p.getAction())).forEach(c -> es.add(c));
 		return es;
 	}
 
 	@Override
 	public void purgeAuditTrail(EventQueryDefinition query) {
 		SearchResult result = getConnection().search(getBuilder().queryReadAllEvents(), true);
-		if (result != null && result.isSucceeded()) {
+		if (ResultUtils.isSucceeded(result)) {
 			for (Hit<Event, Void> event : result.getHits(Event.class)) {
 				getConnection().execute(getBuilder().queryDeleteEvent(event.source.getUuid()));
 			}

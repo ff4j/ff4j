@@ -21,7 +21,9 @@ package org.ff4j.elastic;
  */
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -104,10 +106,16 @@ public class ElasticConnection {
 	}
 
 	private void initTransportClient() {
-		TransportClient tClient = new TransportClient();
+		TransportClient tClient = TransportClient.builder().build();
 		if (!Util.isEmpty(urlSet)) {
 			for (URL url : urlSet) {
-				tClient.addTransportAddress(new InetSocketTransportAddress(url.getHost(), url.getPort()));
+				try {
+					tClient.addTransportAddress(
+							new InetSocketTransportAddress(InetAddress.getByName(url.getHost()), url.getPort()));
+				} catch (UnknownHostException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		esClient = tClient;

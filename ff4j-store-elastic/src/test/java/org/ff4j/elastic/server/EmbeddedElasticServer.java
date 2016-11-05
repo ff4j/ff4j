@@ -1,5 +1,7 @@
 package org.ff4j.elastic.server;
 
+import java.util.Optional;
+
 /*
  * #%L
  * ff4j-store-elastic
@@ -20,9 +22,8 @@ package org.ff4j.elastic.server;
  * #L%
  */
 
-
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
-import org.elasticsearch.common.settings.ImmutableSettings;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 import org.slf4j.Logger;
@@ -55,12 +56,12 @@ public class EmbeddedElasticServer {
 		}
 
 		public Builder clusterName(String name) {
-			instance.clusterName = (name != null ? name : "elastic");
+			instance.clusterName = Optional.ofNullable(name).orElse("elastic");
 			return this;
 		}
 
 		public Builder dataDirectory(String path) {
-			instance.path = (path != null ? path : "data");
+			instance.path = Optional.ofNullable(path).orElse("data");
 			return this;
 		}
 
@@ -72,11 +73,13 @@ public class EmbeddedElasticServer {
 		public Node start() {
 
 			// Configure before starting the instance
-			ImmutableSettings.Builder elasticSettings = ImmutableSettings.settingsBuilder() //
-					.put("path.data", instance.path);
+			Settings elasticSettings = Settings.settingsBuilder() //
+					.put("path.data", instance.path) //
+					.put("path.home", "/") //
+					.build();
 
 			Node node = NodeBuilder.nodeBuilder().clusterName(instance.clusterName) //
-					.local(true).settings(elasticSettings.build()) //
+					.local(true).settings(elasticSettings) //
 					.node();
 
 			node.start();

@@ -1,5 +1,8 @@
 package org.ff4j.elastic.configuration;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 /*
  * #%L
  * ff4j-store-elastic
@@ -54,10 +57,16 @@ public class ESConfigurationTest {
 
 	@Bean
 	public Client client() {
-		TransportClient client = new TransportClient();
+		TransportClient client = TransportClient.builder().build();
 		for (int i = 0; i < ports.size(); i++) {
-			TransportAddress address = new InetSocketTransportAddress(hostname, ports.get(i));
-			client.addTransportAddress(address);
+			TransportAddress address;
+			try {
+				address = new InetSocketTransportAddress(InetAddress.getByName(hostname), ports.get(i));
+				client.addTransportAddress(address);
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return client;
 	}

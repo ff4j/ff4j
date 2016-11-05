@@ -1,15 +1,16 @@
 package org.ff4j.elastic.store;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.elastic.ElasticConnection;
 import org.ff4j.elastic.ElasticQueryBuilder;
+import org.ff4j.elastic.utils.ResultUtils;
 import org.ff4j.store.AbstractFeatureStore;
 import org.ff4j.utils.Util;
 
@@ -37,238 +38,230 @@ import io.searchbox.core.SearchResult.Hit;
  */
 public class FeatureStoreElastic extends AbstractFeatureStore {
 
-    /** Injection of connection to elastic. */
-    private ElasticConnection connection;
+	/** Injection of connection to elastic. */
+	private ElasticConnection connection;
 
-    /** Connection to store Elastic. */
-    private ElasticQueryBuilder builder;
+	/** Connection to store Elastic. */
+	private ElasticQueryBuilder builder;
 
-    /**
-     * Default constructor.
-     */
-    public FeatureStoreElastic() {}
+	/**
+	 * Default constructor.
+	 */
+	public FeatureStoreElastic() {
+	}
 
-    /**
-     * Initialization through {@link ElasticConnection}.
-     *
-     * @param connection
-     *            current client to Elasticsearch database
-     */
-    public FeatureStoreElastic(ElasticConnection connection) {
-        this.connection = connection;
-    }
+	/**
+	 * Initialization through {@link ElasticConnection}.
+	 *
+	 * @param connection
+	 *            current client to Elasticsearch database
+	 */
+	public FeatureStoreElastic(ElasticConnection connection) {
+		this.connection = connection;
+	}
 
-    /**
-     * Initialization with Connection and initialisation file.
-     *
-     * @param connection
-     * @param xmlFile
-     */
-    public FeatureStoreElastic(ElasticConnection connection, String xmlFile) {
-        this(connection);
-        importFeaturesFromXmlFile(xmlFile);
-        getConnection().execute(getBuilder().queryFlushIndex());
-    }
+	/**
+	 * Initialization with Connection and initialisation file.
+	 *
+	 * @param connection
+	 * @param xmlFile
+	 */
+	public FeatureStoreElastic(ElasticConnection connection, String xmlFile) {
+		this(connection);
+		importFeaturesFromXmlFile(xmlFile);
+		getConnection().execute(getBuilder().queryFlushIndex());
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public void enable(String uid) {
-        assertFeatureExist(uid);
-        getConnection().execute(getBuilder().queryEnable(uid));
-    }
+	/** {@inheritDoc} */
+	@Override
+	public void enable(String uid) {
+		assertFeatureExist(uid);
+		getConnection().execute(getBuilder().queryEnable(uid));
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public void disable(String uid) {
-        assertFeatureExist(uid);
-        getConnection().execute(getBuilder().queryDisable(uid));
-    }
+	/** {@inheritDoc} */
+	@Override
+	public void disable(String uid) {
+		assertFeatureExist(uid);
+		getConnection().execute(getBuilder().queryDisable(uid));
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public boolean exist(String uid) {
-        Util.assertHasLength(uid);
-        SearchResult result = getConnection().search(getBuilder().queryGetFeatureById(uid), true);
-        return (result.getTotal() != null) && (result.getTotal() >= 1);
-    }
+	/** {@inheritDoc} */
+	@Override
+	public boolean exist(String uid) {
+		Util.assertHasLength(uid);
+		SearchResult result = getConnection().search(getBuilder().queryGetFeatureById(uid), true);
+		return ResultUtils.exists(result);
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public void create(Feature fp) {
-        assertFeatureNotNull(fp);
-        assertFeatureNotExist(fp.getUid());
-        getConnection().execute(getBuilder().queryCreateFeature(fp));
-    }
+	/** {@inheritDoc} */
+	@Override
+	public void create(Feature fp) {
+		assertFeatureNotNull(fp);
+		assertFeatureNotExist(fp.getUid());
+		getConnection().execute(getBuilder().queryCreateFeature(fp));
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public Feature read(String uid) {
-        assertFeatureExist(uid);
-        // first hit is ensured as feature exist
-        return getConnection().search(
-                getBuilder().queryGetFeatureById(uid)).getFirstHit(Feature.class).source;
-    }
+	/** {@inheritDoc} */
+	@Override
+	public Feature read(String uid) {
+		assertFeatureExist(uid);
+		// first hit is ensured as feature exist
+		return getConnection().search(getBuilder().queryGetFeatureById(uid)).getFirstHit(Feature.class).source;
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public Map<String, Feature> readAll() {
+	/** {@inheritDoc} */
+	@Override
+	public Map<String, Feature> readAll() {
+		SearchResult result = getConnection().search(getBuilder().queryReadAllFeatures(), true);
+		Map<String, Feature> mapOfFeatures = new HashMap<String, Feature>();
+		if (ResultUtils.isSucceeded(result)) {
+			result.getHits(Feature.class).stream().forEach(c -> mapOfFeatures.put(c.source.getUid(), c.source));
+		}
+		return mapOfFeatures;
+	}
 
-        SearchResult result = getConnection().search(getBuilder().queryReadAllFeatures(), true);
+	/** {@inheritDoc} */
+	@Override
+	public void delete(String uid) {
+		assertFeatureExist(uid);
+		getConnection().execute(getBuilder().queryDeleteFeature(uid));
+	}
 
-        Map<String, Feature> mapOfFeatures = new HashMap<String, Feature>();
-        if (null != result && result.isSucceeded()) {
-            for (Hit<Feature, Void> feature : result.getHits(Feature.class)) {
-                mapOfFeatures.put(feature.source.getUid(), feature.source);
-            }
-        }
-        return mapOfFeatures;
-    }
+	/** {@inheritDoc} */
+	@Override
+	public void update(Feature fp) {
+		assertFeatureNotNull(fp);
+		assertFeatureExist(fp.getUid());
+		getConnection().execute(getBuilder().queryUpdateFeature(fp));
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public void delete(String uid) {
-        assertFeatureExist(uid);
-        getConnection().execute(getBuilder().queryDeleteFeature(uid));
-    }
+	/** {@inheritDoc} */
+	@Override
+	public void grantRoleOnFeature(String flipId, String roleName) {
+		assertFeatureExist(flipId);
+		Util.assertHasLength(roleName);
+		Feature feature = read(flipId);
+		feature.getPermissions().add(roleName);
+		getConnection().execute(getBuilder().queryUpdateFeature(feature));
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public void update(Feature fp) {
-        assertFeatureNotNull(fp);
-        assertFeatureExist(fp.getUid());
-        getConnection().execute(getBuilder().queryUpdateFeature(fp));
-    }
+	/** {@inheritDoc} */
+	@Override
+	public void removeRoleFromFeature(String flipId, String roleName) {
+		assertFeatureExist(flipId);
+		Util.assertHasLength(roleName);
+		Feature feature = read(flipId);
+		feature.getPermissions().remove(roleName);
+		getConnection().execute(getBuilder().queryUpdateFeature(feature));
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public void grantRoleOnFeature(String flipId, String roleName) {
-        assertFeatureExist(flipId);
-        Util.assertHasLength(roleName);
+	/** {@inheritDoc} */
+	@Override
+	public void enableGroup(String groupName) {
+		assertGroupExist(groupName);
+		for (String _id : getBuilder().getFeatureTechIdByGroup(groupName)) {
+			getConnection().execute(getBuilder().queryEnableWithTechId(_id));
+		}
+	}
 
-        Feature feature = read(flipId);
-        feature.getPermissions().add(roleName);
-        getConnection().execute(getBuilder().queryUpdateFeature(feature));
-    }
+	/** {@inheritDoc} */
+	@Override
+	public void disableGroup(String groupName) {
+		assertGroupExist(groupName);
+		for (String _id : getBuilder().getFeatureTechIdByGroup(groupName)) {
+			getConnection().execute(getBuilder().queryDisableWithTechId(_id));
+		}
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public void removeRoleFromFeature(String flipId, String roleName) {
-        assertFeatureExist(flipId);
-        Util.assertHasLength(roleName);
+	/** {@inheritDoc} */
+	@Override
+	public boolean existGroup(String groupName) {
+		Util.assertParamHasLength(groupName, "groupName");
+		SearchResult result = getConnection().search(getBuilder().getGroupByGroupName(groupName), true);
+		return ResultUtils.exists(result);
+	}
 
-        Feature feature = read(flipId);
-        feature.getPermissions().remove(roleName);
-        getConnection().execute(getBuilder().queryUpdateFeature(feature));
-    }
+	/** {@inheritDoc} */
+	@Override
+	public Map<String, Feature> readGroup(String groupName) {
+		assertGroupExist(groupName);
+		SearchResult result = getConnection().search(getBuilder().queryReadGroup(groupName));
+		LinkedHashMap<String, Feature> mapOfFeatures = new LinkedHashMap<String, Feature>();
+		if (ResultUtils.isSucceeded(result)) {
+			for (Hit<Feature, Void> hit : result.getHits(Feature.class)) {
+				mapOfFeatures.put(hit.source.getUid(), hit.source);
+			}
+		}
+		return mapOfFeatures;
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public void enableGroup(String groupName) {
-        assertGroupExist(groupName);
-        for (String _id : getBuilder().getFeatureTechIdByGroup(groupName)) {
-            getConnection().execute(getBuilder().queryEnableWithTechId(_id));
-        }
-    }
+	/** {@inheritDoc} */
+	@Override
+	public void addToGroup(String uid, String groupName) {
+		assertFeatureExist(uid);
+		Util.assertHasLength(groupName);
+		getConnection().execute(getBuilder().queryAddFeatureToGroup(uid, groupName));
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public void disableGroup(String groupName) {
-        assertGroupExist(groupName);
-        for (String _id : getBuilder().getFeatureTechIdByGroup(groupName)) {
-            getConnection().execute(getBuilder().queryDisableWithTechId(_id));
-        }
-    }
+	/** {@inheritDoc} */
+	@Override
+	public void removeFromGroup(String uid, String groupName) {
+		assertFeatureExist(uid);
+		assertGroupExist(groupName);
+		getConnection().execute(getBuilder().queryRemoveFeatureFromGroup(uid, groupName));
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public boolean existGroup(String groupName) {
-        Util.assertParamHasLength(groupName, "groupName");
-        SearchResult result = getConnection().search(getBuilder().getGroupByGroupName(groupName), true);
-        return (result.getTotal() != null) && (result.getTotal() >= 1);
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public Map<String, Feature> readGroup(String groupName) {
-        assertGroupExist(groupName);
-        SearchResult result = getConnection().search(getBuilder().queryReadGroup(groupName));
-        LinkedHashMap<String, Feature> mapOfFeatures = new LinkedHashMap<String, Feature>();
-        if (null != result && result.isSucceeded()) {
-            for (Hit<Feature, Void> hit : result.getHits(Feature.class)) {
-                mapOfFeatures.put(hit.source.getUid(), hit.source);
-            }
-        }
-        return mapOfFeatures;
-    }
+	/** {@inheritDoc} */
+	@Override
+	public Set<String> readAllGroups() {
+		Map<String, Feature> allGroups = readAll();
+		Set<String> groups = allGroups.values().stream() //
+				.filter(p -> p.getGroup() != null) //
+				.map(Feature::getGroup).collect(Collectors.toSet());
+		return groups;
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public void addToGroup(String uid, String groupName) {
-        assertFeatureExist(uid);
-        Util.assertHasLength(groupName);
-        getConnection().execute(getBuilder().queryAddFeatureToGroup(uid, groupName));
-    }
+	/** {@inheritDoc} */
+	@Override
+	public void clear() {
+		getConnection().execute(getBuilder().queryClear());
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public void removeFromGroup(String uid, String groupName) {
-        assertFeatureExist(uid);
-        assertGroupExist(groupName);
-        getConnection().execute(getBuilder().queryRemoveFeatureFromGroup(uid, groupName));
-    }
+	/** {@inheritDoc} */
+	@Override
+	public void createSchema() {
+		getConnection().execute(getBuilder().queryFlushIndex());
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public Set<String> readAllGroups() {
-        Set<String> groups = new HashSet<String>();
-        for (Map.Entry<String, Feature> entry : readAll().entrySet()) {
-            if (null != entry.getValue().getGroup()) {
-                groups.add(entry.getValue().getGroup());
-            }
-        }
-        return groups;
-    }
+	/**
+	 * Getter accessor for attribute 'connection'.
+	 *
+	 * @return current value of 'connection'
+	 */
+	public ElasticConnection getConnection() {
+		return connection;
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public void clear() {
-        getConnection().execute(getBuilder().queryClear());
-    }
+	/**
+	 * Setter accessor for attribute 'connection'.
+	 * 
+	 * @param connection
+	 *            new value for 'connection '
+	 */
+	public void setConnection(ElasticConnection connection) {
+		this.connection = connection;
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public void createSchema() {
-        getConnection().execute(getBuilder().queryFlushIndex());
-    }
-
-    /**
-     * Getter accessor for attribute 'connection'.
-     *
-     * @return current value of 'connection'
-     */
-    public ElasticConnection getConnection() {
-        return connection;
-    }
-
-    /**
-     * Setter accessor for attribute 'connection'.
-     * 
-     * @param connection
-     *            new value for 'connection '
-     */
-    public void setConnection(ElasticConnection connection) {
-        this.connection = connection;
-    }
-
-    /**
-     * Getter accessor for attribute 'builder'.
-     *
-     * @return current value of 'builder'
-     */
-    public ElasticQueryBuilder getBuilder() {
-        if (builder == null) {
-            builder = new ElasticQueryBuilder(this.connection);
-        }
-        return builder;
-    }
+	/**
+	 * Getter accessor for attribute 'builder'.
+	 *
+	 * @return current value of 'builder'
+	 */
+	public ElasticQueryBuilder getBuilder() {
+		if (builder == null) {
+			builder = new ElasticQueryBuilder(this.connection);
+		}
+		return builder;
+	}
 }
