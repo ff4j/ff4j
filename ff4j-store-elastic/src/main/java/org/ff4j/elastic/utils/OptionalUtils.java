@@ -1,4 +1,4 @@
-package org.ff4j.elastic.optional;
+package org.ff4j.elastic.utils;
 
 /*
  * #%L

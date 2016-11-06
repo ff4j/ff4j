@@ -49,7 +49,6 @@ import org.ff4j.utils.Util;
 
 import io.searchbox.client.JestResult;
 import io.searchbox.core.SearchResult;
-import io.searchbox.core.SearchResult.Hit;
 
 /**
  * @author <a href="mailto:andre.blaszczyk@gmail.com">Andre Blaszczyk</a>
@@ -99,9 +98,7 @@ public class EventRepositoryElastic extends AbstractEventRepository {
 		// Search All events
 		Iterator<Event> iterEvent = searchFeatureUsageEvents(query).iterator();
 		// Dispatch events into time slots
-		while (iterEvent.hasNext()) {
-			tsc.addEvent(iterEvent.next());
-		}
+		iterEvent.forEachRemaining(c -> tsc.addEvent(c));
 		return tsc;
 	}
 
@@ -163,9 +160,8 @@ public class EventRepositoryElastic extends AbstractEventRepository {
 	public void purgeAuditTrail(EventQueryDefinition query) {
 		SearchResult result = getConnection().search(getBuilder().queryReadAllEvents(), true);
 		if (ResultUtils.isSucceeded(result)) {
-			for (Hit<Event, Void> event : result.getHits(Event.class)) {
-				getConnection().execute(getBuilder().queryDeleteEvent(event.source.getUuid()));
-			}
+			result.getHits(Event.class).stream().forEach(c -> //
+			getConnection().execute(getBuilder().queryDeleteEvent(c.source.getUuid())));
 		}
 	}
 
