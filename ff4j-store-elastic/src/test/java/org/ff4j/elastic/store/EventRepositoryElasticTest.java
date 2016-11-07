@@ -1,13 +1,5 @@
 package org.ff4j.elastic.store;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
-import org.elasticsearch.common.settings.ImmutableSettings;
-import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeBuilder;
-
 /*
  * #%L
  * ff4j-store-elastic
@@ -28,10 +20,18 @@ import org.elasticsearch.node.NodeBuilder;
  * #L%
  */
 
-import org.ff4j.core.FeatureStore;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
+import org.elasticsearch.common.settings.ImmutableSettings;
+import org.elasticsearch.node.Node;
+import org.elasticsearch.node.NodeBuilder;
+import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.elastic.ElasticConnection;
 import org.ff4j.elastic.ElasticConnectionMode;
-import org.ff4j.test.store.FeatureStoreTestSupport;
+import org.ff4j.test.audit.EventRepositoryTestSupport;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -39,13 +39,9 @@ import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author <a href="mailto:andre.blaszczyk@gmail.com">Andre Blaszczyk</a>
- *
- */
-public class FeatureStoreElasticTest extends FeatureStoreTestSupport {
+public class EventRepositoryElasticTest extends EventRepositoryTestSupport {
 
-	private final static Logger logger = LoggerFactory.getLogger(FeatureStoreElasticTest.class);
+	private final static Logger logger = LoggerFactory.getLogger(EventRepositoryElasticTest.class);
 
 	/**
 	 * Using temporary folder as path data for Elasticsearch.
@@ -70,13 +66,7 @@ public class FeatureStoreElasticTest extends FeatureStoreTestSupport {
 	}
 
 	@Override
-	protected int enablePause() {
-		// waiting 2 seconds for integration tests.
-		return 2;
-	}
-
-	@Override
-	protected FeatureStore initStore() {
+	protected EventRepository initRepository() {
 		ElasticConnection connection = null;
 		try {
 			connection = new ElasticConnection(ElasticConnectionMode.JEST_CLIENT, "ff4j",
@@ -84,7 +74,9 @@ public class FeatureStoreElasticTest extends FeatureStoreTestSupport {
 		} catch (MalformedURLException e) {
 			logger.error(e.getMessage(), e);
 		}
-		return new FeatureStoreElastic(connection, "test-ff4j-features.xml");
+		EventRepository elasticStore = new EventRepositoryElastic(connection);
+		elasticStore.createSchema();
+		return elasticStore;
 	}
 
 	// Convenient methods
@@ -94,7 +86,7 @@ public class FeatureStoreElasticTest extends FeatureStoreTestSupport {
 		ImmutableSettings.Builder elasticSettings = ImmutableSettings.settingsBuilder() //
 				.put("path.data", dataDirectory);
 
-		return NodeBuilder.nodeBuilder().clusterName("myIntegrationCluster").local(true)
+		return NodeBuilder.nodeBuilder().clusterName("myIntegrationClusterEvent").local(true)
 				.settings(elasticSettings.build()).node();
 	}
 }

@@ -24,5 +24,5 @@ public class ElasticConstants {
 
 	public static final String TYPE_FEATURE = "feature";
 	public static final String TYPE_PROPERTY = "property";
-
+	public static final String TYPE_EVENT = "event";
 }

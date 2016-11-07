@@ -20,14 +20,19 @@ package org.ff4j.elastic;
  * #L%
  */
 
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.ff4j.audit.Event;
+import org.ff4j.audit.EventConstants;
+import org.ff4j.audit.EventQueryDefinition;
 import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
 
@@ -45,6 +50,7 @@ import io.searchbox.indices.Flush;
  * Helper to create Jest queries.
  *
  * @author Cedrick LUNVEN (@clunven)
+ * @author Andre BLASZCZYK (andre.blaszczyk@gmail.com)
  */
 public class ElasticQueryBuilder {
 
@@ -116,7 +122,7 @@ public class ElasticQueryBuilder {
 				.build();
 		// feature existence must have been checked before (technical function)
 		@SuppressWarnings("rawtypes")
-        List<Hit<Map, Void>> items = connection.search(search).getHits(Map.class);
+		List<Hit<Map, Void>> items = connection.search(search).getHits(Map.class);
 		if (null != items && !items.isEmpty()) {
 			return connection.search(search).getHits(Map.class).get(0).source.get(JestResult.ES_METADATA_ID).toString();
 		}
@@ -221,39 +227,126 @@ public class ElasticQueryBuilder {
 				.addIndex(connection.getIndexName()) //
 				.addType(ElasticConstants.TYPE_PROPERTY) //
 				.build();
-		@SuppressWarnings("rawtypes")
-        List<Hit<Map, Void>> items = connection.search(search).getHits(Map.class);
+		List<Hit<Map, Void>> items = connection.search(search).getHits(Map.class);
 		if (null != items && !items.isEmpty()) {
 			return connection.search(search).getHits(Map.class).get(0).source.get(JestResult.ES_METADATA_ID).toString();
 		}
 		return null;
 	}
-	
+
 	public Search queryReadGroup(String groupName) {
-	    SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        searchSourceBuilder.query(QueryBuilders.matchQuery("group", groupName));
-        return new Search.Builder(searchSourceBuilder.toString()) //
-                .addIndex(connection.getIndexName()) //
-                .addType("feature") //
-                .build();
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		searchSourceBuilder.query(QueryBuilders.matchQuery("group", groupName));
+		return new Search.Builder(searchSourceBuilder.toString()) //
+				.addIndex(connection.getIndexName()) //
+				.addType("feature") //
+				.build();
 	}
-	
+
 	public Update queryAddFeatureToGroup(String uid, String groupName) {
-        String partialDoc = "{ \"doc\" : { \"group\" : \"" + groupName + "\" } }";
-        return new Update.Builder(partialDoc) //
-                .index(connection.getIndexName()) //
-                .type(ElasticConstants.TYPE_FEATURE) //
-                .id(getFeatureTechId(uid)) //
-                .build();
-    }
-	
+		String partialDoc = "{ \"doc\" : { \"group\" : \"" + groupName + "\" } }";
+		return new Update.Builder(partialDoc) //
+				.index(connection.getIndexName()) //
+				.type(ElasticConstants.TYPE_FEATURE) //
+				.id(getFeatureTechId(uid)) //
+				.build();
+	}
+
 	public Update queryRemoveFeatureFromGroup(String uid, String groupName) {
-        String partialDoc = "{ \"doc\" : { \"group\" : \"\" } }";
-        return new Update.Builder(partialDoc) //
-                .index(connection.getIndexName()) //
-                .type(ElasticConstants.TYPE_FEATURE) //
-                .id(getFeatureTechId(uid)) //
-                .build();
-    }
-	
+		String partialDoc = "{ \"doc\" : { \"group\" : \"\" } }";
+		return new Update.Builder(partialDoc) //
+				.index(connection.getIndexName()) //
+				.type(ElasticConstants.TYPE_FEATURE) //
+				.id(getFeatureTechId(uid)) //
+				.build();
+	}
+
+	// "Event" methods
+
+	public Index queryCreateEvent(Event event) {
+		return new Index.Builder(event).index(connection.getIndexName()).type(ElasticConstants.TYPE_EVENT).refresh(true)
+				.build();
+	}
+
+	public Search queryGetEventById(String uuid) {
+		SearchSourceBuilder source = new SearchSourceBuilder();
+		source.query(QueryBuilders.matchQuery("uuid", uuid));
+		return new Search.Builder(source.toString()).addIndex(connection.getIndexName())
+				.addType(ElasticConstants.TYPE_EVENT).build();
+	}
+
+	public Search queryGetEventQueryDefinition(EventQueryDefinition query, String action) {
+		BoolQueryBuilder booleanQuery = new BoolQueryBuilder();
+
+		// Optional constant for action filter
+		if (action != null) {
+			query.getActionFilters().add(action);
+		}
+		QueryBuilder typeQuery = QueryBuilders.termQuery("type", EventConstants.TARGET_FEATURE);
+
+		// Timestamp filter
+		RangeQueryBuilder timestampFilter = QueryBuilders.rangeQuery("timestamp") //
+				.gt(query.getFrom().longValue()) //
+				.lt(query.getTo().longValue()) //
+				.includeLower(false) //
+				.includeUpper(false);
+
+		booleanQuery.must(typeQuery);
+		booleanQuery.must(timestampFilter);
+
+		// Optional filters
+		addOptionalFilters(booleanQuery, query.getActionFilters(), "action");
+		addOptionalFilters(booleanQuery, query.getHostFilters(), "hostName");
+		addOptionalFilters(booleanQuery, query.getNamesFilter(), "name");
+		addOptionalFilters(booleanQuery, query.getSourceFilters(), "source");
+
+		// Warning : default size is set to 10 results, that's why it's
+		// overridden
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder().size(100);
+		Search searchQuery = new Search.Builder(searchSourceBuilder.query(booleanQuery.toString()).toString()) //
+				.addIndex(connection.getIndexName()) //
+				.addType(ElasticConstants.TYPE_EVENT) //
+				.build();
+
+		return searchQuery;
+	}
+
+	public Search queryGetEventQueryDefinition(EventQueryDefinition query) {
+		return queryGetEventQueryDefinition(query, null);
+	}
+
+	public void addOptionalFilters(BoolQueryBuilder booleanQuery, Set<String> filters, String field) {
+		if (!filters.isEmpty()) {
+			BoolQueryBuilder subQuery = new BoolQueryBuilder();
+			for (String filter : filters) {
+				subQuery.must(QueryBuilders.matchQuery(field, filter));
+			}
+			booleanQuery.must(subQuery);
+		}
+	}
+
+	public Search queryReadAllEvents() {
+		return new Search.Builder(new SearchSourceBuilder().toString()).addIndex(connection.getIndexName())
+				.addType(ElasticConstants.TYPE_EVENT).build();
+	}
+
+	public Delete queryDeleteEvent(String uid) {
+		return new Delete.Builder(uid).index(connection.getIndexName()).type(ElasticConstants.TYPE_EVENT)
+				.id(getEventTechId(uid)).refresh(true).build();
+	}
+
+	public String getEventTechId(String uuid) {
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		searchSourceBuilder.query(QueryBuilders.matchQuery("uuid", uuid));
+		Search search = new Search.Builder(searchSourceBuilder.toString()) //
+				.addIndex(connection.getIndexName()) //
+				.addType(ElasticConstants.TYPE_EVENT) //
+				.build();
+		// event existence must have been checked before (technical function)
+		List<Hit<Map, Void>> items = connection.search(search).getHits(Map.class);
+		if (null != items && !items.isEmpty()) {
+			return connection.search(search).getHits(Map.class).get(0).source.get(JestResult.ES_METADATA_ID).toString();
+		}
+		return null;
+	}
 }

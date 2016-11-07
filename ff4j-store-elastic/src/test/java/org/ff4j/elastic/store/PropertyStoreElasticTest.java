@@ -20,7 +20,6 @@ package org.ff4j.elastic.store;
  * #L%
  */
 
-
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -67,7 +66,7 @@ public class PropertyStoreElasticTest extends PropertyStoreTestSupport {
 
 	@AfterClass
 	public static void tearDown() {
-		server.stop();
+		server.close();
 	}
 
 	@Override
