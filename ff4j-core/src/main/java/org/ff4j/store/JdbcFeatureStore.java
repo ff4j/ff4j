@@ -213,6 +213,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
     	assertFeatureNotNull(fp);
     	Connection sqlConn = null;
         PreparedStatement ps = null;
+        Boolean previousAutoCommit = null;
         try {
 
             // Create connection
@@ -222,6 +223,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             }
 
             // Begin TX
+            previousAutoCommit = sqlConn.getAutoCommit();
             sqlConn.setAutoCommit(false);
 
             // Create feature
@@ -269,7 +271,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             throw new FeatureAccessException(CANNOT_UPDATE_FEATURES_DATABASE_SQL_ERROR, sqlEX);
         } finally {
             closeStatement(ps);
-            closeConnection(sqlConn);
+            closeConnection(sqlConn, previousAutoCommit);
         }
     }
 
@@ -279,9 +281,11 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
     	assertFeatureExist(uid);
         Connection sqlConn = null;
         PreparedStatement ps = null;
+        Boolean previousAutoCommit = null;
         try {
             // Create connection
             sqlConn = getDataSource().getConnection();
+            previousAutoCommit = sqlConn.getAutoCommit();
             sqlConn.setAutoCommit(false);
             Feature fp = read(uid);
 
@@ -324,7 +328,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             throw new FeatureAccessException(CANNOT_UPDATE_FEATURES_DATABASE_SQL_ERROR, sqlEX);
         } finally {
             closeStatement(ps);
-            closeConnection(sqlConn);
+            closeConnection(sqlConn, previousAutoCommit);
         }
     }
 
@@ -534,11 +538,13 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
 
         Connection sqlConn = null;
         PreparedStatement ps = null;
+        Boolean previousAutoCommit = null;
 
         try {
             sqlConn = dataSource.getConnection();
 
             // Begin TX
+            previousAutoCommit = sqlConn.getAutoCommit();
             sqlConn.setAutoCommit(false);
 
             // Queries
@@ -555,7 +561,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             throw new FeatureAccessException(CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE, sqlEX);
         } finally {
             closeStatement(ps);
-            closeConnection(sqlConn);
+            closeConnection(sqlConn, previousAutoCommit);
         }
     }
 
