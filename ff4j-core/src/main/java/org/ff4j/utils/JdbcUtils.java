@@ -164,26 +164,40 @@ public class JdbcUtils {
     }
     
     /**
-     * Return connection to pool.
+     * Restore previous <code>autoCommit</code> setting and return connection to pool.
      *
      * @param sqlConnection
+     * @param previousAutoCommit original <code>autoCommit</code> setting of <code>sqlConnection</code>. Ignored when <code>
+     *                           null</code>
      */
-    public static void closeConnection(Connection sqlConnection) {
+    public static void closeConnection(Connection sqlConnection, Boolean previousAutoCommit) {
         try {
             if (sqlConnection != null && !sqlConnection.isClosed()) {
+                if (previousAutoCommit != null) {
+                    sqlConnection.setAutoCommit(previousAutoCommit);
+                }
                 sqlConnection.close();
             }
         } catch (SQLException e) {
             throw new FeatureAccessException("An error occur when closing statement", e);
         }
     }
-    
+
     /**
-     * Utility method to perform rollback in correct way.
-     * 
-     * @param sqlConn
-     *            current sql connection
+     * Return connection to pool.
+     *
+     * @param sqlConnection
      */
+    public static void closeConnection(Connection sqlConnection) {
+        closeConnection(sqlConnection, null);
+    }
+
+     /**
+      * Utility method to perform rollback in correct way.
+      *
+      * @param sqlConn
+      *            current sql connection
+      */
     public static void rollback(Connection sqlConn) {
         try {
             if (sqlConn != null && !sqlConn.isClosed()) {
