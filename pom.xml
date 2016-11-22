@@ -827,6 +827,9 @@
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>${version.maven.plugin.jar}</version>
                     <configuration>
+                        <excludes>
+                            <exclude>**/logback.xml</exclude>
+                        </excludes>
                         <archive>
                             <manifest>
                                 <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
