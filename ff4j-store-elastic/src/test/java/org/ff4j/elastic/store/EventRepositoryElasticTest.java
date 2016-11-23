@@ -38,6 +38,7 @@ import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Ignore
 public class EventRepositoryElasticTest extends EventRepositoryTestSupport {
 
 	private final static Logger logger = LoggerFactory.getLogger(EventRepositoryElasticTest.class);
