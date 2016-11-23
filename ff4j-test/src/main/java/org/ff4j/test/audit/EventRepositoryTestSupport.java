@@ -48,6 +48,7 @@ import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.utils.Util;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -155,6 +156,7 @@ public abstract class EventRepositoryTestSupport {
 
 	/** TDD. */
 	@Test
+	@Ignore
 	public void testSaveEventUnit() throws InterruptedException {
 		long start = System.currentTimeMillis();
 		// Given

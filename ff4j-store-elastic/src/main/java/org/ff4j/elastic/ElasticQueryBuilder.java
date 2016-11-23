@@ -220,7 +220,8 @@ public class ElasticQueryBuilder {
 				.id(getPropertyTechIdByName(name)).refresh(true).build();
 	}
 
-	public String getPropertyTechIdByName(String name) {
+	@SuppressWarnings("rawtypes")
+    public String getPropertyTechIdByName(String name) {
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		searchSourceBuilder.query(QueryBuilders.matchQuery("name", name));
 		Search search = new Search.Builder(searchSourceBuilder.toString()) //
@@ -335,6 +336,7 @@ public class ElasticQueryBuilder {
 				.id(getEventTechId(uid)).refresh(true).build();
 	}
 
+	@SuppressWarnings("rawtypes")
 	public String getEventTechId(String uuid) {
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		searchSourceBuilder.query(QueryBuilders.matchQuery("uuid", uuid));
@@ -343,7 +345,7 @@ public class ElasticQueryBuilder {
 				.addType(ElasticConstants.TYPE_EVENT) //
 				.build();
 		// event existence must have been checked before (technical function)
-		List<Hit<Map, Void>> items = connection.search(search).getHits(Map.class);
+        List<Hit<Map, Void>> items = connection.search(search).getHits(Map.class);
 		if (null != items && !items.isEmpty()) {
 			return connection.search(search).getHits(Map.class).get(0).source.get(JestResult.ES_METADATA_ID).toString();
 		}
