@@ -5,8 +5,7 @@
           "enable":true, 
           "description":"description",
           "permissions": [ "USER" ] },
-          "customProperties":
-        
+          "customProperties":""
         ],
     "properties": []
 }
