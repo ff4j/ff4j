@@ -57,6 +57,8 @@ public class FF4jDispatcherServlet extends FF4jServlet {
         	targetView = VIEW_404;
         	
         } else {
+            // Issue #175 : Enforce output to text/html
+            res.setContentType("text/html");
         	mapOfControllers.get(targetView).get(req, res);
     	}
     }
@@ -70,8 +72,8 @@ public class FF4jDispatcherServlet extends FF4jServlet {
             operationsController.post(req, res, null);
         
         } else if (mapOfControllers.containsKey(targetView)) {
+            res.setContentType("text/html");
             mapOfControllers.get(targetView).post(req, res);
-        
         } else {
             targetView = VIEW_404;
         }

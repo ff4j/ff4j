@@ -7,8 +7,6 @@
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License. 
 	#L% -->
-
-<!DOCTYPE configuration>
 <features>
 
 	<feature uid="sayHello" description="my first feature" enable="true">

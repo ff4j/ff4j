@@ -18,8 +18,6 @@
   limitations under the License.
   #L%
   -->
-
-<!DOCTYPE configuration>
 <features>
 	<feature uid="sample" description="description" />
 </features>

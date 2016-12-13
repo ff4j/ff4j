@@ -94,12 +94,10 @@ public class FileUtils {
         if (is == null) {
             // Fetch absolute classloader path
             is =  FileUtils.class.getClassLoader().getResourceAsStream(fileName);
-            System.out.println("Check classloader");
         }
         if (is == null) {
             // Thread
             is =  Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
-            System.out.println("Check Thread");
         }
         if (is == null) {
             throw new FileNotFoundException("Cannot load file " + fileName + " please check");

@@ -19,7 +19,6 @@
   #L%
   -->
 
-<!DOCTYPE configuration>
 <features>
 	<feature uid="sample" enable="true" description="description" >
 		<flipstrategy class="org.ff4j.strategy.el.ExpressionFlipStrategy">

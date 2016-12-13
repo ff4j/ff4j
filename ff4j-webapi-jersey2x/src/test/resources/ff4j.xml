@@ -19,7 +19,6 @@
   #L%
   -->
 
-<!DOCTYPE configuration>
 <features>
 
 	<feature uid="sayHello" description="my first feature" enable="true">

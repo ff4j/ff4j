@@ -115,16 +115,14 @@ public class FF4JMBeanTest {
     @Test
     public void should_enable_feature() throws Exception {
         ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
-        mbServConn.invoke(objectName, "enableFeature", new Object[] {"jmxDisabledFeature"},
-                new String[] {"java.lang.String"});
+        mbServConn.invoke(objectName, "enableFeature", new Object[] {"jmxDisabledFeature"}, new String[] {"java.lang.String"});
         assertFF4J.assertThatFeatureIsEnabled("jmxDisabledFeature");
     }
 
     @Test
     public void should_disable_feature() throws Exception {
         ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
-        mbServConn.invoke(objectName, "disableFeature", new Object[] {"jmxEnabledFeature"},
-                new String[] {"java.lang.String"});
+        mbServConn.invoke(objectName, "disableFeature", new Object[] {"jmxEnabledFeature"}, new String[] {"java.lang.String"});
         assertFF4J.assertThatFeatureIsDisabled("jmxEnabledFeature");
     }
 
@@ -141,7 +139,7 @@ public class FF4JMBeanTest {
         should_add_auth_role_to_feature();
         should_remove_auth_role_from_feature();
     }
-    
+
     @Test
     public void defaultInitialisation() {
         FF4JMBean sampleBean = new FF4JMBean();

@@ -452,7 +452,7 @@ public class AssertFf4j {
 		try {
 			TimeUnit.SECONDS.sleep(pause);
 		} catch (InterruptedException e) {
-			System.out.println(e);
+		    System.err.println("An error occurs when waiting" + e.getMessage());
 		}
 	}
 }
