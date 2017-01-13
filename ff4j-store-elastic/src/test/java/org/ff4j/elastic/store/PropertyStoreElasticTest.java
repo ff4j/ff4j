@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:andre.blaszczyk@gmail.com">Andre Blaszczyk</a>
  *
  */
+@Ignore
 public class PropertyStoreElasticTest extends PropertyStoreTestSupport {
 
 	private final static Logger logger = LoggerFactory.getLogger(PropertyStoreElasticTest.class);

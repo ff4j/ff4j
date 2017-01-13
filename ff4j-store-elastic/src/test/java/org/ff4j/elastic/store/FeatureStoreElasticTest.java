@@ -33,6 +33,7 @@ import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:andre.blaszczyk@gmail.com">Andre Blaszczyk</a>
  *
  */
+@Ignore
 public class FeatureStoreElasticTest extends FeatureStoreTestSupport {
 
 	private final static Logger logger = LoggerFactory.getLogger(FeatureStoreElasticTest.class);
