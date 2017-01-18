@@ -108,7 +108,7 @@ public class JdbcUtils {
         PreparedStatement ps = sqlConn.prepareStatement(query);
         if (params != null && params.length > 0) {
             for (int i = 0; i < params.length; i++) {
-                ps.setString(i + 1, params[i]);
+                ps.setObject(i + 1, params[i]);
             }
         }
         return ps;
