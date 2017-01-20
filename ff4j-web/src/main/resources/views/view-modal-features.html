@@ -204,6 +204,11 @@
  $(document).on("click", ".open-EditFlipDialog", function () {
 	 ff4j_updateModalEditFeature($(this).data('id'));
  });
+ 
+ $(document).on("click", ".open-DeleteFlipDialog", function () {
+     ff4j_updateModalDeleteFeature($(this).data('id'));
+ });
+ 
 </script>
 
 </div>
@@ -273,6 +278,57 @@
  </div>
 </form>
 
+</div>
+
+<!-- ********************* -->
+<!--  DELETE FEATURE MODAL -->
+<!-- ********************* -->
+ <div th:fragment="modal-deleteFeature">
+ <form class="form-horizontal" th:action="@{features}" action="" method="POST" >
+  <div class="modal hide fade" id="modalDeleteFeature" tabindex="-1" role="dialog" 
+       aria-labelledby="modalDeleteFeatureLabel" aria-hidden="true">
+    
+    <input type="hidden" name="op" value="delete"  />
+    
+    <div class="modal-header"> 
+      <button class="close" data-dismiss="modal">x</button>   
+      <h4 id="modalDeleteFeatureLabel"><i class="icon-upload-alt"></i>&nbsp;
+      <span th:text="#{modal.deletefeature.title}" >Delete feature</span></h4>
+    </div>
+    
+    <div class="modal-body">
+     
+       <!-- Message --> 
+	    <div class="control-group" style="margin-left:50px;float:left">
+	     <span style="color:#ab0000;font-weight:bold" th:text="#{modal.deletefeature.confirmMessage}">
+	         Are you sure you want to delete this feature ?
+	     </span>
+	    </div>
+    
+       <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px"> 
+        <label class="control-label" for="uid" 
+               style="color:#687684;font-style:normal;font-weight:normal;" 
+               th:text="#{modal.createfeature.featurename}" >Feature Name</label>
+        <div class="controls">   
+        <input type="text" name="uid" id="uid" 
+               style="width:350px;height:18px;color:#008bab;background-color:white" 
+               readonly="true" />  
+       </div>
+     </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button class="btn btn" data-dismiss="modal">
+        <i class="icon-remove" ></i>
+        &nbsp;<span th:text="#{modal.button.cancel}">Cancel</span>
+       </button>
+      <button class="btn btn-green" type="submit">
+        <i class="icon-trash icon-white" ></i>
+        &nbsp;<span th:text="#{modal.button.delete}">Delete</span>
+      </button>
+    </div>
+  </div>
+  </form>
 </div>
 
 <!-- ******************** -->

@@ -104,6 +104,11 @@ function hideFeaturePermissions(uid) {
 //  MODAL EDIT FEATURE
 // ---------------------
 
+function ff4j_updateModalDeleteFeature(uid) {
+	$("#modalDeleteFeature #uid").val(uid);
+}
+
+
 // At Load, fill edit form with Data coming from REST Call
 function ff4j_updateModalEditFeature(uid) {
 	var modalEdit = $("#modalEdit");

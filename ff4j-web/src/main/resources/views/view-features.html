@@ -134,16 +134,16 @@
 	     th:attr="data-id=${feat.uid}"
 		 style="width:6px:margin-left:-3px;color:white;background-color:#008bab" 
 		 class="open-EditFlipDialog btn">
-       <i class="icon-pencil"></i>
+        <i class="icon-pencil"></i>
 	  </a>
 	 </td>
 	 <td style="width:5%;text-align:center">
-	   <!-- Confirmation before delete -->
-	 	<a href="" style="width:6px:margin-left:-3px;color:white;background-color:#ab0000" 
-	 	     class="btn" th:href="@{features} + '?op=delete&amp;uid=' + ${feat.uid}">
-	     <i class="icon-trash"></i>
-	    </a>
-	    
+	   <a data-toggle="modal" href="#modalDeleteFeature" 
+         th:attr="data-id=${feat.uid}"
+         style="width:6px:margin-left:-3px;color:white;background-color:#ab0000" 
+         class="open-DeleteFlipDialog btn">
+        <i class="icon-trash"></i>
+       </a>
 	 </td>
 	</tr>
 	</tbody>
@@ -162,6 +162,8 @@
 <div th:include="modal-features :: modal-edit"></div>
 
 <div th:include="modal-features :: modal-create"></div>
+
+<div th:include="modal-features :: modal-deleteFeature"></div>
 
 <div th:include="modal-features :: modal-toggle"></div>
 

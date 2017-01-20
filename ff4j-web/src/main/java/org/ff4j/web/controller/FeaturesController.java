@@ -104,12 +104,6 @@ public class FeaturesController extends AbstractController {
                     LOGGER.info(featureId + " has been enabled");
                 }
                 
-                if (OP_RMV_FEATURE.equalsIgnoreCase(operation)) {
-                    getFf4j().getFeatureStore().delete(featureId);
-                    msg = msg(featureId, "DELETED");
-                    LOGGER.info(featureId + " has been deleted");
-                }
-                
                 if (OP_ADD_PERMISSION.equalsIgnoreCase(operation)) {
                     String permName = req.getParameter(WebConstants.PERMISSION);
                     Feature feature = getFf4j().getFeatureStore().read(featureId);
@@ -166,6 +160,10 @@ public class FeaturesController extends AbstractController {
         } else if (OP_CREATE_FEATURE.equalsIgnoreCase(operation)) {
             ConsoleOperations.createFeature(getFf4j(), req);
             msg = featureId + " has been CREATED";
+            
+        } else if (OP_RMV_FEATURE.equalsIgnoreCase(operation)) {
+            getFf4j().getFeatureStore().delete(featureId);
+            msg = featureId + " has been DELETED";
             
         } else if (OP_RENAME_FEATURE.equalsIgnoreCase(operation)) {
             String newName = req.getParameter(NEW_NAME);
