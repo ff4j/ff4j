@@ -30,8 +30,6 @@ function ff4j_disable(flip) {
   });
 }
 
-
-
 // Toggle ON a feature through AXAJ call
 function ff4j_enable(flip) {
   $.ajax({
@@ -60,6 +58,19 @@ function toggle(flip) {
 	ff4j_enable(flip);
   }
 }
+
+function confirmBeforeDeleteFeature(feature) {
+	/*
+	$('button[name="remove_levels"]').on('click', function(e){
+	    var $form=$(this).closest('form');
+	    e.preventDefault();
+	    $('#confirm').modal({ backdrop: 'static', keyboard: false })
+	        .one('click', '#delete', function (e) {
+	            $form.trigger('submit');
+	        });
+	});*/
+}
+
 
 // Display Custom Properties for current feature in the table
 function showCustomProperties(uid) {
@@ -244,7 +255,6 @@ function ff4j_removePropertiesForFeature(uid, propName) {
 //---------------------
 // MODAL EDIT PROPERTY
 //---------------------
-
 
 // Fill fields from dedicated property
 function ff4j_updateModalEditProperty(name) {
