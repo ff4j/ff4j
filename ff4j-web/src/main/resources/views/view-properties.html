@@ -70,9 +70,12 @@
        <i class="icon-pencil"></i>
       </a>
      </td>
+     
      <td style="width:5%;text-align:center">
-        <a href="" style="width:6px:margin-left:-3px;color:white;background-color:#ab0000" 
-             class="btn" th:href="@{properties} + '?op=deleteProperty&amp;uid=' + ${curProp.name}">
+         <a data-toggle="modal" href="#modalDeleteProperty" 
+         th:attr="data-id=${curProp.name}"
+         style="width:6px:margin-left:-3px;color:white;background-color:#ab0000" 
+         class="open-DeletePropertyDialog btn">
          <i class="icon-trash"></i>
         </a>
      </td>
@@ -94,6 +97,8 @@
 <div th:include="modal-properties :: modal-createProperty"></div>
 
 <div th:include="modal-properties :: modal-updateProperty"></div>
+
+<div th:include="modal-properties :: modal-deleteProperty"></div>
 
 <div th:include="modal-properties :: modal-rename"></div>
 

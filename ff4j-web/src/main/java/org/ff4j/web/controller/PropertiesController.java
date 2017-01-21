@@ -9,7 +9,6 @@ import static org.ff4j.web.bean.WebConstants.OP_EDIT_PROPERTY;
 import static org.ff4j.web.bean.WebConstants.OP_RENAME_PROPERTY;
 import static org.ff4j.web.bean.WebConstants.OP_RMV_PROPERTY;
 import static org.ff4j.web.bean.WebConstants.PARAM_FIXEDVALUE;
-import static org.ff4j.web.embedded.ConsoleRenderer.msg;
 
 /*
  * #%L
@@ -75,8 +74,8 @@ public class PropertiesController extends AbstractController {
 	/** {@inheritDoc} */
     public void post(HttpServletRequest req, HttpServletResponse res, WebContext ctx)
     throws IOException {
-        String msg       = null;
-        String msgType   = "success";
+        String msg          = null;
+        String msgType      = "success";
         String operation    = req.getParameter(WebConstants.OPERATION);
         String propertyName = req.getParameter(WebConstants.NAME);
         String featureId    = req.getParameter(WebConstants.FEATURE_UID);
@@ -89,7 +88,14 @@ public class PropertiesController extends AbstractController {
                 logMessage+= " for feature '" + featureId + "'";
             }
             LOGGER.info(logMessage);
-            
+        } else  if (OP_RMV_PROPERTY.equalsIgnoreCase(operation)) {
+            if (!Util.hasLength(propertyName)) {
+                msgType = "warning";
+                msg = "Property name not found";
+            } else {
+                getFf4j().getPropertiesStore().deleteProperty(propertyName);
+                msg = propertyName + " has been DELETED";
+            }
         } else if (OP_EDIT_PROPERTY.equalsIgnoreCase(operation)) {
             ConsoleOperations.updateProperty(getFf4j(), req);
             msg = propertyName + " has been UPDATED";
@@ -129,7 +135,7 @@ public class PropertiesController extends AbstractController {
                 msg = "Property " + propertyName + " has been copied to " + newName;
             }
         }
-       
+        
         ctx.setVariable("msgType", msgType);
         ctx.setVariable("msgInfo", msg);
         renderPage(ctx);
@@ -145,17 +151,12 @@ public class PropertiesController extends AbstractController {
         String msg = null;
         if (Util.hasLength(operation) && Util.hasLength(propertyName) && 
                 getFf4j().getPropertiesStore().existProperty(propertyName)) {
-
-            if (OP_RMV_PROPERTY.equalsIgnoreCase(operation)) {
-                getFf4j().getPropertiesStore().deleteProperty(propertyName);
-                msg = msg(propertyName, "DELETED");
-                LOGGER.info("Property '" + propertyName + "' has been disabled");
-            }
-
+           
             if (OP_DELETE_FIXEDVALUE.equalsIgnoreCase(operation)) {
                 String fixedValue = req.getParameter(PARAM_FIXEDVALUE);
                 Property<?> ap = getFf4j().getPropertiesStore().readProperty(propertyName);
-                ap.getFixedValues().remove(fixedValue);
+                // Need to convert back to object to use the remove()
+                ap.getFixedValues().remove(ap.fromString(fixedValue));
                 getFf4j().getPropertiesStore().updateProperty(ap);
                 LOGGER.info("Property '" + propertyName + "' remove fixedValue '" + fixedValue + "'");
             }

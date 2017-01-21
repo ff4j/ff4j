@@ -142,8 +142,11 @@ public final class ConsoleOperations {
         String description  = req.getParameter("desc");
         String value        = req.getParameter("pValue");
         String uid          = req.getParameter("uid");
-        
         Property<?> ap;
+        // To update the core the uid is the name (rename, edit)
+        if (uid == null) {
+            uid = name;
+        }
         if (ff4j.getPropertiesStore().existProperty(uid)) {
             // Do not change name, just and update
             if (uid.equalsIgnoreCase(name)) {

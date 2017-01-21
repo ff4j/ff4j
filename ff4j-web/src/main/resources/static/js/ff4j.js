@@ -101,11 +101,15 @@ function hideFeaturePermissions(uid) {
 }
 
 // ---------------------
-//  MODAL EDIT FEATURE
+//  MODAL DELETE FEATURE
 // ---------------------
 
 function ff4j_updateModalDeleteFeature(uid) {
 	$("#modalDeleteFeature #uid").val(uid);
+}
+
+function ff4j_updateModalDeleteProperty(uid) {
+	$("#modalDeleteProperty #name").val(uid);
 }
 
 
