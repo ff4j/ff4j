@@ -92,7 +92,7 @@
         <tbody>
             <tr th:each="event : ${auditTrail}">
             <td>
-                <span th:text="${#dates.format(event.date,'MM/dd/YYYY HH:mm:ss')}">---</span>
+                <span th:text="${#dates.format(event.date,'MM/dd/yyyy HH:mm:ss')}">---</span>
             </td>
             
             <td>

@@ -123,6 +123,13 @@ public class FF4j {
     private ThreadLocal<FlippingExecutionContext> currentExecutionContext = new ThreadLocal<FlippingExecutionContext>();
     
     /**
+     * This attribute indicates when call the alter bean throw de {@link InvocationTargetException}
+     * or the wraps exception thrown by an invoked method or constructor
+     */
+    private boolean alterBeanThrowInvocationTargetException = true;
+    
+    
+    /**
      * Default constructor to allows instantiation through IoC. The created store is an empty {@link InMemoryFeatureStore}.
      */
     public FF4j() {
@@ -979,5 +986,32 @@ public class FF4j {
         }
         return ps;
     }
+    
+    /**
+     * Enable Alter bean Throw InvocationTargetException, when enabled
+     * the alter bean method always throw {@link InvocationTargetException}
+     */
+    public void enableAlterBeanThrowInvocationTargetException() {
+        this.alterBeanThrowInvocationTargetException = true;
+    }
+
+    /**
+     * Disable Alter bean Throw InvocationTargetException, when disabled
+     * the alter bean method always throw the exception cause.
+     */
+    public void disableAlterBeanThrowInvocationTargetException() {
+        this.alterBeanThrowInvocationTargetException = false;
+    }
+
+    /**
+     * Getter accessor for attribute 'alterBeanThrowInvocationTargetException'.
+     *
+     * @return
+     *       current value of 'alterBeanThrowInvocationTargetException'
+     */
+    public boolean isAlterBeanThrowInvocationTargetException() {
+        return alterBeanThrowInvocationTargetException;
+    }
+    
     
 }

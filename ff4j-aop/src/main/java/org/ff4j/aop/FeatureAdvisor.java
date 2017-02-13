@@ -13,6 +13,7 @@ package org.ff4j.aop;
 import static org.ff4j.utils.MappingUtil.instanceFlippingStrategy;
 import static org.ff4j.utils.MappingUtil.toMap;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import javax.lang.model.type.NullType;
@@ -215,6 +216,10 @@ public class FeatureAdvisor implements MethodInterceptor {
         }
         throw new IllegalArgumentException("ff4j-aop: Feature bean must be annotated as a Service or a Component");
     }
+    
+    private IllegalArgumentException makeIllegalArgumentException(String message, Exception exception) {
+        return new IllegalArgumentException(message, exception);
+    }
 
     /**
      * Invoke another Bean for the current Method.
@@ -231,14 +236,16 @@ public class FeatureAdvisor implements MethodInterceptor {
     protected Object invokeAlterBean(final MethodInvocation mi, String alterBeanName) throws Throwable {
         Method method = mi.getMethod();
         try {
-            LOGGER.debug("FeatureFlipping on method:{} class:{}", 
-                    method.getName(), method.getDeclaringClass().getName());
+            LOGGER.debug("FeatureFlipping on method:{} class:{}", method.getName(), method.getDeclaringClass().getName());
             Object alterbean = appCtx.getBean(alterBeanName, method.getDeclaringClass());
             return method.invoke(alterbean, mi.getArguments());
-        } catch (Throwable exception) {
-            throw new IllegalArgumentException("ff4j-aop: "
-                    + "Cannot invoke method " + method.getName() 
-                    + " on bean " + alterBeanName, exception);
+        } catch (InvocationTargetException invocationTargetException) {
+            if(!ff4j.isAlterBeanThrowInvocationTargetException() && invocationTargetException.getCause() != null) {
+                throw invocationTargetException.getCause();
+            }
+            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke method " + method.getName() + " on bean " + alterBeanName, invocationTargetException);
+        } catch (Exception exception) {
+            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke method " + method.getName() + " on bean " + alterBeanName, exception);
         }
     }
 
@@ -256,7 +263,8 @@ public class FeatureAdvisor implements MethodInterceptor {
      */
     protected Object invokeAlterClazz(final MethodInvocation mi, Flip ff) throws Throwable {
         Class<?> alterClazz     = ff.alterClazz();
-        Class<?> declaringClass = mi.getMethod().getDeclaringClass();
+        Method   method         = mi.getMethod();
+        Class<?> declaringClass = method.getDeclaringClass();
         try {
             // Spring context may have a bean of expected type and priority of get instance
             for (Object bean : appCtx.getBeansOfType(declaringClass).values()) {
@@ -268,8 +276,17 @@ public class FeatureAdvisor implements MethodInterceptor {
             }
             // Otherwise instanciate manually
             return mi.getMethod().invoke(ff.alterClazz().newInstance(), mi.getArguments());
-        } catch (Throwable exception) {
-            throw new IllegalArgumentException("" + mi.getMethod().getName() + "" + declaringClass
+        } catch (IllegalAccessException e) {
+            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
+                    + " please check visibility", e);
+        } catch (InvocationTargetException invocationTargetException) {
+            if(!ff4j.isAlterBeanThrowInvocationTargetException() && invocationTargetException.getCause() != null) {
+                throw invocationTargetException.getCause();
+            }
+            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
+                    + " please check signatures", invocationTargetException);
+        } catch (Exception exception) {
+            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
                     + " please check signatures", exception);
         }
     }

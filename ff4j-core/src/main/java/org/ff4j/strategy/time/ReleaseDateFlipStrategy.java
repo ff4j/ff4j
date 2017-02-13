@@ -35,6 +35,7 @@ import org.ff4j.strategy.AbstractFlipStrategy;
  * @author Cedrick Lunven (@clunven)
  */
 public class ReleaseDateFlipStrategy extends AbstractFlipStrategy {
+    
     public static final String DATE_PATTERN = "yyyy-MM-dd-HH:mm";
     
     /** Pattern to create a release Date. */
