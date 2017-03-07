@@ -26,26 +26,27 @@ package org.ff4j.redis;
  * @author Cedrick Lunven (@clunven)
  */
 public class RedisContants {
-
+    
     /** prefix of keys. */
     public static final String KEY_FEATURE = "FF4J_FEATURE_";
-
+    
     /** prefix of keys. */
     public static final String KEY_PROPERTY = "FF4J_PROPERTY_";
-
+    
     /** prefix of keys. */
     public static final String KEY_EVENT = "FF4J_EVENT_";
-
+    
     /** prefix of keys. */
-    public static final String KEY_EVENT_AUDIT = "AUDITRAIL";
-
+    public static final String KEY_EVENT_AUDIT = "AUDITRAIL_";
+    
     /** default ttl. */
     public static int DEFAULT_TTL = 900000000;
-
+    
     /**
      * Hide contructor for constants.
      */
     private RedisContants() {
     }
+    
 
 }
