@@ -21,13 +21,11 @@ package org.ff4j.store;
  */
 
 
-import static org.ff4j.redis.RedisContants.KEY_EVENT;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ff4j.audit.Event;
 import org.ff4j.audit.EventConstants;
 import org.ff4j.audit.EventQueryDefinition;
@@ -37,36 +35,67 @@ import org.ff4j.audit.chart.TimeSeriesChart;
 import org.ff4j.audit.repository.AbstractEventRepository;
 import org.ff4j.redis.RedisConnection;
 import org.ff4j.redis.RedisContants;
-
+import org.ff4j.utils.Util;
 import redis.clients.jedis.Jedis;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import static org.ff4j.redis.RedisContants.KEY_EVENT;
 
 /**
  * Persist audit events into REDIS storage technology.
  *
  * @author clunven
+ * @author Shridhar Navanageri
  */
 public class EventRepositoryRedis extends AbstractEventRepository {
-	
-    /** Wrapping of redis connection (isolation). */
+
+    public static final int UPPER_LIMIT = 50000;
+    /**
+     * Wrapping of redis connection (isolation).
+     */
     private RedisConnection redisConnection;
-    
-    /** Patternt to create KEY. */
-    private static final SimpleDateFormat SDF_KEY = new SimpleDateFormat("yyyyMMdd_HHmm");
-    
-	/**
+
+    /**
+     * Jackson ObjectMapper for serialization and deserialization purpose.
+     */
+    private static ObjectMapper objectMapper = new ObjectMapper();
+
+    static {
+        // Avoiding accidental breaks, since Redis is a schema-free store.
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
+
+    /** Enumeration containing the type of the attribute. */
+    private enum Types {
+        SOURCE,
+        NAME,
+        HOST,
+        USER;
+    }
+
+    /**
+     * Patternt to create KEY.
+     */
+    private static final SimpleDateFormat SDF_KEY = new SimpleDateFormat("yyyyMMdd");
+
+    /**
      * Default Constructor.
      */
     public EventRepositoryRedis() {
         this(new RedisConnection());
     }
-    
+
     /**
      * Contact remote redis server.
-     * 
-     * @param host
-     *            target redis host
-     * @param port
-     *            target redis port
+     *
+     * @param pRedisConnection Redis connection instance.
      */
     public EventRepositoryRedis(RedisConnection pRedisConnection) {
         redisConnection = pRedisConnection;
@@ -74,136 +103,277 @@ public class EventRepositoryRedis extends AbstractEventRepository {
 
     /**
      * Contact remote redis server.
-     * 
-     * @param host
-     *            target redis host
-     * @param port
-     *            target redis port
+     *
+     * @param host target redis host
+     * @param port target redis port
      */
     public EventRepositoryRedis(String host, int port) {
         this(new RedisConnection(host, port));
     }
-    
+
     /**
      * Contact remote redis server.
-     * 
-     * @param host
-     *            target redis host
-     * @param port
-     *            target redis port
+     *
+     * @param host     target redis host
+     * @param port     target redis port
+     * @param password the password for connecting to Redis if auth enabled.
      */
     public EventRepositoryRedis(String host, int port, String password) {
         this(new RedisConnection(host, port, password));
     }
-    
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void createSchema() {
         // Keys are automatically generated and created
     }
-    
-	/** {@inheritDoc} */
-	public boolean saveEvent(Event evt) {
-	    if (evt == null) {
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean saveEvent(Event evt) {
+        if (evt == null) {
             throw new IllegalArgumentException("Event cannot be null nor empty");
         }
-	    
-	    Jedis jedis = null;
+
+        Jedis jedis = null;
+
         try {
+
             jedis = getJedis();
-            String uid = KEY_EVENT;
-            if (EventConstants.ACTION_CHECK_OK.equalsIgnoreCase(evt.getAction())) {
-                // will be : FF4J_EVENTS_FEATUID_YYYYMMDD_HH to be able to group and search
-                uid += evt.getName();
-    	    } else {
-    	        // will be : FF4J_EVENTS_AUDITTRAIL_YYYYMMDD_HH to be able to group and search
-    	        uid += RedisContants.KEY_EVENT_AUDIT;
-    	    }
-            uid+= "_" + SDF_KEY.format(new Date(evt.getTimestamp()));
-            jedis.lpush(uid, evt.toJson());
-	        jedis.persist(uid);
-    		return true;
-	    } finally {
-	        if (jedis != null) {
-	            jedis.close();
-	        }
-	    }
-	}
-    
-    /** {@inheritDoc} */
+
+            long timeStamp = evt.getTimestamp();
+
+            String hashId = this.getHashKey(evt.getTimestamp(), evt.getAction());
+
+            evt.setUuid(String.valueOf(timeStamp));
+
+            jedis.zadd(hashId, timeStamp, objectMapper.writeValueAsString(evt));
+
+            return true;
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+
+        return false;
+    }
+
+    private String getHashKey(long timestamp, String action) {
+
+        String hashId = KEY_EVENT;
+
+        if (action != null) {
+            hashId += RedisContants.KEY_EVENT_AUDIT + "_";
+        }
+
+        long timeStamp = timestamp;
+
+        hashId += SDF_KEY.format(new Date(timeStamp));
+
+        return hashId;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Event getEventByUUID(String uuid, Long timestamp) {
-        // Check in AUDITTRAIL
-        // Check in any Key with FF4J_EVENT_*****_YYMMDD
-        return null;
+
+        Util.assertHasLength(new String[]{uuid});
+
+        Event redisEvent = null;
+
+        Jedis jedis = null;
+
+        try {
+            jedis = getJedis();
+            String hashKey = getHashKey(timestamp, null);
+            // Check for the event within 100ms time range passed, hoping there won't be more than 10 for this.
+            Set<String> events = jedis.zrangeByScore(hashKey, timestamp - 100L, timestamp + 100L, 0, 10);
+
+            // Loop through the result set and match the timestamp passed in.
+            for (String evt : events) {
+                Event event = objectMapper.readValue(evt, Event.class);
+                if (timestamp == event.getTimestamp()) {
+                    return event;
+                }
+            }
+
+        } catch (JsonParseException e) {
+            // TBD: Didn't see the
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+
+        return redisEvent;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Map<String, MutableHitCount> getFeatureUsageHitCount(EventQueryDefinition query) {
-        // TODO Auto-generated method stub
-        return null;
+        return getUsageCount(query, Types.NAME);
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public TimeSeriesChart getFeatureUsageHistory(EventQueryDefinition query, TimeUnit tu) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public EventSeries searchFeatureUsageEvents(EventQueryDefinition query) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-   
-
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Map<String, MutableHitCount> getHostHitCount(EventQueryDefinition query) {
-        // TODO Auto-generated method stub
-        return null;
+        return getUsageCount(query, Types.HOST);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Map<String, MutableHitCount> getUserHitCount(EventQueryDefinition query) {
-        // TODO Auto-generated method stub
-        return null;
+        return getUsageCount(query, Types.USER);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Map<String, MutableHitCount> getSourceHitCount(EventQueryDefinition query) {
-        // TODO Auto-generated method stub
-        return null;
+        return getUsageCount(query, Types.SOURCE);
     }
 
-    /** {@inheritDoc} */
+    private Map<String, MutableHitCount> getUsageCount(EventQueryDefinition query, Types type) {
+
+        Map<String, MutableHitCount> hitCount = new HashMap<>();
+
+        try {
+
+            // Get events from Redis between the time range.
+            Set<String> events = getEventsFromRedis(query);
+
+            // Loop through create the buckets.
+            for (String event : events) {
+                Event eventObject = objectMapper.readValue(event, Event.class);
+                String value = getValueFromAttribute(type, eventObject);
+                MutableHitCount mutableHitCount = hitCount.get(value);
+                if (mutableHitCount != null) {
+                    mutableHitCount.inc();
+                } else {
+                    mutableHitCount = new MutableHitCount(1);
+                }
+                hitCount.put(value, mutableHitCount);
+            }
+
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return hitCount;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public TimeSeriesChart getFeatureUsageHistory(EventQueryDefinition query, TimeUnit tu) {
+
+        TimeSeriesChart tsc = new TimeSeriesChart(query.getFrom(), query.getTo(), tu);
+
+        // Read events from Redis.
+        Set<String> events = getEventsFromRedis(query);
+
+        for (String event : events) {
+            try {
+                // Add to the time series.
+                tsc.addEvent(objectMapper.readValue(event, Event.class));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return tsc;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public EventSeries searchFeatureUsageEvents(EventQueryDefinition query) {
+        // Referenced from RDBMS implementation, same usage.
+        return getAuditTrail(query);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public EventSeries getAuditTrail(EventQueryDefinition query) {
-        // TODO Auto-generated method stub
-        return null;
+
+        Jedis jedis = null;
+
+        EventSeries eventSeries = new EventSeries();
+
+        try {
+            jedis = getJedis();
+
+            String hashKey = getHashKey(query.getFrom(), EventConstants.ACTION_CHECK_OK);
+            Set<String> events = jedis.zrangeByScore(hashKey, query.getFrom(), query.getTo(), 0, 100);
+
+            // FIXME: Server side pagination model isn't present? This could be a lot of data.
+            for (String event : events) {
+                eventSeries.add(objectMapper.readValue(event, Event.class));
+            }
+
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+
+        return eventSeries;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void purgeAuditTrail(EventQueryDefinition query) {
+        // TBD: Where is the setting to turn purging on/off and what would be the time range?
     }
-    
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void purgeFeatureUsage(EventQueryDefinition query) {
+        // TBD: Where is the setting to turn purging on/off and what would be the time range?
     }
-    
+
     /**
      * Safe acces to Jedis, avoid JNPE.
      *
-     * @return
-     *      access jedis
+     * @return access jedis
      */
     public Jedis getJedis() {
         if (redisConnection == null) {
@@ -216,5 +386,60 @@ public class EventRepositoryRedis extends AbstractEventRepository {
         return jedis;
     }
 
-    
+    /**
+     * Method that reads the raw event stream from Redis.
+     *
+     * @param query - The query object containing details about the query.
+     * @return Set containing raw events.
+     */
+    private Set<String> getEventsFromRedis(EventQueryDefinition query) {
+
+        Jedis jedis = null;
+        Set<String> events = null;
+
+        try {
+            jedis = getJedis();
+
+            String hashKey = getHashKey(query.getFrom(), null);
+            events = jedis.zrangeByScore(hashKey, query.getFrom(), query.getTo(), 0, UPPER_LIMIT);
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+
+        return events;
+    }
+
+    /**
+     * Method that maps the enum to the appropriate event method (instead of using Reflection).
+     *
+     * @param type - The type of the evnt to be used.
+     * @param event - Actual event object.
+     * @return The value from the event object.
+     */
+    private String getValueFromAttribute(Types type, Event event) {
+
+        String value;
+
+        switch (type) {
+            case HOST:
+                value = event.getHostName();
+                break;
+            case SOURCE:
+                value = event.getSource();
+                break;
+            case USER:
+                value = event.getUser();
+                break;
+            case NAME:
+                value = event.getName();
+                break;
+            default:
+                value = "NA";
+        }
+        return value;
+    }
+
+
 }
