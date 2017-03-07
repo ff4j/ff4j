@@ -122,7 +122,7 @@ public class HomeBean implements Serializable {
         // Caching
         FF4jCacheProxy cacheProxy = ff4j.getCacheProxy();
         if (cacheProxy != null) {
-           this.caching = cacheProxy.getCacheManager().getCacheProviderName();
+           this.caching = cacheProxy.getCacheManager().getCacheProviderName().toLowerCase();
         }
     }
    

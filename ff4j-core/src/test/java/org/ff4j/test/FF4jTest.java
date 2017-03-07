@@ -67,6 +67,7 @@ public class FF4jTest extends AbstractFf4jTest {
         FF4j ff4j = new FF4j();
         // When
         ff4j.getFeature("i-dont-exist");
+        
         // Then
         // expect error...
     }

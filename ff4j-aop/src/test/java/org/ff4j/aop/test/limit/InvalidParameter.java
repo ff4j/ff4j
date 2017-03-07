@@ -1,6 +1,7 @@
 package org.ff4j.aop.test.limit;
 
 import java.lang.reflect.AccessibleObject;
+
 import java.lang.reflect.Method;
 
 import org.aopalliance.intercept.MethodInvocation;
@@ -31,6 +32,7 @@ import org.ff4j.aop.FeatureAdvisor;
 import org.ff4j.aop.Flip;
 import org.junit.Ignore;
 import org.junit.Test;
+
 @Ignore
 public class InvalidParameter {
 
@@ -39,7 +41,6 @@ public class InvalidParameter {
     public class IDoItImpl  implements IDoIt { public void doIt(String a) {} }
     
     public class IDoItImpl2 implements IDoIt { public void doIt(String a) {} }
-    
     
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidParameter() throws Throwable {
