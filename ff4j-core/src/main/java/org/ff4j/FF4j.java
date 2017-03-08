@@ -725,8 +725,10 @@ public class FF4j {
         this.currentExecutionContext.set(context);
         
         // Event Publisher
-        eventPublisher = new EventPublisher(eventRepository);
-        this.shutdownEventPublisher = true;
+        if (eventPublisher == null) {
+            eventPublisher = new EventPublisher(eventRepository);
+            this.shutdownEventPublisher = true;
+        }
         
         // Audit is enabled, proxified stores for auditing
         if (isEnableAudit()) {
