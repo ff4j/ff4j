@@ -43,28 +43,28 @@ public class HomeBean implements Serializable {
 
     /** uptime. */
     private String uptime;
-    
+
     /** class of store. */
     private String featureStore = PIC_DISABLE;
-    
+
     /** class of store. */
     private String propertyStore = PIC_DISABLE;
 
     /** authorizationManager. */
     private String security = PIC_DISABLE;
-    
+
     /** class of monitoring. */
     private String monitoring = PIC_DISABLE;
-    
+
     /** cmass of cache Manager if available. */
     private String caching = PIC_DISABLE;
 
     /** version of target ff4j. */
     private String version = PIC_DISABLE;
-    
+
     /** number of features to display. */
     private int nbFeature = 0;
-    
+
     /** number of features to display. */
     private int nbProperties = 0;
 
@@ -73,19 +73,19 @@ public class HomeBean implements Serializable {
 
     /** number of events used. */
     private int nbEvents = 0;
-   
+
     /**
      * Default constructor.
      */
     public HomeBean() {
     }
-    
+
     /**
      * Default constructor.
      */
     public HomeBean(FF4j ff4j) {
         this.version = ff4j.getVersion();
-        
+
         setUptime(ff4j.getStartTime());
 
         // Feature Store
@@ -95,8 +95,8 @@ public class HomeBean implements Serializable {
             this.nbFeature = fs.readAll().size();
             this.nbGroup   = fs.readAllGroups().size();
             featureStore = featureStore.replaceAll("FeatureStore", "").toLowerCase();
-         }
-        
+        }
+
         // Property Store
         if (ff4j.getPropertiesStore() != null) {
             PropertyStore ps = ff4j.getConcretePropertyStore();
@@ -104,28 +104,28 @@ public class HomeBean implements Serializable {
             this.nbProperties = ps.listPropertyNames().size();
             propertyStore = propertyStore.replaceAll("PropertyStore", "").toLowerCase();
         }
-        
+
         // Monitoring
         EventRepository evtRepository = ff4j.getEventRepository();
         if (evtRepository != null) {
             this.monitoring = evtRepository.getClass().getSimpleName();
             monitoring = monitoring.replaceAll("EventRepository", "").toLowerCase();
         }
-        
+
         // Security
         AuthorizationsManager authManager = ff4j.getAuthorizationsManager();
         if (authManager != null) {
             this.security = authManager.getClass().getSimpleName();
             security = security.replaceAll("AuthorisationManager", "");
         }
-        
+
         // Caching
         FF4jCacheProxy cacheProxy = ff4j.getCacheProxy();
         if (cacheProxy != null) {
            this.caching = cacheProxy.getCacheManager().getCacheProviderName().toLowerCase();
         }
     }
-   
+
     /**
      * Getter accessor for attribute 'security'.
      *
@@ -164,7 +164,7 @@ public class HomeBean implements Serializable {
 
     /**
      * Setter accessor for attribute 'uptime'.
-     * 
+     *
      * @param uptime
      *            new value for 'uptime '
      */
@@ -212,35 +212,35 @@ public class HomeBean implements Serializable {
         return nbEvents;
     }
 
-	/**
-	 * Getter accessor for attribute 'featureStore'.
-	 *
-	 * @return
-	 *       current value of 'featureStore'
-	 */
-	public String getFeatureStore() {
-		return featureStore;
-	}
+    /**
+     * Getter accessor for attribute 'featureStore'.
+     *
+     * @return
+     *       current value of 'featureStore'
+     */
+    public String getFeatureStore() {
+        return featureStore;
+    }
 
-	/**
-	 * Getter accessor for attribute 'propertyStore'.
-	 *
-	 * @return
-	 *       current value of 'propertyStore'
-	 */
-	public String getPropertyStore() {
-		return propertyStore;
-	}
-	
-	/**
-	 * Getter accessor for attribute 'nbProperties'.
-	 *
-	 * @return
-	 *       current value of 'nbProperties'
-	 */
-	public int getNbProperties() {
-		return nbProperties;
-	}
+    /**
+     * Getter accessor for attribute 'propertyStore'.
+     *
+     * @return
+     *       current value of 'propertyStore'
+     */
+    public String getPropertyStore() {
+        return propertyStore;
+    }
+
+    /**
+     * Getter accessor for attribute 'nbProperties'.
+     *
+     * @return
+     *       current value of 'nbProperties'
+     */
+    public int getNbProperties() {
+        return nbProperties;
+    }
 
     /**
      * Getter accessor for attribute 'caching'.
