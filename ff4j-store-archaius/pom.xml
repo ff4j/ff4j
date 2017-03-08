@@ -4,9 +4,9 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~         COORDINATES      ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<artifactId>ff4j-archaius</artifactId>
+	<artifactId>ff4j-store-archaius</artifactId>
 	<packaging>jar</packaging>
-	<name>ff4j-archaius</name>
+	<name>ff4j-store-archaius</name>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~         PARENT           ~ -->
@@ -22,6 +22,7 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<properties>
 		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
+		<archaius.version>0.7.3</archaius.version>
 	</properties>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -32,26 +33,15 @@
 		<!-- logger -->
 		<dependency>
 			<groupId>org.ff4j</groupId>
-			<artifactId>ff4j-core</artifactId>
+			<artifactId>ff4j-store-commonsconfig</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-            <groupId>org.ff4j</groupId>
-            <artifactId>ff4j-test</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-	
+		
         <!-- Archaius -->
-        <dependency>
-            <groupId>commons-configuration</groupId>
-            <artifactId>commons-configuration</artifactId>
-            <version>1.10</version>
-        </dependency>
         <dependency>
             <groupId>com.netflix.archaius</groupId>
             <artifactId>archaius-core</artifactId>
-            <version>0.7.3</version>
+            <version>${archaius.version}</version>
         </dependency>
         
         <!-- Spring -->
@@ -71,6 +61,12 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+            <groupId>org.ff4j</groupId>
+            <artifactId>ff4j-test</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
 			<scope>test</scope>
@@ -85,7 +81,6 @@
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
         </dependency>
-		
 
 	</dependencies>
 
