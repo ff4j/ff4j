@@ -54,7 +54,6 @@ public class FlippingServiceTest {
         // Then
         Assert.assertTrue(service.hello1().startsWith("Francais"));
         Assert.assertTrue(service.hello2().startsWith("Tour"));
-
     }
 
     @After
