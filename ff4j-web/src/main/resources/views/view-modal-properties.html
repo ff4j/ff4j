@@ -172,6 +172,7 @@
 <!-- *********************** -->
 <!--  FORM UPDATE PROPERTY   -->
 <!-- *********************** -->
+
 <div th:fragment="modal-updateProperty">
 
 <form id="updatePropertyForm" 
@@ -299,12 +300,13 @@
     	ff4j_updateModalDeleteProperty($(this).data('id'));
     });
     
-    
     $(document).on("click", ".open-EditFeaturePropertyDialog", function () {
     	var featureId    = $(this).data('featureid');
     	var propertyName = $(this).data('propertyname');
     	var modalEditProperty = $("#modalEditProperty");
         $("#updatePropertyFeatureControlGroup").show();
+        // Edition of fixedValue for properties related on feature is disabled : Should recreate all create, delete, update, generation HTML
+        // <--
         $("#updatePropertyFixedValueControlGroup").hide();
         modalEditProperty.find("#name").val(propertyName);
         modalEditProperty.find("#featureid").val(featureId);
@@ -457,7 +459,7 @@
 </div>
 
 <!-- ******************** -->
-<!-- MODAL COPY FEATURE -->
+<!-- MODAL COPY PROPERTY  -->
 <!-- ******************** -->
 <div th:fragment="modal-copy">
 

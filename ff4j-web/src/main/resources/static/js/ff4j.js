@@ -71,7 +71,6 @@ function confirmBeforeDeleteFeature(feature) {
 	});*/
 }
 
-
 // Display Custom Properties for current feature in the table
 function showCustomProperties(uid) {
   show('detailCustomP-' + uid);

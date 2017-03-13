@@ -142,12 +142,30 @@ public final class ConsoleOperations {
         String description  = req.getParameter("desc");
         String value        = req.getParameter("pValue");
         String uid          = req.getParameter("uid");
+        String featureId    = req.getParameter(WebConstants.FEATURE_UID);
+        
         Property<?> ap;
         // To update the core the uid is the name (rename, edit)
         if (uid == null) {
             uid = name;
         }
-        if (ff4j.getPropertiesStore().existProperty(uid)) {
+        
+        // Update Feature property
+        if (Util.hasLength(featureId)) {
+            
+            Feature current = ff4j.getFeatureStore().read(featureId);
+            ap = current.getProperty(uid);
+            ap.setDescription(description);
+            if (ap.getType().equalsIgnoreCase(type)) {
+                ap.setValueFromString(value);
+            } else {
+                ap = PropertyFactory.createProperty(name, type, value);
+                LOGGER.warn("By changing property type you loose the fixedValues, cannot evaluate ? at runtime");
+            }
+            ff4j.getFeatureStore().update(current);
+             
+        } else if (ff4j.getPropertiesStore().existProperty(uid)) {
+            
             // Do not change name, just and update
             if (uid.equalsIgnoreCase(name)) {
                 ap = ff4j.getPropertiesStore().readProperty(uid);
