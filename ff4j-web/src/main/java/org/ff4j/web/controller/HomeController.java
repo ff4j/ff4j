@@ -79,14 +79,23 @@ public class HomeController extends AbstractController {
                 } else if (FLIPFILE.equalsIgnoreCase(item.getFieldName())) {
                     String filename = FilenameUtils.getName(item.getName());
                     if (filename.toLowerCase().endsWith("xml")) {
-                        importFile(getFf4j(), item.getInputStream());
-                        msg = "The file <b>" + filename + "</b> has been successfully imported";
+                        try {
+                            importFile(getFf4j(), item.getInputStream());
+                            msg = "The file <b>" + filename + "</b> has been successfully imported";
+                        } catch(RuntimeException re) {
+                            msgType = ERROR;
+                            msg = "Cannot Import XML:" + re.getMessage();
+                            break;
+                        }
                     } else {
                         msgType = ERROR;
                         msg = "Invalid FILE, must be CSV, XML or PROPERTIES files";
                     }
                 }
             }
+            ctx.setVariable("msgType", msgType);
+            ctx.setVariable("msgInfo", msg);
+            get(req, res, ctx);
         } else if (WebConstants.OP_CREATE_SCHEMA.equalsIgnoreCase(operation)) {
             try {
                 getFf4j().createSchema();
