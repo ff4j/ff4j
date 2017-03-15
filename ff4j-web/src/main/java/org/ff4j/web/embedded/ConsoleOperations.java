@@ -354,12 +354,7 @@ public final class ConsoleOperations {
             res.setContentType("text/xml");
             res.setHeader("Content-Disposition", "attachment; filename=\"ff4j.xml\"");
             // res.setContentLength()
-            byte[] bbuf = new byte[BUFFER_SIZE];
-            int length = 0;
-            while ((in != null) && (length != -1)) {
-                length = in.read(bbuf);
-                sos.write(bbuf, 0, length);
-            }
+            org.apache.commons.io.IOUtils.copy(in, sos);
             LOGGER.info(features.size() + " features have been exported.");
         } finally {
             if (in != null) {
