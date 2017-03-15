@@ -193,9 +193,9 @@ public final class ConsoleRenderer {
      *            http request (with parameters)
      * @param res
      *            http response (with outouput test)
-     * @param message
+     * @param msg
      *            text in the information box (blue/green/orange/red)
-     * @param messagetype
+     * @param msgType
      *            type of informatice message (info,success,warning,error)
      * @throws IOException
      *             error during populating http response
@@ -214,7 +214,7 @@ public final class ConsoleRenderer {
      * 
      * @param featureName
      *            target feature name
-     * @param operationd
+     * @param operationId
      *            target operationId
      * @return
      */
@@ -227,7 +227,7 @@ public final class ConsoleRenderer {
      * 
      * @param featureName
      *            target feature name
-     * @param operationd
+     * @param operationId
      *            target operationId
      * @return
      */
@@ -238,9 +238,9 @@ public final class ConsoleRenderer {
     /**
      * Build info messages.
      * 
-     * @param featureName
-     *            target feature name
-     * @param operationd
+     * @param groupName
+     *            target group name
+     * @param operationId
      *            target operationId
      * @return
      */
@@ -428,8 +428,11 @@ public final class ConsoleRenderer {
     /**
      * Produce the rows of the Feature Table.
      *
-     * @param currentElement
-     * @return
+     * @param ff4j
+     *            target ff4j.
+     * @param req
+     *            current http request
+     * @return string representing the list of features
      */
     private static final String renderFeatureRows(FF4j ff4j, HttpServletRequest req) {
         StringBuilder sb = new StringBuilder();

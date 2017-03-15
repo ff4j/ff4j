@@ -166,8 +166,6 @@ public class FF4jServlet extends HttpServlet {
 
     /**
      * Initialize Thymeleaf.
-     *
-     * @param servletConfig
      */
     private void initializeTemplateEngine() {
     	ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();

@@ -245,8 +245,8 @@ public class FeaturesController extends AbstractController {
      *
      * @param req
      *            current http query
-     * @param fp
-     *            current feature
+     * @param uid
+     *      unique feature identifier
      * @return instance of strategy
      */
     private FlippingStrategy buildFlippingStrategy(HttpServletRequest req, String uid) {
