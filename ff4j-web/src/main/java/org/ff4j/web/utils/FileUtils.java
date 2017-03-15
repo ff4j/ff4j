@@ -129,8 +129,8 @@ public class FileUtils {
 	/**
 	 * Transform inputStream into base64.
 	 *
-	 * @param image The image to encode
-	 * @param type jpeg, bmp, ...
+	 * @param fileName
+	 * 		target file name
 	 * @return encoded string
 	 */
 	public static String loadAndResizeImageAsBase64(String fileName) {
@@ -140,8 +140,8 @@ public class FileUtils {
 	/**
 	 * Transform inputStream into base64.
 	 *
-	 * @param image The image to encode
-	 * @param type jpeg, bmp, ...
+	 * @param fileName
+	 * 		target file name
 	 * @return encoded string
 	 */
 	public static byte[] loadAndResizeImageAsByteArray(String fileName) {
@@ -152,8 +152,8 @@ public class FileUtils {
 	/**
 	 * Transform inputStream into base64.
 	 *
-	 * @param image The image to encode
-	 * @param type jpeg, bmp, ...
+	 * @param fileName
+	 * 		target file name
 	 * @return encoded string
 	 * @throws FileNotFoundException 
 	 */
@@ -223,8 +223,8 @@ public class FileUtils {
 	/**
 	 * Transform inputStream into base64.
 	 *
-	 * @param image The image to encode
-	 * @param type jpeg, bmp, ...
+	 * @param fileName
+	 * 		target file name
 	 * @return encoded string
 	 * @throws FileNotFoundException 
 	 */

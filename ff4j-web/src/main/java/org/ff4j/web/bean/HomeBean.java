@@ -165,7 +165,7 @@ public class HomeBean implements Serializable {
     /**
      * Setter accessor for attribute 'uptime'.
      *
-     * @param uptime
+     * @param ff4jStartTime
      *            new value for 'uptime '
      */
     public void setUptime(long ff4jStartTime) {
