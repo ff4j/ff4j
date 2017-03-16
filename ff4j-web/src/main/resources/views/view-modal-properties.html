@@ -336,7 +336,7 @@
     $(document).ready(function() {
         $('#updatePropertyForm').on('submit', function(e) {
             // do something
-            var featId = $(".modal-body #featureid").val();
+            var featId = $("#updatePropertyForm").find(".modal-body #featureid").val();
             if(featId == "" || featId == null) {
                 e.submit();
             } else {
