@@ -1,5 +1,7 @@
 package org.ff4j.web;
 
+import org.ff4j.web.bean.WebConstants;
+
 import static org.ff4j.web.bean.WebConstants.VIEW_404;
 import static org.ff4j.web.bean.WebConstants.VIEW_API;
 import static org.ff4j.web.bean.WebConstants.VIEW_DEFAULT;
@@ -44,6 +46,7 @@ public class FF4jDispatcherServlet extends FF4jServlet {
     /** {@inheritDoc} */
     public void doGet(HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException {
+        res.setCharacterEncoding(WebConstants.UTF8_ENCODING);
         
     	String targetView  = getTargetView(req);
 
@@ -66,6 +69,8 @@ public class FF4jDispatcherServlet extends FF4jServlet {
     /** {@inheritDoc} */
     public void doPost(HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException {
+        res.setCharacterEncoding(WebConstants.UTF8_ENCODING);
+
         String targetView = getTargetView(req);
         
         if (VIEW_API.equals(targetView)) {
