@@ -46,11 +46,11 @@
     
     <!-- Description --> 
     <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">   
-      <label class="control-label" for="desc" style="color:#687684;font-style:normal" 
+      <label class="control-label" for="pDesc" style="color:#687684;font-style:normal"
              th:text="#{modal.createproperty.description}">Description</label>  
       <div class="controls">
         <textarea class="field span4" style="width:350px;color:#008bab"
-            name="desc" id="desc" rows="2" cols="30"></textarea>
+            name="desc" id="pDesc" rows="2" cols="30"></textarea>
       </div>
     </div>
     
@@ -213,11 +213,11 @@
     
     <!-- Description --> 
     <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">   
-      <label class="control-label" for="desc" style="color:#687684;font-style:normal" 
+      <label class="control-label" for="pDesc" style="color:#687684;font-style:normal"
              th:text="#{modal.editproperty.description}">Description</label>  
       <div class="controls">
         <textarea class="field span4" style="width:350px;color:#008bab"
-            name="desc" id="desc" rows="2" cols="30"></textarea>
+            name="desc" id="pDesc" rows="2" cols="30"></textarea>
       </div>
     </div>
     
@@ -312,7 +312,7 @@
         // Fetch information from the feature
         $.get('api/features/' + featureId, function(myFeature) {
            var myProperty = myFeature.customProperties[propertyName];
-           modalEditProperty.find("#desc").val(myProperty.description);
+           modalEditProperty.find("#pDesc").val(myProperty.description);
            modalEditProperty.find("#pType").val(myProperty.type);
            modalEditProperty.find("#pValue").val(myProperty.value);
         });
@@ -320,7 +320,7 @@
     
     $(document).on("click", ".open-createPropertyDialog", function () { 
         $(".modal-body #name").val('');
-        $(".modal-body #desc").val('');
+        $(".modal-body #pDesc").val('');
         $(".modal-body #pType").val('');
         $(".modal-body #pValue").val('');
         var featId = $(this).data('featureid');
