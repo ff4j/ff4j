@@ -1,4 +1,5 @@
 <img src="http://ff4j.org/images/ff4j.png" height="120px" />
+
 ## Feature Flipping for Java
 
 [![Build Status](https://travis-ci.org/clun/ff4j.svg?branch=master)](https://travis-ci.org/clun/ff4j)
