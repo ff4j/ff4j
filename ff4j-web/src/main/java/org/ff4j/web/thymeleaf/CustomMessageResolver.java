@@ -23,12 +23,14 @@ package org.ff4j.web.thymeleaf;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
+import org.ff4j.web.bean.WebConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thymeleaf.Arguments;
@@ -66,17 +68,22 @@ public class CustomMessageResolver implements IMessageResolver {
     }
     
 	/** {@inheritDoc} */
-	public void initialize() {
-		try {
-			defaultMessages.load(
-					CustomMessageResolver.class.getClassLoader()
-						.getResourceAsStream(MSG_FILE + MSG_FILE_EXTENSION));
-		} catch (IOException e) {
-			LOGGER.error("Cannot load properties", e);
-		}
-	}
-	
-	/**
+    public void initialize() {
+        InputStream is = null;
+        InputStreamReader r = null;
+        try {
+            is = CustomMessageResolver.class.getClassLoader().getResourceAsStream(MSG_FILE + MSG_FILE_EXTENSION);
+            r = new InputStreamReader(is, WebConstants.UTF8_ENCODING);
+            defaultMessages.load(r);
+        } catch (IOException e) {
+            LOGGER.error("Cannot load properties", e);
+        } finally {
+            if (r != null) try { r.close(); } catch (IOException e) {}
+            if (is != null) try { is.close(); } catch (IOException e) {}
+        }
+    }
+
+    /**
 	 * Load property file from locale and put in cache.
 	 *
 	 * @param locale
@@ -86,18 +93,24 @@ public class CustomMessageResolver implements IMessageResolver {
 	 */
 	private Properties resolveProperties(Locale locale) {
 		if (!messages.containsKey(locale.getLanguage())) {
-			String expectedFileName = MSG_FILE + "_" + locale.getLanguage() + MSG_FILE_EXTENSION;
-			InputStream is = CustomMessageResolver.class.getClassLoader().getResourceAsStream(expectedFileName);
 			messages.put(locale.getLanguage(), null);
+
+            String expectedFileName = MSG_FILE + "_" + locale.getLanguage() + MSG_FILE_EXTENSION;
+            InputStream is = CustomMessageResolver.class.getClassLoader().getResourceAsStream(expectedFileName);
+            InputStreamReader r = null;
 			if (is != null) {
 				try {
+				    r = new InputStreamReader(is, WebConstants.UTF8_ENCODING);
 					Properties propsLocale = new Properties();
-					propsLocale.load(is);
+					propsLocale.load(r);
 					messages.put(locale.getLanguage(), propsLocale);
 				} catch (IOException e) {
 					LOGGER.error("Cannot load properties", e);
-				}
-			}
+				} finally {
+                    if (r != null) try { r.close(); } catch (IOException e) {}
+                    if (is != null) try { is.close(); } catch (IOException e) {}
+                }
+            }
         }
 		Properties target = messages.get(locale.getLanguage());
 		return target != null ? target : defaultMessages;
