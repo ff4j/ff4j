@@ -130,12 +130,17 @@ function ff4j_updateModalEditFeature(uid) {
       if (feature.flippingStrategy) {
    	   $("#modalEdit #stratlist").show();
    	   $("#modalEdit #strategy").val(feature.flippingStrategy.type);
+
+   	   var initParamsStr = '';
    	   for (var key in feature.flippingStrategy.initParams) {
    	    if (feature.flippingStrategy.initParams.hasOwnProperty(key)) {
-   		     //console.log(key + " -> " + feature.flippingStrategy.initParams[key]);
-   		     $("#modalEdit #initParams").val(key + '=' + feature.flippingStrategy.initParams[key]);
+   	     if (initParamsStr.length > 0) {
+   	      initParamsStr+= ';';
+   	     }
+   	     initParamsStr+= (key + '=' + feature.flippingStrategy.initParams[key]);
    		}
-   	  } 
+   	   }
+   	   $("#modalEdit #initParams").val(initParamsStr);
       } else {
    	   $("#modalEdit #stratlist").hide();
    	   $("#modalEdit #strategy").val('');
