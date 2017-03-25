@@ -558,6 +558,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             sqlConn.commit();
 
         } catch (SQLException sqlEX) {
+            rollback(sqlConn);
             throw new FeatureAccessException(CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE, sqlEX);
         } finally {
             closeStatement(ps);

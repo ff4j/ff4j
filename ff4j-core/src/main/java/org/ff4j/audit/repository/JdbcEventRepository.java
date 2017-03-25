@@ -19,6 +19,7 @@ import static org.ff4j.utils.JdbcUtils.closeResultSet;
 import static org.ff4j.utils.JdbcUtils.closeStatement;
 import static org.ff4j.utils.JdbcUtils.executeUpdate;
 import static org.ff4j.utils.JdbcUtils.isTableExist;
+import static org.ff4j.utils.JdbcUtils.rollback;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -144,10 +145,10 @@ public class JdbcEventRepository extends AbstractEventRepository {
             
             // Commit TX
             sqlConn.commit();
-            
+
         } catch(Exception exc) {
+            rollback(sqlConn);
             throw new AuditAccessException("Cannot insert event into DB (" + exc.getClass() + ") "+ exc.getCause(), exc);
-            
         } finally {
            closeStatement(stmt);
            closeConnection(sqlConn);
