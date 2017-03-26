@@ -480,16 +480,21 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             ps = sqlConn.prepareStatement(getQueryBuilder().deleteAllFeatureCustomProperties());
             ps.setString(1, fpExist.getUid());
             ps.executeUpdate();
+            closeStatement(ps);
+            ps = null;
 
-            // CREATE PROPERTIES
-            createCustomProperties(fp.getUid(), fp.getCustomProperties().values());
-           
-            } catch (SQLException sqlEX) {
-                throw new FeatureAccessException(CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE, sqlEX);
-            } finally {
+            // CREATE CUSTOM PROPERTIES
+            for (Property property : fp.getCustomProperties().values()) {
+                ps = createCustomProperty(sqlConn, fp.getUid(), property);
                 closeStatement(ps);
-                closeConnection(sqlConn);
+                ps = null;
             }
+        } catch (SQLException sqlEX) {
+            throw new FeatureAccessException(CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE, sqlEX);
+        } finally {
+            closeStatement(ps);
+            closeConnection(sqlConn);
+        }
     }
 
     /** {@inheritDoc} */
@@ -558,6 +563,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             sqlConn.commit();
 
         } catch (SQLException sqlEX) {
+            rollback(sqlConn);
             throw new FeatureAccessException(CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE, sqlEX);
         } finally {
             closeStatement(ps);
