@@ -20,12 +20,12 @@ package org.ff4j.cache;
  * #L%
  */
 
-import java.io.Serializable;
-
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.PropertyStore;
+
+import java.io.Serializable;
 
 /**
  * Working thread to poll and fetch data from store and copy to local cache.
@@ -65,17 +65,23 @@ public class Store2CachePollingWorker implements Runnable, Serializable {
     /** {@inheritDoc} */
     @Override
     public void run() {
-        if (sourceFeatureStore != null) {
-            cacheManager.clearFeatures();
-            for (Feature f : sourceFeatureStore.readAll().values()) {
-                cacheManager.putFeature(f);
+        try {
+            if (sourceFeatureStore != null) {
+                cacheManager.clearFeatures();
+                for (Feature f : sourceFeatureStore.readAll()
+                                                   .values()) {
+                    cacheManager.putFeature(f);
+                }
             }
-        }
-        if (sourcePropertyStore != null) {
-            cacheManager.clearProperties();
-            for (Property<?> p : sourcePropertyStore.readAllProperties().values()) {
-                cacheManager.putProperty(p);
+            if (sourcePropertyStore != null) {
+                cacheManager.clearProperties();
+                for (Property<?> p : sourcePropertyStore.readAllProperties()
+                                                        .values()) {
+                    cacheManager.putProperty(p);
+                }
             }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
