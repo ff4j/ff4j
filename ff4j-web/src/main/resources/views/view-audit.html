@@ -35,7 +35,7 @@
        
         <div class="widget-header">
          <i class="icon-bar-chart"></i>
-         <h3>Audit</h3>
+         <h3 th:text="#{audit.title}">Audit</h3>
         </div>
        
         <div class="widget-content" style="text-align:center"> 
@@ -44,14 +44,14 @@
   <form class="form-horizontal" action="" th:action="@{audit}" method="POST">
   <h4 style="color:#00AB8B">
       <div id="datetimepickerFrom1" class="input-append date">
-	     &nbsp; From : &nbsp;
+	    <span th:text="#{audit.from}">&nbsp; From : &nbsp;</span>
 	    <input data-format="MM/dd/yyyy hh:mm:ss" type="text" name="slotfrom" id="slotfrom" th:value="${from}"></input>
 	    <span class="add-on" style="background-color:#00AB8B;margin-left:-6px">
 	     <i class="icon-calendar" style="width:40px;color:white"></i>
 	    </span>
 	  </div>
 	  <div id="datetimepickerTo1" class="input-append date">
-	     &nbsp; TO : &nbsp;
+	    <span th:text="#{audit.to}">&nbsp; TO : &nbsp;</span>
 	    <input data-format="MM/dd/yyyy hh:mm:ss" type="text" name="slotto" id="slotto" th:value="${to}"></input>
 	    <span class="add-on" style="background-color:#00AB8B;margin-left:-6px">
 	     <i class="icon-calendar" style="width:40px;color:white"></i>
@@ -59,7 +59,7 @@
 	  </div>
 	  &nbsp;
 	  <button class="btn " type="submit" style="background-color:#00AB8B;color:white;">
-	    &nbsp;<span th:text="#{modal.button.validate}"></span>
+	    &nbsp;<span th:text="#{audit.validate}"></span>
 	  </button>
    </h4>
  </form>
@@ -82,10 +82,10 @@
            style="margin-top:10px;">
      <thead>
       <tr>
-       <th style="width:23%;text-align:center">Date</th>
-       <th style="width:23%;text-align:center">Action</th>
-       <th style="width:23%;text-align:center">Owner</th>
-       <th style="width:23%;text-align:center">Tech</th>
+       <th style="width:23%;text-align:center" th:text="#{audit.table.date}">Date</th>
+       <th style="width:23%;text-align:center" th:text="#{audit.table.action}">Action</th>
+       <th style="width:23%;text-align:center" th:text="#{audit.table.owner}">Owner</th>
+       <th style="width:23%;text-align:center" th:text="#{audit.table.tech}">Tech</th>
        <th>&nbsp;</th>
        </tr>
        </thead>
@@ -103,8 +103,8 @@
              <td><span th:text="${event.user}">---</span></td>
              
              <td>
-               <li>HostName : <span th:text="${event.hostName}">---</span></li>
-               <li>Source :  <span th:text="${event.source}">---</span></li></td>
+                <li><span th:text="#{audit.table.hostname}"></span> : <span th:text="${event.hostName}">---</span></li>
+                <li><span th:text="#{audit.table.source}"></span> :  <span th:text="${event.source}">---</span></li></td>
               <td style="width:5%;text-align:center">
                 <a target="new"
                    th:href="@{api} + '/audit/' + ${event.uuid} + '?key=' + ${event.timestamp}"

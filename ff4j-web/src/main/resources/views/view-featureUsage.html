@@ -37,7 +37,7 @@
        
         <div class="widget-header">
          <i class="icon-bar-chart"></i>
-         <h3>Audit</h3>
+         <h3 th:text="#{audit.title}">Audit</h3>
         </div>
        
         <div class="widget-content" style="text-align:center">
@@ -45,14 +45,14 @@
          <form class="form-horizontal" action="" th:action="@{featureUsage}" method="POST">
     <h4 style="color:#00AB8B">
       <div id="datetimepickerFrom1" class="input-append date">
-         &nbsp; From : &nbsp;
+        <span th:text="#{audit.from}">&nbsp; From : &nbsp;</span>
         <input data-format="MM/dd/yyyy hh:mm:ss" type="text" name="slotfrom" id="slotfrom" th:value="${from}"></input>
         <span class="add-on" style="background-color:#00AB8B;margin-left:-6px">
          <i class="icon-calendar" style="width:40px;color:white"></i>
         </span>
       </div>
       <div id="datetimepickerTo1" class="input-append date">
-         &nbsp; TO : &nbsp;
+        <span th:text="#{audit.to}">&nbsp; TO : &nbsp;</span>
         <input data-format="MM/dd/yyyy hh:mm:ss" type="text" name="slotto" id="slotto" th:value="${to}"></input>
         <span class="add-on" style="background-color:#00AB8B;margin-left:-6px">
          <i class="icon-calendar" style="width:40px;color:white"></i>
@@ -60,7 +60,7 @@
       </div>
       &nbsp;
       <button class="btn " type="submit" style="background-color:#00AB8B;color:white;">
-        &nbsp;<span th:text="#{modal.button.validate}"></span>
+        &nbsp;<span th:text="#{audit.validate}"></span>
       </button>
    </h4>
  </form>
@@ -78,7 +78,7 @@
  <div class="widget widget-nopad">
   <div class="widget-header">
    <i class="icon-bar-chart"></i>
-   <h3>Feature Usage</h3>
+   <h3 th:text="#{monitoring.featureusage.title}">Feature Usage</h3>
   </div>
   <div class="widget-content" style="padding:15x;">
    <div id="pie" class="divpie" style="margin:20px"></div>
@@ -96,7 +96,7 @@
   <div class="widget widget-nopad">
    <div class="widget-header">
     <i class="icon-bar-chart"></i>
-    <h3>Feature Usage</h3>
+    <h3 th:text="#{monitoring.featureusage.title}">Feature Usage</h3>
    </div>
    <div class="widget-content" style="padding:15x;">
    <div id="featureUsageBar" style="margin:20px"></div>
@@ -149,7 +149,7 @@
  <div class="widget widget-nopad">
   <div class="widget-header">
    <i class="icon-bar-chart"></i>
-   <h3>Repartition per User</h3>
+   <h3 th:text="#{monitoring.repartitionperuser.title}">Repartition per User</h3>
   </div>
   <div class="widget-content">
    <div id="pie-user" class="divpie"></div>
@@ -165,7 +165,7 @@
  <div class="widget widget-nopad">
   <div class="widget-header">
    <i class="icon-bar-chart"></i>
-   <h3>Repartition per Host</h3>
+   <h3 th:text="#{monitoring.repartitionperhost.title}">Repartition per Host</h3>
   </div>
   <div class="widget-content">
    <div id="pie-host" class="divpie"></div>
@@ -181,7 +181,7 @@
  <div class="widget widget-nopad">
   <div class="widget-header">
    <i class="icon-bar-chart"></i>
-   <h3>Repartition per Source</h3>
+   <h3 th:text="#{monitoring.repartitionpersource.title}">Repartition per Source</h3>
   </div>
   <div class="widget-content">
     <div id="pie-source" class="divpie"></div>
