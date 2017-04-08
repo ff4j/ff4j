@@ -17,7 +17,7 @@
             <div class="widget widget-nopad">
             <div class="widget-header"> 
               <i class="icon-cogs"></i>
-              <h3><span th:text="#{navbar.main.settings}" >Settings</span></h3>
+              <h3><span th:text="#{setting.title}" >Settings</span></h3>
             </div>
              <div class="widget-content">
                  
@@ -25,12 +25,8 @@
           
     <table style="border-collapse:separate;border-spacing:0 10px;text-transform:none">
      <tr>
-      <td style="width:100px;text-align:right;margin-right:15px">
-       <h4>
-        <a class="ff4j-tooltip" th:attr="tooltip=#{home.general.version.comment}" >
-        Audit &nbsp;
-        </a>
-       </h4>
+      <td style="width:100px;text-align:right;margin-right:18px">
+       <h4 th:text="#{setting.audit}" >Audit</h4>
       </td>
       <td style="width:30px;text-align:center">
         <h2> <i class="icon-dashboard" style="width:40px;color:#00AB8B"></i></h2>
