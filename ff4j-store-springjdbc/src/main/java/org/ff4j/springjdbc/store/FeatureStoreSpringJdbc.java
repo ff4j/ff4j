@@ -1,8 +1,4 @@
-package org.ff4j.store;
-
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+package org.ff4j.springjdbc.store;
 
 /*
  * #%L ff4j-store-jdbc %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -25,14 +21,15 @@ import javax.sql.DataSource;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.property.Property;
-import org.ff4j.store.rowmapper.CustomPropertyRowMapper;
-import org.ff4j.store.rowmapper.FeatureRowMapper;
-import org.ff4j.store.rowmapper.RoleRowMapper;
+import org.ff4j.springjdbc.store.rowmapper.CustomPropertyRowMapper;
+import org.ff4j.springjdbc.store.rowmapper.FeatureRowMapper;
+import org.ff4j.springjdbc.store.rowmapper.RoleRowMapper;
+import org.ff4j.store.AbstractFeatureStore;
+import org.ff4j.store.JdbcQueryBuilder;
 import org.ff4j.utils.JdbcUtils;
 import org.ff4j.utils.MappingUtil;
 import org.ff4j.utils.Util;
@@ -405,28 +402,14 @@ public class FeatureStoreSpringJdbc extends AbstractFeatureStore {
     @Transactional
     public void createSchema() {
         JdbcQueryBuilder qb = getQueryBuilder();
-        if (!isTableExist(qb.getTableNameFeatures())) {
+        if (!JdbcUtils.isTableExist(dataSource, qb.getTableNameFeatures())) {
             getJdbcTemplate().update(qb.sqlCreateTableFeatures());
         }
-        if (!isTableExist(qb.getTableNameCustomProperties())) {
+        if (!JdbcUtils.isTableExist(dataSource, qb.getTableNameCustomProperties())) {
             getJdbcTemplate().update(qb.sqlCreateTableCustomProperties());
         }
-        if (!isTableExist(qb.getTableNameRoles())) {
+        if (!JdbcUtils.isTableExist(dataSource, qb.getTableNameRoles())) {
             getJdbcTemplate().update(qb.sqlCreateTableRoles());
-        }
-    }
-    
-    public boolean isTableExist(String tableName) {
-        ResultSet rs = null;
-        try {
-            DatabaseMetaData dbmd = 
-                    getJdbcTemplate().getDataSource().getConnection().getMetaData();
-            rs = dbmd.getTables(null, null, tableName, new String[] {"TABLE"});
-            return rs.next();
-        } catch (SQLException sqlEX) {
-            throw new FeatureAccessException("Cannot check table existence", sqlEX);
-        } finally {
-            JdbcUtils.closeResultSet(rs);
         }
     }
     

@@ -22,7 +22,7 @@ package org.ff4j.test.store;
 
 
 import org.ff4j.core.FeatureStore;
-import org.ff4j.store.FeatureStoreSpringJdbc;
+import org.ff4j.springjdbc.store.FeatureStoreSpringJdbc;
 import org.ff4j.store.JdbcQueryBuilder;
 import org.junit.After;
 import org.junit.Before;

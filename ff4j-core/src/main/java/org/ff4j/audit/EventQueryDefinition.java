@@ -37,6 +37,18 @@ public class EventQueryDefinition implements Serializable {
 	
 	/** Serial. */
 	private static final long serialVersionUID = -1649081647715140190L;
+	
+	/** fix a limit of results. */
+	private int maxresult;
+
+    /** Result will use pagination. **/
+    private boolean pageable = false;
+
+    /** Requested page number. **/
+    private int pagenumber = 0;
+
+    /** Requested page size. **/
+    private int pagesize = 0;
 
 	/** Bound bottom. */
 	private long from = TimeUtils.getTodayMidnightTime();
@@ -255,5 +267,81 @@ public class EventQueryDefinition implements Serializable {
      */
     public void setTo(long to) {
         this.to = to;
+    }
+
+    /**
+     * Getter accessor for attribute 'maxresult'.
+     *
+     * @return
+     *       current value of 'maxresult'
+     */
+    public int getMaxresult() {
+        return maxresult;
+    }
+
+    /**
+     * Setter accessor for attribute 'maxresult'.
+     * @param maxresult
+     * 		new value for 'maxresult '
+     */
+    public void setMaxresult(int maxresult) {
+        this.maxresult = maxresult;
+    }
+
+    /**
+     * Getter accessor for attribute 'pageable'.
+     *
+     * @return
+     *       current value of 'pageable'
+     */
+    public boolean isPageable() {
+        return pageable;
+    }
+
+    /**
+     * Setter accessor for attribute 'pageable'.
+     * @param pageable
+     * 		new value for 'pageable '
+     */
+    public void setPageable(boolean pageable) {
+        this.pageable = pageable;
+    }
+
+    /**
+     * Getter accessor for attribute 'pagenumber'.
+     *
+     * @return
+     *       current value of 'pagenumber'
+     */
+    public int getPagenumber() {
+        return pagenumber;
+    }
+
+    /**
+     * Setter accessor for attribute 'pagenumber'.
+     * @param pagenumber
+     * 		new value for 'pagenumber '
+     */
+    public void setPagenumber(int pagenumber) {
+        this.pagenumber = pagenumber;
+    }
+
+    /**
+     * Getter accessor for attribute 'pagesize'.
+     *
+     * @return
+     *       current value of 'pagesize'
+     */
+    public int getPagesize() {
+        return pagesize;
+    }
+
+    /**
+     * Setter accessor for attribute 'pagesize'.
+     * @param pagesize
+     * 		new value for 'pagesize '
+     */
+    public void setPagesize(int pagesize) {
+        this.pagesize = pagesize;
     }
 }

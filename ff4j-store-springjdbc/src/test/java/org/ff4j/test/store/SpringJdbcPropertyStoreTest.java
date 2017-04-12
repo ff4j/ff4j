@@ -22,7 +22,7 @@ package org.ff4j.test.store;
 
 
 import org.ff4j.property.store.PropertyStore;
-import org.ff4j.store.PropertyStoreSpringJdbc;
+import org.ff4j.springjdbc.store.PropertyStoreSpringJdbc;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
 import org.junit.After;
 import org.junit.Before;

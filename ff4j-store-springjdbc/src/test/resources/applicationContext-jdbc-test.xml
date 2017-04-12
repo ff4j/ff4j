@@ -37,7 +37,7 @@
 		<property name="featureStore" ref="dbStore" />
 	</bean>
 	
-	<bean id="dbStore" class="org.ff4j.store.FeatureStoreSpringJdbc" p:dataSource-ref="ff.jdbc.datasource" />
+	<bean id="dbStore" class="org.ff4j.springjdbc.store.FeatureStoreSpringJdbc" p:dataSource-ref="ff.jdbc.datasource" />
 	
 	<!-- enable the configuration of transactional behavior based on annotations -->
  	<tx:annotation-driven transaction-manager="transactionManager"/>

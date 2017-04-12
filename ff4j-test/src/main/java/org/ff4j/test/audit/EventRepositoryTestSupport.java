@@ -404,6 +404,7 @@ public abstract class EventRepositoryTestSupport {
 		// Then
 		Assert.assertNull(repo.getEventByUUID(evtAudit.getUuid(), System.currentTimeMillis()));
 		repo.purgeFeatureUsage(testQuery);
+		Thread.sleep(100);
 		Assert.assertNull(repo.getEventByUUID(evtFeatureUsage.getUuid(), System.currentTimeMillis()));
 	}
 

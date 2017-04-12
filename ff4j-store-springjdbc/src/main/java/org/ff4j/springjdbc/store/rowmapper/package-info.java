@@ -1,11 +1,11 @@
 /**
- * Implementation of FeatureStore to persist data into RDBMS through JDBC
+ * Spring rowmappers which marshall ResultSet into POJO
  * <p>
  *
  * @author Cedrick Lunven (@clunven)</a>
  * @version 1.3
  */
-package org.ff4j.store;
+package org.ff4j.springjdbc.store.rowmapper;
 
 /*
  * #%L

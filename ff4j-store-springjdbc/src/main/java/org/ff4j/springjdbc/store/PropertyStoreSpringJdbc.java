@@ -1,4 +1,4 @@
-package org.ff4j.store;
+package org.ff4j.springjdbc.store;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -39,7 +39,8 @@ import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.AbstractPropertyStore;
 import org.ff4j.property.store.PropertyStore;
-import org.ff4j.store.rowmapper.CustomPropertyRowMapper;
+import org.ff4j.springjdbc.store.rowmapper.CustomPropertyRowMapper;
+import org.ff4j.store.JdbcQueryBuilder;
 import org.ff4j.utils.JdbcUtils;
 import org.ff4j.utils.Util;
 import org.springframework.beans.factory.annotation.Required;

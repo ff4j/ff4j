@@ -1,4 +1,4 @@
-package org.ff4j.store.rowmapper;
+package org.ff4j.springjdbc.store.rowmapper;
 
 /*
  * #%L

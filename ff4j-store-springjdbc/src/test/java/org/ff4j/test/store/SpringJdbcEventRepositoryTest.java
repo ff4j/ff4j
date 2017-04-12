@@ -1,5 +1,7 @@
 package org.ff4j.test.store;
 
+import org.ff4j.audit.repository.EventRepository;
+
 /*
  * #%L
  * ff4j-store-springjdbc
@@ -22,9 +24,8 @@ package org.ff4j.test.store;
 
 
 import org.ff4j.property.store.PropertyStore;
-import org.ff4j.springjdbc.store.PropertyStoreSpringJdbc;
-import org.ff4j.store.JdbcQueryBuilder;
-import org.ff4j.test.propertystore.PropertyStoreTestSupport;
+import org.ff4j.springjdbc.store.EventRepositorySpringJdbc;
+import org.ff4j.test.audit.EventRepositoryTestSupport;
 import org.junit.After;
 import org.junit.Before;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
@@ -36,27 +37,23 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
  *
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class SpringJdbcPropertyStorePrefixTest  extends PropertyStoreTestSupport {
+public class SpringJdbcEventRepositoryTest  extends EventRepositoryTestSupport {
     
     /** DataBase. */
     private EmbeddedDatabase db;
 
     /** Database builder. */
     private EmbeddedDatabaseBuilder builder = null;
-
+    
     /** {@inheritDoc} */
     @Override
-    protected  PropertyStore initPropertyStore() {
+    protected EventRepository initRepository() {
         builder = new EmbeddedDatabaseBuilder();
-        db = builder.
-        		setType(EmbeddedDatabaseType.HSQL).//
-        		addScript("classpath:ddl-prefix-schema.sql").//
-        		addScript("classpath:ddl-prefix-data.sql").build();
-
-        PropertyStoreSpringJdbc jdbcStore = new PropertyStoreSpringJdbc();
-        jdbcStore.setQueryBuilder(new JdbcQueryBuilder("T_FF4J_", "_01"));
-        jdbcStore.setDataSource(db);
-        return jdbcStore;
+        db = builder.setType(EmbeddedDatabaseType.HSQL)//
+                .addScript("classpath:schema-ddl.sql")//
+                .addScript("classpath:ff-store.sql")//
+                .build();
+        return new EventRepositorySpringJdbc(db);
     }
     
     /** {@inheritDoc} */
@@ -75,5 +72,7 @@ public class SpringJdbcPropertyStorePrefixTest  extends PropertyStoreTestSupport
     public void tearDown() throws Exception {
         db.shutdown();
     }
+
+   
 
 }

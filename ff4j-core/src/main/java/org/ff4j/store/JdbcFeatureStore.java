@@ -484,7 +484,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             ps = null;
 
             // CREATE CUSTOM PROPERTIES
-            for (Property property : fp.getCustomProperties().values()) {
+            for (Property<?> property : fp.getCustomProperties().values()) {
                 ps = createCustomProperty(sqlConn, fp.getUid(), property);
                 closeStatement(ps);
                 ps = null;

@@ -660,5 +660,19 @@ public class JdbcQueryBuilder {
         }
         return sb.toString();
     }
+    
+    // ---------- Queries for AUDIT ----------------------
+    
+    public String sqlSaveAudit() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("INSERT INTO ");
+        sb.append(getTableNameAudit());
+        sb.append("(EVT_UUID, EVT_TIME, EVT_TYPE, EVT_NAME, EVT_ACTION,"
+                 + "EVT_HOSTNAME, EVT_SOURCE, EVT_DURATION, " 
+                 + "EVT_USER, EVT_VALUE, EVT_KEYS) "
+                 + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        return sb.toString();
+    }
+    
 	
 }

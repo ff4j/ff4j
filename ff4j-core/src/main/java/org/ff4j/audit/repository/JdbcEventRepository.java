@@ -1,6 +1,7 @@
 package org.ff4j.audit.repository;
 
 
+import static org.ff4j.audit.EventConstants.ACTION_CHECK_OK;
 import static org.ff4j.store.JdbcStoreConstants.*;
 
 /*
@@ -88,6 +89,7 @@ public class JdbcEventRepository extends AbstractEventRepository {
     }
     
     /** {@inheritDoc} */
+    // FIXME Stop dynamic query !
     @Override
     public boolean saveEvent(Event evt) {
         Util.assertEvent(evt);
@@ -207,6 +209,9 @@ public class JdbcEventRepository extends AbstractEventRepository {
     @Override
     public void purgeFeatureUsage(EventQueryDefinition qDef) {
         Util.assertNotNull(qDef);
+        // Enforce remove "checks"
+        qDef.getActionFilters().add(ACTION_CHECK_OK);
+        
         Connection          sqlConn = null;
         PreparedStatement   ps = null;
         ResultSet           rs = null;
