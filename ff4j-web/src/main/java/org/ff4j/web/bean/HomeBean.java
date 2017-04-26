@@ -122,8 +122,7 @@ public class HomeBean implements Serializable {
         // Caching
         FF4jCacheProxy cacheProxy = ff4j.getCacheProxy();
         if (cacheProxy != null) {
-            // The images stored expect the cache name to be lower-case.
-            this.caching = cacheProxy.getCacheManager().getCacheProviderName().toLowerCase();
+           this.caching = cacheProxy.getCacheManager().getCacheProviderName().toLowerCase();
         }
     }
 
