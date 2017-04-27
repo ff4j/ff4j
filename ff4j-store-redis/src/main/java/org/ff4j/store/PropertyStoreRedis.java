@@ -1,8 +1,19 @@
 package org.ff4j.store;
 
-import static org.ff4j.redis.RedisContants.KEY_PROPERTY;
+import org.ff4j.exception.PropertyAlreadyExistException;
+import org.ff4j.property.Property;
+import org.ff4j.property.store.AbstractPropertyStore;
+import org.ff4j.redis.RedisConnection;
+import org.ff4j.utils.Util;
+import org.ff4j.utils.json.PropertyJsonParser;
+import redis.clients.jedis.Jedis;
 
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+
+import static org.ff4j.redis.RedisContants.KEY_PROPERTY;
+import static org.ff4j.redis.RedisContants.KEY_PROPERTY_MAP;
 
 /*
  * #%L
@@ -24,76 +35,56 @@ import java.util.HashSet;
  * #L%
  */
 
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-
-import org.ff4j.exception.PropertyAlreadyExistException;
-import org.ff4j.property.Property;
-import org.ff4j.property.store.AbstractPropertyStore;
-import org.ff4j.redis.RedisConnection;
-import org.ff4j.utils.Util;
-import org.ff4j.utils.json.PropertyJsonParser;
-
-import redis.clients.jedis.Jedis;
-
 /**
  * Implementation of property store for REDIS.
  *
  * @author Cedrick Lunven (@clunven)</a>
+ * @author Shridhar Navanageri
  */
 public class PropertyStoreRedis extends AbstractPropertyStore {
-    
-    /** Wrapping of redis connection (isolation). */
+
+    /**
+     * Wrapping of redis connection (isolation).
+     */
     private RedisConnection redisConnection;
-    
+
     /**
      * Default Constructor.
      */
     public PropertyStoreRedis() {
         this(new RedisConnection());
     }
-    
+
     /**
      * Contact remote redis server.
-     * 
-     * @param host
-     *            target redis host
-     * @param port
-     *            target redis port
      */
     public PropertyStoreRedis(RedisConnection pRedisConnection) {
         redisConnection = pRedisConnection;
     }
-    
+
     /**
      * Default Constructor.
      */
     public PropertyStoreRedis(String xmlFeaturesfFile) {
-       this();
-       importPropertiesFromXmlFile(xmlFeaturesfFile);
+        this();
+        importPropertiesFromXmlFile(xmlFeaturesfFile);
     }
 
     /**
      * Contact remote redis server.
-     * 
-     * @param host
-     *            target redis host
-     * @param port
-     *            target redis port
+     *
+     * @param host target redis host
+     * @param port target redis port
      */
     public PropertyStoreRedis(String host, int port) {
         this(new RedisConnection(host, port));
     }
-    
+
     /**
      * Contact remote redis server.
-     * 
-     * @param host
-     *            target redis host
-     * @param port
-     *            target redis port
+     *
+     * @param host target redis host
+     * @param port target redis port
      */
     public PropertyStoreRedis(String host, int port, String password, String xmlFeaturesfFile) {
         this(new RedisConnection(host, port, password));
@@ -102,18 +93,18 @@ public class PropertyStoreRedis extends AbstractPropertyStore {
 
     /**
      * Contact remote redis server.
-     * 
-     * @param host
-     *            target redis host
-     * @param port
-     *            target redis port
+     *
+     * @param host target redis host
+     * @param port target redis port
      */
     public PropertyStoreRedis(String host, int port, String xmlFeaturesfFile) {
         this(host, port);
         importPropertiesFromXmlFile(xmlFeaturesfFile);
     }
-    
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     public boolean existProperty(String name) {
         Util.assertParamHasLength(name, "PropertyName identifier");
         Jedis jedis = null;
@@ -124,10 +115,12 @@ public class PropertyStoreRedis extends AbstractPropertyStore {
             if (jedis != null) {
                 jedis.close();
             }
-        } 
+        }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public <T> void createProperty(Property<T> prop) {
         Util.assertNotNull(prop);
         if (existProperty(prop.getName())) {
@@ -136,16 +129,21 @@ public class PropertyStoreRedis extends AbstractPropertyStore {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            jedis.set(KEY_PROPERTY + prop.getName(), prop.toJson());
-            jedis.persist(KEY_PROPERTY + prop.getName());
+            String name = prop.getName();
+            // Store the feature in the mapping bucket.
+            jedis.sadd(KEY_PROPERTY_MAP, name);
+            jedis.set(KEY_PROPERTY + name, prop.toJson());
+            jedis.persist(KEY_PROPERTY + name);
         } finally {
             if (jedis != null) {
                 jedis.close();
             }
-        } 
+        }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Property<?> readProperty(String name) {
         assertPropertyExist(name);
         Jedis jedis = null;
@@ -156,33 +154,37 @@ public class PropertyStoreRedis extends AbstractPropertyStore {
             if (jedis != null) {
                 jedis.close();
             }
-        } 
-    }  
+        }
+    }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public void deleteProperty(String name) {
         assertPropertyExist(name);
         Jedis jedis = null;
         try {
             jedis = getJedis();
+            jedis.srem(KEY_PROPERTY_MAP, name);
             jedis.del(KEY_PROPERTY + name);
         } finally {
             if (jedis != null) {
                 jedis.close();
             }
-        } 
+        }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Map<String, Property<?>> readAllProperties() {
         LinkedHashMap<String, Property<?>> mapP = new LinkedHashMap<String, Property<?>>();
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            Set < String > myKeys = jedis.keys(KEY_PROPERTY + "*");
-            if (myKeys != null) {
-                for (String key : myKeys) {
-                    key = key.replaceAll(KEY_PROPERTY, "");
+            Set<String> properties = jedis.smembers(KEY_PROPERTY_MAP);
+            if (properties != null) {
+                for (String key : properties) {
                     mapP.put(key, readProperty(key));
                 }
             }
@@ -191,48 +193,47 @@ public class PropertyStoreRedis extends AbstractPropertyStore {
             if (jedis != null) {
                 jedis.close();
             }
-        } 
+        }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Set<String> listPropertyNames() {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            Set < String > propertyNames = jedis.keys(KEY_PROPERTY + "*");
-            Set < String > responses = new HashSet<String>();
-            if (propertyNames != null) {
-                for (String pName : propertyNames) {
-                    responses.add(pName.replaceAll(KEY_PROPERTY, ""));
-                }
-            }
-            return responses;
+            Set<String> propertyNames = jedis.smembers(KEY_PROPERTY_MAP);
+            return propertyNames;
         } finally {
             if (jedis != null) {
                 jedis.close();
             }
-        } 
+        }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public void clear() {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            Set < String > myKeys = jedis.keys(KEY_PROPERTY + "*");
-            jedis.del(myKeys.toArray(new String[0]));
+            Set<String> myKeys = jedis.smembers(KEY_PROPERTY_MAP);
+            for (String key : myKeys) {
+                deleteProperty(key);
+            }
         } finally {
             if (jedis != null) {
                 jedis.close();
             }
-        } 
+        }
     }
-    
+
     /**
      * Getter accessor for attribute 'redisConnection'.
      *
-     * @return
-     *       current value of 'redisConnection'
+     * @return current value of 'redisConnection'
      */
     public RedisConnection getRedisConnection() {
         return redisConnection;
@@ -240,13 +241,13 @@ public class PropertyStoreRedis extends AbstractPropertyStore {
 
     /**
      * Setter accessor for attribute 'redisConnection'.
-     * @param redisConnection
-     *      new value for 'redisConnection '
+     *
+     * @param redisConnection new value for 'redisConnection '
      */
     public void setRedisConnection(RedisConnection redisConnection) {
         this.redisConnection = redisConnection;
     }
-    
+
     /**
      * Safe acces to Jedis, avoid JNPE.
      *
