@@ -20,11 +20,6 @@ package org.ff4j.store;
  * #L%
  */
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureAlreadyExistException;
@@ -33,15 +28,21 @@ import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.redis.RedisConnection;
 import org.ff4j.utils.Util;
 import org.ff4j.utils.json.FeatureJsonParser;
-
 import redis.clients.jedis.Jedis;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import static org.ff4j.redis.RedisContants.KEY_FEATURE;
+import static org.ff4j.redis.RedisContants.KEY_FEATURE_MAP;
 
 /**
  * {@link FeatureStore} to persist data into
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Shridhar Navanageri
  */
 public class FeatureStoreRedis extends AbstractFeatureStore {
     
@@ -57,11 +58,7 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
     
     /**
      * Contact remote redis server.
-     * 
-     * @param host
-     *            target redis host
-     * @param port
-     *            target redis port
+     *
      */
     public FeatureStoreRedis(RedisConnection pRedisConnection) {
         redisConnection = pRedisConnection;
@@ -188,15 +185,19 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public void create(Feature fp) {
-        Util.assertNotNull("Feature" , fp);
+        Util.assertNotNull("Feature", fp);
         if (exist(fp.getUid())) {
             throw new FeatureAlreadyExistException(fp.getUid());
         }
         Jedis jedis = null;
         try {
+            String id = fp.getUid();
             jedis = getJedis();
-            jedis.set(KEY_FEATURE + fp.getUid(), fp.toJson());
-            jedis.persist(KEY_FEATURE + fp.getUid());
+
+            // Store the feature in the mapping bucket.
+            jedis.sadd(KEY_FEATURE_MAP, id);
+            jedis.set(KEY_FEATURE + id, fp.toJson());
+            jedis.persist(KEY_FEATURE + id);
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -210,15 +211,16 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            Set < String > myKeys = jedis.keys(KEY_FEATURE + "*");
-            Map<String, Feature> myMap = new HashMap<String, Feature>();
-            if (myKeys != null) {
-                for (String key : myKeys) {
-                    key = key.replaceAll(KEY_FEATURE, "");
-                    myMap.put(key, read(key));
+
+            Set<String> features = jedis.smembers(KEY_FEATURE_MAP);
+
+            Map<String, Feature> featuresMap = new HashMap<>();
+            if (features != null) {
+                for (String key : features) {
+                    featuresMap.put(key, read(key));
                 }
             }
-            return myMap;
+            return featuresMap;
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -234,6 +236,8 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
         Jedis jedis = null;
         try {
             jedis = getJedis();
+            // Store the feature in the mapping bucket.
+            jedis.srem(KEY_FEATURE_MAP, fpId);
             jedis.del(KEY_FEATURE + fpId);
         } finally {
             if (jedis != null) {
@@ -360,8 +364,10 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            Set < String > myKeys = jedis.keys(KEY_FEATURE + "*");
-            jedis.del(myKeys.toArray(new String[0]));
+            Set<String> myKeys = jedis.smembers(KEY_FEATURE_MAP);
+            for (String key : myKeys) {
+                delete(key);
+            }
         } finally {
             if (jedis != null) {
                 jedis.close();
