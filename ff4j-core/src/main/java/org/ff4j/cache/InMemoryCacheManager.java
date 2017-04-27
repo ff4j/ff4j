@@ -51,7 +51,7 @@ public class InMemoryCacheManager implements FF4JCacheManager {
     /** {@inheritDoc} */
     @Override
     public String getCacheProviderName() {
-        return "In-Memory";
+        return "InMemory";
     }
 
     /** {@inheritDoc} */
