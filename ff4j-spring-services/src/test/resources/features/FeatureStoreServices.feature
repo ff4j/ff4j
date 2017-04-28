@@ -130,7 +130,7 @@ Feature: Provides api's to do the following
     Then the user gets the response as
     """
     {
-      "cacheProvider": "In-Memory",
+      "cacheProvider": "InMemory",
       "cacheStore": "org.ff4j.store.InMemoryFeatureStore",
       "featureNames": ["cart"],
       "propertyNames": []
@@ -178,7 +178,7 @@ Feature: Provides api's to do the following
     Then the user gets the response as
     """
     {
-      "cacheProvider": "In-Memory",
+      "cacheProvider": "InMemory",
       "cacheStore": "org.ff4j.store.InMemoryFeatureStore",
       "featureNames": ["cart"],
       "propertyNames": []
@@ -216,7 +216,7 @@ Feature: Provides api's to do the following
     Then the user gets the response as
     """
     {
-      "cacheProvider": "In-Memory",
+      "cacheProvider": "InMemory",
       "cacheStore": "org.ff4j.store.InMemoryFeatureStore",
       "featureNames": [],
       "propertyNames": []
@@ -265,7 +265,7 @@ Feature: Provides api's to do the following
         "user"
       ],
       "cache": {
-        "cacheProvider": "In-Memory",
+        "cacheProvider": "InMemory",
         "cacheStore": "org.ff4j.store.InMemoryFeatureStore",
         "featureNames": [],
         "propertyNames": []

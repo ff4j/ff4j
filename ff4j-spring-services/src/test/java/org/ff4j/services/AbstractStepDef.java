@@ -78,11 +78,13 @@ public class AbstractStepDef {
     }
 
     protected void clearFeatureStore() {
+        ff4j.setPropertiesStore(new InMemoryPropertyStore());
         ff4j.setFeatureStore(new InMemoryFeatureStore());
     }
 
     protected void clearPropertyStore() {
         ff4j.setPropertiesStore(new InMemoryPropertyStore());
+        ff4j.setFeatureStore(new InMemoryFeatureStore());
     }
 
     protected Property<?> asProperty(String name, String type, String value, String description, Set<String> fixedValues) {

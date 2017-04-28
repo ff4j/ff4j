@@ -141,7 +141,7 @@ Feature: Provides RESTful api's to do the following
     And the response body as
     """
     {
-      "cacheProvider": "In-Memory",
+      "cacheProvider": "InMemory",
       "cacheStore": "org.ff4j.store.InMemoryFeatureStore",
       "featureNames": ["cart"],
       "propertyNames": []
@@ -193,7 +193,7 @@ Feature: Provides RESTful api's to do the following
     And the response body as
     """
     {
-      "cacheProvider": "In-Memory",
+      "cacheProvider": "InMemory",
       "cacheStore": "org.ff4j.store.InMemoryFeatureStore",
       "featureNames": ["cart"],
       "propertyNames": []
@@ -236,7 +236,7 @@ Feature: Provides RESTful api's to do the following
     And the response body as
     """
     {
-      "cacheProvider": "In-Memory",
+      "cacheProvider": "InMemory",
       "cacheStore": "org.ff4j.store.InMemoryFeatureStore",
       "featureNames": [],
       "propertyNames": []
@@ -289,7 +289,7 @@ Feature: Provides RESTful api's to do the following
         "user"
       ],
       "cache": {
-        "cacheProvider": "In-Memory",
+        "cacheProvider": "InMemory",
         "cacheStore": "org.ff4j.store.InMemoryFeatureStore",
         "featureNames": [],
         "propertyNames": []

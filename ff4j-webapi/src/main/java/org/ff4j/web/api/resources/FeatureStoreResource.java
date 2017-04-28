@@ -1,5 +1,11 @@
 package org.ff4j.web.api.resources;
 
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_CACHE;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_FEATURES;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_GROUPS;
+import static org.ff4j.web.FF4jWebConstants.STORE_CLEAR;
+import static org.ff4j.web.FF4jWebConstants.STORE_CREATESCHEMA;
+
 /*
  * #%L
  * ff4j-web
@@ -46,8 +52,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-
-import static org.ff4j.web.FF4jWebConstants.*;
 
 /**
  * WebResource representing the store.
@@ -155,10 +159,11 @@ public class FeatureStoreResource extends AbstractResource {
     @ApiResponses({ @ApiResponse(code = 200, message= "status of current ff4j monitoring bean", response=CacheApiBean.class),
                     @ApiResponse(code = 404, message= "no cache content provided") })
     public Response getStatus() {
-        if (getFeatureStore() instanceof FF4jCacheProxy) {
-            return Response.ok(new CacheApiBean(getFeatureStore())).build();
+        FF4jCacheProxy cacheProxy = ff4j.getCacheProxy();
+        if (cacheProxy == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Current Store is not cached").build();
         }
-        return Response.status(Response.Status.NOT_FOUND).entity("Current Store is not cached").build();
+        return Response.ok(new CacheApiBean(getFeatureStore())).build();
     }
     
     /**
@@ -171,11 +176,12 @@ public class FeatureStoreResource extends AbstractResource {
     @ApiResponses({ @ApiResponse(code = 200, message= "cache is cleard"),
                     @ApiResponse(code = 404, message= "no cache content provided") })
     public Response clear() {
-        if (getFeatureStore() instanceof FF4jCacheProxy) {
-            ((FF4jCacheProxy) getFeatureStore()).getCacheManager().clearFeatures();
-            return Response.ok("Cache has been cleared").build();
+        FF4jCacheProxy cacheProxy = ff4j.getCacheProxy();
+        if (cacheProxy == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Current Store is not cached").build();
         }
-        return Response.status(Response.Status.NOT_FOUND).entity("Current Store is not cached").build();
+        cacheProxy.getCacheManager().clearFeatures();
+        return Response.ok("Cache has been cleared").build();
     }
 
 }

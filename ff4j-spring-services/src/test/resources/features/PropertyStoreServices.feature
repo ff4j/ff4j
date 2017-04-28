@@ -92,12 +92,13 @@ Feature: This feature enables in providing the user with api's where in the user
     Then the user gets the response as
     """
     {
-      "cacheProvider": "In-Memory",
+      "cacheProvider": "InMemory",
       "cacheStore": "org.ff4j.store.InMemoryFeatureStore",
       "featureNames": [],
       "propertyNames": ["port"]
     }
     """
+    
     When the user requests for all the properties from the property store
     Then the user gets the response as
     """
@@ -133,7 +134,7 @@ Feature: This feature enables in providing the user with api's where in the user
     Then the user gets the response as
     """
     {
-      "cacheProvider": "In-Memory",
+      "cacheProvider": "InMemory",
       "cacheStore": "org.ff4j.store.InMemoryFeatureStore",
       "featureNames": [],
       "propertyNames": ["port"]
@@ -164,7 +165,7 @@ Feature: This feature enables in providing the user with api's where in the user
     Then the user gets the response as
     """
     {
-      "cacheProvider": "In-Memory",
+      "cacheProvider": "InMemory",
       "cacheStore": "org.ff4j.store.InMemoryFeatureStore",
       "featureNames": [],
       "propertyNames": []
@@ -195,7 +196,7 @@ Feature: This feature enables in providing the user with api's where in the user
     """
     {
       "cache": {
-        "cacheProvider": "In-Memory",
+        "cacheProvider": "InMemory",
         "cacheStore": "org.ff4j.store.InMemoryFeatureStore",
         "featureNames": [],
         "propertyNames": []

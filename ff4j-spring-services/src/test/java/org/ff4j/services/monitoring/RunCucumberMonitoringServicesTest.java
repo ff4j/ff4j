@@ -1,6 +1,5 @@
 package org.ff4j.services.monitoring;
 
-import org.junit.Ignore;
 import org.junit.runner.RunWith;
 
 /*
@@ -33,6 +32,5 @@ import cucumber.api.junit.Cucumber;
 @CucumberOptions(features = "classpath:features/MonitoringServices.feature", strict = true,
         plugin = {"json:target/cucumber/MonitoringServices.json", "junit:target/cucumber/MonitoringServices.xml"},
         glue = "classpath:org/ff4j/services/monitoring", tags = "@MonitoringServices")
-@Ignore
 public class RunCucumberMonitoringServicesTest {
 }

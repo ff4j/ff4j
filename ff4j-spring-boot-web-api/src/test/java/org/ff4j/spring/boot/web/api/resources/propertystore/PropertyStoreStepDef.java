@@ -59,6 +59,7 @@ public class PropertyStoreStepDef extends AbstractStepDef {
     public void the_property_store_is_cached() throws Throwable {
         FF4jCacheProxy proxy = new FF4jCacheProxy(ff4j.getFeatureStore(), ff4j.getPropertiesStore(), new InMemoryCacheManager());
         ff4j.setPropertiesStore(proxy);
+        ff4j.setFeatureStore(proxy);
     }
 
     @Given("^the following properties are cached$")

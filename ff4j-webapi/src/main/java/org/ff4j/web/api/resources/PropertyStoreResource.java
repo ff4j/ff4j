@@ -117,10 +117,11 @@ public class PropertyStoreResource  extends AbstractResource {
     @ApiResponses({ @ApiResponse(code = 200, message= "status of current ff4j monitoring bean", response=CacheApiBean.class),
                     @ApiResponse(code = 404, message= "no cache content provided") })
     public Response getStatus() {
-        if (getFeatureStore() instanceof FF4jCacheProxy) {
-            return Response.ok(new CacheApiBean(getFeatureStore())).build();
+        FF4jCacheProxy cacheProxy = ff4j.getCacheProxy();
+        if (cacheProxy == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Current Store is not cached").build();
         }
-        return Response.status(Response.Status.NOT_FOUND).entity("Current Store is not cached").build();
+        return Response.ok(new CacheApiBean(getFeatureStore())).build();
     }
     
     /**
@@ -133,11 +134,12 @@ public class PropertyStoreResource  extends AbstractResource {
     @ApiResponses({ @ApiResponse(code = 200, message= "cache is cleard"),
                     @ApiResponse(code = 404, message= "no cache content provided") })
     public Response clear() {
-        if (getFeatureStore() instanceof FF4jCacheProxy) {
-            ((FF4jCacheProxy) getPropertyStore()).getCacheManager().clearProperties();
-            return Response.ok("Cache has been cleared").build();
+        FF4jCacheProxy cacheProxy = ff4j.getCacheProxy();
+        if (cacheProxy == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Current Store is not cached").build();
         }
-        return Response.status(Response.Status.NOT_FOUND).entity("Current Store is not cached").build();
+        cacheProxy.getCacheManager().clearProperties();
+        return Response.ok("Cache has been cleared").build();
     }
 
 }

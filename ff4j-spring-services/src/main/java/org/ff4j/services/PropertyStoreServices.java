@@ -1,5 +1,9 @@
 package org.ff4j.services;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /*
  * #%L
  * ff4j-spring-services
@@ -30,10 +34,6 @@ import org.ff4j.services.exceptions.PropertyStoreNotCached;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author <a href="mailto:paul58914080@gmail.com">Paul Williams</a>
@@ -68,18 +68,18 @@ public class PropertyStoreServices {
     }
 
     public CacheApiBean getPropertiesFromCache() {
-        if (ff4j.getPropertiesStore() instanceof FF4jCacheProxy) {
-            return new CacheApiBean(ff4j.getPropertiesStore());
-        } else {
+        FF4jCacheProxy cacheProxy = ff4j.getCacheProxy();
+        if (cacheProxy == null) {
             throw new PropertyStoreNotCached();
         }
+        return new CacheApiBean(ff4j.getPropertiesStore());
     }
 
     public void clearCachedPropertyStore() {
-        if (ff4j.getPropertiesStore() instanceof FF4jCacheProxy) {
-            ((FF4jCacheProxy) ff4j.getPropertiesStore()).getCacheManager().clearProperties();
-        } else {
+        FF4jCacheProxy cacheProxy = ff4j.getCacheProxy();
+        if (cacheProxy == null) {
             throw new PropertyStoreNotCached();
         }
+        cacheProxy.getCacheManager().clearProperties();
     }
 }
