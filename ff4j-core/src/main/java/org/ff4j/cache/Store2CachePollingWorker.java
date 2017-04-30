@@ -1,5 +1,8 @@
 package org.ff4j.cache;
 
+import java.io.Serializable;
+import java.util.Map;
+
 /*
  * #%L
  * ff4j-core
@@ -24,8 +27,6 @@ import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.PropertyStore;
-
-import java.io.Serializable;
 
 /**
  * Working thread to poll and fetch data from store and copy to local cache.
@@ -66,21 +67,31 @@ public class Store2CachePollingWorker implements Runnable, Serializable {
     @Override
     public void run() {
         try {
+            
             if (sourceFeatureStore != null) {
+                // Access the store, if failed an error is raised and cache is not cleared.
+                Map < String, Feature > mapOfFeatures = sourceFeatureStore.readAll();
+                // Clear cache
                 cacheManager.clearFeatures();
-                for (Feature f : sourceFeatureStore.readAll()
-                                                   .values()) {
+                // Fill Cache
+                for (Feature f : mapOfFeatures.values()) {
                     cacheManager.putFeature(f);
                 }
             }
+            
             if (sourcePropertyStore != null) {
+                // Access the store, if failed an error is raised and cache is not cleared.
+                Map < String, Property<?> > mapOfProperties = sourcePropertyStore.readAllProperties();
+                // Clear cache
                 cacheManager.clearProperties();
-                for (Property<?> p : sourcePropertyStore.readAllProperties()
-                                                        .values()) {
+                // Fill Cache
+                for (Property<?> p : mapOfProperties.values()) {
                     cacheManager.putProperty(p);
                 }
             }
+            
         } catch (Exception ex) {
+            // Work in background (worker) failed 'silently'
             ex.printStackTrace();
         }
     }
