@@ -85,7 +85,6 @@ public class PropertyStoreElastic extends AbstractPropertyStore {
 	public void deleteProperty(String name) {
 		assertPropertyExist(name);
 		getConnection().execute(getBuilder().queryDeletePropertyByName(name));
-
 	}
 
 	/** {@inheritDoc} */
