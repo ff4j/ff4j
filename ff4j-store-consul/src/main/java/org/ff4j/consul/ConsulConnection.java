@@ -1,9 +1,16 @@
 package org.ff4j.consul;
 
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.ff4j.audit.Event;
 import org.ff4j.store.kv.KeyValueDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Optional;
 import com.orbitz.consul.AgentClient;
 import com.orbitz.consul.Consul;
 import com.orbitz.consul.HealthClient;
@@ -27,10 +34,22 @@ import com.orbitz.consul.KeyValueClient;
  * 
  * @author Cedrick LUNVEN (@clunven)
  */
-public class ConsulConnection implements KeyValueDriver {
+public class ConsulConnection implements KeyValueDriver< String, String > {
 
     /** logger for this class. */
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsulConnection.class);
+    
+    /** Repository. */
+    private static final String KEY_DICTIONARY_FEATURE = "FF4J/FEATURES_DICTIONARY";
+    
+    /** Repository. */
+    private static final String KEY_DICTIONARY_PROPERTY = "FF4J/PROPERTIES_DICTIONARY";
+    
+    /** Repository. */
+    private static final String DICTIONARY_SEPARATOR = ",";
+    
+    /** audit key. */
+    private static final SimpleDateFormat KDF = new SimpleDateFormat("yyyyMMdd");
     
     /** Default consult. */
     private Consul consul = null;
@@ -119,19 +138,24 @@ public class ConsulConnection implements KeyValueDriver {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void deleteKey(String key) {
         getKeyValueClient().deleteKey(key);
     }
     
     /** {@inheritDoc} */
+    @Override
     public String getValue(String key) {
         return getKeyValueClient().getValueAsString(key).get();
     } 
     
     /** {@inheritDoc} */
+    @Override
     public void putValue(String key, String value) {
         getKeyValueClient().putValue(key, value);
     }
+    
+    // -- Features --
     
     /** {@inheritDoc} */
     public String getFeatureKey(String featureName) {
@@ -145,6 +169,34 @@ public class ConsulConnection implements KeyValueDriver {
     }
     
     /** {@inheritDoc} */
+    @Override
+    public Set<String> getFeatureList() {
+        Optional < String> listFeatures = getKeyValueClient().getValueAsString(KEY_DICTIONARY_FEATURE);
+        if (!listFeatures.isPresent()) return new HashSet<>();
+        return new HashSet<>(Arrays.asList(listFeatures.get().split(DICTIONARY_SEPARATOR)));
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void registerFeature(String featureName) {
+        Set < String > featureList = getFeatureList();
+        featureList.add(featureName);
+        getKeyValueClient().putValue(KEY_DICTIONARY_FEATURE, 
+                String.join(DICTIONARY_SEPARATOR, featureList));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void unregisterFeature(String featureName) {
+        Set < String > featureList = getFeatureList();
+        featureList.remove(featureName);
+        getKeyValueClient().putValue(KEY_DICTIONARY_FEATURE, 
+                String.join(DICTIONARY_SEPARATOR, featureList));
+    }
+
+    // -- Properties --
+    
+    /** {@inheritDoc} */
     public String getPropertyKey(String propertyName) {
         return ConsulConstants.FF4J_PREFIXKEY_PROPERTIES + propertyName;
     }
@@ -154,5 +206,58 @@ public class ConsulConnection implements KeyValueDriver {
     public String getPropertyName(String key) {
         return key.replaceAll(ConsulConstants.FF4J_PREFIXKEY_PROPERTIES, "");
     }
-        
+    
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> getPropertyList() {
+        Optional < String> listProperties = getKeyValueClient().getValueAsString(KEY_DICTIONARY_PROPERTY);
+        if (!listProperties.isPresent())  return new HashSet<>();
+        return new HashSet<>(Arrays.asList(
+                listProperties.get().split(DICTIONARY_SEPARATOR)));
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void registerProperty(String propertyName) {
+        Set < String > propertyList = getPropertyList();
+        propertyList.add(propertyName);
+        getKeyValueClient().putValue(KEY_DICTIONARY_PROPERTY, 
+                String.join(DICTIONARY_SEPARATOR, propertyList));
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void unregisterProperty(String propertyName) {
+        Set < String > propertyList = getPropertyList();
+        propertyList.remove(propertyName);
+        getKeyValueClient().putValue(KEY_DICTIONARY_PROPERTY, 
+                String.join(DICTIONARY_SEPARATOR, propertyList));
+    }
+    
+    // Audit
+
+    /** {@inheritDoc} */
+    @Override
+    public String getHitCountKey(Event e) {
+        return ConsulConstants.FF4J_PREFIXKEY_HITS + "/" + 
+                    KDF.format(e.getTimestamp()) + "/"   +
+                    e.getName() + "/" + e.getUuid();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getMissKey(Event e) {
+        return ConsulConstants.FF4J_PREFIXKEY_MISS + "/" + 
+                KDF.format(e.getTimestamp()) + "/"   +
+                e.getName() + "/" + e.getUuid();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getAuditTrailKey(Event e) {
+        return ConsulConstants.FF4J_PREFIXKEY_AUDIT + "/" + 
+                KDF.format(e.getTimestamp()) + "/"   +
+                e.getName() + "/" + e.getUuid();
+    }
+    
 }

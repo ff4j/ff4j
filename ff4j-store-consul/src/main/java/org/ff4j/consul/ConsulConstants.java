@@ -11,11 +11,17 @@ public class ConsulConstants {
     public static final String FF4J_KEY_FF4J = "FF4J";
     
     /** Path for ff4j keys. */
-    public static final String FF4J_PREFIXKEY_FEATURES = "FF4J/FEATURES/";
+    public static final String FF4J_PREFIXKEY_FEATURES = FF4J_KEY_FF4J + "/FEATURES/";
     
     /** Path for ff4j keys. */
-    public static final String FF4J_PREFIXKEY_PROPERTIES = "FF4J/PROPERTIES/";
+    public static final String FF4J_PREFIXKEY_PROPERTIES = FF4J_KEY_FF4J + "/PROPERTIES/";
     
     /** Path for ff4j keys. */
-    public static final String FF4J_PREFIXKEY_AUDIT = "FF4J/AUDIT/";
+    public static final String FF4J_PREFIXKEY_AUDIT = FF4J_KEY_FF4J + "/AUDIT/";
+    
+    /** Path for ff4j keys. */
+    public static final String FF4J_PREFIXKEY_HITS = FF4J_KEY_FF4J + "/HITS/";
+    
+    /** Path for ff4j keys. */
+    public static final String FF4J_PREFIXKEY_MISS = FF4J_KEY_FF4J + "/MISS/";
 }
