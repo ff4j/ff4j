@@ -41,12 +41,6 @@ public class FeatureCacheProviderJCacheRITest extends AbstractCacheManagerJUnitT
     }
     
     @Test
-    public void readCacheProvider() {
-        FF4jJCacheProvider fcp = new FF4jJCacheProvider(RICachingProvider.class.getName());
-        Assert.assertNotNull(fcp.getCachingProvider());
-    }
-    
-    @Test
     public void testCacheManagerProperties() {
         // Given
         FF4jJCacheManager fcm= new FF4jJCacheManager(RICachingProvider.class.getName());
@@ -100,6 +94,5 @@ public class FeatureCacheProviderJCacheRITest extends AbstractCacheManagerJUnitT
         FF4jJCacheManager fcm = new FF4jJCacheManager();
         fcm.getNativeCache();
     }
-
 
 }

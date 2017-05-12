@@ -25,6 +25,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.cache.Cache;
+import javax.cache.CacheManager;
+import javax.cache.Caching;
+import javax.cache.configuration.MutableConfiguration;
+import javax.cache.spi.CachingProvider;
 
 import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
@@ -34,13 +38,19 @@ import org.ff4j.property.Property;
  * 
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class FF4jJCacheManager extends FF4jJCacheProvider implements FF4JCacheManager {    
+public class FF4jJCacheManager implements FF4JCacheManager {    
     
     /** cache name of the features. */
     protected static final String CACHENAME_FEATURES      = "ff4jFeatures";
     
     /** cache name of the properties. */
     protected static final String CACHENAME_PROPERTIES    = "ff4jProperties";
+    
+    /** JCache associated CachingProvider in order to create 'CacheManager'. */
+    private CachingProvider cachingProvider;
+    
+    /** JCache associated cache manager. */
+    private CacheManager cacheManager; 
     
     /** Implementing a JCache CacheProvider. */
     protected Cache<String, Feature> featuresCache;
@@ -53,22 +63,32 @@ public class FF4jJCacheManager extends FF4jJCacheProvider implements FF4JCacheMa
      * Initialisation of internal caches.
      */
     public FF4jJCacheManager() {
-        // Initialization of both caching provider and manager
-        super();
-        featuresCache   = createCacheForFeatures();
-        propertiesCache = createCacheForProperties();
+    }
+    
+    /**
+     * Constructory avec provider.
+     *
+     * @param provider
+     */
+    public FF4jJCacheManager(CachingProvider provider) {
+        this.cachingProvider = provider;
+        initCaches();
     }
     
     /**
      * Initialisation of internal caches.
      */
-    public FF4jJCacheManager(String cachingProviderClassName) {
-        // Initialization of both caching provider and manager
-        super(cachingProviderClassName);
-        featuresCache   = createCacheForFeatures();
-        propertiesCache = createCacheForProperties();
+    public FF4jJCacheManager(String providerClassName) {
+        this.cachingProvider = initCachingProvider(providerClassName);
+        initCaches();
     }
     
+    private void initCaches() {
+        // invoke the jCache 'getCacheManager()' to init cache Manager
+        this.cacheManager    = getCachingProvider().getCacheManager();
+        featuresCache        = createCacheForFeatures();
+        propertiesCache      = createCacheForProperties();
+    }
     
     /**
      * Default initialisation of cache.
@@ -106,6 +126,9 @@ public class FF4jJCacheManager extends FF4jJCacheProvider implements FF4JCacheMa
     
     /** {@inheritDoc} */
     public Object getNativeCache() {
+        if (featuresCache == null) {
+            throw new IllegalArgumentException("Cannot ");
+        }
         return featuresCache;
     }
 
@@ -195,6 +218,9 @@ public class FF4jJCacheManager extends FF4jJCacheProvider implements FF4JCacheMa
      *       current value of 'featuresCache'
      */
     public Cache<String, Feature> getFeaturesCache() {
+        if (featuresCache == null) {
+            initCaches();
+        }
         return featuresCache;
     }
 
@@ -215,7 +241,100 @@ public class FF4jJCacheManager extends FF4jJCacheProvider implements FF4JCacheMa
      */
     @SuppressWarnings("rawtypes")
     public Cache<String, Property> getPropertiesCache() {
+        if (propertiesCache == null) {
+            initCaches();
+        }
         return propertiesCache;
+    }
+    
+    /**
+     * Initialize cache configuration, could be overriden.
+     *
+     * @return
+     *      cache default configuration
+     */
+    protected MutableConfiguration< String, Feature> getFeatureCacheConfiguration() {
+        MutableConfiguration<String, Feature> featuresCacheConfig = new MutableConfiguration<>();        
+        featuresCacheConfig.setTypes(String.class, Feature.class);
+        featuresCacheConfig.setStoreByValue(true);
+        featuresCacheConfig.setStatisticsEnabled(false);
+        return featuresCacheConfig;
+    }
+    
+    /**
+     * Initialize cache configuration, could be overriden.
+     *
+     * @return
+     *      cache default configuration
+     */
+    @SuppressWarnings("rawtypes")
+    protected MutableConfiguration< String, Property> getPropertyCacheConfiguration() {
+        MutableConfiguration<String, Property> propertiesCacheConfig = new MutableConfiguration<>();        
+        propertiesCacheConfig.setTypes(String.class, Property.class);
+        propertiesCacheConfig.setStoreByValue(true);
+        propertiesCacheConfig.setStatisticsEnabled(false);
+        return propertiesCacheConfig;
+    }
+    
+    /**
+     * Default Initialisation of {@link CachingProvider}. It will work only is there is
+     * a single {@link CachingProvider} implementation within classpath. Otherwise should must
+     * overriden it to initialize with your own.
+     *
+     * @return
+     *      specialization of {@link CachingProvider} (JCache)
+     */
+    protected CachingProvider initCachingProvider(String cachingProviderClassname) {
+        try {
+            if (cachingProviderClassname == null) {
+                return Caching.getCachingProvider();
+            }
+            return Caching.getCachingProvider(cachingProviderClassname);
+        } catch(RuntimeException re) {
+            /* 
+             * Some cache implementation do not provide CachingProvider but the cacheManager
+             * work properly. As a consequence, caching provider can be null and should not throw
+             * caching exception.
+             */
+            return null;
+        }
+    }
+    
+    /**
+     * Getter accessor for attribute 'cachingProvider'.
+     *
+     * @return
+     *       current value of 'cachingProvider'
+     */
+    public CachingProvider getCachingProvider() {
+        if (cachingProvider == null) {
+            throw new IllegalStateException("Cannot initialize caches, cacheProvider not provided");
+        }
+        return cachingProvider;
+    }
+    
+    /**
+     * Initialize cache provider.
+     *
+     * @param provider
+     *      target cache provider
+     */
+    public void setCachingProvider(CachingProvider provider) {
+        this.cachingProvider = provider;
+        initCaches();
+    }
+
+    /**
+     * Getter accessor for attribute 'cacheManager'.
+     *
+     * @return
+     *       current value of 'cacheManager'
+     */
+    public CacheManager getCacheManager() {
+        if (cacheManager == null) {
+            throw new IllegalArgumentException("Cache manager must not be null");
+        }
+        return cacheManager;
     }
 
 }

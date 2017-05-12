@@ -1,4 +1,4 @@
-package org.ff4j.cache.hazelcast;
+package org.ff4j.hazelcast;
 
 /*
  * #%L
@@ -20,7 +20,6 @@ package org.ff4j.cache.hazelcast;
  * #L%
  */
 
-
 import javax.cache.CacheManager;
 
 import org.ff4j.cache.FF4JCacheManager;
@@ -31,11 +30,14 @@ import org.ff4j.test.cache.AbstractCacheManagerJUnitTest;
  *
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class FeatureCacheProviderHazelCastTest extends AbstractCacheManagerJUnitTest {
+public class FF4jCacheManagerHazelCastTest extends AbstractCacheManagerJUnitTest {
 
     /** {@inheritDoc} */
     protected FF4JCacheManager getCacheManager() {
-        return new FeatureCacheProviderHazelCast();
+        if (cacheManager == null) {
+            this.cacheManager = new FF4jCacheManagerHazelCast();
+        }
+        return cacheManager;
     }
 
 

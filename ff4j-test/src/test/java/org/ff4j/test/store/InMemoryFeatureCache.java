@@ -31,10 +31,12 @@ import org.ff4j.test.cache.AbstractCacheManagerJUnitTest;
  */
 public class InMemoryFeatureCache extends AbstractCacheManagerJUnitTest {
 
+    private FF4JCacheManager cacheManager = new InMemoryCacheManager();
+    
     /** {@inheritDoc} */
     @Override
     protected FF4JCacheManager getCacheManager() {
-        return new InMemoryCacheManager();
+        return cacheManager;
     }
 
 }

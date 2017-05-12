@@ -36,11 +36,16 @@ import org.junit.Test;
  */
 public class AbstractCacheManagerTest {
     
+    public static FF4JCacheManager cacheManager;
+    
     @Test
     public void testAbstractCacheManagerForCoverage() {
         AbstractCacheManagerJUnitTest ac = new AbstractCacheManagerJUnitTest() {
             protected FF4JCacheManager getCacheManager() {
-                return new InMemoryCacheManager();
+                if (cacheManager == null) {
+                    cacheManager = new InMemoryCacheManager();   
+                }
+                return cacheManager;
             }
         };
         ac.initialize();

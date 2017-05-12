@@ -141,9 +141,10 @@
     </properties>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!-- ~ CHILD MODULES ~ -->
+    <!-- ~ CHILD MODULES            ~ -->
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <modules>
+	
         <module>ff4j-core</module>
         <module>ff4j-aop</module>
         <module>ff4j-test</module>
@@ -160,11 +161,10 @@
         <module>ff4j-strategy-drools</module>
 
 		<!-- Stores -->
-		<!-- Inmemory and core JDBC are in ff4j-core -->
-        <module>ff4j-store-springjdbc</module>
-        <module>ff4j-store-cassandra</module>
+		<module>ff4j-store-archaius</module>
+		<module>ff4j-store-cassandra</module>
 		<module>ff4j-store-commonsconfig</module>
-        <module>ff4j-store-archaius</module>
+		<module>ff4j-store-consul</module>
 		<module>ff4j-store-ehcache</module>
         <module>ff4j-store-elastic</module>
         <module>ff4j-store-jcache</module>
@@ -172,6 +172,7 @@
         <module>ff4j-store-mongodb-v3</module>
         <module>ff4j-store-neo4j</module>
         <module>ff4j-store-redis</module>
+        <module>ff4j-store-springjdbc</module>
         
         <!-- spring-boot-starter -->
         <module>ff4j-spring-services</module>

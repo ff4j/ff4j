@@ -4,9 +4,9 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~         COORDINATES      ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<artifactId>ff4j-store-consul</artifactId>
+	<artifactId>ff4j-store-hazelcast</artifactId>
 	<packaging>jar</packaging>
-	<name>ff4j-store-consul</name>
+	<name>ff4j-store-hazelcast</name>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~         PARENT           ~ -->
@@ -22,9 +22,8 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<properties>
 		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-		<consul-client.version>0.14.0</consul-client.version>
-		<consul-embedded.version>0.3.1</consul-embedded.version>
-		<jackson.version>2.8.0</jackson.version>
+		<jsr107.version>1.0.0</jsr107.version>
+		<hazelcast.version>3.5.3</hazelcast.version>
 	</properties>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -32,44 +31,18 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<dependencies>
 
-		<!-- FF4J -->
+		<!-- Leverage on JCACHE -->
 		<dependency>
 			<groupId>org.ff4j</groupId>
-			<artifactId>ff4j-core</artifactId>
+			<artifactId>ff4j-store-jcache</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-            <groupId>org.ff4j</groupId>
-            <artifactId>ff4j-utils-json</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 
-		<!-- Consul Client -->
+		<!-- Hazelcast -->
 		<dependency>
-         <groupId>com.orbitz.consul</groupId>
-         <artifactId>consul-client</artifactId>
-         <version>${consul-client.version}</version>
-        </dependency>
-         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>${jackson.version}</version><!--$NO-MVN-MAN-VER$-->
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>${jackson.version}</version><!--$NO-MVN-MAN-VER$-->
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version><!--$NO-MVN-MAN-VER$-->
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-guava</artifactId>
-            <version>${jackson.version}</version><!--$NO-MVN-MAN-VER$-->
-        </dependency>
+			<groupId>com.hazelcast</groupId>
+			<artifactId>hazelcast</artifactId>
+		</dependency>
 		
 		<!-- Tests -->
 		<dependency>
@@ -94,18 +67,10 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-            <groupId>com.pszymczyk.consul</groupId>
-            <artifactId>embedded-consul</artifactId>
-           <version>${consul-embedded.version}</version>
-           <scope>test</scope>
-        </dependency>
-    
-		<dependency>
 			<groupId>org.fusesource.jansi</groupId>
 			<artifactId>jansi</artifactId>
 			<version>1.11</version>
 		</dependency>
-			
 
 	</dependencies>
 

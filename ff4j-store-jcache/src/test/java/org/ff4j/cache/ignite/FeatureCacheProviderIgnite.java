@@ -22,7 +22,6 @@ package org.ff4j.cache.ignite;
 
 
 import javax.cache.Cache;
-import javax.cache.CacheManager;
 import javax.cache.spi.CachingProvider;
 
 import org.apache.ignite.Ignite;
@@ -48,12 +47,6 @@ public class FeatureCacheProviderIgnite extends FF4jJCacheManager {
     public CachingProvider initCachingProvider(String className) {
         ignite = Ignition.ignite();
         //Ignition.start("examples/config/example-cache.xml")
-        return null;
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    protected CacheManager initCacheManager() {
         return null;
     }
     

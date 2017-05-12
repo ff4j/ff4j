@@ -44,7 +44,6 @@
 		<dependency>
 			<groupId>javax.cache</groupId>
 			<artifactId>cache-api</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		
 		<!-- JSR Default implementation (Tests Purposes) -->	
