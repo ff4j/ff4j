@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingStrategy;
@@ -65,6 +66,16 @@ public class FeatureJsonParser {
             return parseFeatureMap(objectMapper.readValue(json, HashMap.class));
         } catch (IOException e) {
             throw new IllegalArgumentException("Cannot parse json as Feature " + json, e);
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static Set<String> parsePermissions(String json) {
+        if (json == null) return null;
+        try {
+            return objectMapper.readValue(json, Set.class);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Cannot parse json list");
         }
     }
 

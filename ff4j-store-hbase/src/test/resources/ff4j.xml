@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  #%L
+  ff4j-core
+  %%
+  Copyright (C) 2013 Ff4J
+  %%
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
+<ff4j xmlns="http://www.ff4j.org/schema/ff4j" 
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://www.ff4j.org/schema/ff4j ../../main/resources/ff4j-1.4.0.xsd">
+	
+	<features>
+		<feature uid="AwesomeFeature" enable="true" description="some desc" />
+	
+		<feature uid="first" enable="true" description="description" >
+			
+			<security>
+				<role name="USER" />
+			</security>
+			
+			<custom-properties>
+			  <property name="ppint" 	  type="org.ff4j.property.PropertyInt" value="12"   />
+			  <property name="ppdouble"   type="double"  value="12.5" />
+			  <property name="ppboolean"  type="boolean" value="true" />
+			  <property name="ppstring"   value="hello" />
+			  <property name="ppListInt"  value="12,13,14" />
+			  <property name="myLogLevel" value="DEBUG" type="org.ff4j.property.PropertyLogLevel" />
+			  <property name="digitValue" value="1" type="org.ff4j.property.PropertyInt">
+			  	<fixedValues>
+			 		<value>0</value>
+			 		<value>1</value>
+			 		<value>2</value>
+			 		<value>3</value>
+			 	</fixedValues>
+			  </property>
+			  <property name="regionIdentifier" value="AMER" >
+			 	<fixedValues>
+			 		<value>AMER</value>
+			 		<value>SSSS</value>
+			 		<value>EAST</value>
+			 		<value>EAST</value>
+			 	</fixedValues>
+			 </property>
+			</custom-properties>
+		</feature>
+		
+		<feature-group name="GRP0">
+			<feature uid="second" enable="false" description="description" >
+				<security>
+					<role name="USER" />
+				</security>
+			</feature>
+		</feature-group>
+		
+		<feature-group name="GRP1">
+			<feature uid="forth" enable="true" description="description" >
+				<flipstrategy class="org.ff4j.strategy.el.ExpressionFlipStrategy">
+					<param name="expression" value="third | second" />
+				</flipstrategy>
+				<security>
+					<role name="ADMINISTRATOR" />
+					<role name="BETA-TESTER" />
+				</security>
+			</feature>
+			<feature uid="third" enable="false" >
+				<security>
+					<role name="ADMINISTRATOR" />
+					<role name="BETA-TESTER" />
+				</security>
+			</feature>
+		</feature-group>
+	
+	</features>
+	
+	<properties>	
+	
+	 <property name="a" value="AMER" >
+	 	<fixedValues>
+	 		<value>AMER</value>
+	 		<value>EAST</value>
+	 		<value>EAST</value>
+	 		<value>EAST</value>
+	 	</fixedValues>
+	 </property>
+	 
+	 <property name="b" 	  value="12"   />
+	
+	 <property name="c"   value="12.5" />
+	
+	 <property name="d"  value="true" />
+	
+	 <property name="e"   value="hello" />
+	
+	 <property name="f"  value="12,13,14" />
+	
+	 <property name="g" value="DEBUG" type="org.ff4j.property.PropertyLogLevel" />
+
+	</properties>
+	
+	
+</ff4j>

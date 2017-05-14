@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<configuration> 
+    <property>
+	   <name>hbase.cluster.distributed</name>
+	   <value>false</value>
+	</property>
+	
+	<property>
+	   <name>hbase.zookeeper.quorum</name>
+	   <value>192.168.80.166</value>
+	</property>
+   <property> 
+     <name>hbase.zookeeper.property.clientPort</name> 
+     <value>2181</value> 
+   </property> 
+</configuration> 
