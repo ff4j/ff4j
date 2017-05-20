@@ -21,14 +21,11 @@ package org.ff4j.store.kv;
  */
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.ff4j.core.Feature;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
-import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.mapper.FeatureMapper;
 import org.ff4j.store.AbstractFeatureStore;
 import org.ff4j.utils.Util;
@@ -81,27 +78,7 @@ public abstract class KeyValueFeatureStore < VALUE > extends AbstractFeatureStor
         return getDriver().existKey(getDriver().getFeatureKey(uid));
     }
     
-    /** {@inheritDoc} */
-    @Override
-    public void enable(String uid) {
-        // Read from redis, feature not found if no present
-        Feature f = read(uid);
-        // Update within Object
-        f.enable();
-        // Serialization and update key, update TTL
-        update(f);
-    }
     
-    /** {@inheritDoc} */
-    @Override
-    public void disable(String uid) {
-        // Read from redis, feature not found if no present
-        Feature f = read(uid);
-        // Update within Object
-        f.disable();
-        // Serialization and update key, update TTL
-        update(f);
-    }
     
     /** {@inheritDoc} */
     @Override
@@ -168,116 +145,7 @@ public abstract class KeyValueFeatureStore < VALUE > extends AbstractFeatureStor
         getDriver().unregisterFeature(uid);
     }  
     
-    /** {@inheritDoc} */
-    @Override
-    public void grantRoleOnFeature(String flipId, String roleName) {
-        Util.assertParamHasLength(roleName, "roleName (#2)");
-        // retrieve
-        Feature f = read(flipId);
-        // modify
-        f.getPermissions().add(roleName);
-        // persist modification
-        update(f);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void removeRoleFromFeature(String flipId, String roleName) {
-        Util.assertParamHasLength(roleName, "roleName (#2)");
-        // retrieve
-        Feature f = read(flipId);
-        f.getPermissions().remove(roleName);
-        // persist modification
-        update(f);
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public Map<String, Feature> readGroup(String groupName) {
-        Util.assertParamHasLength(groupName, "groupName");
-        Map < String, Feature > features = readAll();
-        Map < String, Feature > group = new HashMap< String, Feature >();
-        for (Map.Entry<String,Feature> uid : features.entrySet()) {
-            if (groupName.equals(uid.getValue().getGroup())) {
-                group.put(uid.getKey(), uid.getValue());
-            }
-        }
-        if (group.isEmpty()) {
-            throw new GroupNotFoundException(groupName);
-        }
-        return group;
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public boolean existGroup(String groupName) {
-        Util.assertParamHasLength(groupName, "groupName");
-        Map < String, Feature > features = readAll();
-        Map < String, Feature > group = new HashMap< String, Feature >();
-        for (Map.Entry<String,Feature> uid : features.entrySet()) {
-            if (groupName.equals(uid.getValue().getGroup())) {
-                group.put(uid.getKey(), uid.getValue());
-            }
-        }
-        return !group.isEmpty();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void enableGroup(String groupName) {
-        Map < String, Feature > features = readGroup(groupName);
-        for (Map.Entry<String,Feature> uid : features.entrySet()) {
-            uid.getValue().enable();
-            update(uid.getValue());
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void disableGroup(String groupName) {
-        Map < String, Feature > features = readGroup(groupName);
-        for (Map.Entry<String,Feature> uid : features.entrySet()) {
-            uid.getValue().disable();
-            update(uid.getValue());
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void addToGroup(String featureId, String groupName) {
-        Util.assertParamHasLength(groupName, "groupName (#2)");
-        // retrieve
-        Feature f = read(featureId);
-        f.setGroup(groupName);
-        // persist modification
-        update(f);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void removeFromGroup(String featureId, String groupName) {
-        Util.assertParamHasLength(groupName, "groupName (#2)");
-        if (!existGroup(groupName)) {
-            throw new GroupNotFoundException(groupName);
-        }
-        // retrieve
-        Feature f = read(featureId);
-        f.setGroup(null);
-        // persist modification
-        update(f);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Set<String> readAllGroups() {
-        Map < String, Feature > features = readAll();
-        Set < String > groups = new HashSet<String>();
-        for (Map.Entry<String,Feature> uid : features.entrySet()) {
-            groups.add(uid.getValue().getGroup());
-        }
-        groups.remove(null);
-        return groups;
-    }
+   
     
     /** {@inheritDoc} */
     @Override

@@ -63,13 +63,13 @@ public class HBaseConstants {
     public static final int    REGION_PORTINFO_DEFAULT  = 60030;
     
     
-    public static final String REST_PORT_PARAM        = "hbase.rest.port**";
+    public static final String REST_PORT_PARAM          = "hbase.rest.port**";
     
-    public static final int    REST_PORT_DEFAULT      = 8080;    
+    public static final int    REST_PORT_DEFAULT        = 8080;    
     
-    public static final String REST_PORTINFO_PARAM    = " hbase.rest.info.port*";
+    public static final String REST_PORTINFO_PARAM      = " hbase.rest.info.port*";
     
-    public static final int    REST_PORTINFO_DEFAULT  = 8085;
+    public static final int    REST_PORTINFO_DEFAULT    = 8085;
     
     public static final String THRIFT_PORT_PARAM        = "hbase.thrift.port**";
     
@@ -78,47 +78,6 @@ public class HBaseConstants {
     public static final String THRIFT_PORTINFO_PARAM    = "hbase.thrift.info.port**";
     
     public static final int    THRIFT_PORTINFO_DEFAULT  = 9095;
-        
-    // --- Features -----
-    
-    /** column Family. */
-    public static final String COLUMN_FAMILY_AUDIT = "audit";
-
-    /** sql column name for table FF4J_AUDIT. */
-    public static final String COL_EVENT_UID = "UID";
-
-    /** sql column name for table FF4J_AUDIT. */
-    public static final String COL_EVENT_TIME = "TIME";
-    
-    /** sql column name for table FF4J_AUDIT. */
-    public static final String COL_EVENT_DATE = "DATE";
-
-    /** sql column name for table FF4J_AUDIT. */
-    public static final String COL_EVENT_TYPE = "TYPE";
-
-    /** sql column name for table FF4J_AUDIT. */
-    public static final String COL_EVENT_NAME = "NAME";
-
-    /** sql column name for table FF4J_AUDIT. */
-    public static final String COL_EVENT_ACTION = "ACTION";
-
-    /** sql column name for table FF4J_AUDIT. */
-    public static final String COL_EVENT_HOSTNAME = "HOSTNAME";
-
-    /** sql column name for table FF4J_AUDIT. */
-    public static final String COL_EVENT_SOURCE = "SOURCE";
-
-    /** sql column name for table FF4J_AUDIT. */
-    public static final String COL_EVENT_DURATION = "DURATION";
-
-    /** sql column name for table FF4J_AUDIT. */
-    public static final String COL_EVENT_USER = "USER";
-
-    /** sql column name for table FF4J_AUDIT. */
-    public static final String COL_EVENT_VALUE = "VALUE";
-
-    /** sql column name for table FF4J_AUDIT. */
-    public static final String COL_EVENT_KEYS = "KEYS";
     
     // -----  Features ---------
     
@@ -188,28 +147,93 @@ public class HBaseConstants {
     /** column Family. */
     public static final byte[] B_FEAT_CUSTOMPROPERTIES = Bytes.toBytes(COL_FEAT_CUSTOMPROPERTIES);
     
+    
     // ----- Property ------------------
     
     /** column Family. */
-    public static final String COLUMN_FAMILY_PROPERTIES = "properties";
+    public static final String PROPERTIES_TABLENAME_ID = "ff4j_properties";
+    
+    /** column Family. */
+    public static final TableName PROPERTIES_TABLENAME = TableName.valueOf(PROPERTIES_TABLENAME_ID);
     
     /** sql column name from table FF4J_PROPERTIES. */
     public static final String COL_PROPERTY_ID = "UID";
     
+    /** column Family. */
+    public static final byte[] B_COL_PROPERTY_ID = Bytes.toBytes(COL_PROPERTY_ID);
+    
     /** sql column name from table FF4J_PROPERTIES. */
     public static final String COL_PROPERTY_CLAZZ = "CLAZZ";
+    
+    /** column Family. */
+    public static final byte[] B_COL_PROPERTY_CLAZZ = Bytes.toBytes(COL_PROPERTY_CLAZZ);
     
     /** sql column name from table FF4J_PROPERTIES. */
     public static final String COL_PROPERTY_VALUE = "VALUE";
     
+    /** column Family. */
+    public static final byte[] B_COL_PROPERTY_VALUE = Bytes.toBytes(COL_PROPERTY_VALUE);
+    
     /** sql column name from table FF4J_PROPERTIES. */
     public static final String COL_PROPERTY_FIXED = "FIXEDVALUES";
+    
+    /** column Family. */
+    public static final byte[] B_COL_PROPERTY_FIXED = Bytes.toBytes(COL_PROPERTY_FIXED);
     
     /** sql column name from table FF4J_PROPERTIES. */
     public static final String COL_PROPERTY_FEATID = "FEAT_UID";
     
+    /** column Family. */
+    public static final byte[] B_COL_PROPERTY_FEATID = Bytes.toBytes(COL_PROPERTY_FEATID);
+    
     /** sql column name from table FF4J_PROPERTIES. */
     public static final String COL_PROPERTY_DESCRIPTION = "DESCRIPTION";
+    
+    /** column Family. */
+    public static final byte[] B_COL_PROPERTY_DESCRIPTION = Bytes.toBytes(COL_PROPERTY_DESCRIPTION);
+    
+    
+    // --- AUDIT -----
+    
+    /** column Family. */
+    public static final String COLUMN_FAMILY_AUDIT = "audit";
+
+    /** sql column name for table FF4J_AUDIT. */
+    public static final String COL_EVENT_UID = "UID";
+
+    /** sql column name for table FF4J_AUDIT. */
+    public static final String COL_EVENT_TIME = "TIME";
+    
+    /** sql column name for table FF4J_AUDIT. */
+    public static final String COL_EVENT_DATE = "DATE";
+
+    /** sql column name for table FF4J_AUDIT. */
+    public static final String COL_EVENT_TYPE = "TYPE";
+
+    /** sql column name for table FF4J_AUDIT. */
+    public static final String COL_EVENT_NAME = "NAME";
+
+    /** sql column name for table FF4J_AUDIT. */
+    public static final String COL_EVENT_ACTION = "ACTION";
+
+    /** sql column name for table FF4J_AUDIT. */
+    public static final String COL_EVENT_HOSTNAME = "HOSTNAME";
+
+    /** sql column name for table FF4J_AUDIT. */
+    public static final String COL_EVENT_SOURCE = "SOURCE";
+
+    /** sql column name for table FF4J_AUDIT. */
+    public static final String COL_EVENT_DURATION = "DURATION";
+
+    /** sql column name for table FF4J_AUDIT. */
+    public static final String COL_EVENT_USER = "USER";
+
+    /** sql column name for table FF4J_AUDIT. */
+    public static final String COL_EVENT_VALUE = "VALUE";
+
+    /** sql column name for table FF4J_AUDIT. */
+    public static final String COL_EVENT_KEYS = "KEYS";
+
     
     /** Remove public constructor. */
     private HBaseConstants() {

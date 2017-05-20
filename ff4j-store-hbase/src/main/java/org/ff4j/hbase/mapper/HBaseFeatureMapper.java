@@ -80,8 +80,11 @@ public class HBaseFeatureMapper implements FeatureMapper<Put> {
        fout.setEnable(
                Bytes.toBoolean(result.getValue(B_FEATURES_CF_CORE, B_FEAT_ENABLE)));
        // group
-       fout.setDescription(
+       fout.setGroup(
                Bytes.toString(result.getValue(B_FEATURES_CF_CORE, B_FEAT_GROUPNAME)));
+       if ("null".equals(fout.getGroup())) {
+           fout.setGroup(null);
+       }
        // permissions
        fout.setPermissions(FeatureJsonParser.parsePermissions(
                Bytes.toString(result.getValue(B_FEATURES_CF_CORE, B_FEAT_ROLES))));

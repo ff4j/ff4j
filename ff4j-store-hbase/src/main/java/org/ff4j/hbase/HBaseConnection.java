@@ -131,12 +131,22 @@ public class HBaseConnection {
      *      table name
      */
     public void truncateTable(String tableName) {
-        try (Connection hbConn = ConnectionFactory.createConnection(config)) {
-            try(Admin hbAdmin = hbConn.getAdmin()) {
-                hbAdmin.truncateTable(TableName.valueOf(tableName), true);
-            }
+        Connection hbConn = null;
+        Admin hbAdmin     = null;
+        try {
+            hbConn = ConnectionFactory.createConnection(config);
+            hbAdmin = hbConn.getAdmin();
+            TableName target = TableName.valueOf(tableName);
+            hbAdmin.disableTable(target);
+            hbAdmin.truncateTable(target, false);
         } catch (IOException e) {
             throw new IllegalArgumentException("Cannot truncate table " + tableName + " please check name", e);
+        } finally {
+            // Closing connection
+            try {
+                if (hbAdmin != null) hbAdmin.close();
+                if (hbConn != null)  hbConn.close();
+            } catch (IOException e) {}
         }
     }
     

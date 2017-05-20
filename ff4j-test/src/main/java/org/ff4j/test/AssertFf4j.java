@@ -1,6 +1,7 @@
 package org.ff4j.test;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /*
@@ -204,7 +205,8 @@ public class AssertFf4j {
 	 * @return current object
 	 */
 	public final AssertFf4j assertThatStoreHasNumberOfGroups(int expectedNumber) {
-		Assert.assertEquals(expectedNumber, ff4j.getFeatureStore().readAllGroups().size());
+	    Set < String > groups = ff4j.getFeatureStore().readAllGroups();
+	    Assert.assertEquals(expectedNumber, groups.size());
 		waitSomeSeconds();
 		return this;
 	}

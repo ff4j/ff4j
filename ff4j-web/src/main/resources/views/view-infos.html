@@ -31,14 +31,6 @@
 	   <div class="ff4jstore" >
         <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;NoSQL</span>
         <br/><p class="circle">
-	  	<br/><img src="" th:src="@{static/img/db/db-neo4j.png}" style="width:50px" />
-      	<br/><a href="https://neo4j.com/">Neo4j</a>
-   		</p>
-       </div>
-       
-       <div class="ff4jstore" >
-        <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;NoSQL</span>
-        <br/><p class="circle">
 	  	<br/><img src="" th:src="@{static/img/db/db-mongo.png}" style="width:50px" />
       	<br/><a href="https://www.mongodb.com/">MongoDB</a>
    		</p>
@@ -61,36 +53,44 @@
        </div>
        
        <div class="ff4jstore" >
-        <span style="font-weight: bold;font-size:14px;color:#008bab">&nbsp;RDBMS</span>
+        <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;NoSQL</span>
         <br/><p class="circle">
-	  	<br/><img src="" th:src="@{static/img/db/db-oracle.png}" style="width:50px" />
-      	<br/><a href="https://www.oracle.com/database/index.html">Oracle</a>
-   		</p>
+        <br/><img src="" th:src="@{static/img/db/db-hbase.png}" style="width:50px" />
+        <br/><a href="https://hbase.apache.org">HBase</a>
+        </p>
+       </div>
+       
+        <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;NoSQL</span>
+        <br/><p class="circle">
+        <br/><img src="" th:src="@{static/img/db/db-neo4j.png}" style="width:50px" />
+        <br/><a href="https://neo4j.com/">Neo4j</a>
+        </p>
+       </div>
+       
+      <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#8b8b8b">&nbsp;Properties</span>
+        <br/><p class="circle">
+        <br/><img src="" th:src="@{static/img/db/db-archaius.png}" style="width:50px" />
+        <br/><a href="https://github.com/Netflix/archaius#archaius">Archaius</a>
+        </p>
+       </div>
+       
+        <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#8b8b8b">&nbsp;Properties</span>
+        <br/><p class="circle">
+        <br/><img src="" th:src="@{static/img/db/db-consul.png}" style="width:50px" />
+        <br/><a href="https://www.consul.io/">Consul</a>
+        </p>
        </div>
        
        <div class="ff4jstore" >
-        <span style="font-weight: bold;font-size:14px;color:#008bab">&nbsp;RDBMS</span>
+        <span style="font-weight: bold;font-size:14px;color:#8b8b8b">&nbsp;Properties</span>
         <br/><p class="circle">
-	  	<br/><img src="" th:src="@{static/img/db/db-sqlserver.png}" style="width:50px" />
-      	<br/><a href="http://www.microsoft.com/sql">SQLServer</a>
-   		</p>
+        <br/><img src="" th:src="@{static/img/db/db-commonsconfig.png}" style="width:50px" />
+        <br/><a href="https://commons.apache.org/proper/commons-configuration/userguide/overview.html#Configuration_Sources">commons-conf</a>
+        </p>
        </div>
-
-		<div class="ff4jstore" >
-        <span style="font-weight: bold;font-size:14px;color:#008bab">&nbsp;RDBMS</span>
-        <br/><p class="circle">
-	  	<br/><img src="" th:src="@{static/img/db/db-maria.png}" style="width:50px" />
-      	<br/><a href="https://mariadb.com/">MariaDB</a>
-   		</p>
-       </div> 
-       
-       <div class="ff4jstore" >
-        <span style="font-weight: bold;font-size:14px;color:#008bab">&nbsp;RDBMS</span>
-        <br/><p class="circle">
-	  	<br/><img src="" th:src="@{static/img/db/db-postgres.png}" style="width:50px" />
-      	<br/><a href="https://www.postgresql.org/">PostGreSQL</a>
-   		</p>
-       </div> 
        
         <div class="ff4jstore" >
         <span style="font-weight: bold;font-size:14px;color:#ab008b">&nbsp;Cache</span>
@@ -132,19 +132,45 @@
    		</p>
        </div>
        
-       <div class="ff4jstore" >
-        <span style="font-weight: bold;font-size:14px;color:#8b8b8b">&nbsp;Properties</span>
+         <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#008bab">&nbsp;RDBMS</span>
         <br/><p class="circle">
-        <br/><img src="" th:src="@{static/img/db/db-archaius.png}" style="width:50px" />
-        <br/><a href="https://github.com/Netflix/archaius#archaius">Archaius</a>
+        <br/><img src="" th:src="@{static/img/db/db-oracle.png}" style="width:50px" />
+        <br/><a href="https://www.oracle.com/database/index.html">Oracle</a>
         </p>
        </div>
        
        <div class="ff4jstore" >
-        <span style="font-weight: bold;font-size:14px;color:#8b8b8b">&nbsp;Properties</span>
+        <span style="font-weight: bold;font-size:14px;color:#008bab">&nbsp;RDBMS</span>
         <br/><p class="circle">
-        <br/><img src="" th:src="@{static/img/db/db-commonsconfig.png}" style="width:50px" />
-        <br/><a href="https://commons.apache.org/proper/commons-configuration/userguide/overview.html#Configuration_Sources">commons-conf</a>
+        <br/><img src="" th:src="@{static/img/db/db-sqlserver.png}" style="width:50px" />
+        <br/><a href="http://www.microsoft.com/sql">SQLServer</a>
+        </p>
+       </div>
+
+        <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#008bab">&nbsp;RDBMS</span>
+        <br/><p class="circle">
+        <br/><img src="" th:src="@{static/img/db/db-maria.png}" style="width:50px" />
+        <br/><a href="https://mariadb.com/">MariaDB</a>
+        </p>
+       </div> 
+       
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#008bab">&nbsp;RDBMS</span>
+        <br/><p class="circle">
+        <br/><img src="" th:src="@{static/img/db/db-postgres.png}" style="width:50px" />
+        <br/><a href="https://www.postgresql.org/">PostGreSQL</a>
+        </p>
+       </div> 
+       
+      
+       
+         <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;Strategy</span>
+        <br/><p class="circle">
+        <br/><img src="" th:src="@{static/img/strategy/s-drools.png}" style="width:50px" />
+        <br/><a href="http://www.drools.org/">Drools</a>
         </p>
        </div>
        
