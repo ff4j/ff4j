@@ -738,6 +738,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             sqlConnection = dataSource.getConnection();
             ps = buildStatement(sqlConnection, query, params);
             ps.executeUpdate();
+            sqlConnection.commit();
         } catch (SQLException sqlEX) {
             throw new FeatureAccessException(CANNOT_UPDATE_FEATURES_DATABASE_SQL_ERROR, sqlEX);
         } finally {
