@@ -9,7 +9,7 @@ import org.ff4j.test.propertystore.PropertyStoreTestSupport;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class PropertyStoreJCacheTestHazelCast extends PropertyStoreTestSupport {
+public class PropertyStoreHazelCastTest extends PropertyStoreTestSupport {
    
     /** {@inheritDoc} */
     @Override

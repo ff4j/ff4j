@@ -4,7 +4,7 @@ import java.util.Properties;
 
 import org.ff4j.cache.FF4JCacheManager;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.hazelcast.FF4jCacheManagerHazelCast;
+import org.ff4j.hazelcast.CacheManagerHazelCast;
 import org.ff4j.store.FeatureStoreJCache;
 
 import com.hazelcast.config.Config;
@@ -20,14 +20,14 @@ public class FeatureStoreHazelCast extends FeatureStoreJCache {
      * Default constructor.
      */
     public FeatureStoreHazelCast() {
-        this(new FF4jCacheManagerHazelCast());
+        this(new CacheManagerHazelCast());
     }
     
     /**
      * Default constructor.
      */
     public FeatureStoreHazelCast(String xmlConfigFileName, Properties systemProperties) {
-        this(new FF4jCacheManagerHazelCast(xmlConfigFileName, systemProperties));
+        this(new CacheManagerHazelCast(xmlConfigFileName, systemProperties));
     }
             
     /**
@@ -36,7 +36,7 @@ public class FeatureStoreHazelCast extends FeatureStoreJCache {
      * @param cacheManager
      */
     public FeatureStoreHazelCast(Config hazelcastConfig, Properties systemProperties) {
-        this(new FF4jCacheManagerHazelCast(hazelcastConfig, systemProperties));
+        this(new CacheManagerHazelCast(hazelcastConfig, systemProperties));
     }
     
     /**
@@ -45,7 +45,7 @@ public class FeatureStoreHazelCast extends FeatureStoreJCache {
      * @param cacheManager
      *      implementation of {@link FF4JCacheManager} for hazel cast
      */
-    private FeatureStoreHazelCast(FF4jCacheManagerHazelCast cacheManager) {
+    private FeatureStoreHazelCast(CacheManagerHazelCast cacheManager) {
         super(cacheManager);
     }
 

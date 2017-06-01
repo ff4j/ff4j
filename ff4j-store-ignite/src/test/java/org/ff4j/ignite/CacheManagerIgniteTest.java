@@ -1,4 +1,4 @@
-package org.ff4j.cache.ignite;
+package org.ff4j.ignite;
 
 /*
  * #%L
@@ -23,9 +23,12 @@ package org.ff4j.cache.ignite;
 
 import javax.cache.CacheManager;
 
+import org.apache.ignite.Ignite;
+import org.apache.ignite.Ignition;
 import org.ff4j.cache.FF4JCacheManager;
 import org.ff4j.test.cache.AbstractCacheManagerJUnitTest;
-import org.junit.Ignore;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 /**
  * Implementation of {@link CacheManager} for feautres and HazelCast
@@ -34,13 +37,29 @@ import org.junit.Ignore;
  * 
  * Test are skipped as a grid is required.
  */
-@Ignore
-public class FeatureCacheProviderIgniteTest extends AbstractCacheManagerJUnitTest {
-
+public class CacheManagerIgniteTest extends AbstractCacheManagerJUnitTest {
+    
+    /** ignite. */
+    private static Ignite ignite;
+    
+    @BeforeClass
+    public static void startIgnite() {
+        ignite = Ignition.start();
+    }
+    
     /** {@inheritDoc} */
     protected FF4JCacheManager getCacheManager() {
-        return new FeatureCacheProviderIgnite();
+        if (cacheManager == null) {
+            cacheManager = new FF4jCacheManagerIgnite(ignite);
+        }
+        return cacheManager;
     }
-
+    
+    @AfterClass
+    public static void stopIgnite() {
+        if (ignite != null) {
+            ignite.close();
+        }
+    }
 
 }

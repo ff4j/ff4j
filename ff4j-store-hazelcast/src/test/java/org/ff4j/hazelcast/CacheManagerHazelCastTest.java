@@ -30,12 +30,12 @@ import org.ff4j.test.cache.AbstractCacheManagerJUnitTest;
  *
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class FF4jCacheManagerHazelCastTest extends AbstractCacheManagerJUnitTest {
+public class CacheManagerHazelCastTest extends AbstractCacheManagerJUnitTest {
 
     /** {@inheritDoc} */
     protected FF4JCacheManager getCacheManager() {
         if (cacheManager == null) {
-            this.cacheManager = new FF4jCacheManagerHazelCast();
+            this.cacheManager = new CacheManagerHazelCast();
         }
         return cacheManager;
     }

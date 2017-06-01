@@ -41,10 +41,10 @@ import org.ff4j.property.Property;
 public class FF4jJCacheManager implements FF4JCacheManager {    
     
     /** cache name of the features. */
-    protected static final String CACHENAME_FEATURES      = "ff4jFeatures";
+    public static final String CACHENAME_FEATURES      = "ff4jFeatures";
     
     /** cache name of the properties. */
-    protected static final String CACHENAME_PROPERTIES    = "ff4jProperties";
+    public static final String CACHENAME_PROPERTIES    = "ff4jProperties";
     
     /** JCache associated CachingProvider in order to create 'CacheManager'. */
     private CachingProvider cachingProvider;

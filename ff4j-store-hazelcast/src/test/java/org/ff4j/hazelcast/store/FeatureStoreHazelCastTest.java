@@ -9,7 +9,7 @@ import org.ff4j.test.store.FeatureStoreTestSupport;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureStoreJCacheTestHazelCast extends FeatureStoreTestSupport {
+public class FeatureStoreHazelCastTest extends FeatureStoreTestSupport {
    
     /** {@inheritDoc} */
     @Override

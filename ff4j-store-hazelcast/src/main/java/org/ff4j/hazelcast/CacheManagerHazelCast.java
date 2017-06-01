@@ -19,7 +19,7 @@ import com.hazelcast.core.HazelcastInstance;
  *
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class FF4jCacheManagerHazelCast extends FF4jJCacheManager {
+public class CacheManagerHazelCast extends FF4jJCacheManager {
    
     /** Specialize Hazelcast configuration. */
     private Config hazelCastConfig = null;
@@ -29,7 +29,7 @@ public class FF4jCacheManagerHazelCast extends FF4jJCacheManager {
      *
      * @param hazelCastConfig
      */
-    public FF4jCacheManagerHazelCast() {
+    public CacheManagerHazelCast() {
         this(new XmlConfigBuilder().build(), null);
     }
       
@@ -38,7 +38,7 @@ public class FF4jCacheManagerHazelCast extends FF4jJCacheManager {
      *
      * @param hazelCastConfig
      */
-    public FF4jCacheManagerHazelCast(String xmlConfigFileName, Properties systemProperties) {
+    public CacheManagerHazelCast(String xmlConfigFileName, Properties systemProperties) {
         this(new ClasspathXmlConfig(xmlConfigFileName), systemProperties);
     }
     
@@ -47,11 +47,10 @@ public class FF4jCacheManagerHazelCast extends FF4jJCacheManager {
      *
      * @param hazelCastConfig
      */
-    public FF4jCacheManagerHazelCast(Config hazelCastConfig, Properties systemProperties) {
+    public CacheManagerHazelCast(Config hazelCastConfig, Properties systemProperties) {
         if (systemProperties != null) {
             System.setProperties(systemProperties);
         }
-        System.out.println(System.getProperties());
         this.hazelCastConfig = hazelCastConfig;
         initCachingProvider(null);
     }

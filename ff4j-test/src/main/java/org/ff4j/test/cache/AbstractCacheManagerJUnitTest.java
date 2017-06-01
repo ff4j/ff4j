@@ -93,7 +93,7 @@ public abstract class AbstractCacheManagerJUnitTest {
     @Test
     public void testPutAvoidDoublon() {
         // Given
-        Assert.assertTrue(cacheManager.listCachedFeatureNames().isEmpty());
+        Assert.assertTrue(getCacheManager().listCachedFeatureNames().isEmpty());
         // When
         getCacheManager().putFeature(new Feature("ff", false, DESCRIPTION));
         getCacheManager().putFeature(new Feature("ff", false, DESCRIPTION));
