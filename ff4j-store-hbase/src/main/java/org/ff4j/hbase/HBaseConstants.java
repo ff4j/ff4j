@@ -198,54 +198,57 @@ public class HBaseConstants {
     /** column Family. */
     public static final String    AUDIT_TABLENAME_ID = "ff4j_audit";
     public static final TableName AUDIT_TABLENAME    = TableName.valueOf(AUDIT_TABLENAME_ID);
+    /** column Family. */
+    public static final String    AUDIT_CF = "evt";
+    public static final byte[]    B_AUDIT_CF         = Bytes.toBytes(AUDIT_CF);
     
     /** sql column name for table FF4J_AUDIT. */
     public static final String COL_EVENT_UID    = "UID";
-    public static final byte[] B_COL_EVENT_UID  = Bytes.toBytes(COL_EVENT_UID);
+    public static final byte[] B_EVENT_UID  = Bytes.toBytes(COL_EVENT_UID);
 
     /** sql column name for table FF4J_AUDIT. */
     public static final String COL_EVENT_TIME       = "TIME";
-    public static final byte[] B_COL_EVENT_TIME     = Bytes.toBytes(COL_EVENT_TIME);
+    public static final byte[] B_EVENT_TIME     = Bytes.toBytes(COL_EVENT_TIME);
     
     /** sql column name for table FF4J_AUDIT. */
     public static final String COL_EVENT_DATE       = "DATE";
-    public static final byte[] B_COL_EVENT_DATE     = Bytes.toBytes(COL_EVENT_DATE);
+    public static final byte[] B_EVENT_DATE     = Bytes.toBytes(COL_EVENT_DATE);
     
     /** sql column name for table FF4J_AUDIT. */
     public static final String COL_EVENT_TYPE       = "TYPE";
-    public static final byte[] B_COL_EVENT_TYPE     = Bytes.toBytes(COL_EVENT_TYPE);
+    public static final byte[] B_EVENT_TYPE     = Bytes.toBytes(COL_EVENT_TYPE);
     
     /** sql column name for table FF4J_AUDIT. */
     public static final String COL_EVENT_NAME       = "NAME";
-    public static final byte[] B_COL_EVENT_NAME     = Bytes.toBytes(COL_EVENT_NAME);
+    public static final byte[] B_EVENT_NAME     = Bytes.toBytes(COL_EVENT_NAME);
     
     /** sql column name for table FF4J_AUDIT. */
     public static final String COL_EVENT_ACTION     = "ACTION";
-    public static final byte[] B_COL_EVENT_ACTION   = Bytes.toBytes(COL_EVENT_ACTION);
+    public static final byte[] B_EVENT_ACTION   = Bytes.toBytes(COL_EVENT_ACTION);
     
     /** sql column name for table FF4J_AUDIT. */
     public static final String COL_EVENT_HOSTNAME   = "HOSTNAME";
-    public static final byte[] B_COL_EVENT_HOSTNAME = Bytes.toBytes(COL_EVENT_HOSTNAME);
+    public static final byte[] B_EVENT_HOSTNAME = Bytes.toBytes(COL_EVENT_HOSTNAME);
     
     /** sql column name for table FF4J_AUDIT. */
     public static final String COL_EVENT_SOURCE     = "SOURCE";
-    public static final byte[] B_COL_EVENT_SOURCE   = Bytes.toBytes(COL_EVENT_SOURCE);
+    public static final byte[] B_EVENT_SOURCE   = Bytes.toBytes(COL_EVENT_SOURCE);
     
     /** sql column name for table FF4J_AUDIT. */
     public static final String COL_EVENT_DURATION   = "DURATION";
-    public static final byte[] B_COL_EVENT_DURATION = Bytes.toBytes(COL_EVENT_DURATION);
+    public static final byte[] B_EVENT_DURATION = Bytes.toBytes(COL_EVENT_DURATION);
     
     /** sql column name for table FF4J_AUDIT. */
     public static final String COL_EVENT_USER       = "USER";
-    public static final byte[] B_COL_EVENT_USER     = Bytes.toBytes(COL_EVENT_USER);
+    public static final byte[] B_EVENT_USER     = Bytes.toBytes(COL_EVENT_USER);
     
     /** sql column name for table FF4J_AUDIT. */
     public static final String COL_EVENT_VALUE      = "VALUE";
-    public static final byte[] C_COL_EVENT_VALUE    = Bytes.toBytes(COL_EVENT_VALUE);
+    public static final byte[] B_EVENT_VALUE    = Bytes.toBytes(COL_EVENT_VALUE);
     
     /** sql column name for table FF4J_AUDIT. */
     public static final String COL_EVENT_KEYS       = "KEYS";
-    public static final byte[] B_COL_EVENT_KEYS     = Bytes.toBytes(COL_EVENT_KEYS);
+    public static final byte[] B_EVENT_KEYS     = Bytes.toBytes(COL_EVENT_KEYS);
     
     /** Remove public constructor. */
     private HBaseConstants() {

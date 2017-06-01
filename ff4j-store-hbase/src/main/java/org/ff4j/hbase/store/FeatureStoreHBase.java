@@ -26,8 +26,8 @@ import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.hbase.HBaseConnection;
+import org.ff4j.hbase.HBaseQueryBuilder;
 import org.ff4j.hbase.mapper.HBaseFeatureMapper;
-import org.ff4j.hbase.mapper.HBaseQueryBuilder;
 import org.ff4j.store.AbstractFeatureStore;
 import org.ff4j.utils.Util;
 

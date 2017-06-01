@@ -1,17 +1,27 @@
 package org.ff4j.hbase.store;
 
+import static org.ff4j.hbase.HBaseConstants.AUDIT_TABLENAME;
+import static org.ff4j.hbase.HBaseConstants.AUDIT_CF;
+import static org.ff4j.hbase.HBaseConstants.AUDIT_TABLENAME_ID;
+
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.hadoop.hbase.client.Connection;
+import org.apache.hadoop.hbase.client.ConnectionFactory;
+import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.client.Table;
 import org.ff4j.audit.Event;
 import org.ff4j.audit.EventQueryDefinition;
 import org.ff4j.audit.EventSeries;
 import org.ff4j.audit.MutableHitCount;
 import org.ff4j.audit.chart.TimeSeriesChart;
 import org.ff4j.audit.repository.AbstractEventRepository;
+import org.ff4j.exception.AuditAccessException;
 import org.ff4j.hbase.HBaseConnection;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.ff4j.hbase.mapper.HBaseEventMapper;
+import org.ff4j.utils.Util;
 
 /**
  * Implementation of audit HBASE.
@@ -20,9 +30,9 @@ import org.slf4j.LoggerFactory;
  */
 public class EventRepositoryHBase extends AbstractEventRepository {
     
-    /** logger for this store. */
-    private static Logger LOGGER = LoggerFactory.getLogger(EventRepositoryHBase.class);
-
+    /** Mapper. */
+    private static final HBaseEventMapper MAPPER = new HBaseEventMapper();
+    
     /** Connection to store Cassandra. */
     private HBaseConnection conn;
     
@@ -42,15 +52,34 @@ public class EventRepositoryHBase extends AbstractEventRepository {
         this.conn = conn;
     }
     
-    /** {@inheritDoc} */
-    @Override
-    public void createSchema() {
+    /**
+     * Utility to insert data into events.
+     *
+     * @param putQuery
+     *      query to update DB.
+     */
+    private void executePutCommand(Put putQuery) {
+        try (Connection hbConn = ConnectionFactory.createConnection(conn.getConfig())) {
+            try(Table table = hbConn.getTable(AUDIT_TABLENAME)) {
+                table.put(putQuery);
+            }
+        } catch (IOException e) {
+            throw new AuditAccessException("Cannot execute command", e);
+        }
     }
     
     /** {@inheritDoc} */
     @Override
-    public boolean saveEvent(Event e) {
-        return false;
+    public void createSchema() {
+        conn.createTable(AUDIT_TABLENAME_ID, Util.set(AUDIT_CF));
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public boolean saveEvent(Event evt) {
+        Util.assertEvent(evt);
+        executePutCommand(MAPPER.toStore(evt));
+        return true;
     }
 
     /** {@inheritDoc} */

@@ -1,4 +1,4 @@
-package org.ff4j.hbase.mapper;
+package org.ff4j.hbase;
 
 import static org.ff4j.hbase.HBaseConstants.B_FEATURES_CF_CORE;
 import static org.ff4j.hbase.HBaseConstants.B_FEAT_ENABLE;
