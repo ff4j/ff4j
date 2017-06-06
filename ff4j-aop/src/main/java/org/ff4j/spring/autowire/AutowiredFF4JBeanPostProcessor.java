@@ -33,6 +33,9 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * When Proxified, analyze bean to eventually invoke ANOTHER implementation (flip up).
@@ -65,11 +68,14 @@ public class AutowiredFF4JBeanPostProcessor implements BeanPostProcessor {
     /**
      * {@inheritDoc}
      */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) {
         if (bean == null) return null;
         Class<?> beanClass = bean.getClass();
-        Field[] fields = beanClass.getDeclaredFields();
+        Field[] fields = getAllFields(beanClass);
         for (Field field : fields) {
             // Expect to get annnotation Autowired
             if (field.isAnnotationPresent(FF4JProperty.class)) {
@@ -79,6 +85,21 @@ public class AutowiredFF4JBeanPostProcessor implements BeanPostProcessor {
             }
         }
         return bean;
+
+    }
+
+    //Loops through the class hierarchy of the spring managed bean to get all fields
+    private Field[] getAllFields(final Class<?> beanClass) {
+        final List<Field> fields = new ArrayList<Field>();
+        Class<?> clazz = beanClass;
+
+        while (clazz != Object.class) {
+            fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
+
+            clazz = clazz.getSuperclass();
+        }
+
+        return fields.toArray(new Field[fields.size()]);
     }
 
     private void autoWiredFeature(Object bean, Field field) {
