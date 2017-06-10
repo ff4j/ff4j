@@ -153,7 +153,7 @@ public class JdbcQueryBuilder {
                   + "STRATEGY    VARCHAR(1000), "
                   + "EXPRESSION  VARCHAR(255), "
                   + "GROUPNAME   VARCHAR(100), "
-                  + "PRIMARY KEY(FEAT_UID));");
+                  + "PRIMARY KEY(FEAT_UID))");
         return sb.toString();
     }
     
@@ -169,7 +169,7 @@ public class JdbcQueryBuilder {
         sb.append("( FEAT_UID VARCHAR(100) REFERENCES " 
                 + getTableNameFeatures() + "(FEAT_UID), "
                 + "ROLE_NAME  VARCHAR(100), "
-                + "PRIMARY KEY(FEAT_UID, ROLE_NAME));");
+                + "PRIMARY KEY(FEAT_UID, ROLE_NAME))");
         return sb.toString();
     }
     
@@ -188,7 +188,7 @@ public class JdbcQueryBuilder {
                  + " FIXEDVALUES   VARCHAR(1000),"
                  + " DESCRIPTION   VARCHAR(1000),"
                  + " FEAT_UID      VARCHAR(100) REFERENCES " + getTableNameFeatures() + "(FEAT_UID),"
-                 + " PRIMARY KEY(PROPERTY_ID, FEAT_UID));");
+                 + " PRIMARY KEY(PROPERTY_ID, FEAT_UID))");
         return sb.toString();
     }
     
@@ -206,7 +206,7 @@ public class JdbcQueryBuilder {
                  + " CURRENTVALUE VARCHAR(255),"
                  + " FIXEDVALUES  VARCHAR(1000),"
                  + " DESCRIPTION  VARCHAR(1000),"
-                 + " PRIMARY KEY(PROPERTY_ID));");
+                 + " PRIMARY KEY(PROPERTY_ID))");
         return sb.toString();
     }
     
@@ -230,7 +230,7 @@ public class JdbcQueryBuilder {
                 + " EVT_USER     VARCHAR(30),"
                 + " EVT_VALUE    VARCHAR(100),"
                 + " EVT_KEYS     VARCHAR(255),"
-                + "PRIMARY KEY(EVT_UUID, EVT_TIME));");
+                + "PRIMARY KEY(EVT_UUID, EVT_TIME))");
          return sb.toString();
     }
     
