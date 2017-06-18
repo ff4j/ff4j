@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <!-- ~ COORDONATES ~ -->
@@ -61,7 +62,7 @@
     <properties>
 
         <!-- Compiling -->
-        <github.login />
+        <github.login/>
         <encoding>UTF-8</encoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -144,7 +145,7 @@
     <!-- ~ CHILD MODULES            ~ -->
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <modules>
-	
+
         <module>ff4j-core</module>
         <module>ff4j-aop</module>
         <module>ff4j-test</module>
@@ -160,12 +161,12 @@
         <module>ff4j-security-spring</module>
         <module>ff4j-strategy-drools</module>
 
-		<!-- Stores -->
-		<module>ff4j-store-archaius</module>
-		<module>ff4j-store-cassandra</module>
-		<module>ff4j-store-commonsconfig</module>
-		<module>ff4j-store-consul</module>
-		<module>ff4j-store-ehcache</module>
+        <!-- Stores -->
+        <module>ff4j-store-archaius</module>
+        <module>ff4j-store-cassandra</module>
+        <module>ff4j-store-commonsconfig</module>
+        <module>ff4j-store-consul</module>
+        <module>ff4j-store-ehcache</module>
         <module>ff4j-store-elastic</module>
         <module>ff4j-store-jcache</module>
         <module>ff4j-store-mongodb</module>
@@ -173,7 +174,7 @@
         <module>ff4j-store-neo4j</module>
         <module>ff4j-store-redis</module>
         <module>ff4j-store-springjdbc</module>
-        
+
         <!-- spring-boot-starter -->
         <module>ff4j-spring-services</module>
         <module>ff4j-spring-boot-web-api</module>
@@ -193,21 +194,6 @@
                 <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-autoconfigure</artifactId>
-                <version>${spring-boot.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-configuration-processor</artifactId>
-                <version>${spring-boot.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-web</artifactId>
-                <version>${spring-boot.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -248,13 +234,13 @@
                 <artifactId>gson</artifactId>
                 <version>${gson.version}</version>
             </dependency>
-<dependency>
-    <groupId>org.danilopianini</groupId>
-    <artifactId>gson-extras</artifactId>
-    <version>0.1.0</version>
-</dependency>
-            
-            
+            <dependency>
+                <groupId>org.danilopianini</groupId>
+                <artifactId>gson-extras</artifactId>
+                <version>0.1.0</version>
+            </dependency>
+
+
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
@@ -781,14 +767,14 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>${version.maven.plugin.dependency}</version>
-					<!--
-					<executions>
-					<execution>
-						<goals>
-							<goal>sources</goal>
-						</goals>
-					</execution>
-					</executions>-->
+                    <!--
+                    <executions>
+                    <execution>
+                        <goals>
+                            <goal>sources</goal>
+                        </goals>
+                    </execution>
+                    </executions>-->
                 </plugin>
 
                 <!-- Javadoc -->
@@ -870,7 +856,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -883,7 +869,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -897,7 +883,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
