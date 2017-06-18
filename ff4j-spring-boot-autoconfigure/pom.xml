@@ -23,6 +23,7 @@
         <version>1.6.5-SNAPSHOT</version>
     </parent>
     <properties>
+        <spring-boot.version>1.5.4.RELEASE</spring-boot.version>
         <license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
     </properties>
     <dependencies>
