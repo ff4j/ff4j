@@ -35,7 +35,7 @@ public class RedisCacheManagerTestIT {
     public void testPutGet() {
        
         // Initializing cache manager
-        FF4JCacheManager cache = new FeatureCacheProviderRedis();
+        FF4JCacheManager cache = new FF4jCacheManagerRedis();
 
         // Initializing Features for test
         FeatureStore store = new InMemoryFeatureStore(TEST_FEATURES_FILE);

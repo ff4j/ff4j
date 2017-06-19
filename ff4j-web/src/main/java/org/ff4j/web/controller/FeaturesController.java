@@ -259,10 +259,8 @@ public class FeaturesController extends AbstractController {
                 String[] params = strategyParams.split(";");
                 for (String currentP : params) {
                     String[] cur = currentP.split("=");
-                    if (cur.length < 2) {
-                        throw new IllegalArgumentException("Invalid Syntax : param1=val1,val2;param2=val3,val4");
-                    }
-                    initParams.put(cur[0], cur[1]);
+                    String value = (cur.length < 2) ? "" : cur[1];
+                    initParams.put(cur[0], value);
                 }
             }
             fstrategy = MappingUtil.instanceFlippingStrategy(uid, strategy, initParams);

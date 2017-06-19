@@ -2,6 +2,8 @@ package org.ff4j.hbase.store;
 
 import static org.ff4j.hbase.HBaseConstants.B_FEATURES_CF_CORE;
 import static org.ff4j.hbase.HBaseConstants.B_FEATURES_CF_PROPERTIES;
+import static org.ff4j.hbase.HBaseConstants.B_FEAT_ENABLE;
+import static org.ff4j.hbase.HBaseConstants.B_FEAT_UID;
 import static org.ff4j.hbase.HBaseConstants.FEATURES_CF_CORE;
 import static org.ff4j.hbase.HBaseConstants.FEATURES_CF_PROPERTIES;
 import static org.ff4j.hbase.HBaseConstants.FEATURES_TABLENAME;
@@ -17,16 +19,17 @@ import java.util.Map;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.Delete;
+import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.util.Bytes;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.hbase.HBaseConnection;
-import org.ff4j.hbase.HBaseQueryBuilder;
 import org.ff4j.hbase.mapper.HBaseFeatureMapper;
 import org.ff4j.store.AbstractFeatureStore;
 import org.ff4j.utils.Util;
@@ -73,7 +76,8 @@ public class FeatureStoreHBase extends AbstractFeatureStore {
         Util.assertHasLength(featId);
         try (Connection hbConn = ConnectionFactory.createConnection(conn.getConfig())) {
             try(Table table = hbConn.getTable(FEATURES_TABLENAME)) {
-                return !table.get(HBaseQueryBuilder.getFeatureById(featId)).isEmpty();
+                Get queryByIdQuery = new Get(Bytes.toBytes(featId));
+                return !table.get(queryByIdQuery).isEmpty();
             }
         } catch (IOException e) {
             throw new FeatureAccessException("Cannot check feature existence", e);
@@ -102,14 +106,20 @@ public class FeatureStoreHBase extends AbstractFeatureStore {
     @Override
     public void enable(String uid) {
         assertFeatureExist(uid);
-        executePutCommand(HBaseQueryBuilder.queryEnableFeature(uid));
+        Put queryEnableFeature = new Put(Bytes.toBytes(uid));
+        queryEnableFeature.addColumn(B_FEATURES_CF_CORE, B_FEAT_UID, Bytes.toBytes(uid));
+        queryEnableFeature.addColumn(B_FEATURES_CF_CORE, B_FEAT_ENABLE, Bytes.toBytes(true));
+        executePutCommand(queryEnableFeature);
     }
 
     /** {@inheritDoc} */
     @Override
     public void disable(String uid) {
         assertFeatureExist(uid);
-        executePutCommand(HBaseQueryBuilder.queryDisableFeature(uid));
+        Put queryDisableFeature = new Put(Bytes.toBytes(uid));
+        queryDisableFeature.addColumn(B_FEATURES_CF_CORE, B_FEAT_UID, Bytes.toBytes(uid));
+        queryDisableFeature.addColumn(B_FEATURES_CF_CORE, B_FEAT_ENABLE, Bytes.toBytes(false));
+        executePutCommand(queryDisableFeature);
     }    
     
     /** {@inheritDoc} */
@@ -118,7 +128,8 @@ public class FeatureStoreHBase extends AbstractFeatureStore {
         assertFeatureExist(uid);
         try (Connection hbConn = ConnectionFactory.createConnection(conn.getConfig())) {
             try(Table table = hbConn.getTable(FEATURES_TABLENAME)) {
-                Result result = table.get(HBaseQueryBuilder.getFeatureById(uid));
+                Get queryByIdQuery = new Get(Bytes.toBytes(uid));
+                Result result = table.get(queryByIdQuery);
                 return MAPPER.fromStore(result);
             }
         } catch (IOException e) {

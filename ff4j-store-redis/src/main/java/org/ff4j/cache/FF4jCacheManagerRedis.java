@@ -37,7 +37,7 @@ import static org.ff4j.redis.RedisContants.*;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class FeatureCacheProviderRedis implements FF4JCacheManager {
+public class FF4jCacheManagerRedis implements FF4JCacheManager {
     
     /** Wrapping of redis connection (isolation). */
     private RedisConnection redisConnection;
@@ -48,11 +48,18 @@ public class FeatureCacheProviderRedis implements FF4JCacheManager {
     /**
      * Default constructor
      */
-    public FeatureCacheProviderRedis() {
-        redisConnection = new RedisConnection();
+    public FF4jCacheManagerRedis(RedisConnection redisConn) {
+        redisConnection = redisConn;
+    }
+    
+    /**
+     * Default constructor
+     */
+    public FF4jCacheManagerRedis() {
+        this(new RedisConnection());
     }
 
-    public FeatureCacheProviderRedis(String host, int port) {
+    public FF4jCacheManagerRedis(String host, int port) {
         redisConnection = new RedisConnection(host, port);
     }
     

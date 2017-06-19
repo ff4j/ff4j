@@ -1,7 +1,10 @@
 package org.ff4j.hbase;
 
+import java.util.Set;
+
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.ff4j.utils.Util;
 
 /*
  * #%L
@@ -192,12 +195,12 @@ public class HBaseConstants {
     /** column Family. */
     public static final byte[] B_COL_PROPERTY_DESCRIPTION = Bytes.toBytes(COL_PROPERTY_DESCRIPTION);
     
-    
     // --- AUDIT -----
     
     /** column Family. */
     public static final String    AUDIT_TABLENAME_ID = "ff4j_audit";
     public static final TableName AUDIT_TABLENAME    = TableName.valueOf(AUDIT_TABLENAME_ID);
+    
     /** column Family. */
     public static final String    AUDIT_CF = "evt";
     public static final byte[]    B_AUDIT_CF         = Bytes.toBytes(AUDIT_CF);
@@ -249,6 +252,11 @@ public class HBaseConstants {
     /** sql column name for table FF4J_AUDIT. */
     public static final String COL_EVENT_KEYS       = "KEYS";
     public static final byte[] B_EVENT_KEYS     = Bytes.toBytes(COL_EVENT_KEYS);
+    
+    /** Group of all columns ('*' does not exist). */
+    public static final Set < String > COLS_EVENT = Util.set(COL_EVENT_ACTION, COL_EVENT_DATE, COL_EVENT_DURATION,
+            COL_EVENT_HOSTNAME, COL_EVENT_KEYS, COL_EVENT_NAME, COL_EVENT_SOURCE, COL_EVENT_TIME,
+            COL_EVENT_TYPE, COL_EVENT_UID, COL_EVENT_USER, COL_EVENT_VALUE);
     
     /** Remove public constructor. */
     private HBaseConstants() {

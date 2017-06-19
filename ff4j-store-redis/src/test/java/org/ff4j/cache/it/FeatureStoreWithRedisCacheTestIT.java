@@ -26,7 +26,7 @@ import java.util.Set;
 
 import org.ff4j.cache.FF4JCacheManager;
 import org.ff4j.cache.FF4jCacheProxy;
-import org.ff4j.cache.FeatureCacheProviderRedis;
+import org.ff4j.cache.FF4jCacheManagerRedis;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureAlreadyExistException;
@@ -49,7 +49,7 @@ public class FeatureStoreWithRedisCacheTestIT extends FeatureStoreTestSupport {
     private static final int EXPECTED_FEATURES_NUMBERS = 5;
 
     /** Cache Manager. */
-    private static final FF4JCacheManager cache = new FeatureCacheProviderRedis();
+    private static final FF4JCacheManager cache = new FF4jCacheManagerRedis();
 
     /** {@inheritDoc} */
     @Override

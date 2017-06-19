@@ -167,13 +167,14 @@ public abstract class AbstractController {
     	    ctx.setVariable("userName", getFf4j().getAuthorizationsManager().getCurrentUserName());
     	    Set < String > permissions = getFf4j().getAuthorizationsManager().getCurrentUserPermissions();
     	    ctx.setVariable("userPermissions", permissions);
-    	    
-    	    // If no role FF4J_CONSOLE_READ => 403
+    	   
+    	    // Not the responsability of ff4j but in Spring Security
+    	    /* If no role FF4J_CONSOLE_READ => 403
     	    if (!permissions.contains(WebConstants.ROLE_USER)) {
     	        res.setStatus(WebConstants.STATUS_FORBIDDEN);
     	        res.getWriter().println("You cannot access FF4J console, insuffisant permissions");
     	        return;
-    	    }
+    	    }*/
         }
     	
     	try {
