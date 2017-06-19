@@ -44,6 +44,7 @@ public class SwaggerConfig {
                 .build().apiInfo(apiInfo()).useDefaultResponseMessages(false);
     }
 
+    @SuppressWarnings("deprecation")
     private ApiInfo apiInfo() {
         return new ApiInfo("FF4J (ff4j.org) WebAPI", "Administrate and operate all tasks on your features through " +
                 "this api.", "1.5", "Terms of service", "paul589140480@gmail.com", "Apache 2.0",
