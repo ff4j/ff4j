@@ -64,7 +64,7 @@ public class FF4jResource {
         return ff4JServices.getStatus();
     }
 
-    @RequestMapping(value = ROOT + RESOURCE_SECURITY, method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/" + RESOURCE_SECURITY, method = GET, produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Gets <b>Security</b> information (permissions manager)",
             notes = "Security is implemented through dedicated <b>AuthorizationsManager</b> but it's not mandatory")
     @ApiResponses({@ApiResponse(code = 200, message = "Status of current ff4j security bean", response = AuthorizationsManagerApiBean.class),
@@ -74,7 +74,7 @@ public class FF4jResource {
     }
 
 
-    @RequestMapping(value = ROOT + OPERATION_CHECK + ROOT + PATH_PARAM_UID, method = GET)
+    @RequestMapping(value = "/" + OPERATION_CHECK + "/" + PATH_PARAM_UID, method = GET)
     @ApiOperation(value = "<b>Simple check</b> feature toggle", response = Boolean.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "If feature is flipped"),
@@ -84,7 +84,7 @@ public class FF4jResource {
         return new ResponseEntity<Boolean>(status, OK);
     }
 
-    @RequestMapping(value = ROOT + OPERATION_CHECK + ROOT + PATH_PARAM_UID, method = POST, consumes = APPLICATION_FORM_URLENCODED_VALUE)
+    @RequestMapping(value = "/" + OPERATION_CHECK + "/" + PATH_PARAM_UID, method = POST, consumes = APPLICATION_FORM_URLENCODED_VALUE)
     @ApiOperation(value = "<b>Advanced check</b> feature toggle (parametrized)", response = Boolean.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "If feature is flipped"),

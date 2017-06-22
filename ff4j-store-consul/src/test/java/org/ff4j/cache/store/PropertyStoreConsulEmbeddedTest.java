@@ -47,14 +47,8 @@ public class PropertyStoreConsulEmbeddedTest  extends PropertyStoreTestSupport {
         String customConfiguration = "{ \"datacenter\": \"test-dc\"," +                    
                     "\"log_level\": \"INFO\"," +
                     "\"node_name\": \"ff4j-embedded\"," +
-                    "\"ports\": {" +
-                        "\"http\": 8800," +
-                        "\"dns\": 64294," +
-                        "\"rpc\": 64295," +
-                        "\"serf_lan\": 64296," +
-                        "\"serf_wan\": 64297," +
-                        "\"server\": 64298 }" 
-                    + "}";
+                    "\"ports\": { \"http\": 8800  }" + "}";
+        
         consulProcess = ConsulStarterBuilder.consulStarter()
                                             .withCustomConfig(customConfiguration)
                                             .build().start();    

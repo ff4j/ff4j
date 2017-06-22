@@ -17,7 +17,7 @@ Feature: This feature enables in providing the user with RESTful api's where in 
 
    # Get monitoring information pertaining to all features
   Scenario: When the user tries to retrieve the monitoring information of all features
-    When the user requests for a feature by "/ff4j/monitoring" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/monitoring" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """

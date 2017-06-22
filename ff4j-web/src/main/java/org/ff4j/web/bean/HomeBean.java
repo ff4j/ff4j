@@ -117,6 +117,8 @@ public class HomeBean implements Serializable {
         if (authManager != null) {
             this.security = authManager.getClass().getSimpleName();
             security = security.replaceAll("AuthorisationManager", "");
+            security = security.replaceAll("AuthorizationManager", "");
+            security = security.toLowerCase();
         }
 
         // Caching

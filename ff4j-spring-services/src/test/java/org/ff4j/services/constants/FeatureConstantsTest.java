@@ -64,19 +64,19 @@ public class FeatureConstantsTest {
         assertThat(FeatureConstants.PATH_PARAM_GROUP).isEqualTo("{groupName}");
         assertThat(FeatureConstants.PATH_PARAM_NAME).isEqualTo("{name}");
         assertThat(FeatureConstants.PATH_PARAM_VALUE).isEqualTo("{value}");
-        assertThat(FeatureConstants.ROOT).isEqualTo("/");
-        assertThat(FeatureConstants.RESOURCE_FF4J).isEqualTo("/ff4j");
+        assertThat(FeatureConstants.ROOT).isEqualTo("/api/");
+        assertThat(FeatureConstants.RESOURCE_FF4J).isEqualTo("/api/ff4j");
         assertThat(FeatureConstants.RESOURCE_STORE).isEqualTo("/store");
         assertThat(FeatureConstants.RESOURCE_FEATURES).isEqualTo("/features");
         assertThat(FeatureConstants.RESOURCE_GROUPS).isEqualTo("/groups");
-        assertThat(FeatureConstants.RESOURCE_FF4J_STORE).isEqualTo("/ff4j/store");
-        assertThat(FeatureConstants.RESOURCE_FF4J_STORE_FEATURES).isEqualTo("/ff4j/store/features");
-        assertThat(FeatureConstants.RESOURCE_FF4J_STORE_GROUPS).isEqualTo("/ff4j/store/groups");
+        assertThat(FeatureConstants.RESOURCE_FF4J_STORE).isEqualTo("/api/ff4j/store");
+        assertThat(FeatureConstants.RESOURCE_FF4J_STORE_FEATURES).isEqualTo("/api/ff4j/store/features");
+        assertThat(FeatureConstants.RESOURCE_FF4J_STORE_GROUPS).isEqualTo("/api/ff4j/store/groups");
         assertThat(FeatureConstants.RESOURCE_PROPERTY_STORE).isEqualTo("/propertyStore");
         assertThat(FeatureConstants.RESOURCE_PROPERTIES).isEqualTo("/properties");
-        assertThat(FeatureConstants.RESOURCE_PROPERTIES_STORE_PROPERTIES).isEqualTo("/ff4j/propertyStore/properties");
-        assertThat(FeatureConstants.RESOURCE_FF4J_PROPERTY_STORE).isEqualTo("/ff4j/propertyStore");
+        assertThat(FeatureConstants.RESOURCE_PROPERTIES_STORE_PROPERTIES).isEqualTo("/api/ff4j/propertyStore/properties");
+        assertThat(FeatureConstants.RESOURCE_FF4J_PROPERTY_STORE).isEqualTo("/api/ff4j/propertyStore");
         assertThat(FeatureConstants.RESOURCE_CLEAR_CACHE).isEqualTo("/clearCache");
-        assertThat(FeatureConstants.RESOURCE_FF4J_MONITORING).isEqualTo("/ff4j/monitoring");
+        assertThat(FeatureConstants.RESOURCE_FF4J_MONITORING).isEqualTo("/api/ff4j/monitoring");
     }
 }

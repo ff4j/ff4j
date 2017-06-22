@@ -15,7 +15,7 @@ Feature: This feature enables in providing the user with RESTful api's where in 
 
   # Read information about a property
   Scenario: When the user tries to know the information of a property
-    When the user requests for a feature by "/ff4j/propertyStore/properties/usernameMinLength" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/propertyStore/properties/usernameMinLength" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -29,12 +29,12 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     """
 
   Scenario: When the user tries to know the information of an invalid property
-    When the user requests for a feature by "/ff4j/propertyStore/properties/invalidProperty" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/propertyStore/properties/invalidProperty" by "GET" http method and content type as "application/json"
     Then the user gets an error response with code "404" and error message as "property not found"
 
   # Create or update a property
   Scenario: When the user tries to create a property
-    When the user requests for a feature by "/ff4j/propertyStore/properties/springLogLevel" by "PUT" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/propertyStore/properties/springLogLevel" by "PUT" http method and content type as "application/json"
     And request body as
     """
     {
@@ -46,7 +46,7 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     """
     Then the user gets the response with response code "201"
     And the response body has content to be "true"
-    When the user requests for a feature by "/ff4j/propertyStore/properties/springLogLevel" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/propertyStore/properties/springLogLevel" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -59,7 +59,7 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     """
 
   Scenario: When the user tries to create or update a property with blank property name
-    When the user requests for a feature by "/ff4j/propertyStore/properties/springLogLevel" by "PUT" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/propertyStore/properties/springLogLevel" by "PUT" http method and content type as "application/json"
     And request body as
     """
     {
@@ -71,7 +71,7 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     Then the user gets an error response with code "400" and error message as "property name cannot be blank"
 
   Scenario: When the user tries to create or update a property with property name not matching
-    When the user requests for a feature by "/ff4j/propertyStore/properties/springLogLevel" by "PUT" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/propertyStore/properties/springLogLevel" by "PUT" http method and content type as "application/json"
     And request body as
     """
     {
@@ -84,7 +84,7 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     Then the user gets an error response with code "400" and error message as "property name did not match with the requested property name to be created or updated"
 
   Scenario: When the user tries to update a property
-    When the user requests for a feature by "/ff4j/propertyStore/properties/usernameMinLength" by "PUT" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/propertyStore/properties/usernameMinLength" by "PUT" http method and content type as "application/json"
     And request body as
     """
     {
@@ -96,7 +96,7 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     """
     Then the user gets the response with response code "202"
     And the response body has content to be "true"
-    When the user requests for a feature by "/ff4j/propertyStore/properties/usernameMinLength" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/propertyStore/properties/usernameMinLength" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -110,20 +110,20 @@ Feature: This feature enables in providing the user with RESTful api's where in 
 
   # Delete a property
   Scenario: When the user tries to delete a property
-    When the user requests for a feature by "/ff4j/propertyStore/properties/usernameMinLength" by "DELETE" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/propertyStore/properties/usernameMinLength" by "DELETE" http method and content type as "application/json"
     Then the user gets the response with response code "204"
-    When the user requests for a feature by "/ff4j/propertyStore/properties/usernameMinLength" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/propertyStore/properties/usernameMinLength" by "GET" http method and content type as "application/json"
     Then the user gets an error response with code "404" and error message as "property not found"
 
   Scenario: When the user tries to delete a property which does not exists
-    When the user requests for a feature by "/ff4j/propertyStore/properties/invalidProperty" by "DELETE" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/propertyStore/properties/invalidProperty" by "DELETE" http method and content type as "application/json"
     Then the user gets an error response with code "404" and error message as "property not found"
 
   # Update value of a property
   Scenario: When the user tries to update value of a property
-    When the user requests for a feature by "/ff4j/propertyStore/properties/usernameMinLength/update/3" by "POST" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/propertyStore/properties/usernameMinLength/update/3" by "POST" http method and content type as "application/json"
     Then the user gets the response with response code "202"
-    When the user requests for a feature by "/ff4j/propertyStore/properties/usernameMinLength" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/propertyStore/properties/usernameMinLength" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -136,9 +136,9 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     """
 
   Scenario: When the user tries to update value of a property which does not exists
-    When the user requests for a feature by "/ff4j/propertyStore/properties/invalidProperty/update/3" by "POST" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/propertyStore/properties/invalidProperty/update/3" by "POST" http method and content type as "application/json"
     Then the user gets an error response with code "404" and error message as "property not found"
 
   Scenario: When the user tries to update value of a property with a wrong value
-    When the user requests for a feature by "/ff4j/propertyStore/properties/usernameMinLength/update/invalidValue" by "POST" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/propertyStore/properties/usernameMinLength/update/invalidValue" by "POST" http method and content type as "application/json"
     Then the user gets an error response with code "400" and error message as "bad request"

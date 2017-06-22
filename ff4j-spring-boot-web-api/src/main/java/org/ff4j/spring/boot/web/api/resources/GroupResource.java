@@ -43,7 +43,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  * @author <a href="mailto:paul58914080@gmail.com">Paul Williams</a>
  */
 @RestController
-@RequestMapping(value = RESOURCE_FF4J_STORE_GROUPS + ROOT + PATH_PARAM_GROUP)
+@RequestMapping(value = RESOURCE_FF4J_STORE_GROUPS + "/" + PATH_PARAM_GROUP)
 public class GroupResource {
 
     @Autowired
@@ -58,7 +58,7 @@ public class GroupResource {
         return groupServices.getFeaturesByGroup(groupName);
     }
 
-    @RequestMapping(value = ROOT + OPERATION_ENABLE, method = POST, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/" + OPERATION_ENABLE, method = POST, produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Enable a group", response = Void.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "Group has been enabled"),
@@ -67,7 +67,7 @@ public class GroupResource {
         groupServices.enableGroup(groupName);
     }
 
-    @RequestMapping(value = ROOT + OPERATION_DISABLE, method = POST, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/" + OPERATION_DISABLE, method = POST, produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Disable a group", response = Void.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "Group has been disabled"),

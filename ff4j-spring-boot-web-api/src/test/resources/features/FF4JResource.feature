@@ -19,7 +19,7 @@ Feature: Provides RESTful api's to do the following
     Given the feature store has the following security information
       | currentUserPermissions | allPermissions                    |
       | ROLE_USER              | ROLE_USER,ROLE_SUPPORT,ROLE_ADMIN |
-    When the user requests for a feature by "/ff4j" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -55,14 +55,14 @@ Feature: Provides RESTful api's to do the following
 
   # Display security resources
   Scenario: When the user tries to retrieve security information and there is no security defined
-    When the user requests for a feature by "/ff4j/security" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/security" by "GET" http method and content type as "application/json"
     Then the user gets an error response with code "404" and error message as "no security has been defined"
 
   Scenario: When the user tries to retrieve security information and there is security defined
     Given the feature store has the following security information
       | currentUserPermissions | allPermissions                    |
       | ROLE_USER              | ROLE_USER,ROLE_SUPPORT,ROLE_ADMIN |
-    When the user requests for a feature by "/ff4j/security" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/security" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -77,21 +77,21 @@ Feature: Provides RESTful api's to do the following
 
   # Check if a feature is flipped
   Scenario: When the user tries to know whether the feature is flipped
-    When the user requests for a feature by "/ff4j/check/login" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/check/login" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body has content to be "true"
-    When the user requests for a feature by "/ff4j/check/admin" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/check/admin" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body has content to be "false"
 
   Scenario: When the user tries to know whether the feature is flipped and the feature does not exist
-    When the user requests for a feature by "/ff4j/check/cart" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/check/cart" by "GET" http method and content type as "application/json"
     Then the user gets an error response with code "404" and error message as "feature not found"
 
 
   # Initialize a flip strategy with an execution strategy and check if the feature has been flipped
   Scenario: When the user tries to initialize a feature of its flipping strategy with an execution strategy
-    When the user requests for a feature by "/ff4j/store/features/login" by "PUT" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "PUT" http method and content type as "application/json"
     And request body as
     """
     {
@@ -112,7 +112,7 @@ Feature: Provides RESTful api's to do the following
     """
     Then the user gets the response with response code "202"
     And the response body has content to be "true"
-    When the user requests for a feature by "/ff4j/store/features/login" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
    """
@@ -132,24 +132,24 @@ Feature: Provides RESTful api's to do the following
       }
     }
     """
-    When the user requests for a feature by "/ff4j/check/login" by "POST" http method and content type as "application/x-www-form-urlencoded"
+    When the user requests for a feature by "/api/ff4j/check/login" by "POST" http method and content type as "application/x-www-form-urlencoded"
     And the following form param
       | name       | value         |
       | expression | login & admin |
     Then the user gets the response with response code "200"
     And the response body has content to be "false"
-    When the user requests for a feature by "/ff4j/check/login" by "POST" http method and content type as "application/x-www-form-urlencoded"
+    When the user requests for a feature by "/api/ff4j/check/login" by "POST" http method and content type as "application/x-www-form-urlencoded"
     And the following form param
       | name       | value          |
       # or will be replaced by '|'
       | expression | login or admin |
     Then the user gets the response with response code "200"
     And the response body has content to be "true"
-    When the user requests for a feature by "/ff4j/check/cart" by "POST" http method and content type as "application/x-www-form-urlencoded"
+    When the user requests for a feature by "/api/ff4j/check/cart" by "POST" http method and content type as "application/x-www-form-urlencoded"
     Then the user gets an error response with code "404" and error message as "feature not found"
 
   Scenario: When the user tries to initialize a feature of its flipping strategy with an execution strategy which is wrong
-    When the user requests for a feature by "/ff4j/store/features/login" by "PUT" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "PUT" http method and content type as "application/json"
     And request body as
     """
     {
@@ -170,7 +170,7 @@ Feature: Provides RESTful api's to do the following
     """
     Then the user gets the response with response code "202"
     And the response body has content to be "true"
-    When the user requests for a feature by "/ff4j/check/login" by "POST" http method and content type as "application/x-www-form-urlencoded"
+    When the user requests for a feature by "/api/ff4j/check/login" by "POST" http method and content type as "application/x-www-form-urlencoded"
     And the following form param
       | name         | value |
       | InvalidParam | c2    |

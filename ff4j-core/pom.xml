@@ -21,6 +21,8 @@
 	<!-- ~      DEPENDENCIES        ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<dependencies>
+	
+	
 		
 		<!-- Support for tests -->
 		<dependency>
@@ -64,5 +66,8 @@
 	<properties>
 	 	<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
 	</properties>
+
+
+</project>
 	
 </project>

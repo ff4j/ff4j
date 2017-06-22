@@ -36,7 +36,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import static org.ff4j.services.constants.FeatureConstants.RESOURCE_FF4J_PROPERTY_STORE;
-import static org.ff4j.services.constants.FeatureConstants.ROOT;
 import static org.ff4j.web.FF4jWebConstants.RESOURCE_CACHE;
 import static org.ff4j.web.FF4jWebConstants.STORE_CLEAR;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -69,7 +68,7 @@ public class PropertyStoreResource {
     }
 
     @SuppressWarnings("rawtypes")
-    @RequestMapping(value = ROOT + STORE_CLEAR, method = DELETE)
+    @RequestMapping(value = "/" + STORE_CLEAR, method = DELETE)
     @ApiOperation(value = "Delete all <b>Properties</b> in store")
     @ApiResponses(@ApiResponse(code = 204, message = "all properties have been deleted", response = ResponseEntity.class))
     public ResponseEntity deleteAllProperties() {
@@ -77,7 +76,7 @@ public class PropertyStoreResource {
         return new ResponseEntity(NO_CONTENT);
     }
 
-    @RequestMapping(value = ROOT + RESOURCE_CACHE, method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/" + RESOURCE_CACHE, method = GET, produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Display information related to <b>Cache</b>")
     @ApiResponses({@ApiResponse(code = 200, message = "Gets the cached properties", response = CacheApiBean.class),
             @ApiResponse(code = 404, message = "property store is not cached")})

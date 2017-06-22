@@ -111,7 +111,8 @@ public abstract class Property < T > implements Serializable {
      *      current name
      * @param value
      *      current value
-     */    
+     */
+    @SafeVarargs
     protected Property(String name, T value, T... fixed) {
         this(name, value, new HashSet<T>(Arrays.asList(fixed)));
     }

@@ -2,7 +2,6 @@ package org.ff4j.spring.boot.web.api.resources;
 
 import static org.ff4j.services.constants.FeatureConstants.RESOURCE_CLEAR_CACHE;
 import static org.ff4j.services.constants.FeatureConstants.RESOURCE_FF4J_STORE;
-import static org.ff4j.services.constants.FeatureConstants.ROOT;
 import static org.ff4j.web.FF4jWebConstants.RESOURCE_CACHE;
 import static org.ff4j.web.FF4jWebConstants.RESOURCE_FEATURES;
 import static org.ff4j.web.FF4jWebConstants.RESOURCE_GROUPS;
@@ -66,14 +65,14 @@ public class FeatureStoreResource {
         return featureStoreService.getFeatureStore();
     }
 
-    @RequestMapping(value = ROOT + RESOURCE_FEATURES, method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/" + RESOURCE_FEATURES, method = GET, produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Displays all the <b>Features</b>", response = FeatureApiBean.class)
     @ApiResponses(@ApiResponse(code = 200, message = "get all features"))
     public Collection<FeatureApiBean> getAllFeatures() {
         return featureStoreService.getAllFeatures();
     }
 
-    @RequestMapping(value = ROOT + RESOURCE_GROUPS, method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/" + RESOURCE_GROUPS, method = GET, produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Display information regarding <b>Groups</b>", response = GroupDescApiBean.class)
     @ApiResponses({@ApiResponse(code = 200, message = "Groups resource", response = GroupDescApiBean.class)})
     public Collection<GroupDescApiBean> getAllGroups() {
@@ -81,7 +80,7 @@ public class FeatureStoreResource {
     }
 
     @SuppressWarnings("rawtypes")
-    @RequestMapping(value = ROOT + STORE_CLEAR, method = RequestMethod.DELETE)
+    @RequestMapping(value = "/" + STORE_CLEAR, method = RequestMethod.DELETE)
     @ApiOperation(value = "Delete all <b>Features</b> in store")
     @ApiResponses(@ApiResponse(code = 204, message = "all feature have been deleted"))
     public ResponseEntity deleteAllFeatures() {
@@ -89,7 +88,7 @@ public class FeatureStoreResource {
         return new ResponseEntity(NO_CONTENT);
     }
 
-    @RequestMapping(value = ROOT + RESOURCE_CACHE, method = GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/" + RESOURCE_CACHE, method = GET, produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Display information related to <b>Cache</b>")
     @ApiResponses({@ApiResponse(code = 200, message = "Gets the cached features", response = CacheApiBean.class),
             @ApiResponse(code = 404, message = "feature store is not cached")})
@@ -98,7 +97,7 @@ public class FeatureStoreResource {
     }
 
     @SuppressWarnings("rawtypes")
-    @RequestMapping(value = ROOT + RESOURCE_CLEAR_CACHE, method = RequestMethod.DELETE)
+    @RequestMapping(value = "/" + RESOURCE_CLEAR_CACHE, method = RequestMethod.DELETE)
     @ApiOperation(value = "Clear cache", response = ResponseEntity.class)
     @ApiResponses({@ApiResponse(code = 204, message = "cache is cleared"),
             @ApiResponse(code = 404, message = "feature store is not cached")})

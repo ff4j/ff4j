@@ -17,7 +17,7 @@ Feature: Provides RESTful api's to do the following
 
   # Get information of the feature store
   Scenario: When the user tries to retrieve the feature store information
-    When the user requests for a feature by "/ff4j/store" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -40,7 +40,7 @@ Feature: Provides RESTful api's to do the following
   # Get all the features in the feature store
   Scenario: When the user tries to retrieve all the feature in the feature store when the feature store is empty
     Given the feature store is cleared
-    When the user requests for a feature by "/ff4j/store/features" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -48,7 +48,7 @@ Feature: Provides RESTful api's to do the following
     """
 
   Scenario: When the user tries to retrieve all the features in the feature store
-    When the user requests for a feature by "/ff4j/store/features" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -82,7 +82,7 @@ Feature: Provides RESTful api's to do the following
   # Get all the groups
   Scenario: When the user tries to retrieve all the groups from the feature store when the feature store is empty
     Given the feature store is cleared
-    When the user requests for a feature by "/ff4j/store/groups" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/groups" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -94,7 +94,7 @@ Feature: Provides RESTful api's to do the following
       | uid    | enable | description    | group | permissions          |
       | cart   | false  | the cart page  | user  | ROLE_ADMIN           |
       | search | true   | the login page |       | ROLE_ADMIN,ROLE_USER |
-    When the user requests for a feature by "/ff4j/store/groups" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/groups" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -117,9 +117,9 @@ Feature: Provides RESTful api's to do the following
 
   # Delete all features in the feature store
   Scenario: When the user tries to delete all the features in the feature store
-    When the user requests for a feature by "/ff4j/store/clear" by "DELETE" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/clear" by "DELETE" http method and content type as "application/json"
     Then the user gets the response with response code "204"
-    When the user requests for a feature by "/ff4j/store/features" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -128,7 +128,7 @@ Feature: Provides RESTful api's to do the following
 
   # Get all the cached content in the feature store
   Scenario: When the user tries to get all the cached feature from the feature store when the feature store is not cached
-    When the user requests for a feature by "/ff4j/store/cache" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/cache" by "GET" http method and content type as "application/json"
     Then the user gets an error response with code "404" and error message as "feature store is not cached"
 
   Scenario: When the user tries to get all the cached feature from the feature store
@@ -136,7 +136,7 @@ Feature: Provides RESTful api's to do the following
     And the following features are cached
       | uid  | enable | description   | group | permissions |
       | cart | false  | the cart page | user  | ROLE_USER   |
-    When the user requests for a feature by "/ff4j/store/cache" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/cache" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -147,7 +147,7 @@ Feature: Provides RESTful api's to do the following
       "propertyNames": []
     }
     """
-    When the user requests for a feature by "/ff4j/store/features" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -180,7 +180,7 @@ Feature: Provides RESTful api's to do the following
 
   # Clear cache
   Scenario: When the user tries to clear all the cached feature from the feature store when the feature store is not cached
-    When the user requests for a feature by "/ff4j/store/clearCache" by "DELETE" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/clearCache" by "DELETE" http method and content type as "application/json"
     Then the user gets an error response with code "404" and error message as "feature store is not cached"
 
   Scenario: When the user tries to clear all the cached feature from the feature store
@@ -188,7 +188,7 @@ Feature: Provides RESTful api's to do the following
     And the following features are cached
       | uid  | enable | description   | group | permissions |
       | cart | false  | the cart page | user  | ROLE_USER   |
-    When the user requests for a feature by "/ff4j/store/cache" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/cache" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -199,7 +199,7 @@ Feature: Provides RESTful api's to do the following
       "propertyNames": []
     }
     """
-    When the user requests for a feature by "/ff4j/store/features" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -229,9 +229,9 @@ Feature: Provides RESTful api's to do the following
       }
     ]
     """
-    When the user requests for a feature by "/ff4j/store/clearCache" by "DELETE" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/clearCache" by "DELETE" http method and content type as "application/json"
     Then the user gets the response with response code "204"
-    When the user requests for a feature by "/ff4j/store/cache" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/cache" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -242,7 +242,7 @@ Feature: Provides RESTful api's to do the following
       "propertyNames": []
     }
     """
-    When the user requests for a feature by "/ff4j/store/features" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -272,7 +272,7 @@ Feature: Provides RESTful api's to do the following
       }
     ]
     """
-    When the user requests for a feature by "/ff4j/store" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """

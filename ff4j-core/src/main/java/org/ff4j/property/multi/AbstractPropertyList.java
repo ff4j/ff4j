@@ -88,6 +88,7 @@ public abstract class AbstractPropertyList < T > extends AbstractPropertyMultiVa
      * @param lvl
      *      current double value
      */
+    @SafeVarargs
     public AbstractPropertyList(String uid, T... value) {
        super(uid, Arrays.asList(value));
     }

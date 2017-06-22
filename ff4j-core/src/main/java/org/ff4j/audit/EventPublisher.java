@@ -132,6 +132,7 @@ public class EventPublisher {
         } catch (Exception e1) {
             // Do not propagate error, it's monitoring (aside business logic)
             System.err.println("Cannot publish event " + e1.getMessage());
+            e1.printStackTrace();
         }
     }
 

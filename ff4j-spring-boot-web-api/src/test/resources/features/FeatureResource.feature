@@ -15,12 +15,12 @@ Feature: This feature enables in providing the user with RESTful api's where in 
 
   # Read configuration information about the feature
   Scenario: When the feature does not exists in the feature store and when the user wants to read its feature configuration by its uid, we get an exception
-    When the user requests for a feature by "/ff4j/store/features/login" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "GET" http method and content type as "application/json"
     Then the user gets an error response with code "404" and error message as "feature not found"
 
   Scenario Outline: Read configuration information about the feature
     Given the feature with <uid>, <enabled>, <description>, <group> and <permissions> exists in the feature store
-    When the user requests for a feature by "/ff4j/store/features/" appended with <requestUID> by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/" appended with <requestUID> by "GET" http method and content type as "application/json"
     Then the user gets the response with response code as <responseCode> and content as <expectedUid>, <expectedEnabled>, <expectedDescription>, <expectedGroup> and <expectedPermissions>
     Examples:
       | uid     | enabled | description                          | group   | permissions             | requestUID | responseCode | expectedUid | expectedEnabled | expectedDescription                  | expectedGroup | expectedPermissions     |
@@ -29,7 +29,7 @@ Feature: This feature enables in providing the user with RESTful api's where in 
 
   # Update the configuration of the feature
   Scenario: When the feature uid is blank or empty and the user tries to create or update the configuration, the user gets an exception
-    When the user requests for a feature by "/ff4j/store/features/login" by "PUT" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "PUT" http method and content type as "application/json"
     And request body as
     """
     {
@@ -39,7 +39,7 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     Then the user gets an error response with code "400" and error message as "feature uid cannot be blank"
 
   Scenario: When the feature uid is valid and does not match with the feature we are trying to update and when the user tries to create or update the configuration, we get an exception
-    When the user requests for a feature by "/ff4j/store/features/login" by "PUT" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "PUT" http method and content type as "application/json"
     And request body as
     """
     {
@@ -50,7 +50,7 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     Then the user gets an error response with code "400" and error message as "feature uid did not match with the requested feature uid to be created or updated"
 
   Scenario: When the user requests to create a feature with uid
-    When the user requests for a feature by "/ff4j/store/features/login" by "PUT" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "PUT" http method and content type as "application/json"
     And request body as
     """
     {
@@ -59,7 +59,7 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     """
     Then the user gets the response with response code "201"
     And the response body has content to be "true"
-    When the user requests for a feature by "/ff4j/store/features/login" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -76,7 +76,7 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     Given the following features exists in the feature store
       | uid   | enable | description    | group | permissions          |
       | login | true   | the login page | user  | ROLE_ADMIN,ROLE_USER |
-    When the user requests for a feature by "/ff4j/store/features/login" by "PUT" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "PUT" http method and content type as "application/json"
     And request body as
     """
     {
@@ -105,7 +105,7 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     """
     Then the user gets the response with response code "202"
     And the response body has content to be "true"
-    When the user requests for a feature by "/ff4j/store/features/login" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -138,7 +138,7 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     Given the following features exists in the feature store
       | uid   | enable | description    | group | permissions          |
       | login | true   | the login page | user  | ROLE_ADMIN,ROLE_USER |
-    When the user requests for a feature by "/ff4j/store/features/login" by "PUT" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "PUT" http method and content type as "application/json"
     And request body as
     """
     {
@@ -156,7 +156,7 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     }
     """
     Then the user gets an error response with code "400" and error message as "flipping strategy specified wrongly"
-    When the user requests for a feature by "/ff4j/store/features/login" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -174,7 +174,7 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     Given the following features exists in the feature store
       | uid   | enable | description    | group | permissions          |
       | login | true   | the login page | user  | ROLE_ADMIN,ROLE_USER |
-    When the user requests for a feature by "/ff4j/store/features/login" by "PUT" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "PUT" http method and content type as "application/json"
     And request body as
     """
     {
@@ -194,7 +194,7 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     }
     """
     Then the user gets an error response with code "400" and error message as "properties specified wrongly"
-    When the user requests for a feature by "/ff4j/store/features/login" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -213,14 +213,14 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     Given the following features exists in the feature store
       | uid   | enable | description    | group | permissions          |
       | login | true   | the login page | user  | ROLE_ADMIN,ROLE_USER |
-    When the user requests for a feature by "/ff4j/store/features/login" by "DELETE" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "DELETE" http method and content type as "application/json"
     Then the user gets the response with response code "204"
-    When the user requests for a feature by "/ff4j/store/features/login" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "GET" http method and content type as "application/json"
     Then the user gets an error response with code "404" and error message as "feature not found"
 
 
   Scenario: When the user requests to delete a feature which is not present in the feature store
-    When the user requests for a feature by "/ff4j/store/features/login" by "DELETE" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "DELETE" http method and content type as "application/json"
     Then the user gets an error response with code "404" and error message as "feature not found"
 
   # Disable a feature
@@ -228,9 +228,9 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     Given the following features exists in the feature store
       | uid   | enable | description    | group | permissions          |
       | login | true   | the login page | user  | ROLE_ADMIN,ROLE_USER |
-    When the user requests for a feature by "/ff4j/store/features/login/disable" by "POST" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login/disable" by "POST" http method and content type as "application/json"
     Then the user gets the response with response code "202"
-    When the user requests for a feature by "/ff4j/store/features/login" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -244,7 +244,7 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     """
 
   Scenario: When the user requests to disable a feature which is not present in the feature store
-    When the user requests for a feature by "/ff4j/store/features/login/disable" by "POST" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login/disable" by "POST" http method and content type as "application/json"
     Then the user gets an error response with code "404" and error message as "feature not found"
 
   # Enable a feature
@@ -252,9 +252,9 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     Given the following features exists in the feature store
       | uid   | enable | description    | group | permissions          |
       | login | false  | the login page | user  | ROLE_ADMIN,ROLE_USER |
-    When the user requests for a feature by "/ff4j/store/features/login/enable" by "POST" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login/enable" by "POST" http method and content type as "application/json"
     Then the user gets the response with response code "202"
-    When the user requests for a feature by "/ff4j/store/features/login" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -268,22 +268,22 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     """
 
   Scenario: When the user requests to enable a feature which is not present in the feature store
-    When the user requests for a feature by "/ff4j/store/features/login/enable" by "POST" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login/enable" by "POST" http method and content type as "application/json"
     Then the user gets an error response with code "404" and error message as "feature not found"
 
 
   # Grant a role for a feature
   Scenario: When the user requests to grant a role and when the feature id is blank
-    When the user requests for a feature by "/ff4j/store/features/login/grantrole/ROLE_SUPPORT" by "POST" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login/grantrole/ROLE_SUPPORT" by "POST" http method and content type as "application/json"
     Then the user gets an error response with code "404" and error message as "feature not found"
 
   Scenario: When the user requests to grant a role and when the feature exists in the feature store, the feature is updated with this new role\permission addition
     Given the following features exists in the feature store
       | uid   | enable | description    | group | permissions          |
       | login | false  | the login page | user  | ROLE_ADMIN,ROLE_USER |
-    When the user requests for a feature by "/ff4j/store/features/login/grantrole/ROLE_SUPPORT" by "POST" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login/grantrole/ROLE_SUPPORT" by "POST" http method and content type as "application/json"
     Then the user gets the response with response code "202"
-    When the user requests for a feature by "/ff4j/store/features/login" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -300,9 +300,9 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     Given the following features exists in the feature store
       | uid   | enable | description    | group | permissions          |
       | login | false  | the login page | user  | ROLE_ADMIN,ROLE_USER |
-    When the user requests for a feature by "/ff4j/store/features/login/grantrole/ROLE_ADMIN" by "POST" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login/grantrole/ROLE_ADMIN" by "POST" http method and content type as "application/json"
     Then the user gets an error response with code "304" and error message as "role already exists"
-    When the user requests for a feature by "/ff4j/store/features/login" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -317,16 +317,16 @@ Feature: This feature enables in providing the user with RESTful api's where in 
 
   # Remove a role from a feature
   Scenario: When the user requests to remove a role and when the feature does not exists in the feature store
-    When the user requests for a feature by "/ff4j/store/features/login/removerole/ROLE_ADMIN" by "POST" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login/removerole/ROLE_ADMIN" by "POST" http method and content type as "application/json"
     Then the user gets an error response with code "404" and error message as "feature not found"
 
   Scenario: When the user requests to remove a role and when the feature exists in the feature store, the feature is updated with this role\permission deletion
     Given the following features exists in the feature store
       | uid   | enable | description    | group | permissions          |
       | login | false  | the login page | user  | ROLE_ADMIN,ROLE_USER |
-    When the user requests for a feature by "/ff4j/store/features/login/removerole/ROLE_ADMIN" by "POST" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login/removerole/ROLE_ADMIN" by "POST" http method and content type as "application/json"
     Then the user gets the response with response code "202"
-    When the user requests for a feature by "/ff4j/store/features/login" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -343,9 +343,9 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     Given the following features exists in the feature store
       | uid   | enable | description    | group | permissions          |
       | login | false  | the login page | user  | ROLE_ADMIN,ROLE_USER |
-    When the user requests for a feature by "/ff4j/store/features/login/removerole/ROLE_SUPPORT" by "POST" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login/removerole/ROLE_SUPPORT" by "POST" http method and content type as "application/json"
     Then the user gets an error response with code "404" and error message as "role does not exist"
-    When the user requests for a feature by "/ff4j/store/features/login" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -360,16 +360,16 @@ Feature: This feature enables in providing the user with RESTful api's where in 
 
   # Add a group to a feature
   Scenario: When the user requests to add a group and when the feature does not exists in the feature store
-    When the user requests for a feature by "/ff4j/store/features/login/addGroup/user" by "POST" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login/addGroup/user" by "POST" http method and content type as "application/json"
     Then the user gets an error response with code "404" and error message as "feature not found"
 
   Scenario: When the user requests to add a group and when the feature exists in the feature store and a group already exists for the feature, no changes are made
     Given the following features exists in the feature store
       | uid   | enable | description    | group | permissions          |
       | login | false  | the login page | user  | ROLE_ADMIN,ROLE_USER |
-    When the user requests for a feature by "/ff4j/store/features/login/addGroup/user" by "POST" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login/addGroup/user" by "POST" http method and content type as "application/json"
     Then the user gets an error response with code "304" and error message as "group already exists"
-    When the user requests for a feature by "/ff4j/store/features/login" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -386,9 +386,9 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     Given the following features exists in the feature store
       | uid   | enable | description    | group | permissions          |
       | login | false  | the login page |       | ROLE_ADMIN,ROLE_USER |
-    When the user requests for a feature by "/ff4j/store/features/login/addGroup/user" by "POST" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login/addGroup/user" by "POST" http method and content type as "application/json"
     Then the user gets the response with response code "202"
-    When the user requests for a feature by "/ff4j/store/features/login" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -403,16 +403,16 @@ Feature: This feature enables in providing the user with RESTful api's where in 
 
   # Remove a group from a feature
   Scenario: When the user requests to remove a group and when the feature does not exists in the feature store
-    When the user requests for a feature by "/ff4j/store/features/login/removeGroup/user" by "POST" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login/removeGroup/user" by "POST" http method and content type as "application/json"
     Then the user gets an error response with code "404" and error message as "feature not found"
 
   Scenario: When the user requests to remove a group and when the feature exists in the feature store and a group is being removed, the feature is updated with the group's deletion
     Given the following features exists in the feature store
       | uid   | enable | description    | group | permissions          |
       | login | false  | the login page | user  | ROLE_ADMIN,ROLE_USER |
-    When the user requests for a feature by "/ff4j/store/features/login/removeGroup/user" by "POST" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login/removeGroup/user" by "POST" http method and content type as "application/json"
     Then the user gets the response with response code "202"
-    When the user requests for a feature by "/ff4j/store/features/login" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """
@@ -429,9 +429,9 @@ Feature: This feature enables in providing the user with RESTful api's where in 
     Given the following features exists in the feature store
       | uid   | enable | description    | group | permissions          |
       | login | false  | the login page | user  | ROLE_ADMIN,ROLE_USER |
-    When the user requests for a feature by "/ff4j/store/features/login/removeGroup/support" by "POST" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login/removeGroup/support" by "POST" http method and content type as "application/json"
     Then the user gets an error response with code "404" and error message as "group does not exist"
-    When the user requests for a feature by "/ff4j/store/features/login" by "GET" http method and content type as "application/json"
+    When the user requests for a feature by "/api/ff4j/store/features/login" by "GET" http method and content type as "application/json"
     Then the user gets the response with response code "200"
     And the response body as
     """

@@ -36,6 +36,7 @@
                                                     <div class="ff4jstore" >
                                                         <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;FeatureStore</span>
                                                         <br/>
+                                                        <a href="" th:href="@{features}" >
                                                         <p class="circle">
         <span th:if="${homebean.featureStore} eq 'disabled'">
           <br/><img src="" th:src="@{static/img/disabled.png}" style="width:45px" />
@@ -46,13 +47,15 @@
          <br/><span th:text="${homebean.featureStore}">---</span>
          <br/>(<span th:text="${homebean.nbFeature}"></span>)
         </span>
-                                                        </p>
+                                                        </p></a>
 
                                                     </div>
 
                                                     <div class="ff4jstore" >
                                                         <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;PropertyStore</span>
-                                                        <br/><p class="circle">
+                                                        <br/>
+                                                        <a href="" th:href="@{properties}" >
+                                                        <p class="circle">
         <span th:if="${homebean.propertyStore} eq 'disabled'">
           <br/><img src="" th:src="@{static/img/disabled.png}" style="width:45px" />
           <br/>ERROR
@@ -62,13 +65,15 @@
       	<br/><span th:text="${homebean.propertyStore}">---</span>
       	<br/>(<span th:text="${homebean.nbProperties}"></span>)
       	</span>
-                                                    </p>
+                                                    </p></a>
 
                                                     </div>
 
                                                     <div class="ff4jstore" >
                                                         <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;EventRepository</span>
-                                                        <br/><p class="circle">
+                                                        <br/>
+                                                    <a href="" th:href="@{featureUsage}" >
+                                                   <p class="circle">
         <span th:if="${homebean.monitoring} eq 'disabled'">
           <br/><img src="" th:src="@{static/img/disabled.png}" style="width:45px" />
           <br/><span th:text="#{home.store.undefined}">PropertyStore</span>
@@ -77,7 +82,7 @@
          <br/><img src="" th:src="@{static/img/db/db-} + ${homebean.monitoring} + '.png'" style="width:50px" />
       	 <br/><span th:text="${homebean.monitoring}">---</span>
       	</span>
-                                                    </p>
+                                                    </p></a>
                                                     </div>
 
                                                     <p/>

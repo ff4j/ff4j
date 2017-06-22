@@ -331,6 +331,11 @@ h6.bigstats{
 }
 
 .circle {
-display:block;width:120px;height:120px;border-radius:60px;font-size:12px;color:#687684;
+    display:block;width:120px;height:120px;border-radius:60px;font-size:12px;color:#687684;
 text-align:center;text-decoration:none;background:#f9f6f1}
-.circle:hover{color:white;text-decoration:none;background-color:#687684}
+
+.circle:hover {
+	color:white;
+	text-decoration:none;
+	background-color:#00ba8b;
+}

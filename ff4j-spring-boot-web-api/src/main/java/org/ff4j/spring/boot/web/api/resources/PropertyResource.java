@@ -44,7 +44,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  * @author <a href="mailto:paul58914080@gmail.com">Paul Williams</a>
  */
 @RestController
-@RequestMapping(value = RESOURCE_PROPERTIES_STORE_PROPERTIES + ROOT + PATH_PARAM_NAME)
+@RequestMapping(value = RESOURCE_PROPERTIES_STORE_PROPERTIES + "/" + PATH_PARAM_NAME)
 public class PropertyResource {
     @Autowired
     private PropertyServices propertyServices;
@@ -83,7 +83,7 @@ public class PropertyResource {
     }
 
     @SuppressWarnings("rawtypes")
-    @RequestMapping(value = ROOT + OPERATION_UPDATE + ROOT + PATH_PARAM_VALUE, method = POST, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/" + OPERATION_UPDATE + "/" + PATH_PARAM_VALUE, method = POST, produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Update value of a property", response = ResponseEntity.class)
     @ApiResponses({
             @ApiResponse(code = 202, message = "Property has been updated"),

@@ -199,7 +199,8 @@ public class Util {
      *            enumeration of elements
      * @return
      */
-	public static <T> Set<T> set(T... els) {
+	@SafeVarargs
+    public static <T> Set<T> set(T... els) {
 	    if (els == null) return null;
         return new HashSet<T>(Arrays.asList(els));
     }
@@ -211,6 +212,7 @@ public class Util {
      *            enumeration of elements
      * @return
      */
+	@SafeVarargs
     public static <T> List<T> list(T... els) {
         if (els == null) return null;
         return new ArrayList<T>(Arrays.asList(els));
