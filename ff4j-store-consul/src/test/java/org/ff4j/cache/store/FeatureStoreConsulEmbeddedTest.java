@@ -33,7 +33,7 @@ import com.pszymczyk.consul.ConsulProcess;
 import com.pszymczyk.consul.ConsulStarterBuilder;
 
 /**
- * Test to work with Redis as a store.
+ * Test to work with Consul as a store.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
