@@ -75,6 +75,19 @@ public class PropertyStoreMongo extends AbstractPropertyStore {
     public PropertyStoreMongo() {
     }
     
+
+    /**
+     * Parameterized constructor with collection.
+     * 
+     * @param collection
+     *            the collection to set
+     */
+    public PropertyStoreMongo(MongoClient client, String dbName) {
+        this.dbName      = dbName;
+        this.mongoClient = client;
+        this.propertiesCollection = getPropertiesCollection();
+    }
+    
     /**
      * Parameterized constructor with collection.
      * 
@@ -82,8 +95,7 @@ public class PropertyStoreMongo extends AbstractPropertyStore {
      *            the collection to set
      */
     public PropertyStoreMongo(MongoClient client) {
-        this.mongoClient = client;
-        this.propertiesCollection = getPropertiesCollection();
+        this(client, MongoDbConstants.DEFAULT_DBNAME);
     }
     
     /**

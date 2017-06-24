@@ -83,6 +83,17 @@ public class FeatureStoreMongo extends AbstractFeatureStore {
      *            the collection to set
      */
     public FeatureStoreMongo(MongoClient client) {
+        this(client, MongoDbConstants.DEFAULT_DBNAME);
+    }
+    
+    /**
+     * Parameterized constructor with collection.
+     * 
+     * @param collection
+     *            the collection to set
+     */
+    public FeatureStoreMongo(MongoClient client, String dbName) {
+        this.dbName      = dbName;
         this.mongoClient = client;
         this.featuresCollection = getFeaturesCollection();
     }
@@ -106,8 +117,9 @@ public class FeatureStoreMongo extends AbstractFeatureStore {
      * @param collection
      *            the collection to set
      */
-    public FeatureStoreMongo(MongoDatabase db) {
+    public FeatureStoreMongo(MongoDatabase db, MongoClient client) {
         this(db, MongoDbConstants.DEFAULT_FEATURE_COLLECTION);
+        this.mongoClient = client;
     }
     
     /**
@@ -117,8 +129,8 @@ public class FeatureStoreMongo extends AbstractFeatureStore {
      *            the collection to set
      */
     public FeatureStoreMongo(MongoDatabase db, String collectionName) {
-        this.featuresCollection = db.getCollection(collectionName);
         this.dbName = db.getName();
+        this.featuresCollection = db.getCollection(collectionName);
     }
     
     /**

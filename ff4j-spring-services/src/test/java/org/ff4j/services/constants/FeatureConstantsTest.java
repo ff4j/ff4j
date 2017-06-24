@@ -31,6 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author <a href="mailto:paul58914080@gmail.com">Paul Williams</a>
  */
 public class FeatureConstantsTest {
+    
     @Test
     public void constructorInvocation() {
         try {

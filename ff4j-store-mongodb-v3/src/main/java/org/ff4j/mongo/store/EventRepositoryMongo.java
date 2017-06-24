@@ -1,5 +1,8 @@
 package org.ff4j.mongo.store;
 
+import java.util.HashMap;
+import java.util.HashSet;
+
 /*
  * #%L
  * ff4j-store-mongodb-v3
@@ -33,6 +36,7 @@ import org.ff4j.audit.repository.AbstractEventRepository;
 import org.ff4j.mongo.MongoDbConstants;
 import org.ff4j.mongo.mapper.MongoEventMapper;
 
+import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
@@ -48,6 +52,37 @@ public class EventRepositoryMongo extends AbstractEventRepository {
     
     /** MongoDB collection. */
     private MongoCollection<Document> eventsCollection;
+    
+    /** Feature collection Name. */
+    private String collectionName = MongoDbConstants.DEFAULT_EVENT_COLLECTION;
+    
+    /** Database name. */
+    private String dbName = MongoDbConstants.DEFAULT_DBNAME;
+    
+    /** Current mongo client. */
+    private MongoClient mongoClient;
+    
+    /**
+     * Parameterized constructor with collection.
+     * 
+     * @param collection
+     *            the collection to set
+     */
+    public EventRepositoryMongo(MongoClient client) {
+        this(client, MongoDbConstants.DEFAULT_DBNAME);
+    }
+    
+    /**
+     * Parameterized constructor with collection.
+     * 
+     * @param collection
+     *            the collection to set
+     */
+    public EventRepositoryMongo(MongoClient client, String dbName) {
+        this.dbName      = dbName;
+        this.mongoClient = client;
+        this.eventsCollection = getEventCollection();
+    }
     
     /**
      * Parameterized constructor with collection.
@@ -79,6 +114,35 @@ public class EventRepositoryMongo extends AbstractEventRepository {
         this.eventsCollection = db.getCollection(collectionName);
     }
     
+    /**
+     * Getter accessor for attribute 'featuresCollection'.
+     *
+     * @return
+     *       current value of 'featuresCollection'
+     */
+    public MongoCollection<Document> getEventCollection() {
+        if (eventsCollection == null) {
+            if (mongoClient != null) {
+                createSchema();
+            } else {
+                throw new IllegalStateException("Cannot initialize Features collection : no mongo client defined");
+            }
+        }
+        return eventsCollection;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        if (!mongoClient.getDatabase(dbName)
+                .listCollectionNames()
+                .into(new HashSet<String>())
+                .contains(collectionName)) {
+            mongoClient.getDatabase(dbName).createCollection(collectionName);
+        }
+        eventsCollection = mongoClient.getDatabase(dbName).getCollection(collectionName);
+    }
+    
     
     /** {@inheritDoc} */
     @Override
@@ -90,70 +154,62 @@ public class EventRepositoryMongo extends AbstractEventRepository {
         return true;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Map<String, MutableHitCount> getFeatureUsageHitCount(EventQueryDefinition query) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public TimeSeriesChart getFeatureUsageHistory(EventQueryDefinition query, TimeUnit tu) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public EventSeries searchFeatureUsageEvents(EventQueryDefinition query) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void purgeFeatureUsage(EventQueryDefinition query) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public Map<String, MutableHitCount> getHostHitCount(EventQueryDefinition query) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Map<String, MutableHitCount> getUserHitCount(EventQueryDefinition query) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Map<String, MutableHitCount> getSourceHitCount(EventQueryDefinition query) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public EventSeries getAuditTrail(EventQueryDefinition query) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void purgeAuditTrail(EventQueryDefinition query) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public Event getEventByUUID(String uuid, Long timestamp) {
-        // TODO Auto-generated method stub
-        return null;
+        return new HashMap<String, MutableHitCount>();
     }
 
     /** {@inheritDoc} */
     @Override
-    public void createSchema() {
-        // TODO Auto-generated method stub
-        
+    public TimeSeriesChart getFeatureUsageHistory(EventQueryDefinition query, TimeUnit tu) {
+        return new TimeSeriesChart();
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public EventSeries searchFeatureUsageEvents(EventQueryDefinition query) {        
+        return new EventSeries();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void purgeFeatureUsage(EventQueryDefinition query) {
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, MutableHitCount> getHostHitCount(EventQueryDefinition query) {
+        return new HashMap<String, MutableHitCount>();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, MutableHitCount> getUserHitCount(EventQueryDefinition query) {
+        return new HashMap<String, MutableHitCount>();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, MutableHitCount> getSourceHitCount(EventQueryDefinition query) {
+        return new HashMap<String, MutableHitCount>();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public EventSeries getAuditTrail(EventQueryDefinition query) {
+        return new EventSeries();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void purgeAuditTrail(EventQueryDefinition query) {
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Event getEventByUUID(String uuid, Long timestamp) {
+        return null;
+    }
+    
 }
