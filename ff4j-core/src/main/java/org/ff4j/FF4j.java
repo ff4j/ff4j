@@ -26,6 +26,7 @@ import static org.ff4j.audit.EventConstants.SOURCE_JAVA;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -48,8 +49,10 @@ import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.store.PropertyStore;
+import org.ff4j.property.store.RESTPropertyStore;
 import org.ff4j.security.AuthorizationsManager;
 import org.ff4j.store.InMemoryFeatureStore;
+import org.ff4j.store.RESTFeatureStore;
 
 /**
  * Principal class stands as public api to work with FF4J.
@@ -149,6 +152,11 @@ public class FF4j {
      */
     public FF4j(InputStream xmlFileResourceAsStream) {
         this.fstore = new InMemoryFeatureStore(xmlFileResourceAsStream);
+    }
+
+    public FF4j(URL restUrl) {
+        this.fstore = new RESTFeatureStore(restUrl);
+        this.pStore = new RESTPropertyStore(restUrl);
     }
 
     /**
