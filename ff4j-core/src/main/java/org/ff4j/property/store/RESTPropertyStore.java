@@ -27,12 +27,13 @@ import org.ff4j.store.client.ApiException;
 import org.ff4j.store.client.api.PropertyResourceApi;
 import org.ff4j.store.client.api.PropertyStoreResourceApi;
 import org.ff4j.store.client.model.InlineResponse2003;
+import org.ff4j.store.client.model.PropertyApiBean;
 
 import java.net.URL;
 import java.util.*;
 
 /**
- * Created by peterdietz on 7/27/17.
+ * PropertyStore that is client to FF4J REST API
  */
 public class RESTPropertyStore extends AbstractPropertyStore {
     private PropertyStoreResourceApi propertyStoreResourceApi = null;
@@ -40,11 +41,10 @@ public class RESTPropertyStore extends AbstractPropertyStore {
 
     public RESTPropertyStore(URL apiURL) {
         ApiClient client = new ApiClient();
-        client.setBasePath(apiURL.getPath());
+        client.setBasePath(apiURL.toString());
         propertyStoreResourceApi = new PropertyStoreResourceApi(client);
         propertyResourceApi = new PropertyResourceApi(client);
     }
-
 
     @Override
     public boolean existProperty(String name) {
@@ -60,7 +60,17 @@ public class RESTPropertyStore extends AbstractPropertyStore {
 
     @Override
     public <T> void createProperty(Property<T> value) {
-        System.out.println("Not Implemented");
+        PropertyApiBean propertyApiBean = new PropertyApiBean();
+        propertyApiBean.setName(value.getName());
+        propertyApiBean.setType(value.getType());
+        propertyApiBean.setDescription(value.getDescription());
+        propertyApiBean.setFixedValues((List<String>) value.getFixedValues());
+        propertyApiBean.setValue((String) value.getValue());
+        try {
+            propertyResourceApi.createOrUpdatePropertyUsingPUT(value.getName(), propertyApiBean);
+        } catch (ApiException e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     @Override
@@ -78,7 +88,11 @@ public class RESTPropertyStore extends AbstractPropertyStore {
 
     @Override
     public void deleteProperty(String name) {
-        System.out.println("Not Implemented");
+        try {
+            propertyResourceApi.deletePropertyUsingDELETE(name);
+        } catch (ApiException e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     @Override
@@ -110,6 +124,10 @@ public class RESTPropertyStore extends AbstractPropertyStore {
 
     @Override
     public void clear() {
-        System.out.println("Not Implemented");
+        try {
+            propertyStoreResourceApi.clearCachedPropertyStoreUsingDELETE();
+        } catch (ApiException e) {
+            System.err.println(e.getMessage());
+        }
     }
 }
