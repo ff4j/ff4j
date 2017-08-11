@@ -231,7 +231,7 @@ public abstract class AbstractFeatureStore implements FeatureStore {
     /** {@inheritDoc} */
     public String toJson() {
         StringBuilder sb = new StringBuilder("{");
-        sb.append("\"type\":\"" + this.getClass().getCanonicalName() + "\"");
+        sb.append("\"type\":\"" + this.getClass().getName() + "\"");
         sb.append(JsonUtils.cacheJson(this));
         Set<String> myFeatures = readAll().keySet();
         sb.append(",\"numberOfFeatures\":" + myFeatures.size());

@@ -39,7 +39,7 @@ public abstract class AbstractAuthorizationManager implements AuthorizationsMana
     @Override
     public String toJson() {
         StringBuilder sb = new StringBuilder("{");
-        sb.append("\"type\":\"" + this.getClass().getCanonicalName() + "\", ");
+        sb.append("\"type\":\"" + this.getClass().getName() + "\", ");
         sb.append("\"permissions\":[");
         Set<String> permSet = listAllPermissions();
         boolean first = true;

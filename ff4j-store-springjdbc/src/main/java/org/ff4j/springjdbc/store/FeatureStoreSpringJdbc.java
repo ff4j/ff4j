@@ -162,7 +162,7 @@ public class FeatureStoreSpringJdbc extends AbstractFeatureStore {
         String strategyColumn   = null;
         String expressionColumn = null;
         if (fp.getFlippingStrategy() != null) {
-            strategyColumn = fp.getFlippingStrategy().getClass().getCanonicalName();
+            strategyColumn = fp.getFlippingStrategy().getClass().getName();
             expressionColumn = MappingUtil.fromMap(fp.getFlippingStrategy().getInitParams());
         }
         getJdbcTemplate().update(getQueryBuilder().createFeature(), 

@@ -64,7 +64,7 @@ public class EventRepositoryApiBean {
     }
             
     public EventRepositoryApiBean(EventRepository evtRepository, Long start, Long end) {
-        type = evtRepository.getClass().getCanonicalName();
+        type = evtRepository.getClass().getName();
         EventQueryDefinition query = new EventQueryDefinition();
         if (start != null) {
             query.setFrom(start);

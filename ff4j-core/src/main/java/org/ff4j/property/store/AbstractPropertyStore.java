@@ -79,7 +79,7 @@ public abstract class AbstractPropertyStore implements PropertyStore {
     /** {@inheritDoc} */
     public String toJson() {
         StringBuilder sb = new StringBuilder("{");
-        sb.append("\"type\":\"" + this.getClass().getCanonicalName() + "\"");
+        sb.append("\"type\":\"" + this.getClass().getName() + "\"");
         Set<String> myProperties = readAllProperties().keySet();
         sb.append(",\"numberOfProperties\":" + myProperties.size());
         sb.append(",\"properties\":[");

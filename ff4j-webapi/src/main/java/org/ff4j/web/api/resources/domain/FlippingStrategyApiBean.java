@@ -70,7 +70,7 @@ public class FlippingStrategyApiBean {
      *      current flipping strategy
      */
     public FlippingStrategyApiBean(FlippingStrategy fs) {
-        this.type = fs.getClass().getCanonicalName();
+        this.type = fs.getClass().getName();
         this.initParams = fs.getInitParams();
     }
 

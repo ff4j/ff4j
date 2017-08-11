@@ -212,7 +212,7 @@ public abstract class AbstractEventRepository implements EventRepository {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("{");
-        sb.append("\"type\":\"" + this.getClass().getCanonicalName() + "\"");
+        sb.append("\"type\":\"" + this.getClass().getName() + "\"");
         EventQueryDefinition q = new EventQueryDefinition();
         sb.append(",\"todayHitsPieChart\": " + getFeatureUsagePieChart(q).toJson());
         sb.append(",\"todayHitsBarChart\": " + getFeatureUsageBarChart(q).toJson());

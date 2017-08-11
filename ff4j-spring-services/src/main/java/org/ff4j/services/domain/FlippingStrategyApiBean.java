@@ -42,7 +42,7 @@ public class FlippingStrategyApiBean implements Serializable {
     }
 
     public FlippingStrategyApiBean(FlippingStrategy fs) {
-        this.type = fs.getClass().getCanonicalName();
+        this.type = fs.getClass().getName();
         this.initParams = fs.getInitParams();
     }
 

@@ -44,7 +44,7 @@ public class JerseyRequestEventListener implements RequestEventListener {
     public void onEvent(RequestEvent reqEvt) {
         if (RequestEvent.Type.ON_EXCEPTION.equals(reqEvt.getType())) {
             logger.error("An error occured when processing " + reqEvt.getContainerRequest().getRequestUri(), reqEvt.getException() );
-            logger.error(" + Type : " + reqEvt.getException().getClass().getCanonicalName());
+            logger.error(" + Type : " + reqEvt.getException().getClass().getName());
             logger.error(" + Message : " + reqEvt.getException().getMessage());
         } else {
             logger.debug(reqEvt.getContainerRequest().getRequestUri() + "[" + reqEvt.getType() + "]");

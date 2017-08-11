@@ -48,7 +48,7 @@ public class PropertyStoreApiBean implements Serializable {
     }
 
     public PropertyStoreApiBean(PropertyStore pStore) {
-        type = pStore.getClass().getCanonicalName();
+        type = pStore.getClass().getName();
         if (pStore instanceof FF4jCacheProxy) {
             cache = new CacheApiBean(pStore);
         }

@@ -49,7 +49,7 @@ public abstract class Property < T > implements Serializable {
     protected String description = null;
     
     /** Canonical name for JSON serialization. */
-    protected String type = getClass().getCanonicalName();
+    protected String type = getClass().getName();
     
     /** Current Value. */
     protected T value;

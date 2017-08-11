@@ -480,7 +480,7 @@ public final class ConsoleRenderer {
             sb.append("</td><td style=\"word-break: break-all;\">");
             FlippingStrategy fs = currentFeature.getFlippingStrategy();
             if (null != fs) {
-                sb.append(renderValue(fs.getClass().getCanonicalName(), 50));
+                sb.append(renderValue(fs.getClass().getName(), 50));
                 if (fs.getInitParams() != null) {
                     for (Map.Entry<String, String> entry : fs.getInitParams().entrySet()) {
                         sb.append("<li>" + renderValue(entry.getKey() + " =  " + entry.getValue(), 40));     
@@ -510,7 +510,7 @@ public final class ConsoleRenderer {
             sb.append(" data-group=\"" + currentFeature.getGroup() + "\"");
             sb.append(" data-strategy=\"");
             if (null != currentFeature.getFlippingStrategy()) {
-                sb.append(currentFeature.getFlippingStrategy().getClass().getCanonicalName());
+                sb.append(currentFeature.getFlippingStrategy().getClass().getName());
             }
             sb.append("\" data-stratparams=\"");
             if (null != currentFeature.getFlippingStrategy()) {

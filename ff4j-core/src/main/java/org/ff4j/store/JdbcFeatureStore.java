@@ -234,7 +234,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             String strategyColumn = null;
             String expressionColumn = null;
             if (fp.getFlippingStrategy() != null) {
-                strategyColumn   = fp.getFlippingStrategy().getClass().getCanonicalName();
+                strategyColumn   = fp.getFlippingStrategy().getClass().getName();
                 expressionColumn = MappingUtil.fromMap(fp.getFlippingStrategy().getInitParams());
             }
             ps.setString(4, strategyColumn);
@@ -452,7 +452,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
             String fStrategy = null;
             String fExpression = null;
             if (fp.getFlippingStrategy() != null) {
-                fStrategy = fp.getFlippingStrategy().getClass().getCanonicalName();
+                fStrategy = fp.getFlippingStrategy().getClass().getName();
                 fExpression = MappingUtil.fromMap(fp.getFlippingStrategy().getInitParams());
             }
             update(getQueryBuilder().updateFeature(),

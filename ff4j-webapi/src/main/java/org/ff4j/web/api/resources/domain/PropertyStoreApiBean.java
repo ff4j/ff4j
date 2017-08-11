@@ -72,7 +72,7 @@ public class PropertyStoreApiBean {
      *      cuurent fature store
      */
     public PropertyStoreApiBean(PropertyStore pStore) {
-        type = pStore.getClass().getCanonicalName();
+        type = pStore.getClass().getName();
         if (pStore instanceof FF4jCacheProxy) {
             cache = new CacheApiBean(pStore);
         }

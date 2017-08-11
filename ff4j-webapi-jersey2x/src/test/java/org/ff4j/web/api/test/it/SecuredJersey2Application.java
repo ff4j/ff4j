@@ -41,7 +41,7 @@ public class SecuredJersey2Application extends FF4jApiApplicationJersey2x {
         ApiConfig secured = new ApiConfigBuilder(ff4j)//
                 .withAuthentication() //
                 .withAutorization().build();
-        
+      
         // Create 2 valid apiKeys
         secured.createApiKey("123", true, false, Util.set("ROLE_USER", "ROLE_ADMIN"));
         secured.createApiKey("456", true, true, Util.set("ROLE_USER", "ROLE_ADMIN"));

@@ -38,7 +38,7 @@ public abstract class AbstractFlipStrategy implements FlippingStrategy {
     protected Map<String, String> initParams = new HashMap<String, String>();
 
     /** ClassType. */
-    private final String type = getClass().getCanonicalName();
+    private final String type = getClass().getName();
     
     /** {@inheritDoc} */
     @Override

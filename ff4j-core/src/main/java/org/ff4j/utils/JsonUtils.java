@@ -141,7 +141,7 @@ public class JsonUtils {
         json.append(valueAsJson("initParams") + ":");
         json.append(mapAsJson(flippingStrategy.getInitParams()));
         json.append("," + valueAsJson("type")  + ":");
-        json.append(valueAsJson(flippingStrategy.getClass().getCanonicalName()));
+        json.append(valueAsJson(flippingStrategy.getClass().getName()));
         json.append("}");
         return json.toString();
     }

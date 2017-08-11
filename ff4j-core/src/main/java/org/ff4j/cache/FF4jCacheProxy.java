@@ -292,7 +292,7 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
 
     /** {@inheritDoc} */
     public String getCachedTargetStore() {
-        return getTargetFeatureStore().getClass().getCanonicalName();
+        return getTargetFeatureStore().getClass().getName();
     }
 
     /** {@inheritDoc} */

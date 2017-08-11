@@ -57,7 +57,7 @@ public class AuthorizationsManagerApiBean {
      *      target authentifaction manager
      */
     public AuthorizationsManagerApiBean(AuthorizationsManager authMger) {
-        type = authMger.getClass().getCanonicalName();
+        type = authMger.getClass().getName();
         permissions = new ArrayList<String>(authMger.listAllPermissions());
     }
 

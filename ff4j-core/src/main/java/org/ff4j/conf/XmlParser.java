@@ -623,7 +623,7 @@ public final class XmlParser {
                 // <flipstrategy>
                 FlippingStrategy fs = feat.getFlippingStrategy();
                 if (null != fs) {
-                    sb.append("   <" + FLIPSTRATEGY_TAG + " class=\"" + fs.getClass().getCanonicalName() + "\" >\n");
+                    sb.append("   <" + FLIPSTRATEGY_TAG + " class=\"" + fs.getClass().getName() + "\" >\n");
                     for (String p : fs.getInitParams().keySet()) {
                         sb.append("     <" + FLIPSTRATEGY_PARAMTAG + " " + FLIPSTRATEGY_PARAMNAME + "=\"");
                         sb.append(p);
@@ -669,7 +669,7 @@ public final class XmlParser {
                 sb.append("    <" + PROPERTY_TAG + " " + PROPERTY_PARAMNAME + "=\"" + property.getName() + "\" ");
                 sb.append(PROPERTY_PARAMVALUE + "=\"" + property.asString() + "\" ");
                 if (!(property instanceof PropertyString)) {
-                    sb.append(PROPERTY_PARAMTYPE  + "=\"" + property.getClass().getCanonicalName()  + "\"");
+                    sb.append(PROPERTY_PARAMTYPE  + "=\"" + property.getClass().getName()  + "\"");
                 }
                 // Processing fixedValue is present
                 if (property.getFixedValues() != null && !property.getFixedValues().isEmpty()) {

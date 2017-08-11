@@ -82,7 +82,7 @@ public class FeatureStoreApiBean {
      *      cuurent fature store
      */
     public FeatureStoreApiBean(FeatureStore featureStore) {
-        type = featureStore.getClass().getCanonicalName();
+        type = featureStore.getClass().getName();
         if (featureStore instanceof FF4jCacheProxy) {
             cache = new CacheApiBean(featureStore);
         }

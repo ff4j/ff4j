@@ -126,7 +126,7 @@ public class MongoFeatureMapper implements FeatureMapper<Document> {
         String strategyColumn = null;
         String expressionColumn = null;
         if (feature.getFlippingStrategy() != null) {
-            strategyColumn = feature.getFlippingStrategy().getClass().getCanonicalName();
+            strategyColumn = feature.getFlippingStrategy().getClass().getName();
             expressionColumn = MappingUtil.fromMap(feature.getFlippingStrategy().getInitParams());
         }
         String customProperties = null;
