@@ -133,6 +133,12 @@
 						<groupId>org.terracotta</groupId>
 						<artifactId>terracotta</artifactId>
 						<version>4.3.0.0.26</version>
+						<exclusions>
+							<exclusion>
+								<groupId>org.terracotta</groupId>
+								<artifactId>search</artifactId>
+							</exclusion>
+						</exclusions>
 					</dependency>
 				</dependencies>
 				
