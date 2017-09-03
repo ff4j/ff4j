@@ -29,9 +29,9 @@ import io.searchbox.core.SearchResult.Hit;
 
 /**
  * Implementation of the {@link FeatureStore} to work ElasticSearch storage DB.
- * 
+ *
  * @since 1.6
- * 
+ *
  * @author C&eacute;drick Lunven (@clunven)
  * @author <a href="mailto:andre.blaszczyk@gmail.com">Andre Blaszczyk</a>
  */
@@ -112,13 +112,15 @@ public class FeatureStoreElastic extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public Map<String, Feature> readAll() {
-
-        SearchResult result = getConnection().search(getBuilder().queryReadAllFeatures(), true);
-
+        SearchResult search = getConnection().search(getBuilder().queryReadAllFeatures(), true);
         Map<String, Feature> mapOfFeatures = new HashMap<String, Feature>();
-        if (null != result && result.isSucceeded()) {
-            for (Hit<Feature, Void> feature : result.getHits(Feature.class)) {
-                mapOfFeatures.put(feature.source.getUid(), feature.source);
+        if (null != search && search.isSucceeded()) {
+            Integer total = search.getTotal();
+            SearchResult searchAllResult = getConnection().search(getBuilder().queryReadAllFeatures(total), true);
+            if (null != searchAllResult && searchAllResult.isSucceeded()) {
+                for (Hit<Feature, Void> feature : searchAllResult.getHits(Feature.class)) {
+                    mapOfFeatures.put(feature.source.getUid(), feature.source);
+                }
             }
         }
         return mapOfFeatures;
@@ -186,7 +188,7 @@ public class FeatureStoreElastic extends AbstractFeatureStore {
         SearchResult result = getConnection().search(getBuilder().getGroupByGroupName(groupName), true);
         return (result.getTotal() != null) && (result.getTotal() >= 1);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public Map<String, Feature> readGroup(String groupName) {
@@ -252,7 +254,7 @@ public class FeatureStoreElastic extends AbstractFeatureStore {
 
     /**
      * Setter accessor for attribute 'connection'.
-     * 
+     *
      * @param connection
      *            new value for 'connection '
      */

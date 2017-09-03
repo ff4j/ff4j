@@ -103,6 +103,11 @@ public class ElasticQueryBuilder {
 				.addType(ElasticConstants.TYPE_FEATURE).build();
 	}
 
+    public Search queryReadAllFeatures(Integer totalCount) {
+        return new Search.Builder(new SearchSourceBuilder().size(totalCount).toString()).addIndex(connection.getIndexName())
+                .addType(ElasticConstants.TYPE_FEATURE).build();
+    }
+
 	public Delete queryDeleteFeature(String uid) {
 		return new Delete.Builder(uid).index(connection.getIndexName()).type(ElasticConstants.TYPE_FEATURE)
 				.id(getFeatureTechId(uid)).refresh(true).build();
