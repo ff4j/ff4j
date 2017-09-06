@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
   #%L
-  logback.xml (ff4j-spring-boot-web-api)
+  logback.xml (ff4j-store-hazelcast)
   %%
   Copyright (C) 2013 Ff4J
   %%
