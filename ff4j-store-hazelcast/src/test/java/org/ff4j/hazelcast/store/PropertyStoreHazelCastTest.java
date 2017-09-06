@@ -20,10 +20,9 @@ package org.ff4j.hazelcast.store;
  * #L%
  */
 
-
 import org.ff4j.property.store.PropertyStore;
-import org.ff4j.store.PropertyStoreJCache;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
+import org.junit.BeforeClass;
 
 /**
  * Test to work with Redis as a store.
@@ -31,13 +30,21 @@ import org.ff4j.test.propertystore.PropertyStoreTestSupport;
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public class PropertyStoreHazelCastTest extends PropertyStoreTestSupport {
+
+
+    private static PropertyStoreHazelCast propertyStoreHazelCast;
+
+    @BeforeClass
+    public static void setupHazelcast(){
+        propertyStoreHazelCast = new PropertyStoreHazelCast();
+        propertyStoreHazelCast.importPropertiesFromXmlFile("ff4j.xml");
+    }
+
    
     /** {@inheritDoc} */
     @Override
     protected PropertyStore initPropertyStore() {
-        PropertyStoreJCache hazelCastStore = new PropertyStoreHazelCast();
-        hazelCastStore.importPropertiesFromXmlFile("ff4j.xml");
-        return hazelCastStore;
+        return propertyStoreHazelCast;
     }
     
 }
