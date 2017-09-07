@@ -208,6 +208,11 @@ public class ElasticQueryBuilder {
 				.addType(ElasticConstants.TYPE_PROPERTY).build();
 	}
 
+	public Search queryReadAllProperties(Integer totalCount) {
+		return new Search.Builder(new SearchSourceBuilder().size(totalCount).toString()).addIndex(connection.getIndexName())
+				.addType(ElasticConstants.TYPE_FEATURE).build();
+	}
+
 	public Search queryPropertyByName(String name) {
 		SearchSourceBuilder source = new SearchSourceBuilder();
 		source.query(QueryBuilders.matchQuery("name", name));
