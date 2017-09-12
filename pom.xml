@@ -138,6 +138,8 @@
         <easymock.version>3.1</easymock.version>
         <swagger.version>2.2.2</swagger.version>
         <meanbean.version>2.0.3</meanbean.version>
+
+        <apache.ignite.version>2.1.0</apache.ignite.version>
     </properties>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -162,6 +164,7 @@
 
         <!-- Stores -->
         <module>ff4j-store-archaius</module>
+        <module>ff4j-store-apache-ignite</module>
         <module>ff4j-store-cassandra</module>
         <module>ff4j-store-commonsconfig</module>
         <module>ff4j-store-consul</module>
@@ -592,6 +595,11 @@
                 <version>${version.httpclient}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.apache.ignite</groupId>
+                <artifactId>ignite-core</artifactId>
+                <version>${apache.ignite.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
