@@ -164,7 +164,6 @@
 
         <!-- Stores -->
         <module>ff4j-store-archaius</module>
-        <module>ff4j-store-apache-ignite</module>
         <module>ff4j-store-cassandra</module>
         <module>ff4j-store-commonsconfig</module>
         <module>ff4j-store-consul</module>
