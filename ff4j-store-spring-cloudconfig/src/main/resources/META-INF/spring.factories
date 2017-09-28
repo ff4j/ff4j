@@ -1,0 +1,3 @@
+# Bootstrap Configuration
+org.springframework.cloud.bootstrap.BootstrapConfiguration=\
+org.ff4j.spring.cloudconfig.source.FF4jBootstrapConfiguration

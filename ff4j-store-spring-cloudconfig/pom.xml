@@ -1,0 +1,92 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~         COORDINATES      ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<artifactId>ff4j-store-spring-cloudconfig</artifactId>
+	<packaging>jar</packaging>
+	<name>ff4j-store-spring-cloudconfig</name>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~         PARENT           ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<parent>
+		<groupId>org.ff4j</groupId>
+		<artifactId>ff4j-parent</artifactId>
+		<version>1.6.6-SNAPSHOT</version>
+	</parent>
+	
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~      PROPERTIES          ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<properties>
+		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
+		<commonsconfig.version>1.10</commonsconfig.version>
+		<spring.cloudconfig.version>1.3.2.RELEASE</spring.cloudconfig.version>
+	</properties>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~       DEPENDENCIES       ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<dependencies>
+
+		<!-- SpringBoot Starter (spring cloud is based on Spring boot) -->
+		<dependency>
+		  <groupId>org.ff4j</groupId>
+		  <artifactId>ff4j-spring-boot-starter</artifactId>
+          <version>1.6.6-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+          <groupId>org.ff4j</groupId>
+          <artifactId>ff4j-utils-json</artifactId>
+          <version>1.6.6-SNAPSHOT</version>
+        </dependency>
+	
+        <!-- Spring Cloud Config -->
+        <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-config-server</artifactId>
+			<version>${spring.cloudconfig.version}</version>
+		</dependency>
+
+		<!-- Tests -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+    <groupId>commons-logging</groupId>
+    <artifactId>commons-logging</artifactId>
+    <version>1.2</version>
+</dependency>
+        
+		<dependency>
+            <groupId>org.ff4j</groupId>
+            <artifactId>ff4j-test</artifactId>
+            <version>1.6.6-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+	</dependencies>
+
+
+</project>
