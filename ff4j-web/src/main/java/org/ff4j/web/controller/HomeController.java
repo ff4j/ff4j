@@ -122,6 +122,7 @@ public class HomeController extends AbstractController {
 		try {
 		    hb = new HomeBean(ff4j);
 		} catch(RuntimeException e) {
+		    LOGGER.error("Cannot read store", e);
 		    ctx.setVariable("msgType", ERROR);
 	        ctx.setVariable("msgInfo", "Cannot read store:" + e.getMessage());
 		}
