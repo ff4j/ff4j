@@ -29,7 +29,7 @@ Monitoring
 ## Contributors
 
 This project exists thanks to all the people who contribute. [[Contribute]](CONTRIBUTING.md).
-<a href="graphs/contributors"><img src="https://opencollective.com/ff4j/contributors.svg?width=890" /></a>
+<a href="https://github.com/clun/ff4j/graphs/contributors"><img src="https://opencollective.com/ff4j/contributors.svg?width=890" /></a>
 
 
 ## Backers
