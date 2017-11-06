@@ -103,7 +103,7 @@ public class JdbcUtils {
      * @throws SQLException
      *             sql error when working with statement
      */
-    public static PreparedStatement buildStatement(Connection sqlConn, String query, String... params)
+    public static PreparedStatement buildStatement(Connection sqlConn, String query, Object... params)
     throws SQLException {
         PreparedStatement ps = sqlConn.prepareStatement(query);
         if (params != null && params.length > 0) {
