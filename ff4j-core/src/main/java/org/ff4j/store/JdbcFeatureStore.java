@@ -445,9 +445,9 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
         try {
             sqlConn = dataSource.getConnection();
             Feature fpExist = read(fp.getUid());
-            String enable = "0";
+            int enable = 0;
             if (fp.isEnable()) {
-                enable = "1";
+                enable = 1;
             }
             String fStrategy = null;
             String fExpression = null;
@@ -731,7 +731,7 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
      * @param params
      *            sql query params
      */
-    public void update(String query, String... params) {
+    public void update(String query, Object... params) {
         Connection sqlConnection = null;
         PreparedStatement ps = null;
         try {
