@@ -42,7 +42,7 @@ public class FeatureStoreCouchbaseTest extends FeatureStoreTestSupportCouchbase 
     private static final int ff4jPort = 8092;
     private static final String ff4jBucketName = "featuresTest";
     private static final String ff4jBucketPassword = "";
-    private static boolean mockCouchbaseIsRunning = false;
+    private static boolean mockDataCreated = false;
 
     @Data
     public static class MockData {
@@ -74,29 +74,13 @@ public class FeatureStoreCouchbaseTest extends FeatureStoreTestSupportCouchbase 
         Cluster ff4jCluster = CouchbaseCluster.create(ff4jIp);
         Bucket ff4jBucket;
 
-        if (!mockCouchbaseIsRunning) {
-            mockCouchbaseIsRunning = true;
-            /*CouchbaseMock.main(new String[]{
-                "--port", Integer.toString(ff4jPort)
-            });
-
-            ClusterManager clusterManager = ff4jCluster.clusterManager(adminUser, adminPassword);
-            BucketSettings bucketSettings = new DefaultBucketSettings.Builder()
-                .type(BucketType.COUCHBASE)
-                .name(ff4jBucketName)
-                .password(ff4jBucketPassword)
-                .quota(100) // megabytes
-                .replicas(0)
-                .indexReplicas(false)
-                .enableFlush(true)
-                .build();
-            clusterManager.insertBucket(bucketSettings);*/
-
+        if (!mockDataCreated) {
             ff4jBucket = ff4jCluster.openBucket(ff4jBucketName, ff4jBucketPassword);
             ff4jBucket.bucketManager().flush();
             createMockData(
                 new CouchbaseRepository<>(ff4jBucket, FeatureDocument.class, ObjectMapperFactory.createMapper())
             );
+            mockDataCreated = true;
         } else {
             ff4jBucket = ff4jCluster.openBucket(ff4jBucketName, ff4jBucketPassword);
         }

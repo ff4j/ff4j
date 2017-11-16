@@ -54,12 +54,6 @@
 
         <!-- couchbase -->
         <dependency>
-            <groupId>com.couchbase.mock</groupId>
-            <artifactId>CouchbaseMock</artifactId>
-            <version>1.5.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>com.couchbase.client</groupId>
             <artifactId>java-client</artifactId>
             <version>2.5.2</version>
