@@ -127,8 +127,7 @@ public class FF4j {
      * or the wraps exception thrown by an invoked method or constructor
      */
     private boolean alterBeanThrowInvocationTargetException = true;
-    
-    
+        
     /**
      * Default constructor to allows instantiation through IoC. The created store is an empty {@link InMemoryFeatureStore}.
      */

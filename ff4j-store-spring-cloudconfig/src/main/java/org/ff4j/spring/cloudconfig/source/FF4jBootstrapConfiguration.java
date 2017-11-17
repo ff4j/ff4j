@@ -21,7 +21,6 @@ package org.ff4j.spring.cloudconfig.source;
  */
 
 import org.ff4j.FF4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -35,20 +34,29 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FF4jBootstrapConfiguration {
 
-    // @Autowired
-    // private static FF4j ff4j;
-    
     @Configuration
     @EnableConfigurationProperties
     @ConditionalOnProperty(name = "spring.cloud.custom.config.enabled", matchIfMissing = true)
     protected static class FF4jPropertySourceConfiguration {
         
+        /** Inject at startup. */
         private FF4j ff4j = null;
         
+        /**
+         * Inject through constructor.
+         *
+         * @param ff4j
+         *          current ff4j bean
+         */
         public FF4jPropertySourceConfiguration(FF4j ff4j) {
             this.ff4j = ff4j;
             System.out.println(ff4j);
         }
+        
+        /**
+         * Expected 
+         * @return
+         */
         @Bean
         public FF4jPropertySourceLocator customPropertySourceLocator() {
             return new FF4jPropertySourceLocator(ff4j);

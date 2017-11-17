@@ -69,14 +69,6 @@
 			<scope>test</scope>
 		</dependency>
 		
-		<!-- Apache Ignite -->
-		<dependency>
-	    <groupId>org.apache.ignite</groupId>
-	    <artifactId>ignite-core</artifactId>
-		    <version>${ignite.version}</version>
-		    <scope>test</scope>
-		</dependency>
-		
 		<!-- Tests -->
 		<dependency>
 			<artifactId>ff4j-test</artifactId>
