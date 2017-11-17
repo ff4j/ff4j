@@ -81,7 +81,7 @@ public abstract class AbstractFeatureTag extends TagSupport {
             }
 
             // Handle where feature doe not exist
-            if (!ff4j.exist(getFeatureid())) {
+            if (!ff4j.exist(getFeatureid()) && !ff4j.isAutocreate()) {
                 displayError("Cannot find feature (" + getFeatureid() + ") anywhere.");
                 return SKIP_BODY;
             }

@@ -366,6 +366,9 @@ public class ConsoleServlet extends HttpServlet {
             message = e.getMessage();
             LOGGER.error("An error occured ", e);
         }
+        // Update FF4J in Session (distributed)
+        getServletContext().setAttribute(FF4J_SESSIONATTRIBUTE_NAME, ff4j);
+        
         renderPage(ff4j, req, res, message, messagetype);
     }
 
