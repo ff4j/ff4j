@@ -43,6 +43,7 @@ public class FeatureTagEnable extends AbstractFeatureTag {
     protected boolean eval(FF4j ff4j, PageContext jspContext) {
         FlippingExecutionContext executionContext = new FlippingExecutionContext();
         if (isShareHttpSession()) {
+            
             executionContext.putString("LOCALE", pageContext.getRequest().getLocalName());
             @SuppressWarnings("unchecked")
             Map < String, String[]> parameters = pageContext.getRequest().getParameterMap();

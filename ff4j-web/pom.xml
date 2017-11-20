@@ -61,11 +61,20 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
 		</dependency>
+		<!-- 
 		<dependency>
 			<groupId>taglibs</groupId>
 			<artifactId>standard</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		-->
+		
+		<!-- Fixing issue #241 -->
+		<dependency>
+            <groupId>org.apache.taglibs</groupId>
+            <artifactId>taglibs-standard-impl</artifactId>
+            <version>1.2.5</version>
+        </dependency>
 		
 		<!-- Templating Engine -->
 		<dependency>

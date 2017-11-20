@@ -21,7 +21,22 @@ package org.ff4j.spring.boot.web.api.exceptions;
  */
 
 import org.ff4j.exception.InvalidPropertyTypeException;
-import org.ff4j.services.exceptions.*;
+import org.ff4j.services.exceptions.AuthorizationNotExistsException;
+import org.ff4j.services.exceptions.FeatureIdBlankException;
+import org.ff4j.services.exceptions.FeatureIdNotMatchException;
+import org.ff4j.services.exceptions.FeatureNotFoundException;
+import org.ff4j.services.exceptions.FeatureStoreNotCached;
+import org.ff4j.services.exceptions.FlippingStrategyBadRequestException;
+import org.ff4j.services.exceptions.GroupExistsException;
+import org.ff4j.services.exceptions.GroupNotExistsException;
+import org.ff4j.services.exceptions.PropertiesBadRequestException;
+import org.ff4j.services.exceptions.PropertyNameBlankException;
+import org.ff4j.services.exceptions.PropertyNameNotMatchException;
+import org.ff4j.services.exceptions.PropertyNotFoundException;
+import org.ff4j.services.exceptions.PropertyStoreNotCached;
+import org.ff4j.services.exceptions.RoleExistsException;
+import org.ff4j.services.exceptions.RoleNotExistsException;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,6 +46,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author <a href="mailto:paul58914080@gmail.com">Paul Williams</a>
  */
 @ControllerAdvice(basePackages = {"org.ff4j.spring.boot.web.api.resources"})
+@Order(0)
 public class FF4jExceptionHandler {
     @ExceptionHandler(value = IllegalArgumentException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "bad request")
