@@ -178,6 +178,7 @@
         <module>ff4j-store-neo4j</module>
         <module>ff4j-store-redis</module>
         <module>ff4j-store-springjdbc</module>
+        <module>ff4j-store-couchbase</module>
 
         <!-- spring-boot-starter -->
         <module>ff4j-spring-services</module>
