@@ -1,4 +1,16 @@
-package org.ff4j.couchbase.store.store;
+package org.ff4j.couchbase.store;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.ff4j.core.Feature;
+import org.ff4j.couchbase.CouchbaseConnection;
+import org.ff4j.couchbase.mapper.FeatureCouchbaseMapper;
+import org.ff4j.store.AbstractFeatureStore;
+import org.ff4j.utils.Util;
+import org.ff4j.utils.json.FeatureJsonParser;
 
 /*
  * #%L
@@ -21,64 +33,70 @@ package org.ff4j.couchbase.store.store;
  */
 
 import com.couchbase.client.java.Bucket;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang3.StringUtils;
-import org.ff4j.core.Feature;
-import org.ff4j.couchbase.store.document.FeatureDocument;
-import org.ff4j.couchbase.store.mapper.DocumentMapper;
-import org.ff4j.couchbase.store.mapper.ObjectMapperFactory;
-import org.ff4j.couchbase.store.repository.CouchbaseRepository;
-import org.ff4j.store.AbstractFeatureStore;
-import org.ff4j.utils.Util;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import com.couchbase.client.java.query.N1qlQuery;
+import com.couchbase.client.java.query.N1qlQueryResult;
+import com.couchbase.client.java.query.N1qlQueryRow;
 
 /**
- * Created by farrellyja on 09/11/2017.
+ * Implementation of FeatureStore into Couchbase.
+ *
+ * @author farrellyja
+ * @author Cedrick LUNVEN (@clunven)
  */
 public class FeatureStoreCouchbase extends AbstractFeatureStore {
-
-    /** Couchbase bucket connections **/
-    private CouchbaseRepository<FeatureDocument> featureRepository;
-
-    public FeatureStoreCouchbase(Bucket featureBucket) {
-        ObjectMapper objectMapper = ObjectMapperFactory.createMapper();
-        this.featureRepository = new CouchbaseRepository<>(featureBucket, FeatureDocument.class, objectMapper);
+    
+    /** Couchebase mapper. */
+    private FeatureCouchbaseMapper FEATURE_MAPPER = new FeatureCouchbaseMapper();
+    
+    /** Keep reference to connection. */
+    private CouchbaseConnection couchBaseConnection;
+    
+    /** Keep reference to bucket. */
+    private Bucket featureBucket;
+    
+    /**
+     * Default initialisation
+     */
+    public FeatureStoreCouchbase() {
     }
-
+    
+    /**
+     * Initialization thourhg connection
+     * @param conn
+     */
+    public FeatureStoreCouchbase(CouchbaseConnection conn) {
+        this.couchBaseConnection = conn;
+    }
+    
     /** {@inheritDoc} */
     @Override
     public void createSchema() {
-
+        throw new UnsupportedOperationException("Cannot create buckets from Java driver");
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean exist(String uid) {
         Util.assertHasLength(uid);
-        return featureRepository.get(uid) != null;
+        return getFeatureBucket().exists(uid);
     }
 
     /** {@inheritDoc} */
     @Override
     public void enable(String uid) {
         assertFeatureExist(uid);
-        FeatureDocument feature = featureRepository.get(uid);
-        feature.setEnable(true);
-        featureRepository.upsert(feature.getUid(), feature);
+        Feature f1 = FEATURE_MAPPER.fromStore(getFeatureBucket().get(uid));
+        f1.enable();
+        update(f1);
     }
 
     /** {@inheritDoc} */
     @Override
     public void disable(String uid) {
         assertFeatureExist(uid);
-        FeatureDocument feature = featureRepository.get(uid);
-        feature.setEnable(false);
-        featureRepository.upsert(feature.getUid(), feature);
+        Feature f1 = FEATURE_MAPPER.fromStore(getFeatureBucket().get(uid));
+        f1.disable();
+        update(f1);
     }
 
     /** {@inheritDoc} */
@@ -86,40 +104,44 @@ public class FeatureStoreCouchbase extends AbstractFeatureStore {
     public void create(Feature fp) {
         assertFeatureNotNull(fp);
         assertFeatureNotExist(fp.getUid());
-        featureRepository.upsert(fp.getUid(), DocumentMapper.featureToFeatureDocument(fp));
+        getFeatureBucket().upsert(FEATURE_MAPPER.toStore(fp));
     }
 
     /** {@inheritDoc} */
     @Override
     public void delete(String uid) {
         assertFeatureExist(uid);
-        featureRepository.remove(uid);
+        getFeatureBucket().remove(uid);
     }
 
     /** {@inheritDoc} */
     @Override
     public Feature read(String uid) {
         assertFeatureExist(uid);
-        FeatureDocument featureDocument = featureRepository.get(uid);
-        return DocumentMapper.featureDocumentToFeature(featureDocument);
+        return FEATURE_MAPPER.fromStore(getFeatureBucket().get(uid));
     }
 
     /** {@inheritDoc} */
     @Override
     public Map<String, Feature> readAll() {
-        List<FeatureDocument> featureDocuments = featureRepository.getAll();
-        return featureDocuments.stream()
-                .map(DocumentMapper::featureDocumentToFeature)
-                .collect(Collectors.toMap(Feature::getUid, Function.identity()));
+        // To retrieve the items we use the BUCKET (not view as KEY/VALUE searches)
+        N1qlQuery queryFeatures = N1qlQuery.simple("SELECT * FROM " + couchBaseConnection.getFf4jFeatureBucketName());
+        N1qlQueryResult queryResult = getFeatureBucket().query(queryFeatures);
+        Map<String, Feature> allFeatures = new HashMap<>();
+        for (N1qlQueryRow row : queryResult.allRows()) {
+            Feature f = FeatureJsonParser.parseFeature(row.value().get(couchBaseConnection.getFf4jFeatureBucketName()).toString());
+            allFeatures.put(f.getUid(), f);
+        }
+        return allFeatures;
     }
-
+    
+   
     /** {@inheritDoc} */
     @Override
     public void update(Feature fp) {
         assertFeatureNotNull(fp);
         assertFeatureExist(fp.getUid());
-        FeatureDocument featureDocument = DocumentMapper.featureToFeatureDocument(fp);
-        featureRepository.upsert(featureDocument.getUid(), featureDocument);
+        getFeatureBucket().upsert(FEATURE_MAPPER.toStore(fp));
     }
 
     /** {@inheritDoc} */
@@ -127,9 +149,9 @@ public class FeatureStoreCouchbase extends AbstractFeatureStore {
     public void grantRoleOnFeature(String uid, String roleName) {
         Util.assertHasLength(roleName);
         assertFeatureExist(uid);
-        FeatureDocument featureDocument = featureRepository.get(uid);
-        featureDocument.getPermissions().add(roleName);
-        featureRepository.upsert(featureDocument.getUid(), featureDocument);
+        Feature f = read(uid);
+        f.getPermissions().add(roleName);
+        update(f);
     }
 
     /** {@inheritDoc} */
@@ -137,9 +159,9 @@ public class FeatureStoreCouchbase extends AbstractFeatureStore {
     public void removeRoleFromFeature(String uid, String roleName) {
         Util.assertHasLength(roleName);
         assertFeatureExist(uid);
-        FeatureDocument featureDocument = featureRepository.get(uid);
-        featureDocument.getPermissions().remove(roleName);
-        featureRepository.upsert(featureDocument.getUid(), featureDocument);
+        Feature f = read(uid);
+        f.getPermissions().remove(roleName);
+        update(f);
     }
 
     /** {@inheritDoc} */
@@ -150,19 +172,19 @@ public class FeatureStoreCouchbase extends AbstractFeatureStore {
             Feature f = kv.getValue();
             f.setGroup(groupName);
             f.setEnable(true);
-            featureRepository.upsert(f.getUid(), DocumentMapper.featureToFeatureDocument(f));
+            update(f);
         });
     }
 
     /** {@inheritDoc} */
     @Override
     public void disableGroup(String groupName) {
-        assertGroupExist(groupName);
         Map<String, Feature> featuresInGroup = readGroup(groupName);
         featuresInGroup.entrySet().forEach(kv -> {
             Feature f = kv.getValue();
+            f.setGroup(groupName);
             f.setEnable(false);
-            featureRepository.upsert(f.getUid(), DocumentMapper.featureToFeatureDocument(f));
+            update(f);
         });
     }
 
@@ -189,9 +211,9 @@ public class FeatureStoreCouchbase extends AbstractFeatureStore {
     public void addToGroup(String uid, String groupName) {
         Util.assertHasLength(groupName);
         assertFeatureExist(uid);
-        FeatureDocument featureDocument = featureRepository.get(uid);
-        featureDocument.setGroup(groupName);
-        featureRepository.upsert(featureDocument.getUid(), featureDocument);
+        Feature f = read(uid);
+        f.setGroup(groupName);
+        update(f);
     }
 
     /** {@inheritDoc} */
@@ -199,10 +221,11 @@ public class FeatureStoreCouchbase extends AbstractFeatureStore {
     public void removeFromGroup(String uid, String groupName) {
         Util.assertHasLength(groupName);
         assertFeatureExist(uid);
-        assertGroupExist(groupName);
-        FeatureDocument featureDocument = featureRepository.get(uid);
-        featureDocument.setGroup(null);
-        featureRepository.upsert(featureDocument.getUid(), featureDocument);
+        Feature f = readGroup(groupName).get(uid);
+        if (f != null) {
+            f.setGroup(null);
+            update(f);
+        }
     }
 
     /** {@inheritDoc} */
@@ -210,13 +233,46 @@ public class FeatureStoreCouchbase extends AbstractFeatureStore {
     public Set<String> readAllGroups() {
         return readAll().entrySet().stream()
             .map(f -> f.getValue().getGroup())
-            .filter(StringUtils::isNoneEmpty)
-            .collect(Collectors.toSet());
+            .filter(Util::hasLength).collect(Collectors.toSet());
     }
 
     /** {@inheritDoc} */
     @Override
     public void clear() {
-        featureRepository.removeAll();
+        getFeatureBucket().bucketManager().flush();
+    }
+    
+    /**
+     * Access to feature bucket.
+     *
+     * @return
+     *      reference to bucket
+     */
+    private Bucket getFeatureBucket() {
+        if (featureBucket == null) {
+            Util.assertNotNull(getCouchBaseConnection());
+            featureBucket = getCouchBaseConnection().getFeaturesBucket();
+            Util.assertNotNull(featureBucket);
+        }
+        return featureBucket;
+    }
+
+    /**
+     * Getter accessor for attribute 'couchBaseConnection'.
+     *
+     * @return
+     *       current value of 'couchBaseConnection'
+     */
+    public CouchbaseConnection getCouchBaseConnection() {
+        return couchBaseConnection;
+    }
+
+    /**
+     * Setter accessor for attribute 'couchBaseConnection'.
+     * @param couchBaseConnection
+     * 		new value for 'couchBaseConnection '
+     */
+    public void setCouchBaseConnection(CouchbaseConnection couchBaseConnection) {
+        this.couchBaseConnection = couchBaseConnection;
     }
 }

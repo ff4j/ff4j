@@ -1,6 +1,6 @@
 # ff4j-store-couchbase
 
-Provides a backend store for FF4J using couchbase. Currently only provides feature & property stores, event repository store is not yet implemented.
+Provides a backend store for FF4J using couchbase. Currently only provides feature & property stores, (event repository store is not yet implemented).
 
 
 ### Usage instructions
@@ -13,49 +13,23 @@ Provides a backend store for FF4J using couchbase. Currently only provides featu
         <version>1.6.6-SNAPSHOT</version>
     </dependency>
     ```
-  - Create a bucket for FF4J to use, then create 2 views on the bucket:
-    - Design document name: featureDocument, view name: all
-        ```javascript
-        function (doc, meta) {
-          if (doc._class == "org.ff4j.couchbase.store.document.FeatureDocument") {
-            emit(meta.id, null);
-          }
-        }
-        ```
-    - Design document name: propertyDocument, view name: all
-        ```javascript
-        function (doc, meta) {
-          if (doc._class == "org.ff4j.couchbase.store.document.PropertyDocument") {
-            emit(meta.id, null);
-          }
-        }
-        ```
-  - Create your couchbase config. Here is an example spring boot config:
-    ```java
-    @Configuration
-    class CouchbaseConfig {
-        @Value("${couchbase.cluster.ff4j.ip}")
-        private String ff4jIp;
-        @Value("${couchbase.cluster.ff4j.bucket}")
-        private String ff4jBucketName;
-        @Value("${couchbase.cluster.ff4j.password}")
-        private String ff4jBucketPassword;
-
-        @Bean
-        public Cluster ff4jCluster() {
-            return CouchbaseCluster.create(ff4jIp);
-        }
-
-        @Bean
-        public Bucket ff4jBucket(Cluster ff4jCluster) {
-            return ff4jCluster.openBucket(ff4jBucketName, ff4jBucketPassword);
-        }
-    }
+  - Create Flushable buckets for FF4j properties and ff4jFeature (defaults expected are `ff4jFeatures` and `ff4jProperties`.
+  
+  - Create primary indexes for each bucket.
+     ```
+     CREATE PRIMARY INDEX `ff4jFeatures-index` ON `ff4jFeatures` USING GSI;
+     CREATE PRIMARY INDEX `ff4jProperties-index` ON `ff4jProperties` USING GSI;
+     
     ```
   - Use in your FF4J config:
     ```java
     @Bean
     public FF4j ff4j() {
+            CouchbaseConnection conn = new CouchbaseConnection().addNode("127.0.0.1")
+                    .userName("Administrator")
+                    .password("password")
+                    .featureBucketName("ff4jFeatures");
+                    
         FF4j ff4j = new FF4j();
         ff4j.setFeatureStore(new FeatureStoreCouchbase(ff4jBucket));
         ff4j.setPropertiesStore(new PropertyStoreCouchbase(ff4jBucket));
