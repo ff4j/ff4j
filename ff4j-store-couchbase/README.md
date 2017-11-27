@@ -25,14 +25,17 @@ Provides a backend store for FF4J using couchbase. Currently only provides featu
     ```java
     @Bean
     public FF4j ff4j() {
-            CouchbaseConnection conn = new CouchbaseConnection().addNode("127.0.0.1")
-                    .userName("Administrator")
-                    .password("password")
-                    .featureBucketName("ff4jFeatures");
+         CouchbaseConnection conn = new CouchbaseConnection().addNode("127.0.0.1")
+           .userName("Administrator")
+           .password("password")
+           //[optional].propertyBucketName("ff4jProperties");
+           //[optional].featureBucketName("ff4jFeatures");
+           //[optional].propertyBucketPassword("password");
+           //[optional].featureBucketPassword("password");    
                     
         FF4j ff4j = new FF4j();
-        ff4j.setFeatureStore(new FeatureStoreCouchbase(ff4jBucket));
-        ff4j.setPropertiesStore(new PropertyStoreCouchbase(ff4jBucket));
+        ff4j.setFeatureStore(new FeatureStoreCouchbase(conn));
+        ff4j.setPropertiesStore(new PropertyStoreCouchbase(conn));
         return ff4j;
     }
     ```
