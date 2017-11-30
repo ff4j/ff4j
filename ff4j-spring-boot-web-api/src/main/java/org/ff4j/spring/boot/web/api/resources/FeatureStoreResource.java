@@ -53,6 +53,7 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @RequestMapping(value = RESOURCE_FF4J_STORE)
 public class FeatureStoreResource {
+    
     @Autowired
     private FeatureStoreServices featureStoreService;
 

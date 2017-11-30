@@ -1,5 +1,10 @@
 package org.ff4j.web.api.test.it;
 
+import static org.ff4j.test.TestsFf4jConstants.TEST_FEATURES_FILE;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_FEATURES;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_GROUPS;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_STORE;
+
 /*
  * #%L
  * ff4j-web
@@ -21,7 +26,6 @@ package org.ff4j.web.api.test.it;
  */
 
 import javax.ws.rs.Path;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Application;
 
@@ -30,20 +34,15 @@ import org.ff4j.test.AssertFf4j;
 import org.ff4j.web.api.FF4jJacksonMapper;
 import org.ff4j.web.api.resources.FF4jResource;
 import org.ff4j.web.api.test.SampleFF4jJersey2Application;
+import org.ff4j.web.api.utils.ClientHttpUtils;
 import org.ff4j.web.jersey2.store.FeatureStoreHttp;
 import org.ff4j.web.store.FeatureStoreHttpTestIT;
-import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.swagger.jaxrs.json.JacksonJsonProvider;
-
-import static org.ff4j.test.TestsFf4jConstants.*;
-import static org.ff4j.web.FF4jWebConstants.*;
 
 /**
  * Superclass for testing web resources.
@@ -86,11 +85,7 @@ public abstract class AbstractWebResourceTestIT extends JerseyTest {
         enable(TestProperties.DUMP_ENTITY);
         
         // Initialisation of clientss
-        ClientConfig clientConfig = new ClientConfig();
-        clientConfig.register(JacksonJsonProvider.class);
-        clientConfig.register(FF4jJacksonMapper.class);
-        setClient(ClientBuilder.newClient(clientConfig));
-        
+        setClient(ClientHttpUtils.buildJerseyClient());
         return new SampleFF4jJersey2Application(ff4j);
     }
     

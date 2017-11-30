@@ -28,6 +28,7 @@
         <version.spring>4.3.9.RELEASE</version.spring>
         <version.logback>1.1.11</version.logback>
         <spring-boot.version>1.5.4.RELEASE</spring-boot.version>
+        <spring-security.version>4.2.3.RELEASE</spring-security.version>
         <swagger.version>2.5.0</swagger.version>
         <license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
     </properties>
@@ -36,6 +37,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        
+        <!-- Secure Resources with SpringSecurity -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        
         <dependency>
             <groupId>org.ff4j</groupId>
             <artifactId>ff4j-spring-services</artifactId>
@@ -97,6 +105,7 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        
     </dependencies>
     <build>
         <finalName>ff4j-spring-boot-web-api</finalName>

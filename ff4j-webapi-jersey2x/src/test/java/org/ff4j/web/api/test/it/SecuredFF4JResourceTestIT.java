@@ -35,6 +35,7 @@ import org.ff4j.test.AssertFf4j;
 import org.ff4j.web.api.FF4jJacksonMapper;
 import org.ff4j.web.api.resources.FF4jResource;
 import org.ff4j.web.api.security.FF4JSecurityContextAuthenticationManager;
+import org.ff4j.web.api.utils.ClientHttpUtils;
 import org.ff4j.web.jersey2.store.FeatureStoreHttp;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.test.grizzly.GrizzlyTestContainerFactory;
@@ -207,7 +208,7 @@ public class SecuredFF4JResourceTestIT  extends AbstractWebResourceTestIT {
         // Given
         Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getFeatureStore().getClass());
         // When
-        String authent = FeatureStoreHttp.buildAuthorization4UserName("user", "user");
+        String authent = ClientHttpUtils.buildAuthorization4UserName("user", "user");
         Response resHttp = resourceff4j() //
                 .request(MediaType.APPLICATION_JSON)
                 .header(HEADER_AUTHORIZATION, authent).get();
@@ -223,7 +224,7 @@ public class SecuredFF4JResourceTestIT  extends AbstractWebResourceTestIT {
         // Given
         Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getFeatureStore().getClass());
         // When
-        String authent = FeatureStoreHttp.buildAuthorization4UserName("incalidUser", "user");
+        String authent = ClientHttpUtils.buildAuthorization4UserName("incalidUser", "user");
         Response resHttp = resourceff4j() //
                 .request(MediaType.APPLICATION_JSON)
                 .header(HEADER_AUTHORIZATION, authent).get();
@@ -240,7 +241,7 @@ public class SecuredFF4JResourceTestIT  extends AbstractWebResourceTestIT {
         // Given
         Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getFeatureStore().getClass());
         // When
-        String authent = FeatureStoreHttp.buildAuthorization4UserName("user", "invalidPassword");
+        String authent = ClientHttpUtils.buildAuthorization4UserName("user", "invalidPassword");
         Response resHttp = resourceff4j() //
                 .request(MediaType.APPLICATION_JSON)
                 .header(HEADER_AUTHORIZATION, authent).get();

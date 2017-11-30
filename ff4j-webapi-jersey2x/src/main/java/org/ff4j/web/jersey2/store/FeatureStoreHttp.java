@@ -22,6 +22,17 @@ package org.ff4j.web.jersey2.store;
 
 import static org.ff4j.utils.json.FeatureJsonParser.parseFeature;
 import static org.ff4j.utils.json.FeatureJsonParser.parseFeatureArray;
+import static org.ff4j.web.FF4jWebConstants.OPERATION_ADDGROUP;
+import static org.ff4j.web.FF4jWebConstants.OPERATION_DISABLE;
+import static org.ff4j.web.FF4jWebConstants.OPERATION_ENABLE;
+import static org.ff4j.web.FF4jWebConstants.OPERATION_GRANTROLE;
+import static org.ff4j.web.FF4jWebConstants.OPERATION_REMOVEGROUP;
+import static org.ff4j.web.FF4jWebConstants.OPERATION_REMOVEROLE;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_FEATURES;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_GROUPS;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_STORE;
+import static org.ff4j.web.FF4jWebConstants.STORE_CLEAR;
+import static org.ff4j.web.FF4jWebConstants.STORE_CREATESCHEMA;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,9 +41,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -45,16 +54,10 @@ import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.store.AbstractFeatureStore;
 import org.ff4j.utils.Util;
-import org.ff4j.web.api.FF4jJacksonMapper;
 import org.ff4j.web.api.resources.domain.FeatureApiBean;
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.internal.util.Base64;
-
-import io.swagger.jaxrs.json.JacksonJsonProvider;
+import org.ff4j.web.api.utils.ClientHttpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.ff4j.web.FF4jWebConstants.*;
 
 /**
  * Implementation of store using {@link HttpClient} connection.
@@ -71,15 +74,15 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
     
     /** constant. */
     private static final String CANNOT_GRANT_ROLE_ON_FEATURE_AN_HTTP_ERROR = "Cannot grant role on feature, an HTTP error ";
-
+    
     /** Jersey Client. */
-    protected Client client = null;
-
+    protected Client jerseyClient = null;
+    
     /** Property to get url ROOT. */
     private String url = null;
     
     /** header parameter to add if secured mode enabled. */
-    private String authorization = null;
+    private String authorizationHeaderValue = null;
 
     /** Target jersey resource. */
     private WebTarget storeWebRsc = null;
@@ -109,7 +112,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
      */
     public FeatureStoreHttp(String rootApiUrl, String apiKey) {
         this(rootApiUrl);
-        this.authorization = buildAuthorization4ApiKey(apiKey);
+        this.authorizationHeaderValue = ClientHttpUtils.buildAuthorization4ApiKey(apiKey);
     }
     
     /**
@@ -121,22 +124,20 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
      */
     public FeatureStoreHttp(String rootApiUrl, String username, String password) {
         this(rootApiUrl);
-        this.authorization = buildAuthorization4UserName(username, password);
+        this.authorizationHeaderValue = ClientHttpUtils.buildAuthorization4UserName(username, password);
     }
 
     /**
-     * Initializing jerseyClient.
+     * Initilialization of jersey.
+     *
+     * @return
+     *      target Jersey
      */
-    private void initJerseyClient() {
-        if (client == null) {
-            ClientConfig clientConfig = new ClientConfig();
-            clientConfig.register(JacksonJsonProvider.class);
-            clientConfig.register(FF4jJacksonMapper.class);
-            client = ClientBuilder.newClient(clientConfig);
+    public Client getJerseyClient() {
+        if (this.jerseyClient == null) {
+            this.jerseyClient = ClientHttpUtils.buildJerseyClient();
         }
-        if (url == null) {
-            throw new IllegalArgumentException("Cannot initialialize Jersey Client : please provide store URL in 'url' attribute");
-        }
+        return jerseyClient;
     }
 
     /**
@@ -145,9 +146,9 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
      * @return target web resource
      */
     private WebTarget getStore() {
+        Util.assertNotNull(url);
         if (storeWebRsc == null) {
-            initJerseyClient();
-            storeWebRsc = client.target(url).path(RESOURCE_STORE).path(RESOURCE_FEATURES);
+            storeWebRsc = getJerseyClient().target(url).path(RESOURCE_STORE).path(RESOURCE_FEATURES);
         }
         return storeWebRsc;
     }
@@ -158,9 +159,9 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
      * @return target web resource
      */
     private WebTarget getGroups() {
+        Util.assertNotNull(url);
         if (groupsWebRsc == null) {
-            initJerseyClient();
-            groupsWebRsc = client.target(url).path(RESOURCE_STORE).path(RESOURCE_GROUPS);
+            groupsWebRsc = getJerseyClient().target(url).path(RESOURCE_STORE).path(RESOURCE_GROUPS);
         }
         return groupsWebRsc;
     }
@@ -169,10 +170,13 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
     @Override
     public Feature read(String uid) {
         Util.assertHasLength(uid);
-        Response cRes = getStore().path(uid).request(MediaType.APPLICATION_JSON_TYPE).get();
+        Response cRes = ClientHttpUtils.invokeGetMethod(
+                getStore().path(uid), authorizationHeaderValue);
         log.info(String.valueOf(getStore().path(uid)));
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new FeatureNotFoundException(uid);
+        } else if (Status.OK.getStatusCode() != cRes.getStatus()) {
+            throw new FeatureAccessException("Error when reaching API code:[" + cRes.getStatus() + "] MSG:" + cRes.getStatusInfo());
         }
         return parseFeature(cRes.readEntity(String.class));
     }
@@ -181,7 +185,8 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
     @Override
     public void enable(String uid) {
         Util.assertHasLength(uid);
-        Response cRes = post(getStore().path(uid).path(OPERATION_ENABLE));
+        Response cRes = ClientHttpUtils.invokePostMethod(
+                getStore().path(uid).path(OPERATION_ENABLE), authorizationHeaderValue);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new FeatureNotFoundException(uid);
         }
@@ -191,7 +196,8 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
     @Override
     public void disable(String uid) {
         Util.assertHasLength(uid);
-        Response cRes = post(getStore().path(uid).path(OPERATION_DISABLE));
+        Response cRes = ClientHttpUtils.invokePostMethod(
+                getStore().path(uid).path(OPERATION_DISABLE), authorizationHeaderValue);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new FeatureNotFoundException(uid);
         }
@@ -201,7 +207,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
     @Override
     public boolean exist(String uid) {
         Util.assertHasLength(uid);
-        Response cRes = getStore().path(uid).request(MediaType.APPLICATION_JSON_TYPE).get();
+        Response cRes = ClientHttpUtils.invokeGetMethod(getStore().path(uid), authorizationHeaderValue);
         if (Status.OK.getStatusCode() == cRes.getStatus()) {
             return true;
         }
@@ -220,10 +226,14 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
         if (exist(fp.getUid())) {
             throw new FeatureAlreadyExistException(fp.getUid());
         }
-        // Now can process upsert through PUT HTTP method
+        /* Now can process upsert through PUT HTTP method
         Response cRes = getStore().path(fp.getUid())//
                 .request(MediaType.APPLICATION_JSON) //
-                .put(Entity.entity(new FeatureApiBean(fp), MediaType.APPLICATION_JSON));
+                .put(Entity.entity(new FeatureApiBean(fp), MediaType.APPLICATION_JSON));*/
+        Response cRes = ClientHttpUtils
+                            .createRequest(getStore().path(fp.getUid()), authorizationHeaderValue)
+                            .put(Entity.entity(new FeatureApiBean(fp), MediaType.APPLICATION_JSON));
+        
         // Check response code CREATED or raised error
         if (Status.CREATED.getStatusCode() != cRes.getStatus()) {
             throw new FeatureAccessException("Cannot create feature, an HTTP error " + cRes.getStatus() + OCCURED);
@@ -233,8 +243,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public Map<String, Feature> readAll() {
-        
-        Response cRes = getStore().request(MediaType.APPLICATION_JSON_TYPE).get();
+        Response cRes = ClientHttpUtils.invokeGetMethod(getStore(), authorizationHeaderValue);
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
             throw new FeatureAccessException("Cannot read features, an HTTP error " + cRes.getStatus() + OCCURED);
         }
@@ -252,7 +261,8 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
     @Override
     public void delete(String uid) {
         Util.assertHasLength(uid);
-        Response cRes = getStore().path(uid).request().delete();
+        Response cRes = ClientHttpUtils
+                .invokeDeleteMethod(getStore().path(uid), authorizationHeaderValue);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new FeatureNotFoundException(uid);
         }
@@ -270,8 +280,8 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
         if (!exist(fp.getUid())) {
             throw new FeatureNotFoundException(fp.getUid());
         }
-        Response cRes = getStore().path(fp.getUid()) //
-                .request(MediaType.APPLICATION_JSON)
+        Response cRes = ClientHttpUtils
+                .createRequest(getStore().path(fp.getUid()), authorizationHeaderValue)
                 .put(Entity.entity(new FeatureApiBean(fp), MediaType.APPLICATION_JSON));
         if (Status.NO_CONTENT.getStatusCode() != cRes.getStatus()) {
             throw new FeatureAccessException("Cannot update feature, an HTTP error " + cRes.getStatus() + OCCURED);
@@ -282,7 +292,8 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
     @Override
     public void grantRoleOnFeature(String uid, String roleName) {
         Util.assertHasLength(uid, roleName);
-        Response cRes = post(getStore().path(uid).path(OPERATION_GRANTROLE).path(roleName));
+        Response cRes = ClientHttpUtils.invokePostMethod(
+                getStore().path(uid).path(OPERATION_GRANTROLE).path(roleName), authorizationHeaderValue);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new FeatureNotFoundException(uid);
         }
@@ -295,7 +306,8 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
     @Override
     public void removeRoleFromFeature(String uid, String roleName) {
         Util.assertHasLength(uid, roleName);
-        Response cRes = post(getStore().path(uid).path(OPERATION_REMOVEROLE).path(roleName));
+        Response cRes = ClientHttpUtils.invokePostMethod(
+                getStore().path(uid).path(OPERATION_REMOVEROLE).path(roleName), authorizationHeaderValue);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new FeatureNotFoundException(uid);
         }
@@ -308,8 +320,8 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
     @Override
     public void addToGroup(String uid, String groupName) {
         Util.assertHasLength(uid, groupName);
-        
-        Response cRes = post(getStore().path(uid).path(OPERATION_ADDGROUP).path(groupName));
+        Response cRes = ClientHttpUtils.invokePostMethod(
+                getStore().path(uid).path(OPERATION_ADDGROUP).path(groupName), authorizationHeaderValue);
        
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new FeatureNotFoundException(uid);
@@ -325,7 +337,10 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
     @Override
     public void removeFromGroup(String uid, String groupName) {
         Util.assertHasLength(uid, groupName);
-        Response cRes = post(getStore().path(uid).path(OPERATION_REMOVEGROUP).path(groupName));
+        Response cRes = ClientHttpUtils.invokePostMethod(getStore()
+                .path(uid)
+                .path(OPERATION_REMOVEGROUP)
+                .path(groupName), authorizationHeaderValue);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new FeatureNotFoundException(uid);
         }
@@ -341,7 +356,9 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
     @Override
     public void enableGroup(String groupName) {
         Util.assertHasLength(groupName);
-        Response cRes = post(getGroups().path(groupName).path(OPERATION_ENABLE));
+        Response cRes = ClientHttpUtils.invokePostMethod(getGroups()
+                .path(groupName)
+                .path(OPERATION_ENABLE), authorizationHeaderValue);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new GroupNotFoundException(groupName);
         }
@@ -354,7 +371,9 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
     @Override
     public void disableGroup(String groupName) {
         Util.assertHasLength(groupName);
-        Response cRes = post(getGroups().path(groupName).path(OPERATION_DISABLE));
+        Response cRes = ClientHttpUtils.invokePostMethod(getGroups()
+                .path(groupName)
+                .path(OPERATION_DISABLE), authorizationHeaderValue);
         
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new GroupNotFoundException(groupName);
@@ -363,12 +382,11 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
             throw new FeatureAccessException(CANNOT_GRANT_ROLE_ON_FEATURE_AN_HTTP_ERROR + cRes.getStatus() + OCCURED);
         }
     }
-   
 
     /** {@inheritDoc} */
     public Map<String, Feature> readGroup(String groupName) {
         Util.assertHasLength(groupName);
-        Response cRes = getGroups().path(groupName).request(MediaType.APPLICATION_JSON).get();
+        Response cRes = ClientHttpUtils.invokeGetMethod(getGroups().path(groupName), authorizationHeaderValue);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new GroupNotFoundException(groupName);
         }
@@ -388,7 +406,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
     @Override
     public boolean existGroup(String groupName) {
         Util.assertHasLength(groupName);
-        Response cRes = getGroups().path(groupName).request(MediaType.APPLICATION_JSON).get();
+        Response cRes = ClientHttpUtils.invokeGetMethod(getGroups().path(groupName), authorizationHeaderValue);
         if (Status.OK.getStatusCode() == cRes.getStatus()) {
             return true;
         }
@@ -402,7 +420,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
     @SuppressWarnings("unchecked")
     @Override
     public Set<String> readAllGroups() {
-        Response cRes = getGroups().request(MediaType.APPLICATION_JSON).get();
+        Response cRes = ClientHttpUtils.invokeGetMethod(getGroups(), authorizationHeaderValue);
         List < Map < String, String>> groupList = cRes.readEntity(List.class);
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
             throw new FeatureAccessException("Cannot read groups, an HTTP error " + cRes.getStatus() + OCCURED);
@@ -417,8 +435,11 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public void clear() {
-        WebTarget wr = client.target(url).path(RESOURCE_STORE).path(STORE_CLEAR);
-        Response cRes = post(wr);
+        Util.assertHasLength(url);
+        Response cRes = ClientHttpUtils.invokePostMethod(
+                getJerseyClient().target(url)
+                .path(RESOURCE_STORE)
+                .path(STORE_CLEAR),authorizationHeaderValue);
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
             throw new FeatureAccessException("Cannot clear feature store - " + cRes.getStatus());
         }
@@ -427,50 +448,16 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public void createSchema() {
-        WebTarget wr = client.target(url).path(RESOURCE_STORE).path(STORE_CREATESCHEMA);
-        Response cRes = post(wr);
+        Util.assertHasLength(url);
+        Response cRes = ClientHttpUtils.invokePostMethod(
+                getJerseyClient().target(url)
+                .path(RESOURCE_STORE)
+                .path(STORE_CREATESCHEMA), authorizationHeaderValue);
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
             throw new FeatureAccessException("Cannot create feature store - " + cRes.getStatus());
         }
-        
     }
     
-    // ------- Static for authentication -------
-    
-    /**
-     * Build Authorization header for final user.
-     * @param username target username
-     * @param password target password
-     * @return target header
-     */
-    public static String buildAuthorization4UserName(String username, String password) {
-        return " Basic " + new String(Base64.encodeAsString(username + ":" + password));
-    }
-    
-    
-    /**
-     * Share header settings for invocations.
-     *
-     * @param webTarget target web
-     * @return
-     */
-    private Response post(WebTarget webTarget) {
-        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
-        if (null != authorization) {
-            invocationBuilder.header(HEADER_AUTHORIZATION, authorization);
-        }
-        return invocationBuilder.post(Entity.text(""));
-    }
-    
-    /**
-     * Build Authorization header for technical user.
-     * @param apiKey target apiKey
-     * @return target header
-     */
-    public static String buildAuthorization4ApiKey(String apiKey) {
-        return PARAM_AUTHKEY + "=" + apiKey;
-    }
-
     /**
      * Getter accessor for attribute 'url'.
      *

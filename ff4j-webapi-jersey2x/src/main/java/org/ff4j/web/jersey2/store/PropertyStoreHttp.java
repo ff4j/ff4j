@@ -1,5 +1,12 @@
 package org.ff4j.web.jersey2.store;
 
+import static org.ff4j.web.FF4jWebConstants.HEADER_AUTHORIZATION;
+import static org.ff4j.web.FF4jWebConstants.PARAM_AUTHKEY;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_PROPERTIES;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_PROPERTYSTORE;
+import static org.ff4j.web.FF4jWebConstants.STORE_CLEAR;
+import static org.ff4j.web.FF4jWebConstants.STORE_CREATESCHEMA;
+
 /*
  * #%L
  * ff4j-webapi-jersey1x
@@ -26,7 +33,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
@@ -42,14 +48,9 @@ import org.ff4j.property.Property;
 import org.ff4j.property.store.AbstractPropertyStore;
 import org.ff4j.utils.Util;
 import org.ff4j.utils.json.PropertyJsonParser;
-import org.ff4j.web.api.FF4jJacksonMapper;
 import org.ff4j.web.api.resources.domain.PropertyApiBean;
-import org.glassfish.jersey.client.ClientConfig;
+import org.ff4j.web.api.utils.ClientHttpUtils;
 import org.glassfish.jersey.internal.util.Base64;
-
-import io.swagger.jaxrs.json.JacksonJsonProvider;
-
-import static org.ff4j.web.FF4jWebConstants.*;
 
 /**
  * Implementation of the store with REST.
@@ -59,8 +60,9 @@ import static org.ff4j.web.FF4jWebConstants.*;
 public class PropertyStoreHttp extends AbstractPropertyStore {
 
     public static final String OCCURED = " occured.";
+    
     /** Jersey Client. */
-    protected Client client = null;
+    protected Client jerseyClient = null;
 
     /** Property to get url ROOT. */
     private String url = null;
@@ -96,7 +98,7 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
      */
     public PropertyStoreHttp(String rootApiUrl, String apiKey) {
         this(rootApiUrl);
-        this.authorization = buildAuthorization4ApiKey(apiKey);
+        this.authorization = ClientHttpUtils.buildAuthorization4ApiKey(apiKey);
     }
     
     /**
@@ -111,22 +113,20 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
      */
     public PropertyStoreHttp(String rootApiUrl, String username, String password) {
         this(rootApiUrl);
-        this.authorization = buildAuthorization4UserName(username, password);
+        this.authorization = ClientHttpUtils.buildAuthorization4UserName(username, password);
     }
 
     /**
-     * Initializing jerseyClient.
+     * Initilialization of jersey.
+     *
+     * @return
+     *      target Jersey
      */
-    private void initJerseyClient() {
-        if (client == null) {
-            ClientConfig clientConfig = new ClientConfig();
-            clientConfig.register(JacksonJsonProvider.class);
-            clientConfig.register(FF4jJacksonMapper.class);
-            client = ClientBuilder.newClient(clientConfig);
+    public Client getJerseyClient() {
+        if (this.jerseyClient == null) {
+            this.jerseyClient = ClientHttpUtils.buildJerseyClient();
         }
-        if (url == null) {
-            throw new IllegalArgumentException("Cannot initialialize Jersey Client : please provide store URL in 'url' attribute");
-        }
+        return jerseyClient;
     }
     
     /**
@@ -136,8 +136,8 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
      */
     private WebTarget getStore() {
         if (storeWebRsc == null) {
-            initJerseyClient();
-            storeWebRsc = client.target(url).path(RESOURCE_PROPERTYSTORE).path(RESOURCE_PROPERTIES);
+            Util.assertHasLength(url);
+            storeWebRsc = getJerseyClient().target(url).path(RESOURCE_PROPERTYSTORE).path(RESOURCE_PROPERTIES);
         }
         return storeWebRsc;
     }
@@ -145,7 +145,7 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
     /** {@inheritDoc} */
     public boolean existProperty(String name) {
         Util.assertHasLength(name);
-        Response cRes = getStore().path(name).request(MediaType.APPLICATION_JSON_TYPE).get();
+        Response cRes = ClientHttpUtils.invokeGetMethod(getStore().path(name), authorization);
         if (Status.OK.getStatusCode() == cRes.getStatus()) {
             return true;
         }
@@ -163,9 +163,12 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
         if (existProperty(value.getName())) {
             throw new PropertyAlreadyExistException("Property already exist");
         }
-        // Now can process upsert through PUT HTTP method
+        /* Now can process upsert through PUT HTTP method
         Response cRes = getStore().path(value.getName())//
                 .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(new PropertyApiBean(value), MediaType.APPLICATION_JSON));*/
+        Response cRes = ClientHttpUtils
+                .createRequest(getStore().path(value.getName()), authorization)
                 .put(Entity.entity(new PropertyApiBean(value), MediaType.APPLICATION_JSON));
         
         // Check response code CREATED or raised error
@@ -179,7 +182,7 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Property name cannot be null nor empty");
         }
-        Response cRes = getStore().path(name).request(MediaType.APPLICATION_JSON_TYPE).get();
+        Response cRes = ClientHttpUtils.invokeGetMethod(getStore().path(name), authorization);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new PropertyNotFoundException(name);
         }
@@ -190,7 +193,7 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
     /** {@inheritDoc} */
     public void deleteProperty(String name) {
         Util.assertHasLength(name);
-        Response cRes = getStore().path(name).request().delete();
+        Response cRes = ClientHttpUtils.invokeDeleteMethod(getStore().path(name), authorization);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new PropertyNotFoundException(name);
         }
@@ -201,7 +204,7 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
 
     /** {@inheritDoc} */
     public Map<String, Property<?>> readAllProperties() {
-        Response cRes = getStore().request(MediaType.APPLICATION_JSON_TYPE).get();
+        Response cRes = ClientHttpUtils.invokeGetMethod(getStore(), authorization);
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
             throw new PropertyAccessException("Cannot read properties, an HTTP error " + cRes.getStatus() + OCCURED);
         }
@@ -221,7 +224,8 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
 
     /** {@inheritDoc} */
     public void clear() {
-        WebTarget wr = client.target(url).path(RESOURCE_PROPERTYSTORE).path(STORE_CLEAR);
+        Util.assertHasLength(url);
+        WebTarget wr = getJerseyClient().target(url).path(RESOURCE_PROPERTYSTORE).path(STORE_CLEAR);
         Response cRes = post(wr);
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
             throw new PropertyAccessException("Cannot clear property store - " + cRes.getStatus());
@@ -231,7 +235,8 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
     /** {@inheritDoc} */
     @Override
     public void createSchema() {
-        WebTarget wr = client.target(url).path(RESOURCE_PROPERTYSTORE).path(STORE_CREATESCHEMA);
+        Util.assertHasLength(url);
+        WebTarget wr = getJerseyClient().target(url).path(RESOURCE_PROPERTYSTORE).path(STORE_CREATESCHEMA);
         Response cRes = post(wr);
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
             throw new PropertyAccessException("Cannot clear property store - " + cRes.getStatus());
@@ -275,6 +280,6 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
             invocationBuilder.header(HEADER_AUTHORIZATION, authorization);
         }
         return invocationBuilder.post(Entity.text(""));
-    }    
+    } 
     
 }

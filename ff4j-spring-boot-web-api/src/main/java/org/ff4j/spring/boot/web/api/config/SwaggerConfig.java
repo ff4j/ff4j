@@ -1,5 +1,7 @@
 package org.ff4j.spring.boot.web.api.config;
 
+import org.ff4j.FF4j;
+
 /*
  * #%L
  * ff4j-spring-boot-web-api
@@ -25,6 +27,7 @@ import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -35,19 +38,31 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
+    
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
+                .groupName("FF4j")
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("org.ff4j.spring.boot.web.api.resources"))
                 .paths(PathSelectors.any())
-                .build().apiInfo(apiInfo()).useDefaultResponseMessages(false);
+                .build().apiInfo(apiInfo())
+                .useDefaultResponseMessages(false);
     }
 
-    @SuppressWarnings("deprecation")
+    /**
+     * Initialization of documentation
+     * 
+     * @return
+     *  static infos
+     */
     private ApiInfo apiInfo() {
-        return new ApiInfo("FF4J (ff4j.org) WebAPI", "Administrate and operate all tasks on your features through " +
-                "this api.", "1.5", "Terms of service", "paul589140480@gmail.com", "Apache 2.0",
-                "http://www.apache.org/licenses/LICENSE-2.0.html");
+        return new ApiInfo(
+                "ff4j (ff4j.org) Feature Toggle for Java Platform",
+                "Operation FF4J solution through API (features, properties, audit)", 
+                FF4j.class.getPackage().getImplementationVersion(), 
+                "Terms of service", 
+                new Contact("Paul William", "", "paul589140480@gmail.com"), 
+                "Apache 2.0", "http://www.apache.org/licenses/LICENSE-2.0.html");
     }
 }
