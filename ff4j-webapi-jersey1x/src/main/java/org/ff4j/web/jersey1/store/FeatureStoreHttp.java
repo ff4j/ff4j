@@ -29,7 +29,6 @@ import static org.ff4j.web.FF4jWebConstants.OPERATION_ENABLE;
 import static org.ff4j.web.FF4jWebConstants.OPERATION_GRANTROLE;
 import static org.ff4j.web.FF4jWebConstants.OPERATION_REMOVEGROUP;
 import static org.ff4j.web.FF4jWebConstants.OPERATION_REMOVEROLE;
-import static org.ff4j.web.FF4jWebConstants.PARAM_AUTHKEY;
 import static org.ff4j.web.FF4jWebConstants.RESOURCE_FEATURES;
 import static org.ff4j.web.FF4jWebConstants.RESOURCE_GROUPS;
 import static org.ff4j.web.FF4jWebConstants.RESOURCE_STORE;
@@ -45,7 +44,6 @@ import java.util.Set;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
-import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.ff4j.core.Feature;
 import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.exception.FeatureAlreadyExistException;
@@ -53,18 +51,14 @@ import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.store.AbstractFeatureStore;
 import org.ff4j.utils.Util;
-import org.ff4j.web.api.FF4jJacksonMapper;
 import org.ff4j.web.api.resources.domain.FeatureApiBean;
 import org.ff4j.web.api.resources.domain.GroupDescApiBean;
+import org.ff4j.web.api.security.ClientHttpJersey1Utils;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.api.json.JSONConfiguration;
-import com.sun.jersey.core.util.Base64;
 
 /**
  * Implementation of store using {@link HttpClient} connection.
@@ -84,7 +78,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
     private static final String FEATURE_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY = "Feature identifier cannot be null nor empty";
 
     /** Jersey Client. */
-    protected Client client = null;
+    protected Client jersey1xClient = null;
 
     /** Property to get url ROOT. */
     private String url = null;
@@ -123,7 +117,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
      */
     public FeatureStoreHttp(String rootApiUrl, String apiKey) {
         this(rootApiUrl);
-        this.authorization = buildAuthorization4ApiKey(apiKey);
+        this.authorization = ClientHttpJersey1Utils.buildAuthorization4ApiKey(apiKey);
     }
     
     /**
@@ -138,23 +132,20 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
      */
     public FeatureStoreHttp(String rootApiUrl, String username, String password) {
         this(rootApiUrl);
-        this.authorization = buildAuthorization4UserName(username, password);
+        this.authorization = ClientHttpJersey1Utils.buildAuthorization4UserName(username, password);
     }
 
     /**
-     * Initializing jerseyClient.
+     * Initilialization of jersey.
+     *
+     * @return
+     *      target Jersey
      */
-    private void initJerseyClient() {
-        if (client == null) {
-            ClientConfig config = new DefaultClientConfig();
-            config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
-            config.getSingletons().add(new JacksonJsonProvider());
-            config.getSingletons().add(new FF4jJacksonMapper());
-            client = Client.create(config);
+    public Client getJerseyClient() {
+        if (this.jersey1xClient == null) {
+            this.jersey1xClient = ClientHttpJersey1Utils.buildJersey1Client();
         }
-        if (url == null) {
-            throw new IllegalArgumentException("Cannot initialialize Jersey Client : please provide store URL in 'url' attribute");
-        }
+        return jersey1xClient;
     }
 
     /**
@@ -164,8 +155,8 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
      */
     private WebResource getStore() {
         if (storeWebRsc == null) {
-            initJerseyClient();
-            storeWebRsc = client.resource(url).path(RESOURCE_STORE).path(RESOURCE_FEATURES);
+            Util.assertHasLength(url);
+            storeWebRsc = getJerseyClient().resource(url).path(RESOURCE_STORE).path(RESOURCE_FEATURES);
             if (null != authorization) {
                 storeWebRsc.header(HEADER_AUTHORIZATION, authorization);
             }
@@ -180,8 +171,8 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
      */
     private WebResource getGroups() {
         if (groupsWebRsc == null) {
-            initJerseyClient();
-            groupsWebRsc = client.resource(url).path(RESOURCE_STORE).path(RESOURCE_GROUPS);
+            Util.assertHasLength(url);
+            groupsWebRsc = getJerseyClient().resource(url).path(RESOURCE_STORE).path(RESOURCE_GROUPS);
             if (null != authorization) {
                 groupsWebRsc.header(HEADER_AUTHORIZATION, authorization);
             }
@@ -468,7 +459,8 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public void clear() {
-        WebResource wr = client.resource(url).path(RESOURCE_STORE).path(STORE_CLEAR);
+        Util.assertHasLength(url);
+        WebResource wr = getJerseyClient().resource(url).path(RESOURCE_STORE).path(STORE_CLEAR);
         if (null != authorization) {
             wr.header(HEADER_AUTHORIZATION, authorization);
         }
@@ -481,7 +473,8 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public void createSchema() {
-        WebResource wr = client.resource(url).path(RESOURCE_STORE).path(STORE_CREATESCHEMA);
+        Util.assertHasLength(url);
+        WebResource wr = getJerseyClient().resource(url).path(RESOURCE_STORE).path(STORE_CREATESCHEMA);
         if (null != authorization) {
             wr.header(HEADER_AUTHORIZATION, authorization);
         }
@@ -489,33 +482,6 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
             throw new FeatureAccessException("Cannot create schema for feature store - " + cRes.getStatus());
         }
-    }
-
-    
-    // ------- Static for authentication -------
-    
-    /**
-     * Build Authorization header for final user.
-     * @param username
-     *      target username
-     * @param password
-     *      target password
-     * @return
-     *      target header
-     */
-    public static String buildAuthorization4UserName(String username, String password) {
-        return " Basic " + new String(Base64.encode(username + ":" + password));
-    }
-    
-    /**
-     * Build Authorization header for technical user.
-     * @param apiKey
-     *      target apiKey
-     * @return
-     *      target header
-     */
-    public static String buildAuthorization4ApiKey(String apiKey) {
-        return PARAM_AUTHKEY + "=" + apiKey;
     }
 
     /**

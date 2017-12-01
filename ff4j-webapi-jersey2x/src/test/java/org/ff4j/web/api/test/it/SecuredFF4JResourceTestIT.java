@@ -1,5 +1,14 @@
 package org.ff4j.web.api.test.it;
 
+import static org.ff4j.test.TestsFf4jConstants.F4;
+import static org.ff4j.test.TestsFf4jConstants.TEST_FEATURES_FILE;
+import static org.ff4j.web.FF4jWebConstants.HEADER_AUTHORIZATION;
+import static org.ff4j.web.FF4jWebConstants.OPERATION_DISABLE;
+import static org.ff4j.web.FF4jWebConstants.PARAM_AUTHKEY;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_FEATURES;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_GROUPS;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_STORE;
+
 /*
  * #%L
  * ff4j-web
@@ -21,7 +30,6 @@ package org.ff4j.web.api.test.it;
  */
 
 import javax.ws.rs.Path;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Application;
@@ -37,7 +45,6 @@ import org.ff4j.web.api.resources.FF4jResource;
 import org.ff4j.web.api.security.FF4JSecurityContextAuthenticationManager;
 import org.ff4j.web.api.utils.ClientHttpUtils;
 import org.ff4j.web.jersey2.store.FeatureStoreHttp;
-import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.test.grizzly.GrizzlyTestContainerFactory;
 import org.glassfish.jersey.test.spi.TestContainerFactory;
 import org.junit.Assert;
@@ -46,11 +53,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.swagger.jaxrs.json.JacksonJsonProvider;
-
-import static org.ff4j.test.TestsFf4jConstants.*;
-import static org.ff4j.web.FF4jWebConstants.*;
 
 /**
  * Force security through API KEY and check.
@@ -85,13 +87,6 @@ public class SecuredFF4JResourceTestIT  extends AbstractWebResourceTestIT {
     
     @Override
     protected Application configure() {
-        
-        // Initialisation of clientss
-        ClientConfig clientConfig = new ClientConfig();
-        clientConfig.register(JacksonJsonProvider.class);
-        clientConfig.register(FF4jJacksonMapper.class);
-        setClient(ClientBuilder.newClient(clientConfig));
-        
         return new SecuredJersey2Application(ff4j);
     }
     

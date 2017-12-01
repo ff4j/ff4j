@@ -44,6 +44,7 @@ import org.ff4j.web.ApiConfigBuilder;
 import org.ff4j.web.api.FF4JApiApplication;
 import org.ff4j.web.api.FF4jJacksonMapper;
 import org.ff4j.web.api.resources.FF4jResource;
+import org.ff4j.web.api.security.ClientHttpJersey1Utils;
 import org.ff4j.web.api.security.FF4JSecurityContextAuthenticationManager;
 import org.ff4j.web.jersey1.store.FeatureStoreHttp;
 import org.junit.Assert;
@@ -218,7 +219,7 @@ public class SecuredFF4JResourceTestIT extends JerseyTest {
         // Given
         Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getFeatureStore().getClass());
         // When
-        String authent = FeatureStoreHttp.buildAuthorization4UserName("user", "user");
+        String authent = ClientHttpJersey1Utils.buildAuthorization4UserName("user", "user");
         ClientResponse resHttp = resourceff4j().header(HEADER_AUTHORIZATION, authent).type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
         // Then, HTTPResponse
         Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
@@ -245,7 +246,7 @@ public class SecuredFF4JResourceTestIT extends JerseyTest {
         // Given
         Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getFeatureStore().getClass());
         // When
-        String authent = FeatureStoreHttp.buildAuthorization4UserName("incalidUser", "user");
+        String authent = ClientHttpJersey1Utils.buildAuthorization4UserName("incalidUser", "user");
         ClientResponse resHttp = resourceff4j().header(HEADER_AUTHORIZATION, authent).type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
         // Then, HTTPResponse
         Assert.assertEquals("Expected status is 401", Status.UNAUTHORIZED.getStatusCode(), resHttp.getStatus());
@@ -259,7 +260,7 @@ public class SecuredFF4JResourceTestIT extends JerseyTest {
         // Given
         Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getFeatureStore().getClass());
         // When
-        String authent = FeatureStoreHttp.buildAuthorization4UserName("user", "invalidPassword");
+        String authent = ClientHttpJersey1Utils.buildAuthorization4UserName("user", "invalidPassword");
         ClientResponse resHttp = resourceff4j().header(HEADER_AUTHORIZATION, authent).type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
         // Then, HTTPResponse
         Assert.assertEquals("Expected status is 401", Status.UNAUTHORIZED.getStatusCode(), resHttp.getStatus());
@@ -293,7 +294,7 @@ public class SecuredFF4JResourceTestIT extends JerseyTest {
         // When
         ClientResponse resHttp = resourceff4j().path(OPERATION_CHECK).path(F1).//
                 type(MediaType.APPLICATION_JSON).//
-                header(HEADER_AUTHORIZATION, FeatureStoreHttp.buildAuthorization4UserName("user", "user")). //
+                header(HEADER_AUTHORIZATION, ClientHttpJersey1Utils.buildAuthorization4UserName("user", "user")). //
                 get(ClientResponse.class);
         
         String resEntity = resHttp.getEntity(String.class);
@@ -315,7 +316,7 @@ public class SecuredFF4JResourceTestIT extends JerseyTest {
         ClientResponse resHttp = 
                 resourceff4j().path(OPERATION_CHECK).path(F1).//
                 type(MediaType.APPLICATION_JSON).//
-                header(HEADER_AUTHORIZATION, FeatureStoreHttp.buildAuthorization4UserName("admin", "admin")). //
+                header(HEADER_AUTHORIZATION, ClientHttpJersey1Utils.buildAuthorization4UserName("admin", "admin")). //
                 get(ClientResponse.class);
         
         String resEntity = resHttp.getEntity(String.class);

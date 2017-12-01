@@ -38,12 +38,6 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         
-        <!-- Secure Resources with SpringSecurity -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        
         <dependency>
             <groupId>org.ff4j</groupId>
             <artifactId>ff4j-spring-services</artifactId>

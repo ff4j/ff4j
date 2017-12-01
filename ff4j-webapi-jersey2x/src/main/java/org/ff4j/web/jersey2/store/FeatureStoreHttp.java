@@ -231,7 +231,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
                 .request(MediaType.APPLICATION_JSON) //
                 .put(Entity.entity(new FeatureApiBean(fp), MediaType.APPLICATION_JSON));*/
         Response cRes = ClientHttpUtils
-                            .createRequest(getStore().path(fp.getUid()), authorizationHeaderValue)
+                            .createRequest(getStore().path(fp.getUid()), authorizationHeaderValue, null)
                             .put(Entity.entity(new FeatureApiBean(fp), MediaType.APPLICATION_JSON));
         
         // Check response code CREATED or raised error
@@ -281,7 +281,7 @@ public class FeatureStoreHttp extends AbstractFeatureStore {
             throw new FeatureNotFoundException(fp.getUid());
         }
         Response cRes = ClientHttpUtils
-                .createRequest(getStore().path(fp.getUid()), authorizationHeaderValue)
+                .createRequest(getStore().path(fp.getUid()), authorizationHeaderValue, null)
                 .put(Entity.entity(new FeatureApiBean(fp), MediaType.APPLICATION_JSON));
         if (Status.NO_CONTENT.getStatusCode() != cRes.getStatus()) {
             throw new FeatureAccessException("Cannot update feature, an HTTP error " + cRes.getStatus() + OCCURED);

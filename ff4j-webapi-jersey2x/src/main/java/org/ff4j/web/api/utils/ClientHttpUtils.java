@@ -39,7 +39,8 @@ import org.glassfish.jersey.internal.util.Base64;
 import io.swagger.jaxrs.json.JacksonJsonProvider;
 
 /**
- * Mutualization 
+ * Mutualization of HTTP METHODS.
+ *
  * @author Cedrick LUNVEN (@clunven)
  */
 public class ClientHttpUtils {
@@ -67,9 +68,14 @@ public class ClientHttpUtils {
      * @param auth
      * @return
      */
-    public static Invocation.Builder createRequest(WebTarget webTarget, String auth) {
+    public static Invocation.Builder createRequest(WebTarget webTarget, String auth, MediaType mediaType) {
         Util.assertNotNull(webTarget);
-        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
+        Invocation.Builder invocationBuilder = null;
+        if (mediaType != null) {
+            invocationBuilder = webTarget.request();
+        } else {
+            invocationBuilder = webTarget.request(mediaType);
+        }
         if (Util.hasLength(auth)) {
             invocationBuilder.header(HEADER_AUTHORIZATION, auth);
         }
@@ -83,7 +89,7 @@ public class ClientHttpUtils {
      * @return
      */
     public static Response invokeGetMethod(WebTarget webTarget, String auth) {
-        return createRequest(webTarget, auth).get();
+        return createRequest(webTarget, auth, MediaType.APPLICATION_JSON_TYPE).get();
     }
     
     /**
@@ -93,7 +99,7 @@ public class ClientHttpUtils {
      * @return
      */
     public static Response invokeDeleteMethod(WebTarget webTarget, String auth) {
-        return createRequest(webTarget, auth).delete();
+        return createRequest(webTarget, auth, null).delete();
     }
     
     /**
@@ -104,7 +110,7 @@ public class ClientHttpUtils {
      * @return
      */
     public static Response invokePostMethod(WebTarget webTarget, String auth) {
-        return createRequest(webTarget, auth).post(Entity.text(""));
+        return createRequest(webTarget, auth, MediaType.APPLICATION_JSON_TYPE).post(Entity.text(""));
     } 
     
     /**
