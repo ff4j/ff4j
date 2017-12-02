@@ -1,5 +1,6 @@
 package org.ff4j.spring.boot.web.api.config;
 
+import com.google.common.collect.Lists;
 import org.ff4j.FF4j;
 
 /*
@@ -38,31 +39,31 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
-    
+
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("FF4j")
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("org.ff4j.spring.boot.web.api.resources"))
-                .paths(PathSelectors.any())
-                .build().apiInfo(apiInfo())
-                .useDefaultResponseMessages(false);
+            .groupName("FF4j")
+            .select()
+            .apis(RequestHandlerSelectors.basePackage("org.ff4j.spring.boot.web.api.resources"))
+            .paths(PathSelectors.any())
+            .build().apiInfo(apiInfo())
+            .useDefaultResponseMessages(false);
     }
 
     /**
      * Initialization of documentation
-     * 
-     * @return
-     *  static infos
+     *
+     * @return static infos
      */
     private ApiInfo apiInfo() {
         return new ApiInfo(
-                "ff4j (ff4j.org) Feature Toggle for Java Platform",
-                "Operation FF4J solution through API (features, properties, audit)", 
-                FF4j.class.getPackage().getImplementationVersion(), 
-                "Terms of service", 
-                new Contact("Paul William", "", "paul589140480@gmail.com"), 
-                "Apache 2.0", "http://www.apache.org/licenses/LICENSE-2.0.html");
+            "ff4j (ff4j.org) Feature Toggle for Java Platform",
+            "Operation FF4J solution through API (features, properties, audit)",
+            FF4j.class.getPackage().getImplementationVersion(),
+            "Terms of service",
+            new Contact("Paul William", "", "paul589140480@gmail.com"),
+            "Apache 2.0", "http://www.apache.org/licenses/LICENSE-2.0.html",
+            Lists.newArrayList());
     }
 }
