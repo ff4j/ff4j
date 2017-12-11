@@ -36,6 +36,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 import org.ff4j.FF4j;
+import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.web.bean.HomeBean;
 import org.ff4j.web.bean.WebConstants;
 import org.slf4j.Logger;
@@ -49,25 +50,25 @@ import org.thymeleaf.context.WebContext;
  * @author Cedrick LUNVEN (@clunven)
  */
 public class HomeController extends AbstractController {
-	
+
     /** Logger for this class. */
     public static final Logger LOGGER = LoggerFactory.getLogger(HomeController.class);
-    
+
 	/** View name. */
 	private static final String VIEW_HOME = "home";
-	
+
 	/** {@inheritDoc} */
 	public HomeController(FF4j ff4j, TemplateEngine te) {
 		super(ff4j, VIEW_HOME, te);
 	}
-	
+
 	/** {@inheritDoc} */
     public void post(HttpServletRequest req, HttpServletResponse res, WebContext ctx)
     throws Exception {
         String msg       = null;
         String msgType   = "success";
         String operation = req.getParameter(WebConstants.OPERATION);
-        
+
         // Upload XML File
         if (ServletFileUpload.isMultipartContent(req)) {
             List<FileItem> items = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(req);
@@ -110,9 +111,21 @@ public class HomeController extends AbstractController {
                 ctx.setVariable("today", Calendar.getInstance());
                 ctx.setVariable("homebean", new HomeBean());
             }
+        } else if (WebConstants.OP_CLEAR_CACHE.equalsIgnoreCase(operation)){
+          FF4jCacheProxy cacheProxy = getFf4j().getCacheProxy();
+          if(cacheProxy != null) {
+              cacheProxy.getCacheManager().clearFeatures();
+              cacheProxy.getCacheManager().clearProperties();
+              msg = "Cache Cleared!";
+          } else {
+              msg = "Cache not present: it cannot be cleared!";
+          }
+          ctx.setVariable("msgType", msgType);
+          ctx.setVariable("msgInfo", msg);
+          get(req, res, ctx);
         }
     }
-    
+
     /** {@inheritDoc} */
     public void get(HttpServletRequest req, HttpServletResponse res, WebContext ctx)
 	throws Exception {

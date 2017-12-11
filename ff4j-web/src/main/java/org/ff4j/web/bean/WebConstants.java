@@ -195,6 +195,9 @@ public class WebConstants {
     
     /** User operation. */
     public static final String OP_AUDIT = "audit";
+
+    /** User operation. */
+    public static final String OP_CLEAR_CACHE = "clearCache";
     
     // -------- GraphNames ------------------------------
 
