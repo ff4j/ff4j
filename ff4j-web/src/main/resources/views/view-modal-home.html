@@ -30,6 +30,32 @@
 </form>
 </div>
 
+ <div th:fragment="modal-clearCache">
+     <form class="form-horizontal" action="" th:action="@{home}" method="POST"  >
+         <div class="modal hide fade" id="modalClearCache" tabindex="-1" role="dialog"
+              aria-labelledby="myModalLabel" aria-hidden="true">
+             <div class="modal-header">
+                 <button class="close" data-dismiss="modal">x</button>
+                 <h4 id="clearCacheModalLabel"><i class="icon-upload-alt"></i>&nbsp;
+                     <span th:text="#{modal.clearcache.title}" >Create Schema</span></h4>
+             </div>
+             <div class="modal-body">
+                 <p><span th:text="#{modal.clearcache.message}" >Do you want to create DB schema ?</span></p>
+                 <input type="hidden" name="op" value="clearCache" />
+             </div>
+             <div class="modal-footer">
+                 <button class="btn btn" data-dismiss="modal">
+                     <i class="icon-remove" ></i>
+                     &nbsp;<span th:text="#{modal.button.cancel}">Cancel</span>
+                 </button>
+                 <button class="btn btn-green" type="submit">
+                     <i class="icon-file icon-white" ></i>
+                     &nbsp;<span th:text="#{modal.button.validate}">Importer</span>
+                 </button>
+             </div>
+         </div>
+     </form>
+ </div>
     
 </body>
 </html>

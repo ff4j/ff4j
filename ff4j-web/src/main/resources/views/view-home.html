@@ -151,7 +151,7 @@
                                             </a>
               	
                 <span th:if="${homebean.caching} neq 'disabled'">
-	              <a href="" th:href="@{clearCache}" class="shortcut">
+	              <a data-toggle="modal" href="#modalClearCache" class="shortcut">
                       <i class="shortcut-icon icon-magic"></i>
                       <span class="shortcut-label">ClearCache</span>
                   </a>
@@ -178,6 +178,7 @@
 <div th:include="modal-features :: modal-import"></div>
 
 <div th:include="modal-home :: modal-createSchema"></div>
+<div th:include="modal-home :: modal-clearCache"></div>
 
 
 </body>
