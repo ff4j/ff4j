@@ -126,9 +126,7 @@ public class FF4jWebConstants {
     /** Manifest File. */
     public static final String MANIFEST_FILE = "/META-INF/MANIFEST.MF";
 
-    /** Manifest File. */
     public static final String MANIFEST_VERSION = "Specification-Version";
 
-    /** Hide default constructor. */
     private FF4jWebConstants() {}
 }

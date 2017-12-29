@@ -1,5 +1,7 @@
 package org.ff4j.utils;
 
+import static org.ff4j.test.AssertUtils.assertNotNull;
+
 /*
  * #%L
  * ff4j-core
@@ -27,11 +29,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
 
 import org.ff4j.FF4j;
-import org.ff4j.core.Feature;
-import org.ff4j.property.Property;
 
 /**
  * Generation of Java Interface.
@@ -46,8 +45,7 @@ public class GeneratorUtils {
     /**
      * Hide constructor.
      */
-    private GeneratorUtils() {
-    }
+    private GeneratorUtils() {}
     
     /**
      * Generate target Java Interface.
@@ -60,7 +58,7 @@ public class GeneratorUtils {
      *             error occu
      */
     public static String generateInterfaceConstantsSource(FF4j ff4j) {
-        Util.assertNotNull(ff4j);
+        assertNotNull(ff4j);
         StringBuilder sb = new StringBuilder();
         sb.append("/**\r\n * Constants for ff4j features and properties.");
         sb.append("\r\n * Generated on : " + new SimpleDateFormat("yyyy-MM-DD HH:mm").format(new Date()));
@@ -73,32 +71,29 @@ public class GeneratorUtils {
         sb.append("\r\n   //  Features ");
         sb.append("\r\n   // -------------------------");
         sb.append("\r\n");
-        for (Map.Entry<String, Feature> feat : ff4j.getFeatureStore().readAll().entrySet()) {
-            sb.append("\r\n   /* Feature '" + feat.getKey() + "' : '" + feat.getValue().getDescription() + "' */");
-            sb.append("\r\n   String FEATURE_" + feat.getKey().replaceAll(" ", "_").toUpperCase() + " = \"" + feat.getKey()
-                    + "\";");
+        ff4j.getRepositoryFeatures().findAll().forEach(f -> {
+            sb.append("\r\n   /* Feature '" + f.getUid() + "' : '" + f.getDescription().orElse("") + "' */");
+            sb.append("\r\n   String FEATURE_" + f.getUid().replaceAll(" ", "_").toUpperCase() + " = \"" + f.getUid() + "\";");
             sb.append("\r\n");
-        }
+        });
         sb.append("\r\n   // -------------------------");
         sb.append("\r\n   //  Groups ");
         sb.append("\r\n   // -------------------------");
         sb.append("\r\n");
-        for (String groupName : ff4j.getFeatureStore().readAllGroups()) {
-            sb.append("\r\n   /* Group '" + groupName + "' */");
-            sb.append(
-                    "\r\n   String FEATURE_GROUP_" + groupName.replaceAll(" ", "_").toUpperCase() + " = \"" + groupName + "\";");
+        ff4j.getRepositoryFeatures().listAllGroupNames().forEach(g -> {
+            sb.append("\r\n   /* Group '" + g + "' */");
+            sb.append("\r\n   String FEATURE_GROUP_" + g.replaceAll(" ", "_").toUpperCase() + " = \"" + g + "\";");
             sb.append("\r\n");
-        }
+        });
         sb.append("\r\n   // -------------------------");
         sb.append("\r\n   //  Properties ");
         sb.append("\r\n   // -------------------------");
         sb.append("\r\n");
-        for (Map.Entry<String, Property<?>> prop : ff4j.getPropertiesStore().readAllProperties().entrySet()) {
-            sb.append("\r\n   /* Property '" + prop.getKey() + "' : '" + prop.getValue().getDescription() + "' */");
-            sb.append("\r\n   String PROPERTY_" + prop.getKey().replaceAll(" ", "_").toUpperCase() + " = \"" + prop.getKey()
-                    + "\";");
+        ff4j.getRepositoryProperties().findAll().forEach(p -> {
+            sb.append("\r\n   /* Property '" + p.getUid() + "' : '" + p.getDescription().orElse("") + "' */");
+            sb.append("\r\n   String PROPERTY_" + p.getUid().replaceAll(" ", "_").toUpperCase() + " = \"" + p.getUid() + "\";");
             sb.append("\r\n");
-        }
+        });
         sb.append("\r\n}");
         return sb.toString();      
     }
@@ -108,7 +103,7 @@ public class GeneratorUtils {
     }
     
     public static void generateInterfaceConstantFile(FF4j ff4j, File folder) throws IOException {
-        Util.assertNotNull(folder);
+        assertNotNull(folder);
         File outFile = new File(folder.getAbsolutePath() + File.separator + "FF4jConstants.java");
         FileWriter out = new FileWriter(outFile);
         out.write(generateInterfaceConstantsSource(ff4j));

@@ -1,6 +1,8 @@
 package org.ff4j.utils;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 
 /*
  * #%L
@@ -25,8 +27,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import org.ff4j.cache.FF4jCacheProxy;
-import org.ff4j.core.FlippingStrategy;
+import org.ff4j.cache.CacheProxy;
 import org.ff4j.property.Property;
 
 /**
@@ -51,6 +52,18 @@ public class JsonUtils {
         if (value == null )          return "null";
         if (value instanceof String) return "\"" + value + "\"";
         return value.toString();
+    }
+    
+    public static final String attributeAsJson(String name, Object value) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(",\"" + name + "\":" + valueAsJson(value));
+        return sb.toString();
+    }
+    
+    public static final String objectAsJson(String name, Object value) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(",\"" + name + "\":" + value);
+        return sb.toString();
     }
     
     /**
@@ -99,6 +112,33 @@ public class JsonUtils {
     }
     
     /**
+     * Serialize a map of objects as Json. Elements should override <code>toString()</code> to produce JSON.
+     *
+     * @param customProperties
+     *      target properties
+     * @return
+     *      target json expression
+     */
+    public static final Map <String, String> jsonAsMap(String jsonString) {
+      if (jsonString == null) {
+          return null;
+      } else if (jsonString.charAt(0) != '{' || jsonString.charAt(jsonString.length()-1) != '}') {
+          throw new IllegalArgumentException("Invalid String expected {...}");
+      } else if ("{}".equals(jsonString)) {
+          return new HashMap<>();
+      }
+      Map <String, String> response = new HashMap<>();
+      // trim { and }
+      jsonString = jsonString.substring(1, jsonString.length()-1);
+      // Will fail if a string value ends by ','
+      Arrays.stream(jsonString.split(",\"")).forEach(chunk -> {
+          String[] pair = chunk.split("\":");
+          response.put(pair[0].replaceAll("\"", ""), pair[1].replaceAll("\"", ""));
+      });
+      return response;
+    }
+    
+    /**
      * Cache JSON expression for a store.
      *
      * @param store
@@ -108,11 +148,11 @@ public class JsonUtils {
      */
     public static final String cacheJson(Object store) {
         StringBuilder sb = new StringBuilder();
-        if (store instanceof FF4jCacheProxy) {
-            FF4jCacheProxy cacheProxy = (FF4jCacheProxy) store;
+        if (store instanceof CacheProxy<?,?>) {
+            CacheProxy<?,?> cacheProxy = (CacheProxy<?,?>) store;
             sb.append(",\"cached\":true");
             sb.append(",\"cacheProvider\":\"" + cacheProxy.getCacheProvider() + "\"");
-            sb.append(",\"cacheStore\":\"" + cacheProxy.getCachedTargetStore() + "\"");
+            sb.append(",\"cacheStore\":\"" + cacheProxy.getTargetStore() + "\"");
         } else {
             sb.append(",\"cached\":false");
         }
@@ -129,22 +169,6 @@ public class JsonUtils {
         return collectionAsJson(permissions);
     }
     
-    /**
-     * Generate flipping strategy as json.
-     * 
-     * @return
-     *      flippling strategy as json.     
-     */
-    public static final String flippingStrategyAsJson(final FlippingStrategy flippingStrategy) {
-        if (flippingStrategy == null) return "null";
-        StringBuilder json = new StringBuilder("{");
-        json.append(valueAsJson("initParams") + ":");
-        json.append(mapAsJson(flippingStrategy.getInitParams()));
-        json.append("," + valueAsJson("type")  + ":");
-        json.append(valueAsJson(flippingStrategy.getClass().getName()));
-        json.append("}");
-        return json.toString();
-    }
     
     /**
      * Serialized custom properties.

@@ -16,7 +16,7 @@ package org.ff4j.exception;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class PropertyNotFoundException extends RuntimeException {
+public class PropertyNotFoundException extends ItemNotFoundException {
 
     /** serial. */
     private static final long serialVersionUID = -232699648959802172L;
@@ -27,8 +27,18 @@ public class PropertyNotFoundException extends RuntimeException {
      * @param propertyName
      *            property to be processed
      **/
-    public PropertyNotFoundException(String propertyName) {
-        super(propertyName + " does not exist");
+    public PropertyNotFoundException(String uid) {
+        super(uid);
     }
 
+    /**
+     * Parameterized constructor.
+     * 
+     * @param featureName
+     *            feature to be processed
+     **/
+    public PropertyNotFoundException(String uid, Throwable parentException) {
+        super(uid, parentException);
+    }
+    
 }

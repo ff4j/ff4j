@@ -1,10 +1,10 @@
 package org.ff4j.mapper;
 
-/*
+/*-
  * #%L
  * ff4j-core
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2017 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,7 @@ package org.ff4j.mapper;
  * limitations under the License.
  * #L%
  */
-
-import org.ff4j.audit.Event;
+import org.ff4j.event.Event;
 
 /**
  * Specialization of mapper for Events
@@ -29,4 +28,4 @@ import org.ff4j.audit.Event;
  *
  * @param <STORE_OBJ>
  */
-public interface EventMapper < STORE_OBJ > extends Mapper<Event, STORE_OBJ> {}
+public interface EventMapper < REQ, RES > extends Mapper<Event, REQ, RES> {}

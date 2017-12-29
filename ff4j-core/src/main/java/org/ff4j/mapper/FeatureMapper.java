@@ -20,7 +20,7 @@ package org.ff4j.mapper;
  * #L%
  */
 
-import org.ff4j.core.Feature;
+import org.ff4j.feature.Feature;
 
 /**
  * Specialization of the interface.
@@ -30,4 +30,4 @@ import org.ff4j.core.Feature;
  * @param <STORE_OBJ>
  *      target driver object.
  */
-public interface FeatureMapper <STORE_OBJ> extends Mapper< Feature, STORE_OBJ> {}
+public interface FeatureMapper <REQ , RES> extends Mapper < Feature, REQ, RES > {}

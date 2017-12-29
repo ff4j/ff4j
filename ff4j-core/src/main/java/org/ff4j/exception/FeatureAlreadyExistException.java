@@ -16,7 +16,7 @@ package org.ff4j.exception;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class FeatureAlreadyExistException extends RuntimeException {
+public class FeatureAlreadyExistException extends ItemAlreadyExistException {
 
     /** serial. */
     private static final long serialVersionUID = -232699648959802172L;
@@ -28,7 +28,17 @@ public class FeatureAlreadyExistException extends RuntimeException {
      *            feature to be processed
      **/
     public FeatureAlreadyExistException(String featureName) {
-        super(featureName + " already exist in store, duplicate uid");
+        super(featureName);
+    }
+    
+    /**
+     * Parameterized constructor.
+     * 
+     * @param featureName
+     *            feature to be processed
+     **/
+    public FeatureAlreadyExistException(String entityId, Throwable parentException) {
+        super(entityId, parentException);
     }
 
 }

@@ -30,4 +30,4 @@ import org.ff4j.property.Property;
  * @param <STORE_OBJ>
  *      target database driver bean
  */
-public interface PropertyMapper <STORE_OBJ > extends Mapper< Property<?>, STORE_OBJ>{}
+public interface PropertyMapper <REQ, RES > extends Mapper< Property<?>, REQ, RES > {}

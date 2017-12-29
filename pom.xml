@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.ff4j</groupId>
     <artifactId>ff4j-parent</artifactId>
-    <version>1.7.1-SNAPSHOT</version>
+    <version>2.0.RC1</version>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <!-- ~ MAIN INFO ~ -->
@@ -65,47 +65,47 @@
         <encoding>UTF-8</encoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.target>1.6</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
 
         <!-- License -->
         <license.licenseName>apache_v2</license.licenseName>
         <license.licenseResolver>${project.baseUri}src/license</license.licenseResolver>
 
         <!-- Versions -->
-        <version.slf4j>1.7.7</version.slf4j>
-        <version.logback>1.1.2</version.logback>
+        <version.slf4j>1.8.0-beta0</version.slf4j>
+        <version.logback>1.2.3</version.logback>
 
         <version.junit>4.12</version.junit>
-        <version.powermock>1.5.5</version.powermock>
-        <version.mockito>1.9.5</version.mockito>
+        <version.powermock>1.7.3</version.powermock>
+        <version.mockito>2.0.2-beta</version.mockito>
 
-        <version.cglib>3.1</version.cglib>
+        <version.cglib>3.2.5</version.cglib>
         <version.aopalliance>1.0</version.aopalliance>
-        <version.spring>4.2.3.RELEASE</version.spring>
-        <version.spring.security>3.2.4.RELEASE</version.spring.security>
+        <version.spring>5.0.2.RELEASE</version.spring>
+        <version.spring.security>5.0.0.RELEASE</version.spring.security>
 
         <version.commons-lang>2.6</version.commons-lang>
         <version.commons-dbcp>1.4</version.commons-dbcp>
-        <version.commons-io>2.4</version.commons-io>
-        <version.commons-fileupload>1.3.1</version.commons-fileupload>
-        <version.commons-cli>1.3.1</version.commons-cli>
+        <version.commons-io>2.6</version.commons-io>
+        <version.commons-fileupload>1.3.3</version.commons-fileupload>
+        <version.commons-cli>1.4</version.commons-cli>
 
-        <version.servlet-api>2.5</version.servlet-api>
-        <version.jsp-api>2.2</version.jsp-api>
+        <version.servlet-api>3.0-alpha-1</version.servlet-api>
+        <version.jsp-api>2.2.1-b03</version.jsp-api>
         <version.jstl>1.2</version.jstl>
         <version.taglib>1.1.2</version.taglib>
         <version.jsr311>1.1.1</version.jsr311>
-        <version.jacoco>0.7.5.201505241946</version.jacoco>
-        <version.jackon2x>2.6.4</version.jackon2x>
-        <version.jersey1x>1.19</version.jersey1x>
-        <version.jersey2x>2.22.1</version.jersey2x>
-        <version.httpclient>4.3.4</version.httpclient>
+        <version.jacoco>0.7.9</version.jacoco>
+        <version.jackon2x>2.9.3</version.jackon2x>
+        <version.jersey1x>1.19.4</version.jersey1x>
+        <version.jersey2x>2.26</version.jersey2x>
+        <version.httpclient>4.5.4</version.httpclient>
 
-        <version.swagger>1.5.4</version.swagger>
+        <version.swagger>1.5.17</version.swagger>
 
-        <version.metrics>3.1.0</version.metrics>
-        <version.hdldb>2.3.2</version.hdldb>
+        <version.metrics>4.0.0</version.metrics>
+        <version.hdldb>2.4.0</version.hdldb>
 
         <version.ehcache>2.10.1</version.ehcache>
         <version.jedis>2.5.1</version.jedis>
@@ -114,32 +114,32 @@
         <!-- VERSIONS PLUGINS -->
         <version.maven.plugin.failsafe>2.18.1</version.maven.plugin.failsafe>
         <version.maven.plugin.redis>1.4.6</version.maven.plugin.redis>
-        <version.maven.plugin.surefire>2.7.2</version.maven.plugin.surefire>
+        <version.maven.plugin.surefire>2.20.1</version.maven.plugin.surefire>
         <version.maven.plugin.gpg>1.5</version.maven.plugin.gpg>
         <version.maven.plugin.graph>1.4</version.maven.plugin.graph>
-        <version.maven.plugin.site>3.4</version.maven.plugin.site>
-        <version.maven.plugin.resources>2.4</version.maven.plugin.resources>
-        <version.maven.plugin.release>2.5.2</version.maven.plugin.release>
+        <version.maven.plugin.site>3.6</version.maven.plugin.site>
+        <version.maven.plugin.resources>3.0.2</version.maven.plugin.resources>
+        <version.maven.plugin.release>2.5.3</version.maven.plugin.release>
         <version.maven.plugin.sonar>2.2</version.maven.plugin.sonar>
-        <version.maven.plugin.javadoc>2.10.3</version.maven.plugin.javadoc>
+        <version.maven.plugin.javadoc>3.0.0</version.maven.plugin.javadoc>
         <version.maven.plugin.source>2.2.1</version.maven.plugin.source>
-        <version.maven.plugin.license>1.8</version.maven.plugin.license>
-        <version.maven.plugin.nexus>1.6.6</version.maven.plugin.nexus>
-        <version.maven.plugin.compiler>3.3</version.maven.plugin.compiler>
-        <version.maven.plugin.jar>2.6</version.maven.plugin.jar>
-        <version.maven.plugin.dependency>2.8</version.maven.plugin.dependency>
+        <version.maven.plugin.license>1.14</version.maven.plugin.license>
+        <version.maven.plugin.nexus>1.6.8</version.maven.plugin.nexus>
+        <version.maven.plugin.compiler>3.7.0</version.maven.plugin.compiler>
+        <version.maven.plugin.jar>3.0.2</version.maven.plugin.jar>
+        <version.maven.plugin.dependency>3.0.2</version.maven.plugin.dependency>
 
-        <spring-boot.version>1.3.2.RELEASE</spring-boot.version>
-        <commons.lang>3.0</commons.lang>
-        <cucumber.version>1.2.4</cucumber.version>
-        <gson.version>2.3.1</gson.version>
-        <assertj.version>3.2.0</assertj.version>
-        <jsonassert.version>1.2.3</jsonassert.version>
-        <easymock.version>3.1</easymock.version>
-        <swagger.version>2.2.2</swagger.version>
+        <spring-boot.version>1.5.9.RELEASE</spring-boot.version>
+        <commons.lang>3.2.1</commons.lang>
+        <cucumber.version>1.2.5</cucumber.version>
+        <gson.version>2.8.2</gson.version>
+        <assertj.version>3.8.0</assertj.version>
+        <jsonassert.version>1.5.0</jsonassert.version>
+        <easymock.version>3.5.1</easymock.version>
+        <swagger.version>2.7.0</swagger.version>
         <meanbean.version>2.0.3</meanbean.version>
 
-        <apache.ignite.version>2.1.0</apache.ignite.version>
+        <apache.ignite.version>2.3.0</apache.ignite.version>
     </properties>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -148,6 +148,7 @@
     <modules>
 
         <module>ff4j-core</module>
+        <!-- 
         <module>ff4j-aop</module>
         <module>ff4j-test</module>
         <module>ff4j-cli</module>
@@ -162,7 +163,6 @@
         <module>ff4j-security-spring</module>
         <module>ff4j-strategy-drools</module>
 
-        <!-- Stores -->
         <module>ff4j-store-archaius</module>
         <module>ff4j-store-cassandra</module>
         <module>ff4j-store-commonsconfig</module>
@@ -178,13 +178,13 @@
         <module>ff4j-store-neo4j</module>
         <module>ff4j-store-redis</module>
         <module>ff4j-store-springjdbc</module>
-        <module>ff4j-store-couchbase</module>
+        <module>ff4j-store-couchbase</module>-->
 
-        <!-- spring-boot-starter -->
+        <!-- spring-boot-starter
         <module>ff4j-spring-services</module>
         <module>ff4j-spring-boot-web-api</module>
         <module>ff4j-spring-boot-autoconfigure</module>
-        <module>ff4j-spring-boot-starter</module>
+        <module>ff4j-spring-boot-starter</module>-->
     </modules>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->

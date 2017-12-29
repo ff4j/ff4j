@@ -1,5 +1,10 @@
 package org.ff4j.utils;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+
 /*
  * #%L
  * ff4j-core
@@ -65,5 +70,14 @@ public class TimeUtils {
 		c2.set(Calendar.SECOND, 0);
 		return c2.getTimeInMillis();
 	}
+	
+	public static LocalDateTime asLocalDateTime(java.sql.Timestamp sqlTimeStamp) {
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(sqlTimeStamp.getTime()), ZoneId.systemDefault());
+    }
+    
+    public static java.sql.Timestamp asSqlTimeStamp(LocalDateTime jdk8Date) {
+        ZoneOffset zof = ZoneId.systemDefault().getRules().getOffset(jdk8Date);
+        return new java.sql.Timestamp(jdk8Date.toEpochSecond(zof));
+    }
 
 }

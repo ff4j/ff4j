@@ -16,7 +16,7 @@ package org.ff4j.exception;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class PropertyAlreadyExistException extends RuntimeException {
+public class PropertyAlreadyExistException extends ItemAlreadyExistException {
    
     /** Serial. */
     private static final long serialVersionUID = -8684640754973349494L;
@@ -28,7 +28,17 @@ public class PropertyAlreadyExistException extends RuntimeException {
      *            feature to be processed
      **/
     public PropertyAlreadyExistException(String propertyName) {
-        super(propertyName + " already exist in store, duplicate 'name'");
+        super(propertyName);
+    }
+    
+    /**
+     * Parameterized constructor.
+     * 
+     * @param featureName
+     *            feature to be processed
+     **/
+    public PropertyAlreadyExistException(String entityId, Throwable parentException) {
+        super(entityId, parentException);
     }
 
 }
