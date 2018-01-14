@@ -1,4 +1,7 @@
-package org.ff4j.conf;
+package org.ff4j.inmemory.parser;
+
+import static org.ff4j.test.AssertUtils.assertHasLengthParam;
+import static org.ff4j.test.AssertUtils.assertNotNullParam;
 
 /*
  * #%L
@@ -31,6 +34,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -42,9 +46,9 @@ import org.ff4j.feature.Feature;
 import org.ff4j.feature.ToggleStrategy;
 import org.ff4j.property.Property;
 import org.ff4j.property.domain.PropertyString;
+import org.ff4j.security.domain.FF4jPermission;
 import org.ff4j.security.domain.FF4jUser;
 import org.ff4j.test.AssertUtils;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -55,7 +59,7 @@ import org.w3c.dom.NodeList;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public final class XmlParserV2 {
+public final class XmlParser {
 
     /** 
      * <feature uid="first" enable="true" description="description"  groupName="GRP1">
@@ -118,7 +122,7 @@ public final class XmlParserV2 {
     public static final String SECURITY_ROLE_TAG        = "role";
     public static final String SECURITY_ROLE_ATTNAME    = "name";
     public static final String SECURITY_PERMISSION_TAG  = "permission";
-    public static final String SECURITY_PERMISSIONS_TAG = "permission";
+    public static final String SECURITY_PERMISSIONS_TAG = "permissions";
     
     /** 
      * <users>
@@ -190,6 +194,31 @@ public final class XmlParserV2 {
     /** Document Builder use to parse XML. */
     private static DocumentBuilder builder = null;
    
+    /** Do not parse the same file multiple times. */
+    private static Map < String, XmlData > cachedXmlData = new HashMap<>();
+    
+    /**  Hide constructor. */
+    private XmlParser() {
+    }
+    
+    /**
+     * Parse configuration file.
+     *
+     * @param fileName
+     *      target file
+     * @return
+     *      current configuration as XML
+     */
+    public static XmlData parseFile(String fileName) {
+        assertHasLengthParam("fileName", 0, fileName);
+        if (!cachedXmlData.containsKey(fileName)) {
+            InputStream xmlIN = XmlParser.class.getClassLoader().getResourceAsStream(fileName);
+            assertNotNullParam("fileName", 0, xmlIN, String.format("Cannot parse XML file %s file not found", fileName));
+            cachedXmlData.put(fileName, parseInputStream(xmlIN));
+        }
+        return cachedXmlData.get(fileName);
+    }
+    
     /**
      * Parsing of XML Configuration file.
      *
@@ -198,18 +227,13 @@ public final class XmlParserV2 {
      * @return
      *      features and properties find within file
      */
-    public XmlConfigV2 parseConfigurationFile(InputStream in) {
+    public static XmlData parseInputStream(InputStream in) {
         try {
-            
-            XmlConfigV2 xmlConf = new XmlConfigV2();
-                
-            Document ff4jDocument = getDocumentBuilder().parse(in);
-            
-            NodeList ff4jRootNode = ff4jDocument.getChildNodes();
-            AssertUtils.assertTrue(ff4jRootNode.getLength() == 1);
-            AssertUtils.assertEquals("ff4j", ff4jRootNode.item(0).getNodeName());
-            
-            NodeList firstLevelNodes = ff4jDocument.getChildNodes().item(0).getChildNodes();
+            XmlData xmlConf = new XmlData();
+            NodeList firstLevelNodes = getDocumentBuilder()
+                    .parse(in)
+                    .getElementsByTagName("ff4j").item(0)
+                    .getChildNodes();
             for (int i = 0; i < firstLevelNodes.getLength(); i++) {
                 if (firstLevelNodes.item(i) instanceof Element) {
                     Element currentCore = (Element) firstLevelNodes.item(i);
@@ -244,19 +268,74 @@ public final class XmlParserV2 {
      * @throws IOException
      *             exception raised when reading inputstream
      */
-    public Map <String, FF4jUser > parseUsersTag(Element usersTag) {
-        System.out.println("Users");
-        Map <String, FF4jUser > mapOfUsers = new HashMap<>();
-        NodeList userNodes = usersTag.getChildNodes();
-        for (int i = 0; i < userNodes.getLength(); i++) {
-            if (userNodes.item(i) instanceof Element) {
-                parseUserTag((Element) userNodes.item(i), mapOfUsers);
+    private static Map<String, FF4jUser> parseUsersTag(Element usersTag) {
+        Map <String, FF4jUser > mapOfUsers = new LinkedHashMap<>();
+        NodeList firstLevelNodes = usersTag.getChildNodes();
+        for (int i = 0; i < firstLevelNodes.getLength(); i++) {
+            if (firstLevelNodes.item(i) instanceof Element) {
+                Element currentCore = (Element) firstLevelNodes.item(i);
+                if (USER_TAG.equals(currentCore.getNodeName())) {
+                    FF4jUser singleUser = parseUserTag(currentCore);
+                    mapOfUsers.put(singleUser.getUid(), singleUser);
+                } else {
+                    throw new IllegalArgumentException("Invalid XML Format, Features sub nodes are [user]");
+                }
             }
         }
         return mapOfUsers;
     }
     
-    private void parseUserTag(Element roleNode, Map <String, FF4jUser > mapOfUsers) {
+    private static Optional < String > getOptionalAttribute(NamedNodeMap nnm, String attName) {
+        return (null != nnm.getNamedItem(attName)) ?
+             Optional.of(nnm.getNamedItem(attName).getNodeValue()) : Optional.empty();
+    }
+    
+    private static String getRequiredAttribute(NamedNodeMap nnm, String attName) {
+        AssertUtils.assertNotNull(nnm.getNamedItem(attName));
+        return nnm.getNamedItem(attName).getNodeValue();
+    }
+    
+    private static FF4jUser parseUserTag(Element userXmlTag) {
+        NamedNodeMap nnm = userXmlTag.getAttributes();
+        
+        // Create user
+        FF4jUser f = new FF4jUser(getRequiredAttribute(nnm, USER_ATT_UID));
+        getOptionalAttribute(nnm, USER_ATT_FIRSTNAME).ifPresent(f::setFirstName);
+        getOptionalAttribute(nnm, USER_ATT_LASTNAME).ifPresent(f::setLastName);
+        getOptionalAttribute(nnm, USER_ATT_DESC).ifPresent(f::setDescription);
+        
+        NodeList firstLevelNodes = userXmlTag.getChildNodes();
+        for (int i = 0; i < firstLevelNodes.getLength(); i++) {
+            if (firstLevelNodes.item(i) instanceof Element) {
+                Element currentCore = (Element) firstLevelNodes.item(i);
+                // Roles
+                if (SECURITY_ROLES_TAG.equals(currentCore.getNodeName())) {
+                    NodeList roleNodes = currentCore.getChildNodes();
+                    for (int j = 0; j < roleNodes.getLength(); j++) {
+                        if (roleNodes.item(j) instanceof Element) {
+                            f.getRoles().add(
+                                    ((Element) roleNodes.item(j))
+                                    .getTextContent().trim());
+                        }
+                    }
+                    System.out.println("Roles " + f.getRoles());
+                }
+                // Permissions
+                if (SECURITY_PERMISSIONS_TAG.equals(currentCore.getNodeName())) {
+                    NodeList permNodes = currentCore.getChildNodes();
+                    for (int j = 0; j < permNodes.getLength(); j++) {
+                        if (permNodes.item(j) instanceof Element) {
+                            String perStr =  ((Element) permNodes.item(j))
+                                    .getTextContent().trim();
+                            f.getPermissions().add(
+                                    FF4jPermission.valueOf(perStr));
+                        }
+                    }
+                    System.out.println("Permissions" + f.getPermissions());
+                }
+            }
+        }
+        return f;
     }
     
     /**
@@ -268,7 +347,7 @@ public final class XmlParserV2 {
      * @throws IOException
      *             exception raised when reading inputstream
      */
-    private Map<String, Set < String > > parseRolesTag(Element rolesTag) {
+    private static Map<String, Set < String > > parseRolesTag(Element rolesTag) {
         Map<String, Set < String > > mapOfRoles = new HashMap<>();
         NodeList roleNodes = rolesTag.getChildNodes();
         for (int i = 0; i < roleNodes.getLength(); i++) {
@@ -279,14 +358,14 @@ public final class XmlParserV2 {
         return mapOfRoles;
     }
     
-    private void parseRoleTag(Element roleNode, Map<String, Set < String > > mapOfRoles) {
+    private static void parseRoleTag(Element roleNode, Map<String, Set < String > > mapOfRoles) {
         NamedNodeMap nnm = roleNode.getAttributes();
         Node attributeName = nnm.getNamedItem(SECURITY_ROLE_ATTNAME);
         AssertUtils.assertNotNull(attributeName);
         mapOfRoles.put(attributeName.getNodeValue(), parseRolePermissionsTag(roleNode));
     }
     
-    private Set < String > parseRolePermissionsTag(Element roleNode) {
+    private static Set < String > parseRolePermissionsTag(Element roleNode) {
         Set<String> setOfPermissions = new HashSet<>();
         NodeList permissionNodes = roleNode.getChildNodes();
         for (int j = 0; j < permissionNodes.getLength(); j++) {
@@ -307,7 +386,7 @@ public final class XmlParserV2 {
      * @throws IOException
      *             exception raised when reading inputstream
      */
-    private Map<String, Feature> parseFeaturesTag(Element featuresTag) {
+    private static Map<String, Feature> parseFeaturesTag(Element featuresTag) {
         Map<String, Feature> xmlFeatures = new LinkedHashMap<String, Feature>();
         NodeList firstLevelNodes = featuresTag.getChildNodes();
         for (int i = 0; i < firstLevelNodes.getLength(); i++) {
@@ -333,7 +412,7 @@ public final class XmlParserV2 {
      *            feature group tag
      * @return map of features
      */
-    private Map<String, Feature> parseFeatureGroupTag(Element featGroupTag) {
+    private static Map<String, Feature> parseFeatureGroupTag(Element featGroupTag) {
         NamedNodeMap nnm = featGroupTag.getAttributes();
         String groupName;
         if (nnm.getNamedItem(FEATUREGROUP_ATTNAME) == null) {
@@ -359,7 +438,7 @@ public final class XmlParserV2 {
      *            xml tag to nuild feature
      * @return current feature
      */
-    private Feature parseFeatureTag(Element featXmlTag) {
+    private static Feature parseFeatureTag(Element featXmlTag) {
         NamedNodeMap nnm = featXmlTag.getAttributes();
         // Identifier
         String uid;
@@ -403,7 +482,7 @@ public final class XmlParserV2 {
      * @return
      *      properties map
      */
-    private Map < String , Property<?>> parsePropertiesTag(Element propertiesTag) {
+    private static Map < String , Property<?>> parsePropertiesTag(Element propertiesTag) {
         Map< String , Property<?>> properties = new HashMap<String, Property<?>>(); 
         // <properties>
         NodeList lisOfProperties = propertiesTag.getElementsByTagName(PROPERTY_TAG);
@@ -474,7 +553,7 @@ public final class XmlParserV2 {
      * @return flipstrategy related to current feature.
      */
     @SuppressWarnings("unused")
-    private ToggleStrategy parseFlipStrategy(Element flipStrategyTag, String uid) {
+    private static ToggleStrategy parseFlipStrategy(Element flipStrategyTag, String uid) {
         NamedNodeMap nnm = flipStrategyTag.getAttributes();
         ToggleStrategy flipStrategy;
         if (nnm.getNamedItem(TOGGLE_STRATEGY_ATTCLASS) == null) {
@@ -574,7 +653,7 @@ public final class XmlParserV2 {
      * @throws IOException
      *             error occurs when generating output
      */
-    public InputStream exportFeatures(Stream < Feature> mapOfFeatures) throws IOException {    
+    public static InputStream exportFeatures(Stream < Feature> mapOfFeatures) throws IOException {    
         return new ByteArrayInputStream(exportFeaturesPart(mapOfFeatures).getBytes(ENCODING));
     }
     
@@ -587,7 +666,7 @@ public final class XmlParserV2 {
      * @throws IOException
      *             error occurs when generating output
      */
-    public InputStream exportProperties(Stream < Property<?> > mapOfProperties) throws IOException {   
+    public static InputStream exportProperties(Stream < Property<?> > mapOfProperties) throws IOException {   
         return new ByteArrayInputStream(exportPropertiesPart(mapOfProperties).getBytes(ENCODING));
     }
     
@@ -600,7 +679,7 @@ public final class XmlParserV2 {
      * @throws IOException
      *             error occurs when generating output
      */
-    public InputStream exportAll(Map<String, Feature> mapOfFeatures, Map < String, Property<?>> mapOfProperties) throws IOException {   
+    public static InputStream exportAll(Map<String, Feature> mapOfFeatures, Map < String, Property<?>> mapOfProperties) throws IOException {   
         // Create output
         StringBuilder sb = new StringBuilder(XML_HEADER);
         sb.append(exportFeaturesPart(mapOfFeatures.values().stream()));
@@ -619,7 +698,7 @@ public final class XmlParserV2 {
      * @throws IOException
      *      error during marshalling
      */
-    public InputStream exportAll(XmlConfigV1 conf) throws IOException {
+    public static InputStream exportAll(XmlData conf) throws IOException {
         return exportAll(conf.getFeatures(), conf.getProperties());
     }
     
@@ -631,7 +710,7 @@ public final class XmlParserV2 {
      * @return
      *      XML Flow     
      */
-    private String exportPropertiesPart(Stream < Property<?> > streamOfProperties) {
+    private static String exportPropertiesPart(Stream < Property<?> > streamOfProperties) {
         StringBuilder sb = new StringBuilder(BEGIN_PROPERTIES);
         sb.append(buildPropertiesPart(streamOfProperties));
         sb.append(END_PROPERTIES);
@@ -647,7 +726,7 @@ public final class XmlParserV2 {
      * @return
      *      all XML
      */
-    private String exportFeaturesPart(Stream<Feature> streamOfFeatures) {
+    private static String exportFeaturesPart(Stream<Feature> streamOfFeatures) {
         // Split features
         Map<String, List<Feature>> mapOfGroups = new HashMap<String, List<Feature>>();
         List < Feature > noGroupFeatures = new ArrayList<>();
@@ -678,7 +757,7 @@ public final class XmlParserV2 {
         return sb.toString();
     }
     
-    private String exportFeature(Feature feature) {
+    private static String exportFeature(Feature feature) {
         StringBuilder sb = new StringBuilder();
         
         // <feature uid=.. enable=... <description=...> 
@@ -720,7 +799,7 @@ public final class XmlParserV2 {
      *      properties elements.
      * @return
      */
-    private String buildPropertiesPart(Stream < Property<?> > props) {
+    private static String buildPropertiesPart(Stream < Property<?> > props) {
         final StringBuilder sb = new StringBuilder();
         if (props != null) {
             props.forEach(property -> {
@@ -752,7 +831,7 @@ public final class XmlParserV2 {
      *      target XML
      * @return
      */
-    public String escapeXML(String value) {
+    public static String escapeXML(String value) {
         if (value == null) {
             return null;
         }

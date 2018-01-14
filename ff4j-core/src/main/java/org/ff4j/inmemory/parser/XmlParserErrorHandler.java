@@ -1,4 +1,4 @@
-package org.ff4j.conf;
+package org.ff4j.inmemory.parser;
 
 /*
  * #%L

@@ -1,11 +1,11 @@
 /**
- * Provides parsers to initialize the framework with xml definition files.
+ * Load data from XML files to populate inMemory stores (mostly).
  * <p>
  *
  * @author Cedrick Lunven (@clunven)</a>
- * @since 1.2
+ * @since 2.0
  */
-package org.ff4j.conf;
+package org.ff4j.inmemory.parser;
 
 /*
  * #%L

@@ -5,7 +5,6 @@ import static org.ff4j.test.AssertUtils.assertNotNull;
 import static org.ff4j.utils.JsonUtils.attributeAsJson;
 import static org.ff4j.utils.JsonUtils.collectionAsJson;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -14,10 +13,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.ff4j.conf.XmlConfigV1;
-import org.ff4j.conf.XmlParserV1;
 import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.exception.PropertyNotFoundException;
+import org.ff4j.inmemory.parser.XmlParser;
 import org.ff4j.monitoring.AuditTrail;
 import org.ff4j.repository.FF4jRepositoryListener;
 import org.ff4j.repository.FF4jRepositorySupport;
@@ -76,20 +74,7 @@ public abstract class AbstractRepositoryProperties
      *      xml configuration file
      */
     public  Map<String, Property<?>> importPropertiesFromXmlFile(String xmlConfFile) {
-        // Argument validation
-        if (xmlConfFile == null || xmlConfFile.isEmpty()) {
-            throw new IllegalArgumentException("Configuration filename cannot be null nor empty");
-        }
-        // Load as Inputstream
-        InputStream xmlIS = getClass().getClassLoader().getResourceAsStream(xmlConfFile);
-        if (xmlIS == null) {
-            throw new IllegalArgumentException("File " + xmlConfFile + " could not be read, please check path and rights");
-        }
-        // Use the Feature Parser
-        XmlConfigV1 conf = new XmlParserV1().parseConfigurationFile(xmlIS);
-        Map<String, Property<?>> properties = conf.getProperties();
-
-        // Override existing configuration within database
+        Map<String, Property<?>> properties = XmlParser.parseFile(xmlConfFile).getProperties();
         for (Map.Entry<String,Property<?>> featureName : properties.entrySet()) {
             if (exists(featureName.getKey())) {
                 delete(featureName.getKey());

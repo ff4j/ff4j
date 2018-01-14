@@ -502,6 +502,163 @@ public class AssertUtils {
             throw new AssertionViolationException(errorMessage);
         }
     }
+    
+    // -------------------------------------------------------------------------
+    // ------------------- ARGUMENTS VALIDATION  -------------------------------
+    // -------------------------------------------------------------------------
+    
+    /**
+     * Check condition as TRUE
+     */
+    public static final void assertTrueParam(String paramName, int idx, boolean condition) {
+        assertTrueParam(paramName, idx, condition, null);
+    }
+    
+    public static final void assertTrueParam(String paramName, int idx, boolean condition, String errorMessage) {
+        try{
+            if (errorMessage == null) {
+                assertTrue(condition);
+            } else {
+                assertTrue(condition, errorMessage);
+            }
+        } catch(AssertionViolationException ave) {
+            handleAssertException(paramName, idx, ave);
+        }
+    }
+    
+    
+    /**
+     * Check condition as FALSE
+     */
+    public static final void assertFalseParam(String paramName, int idx, boolean condition) {
+        assertFalseParam(paramName, idx, condition, null);
+    }
+    
+    public static final void assertFalseParam(String paramName, int idx, boolean condition, String errorMessage) {
+        try{
+            if (errorMessage == null) {
+                assertFalse(condition);
+            } else {
+                assertFalse(condition, errorMessage);
+            }
+        } catch(AssertionViolationException ave) {
+            handleAssertException(paramName, idx, ave);
+        }
+    }
+    
+    
+    /**
+     * Check condition NOT NULL
+     */
+    public static final <T> void assertNotNullParam(String paramName, int idx, T actual) {
+        assertNotNullParam(paramName, idx, actual, null);
+    }
+    
+    public static final <T> void assertNotNullParam(String paramName, int idx, T actual, String errorMessage) {
+        try{
+            if (errorMessage == null) {
+                assertNotNull(actual);
+            } else {
+                assertNotNull(actual, errorMessage);
+            }
+        } catch(AssertionViolationException ave) {
+            handleAssertException(paramName, idx, ave);
+        }
+    }
+    
+    /**
+     * Check condition NOT NULL
+     */
+    
+    public static final <T> void assertNullParam(String paramName, int idx, T actual) {
+        assertNullParam(paramName, idx, actual, null);
+    }
+    
+    public static final <T> void assertNullParam(String paramName, int idx, T actual, String errorMessage) {
+        try{
+            if (errorMessage == null) {
+                assertNull(actual);
+            } else {
+                assertNull(actual, errorMessage);
+            }
+        } catch(AssertionViolationException ave) {
+            handleAssertException(paramName, idx, ave);
+        }
+    }
+    
+    /**
+     * Check condition EQUALS
+     */
+    public static final <T> void assertEqualsParam(String paramName, int idx, T expected, T actual) {
+        assertEqualsParam(paramName, idx, actual, null);
+    }
+    
+    public static final <T> void assertEqualsParam(String paramName, int idx, T expected, T actual, String errorMessage) {
+        try{
+            if (errorMessage == null) {
+                assertEquals(expected, actual);
+            } else {
+                assertEquals(expected, actual, errorMessage);
+            }
+        } catch(AssertionViolationException ave) {
+            handleAssertException(paramName, idx, ave);
+        }
+    }
+    
+    
+    /**
+     * Check condition INSTANCE_OF
+     */
+    
+    public static final void assertInstanceOfParam(String paramName, int idx, Object obj, Class<?> expectedClass) {
+        assertInstanceOfParam(paramName, idx, obj, expectedClass, null);
+    }
+    
+    public static final void assertInstanceOfParam(String paramName, int idx, Object obj, Class<?> expectedClass, String errorMessage) {
+        try{
+            if (errorMessage == null) {
+                assertInstanceOf(obj, expectedClass);
+            } else {
+                assertInstanceOf(obj, expectedClass, errorMessage);
+            }
+        } catch(AssertionViolationException ave) {
+            handleAssertException(paramName, idx, ave);
+        }
+    }
+    
+    /**
+     * Check not empty
+     */
+    public static final void assertHasLengthParam(String paramName, int idx, String expression) {
+        assertHasLengthParam(paramName, idx, expression, null);
+    }
+    
+    public static final void assertHasLengthParam(String paramName, int idx, String expression, String errorMessage) {
+        try{
+            if (errorMessage == null) {
+                assertHasLength(expression);
+            } else {
+                assertHasLength(expression, errorMessage);
+            }
+        } catch(AssertionViolationException ave) {
+            handleAssertException(paramName, idx, ave);
+        }
+    }
+    
+    /**
+     * Handle assert exception.
+     * 
+     * @param paramName
+     *          name of parameter
+     * @param idx
+     *          offset of parameter
+     * @param ave
+     *          current error
+     */
+    private static void handleAssertException(String paramName, int idx, AssertionViolationException ave) {
+        throw new IllegalArgumentException(
+                String.format("Param #%s (%s) %s", idx, paramName, ave.getMessage()), ave);
+    }
  
     // -------------------------------------------------------------------------
     // ------------------- GETTERS & SETTERS -----------------------------------

@@ -26,8 +26,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.ff4j.FF4jEntity;
-import org.ff4j.conf.XmlConfigV1;
-import org.ff4j.conf.XmlParserV1;
+import org.ff4j.inmemory.parser.XmlData;
+import org.ff4j.inmemory.parser.XmlParser;
 import org.ff4j.test.AssertUtils;
 
 /**
@@ -40,20 +40,14 @@ import org.ff4j.test.AssertUtils;
  */
 public class RepositoryInMemory <E extends FF4jEntity<?> > implements Map< String, E >{
     
-    /** XML Parser V1. */
-    private static final XmlParserV1 PARSER_V1 = new XmlParserV1();
-    
-    /** XML Parser V2. */
-    //private static final XmlParserV2 PARSER_V2 = new XmlParserV2();
-    
     /** InMemory Feature Map */
     private Map<String, E> mapOfEntities = new ConcurrentHashMap<String, E>();
     
-    /** XML Configuration. */
-    private XmlConfigV1 xmlConfigV1;
-
     /** FileName used to retrieve properties. */
     private String fileName;
+    
+    /** Avoid to parse the same file multiple time. */
+    private XmlData cachedXmlData = null;
     
     /**
      * Default constructor.
@@ -124,23 +118,14 @@ public class RepositoryInMemory <E extends FF4jEntity<?> > implements Map< Strin
      * @return
      *       current value of 'xmlConfigV1'
      */
-    public XmlConfigV1 getXmlConfigV1() {
-        if (xmlConfigV1 == null) {
+    public XmlData loadXmlData() {
+        if (cachedXmlData == null) {
             AssertUtils.assertHasLength(fileName);
             InputStream fileStream = getClass().getClassLoader().getResourceAsStream(fileName);
             AssertUtils.assertNotNull(fileStream, "Cannot open '" + fileName + "' please check location");
-            xmlConfigV1 = PARSER_V1.parseConfigurationFile(fileStream);
+            cachedXmlData =XmlParser.parseInputStream(fileStream);
         }
-        return xmlConfigV1;
-    }
-
-    /**
-     * Setter accessor for attribute 'xmlConfigV1'.
-     * @param xmlConfigV1
-     * 		new value for 'xmlConfigV1 '
-     */
-    public void setXmlConfigV1(XmlConfigV1 xmlConfigV1) {
-        this.xmlConfigV1 = xmlConfigV1;
+        return cachedXmlData;
     }
 
     /** {@inheritDoc} */

@@ -27,9 +27,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.ff4j.conf.XmlParserV1;
-import org.ff4j.feature.Feature;
 import org.ff4j.feature.AbstractRepositoryFeatures;
+import org.ff4j.feature.Feature;
+import org.ff4j.inmemory.parser.XmlParser;
 import org.ff4j.test.AssertUtils;
 
 /**
@@ -192,10 +192,7 @@ public class RepositoryFeaturesInMemory extends AbstractRepositoryFeatures {
      *            xml filename
      */
     public void loadConf(InputStream xmlIN) {
-        if (xmlIN == null) {
-            throw new IllegalArgumentException("Cannot parse feature stream");
-        }
-        this.mapOfFeatures = new XmlParserV1().parseConfigurationFile(xmlIN).getFeatures();
+        this.mapOfFeatures = XmlParser.parseInputStream(xmlIN).getFeatures();
         buildGroupsFromFeatures();
     }
 

@@ -1,4 +1,4 @@
-package org.ff4j.conf;
+package org.ff4j.inmemory.parser;
 
 /*-
  * #%L
@@ -24,6 +24,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.ff4j.feature.Feature;
+import org.ff4j.property.Property;
 import org.ff4j.security.domain.FF4jAcl;
 import org.ff4j.security.domain.FF4jUser;
 
@@ -32,8 +34,14 @@ import org.ff4j.security.domain.FF4jUser;
  *
  * @author Cedrick LUNVEN (@clunven)
  */
-public class XmlConfigV2 extends XmlConfigV1 {
+public final class XmlData {
 
+	/** Dedicated Parsing. */
+    private Map <String, Feature > features = new LinkedHashMap<String, Feature>();
+    
+    /** InMemory Feature Map */
+    private Map <String, Property<?> > properties = new LinkedHashMap<String, Property<?>>();
+    
     /** Load Tag <ROLES>. */
     private Map < String, Set<String> > roles = new HashMap<>();
     
@@ -98,6 +106,44 @@ public class XmlConfigV2 extends XmlConfigV1 {
      */
     public void setAcls(Map<String, FF4jAcl> acls) {
         this.acls = acls;
+    }
+    
+    /**
+     * Getter accessor for attribute 'features'.
+     *
+     * @return
+     *       current value of 'features'
+     */
+    public Map<String, Feature> getFeatures() {
+        return features;
+    }
+
+    /**
+     * Setter accessor for attribute 'features'.
+     * @param features
+     * 		new value for 'features '
+     */
+    public void setFeatures(Map<String, Feature> features) {
+        this.features = features;
+    }
+
+    /**
+     * Getter accessor for attribute 'properties'.
+     *
+     * @return
+     *       current value of 'properties'
+     */
+    public Map<String, Property<?>> getProperties() {
+        return properties;
+    }
+
+    /**
+     * Setter accessor for attribute 'properties'.
+     * @param properties
+     * 		new value for 'properties '
+     */
+    public void setProperties(Map<String, Property<?>> properties) {
+        this.properties = properties;
     }
     
 }

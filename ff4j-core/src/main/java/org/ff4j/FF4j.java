@@ -20,7 +20,6 @@ package org.ff4j;
  * #L%
  */
 
-import static org.ff4j.test.AssertUtils.assertHasLength;
 import static org.ff4j.test.AssertUtils.assertNotNull;
 import static org.ff4j.utils.JsonUtils.attributeAsJson;
 import static org.ff4j.utils.JsonUtils.objectAsJson;
@@ -33,8 +32,6 @@ import java.util.function.Predicate;
 import org.ff4j.cache.CacheManager;
 import org.ff4j.cache.CacheProxyFeatures;
 import org.ff4j.cache.CacheProxyProperties;
-import org.ff4j.conf.XmlConfigV1;
-import org.ff4j.conf.XmlParserV1;
 import org.ff4j.event.Event;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.feature.Feature;
@@ -418,27 +415,14 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
     // -------------------------
     
     /**
-     * Parse configuration file.
-     *
-     * @param fileName
-     *      target file
-     * @return
-     *      current configuration as XML
-     */
-    public XmlConfigV1 parseXmlConfigV1(String fileName) {
-        assertHasLength(fileName, "fileName");
-        InputStream xmlIN = getClass().getClassLoader().getResourceAsStream(fileName);
-        assertNotNull(xmlIN, String.format("Cannot parse XML file %s file not found", fileName));
-        return new XmlParserV1().parseConfigurationFile(xmlIN);
-    }
-   
-    /**
      * Create tables/collections/columns in DB (if required).
      */
     public void createSchema() {
+    	// Features
         if (null != getRepositoryFeatures()) {
             getRepositoryFeatures().createSchema();
         }
+        // Properties
         if (null != getRepositoryProperties()) {
             getRepositoryProperties().createSchema();
         }
@@ -446,8 +430,18 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
         if (null != getRepositoryEventAudit()) {
             getRepositoryEventAudit().createSchema();
         }
+        // Audit
+        if (null != getRepositoryEventAudit()) {
+        	getRepositoryEventAudit().createSchema();
+        }
         // Feature Usage
-        // SecurityManager
+        if (null != getRepositoryEventAudit()) {
+        	getRepositoryEventAudit().createSchema();
+        }
+        // Users
+        
+        
+        // Acld
     }
 
     /** {@inheritDoc} */

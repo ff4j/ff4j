@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.ff4j.conf.XmlParserV1;
+import org.ff4j.inmemory.parser.XmlParser;
 import org.ff4j.property.AbstractRepositoryProperties;
 import org.ff4j.property.Property;
 import org.ff4j.property.RepositoryProperties;
@@ -51,7 +51,6 @@ public class RepositoryPropertiesInMemory extends AbstractRepositoryProperties {
     
     /** InMemory Feature Map */
     private Map<String, Property<?>> properties = new LinkedHashMap<>();
-
     
     /**
      * Default Constructor 
@@ -173,10 +172,7 @@ public class RepositoryPropertiesInMemory extends AbstractRepositoryProperties {
      *            xml filename
      */
     private void loadConf(InputStream xmlIN) {
-        if (xmlIN == null) {
-            throw new IllegalArgumentException("Cannot parse stream with properties");
-        }
-        this.properties = new XmlParserV1().parseConfigurationFile(xmlIN).getProperties();
+       this.properties = XmlParser.parseInputStream(xmlIN).getProperties();
     }
     
     /**

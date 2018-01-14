@@ -28,19 +28,18 @@ import static org.ff4j.utils.JsonUtils.collectionAsJson;
 import static org.ff4j.utils.JsonUtils.objectAsJson;
 import static org.ff4j.utils.Util.setOf;
 
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.ff4j.conf.XmlParserV1;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.exception.ItemAlreadyExistException;
 import org.ff4j.exception.ItemNotFoundException;
+import org.ff4j.inmemory.parser.XmlParser;
 import org.ff4j.monitoring.AuditTrail;
 import org.ff4j.repository.FF4jRepository;
 import org.ff4j.repository.FF4jRepositoryListener;
@@ -160,12 +159,7 @@ public abstract class AbstractRepositoryFeatures
      *      xml configuration file
      */
     protected Stream < Feature > importFeaturesFromXmlFile(String xmlConfFile) {
-        // Load as Inputstream
-        assertHasLength(xmlConfFile, "xmlConfFile");
-        InputStream xmlIS = getClass().getClassLoader().getResourceAsStream(xmlConfFile);
-        assertNotNull(xmlIS, String.format("Cannot parse XML file %s file not found", xmlConfFile));
-        // Use the Feature Parser
-        Map < String, Feature > features = new XmlParserV1().parseConfigurationFile(xmlIS).getFeatures();
+        Map < String, Feature > features = XmlParser.parseFile(xmlConfFile).getFeatures();
         save(features.values());
         return features.values().stream();
     }
