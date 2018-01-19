@@ -57,6 +57,9 @@ public class JdbcUtils {
         try {
             sqlConn = ds.getConnection();
             DatabaseMetaData dbmd = sqlConn.getMetaData();
+            if (dbmd.storesLowerCaseIdentifiers()) {
+                tableName = tableName.toLowerCase();
+            }
             rs = dbmd.getTables(null, null, tableName, new String[] {"TABLE"});
             return rs.next();
         } catch (SQLException sqlEX) {
