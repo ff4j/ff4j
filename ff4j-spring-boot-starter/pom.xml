@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.ff4j</groupId>
         <artifactId>ff4j-parent</artifactId>
-        <version>1.7.1-SNAPSHOT</version>
+        <version>1.7.1</version>
     </parent>
     <properties>
         <license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
