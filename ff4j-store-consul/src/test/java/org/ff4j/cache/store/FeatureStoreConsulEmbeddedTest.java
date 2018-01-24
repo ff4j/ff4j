@@ -27,6 +27,7 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 
 import com.orbitz.consul.Consul;
 import com.pszymczyk.consul.ConsulProcess;
@@ -37,6 +38,7 @@ import com.pszymczyk.consul.ConsulStarterBuilder;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
+@Ignore
 public class FeatureStoreConsulEmbeddedTest extends FeatureStoreTestSupport {
     
     /** Initialisation of embedded consul. */
