@@ -67,7 +67,6 @@ public class FeatureAdvisor implements MethodInterceptor {
         	Class<?> alterClazz = ff4jAnnotation.alterClazz();
         	boolean isFeatureToggled = check(ff4jAnnotation, mi);
         	
-        	System.out.println("INVOKE");
         	// Would like to skip if feature is Disable
         	if (!Util.hasLength(alterBean) && !Util.isValidClass(alterClazz) && !isFeatureToggled) {
         		return null;
