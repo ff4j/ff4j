@@ -38,7 +38,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * Created by Paul
+ * Created by Paul.
  *
  * @author <a href="mailto:paul58914080@gmail.com">Paul Williams</a>
  */

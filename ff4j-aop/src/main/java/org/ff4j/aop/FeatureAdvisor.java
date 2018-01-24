@@ -59,26 +59,38 @@ public class FeatureAdvisor implements MethodInterceptor {
     @Override
     public Object invoke(final MethodInvocation mi) throws Throwable {
         Flip ff4jAnnotation = getFF4jAnnotation(mi);
-        // Method is annotated and the related feature is ON
-        if (ff4jAnnotation != null && check(ff4jAnnotation, mi)) {
-            
-            // Do we use the alter bean defined in the annotation ?
-            String alterBean  = ff4jAnnotation.alterBean();
-            if (Util.hasLength(alterBean)
-                    // Bean name exist
-                    & appCtx.containsBean(alterBean)   
-                    // Bean name is not the same as current
-                    & !alterBean.equals(getExecutedBeanName(mi))) {
-                return invokeAlterBean(mi, alterBean);
-            }
-            
-            // Or else do we use the alter class defined in the annotation ?
-            Class<?> alterClazz = ff4jAnnotation.alterClazz();
-            if (Util.isValidClass(alterClazz) 
-                    // Alter class is not the same as current
-                    & (alterClazz != getExecutedClass(mi))) {
-                return invokeAlterClazz(mi, ff4jAnnotation);
-            }
+        
+        // Method is annotated
+        if (ff4jAnnotation != null) {
+        	
+        	String alterBean    = ff4jAnnotation.alterBean();
+        	Class<?> alterClazz = ff4jAnnotation.alterClazz();
+        	boolean isFeatureToggled = check(ff4jAnnotation, mi);
+        	
+        	System.out.println("INVOKE");
+        	// Would like to skip if feature is Disable
+        	if (!Util.hasLength(alterBean) && !Util.isValidClass(alterClazz) && !isFeatureToggled) {
+        		return null;
+        	}
+        	
+        	// Feature is 'ON'
+        	if (isFeatureToggled) {
+	            // Do we use the alter bean defined in the annotation ?
+	            if (Util.hasLength(alterBean)
+	                    // Bean name exist
+	                    & appCtx.containsBean(alterBean)   
+	                    // Bean name is not the same as current
+	                    & !alterBean.equals(getExecutedBeanName(mi))) {
+	                return invokeAlterBean(mi, alterBean);
+	            }
+	            
+	            // Or else do we use the alter class defined in the annotation ?
+	            if (Util.isValidClass(alterClazz) 
+	                    // Alter class is not the same as current
+	                    & (alterClazz != getExecutedClass(mi))) {
+	                return invokeAlterClazz(mi, ff4jAnnotation);
+	            }
+        	}
         }
         // No feature toggle (no annotation nor feature OFF)
         return mi.proceed();

@@ -3,14 +3,14 @@
 	xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 
 	<properties>
-		<title>ff4j-aop</title>
+		<title>ff4j-cache-ehcache</title>
 	</properties>
 
 	<body>
-		<section name="ff4j-aop">
+		<section name="ff4j-cache-ehcache">
 			<subsection name="Introduction">
 				<p>
-					This component is used to perform flipping (feature toggle) through Spring AOP
+					This component provides caching support based on EHCache 
 				</p>
 			</subsection>
 			<subsection name="Quality Reports">

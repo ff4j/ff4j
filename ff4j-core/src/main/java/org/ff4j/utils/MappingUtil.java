@@ -177,7 +177,8 @@ public class MappingUtil {
      * @return
      *      the flipping strategy
      */
-    public static FlippingStrategy instanceFlippingStrategy(String uid, String className,  Map<String, String> initparams) {
+    @SuppressWarnings("unchecked")
+	public static FlippingStrategy instanceFlippingStrategy(String uid, String className,  Map<String, String> initparams) {
         try {
             Class<FlippingStrategy> clazz = (Class<FlippingStrategy>) (classLoader == null ? Class.forName(className) : classLoader.loadClass(className));
             FlippingStrategy flipStrategy = clazz.newInstance();

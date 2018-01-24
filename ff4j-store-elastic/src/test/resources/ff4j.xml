@@ -8,8 +8,7 @@
 	the specific language governing permissions and limitations under the License. 
 	#L% -->
 
-<features xmlns="http://www.ff4j.org/schema/ff4j" 
-		  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+<features  >
 
 	<feature uid="AwesomeFeature" enable="true" description="some desc" />
 
