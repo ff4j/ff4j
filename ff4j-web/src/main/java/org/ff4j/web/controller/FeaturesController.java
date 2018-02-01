@@ -282,10 +282,26 @@ public class FeaturesController extends AbstractController {
         List<String> featuresNames = Arrays.asList(mapOfFeatures.keySet().toArray(new String[0]));
         Collections.sort(featuresNames);
         List<Feature> orderedFeatures = new ArrayList<Feature>();
+        List<FlippingStrategy> orderedStrategyUsed = new ArrayList<FlippingStrategy>();
+        Map<String,FlippingStrategy> mapOfStrategyUsed = new HashMap<String, FlippingStrategy>();
+
         for (String featuName : featuresNames) {
-            orderedFeatures.add(mapOfFeatures.get(featuName));
+            Feature feature = mapOfFeatures.get(featuName);
+            orderedFeatures.add(feature);
+            FlippingStrategy strategyTargered = feature.getFlippingStrategy();
+            if (strategyTargered!=null) {
+                if (mapOfStrategyUsed.get(strategyTargered.getClass().getSimpleName()) != null) {
+                } else {
+                    mapOfStrategyUsed.put(strategyTargered.getClass().getSimpleName(), strategyTargered);
+                    orderedStrategyUsed.add(strategyTargered);
+                }
+            }
         }
+
         ctx.setVariable("listOfFeatures", orderedFeatures);
+
+        ctx.setVariable("listOfStrategyUsed", orderedStrategyUsed);
+
 
         // Get Group List
         List<String> myGroupList = new ArrayList<String>(ff4j.getFeatureStore().readAllGroups());
