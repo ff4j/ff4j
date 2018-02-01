@@ -131,6 +131,21 @@
                     $('#modalEdit #stratlist').show();
                     $('#modalEdit #initParams').val('grantedServers=s1,s2,s3')">ServerFilter</a></li>
               <li class="divider"></li>
+                <b><span>Strategies used</span></b>
+                <li th:each="stragy : ${listOfStrategyUsed}" >
+                    <span th:if="${stragy} != null">
+	                    <span th:each="initParam : ${stragy.initParams}">
+                         <a href="#" th:onclick="'
+                        $(\'#modalEdit #strategy\').val(\'' + ${stragy.type} + '\');
+                        $(\'#modalEdit #stratlist\').show();
+                        $(\'#modalEdit #initParams\').val(\'' + ${initParam} + '\'); '"
+                         >
+                             <b><span th:text="${stragy.class.simpleName}">---</span></b>
+                        </a>
+                        </span>
+                    </span>
+                </li>
+                <li class="divider"></li>
               <li><a href="#" onclick="javascript:
                     $('#modalEdit #strategy').val('');
                     $('#modalEdit #stratlist').hide();

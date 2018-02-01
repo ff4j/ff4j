@@ -25,6 +25,9 @@
 	   <span th:if="${#locale.language == 'en'}">
 	    <img src="" th:src="@{static/img/flags/flagEnglish.png}" style="height:20px" /> 
 	   </span>
+       <span th:if="${#locale.language == 'es'}">
+	    <img src="" th:src="@{static/img/flags/flagMexico.png}" style="height:20px" />
+	   </span>
 	   <span th:if="${#locale.language == 'fr'}">
 	    <img src="" th:src="@{static/img/flags/flagFrance.png}" style="height:20px" /> 
 	   </span>
@@ -40,6 +43,7 @@
       
       <ul class="dropdown-menu">
       	<li><a href="?lang=en"><img src="" th:src="@{static/img/flags/flagEnglish.png}" style="height:15px" />&nbsp;English</a></li>
+        <li><a href="?lang=es"><img src="" th:src="@{static/img/flags/flagMexico.png}" style="height:15px" />&nbsp;Español</a></li>
         <li><a href="?lang=fr"><img src="" th:src="@{static/img/flags/flagFrance.png}"  style="height:15px" />&nbsp;Français</a></li>
         <li><a href="?lang=de"><img src="" th:src="@{static/img/flags/flagGermany.png}" style="height:15px" />&nbsp;Deutsch</a></li>
         <li><a href="?lang=ja"><img src="" th:src="@{static/img/flags/flagJapanese.png}" style="height:15px" />&nbsp;Japanese</a></li>
