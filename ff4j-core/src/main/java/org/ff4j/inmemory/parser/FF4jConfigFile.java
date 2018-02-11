@@ -34,7 +34,7 @@ import org.ff4j.security.domain.FF4jUser;
  *
  * @author Cedrick LUNVEN (@clunven)
  */
-public final class XmlData {
+public final class FF4jConfigFile {
 
 	/** Dedicated Parsing. */
     private Map <String, Feature > features = new LinkedHashMap<String, Feature>();

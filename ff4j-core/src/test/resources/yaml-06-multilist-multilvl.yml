@@ -1,0 +1,7 @@
+ff4j:
+  users:
+    - uid: pierre
+      permissions:
+        - ADMIN_FEATURES
+        - ADMIN_PROPERTIES
+      description: sample description if OK

@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 
 import org.ff4j.feature.AbstractRepositoryFeatures;
 import org.ff4j.feature.Feature;
-import org.ff4j.inmemory.parser.XmlParser;
+import org.ff4j.inmemory.parser.xml.XmlParser;
 import org.ff4j.test.AssertUtils;
 
 /**

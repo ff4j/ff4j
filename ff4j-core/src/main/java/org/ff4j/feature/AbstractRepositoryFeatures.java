@@ -39,7 +39,7 @@ import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.exception.ItemAlreadyExistException;
 import org.ff4j.exception.ItemNotFoundException;
-import org.ff4j.inmemory.parser.XmlParser;
+import org.ff4j.inmemory.parser.xml.XmlParser;
 import org.ff4j.monitoring.AuditTrail;
 import org.ff4j.repository.FF4jRepository;
 import org.ff4j.repository.FF4jRepositoryListener;

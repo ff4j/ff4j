@@ -5,13 +5,12 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.notNull;
 
 import java.io.ByteArrayInputStream;
 
-import org.ff4j.inmemory.parser.XmlData;
-import org.ff4j.inmemory.parser.XmlParser;
-import org.ff4j.inmemory.parser.XmlParserErrorHandler;
+import org.ff4j.inmemory.parser.FF4jConfigFile;
+import org.ff4j.inmemory.parser.xml.XmlParser;
+import org.ff4j.inmemory.parser.xml.XmlParserErrorHandler;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -64,7 +63,7 @@ public class XmlParserTestJunit5 {
     public void testParseXML(String xmlFileName) {
         // Given (fileName)
         // When        
-        XmlData xmlData = XmlParser.parseFile(xmlFileName);
+        FF4jConfigFile xmlData = XmlParser.parseFile(xmlFileName);
         
         // Then (Roles)
         assertThat(xmlData.getRoles().size(), is(equalTo(3)));

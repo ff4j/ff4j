@@ -21,9 +21,18 @@
 	<!-- ~      DEPENDENCIES        ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<dependencies>
-	
-	
-		
+
+	<dependency>
+		<groupId>org.reflections</groupId>
+		<artifactId>reflections</artifactId>
+		<version>0.9.11</version>
+	</dependency>
+	<dependency>
+		<groupId>com.google.guava</groupId>
+		<artifactId>guava</artifactId>
+		<version>20.0</version>
+	</dependency>
+
 		<!-- Support for tests -->
 		<dependency>
 			<groupId>junit</groupId>

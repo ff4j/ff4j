@@ -1,4 +1,4 @@
-package org.ff4j.inmemory.parser;
+package org.ff4j.inmemory.parser.xml;
 
 import static org.ff4j.test.AssertUtils.assertHasLengthParam;
 import static org.ff4j.test.AssertUtils.assertNotNullParam;
@@ -44,6 +44,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.ff4j.feature.Feature;
 import org.ff4j.feature.ToggleStrategy;
+import org.ff4j.inmemory.parser.FF4jConfigFile;
 import org.ff4j.property.Property;
 import org.ff4j.property.domain.PropertyString;
 import org.ff4j.security.domain.FF4jPermission;
@@ -195,7 +196,7 @@ public final class XmlParser {
     private static DocumentBuilder builder = null;
    
     /** Do not parse the same file multiple times. */
-    private static Map < String, XmlData > cachedXmlData = new HashMap<>();
+    private static Map < String, FF4jConfigFile > cachedXmlData = new HashMap<>();
     
     /**  Hide constructor. */
     private XmlParser() {
@@ -209,7 +210,7 @@ public final class XmlParser {
      * @return
      *      current configuration as XML
      */
-    public static XmlData parseFile(String fileName) {
+    public static FF4jConfigFile parseFile(String fileName) {
         assertHasLengthParam("fileName", 0, fileName);
         if (!cachedXmlData.containsKey(fileName)) {
             InputStream xmlIN = XmlParser.class.getClassLoader().getResourceAsStream(fileName);
@@ -227,9 +228,9 @@ public final class XmlParser {
      * @return
      *      features and properties find within file
      */
-    public static XmlData parseInputStream(InputStream in) {
+    public static FF4jConfigFile parseInputStream(InputStream in) {
         try {
-            XmlData xmlConf = new XmlData();
+            FF4jConfigFile xmlConf = new FF4jConfigFile();
             NodeList firstLevelNodes = getDocumentBuilder()
                     .parse(in)
                     .getElementsByTagName("ff4j").item(0)
@@ -698,7 +699,7 @@ public final class XmlParser {
      * @throws IOException
      *      error during marshalling
      */
-    public static InputStream exportAll(XmlData conf) throws IOException {
+    public static InputStream exportAll(FF4jConfigFile conf) throws IOException {
         return exportAll(conf.getFeatures(), conf.getProperties());
     }
     

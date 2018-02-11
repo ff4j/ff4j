@@ -1,0 +1,22 @@
+cars:
+  - brand: tesla
+    model: S
+  - brand: audit
+    model: TT
+    colors:
+      - sample: y
+        truc: x
+      - titi: z
+        toto: w
+        tata:
+          - tata1: 1
+          - tata2: 2
+  - brand: renault
+    model: R5
+    colors:
+      - sample: y
+        truc: x
+      - titi: z
+        toto: w
+main: val1
+main2: val2

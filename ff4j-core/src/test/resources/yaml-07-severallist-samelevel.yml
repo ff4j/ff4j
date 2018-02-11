@@ -1,0 +1,16 @@
+ff4j:
+  features:
+    - uid: first
+      enable: true
+      description: description
+      groupName: GRP1
+      acl:
+        - permission: FEATURE_TOGGLE
+          users: [pierre]
+        - permission: FEATURE_VIEW
+          roles: [EVERYONE]
+      toggle-strategies:
+        - order: 1
+          className: org.ff4j.strategy.PonderationStrategy
+          params:
+            - weight: 0.5

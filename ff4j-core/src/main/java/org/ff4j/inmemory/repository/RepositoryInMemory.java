@@ -26,8 +26,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.ff4j.FF4jEntity;
-import org.ff4j.inmemory.parser.XmlData;
-import org.ff4j.inmemory.parser.XmlParser;
+import org.ff4j.inmemory.parser.FF4jConfigFile;
+import org.ff4j.inmemory.parser.xml.XmlParser;
 import org.ff4j.test.AssertUtils;
 
 /**
@@ -47,7 +47,7 @@ public class RepositoryInMemory <E extends FF4jEntity<?> > implements Map< Strin
     private String fileName;
     
     /** Avoid to parse the same file multiple time. */
-    private XmlData cachedXmlData = null;
+    private FF4jConfigFile cachedXmlData = null;
     
     /**
      * Default constructor.
@@ -118,7 +118,7 @@ public class RepositoryInMemory <E extends FF4jEntity<?> > implements Map< Strin
      * @return
      *       current value of 'xmlConfigV1'
      */
-    public XmlData loadXmlData() {
+    public FF4jConfigFile loadXmlData() {
         if (cachedXmlData == null) {
             AssertUtils.assertHasLength(fileName);
             InputStream fileStream = getClass().getClassLoader().getResourceAsStream(fileName);
