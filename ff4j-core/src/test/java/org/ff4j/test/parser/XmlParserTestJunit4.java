@@ -28,9 +28,9 @@ import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.ff4j.inmemory.parser.FF4jConfigFile;
-import org.ff4j.inmemory.parser.xml.XmlParser;
-import org.ff4j.inmemory.parser.xml.XmlParserErrorHandler;
+import org.ff4j.parser.FF4jConfigFile;
+import org.ff4j.parser.xml.XmlParser;
+import org.ff4j.parser.xml.XmlParserErrorHandler;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

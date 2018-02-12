@@ -5,7 +5,7 @@
  * @author Cedrick Lunven (@clunven)</a>
  * @since 2.0
  */
-package org.ff4j.inmemory.parser;
+package org.ff4j.parser;
 
 /*
  * #%L

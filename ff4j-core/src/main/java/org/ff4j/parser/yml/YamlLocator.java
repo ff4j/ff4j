@@ -1,4 +1,4 @@
-package org.ff4j.inmemory.parser.yml;
+package org.ff4j.parser.yml;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -37,92 +37,75 @@ public class YamlLocator implements Serializable {
      */
     @SuppressWarnings({"unchecked","rawtypes"})
     public Object locate(YamlLine ymlLine, Map < String, Object > yamlTree) {
-        
-        if (ymlLine.getRawLine().trim().equals("- order: 2")) {
-            System.out.println("OK");
-            goUpInTree();
-        }
-        
-        log("INDEXES=" + tagPathListIndexes);
-        log("PATH="    + tagPath);
-        
-        // If current line has identation less than before go up in graph
+        // If required move back to top level
         moveCursorBackInTree(ymlLine);
         
         // if top level tag, return tree
         if (tagPath.isEmpty()) return yamlTree;
         
-        // Iterate level by level in the tree recursively (path in depth)
         Map < String, Object > cursorInTree = yamlTree;
         for(int treeLevel = 0;treeLevel < tagPath.size();treeLevel++) {
             
             // Navigate the tree
-            
             Object currentTreeNode = cursorInTree.get(tagPath.get(treeLevel));
-            log(treeLevel + ") Processing =" +  currentTreeNode);
+            log(treeLevel + ") " + currentTreeNode);
             
             // Embedded object
             if (currentTreeNode instanceof Map) {
+                
                 cursorInTree = (Map<String, Object>) currentTreeNode;
-            
-            // Embedded List
+                
             } else if (currentTreeNode instanceof List) {
                 
-                List myList = (List) currentTreeNode;
-                
-                // NON JE NE SUIS PAS AU BON PATH
-                if (ymlLine.getLevel() == tagPath.size()) {
-//                    log("Reaching max depth " + currentTreeNode);
-//                    String adressTmp = buildAdressFromPath(getTagPath());
-//                    log("Reaching max depth " + adressTmp + " tagPathListIndexes:" + tagPathListIndexes);
-//                    if (tagPathListIndexes.containsKey(adressTmp)) {
-//                        return myList.get(tagPathListIndexes.get(adressTmp));
-//                    }
-                    return myList;
+                // Terminate condition
+                if (ymlLine.getLevel() == tagPath.size()) return (List) currentTreeNode;
                     
                 // We need to fetch correct item in list and return the inner MAP , this is no of list
-                } else {
-                    Object subLevelElement = navigateSubLevel(ymlLine, yamlTree, myList);
-                    if (subLevelElement instanceof Map) {
-                        cursorInTree = (Map<String, Object>) subLevelElement;
-                    } else {
-                        // No sublevel returning current list to add something
-                        return subLevelElement;
-                    }
-                }
+                Object subLevelElement = navigateSubLevel(ymlLine, yamlTree, (List) currentTreeNode);
+                
+                // SubElement is termante
+                if (subLevelElement instanceof List) return subLevelElement;
+                
+                // Still something to dig into
+                cursorInTree = (Map<String, Object>) subLevelElement;
             }
         }
-        log("Returning " + cursorInTree);
         return cursorInTree;
     }
     
+    /**
+     * Navigate through adresses and list to get final.
+     * 
+     * @param ymlLine
+     *      current line
+     * @param yamlTree
+     *      current tree
+     * @param myList
+     *      current list to dig into
+     * @return
+     *      object fetched
+     */
+    @SuppressWarnings({"unchecked","rawtypes"})
     private Object navigateSubLevel(YamlLine ymlLine, Map < String, Object > yamlTree, List myList) {
-        String currentAdress = buildCurrentAddress();
-        log("Picking element from list " + myList + " and adress " + currentAdress);
-        
         Map < String, Object > currentCursorInTree = yamlTree;
+        
         for (int level =  0;level < tagPath.size(); level++) {
             String nodeXTagName = getTagPath().get(level);
             Object nodeX = currentCursorInTree.get(nodeXTagName);
             log(level + ") name '" + nodeXTagName + "' value:" + nodeX);
-            
             if (nodeX instanceof Map) {
+                
                 // C'est une Map on descend simple
                 currentCursorInTree = ((Map <String, Object>) nodeX);
                 
             } else if (nodeX instanceof List) {
                 
-                // On retourne la liste sauf si :
-                // - Il existe encore des elements dans le breadbrumb
-                // - Il existe un idem dans les éléments
-                
-                
-                List nodeXList = (List) nodeX;
+                List<?> nodeXList = (List<?>) nodeX;
                 String adressTmp = buildAdressFromPath(getTagPath(level));
                 log(level + ") Value is a list picking correct index from address '" + adressTmp + "'");
                 if (nodeXList.isEmpty()) return nodeXList;
                 
-                // Nous sommes sur le dernier element et une liste
+                // Nous sommes sur le dernier element et une liste, nous allons ajouter un element a cette liste finale
                 if ((level == tagPath.size()-1) && ymlLine.isListElement()) {
                     return nodeXList;
                 }
@@ -160,7 +143,7 @@ public class YamlLocator implements Serializable {
      *  This means we have to go up now. 
      **/
     public void moveCursorBackInTree(YamlLine ymlLine) {
-        while (ymlLine.getLevel() < tagPath.size()) { 
+        while (ymlLine.getLevel() < tagPath.size()) {
             goUpInTree();
         }
     }
@@ -178,7 +161,9 @@ public class YamlLocator implements Serializable {
     }
     
     /** Move to upper side.  */
-    private void goUpInTree() {
+    public void goUpInTree() {
+        log("Truncate:" + tagPath.get(tagPath.size()-1) + " and " + buildCurrentAddress());
+        tagPathListIndexes.remove(buildCurrentAddress());
         tagPath.remove(tagPath.size()-1);
     }
     
@@ -187,7 +172,9 @@ public class YamlLocator implements Serializable {
      * @param msg
      */
     private void log(String msg) {
-        System.out.println("[LOCATE]:" + msg);
+        if (YamlParser.VERBOSE) {
+            System.out.println("[LOCATE]:" + msg);
+        }
     }
 
     /**
@@ -196,8 +183,12 @@ public class YamlLocator implements Serializable {
      * @return
      *       current value of 'tagPath'
      */
-    private List<String> getTagPath() {
+    public List<String> getTagPath() {
         return tagPath;
+    }
+    
+    public Map < String, Integer > getTagIndexes() {
+        return tagPathListIndexes;
     }
     
     /**
@@ -206,7 +197,7 @@ public class YamlLocator implements Serializable {
      * @return
      *       current value of 'tagPath'
      */
-    private List<String> getTagPath(int level) {
+    public List<String> getTagPath(int level) {
         return tagPath.subList(0, level+1);
     }
     
@@ -218,7 +209,7 @@ public class YamlLocator implements Serializable {
      * @return
      *      a generated adress
      */
-    private String buildAdressFromPath(List < String > tags) {
+    public String buildAdressFromPath(List < String > tags) {
         return String.join("/", tags);
     }
     

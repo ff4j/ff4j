@@ -1,6 +1,5 @@
-package org.ff4j.inmemory.parser.yml;
+package org.ff4j.parser.yml;
 
-import static org.ff4j.test.AssertUtils.assertHasLengthParam;
 import static org.ff4j.test.AssertUtils.assertTrue;
 
 import java.io.Serializable;
@@ -52,30 +51,34 @@ public class YamlLine implements Serializable {
      *      target line
      */
     public YamlLine(String line, int lineNumber) {
-        assertHasLengthParam("line", 0, line);
         this.rawLine         = line.replace("\t", "  ");
         this.lineNumber      = lineNumber;
         this.trimLine        = rawLine.trim();
         this.numberOfSpaces  = rawLine.indexOf(trimLine);
         assertTrue(0==numberOfSpaces%2, "Invalid line, spaces should "
                 + "be multiple of 2 here it's {" + numberOfSpaces + "}");
-        
-        if (-1 == trimLine.indexOf(":")) {
-            // - value
-            parsingSimpleValue();
-        } else {
-            // name:value
+        if (-1 != trimLine.indexOf(":")) {
             this.tagName  = parseTagName();
             this.tagValue = parseTagValue();
         }
     }
     
+    /**
+     * Parse line tag.
+     * @return
+     *      line tag name
+     */
     private String parseTagName() {
         return trimLine.substring(0, 
                 trimLine.indexOf(":"))
                     .replaceAll("\\- ", "");
     }
     
+    /**
+     * Parse line content.
+     * @return
+     *      lne value
+     */
     private Object parseTagValue() {
         int indexOfColon = trimLine.indexOf(":");
         Object result = null;
@@ -93,18 +96,6 @@ public class YamlLine implements Serializable {
             }
         }
         return result;
-    }
-    
-    /**
-     * Process and parse lines like "   - VALUE"
-     */
-    private void parsingSimpleValue() {
-        if (!isBlank() && !isComment() && !isListElement()) {
-            throw new IllegalArgumentException(getErrorMessage() + " cannot evaluate tagName in");
-        }
-        if (isListElement()) {
-            this.tagValue = trimLine.replaceAll("\\- ", "");
-        }
     }
     
     /** {@inheritDoc} */
@@ -132,148 +123,53 @@ public class YamlLine implements Serializable {
         return numberOfSpaces/2;
     }
     
+    /**
+     * Test if line is empty.
+     * @return
+     *      if current line is empty
+     */
     public boolean isBlank() {
         return "".equals(trimLine);
     }
     
+    /**
+     * Test if line is comment #.
+     * @return
+     *      if current line is comment
+     */
     public boolean isComment() {
         return trimLine.startsWith("#");
     }
     
+    /**
+     * Test if line is LIST.
+     * @return
+     *      if current line is LIST
+     */
     public boolean isListElement() {
         return trimLine.startsWith("-");
     }
     
-    public boolean isSimpleValue() {
-        return (null == tagName) && (null != tagValue); 
-    }
-    
+    /**
+     * Will start new object.
+     *
+     * @return
+     *      if only started subobject
+     */
     public boolean isStartNewObject() {
         return (null != tagName) && ("".equals(tagValue)); 
     }
     
+    /**
+     * Simplest element.
+     *
+     * @return
+     *      target element
+     */
     public boolean isStandard() {
         return !isListElement() && !"".equals(getTagName()) && !"".equals(getTagValue());
     }
         
-    private String getErrorMessage() {
-        return String.format("Yaml Parsing error: line (%s): " , rawLine);
-    }
-
-    /**
-     * Getter accessor for attribute 'rawLine'.
-     *
-     * @return
-     *       current value of 'rawLine'
-     */
-    public String getRawLine() {
-        return rawLine;
-    }
-
-    /**
-     * Setter accessor for attribute 'rawLine'.
-     * @param rawLine
-     * 		new value for 'rawLine '
-     */
-    public void setRawLine(String rawLine) {
-        this.rawLine = rawLine;
-    }
-
-    /**
-     * Getter accessor for attribute 'trimLine'.
-     *
-     * @return
-     *       current value of 'trimLine'
-     */
-    public String getTrimLine() {
-        return trimLine;
-    }
-
-    /**
-     * Setter accessor for attribute 'trimLine'.
-     * @param trimLine
-     * 		new value for 'trimLine '
-     */
-    public void setTrimLine(String trimLine) {
-        this.trimLine = trimLine;
-    }
-
-    /**
-     * Getter accessor for attribute 'numberOfSpaces'.
-     *
-     * @return
-     *       current value of 'numberOfSpaces'
-     */
-    public int getNumberOfSpaces() {
-        return numberOfSpaces;
-    }
-
-    /**
-     * Setter accessor for attribute 'numberOfSpaces'.
-     * @param numberOfSpaces
-     * 		new value for 'numberOfSpaces '
-     */
-    public void setNumberOfSpaces(int numberOfSpaces) {
-        this.numberOfSpaces = numberOfSpaces;
-    }
-
-    /**
-     * Getter accessor for attribute 'tagName'.
-     *
-     * @return
-     *       current value of 'tagName'
-     */
-    public String getTagName() {
-        return tagName;
-    }
-
-    /**
-     * Setter accessor for attribute 'tagName'.
-     * @param tagName
-     * 		new value for 'tagName '
-     */
-    public void setTagName(String tagName) {
-        this.tagName = tagName;
-    }
-
-    /**
-     * Getter accessor for attribute 'tagValue'.
-     *
-     * @return
-     *       current value of 'tagValue'
-     */
-    public Object getTagValue() {
-        return tagValue;
-    }
-
-    /**
-     * Setter accessor for attribute 'tagValue'.
-     * @param tagValue
-     * 		new value for 'tagValue '
-     */
-    public void setTagValue(Object tagValue) {
-        this.tagValue = tagValue;
-    }
-
-    /**
-     * Getter accessor for attribute 'lineNumber'.
-     *
-     * @return
-     *       current value of 'lineNumber'
-     */
-    public int getLineNumber() {
-        return lineNumber;
-    }
-
-    /**
-     * Setter accessor for attribute 'lineNumber'.
-     * @param lineNumber
-     * 		new value for 'lineNumber '
-     */
-    public void setLineNumber(int lineNumber) {
-        this.lineNumber = lineNumber;
-    }
-
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
@@ -302,6 +198,76 @@ public class YamlLine implements Serializable {
         } else if (!rawLine.equals(other.rawLine))
             return false;
         return true;
+    }
+    
+    /**
+     * Getter accessor for attribute 'rawLine'.
+     *
+     * @return
+     *       current value of 'rawLine'
+     */
+    public String getRawLine() {
+        return rawLine;
+    }
+
+    /**
+     * Getter accessor for attribute 'trimLine'.
+     *
+     * @return
+     *       current value of 'trimLine'
+     */
+    public String getTrimLine() {
+        return trimLine;
+    }
+
+    /**
+     * Getter accessor for attribute 'numberOfSpaces'.
+     *
+     * @return
+     *       current value of 'numberOfSpaces'
+     */
+    public int getNumberOfSpaces() {
+        return numberOfSpaces;
+    }
+
+    /**
+     * Getter accessor for attribute 'tagName'.
+     *
+     * @return
+     *       current value of 'tagName'
+     */
+    public String getTagName() {
+        return tagName;
+    }
+
+    /**
+     * Getter accessor for attribute 'tagValue'.
+     *
+     * @return
+     *       current value of 'tagValue'
+     */
+    public Object getTagValue() {
+        return tagValue;
+    }
+
+    /**
+     * Getter accessor for attribute 'lineNumber'.
+     *
+     * @return
+     *       current value of 'lineNumber'
+     */
+    public int getLineNumber() {
+        return lineNumber;
+    }  
+   
+   /**
+     * Setter for this line.
+     *
+     * @param ln
+     *      current line number
+     */
+    public void setLineNumber(int ln) {
+        this.lineNumber = ln;
     }
     
 }

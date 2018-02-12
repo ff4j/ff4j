@@ -26,8 +26,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.ff4j.FF4jEntity;
-import org.ff4j.inmemory.parser.FF4jConfigFile;
-import org.ff4j.inmemory.parser.xml.XmlParser;
+import org.ff4j.parser.FF4jConfigFile;
+import org.ff4j.parser.xml.XmlParser;
 import org.ff4j.test.AssertUtils;
 
 /**

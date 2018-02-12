@@ -1,4 +1,4 @@
-package org.ff4j.inmemory.parser.yml;
+package org.ff4j.parser.yml;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,6 +19,9 @@ public final class YamlParser {
     /** Error message. */
     public static final String ERROR_SYNTAX_IN_CONFIGURATION_FILE = "Error syntax in YAML configuration file : ";
    
+    /** Help to get info on trace for the parser. */
+    public static Boolean VERBOSE = false;
+    
     /** Hide constructor. */
     private YamlParser() {}
     
@@ -51,10 +54,9 @@ public final class YamlParser {
      */
     @SuppressWarnings("unchecked")
     private static void parseLine(YamlLine line, List < YamlLine > yamlFile, YamlLocator yamlLocator, Map < String, Object> yamlTree) {
-        System.out.println("");
-        log(line.getRawLine().trim());
-        log("====================");
-        log("BEFORE="  + yamlTree.toString());
+       trace(line.getRawLine().trim());
+       trace("====================");
+       trace("BEFORE="  + yamlTree.toString());
        
        // Navigate cursor in tree
        Object currentNode = yamlLocator.locate(line, yamlTree);
@@ -63,7 +65,8 @@ public final class YamlParser {
            Optional <YamlLine> nextLine = getNextLineIfExist(line, yamlFile);
            if (line.isStandard()) {
                addKeyToCurrentMap(line, (Map<String, Object>) currentNode);
-               navigateInTree(line, nextLine);
+               navigateInTree(line, nextLine, yamlLocator);
+               
            } else if (line.isStartNewObject()) {
                addSubObjectToCurrentMap(line, (Map<String, Object>) currentNode, nextLine);
                yamlLocator.moveCursorDeeperInTree(line);
@@ -77,16 +80,78 @@ public final class YamlParser {
     }
     
     /**
-     * Allows to TODO
+     * Go up (as many time as require in tree if  :
+     *  <li> Next Line is idented less and no list
+     *  <li> Next Line is idented equally and a is list
+     *
      * @param currentLine
+     *      current line
      * @param nextLine
+     *      next Line
      */
-    private static void navigateInTree(YamlLine currentLine, Optional <YamlLine> nextLine) {
-        if (nextLine.isPresent()) {
-            // NEXT
+    private static void navigateInTree(YamlLine currentLine, Optional <YamlLine> nextLine, YamlLocator yamlLocator) {
+        nextLine.ifPresent(nl -> {
+            /*
+            for (int offset = currentLine.getLevel()-1;offset > nl.getLevel();offset--) {
+                yamlLocator.goUpInTree();
+            }*/
             
+            // Different between 2 level
+            int diff = currentLine.getLevel() - nl.getLevel();
             
+            if (nl.getRawLine().trim().startsWith("- uid: second")) {
+                System.out.println("== roles: [EVERYONE] ==> UID SECOND (expected 1) ===");
+                levelToRemove(currentLine, nl, yamlLocator);
+                diff--;
+            }
+            
+            if (nl.getRawLine().trim().startsWith("- order: 2")) {
+                System.out.println("==  weight: 0.5 ==> - order: 2 (EXPECTED 1)");
+                levelToRemove(currentLine, nl, yamlLocator);
+            }
+            
+            if (nl.getRawLine().trim().startsWith("acl:")) {
+                System.out.println("== minutes: 00 ==> - acl: (EXPECTED 2)");
+                levelToRemove(currentLine, nl, yamlLocator);
+            }
+            
+            for (int offset = 0;offset < diff-1;offset++) {
+                yamlLocator.goUpInTree();
+            }
+            
+        });
+    }
+    
+    private static int levelToRemove(YamlLine currentLine, YamlLine nl, YamlLocator yamlLocator) {
+        int diff = currentLine.getLevel() - nl.getLevel();
+        
+        System.out.println("LVL=" + currentLine.getLevel());
+        System.out.println("NEXT_LVL=" + nl.getLevel());
+        System.out.println("DIFF=" + diff);
+        System.out.println("PATH=" + yamlLocator.getTagPath() + " size=" + yamlLocator.getTagPath().size());
+        System.out.println("INDEX=" + yamlLocator.getTagIndexes());
+        int nbIndex = 0;
+        // Au maxi on en element la DIF ENTRE LES DEUX
+        for(int idx=0; idx < diff-1;idx++) {
+            List < String > subList = yamlLocator.getTagPath(yamlLocator.getTagPath().size()-idx-1);
+            String subAddre = yamlLocator.buildAdressFromPath(subList);
+            if (yamlLocator.getTagIndexes().containsKey(subAddre)) {
+                nbIndex++;
+                System.out.println("+1:" + subAddre + " is in INDEX");
+            }
         }
+        System.out.println("NBINDEX=" + nbIndex);
+        
+        // Target diff - element to remove
+        int nbSup = diff - nbIndex;
+        
+        // Target is a list remove one
+        //if (nl.isListElement()) {
+        //  nbSup--;
+        //}
+        System.out.println("ITEM_To_REMOVE=" + nbSup);
+       return  nbSup;
+        
     }
     
     /**
@@ -194,8 +259,10 @@ public final class YamlParser {
      * @param msg
      *      current message
      */
-    private static void log(String msg) {
-        System.out.println("[PARSER]:" +  msg);
+    private static void trace(String msg) {
+        if (VERBOSE) {
+            System.out.println("[PARSER]:" +  msg);
+        }
     }
     
 }

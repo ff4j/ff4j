@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.ff4j.inmemory.parser.xml.XmlParser;
+import org.ff4j.parser.xml.XmlParser;
 import org.ff4j.property.AbstractRepositoryProperties;
 import org.ff4j.property.Property;
 import org.ff4j.property.RepositoryProperties;

@@ -1,4 +1,4 @@
-package org.ff4j.inmemory.parser.xml;
+package org.ff4j.parser.xml;
 
 import static org.ff4j.test.AssertUtils.assertHasLengthParam;
 import static org.ff4j.test.AssertUtils.assertNotNullParam;
@@ -44,7 +44,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.ff4j.feature.Feature;
 import org.ff4j.feature.ToggleStrategy;
-import org.ff4j.inmemory.parser.FF4jConfigFile;
+import org.ff4j.parser.FF4jConfigFile;
 import org.ff4j.property.Property;
 import org.ff4j.property.domain.PropertyString;
 import org.ff4j.security.domain.FF4jPermission;

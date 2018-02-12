@@ -8,9 +8,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 
-import org.ff4j.inmemory.parser.FF4jConfigFile;
-import org.ff4j.inmemory.parser.xml.XmlParser;
-import org.ff4j.inmemory.parser.xml.XmlParserErrorHandler;
+import org.ff4j.parser.FF4jConfigFile;
+import org.ff4j.parser.xml.XmlParser;
+import org.ff4j.parser.xml.XmlParserErrorHandler;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;

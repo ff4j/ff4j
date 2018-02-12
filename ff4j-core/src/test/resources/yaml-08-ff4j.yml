@@ -1,28 +1,52 @@
 # This is a comment
-#server:
-#  hostname: localhost
-#  port: 8080
+server:
+  hostname: localhost
+  port: 8080
+  
 ff4j:
-#  roles:
-#    - name: ADMINISTRATOR
-#      permissions: [ADMIN_FEATURES, ADMIN_PROPERTIES, TOGGLE_FEATURES,  VIEW_FEATURES, VIEW_PROPERTIES, VIEW_AUDITTRAIL, VIEW_FEATUREUSAGE]
-#    - name: SUPERUSER
-#      permissions: [TOGGLE_FEATURES,  VIEW_FEATURES, VIEW_PROPERTIES, VIEW_AUDITTRAIL, VIEW_FEATUREUSAGE]
-#    - name: USER
-#      permissions: [VIEW_FEATURES, VIEW_PROPERTIES, VIEW_AUDITTRAIL, VIEW_FEATUREUSAGE]
-#  users:
-#    - uid: pierre
-#      firstName: Pierre
-#      lastName: Foioi
-#      description: sample description if OK
-#      permissions: [ADMIN_FEATURES, ADMIN_PROPERTIES ]      
-#    - uid: paul
-#      firstName: paulo
+
+  roles:
+    - name: ADMINISTRATOR
+      permissions: [ADMIN_FEATURES, ADMIN_PROPERTIES, TOGGLE_FEATURES,  VIEW_FEATURES, VIEW_PROPERTIES, VIEW_AUDITTRAIL, VIEW_FEATUREUSAGE]
+    - name: SUPERUSER
+      permissions: [TOGGLE_FEATURES,  VIEW_FEATURES, VIEW_PROPERTIES, VIEW_AUDITTRAIL, VIEW_FEATUREUSAGE]
+    - name: USER
+      permissions: [VIEW_FEATURES, VIEW_PROPERTIES, VIEW_AUDITTRAIL, VIEW_FEATUREUSAGE]
+      
+  users:
+    - uid: pierre
+      firstName: Pierre
+      lastName: Foioi
+      description: sample description if OK
+      permissions: [ADMIN_FEATURES, ADMIN_PROPERTIES ]      
+    - uid: paul
+      firstName: paulo
+      
+  properties:
+    - name: a
+      value: AMER
+      fixedValues: [AMER, EAST]
+    - name: b
+      value: 12
+    - name: c
+      value: 12.5
+    - name: d
+      value: true
+    - name: e
+      value: hello
+    - name: f
+      value: [12,13,14]
+    - name: g
+      value: DEBUG
+      type: org.ff4j.property.domain.PropertyLogLevel
+         
   features:
+  
+    #Feature 1
     - uid: first
-#      enable: true
-#      description: description
-#      groupName: GRP1
+      enable: true
+      description: description
+      groupName: GRP1
       toggle-strategies:
         - order: 1
           className: org.ff4j.strategy.PonderationStrategy
@@ -33,12 +57,20 @@ ff4j:
           params:
             hour: 18
             minutes: 00
-#      acl:
-#        - permission: FEATURE_TOGGLE
-#          users: [pierre]
-#        - permission: FEATURE_VIEW
-#          roles: [EVERYONE]      
-#    - uid: second
-#      enable: true
-#      description: description
-#      groupName: GRP1
+      acl:
+        - permission: FEATURE_TOGGLE
+          users: [pierre]
+        - permission: FEATURE_VIEW
+          roles: [EVERYONE]
+    
+    #Feature B
+    - uid: second
+      enable: true
+      description: description
+      groupName: GRP2
+      
+    #Feature C
+    - uid: TOTO
+      enable: true
+      description: description
+      groupName: GRP2     

@@ -15,8 +15,8 @@ import java.util.stream.Stream;
 
 import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.exception.PropertyNotFoundException;
-import org.ff4j.inmemory.parser.xml.XmlParser;
 import org.ff4j.monitoring.AuditTrail;
+import org.ff4j.parser.xml.XmlParser;
 import org.ff4j.repository.FF4jRepositoryListener;
 import org.ff4j.repository.FF4jRepositorySupport;
 
