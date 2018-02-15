@@ -1,5 +1,6 @@
 package org.ff4j.core;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /*
@@ -27,7 +28,7 @@ import java.util.Map;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public interface FlippingStrategy {
+public interface FlippingStrategy extends Serializable {
 
     /**
      * Allow to parameterized Flipping Strategy
