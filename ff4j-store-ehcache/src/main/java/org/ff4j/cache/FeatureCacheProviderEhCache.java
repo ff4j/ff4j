@@ -46,10 +46,10 @@ public class FeatureCacheProviderEhCache implements FF4JCacheManager {
     /** The cache manager. */
     private CacheManager cacheManager;
     
-    /** Eh Cache - cache-aside mode utlization. */
+    /** Eh Cache - cache-aside mode utilization. */
     private Cache cacheFeatures = null;
     
-    /** Eh Cache - cache-aside mode utlization. */
+    /** Eh Cache - cache-aside mode utilization. */
     private Cache cacheProperties = null;
 
     /**
@@ -79,20 +79,16 @@ public class FeatureCacheProviderEhCache implements FF4JCacheManager {
     }
 
     /**
-     * Ininitialize cache
+     * Initialize cache
      */
-    private void initializeCache() {
-        if (null == getCacheConfiguration()) {
-            this.cacheManager = CacheManager.create();
-        } else {
-            this.cacheManager = CacheManager.create(getCacheConfiguration());  
+    private synchronized void initializeCache() {
+        if (cacheManager == null) {
+            cacheManager = cacheConfiguration == null
+                           ? CacheManager.create()
+                           : CacheManager.create(cacheConfiguration);
         }
-        if (!cacheManager.cacheExists(CACHENAME_FEATURES)) {
-            cacheManager.addCache(CACHENAME_FEATURES);
-        }
-        if (!cacheManager.cacheExists(CACHENAME_PROPERTIES)) {
-            cacheManager.addCache(CACHENAME_PROPERTIES);
-        }
+        cacheManager.addCacheIfAbsent(CACHENAME_FEATURES);
+        cacheManager.addCacheIfAbsent(CACHENAME_PROPERTIES);
         cacheFeatures   = cacheManager.getCache(CACHENAME_FEATURES);
         cacheProperties = cacheManager.getCache(CACHENAME_PROPERTIES);
         LOG.debug("CacheManager initialized as '{}'", cacheFeatures.getName());
@@ -108,7 +104,6 @@ public class FeatureCacheProviderEhCache implements FF4JCacheManager {
     @Override
     public void clearProperties() {
         getCacheProperties().flush();
-        
     }
 
     /** {@inheritDoc} */
