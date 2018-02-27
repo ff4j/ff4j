@@ -49,10 +49,10 @@ public final class FF4jEhCacheWrapper {
     /** Configuration file. */
     private InputStream cacheConfigurationFile;
    
-    /** Eh Cache - cache-aside mode utlization. */
+    /** Eh Cache - cache-aside mode utilization. */
     private Cache cacheFeatures = null;
     
-    /** Eh Cache - cache-aside mode utlization. */
+    /** Eh Cache - cache-aside mode utilization. */
     private Cache cacheProperties = null;
     
     /**

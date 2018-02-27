@@ -46,10 +46,10 @@ public class FeatureCacheProviderEhCache implements FF4JCacheManager {
     /** The cache manager. */
     private CacheManager cacheManager;
     
-    /** Eh Cache - cache-aside mode utlization. */
+    /** Eh Cache - cache-aside mode utilization. */
     private Cache cacheFeatures = null;
     
-    /** Eh Cache - cache-aside mode utlization. */
+    /** Eh Cache - cache-aside mode utilization. */
     private Cache cacheProperties = null;
 
     /**
@@ -79,7 +79,7 @@ public class FeatureCacheProviderEhCache implements FF4JCacheManager {
     }
 
     /**
-     * Ininitialize cache
+     * Initialize cache
      */
     private void initializeCache() {
         if (null == getCacheConfiguration()) {
@@ -108,7 +108,6 @@ public class FeatureCacheProviderEhCache implements FF4JCacheManager {
     @Override
     public void clearProperties() {
         getCacheProperties().flush();
-        
     }
 
     /** {@inheritDoc} */
