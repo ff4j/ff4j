@@ -402,13 +402,13 @@ public class FeatureStoreSpringJdbc extends AbstractFeatureStore {
     @Transactional
     public void createSchema() {
         JdbcQueryBuilder qb = getQueryBuilder();
-        if (!JdbcUtils.isTableExist(dataSource, qb.getTableNameFeatures())) {
+        if (!JdbcUtils.isTableExist(dataSource, qb.getTableNameFeatures(), queryBuilder.getDbSchema())) {
             getJdbcTemplate().update(qb.sqlCreateTableFeatures());
         }
-        if (!JdbcUtils.isTableExist(dataSource, qb.getTableNameCustomProperties())) {
+        if (!JdbcUtils.isTableExist(dataSource, qb.getTableNameCustomProperties(), queryBuilder.getDbSchema())) {
             getJdbcTemplate().update(qb.sqlCreateTableCustomProperties());
         }
-        if (!JdbcUtils.isTableExist(dataSource, qb.getTableNameRoles())) {
+        if (!JdbcUtils.isTableExist(dataSource, qb.getTableNameRoles(), queryBuilder.getDbSchema())) {
             getJdbcTemplate().update(qb.sqlCreateTableRoles());
         }
     }

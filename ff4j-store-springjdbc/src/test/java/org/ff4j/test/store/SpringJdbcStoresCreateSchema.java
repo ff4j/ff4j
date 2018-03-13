@@ -1,5 +1,10 @@
 package org.ff4j.test.store;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
 /*
  * #%L
  * ff4j-store-springjdbc
@@ -54,10 +59,15 @@ public class SpringJdbcStoresCreateSchema {
         initStore();
     }
     
-    /** {@inheritDoc} */
-    public void initStore() {
+    /** {@inheritDoc} 
+     * @throws SQLException */
+    public void initStore() throws SQLException {
         builder = new EmbeddedDatabaseBuilder();
         db = builder.setType(EmbeddedDatabaseType.HSQL).build();
+        PreparedStatement prepareStatement = db.getConnection().prepareStatement("CREATE SCHEMA FF4J");
+        prepareStatement.executeUpdate();
+        prepareStatement = db.getConnection().prepareStatement("CREATE SCHEMA FF4J_2");
+        prepareStatement.executeUpdate();
         testedStore = new FeatureStoreSpringJdbc();
         testedStore.setDataSource(db);
         testedStore.getJdbcTemplate();
@@ -95,5 +105,14 @@ public class SpringJdbcStoresCreateSchema {
                 testedStore.getJdbcTemplate().getDataSource(), qb.getTableNameCustomProperties()));
     }
     
+    @Test
+    public void testCreateTablesWithDataBaseSchema() {
+		JdbcQueryBuilder queryBuilder = testedStore.getQueryBuilder();
+		queryBuilder.setDbSchema("FF4J");
+        testedStore.createSchema();
+        DataSource dataSource = testedStore.getJdbcTemplate().getDataSource();
+		Assert.assertTrue(JdbcUtils.isTableExist(dataSource, queryBuilder.getTableNameFeatures(), "FF4J"));
+		Assert.assertFalse(JdbcUtils.isTableExist(dataSource, queryBuilder.getTableNameFeatures(), "FF4J_2"));
+    }
 
 }

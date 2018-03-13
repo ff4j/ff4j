@@ -111,13 +111,13 @@ public class JdbcFeatureStore extends AbstractFeatureStore {
     public void createSchema() {
         DataSource       ds = getDataSource();
         JdbcQueryBuilder qb = getQueryBuilder();
-        if (!isTableExist(ds, qb.getTableNameFeatures())) {
+        if (!isTableExist(ds, qb.getTableNameFeatures(), queryBuilder.getDbSchema())) {
             executeUpdate(ds, qb.sqlCreateTableFeatures());
         }
-        if (!isTableExist(ds, qb.getTableNameCustomProperties())) {
+        if (!isTableExist(ds, qb.getTableNameCustomProperties(), queryBuilder.getDbSchema())) {
             executeUpdate(ds, qb.sqlCreateTableCustomProperties());
         }
-        if (!isTableExist(ds, qb.getTableNameRoles())) {
+        if (!isTableExist(ds, qb.getTableNameRoles(), queryBuilder.getDbSchema())) {
             executeUpdate(ds, qb.sqlCreateTableRoles());
         }
     }

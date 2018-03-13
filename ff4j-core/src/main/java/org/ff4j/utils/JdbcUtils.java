@@ -51,6 +51,19 @@ public class JdbcUtils {
      *      if the table exist or not
      */
     public static boolean isTableExist(DataSource ds, String tableName) {
+        return isTableExist(ds, tableName, null);
+    }
+    
+    
+    /**
+     * Check if target Table exist.
+     *
+     * @param ds the ds
+     * @param tableName      table to create
+     * @param schemaPattern the schema
+     * @return      if the table exist or not
+     */
+    public static boolean isTableExist(DataSource ds, String tableName, String schemaPattern) {
         Util.assertHasLength(tableName);
         Connection          sqlConn = null;
         ResultSet           rs = null;
@@ -60,7 +73,7 @@ public class JdbcUtils {
             if (dbmd.storesLowerCaseIdentifiers()) {
                 tableName = tableName.toLowerCase();
             }
-            rs = dbmd.getTables(null, null, tableName, new String[] {"TABLE"});
+            rs = dbmd.getTables(null, schemaPattern, tableName, new String[] {"TABLE"});
             return rs.next();
         } catch (SQLException sqlEX) {
             throw new FeatureAccessException("Cannot check table existence", sqlEX);
