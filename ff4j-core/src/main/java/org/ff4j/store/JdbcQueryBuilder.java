@@ -43,7 +43,6 @@ import java.util.Collection;
 
 import org.ff4j.audit.EventConstants;
 import org.ff4j.audit.EventQueryDefinition;
-import org.springframework.util.StringUtils;
 
 /**
  * Create JDBC queries for FF4J with capabilities to 
