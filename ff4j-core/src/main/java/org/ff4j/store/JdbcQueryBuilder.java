@@ -80,6 +80,19 @@ public class JdbcQueryBuilder {
 	}
 	
 	/**
+	 * Overriding Builder.
+	 *
+	 * @param prefix 		table prefix
+	 * @param suffix 		table suffix
+	 * @param schema        database schema
+	 */
+	public JdbcQueryBuilder(String prefix, String suffix, String schema) {
+		this.tablePrefix = prefix;
+		this.tableSuffix = suffix;
+		this.dbSchema = schema;
+	}
+	
+	/**
 	 * Prefix and suffix table Names.
 	 * 
 	 * @param coreName
