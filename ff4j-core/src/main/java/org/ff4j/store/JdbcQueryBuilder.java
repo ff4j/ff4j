@@ -92,14 +92,6 @@ public class JdbcQueryBuilder {
 		return tablePrefix + coreName + tableSuffix;
 	}
 	
-	private String getSchemaPattern() {
-		if (StringUtils.isEmpty(getDbSchema())) {
-			return "";
-		} else {
-			return getDbSchema() + ".";
-		}
-	}
-
 	/**
 	 * Table name for audit.
 	 *
@@ -749,5 +741,18 @@ public class JdbcQueryBuilder {
 		this.dbSchema = dbSchema;
 	}
     
+	/**
+	 * Formats schema to be used in queries
+	 *
+	 * @return the schema pattern
+	 */
+	private String getSchemaPattern() {
+		String dbSchemaStr = getDbSchema();
+		if (dbSchemaStr == null || dbSchemaStr.isEmpty()) {
+			return "";
+		} else {
+			return dbSchemaStr + ".";
+		}
+	}
 	
 }
