@@ -23,6 +23,8 @@ package org.ff4j.test.store;
 
 import static org.ff4j.utils.JdbcUtils.isTableExist;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +37,7 @@ import org.ff4j.property.PropertyString;
 import org.ff4j.store.JdbcFeatureStore;
 import org.ff4j.store.JdbcQueryBuilder;
 import org.ff4j.strategy.PonderationStrategy;
+import org.ff4j.utils.JdbcUtils;
 import org.ff4j.utils.Util;
 import org.junit.After;
 import org.junit.Assert;
@@ -66,10 +69,15 @@ public class JdbcFeatureStoreSchemaTest {
         initStore();
     }
     
-    /** {@inheritDoc} */
-    public void initStore() {
+    /** {@inheritDoc} 
+     * @throws SQLException */
+    public void initStore() throws SQLException {
         builder = new EmbeddedDatabaseBuilder();
         db = builder.setType(EmbeddedDatabaseType.HSQL).build();
+        PreparedStatement prepareStatement = db.getConnection().prepareStatement("CREATE SCHEMA FF4J");
+        prepareStatement.executeUpdate();
+        prepareStatement = db.getConnection().prepareStatement("CREATE SCHEMA FF4J_2");
+        prepareStatement.executeUpdate();
         testedStore = new JdbcFeatureStore();
         testedStore.setDataSource(db);
     }
@@ -138,5 +146,14 @@ public class JdbcFeatureStoreSchemaTest {
         testedStore.createCustomProperties("fx", Arrays.asList(p2,p1));
         testedStore.createCustomProperties("fx", null);
         
+    }
+    
+    @Test
+    public void testCreateTablesWithDataBaseSchema() {
+		JdbcQueryBuilder queryBuilder = testedStore.getQueryBuilder();
+		queryBuilder.setDbSchema("FF4J");
+        testedStore.createSchema();
+        Assert.assertTrue(JdbcUtils.isTableExist(testedStore.getDataSource(), queryBuilder.getTableNameFeatures(), "FF4J"));
+        Assert.assertFalse(JdbcUtils.isTableExist(testedStore.getDataSource(), queryBuilder.getTableNameFeatures(), "FF4J_2"));
     }
 }

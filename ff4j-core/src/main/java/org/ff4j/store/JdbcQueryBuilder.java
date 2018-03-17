@@ -56,6 +56,9 @@ public class JdbcQueryBuilder {
 	
 	/** table suffix. */
 	public String tableSuffix = "";
+	
+    /**  Data base schema   */
+    private String dbSchema;
 
 	/** 
 	 * Default constructor. 
@@ -74,6 +77,19 @@ public class JdbcQueryBuilder {
 	public JdbcQueryBuilder(String prefix, String suffix) {
 		this.tablePrefix = prefix;
 		this.tableSuffix = suffix;
+	}
+	
+	/**
+	 * Overriding Builder.
+	 *
+	 * @param prefix 		table prefix
+	 * @param suffix 		table suffix
+	 * @param schema        database schema
+	 */
+	public JdbcQueryBuilder(String prefix, String suffix, String schema) {
+		this.tablePrefix = prefix;
+		this.tableSuffix = suffix;
+		this.dbSchema = schema;
 	}
 	
 	/**
@@ -146,6 +162,7 @@ public class JdbcQueryBuilder {
      */
     public String sqlCreateTableFeatures() {
         StringBuilder sb = new StringBuilder("CREATE TABLE ");
+        sb.append(getSchemaPattern());
         sb.append(getTableNameFeatures());
         sb.append("( FEAT_UID    VARCHAR(100), "
                   + "ENABLE      INTEGER NOT NULL, "
@@ -165,6 +182,7 @@ public class JdbcQueryBuilder {
      */
     public String sqlCreateTableRoles() {
         StringBuilder sb = new StringBuilder("CREATE TABLE ");
+        sb.append(getSchemaPattern());
         sb.append(getTableNameRoles());
         sb.append("( FEAT_UID VARCHAR(100) REFERENCES " 
                 + getTableNameFeatures() + "(FEAT_UID), "
@@ -181,6 +199,7 @@ public class JdbcQueryBuilder {
      */
     public String sqlCreateTableCustomProperties() {
         StringBuilder sb = new StringBuilder("CREATE TABLE ");
+        sb.append(getSchemaPattern());
         sb.append(getTableNameCustomProperties());
         sb.append("( PROPERTY_ID   VARCHAR(100) NOT NULL,"
                  + " CLAZZ          VARCHAR(255) NOT NULL,"
@@ -200,6 +219,7 @@ public class JdbcQueryBuilder {
      */
     public String sqlCreateTableProperties() {
         StringBuilder sb = new StringBuilder("CREATE TABLE ");
+        sb.append(getSchemaPattern());
         sb.append(getTableNameProperties());
         sb.append("( PROPERTY_ID  VARCHAR(100) NOT NULL,"
                  + " CLAZZ        VARCHAR(255) NOT NULL,"
@@ -218,6 +238,7 @@ public class JdbcQueryBuilder {
      */
     public String sqlCreateTableAudit() {
         StringBuilder sb = new StringBuilder("CREATE TABLE ");
+        sb.append(getSchemaPattern());
         sb.append(getTableNameAudit());
         sb.append("( EVT_UUID    VARCHAR(40)  NOT NULL,"
                 + " EVT_TIME     TIMESTAMP    NOT NULL,"
@@ -238,6 +259,7 @@ public class JdbcQueryBuilder {
 	public String getAllFeatures() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT FEAT_UID,ENABLE,DESCRIPTION,STRATEGY,EXPRESSION,GROUPNAME FROM ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameFeatures());
 		return sb.toString();
 	}
@@ -245,6 +267,7 @@ public class JdbcQueryBuilder {
 	public String getAllGroups() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT DISTINCT(GROUPNAME) FROM ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameFeatures());
 		return sb.toString();
 	}
@@ -252,6 +275,7 @@ public class JdbcQueryBuilder {
 	public String getFeatureOfGroup() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT FEAT_UID,ENABLE,DESCRIPTION,STRATEGY,EXPRESSION,GROUPNAME FROM ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameFeatures());
 		sb.append(" WHERE GROUPNAME = ?");
 		return sb.toString();
@@ -260,6 +284,7 @@ public class JdbcQueryBuilder {
 	public String getFeature() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT FEAT_UID,ENABLE,DESCRIPTION,STRATEGY,EXPRESSION,GROUPNAME FROM ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameFeatures());
 		sb.append(" WHERE FEAT_UID = ?");
 		return sb.toString();
@@ -268,6 +293,7 @@ public class JdbcQueryBuilder {
 	public String existFeature() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT COUNT(FEAT_UID) FROM ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameFeatures());
 		sb.append(" WHERE FEAT_UID = ?");
 		return sb.toString();
@@ -276,6 +302,7 @@ public class JdbcQueryBuilder {
 	public String existGroup() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT COUNT(FEAT_UID) FROM ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameFeatures());
 		sb.append(" WHERE GROUPNAME = ?");
 		return sb.toString();
@@ -284,6 +311,7 @@ public class JdbcQueryBuilder {
 	public String enableFeature() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("UPDATE ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameFeatures());
 		sb.append(" SET ENABLE = 1 WHERE FEAT_UID = ?");
 		return sb.toString();
@@ -292,6 +320,7 @@ public class JdbcQueryBuilder {
 	public String enableGroup() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("UPDATE ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameFeatures());
 		sb.append(" SET ENABLE = 1 WHERE GROUPNAME = ?");
 		return sb.toString();
@@ -300,6 +329,7 @@ public class JdbcQueryBuilder {
 	public String disableFeature() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("UPDATE ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameFeatures());
 		sb.append(" SET ENABLE = 0 WHERE FEAT_UID = ?");
 		return sb.toString();
@@ -308,6 +338,7 @@ public class JdbcQueryBuilder {
 	public String disableGroup() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("UPDATE ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameFeatures());
 		sb.append(" SET ENABLE = 0 WHERE GROUPNAME = ?");
 		return sb.toString();
@@ -316,6 +347,7 @@ public class JdbcQueryBuilder {
 	public String addFeatureToGroup() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("UPDATE ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameFeatures());
 		sb.append(" SET GROUPNAME = ? WHERE FEAT_UID = ?");
 		return sb.toString();
@@ -324,6 +356,7 @@ public class JdbcQueryBuilder {
 	public String removeFeatureFromGroup() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("UPDATE ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameFeatures());
 		sb.append(" SET GROUPNAME = NULL WHERE FEAT_UID = ?");
 		return sb.toString();
@@ -332,6 +365,7 @@ public class JdbcQueryBuilder {
 	public String createFeature() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("INSERT INTO ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameFeatures());
 		sb.append("(FEAT_UID, ENABLE, DESCRIPTION, STRATEGY,EXPRESSION, GROUPNAME) VALUES(?, ?, ?, ?, ?, ?)");
 		return sb.toString();
@@ -340,6 +374,7 @@ public class JdbcQueryBuilder {
 	public String deleteFeature() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameFeatures());
 		sb.append(" WHERE FEAT_UID = ?");
 		return sb.toString();
@@ -348,6 +383,7 @@ public class JdbcQueryBuilder {
 	public String updateFeature() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("UPDATE ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameFeatures());
 		sb.append(" SET ENABLE=?,DESCRIPTION=?,STRATEGY=?,EXPRESSION=?,GROUPNAME=? WHERE FEAT_UID = ?");
 		return sb.toString();
@@ -356,6 +392,7 @@ public class JdbcQueryBuilder {
 	public String addRoleToFeature() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("INSERT INTO ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameRoles());
 		sb.append(" (FEAT_UID, ROLE_NAME) VALUES (?,?)");
 		return sb.toString();
@@ -364,6 +401,7 @@ public class JdbcQueryBuilder {
 	public String deleteRoles() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameRoles());
         sb.append(" WHERE FEAT_UID = ?");
 		return sb.toString();
@@ -372,6 +410,7 @@ public class JdbcQueryBuilder {
 	public String deleteFeatureRole() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameRoles());
         sb.append(" WHERE FEAT_UID = ? AND ROLE_NAME = ?");
 		return sb.toString();
@@ -380,6 +419,7 @@ public class JdbcQueryBuilder {
 	public String getRoles() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT ROLE_NAME FROM ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameRoles());
 		sb.append(" WHERE FEAT_UID = ?");
 		return sb.toString();
@@ -388,6 +428,7 @@ public class JdbcQueryBuilder {
 	public String getAllRoles() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT FEAT_UID,ROLE_NAME FROM ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameRoles());
 		return sb.toString(); 
 	}
@@ -397,6 +438,7 @@ public class JdbcQueryBuilder {
 	public String getFeatureProperties() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT PROPERTY_ID,CLAZZ,CURRENTVALUE,DESCRIPTION,FIXEDVALUES,FEAT_UID FROM ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameCustomProperties());
 		sb.append(" WHERE FEAT_UID = ?");
 		return sb.toString();
@@ -405,6 +447,7 @@ public class JdbcQueryBuilder {
 	public String getFeatureProperty() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT PROPERTY_ID,CLAZZ,CURRENTVALUE,FIXEDVALUES,FEAT_UID FROM ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameCustomProperties());
 		sb.append(" WHERE PROPERTY_ID = ? AND FEAT_UID = ?");
 		return sb.toString();
@@ -413,6 +456,7 @@ public class JdbcQueryBuilder {
 	public String deleteFeatureProperty() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameCustomProperties());
 		sb.append(" WHERE PROPERTY_ID = ? AND FEAT_UID = ?");
 		return sb.toString();
@@ -421,6 +465,7 @@ public class JdbcQueryBuilder {
 	public String deleteAllFeatureCustomProperties() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameCustomProperties());
 		sb.append(" WHERE FEAT_UID = ?");
 		return sb.toString();
@@ -429,6 +474,7 @@ public class JdbcQueryBuilder {
 	public String deleteAllCustomProperties() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameCustomProperties());
 		return sb.toString();
 	}
@@ -436,6 +482,7 @@ public class JdbcQueryBuilder {
 	public String deleteAllRoles() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameRoles());
 		return sb.toString();
 	}
@@ -443,6 +490,7 @@ public class JdbcQueryBuilder {
 	public String deleteAllFeatures() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameFeatures());
 		return sb.toString();
 	}
@@ -450,6 +498,7 @@ public class JdbcQueryBuilder {
 	public String createFeatureProperty() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("INSERT INTO ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameCustomProperties());
 		sb.append("(PROPERTY_ID, CLAZZ, CURRENTVALUE, DESCRIPTION, FIXEDVALUES, FEAT_UID) VALUES(?, ?, ?, ?, ?, ?)");
 		return sb.toString();
@@ -458,6 +507,7 @@ public class JdbcQueryBuilder {
 	public String createProperty() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("INSERT INTO ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameProperties());
 		sb.append("(PROPERTY_ID, CLAZZ, CURRENTVALUE, DESCRIPTION, FIXEDVALUES) VALUES(?, ?, ?, ?, ?)");
 		return sb.toString();
@@ -466,6 +516,7 @@ public class JdbcQueryBuilder {
 	public String deleteProperty() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameProperties());
 		sb.append(" WHERE PROPERTY_ID = ?");
 		return sb.toString();
@@ -474,6 +525,7 @@ public class JdbcQueryBuilder {
 	public String deleteAllProperties() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DELETE FROM ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableName("PROPERTIES"));
 		return sb.toString();
 	}
@@ -481,6 +533,7 @@ public class JdbcQueryBuilder {
 	public String existProperty() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT COUNT(*) FROM ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameProperties());
 		sb.append(" WHERE PROPERTY_ID = ?");
 		return sb.toString();
@@ -489,6 +542,7 @@ public class JdbcQueryBuilder {
 	public String getProperty() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT PROPERTY_ID,CLAZZ,CURRENTVALUE,DESCRIPTION,FIXEDVALUES FROM ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameProperties());
 		sb.append(" WHERE PROPERTY_ID = ?");
 		return sb.toString();
@@ -497,6 +551,7 @@ public class JdbcQueryBuilder {
 	public String updateProperty() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("UPDATE ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameProperties());
 		sb.append(" SET CURRENTVALUE = ? WHERE PROPERTY_ID = ?");
 		return sb.toString();
@@ -505,6 +560,7 @@ public class JdbcQueryBuilder {
 	public String getAllProperties() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT PROPERTY_ID,CLAZZ,CURRENTVALUE,DESCRIPTION,FIXEDVALUES FROM ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameProperties());
 		return sb.toString();
 	}
@@ -512,6 +568,7 @@ public class JdbcQueryBuilder {
 	public String getAllPropertiesNames() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT PROPERTY_ID FROM ");
+		sb.append(getSchemaPattern());
 		sb.append(getTableNameProperties());
 		return sb.toString();
 	}
@@ -521,6 +578,7 @@ public class JdbcQueryBuilder {
 	public String getEventByUuidQuery() {
 	     StringBuilder sb = new StringBuilder();
 	     sb.append("SELECT * FROM ");
+	     sb.append(getSchemaPattern());
 	     sb.append(getTableNameAudit());
 	     sb.append(" WHERE " + COL_EVENT_UUID + " LIKE ?");
 	     return sb.toString();
@@ -529,6 +587,7 @@ public class JdbcQueryBuilder {
 	public String getPurgeFeatureUsageQuery(EventQueryDefinition eqd) {
 	    StringBuilder sb = new StringBuilder();
         sb.append("DELETE FROM ");
+        sb.append(getSchemaPattern());
         sb.append(getTableNameAudit());
         sb.append(buildWhereClause(eqd, true, false));
         return sb.toString();
@@ -537,6 +596,7 @@ public class JdbcQueryBuilder {
 	public String getSelectFeatureUsageQuery(EventQueryDefinition eqd) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT * FROM ");
+        sb.append(getSchemaPattern());
         sb.append(getTableNameAudit());
         sb.append(buildWhereClause(eqd, true, false));
         return sb.toString();
@@ -545,6 +605,7 @@ public class JdbcQueryBuilder {
     public String getPurgeAuditTrailQuery(EventQueryDefinition eqd) {
         StringBuilder sb = new StringBuilder();
         sb.append("DELETE FROM ");
+        sb.append(getSchemaPattern());
         sb.append(getTableNameAudit());
         sb.append(buildWhereClause(eqd, false, true));
         return sb.toString();
@@ -553,6 +614,7 @@ public class JdbcQueryBuilder {
 	public String getSelectAuditTrailQuery(EventQueryDefinition eqd) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT * FROM ");
+        sb.append(getSchemaPattern());
         sb.append(getTableNameAudit());
         sb.append(buildWhereClause(eqd, false, true));
         return sb.toString();
@@ -561,6 +623,7 @@ public class JdbcQueryBuilder {
 	public String getHitCount(String columName) {
 	    StringBuilder sb = new StringBuilder();
         sb.append("SELECT count(" + COL_EVENT_UUID + ") as NB, " + columName + " FROM ");
+        sb.append(getSchemaPattern());
         sb.append(getTableNameAudit());
         sb.append(" WHERE (" + COL_EVENT_TYPE   + " LIKE '" + EventConstants.TARGET_FEATURE  + "') ");
         sb.append(" AND   (" + COL_EVENT_ACTION + " LIKE '" + EventConstants.ACTION_CHECK_OK + "') ");
@@ -591,6 +654,7 @@ public class JdbcQueryBuilder {
     public String getFeatureDistributionAudit() {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT count(" + COL_EVENT_UUID + ") as NB, " + COL_EVENT_ACTION + " FROM ");
+        sb.append(getSchemaPattern());
         sb.append(getTableNameAudit());
         sb.append(" WHERE (" + COL_EVENT_TYPE + " LIKE '" + EventConstants.TARGET_FEATURE  + "') ");
         sb.append(" AND   (" + COL_EVENT_NAME + " LIKE ?) ");
@@ -666,6 +730,7 @@ public class JdbcQueryBuilder {
     public String sqlSaveAudit() {
         StringBuilder sb = new StringBuilder();
         sb.append("INSERT INTO ");
+        sb.append(getSchemaPattern());
         sb.append(getTableNameAudit());
         sb.append("(EVT_UUID, EVT_TIME, EVT_TYPE, EVT_NAME, EVT_ACTION,"
                  + "EVT_HOSTNAME, EVT_SOURCE, EVT_DURATION, " 
@@ -673,6 +738,33 @@ public class JdbcQueryBuilder {
                  + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         return sb.toString();
     }
+
+	/**
+	 * @return the dbSchema
+	 */
+	public String getDbSchema() {
+		return dbSchema;
+	}
+
+	/**
+	 * @param dbSchema the dbSchema to set
+	 */
+	public void setDbSchema(String dbSchema) {
+		this.dbSchema = dbSchema;
+	}
     
+	/**
+	 * Formats schema to be used in queries
+	 *
+	 * @return the schema pattern
+	 */
+	private String getSchemaPattern() {
+		String dbSchemaStr = getDbSchema();
+		if (dbSchemaStr == null || dbSchemaStr.isEmpty()) {
+			return "";
+		} else {
+			return dbSchemaStr + ".";
+		}
+	}
 	
 }
