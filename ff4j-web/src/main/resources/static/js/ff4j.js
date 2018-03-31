@@ -276,7 +276,7 @@ function ff4j_updateModalEditProperty(name) {
   $.get('api/properties/' + name, 
     function(myProperty) {
 	  modalEditProperty.find("#name").val(myProperty.name);
-	  modalEditProperty.find("#desc").val(myProperty.description);
+	  modalEditProperty.find("#pDesc").val(myProperty.description);
 	  modalEditProperty.find("#pType").val(myProperty.type);
 	  modalEditProperty.find("#pValue").val(myProperty.value);
       ff4j_drawFixedValues(myProperty.name);
