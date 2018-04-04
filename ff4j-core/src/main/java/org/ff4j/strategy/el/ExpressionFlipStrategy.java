@@ -65,10 +65,10 @@ public class ExpressionFlipStrategy extends AbstractFlipStrategy implements Seri
     public boolean evaluate(String featureName, FeatureStore currentStore, FlippingExecutionContext executionContext) {
         // If execution context specified overriding initvalue
         if ((null != executionContext) && executionContext.containsKey(PARAM_EXPRESSION)) {
-            return evaluateExpression(executionContext.getString(PARAM_EXPRESSION), currentStore);
+            return evaluateExpression(executionContext.getString(PARAM_EXPRESSION), currentStore,executionContext);
         } else if (mapOfValue.containsKey(featureName)) {
             // Else, check initial value of featureName (if exist)
-            return evaluateExpression(mapOfValue.get(featureName), currentStore);
+            return evaluateExpression(mapOfValue.get(featureName), currentStore, executionContext);
         }
         // FeatureName does not exit, no condition required
         return true;
@@ -81,11 +81,12 @@ public class ExpressionFlipStrategy extends AbstractFlipStrategy implements Seri
      *            target expression
      * @return expression evaluation value
      */
-    private boolean evaluateExpression(String expression, FeatureStore currentStore) {
+    private boolean evaluateExpression(String expression, FeatureStore currentStore,
+                                       FlippingExecutionContext executionContext) {
         if (!cachedExpression.containsKey(expression)) {
             cachedExpression.put(expression, ExpressionParser.parseExpression(expression));
         }
-        return cachedExpression.get(expression).evalue(getFeaturesStatus(currentStore));
+        return cachedExpression.get(expression).evalue(getFeaturesStatus(currentStore, executionContext));
     }
 
     /**
@@ -95,12 +96,18 @@ public class ExpressionFlipStrategy extends AbstractFlipStrategy implements Seri
      *            current store for features
      * @return current statuses for stores
      */
-    private Map<String, Boolean> getFeaturesStatus(FeatureStore currentStore) {
+    private Map<String, Boolean> getFeaturesStatus(FeatureStore currentStore,
+                                                   FlippingExecutionContext executionContext) {
         Map<String, Boolean> bools = new HashMap<String, Boolean>();
         List<Feature> listOfFlip = new ArrayList<Feature>();
         listOfFlip.addAll(currentStore.readAll().values());
         for (Feature fp : listOfFlip) {
-            bools.put(fp.getUid(), fp.isEnable());
+            if (fp.isEnable() && null != fp.getFlippingStrategy() &&!(fp.getFlippingStrategy() instanceof ExpressionFlipStrategy)) {
+                bools.put(fp.getUid(), fp.getFlippingStrategy().evaluate(fp.getUid(), currentStore,
+                        executionContext));
+            } else {
+                bools.put(fp.getUid(), fp.isEnable());
+            }
         }
         return bools;
     }
