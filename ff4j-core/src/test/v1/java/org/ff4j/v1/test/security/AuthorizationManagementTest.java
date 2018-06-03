@@ -23,10 +23,10 @@ package org.ff4j.v1.test.security;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.ff4j.test.AbstractFf4jTest;
 import org.ff4j.v1.FF4j;
 import org.ff4j.v1.core.Feature;
 import org.ff4j.v1.security.AuthorizationsManager;
-import org.ff4j.v1.test.AbstractFf4jTest;
 import org.junit.Assert;
 import org.junit.Test;
 

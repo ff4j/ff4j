@@ -29,11 +29,12 @@ import java.util.Date;
 import org.ff4j.v1.property.Property;
 import org.ff4j.v1.property.PropertyLogLevel;
 import org.ff4j.v1.property.PropertyString;
-import org.ff4j.v1.property.util.PropertyFactory;
-import org.ff4j.v1.property.util.PropertyJsonBean;
 import org.ff4j.v1.utils.Util;
 import org.junit.Assert;
 import org.junit.Test;
+
+import PropertyFactory;
+import PropertyJsonBean;
 
 
 public class PropertyFactoryTest {

@@ -1,8 +1,5 @@
 package org.ff4j.parser.xml;
 
-import static org.ff4j.test.AssertUtils.assertHasLengthParam;
-import static org.ff4j.test.AssertUtils.assertNotNullParam;
-
 /*
  * #%L
  * ff4j-core
@@ -44,12 +41,14 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.ff4j.feature.Feature;
 import org.ff4j.feature.ToggleStrategy;
+import org.ff4j.parser.AbstractConfigurationFileParser;
 import org.ff4j.parser.FF4jConfigFile;
 import org.ff4j.property.Property;
 import org.ff4j.property.domain.PropertyString;
 import org.ff4j.security.domain.FF4jPermission;
 import org.ff4j.security.domain.FF4jUser;
 import org.ff4j.test.AssertUtils;
+import org.ff4j.utils.Util;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -60,90 +59,7 @@ import org.w3c.dom.NodeList;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public final class XmlParser {
-
-    /** 
-     * <feature uid="first" enable="true" description="description"  groupName="GRP1">
-     *  <acl>
-     *   <permission name="FEATURE_TOGGLE" grantedUsers="pierre"   />
-     *   <permission name="FEATURE_VIEW"   grantedRoles="EVERYONE" />
-     *  </acl>
-     *  <toggle-strategies>
-     *   <toggle-strategy class="org.ff4j.strategy.PonderationStrategy">
-     *    <param name="weight" value="0.5"/>
-     *   </toggle-strategy>
-     *   <toggle-strategy name="Ponderation">
-     *    <param name="weight" value="0.5"/>
-     *   </toggle-strategy>
-     *  </toggle-strategies>
-     *  <custom-properties>
-     *   <property name="ppListInt" value="12,13,14" />
-     *   <property name="digitValue" value="1" type="org.ff4j.property.domain.PropertyInt" fixedValues="0,1,2,3" />
-     *  </custom-properties>
-     * </feature>
-     **/
-    public static final String FEATURES_TAG         = "features";
-    public static final String FEATURE_TAG          = "feature";
-    public static final String FEATURE_ATT_UID      = "uid";
-    public static final String FEATURE_ATT_DESC     = "description";
-    public static final String FEATURE_ATT_ENABLE   = "enable";
-    public static final String FEATUREGROUP_TAG     = "feature-group";
-    public static final String FEATUREGROUP_ATTNAME = "name";
-
-    public static final String TOGGLE_STRATEGIES_TAG      = "toggle-strategies";
-    public static final String TOGGLE_STRATEGY_TAG        = "toggle-strategy";
-    public static final String TOGGLE_STRATEGY_ATTCLASS   = "class";
-    public static final String TOGGLE_STRATEGY_PARAMTAG   = "param";
-    public static final String TOGGLE_STRATEGY_PARAMNAME  = "name";
-    public static final String TOGGLE_STRATEGY_PARAMVALUE = "value";
-    public static final String PROPERTIES_CUSTOM_TAG      = "custom-properties";
-    public static final String PROPERTIES_TAG             = "properties";
-    
-    /**
-     * <properties>
-     *  <property name="a" value="AMER" fixedValues="AMER,EAST" />
-     * </properties>
-     */
-    public static final String PROPERTY_TAG               = "property";
-    public static final String PROPERTY_PARAMTYPE         = "type";
-    public static final String PROPERTY_PARAMNAME         = "name";
-    public static final String PROPERTY_PARAMDESCRIPTION  = "description";
-    public static final String PROPERTY_PARAMVALUE        = "value";
-    public static final String PROPERTY_PARAMFIXED_VALUES = "fixedValues";
-    
-    /** 
-     * <roles>
-     *   <role name="aa" >
-     *     <permission>BBB</permission>
-     *     <permission>CCC</permission>
-     *   </role>
-     * </roles>
-     */ 
-    public static final String SECURITY_ROLES_TAG       = "roles";
-    public static final String SECURITY_ROLE_TAG        = "role";
-    public static final String SECURITY_ROLE_ATTNAME    = "name";
-    public static final String SECURITY_PERMISSION_TAG  = "permission";
-    public static final String SECURITY_PERMISSIONS_TAG = "permissions";
-    
-    /** 
-     * <users>
-     *  <user uid="11" firstName="22" lastName="33" description="44" >
-     *   <roles>
-     *    <role>USER</role>
-     *   </roles>
-     *   <permissions>
-     *    <permission>ADMIN_FEATURES</permission>
-     *    <permission>ADMIN_PROPERTIES</permission>
-     *   </permissions>
-     *  </user>
-     * </users>
-     */
-    public static final String USERS_TAG                = "users";
-    public static final String USER_TAG                 = "user";
-    public static final String USER_ATT_UID             = "uid";
-    public static final String USER_ATT_DESC            = "description";
-    public static final String USER_ATT_LASTNAME        = "lastName";
-    public static final String USER_ATT_FIRSTNAME       = "firstName";
+public final class XmlParser extends AbstractConfigurationFileParser {
     
     /** TAG XML. */
     public static final String CDATA_START = "<![CDATA[";
@@ -194,30 +110,18 @@ public final class XmlParser {
 
     /** Document Builder use to parse XML. */
     private static DocumentBuilder builder = null;
-   
-    /** Do not parse the same file multiple times. */
-    private static Map < String, FF4jConfigFile > cachedXmlData = new HashMap<>();
     
     /**  Hide constructor. */
-    private XmlParser() {
+    public XmlParser() {
     }
     
-    /**
-     * Parse configuration file.
-     *
-     * @param fileName
-     *      target file
-     * @return
-     *      current configuration as XML
-     */
-    public static FF4jConfigFile parseFile(String fileName) {
-        assertHasLengthParam("fileName", 0, fileName);
-        if (!cachedXmlData.containsKey(fileName)) {
-            InputStream xmlIN = XmlParser.class.getClassLoader().getResourceAsStream(fileName);
-            assertNotNullParam("fileName", 0, xmlIN, String.format("Cannot parse XML file %s file not found", fileName));
-            cachedXmlData.put(fileName, parseInputStream(xmlIN));
+    @Override
+    public String export(FF4jConfigFile config) {
+        try {
+            return Util.fromInputStreamToString(exportAll(config));
+        } catch (IOException e) {
+           throw new IllegalArgumentException("Cannot export configuration as file", e);
         }
-        return cachedXmlData.get(fileName);
     }
     
     /**
@@ -228,7 +132,8 @@ public final class XmlParser {
      * @return
      *      features and properties find within file
      */
-    public static FF4jConfigFile parseInputStream(InputStream in) {
+    @Override
+    public FF4jConfigFile parse(InputStream in) {
         try {
             FF4jConfigFile xmlConf = new FF4jConfigFile();
             NodeList firstLevelNodes = getDocumentBuilder()
@@ -319,7 +224,6 @@ public final class XmlParser {
                                     .getTextContent().trim());
                         }
                     }
-                    System.out.println("Roles " + f.getRoles());
                 }
                 // Permissions
                 if (SECURITY_PERMISSIONS_TAG.equals(currentCore.getNodeName())) {
@@ -332,7 +236,6 @@ public final class XmlParser {
                                     FF4jPermission.valueOf(perStr));
                         }
                     }
-                    System.out.println("Permissions" + f.getPermissions());
                 }
             }
         }
@@ -839,7 +742,6 @@ public final class XmlParser {
         return value.replaceAll("&", "&amp;")
                     .replaceAll(">", "&gt;")
                     .replaceAll("<", "&lt;");
-    }
-    
+    }    
 
 }

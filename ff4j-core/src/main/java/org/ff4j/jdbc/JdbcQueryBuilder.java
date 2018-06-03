@@ -30,20 +30,18 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.ff4j.jdbc.JdbcConstants.AuditTrailColumns;
-import org.ff4j.jdbc.JdbcConstants.FeaturePermissionsColumns;
 import org.ff4j.jdbc.JdbcConstants.FeaturePropertyColumns;
 import org.ff4j.jdbc.JdbcConstants.FeatureStrategyColumns;
 import org.ff4j.jdbc.JdbcConstants.FeatureUsageColumns;
 import org.ff4j.jdbc.JdbcConstants.FeaturesColumns;
-import org.ff4j.jdbc.JdbcConstants.GlobalPermissionsColumns;
+import org.ff4j.jdbc.JdbcConstants.PermissionsColumns;
 import org.ff4j.jdbc.JdbcConstants.PropertyColumns;
-import org.ff4j.jdbc.JdbcConstants.PropertyPermissionsColumns;
 import org.ff4j.jdbc.JdbcConstants.PropertyPropertyColumns;
+import org.ff4j.jdbc.JdbcConstants.RolesColumns;
 import org.ff4j.jdbc.JdbcConstants.SQLTypes;
 import org.ff4j.jdbc.JdbcConstants.SqlTableColumns;
 import org.ff4j.jdbc.JdbcConstants.UserColumns;
 import org.ff4j.jdbc.JdbcConstants.UserRoleAssociationColumns;
-import org.ff4j.jdbc.JdbcConstants.RolesColumns;
 
 /**
  * Create JDBC queries for FF4J with capabilities to 
@@ -270,15 +268,13 @@ public class JdbcQueryBuilder {
                 .append(sqlDropTable(UserRoleAssociationColumns.REF_USER.tableName()))
                 .append(sqlDropTable(RolesColumns.NAME.tableName()))
                 .append(sqlDropTable(UserColumns.UID.tableName()))
-                .append(sqlDropTable(GlobalPermissionsColumns.RIGHTS.tableName()))
+                .append(sqlDropTable(PermissionsColumns.PERMISSION.tableName()))
                 // Features Tables
                 .append(sqlDropTable(FeatureStrategyColumns.FEATURE.tableName()))
                 .append(sqlDropTable(FeaturePropertyColumns.FEATURE.tableName()))
-                .append(sqlDropTable(FeaturePermissionsColumns.RIGHTS.tableName()))
                 .append(sqlDropTable(FeaturesColumns.UID.tableName()))
                 // Properties Tables (single strategy included in Property table)
                 .append(sqlDropTable(PropertyPropertyColumns.PROPERTY.tableName()))
-                .append(sqlDropTable(PropertyPermissionsColumns.PROPERTY.tableName()))
                 .append(sqlDropTable(PropertyColumns.UID.tableName()))
                 // Audit Tables
                 .append(sqlDropTable(FeatureUsageColumns.UID.tableName()))
@@ -293,21 +289,17 @@ public class JdbcQueryBuilder {
                 .append("\n")
                 .append(sqlCreateTable(FeaturePropertyColumns.values()))
                 .append("\n")
-                .append(sqlCreateTable(FeaturePermissionsColumns.values()))
-                .append("\n")
                 .append(sqlCreateTable(FeatureStrategyColumns.values()))
                 .append("\n")
                 .append(sqlCreateTable(PropertyColumns.values()))
                 .append("\n")
                 .append(sqlCreateTable(PropertyPropertyColumns.values()))
                 .append("\n")
-                .append(sqlCreateTable(PropertyPermissionsColumns.values()))
-                .append("\n")
                 .append(sqlCreateTable(AuditTrailColumns.values()))
                 .append("\n")
                 .append(sqlCreateTable(FeatureUsageColumns.values()))
                 .append("\n")
-                .append(sqlCreateTable(GlobalPermissionsColumns.values()))
+                .append(sqlCreateTable(PermissionsColumns.values()))
                 .append("\n")   
                 .append(sqlCreateTable(UserColumns.values()))
                 .append("\n")
@@ -316,8 +308,8 @@ public class JdbcQueryBuilder {
                 .append(sqlCreateTable(UserRoleAssociationColumns.values()))
                 .append("\n")
                 .toString();
-    }           
-	
+    }
+    
 	// ---------------------------------
     // -- TABLE Features              --
 	// ---------------------------------
@@ -343,22 +335,22 @@ public class JdbcQueryBuilder {
        return sqlSelectWhere(false, FeaturesColumns.UID, FeaturesColumns.values());
     }
 	
+	public String sqlInsertFeature() {
+        return sqlInsert(FeaturesColumns.values());
+    }
+	
 	public String sqlSelectAllGroups() {
 	    return sqlSelect(true, FeaturesColumns.GROUPNAME);
-	}
-	    
-	public String sqlSelectPermissionOfFeature() {
-	    return sqlSelectWhere(true, FeaturePermissionsColumns.FEATURE, FeaturePermissionsColumns.values());
-	}
-	    
-	public String sqlSelectPermissionOfProperty() {
-	    return sqlSelectWhere(true, PropertyPermissionsColumns.PROPERTY, PropertyPermissionsColumns.values());
 	}
 	
 	// ---------------------------------
     // -- TABLE Features_Strategy     --
     // ---------------------------------
-	
+
+	public String getTableNameFeatureStrategy() {
+        return getTableName(FeatureStrategyColumns.FEATURE.tableName());
+    }
+
 	public String sqlCreateTableToggleStrategy() {
 	    return sqlCreateTable(FeatureStrategyColumns.values());
 	}
@@ -370,6 +362,10 @@ public class JdbcQueryBuilder {
 	public String sqlInsertToggleStrategy() {
 	    return sqlInsert(FeatureStrategyColumns.values());
 	}
+	 
+    public String sqlStrategyOfFeature() {
+        return sqlSelectWhere(false, FeatureStrategyColumns.FEATURE, FeatureStrategyColumns.values());
+    }
     
     // ---------------------------------
     // -- TABLE Features_Properties  --
@@ -378,41 +374,28 @@ public class JdbcQueryBuilder {
 	public String getTableNameFeatureProperties() {
 	    return getTableName(FeaturePropertyColumns.FEATURE.tableName());
 	}
-	
 	public String sqlCreateTableFeatureProperties() {
         return sqlCreateTable(FeaturePropertyColumns.values());
     }
-    
     public String sqlDropTableFeatureProperties() {
         return sqlDropTable(FeaturePropertyColumns.UID.tableName());
     }
-	 
-	// ---------------------------------
-    // -- TABLE Features_Permissions  --
-    // ---------------------------------
-	
-	public String getTableNameFeaturePermissions() {
-        return getTableName(FeaturePermissionsColumns.FEATURE.tableName());
-    }
-	
-	public String sqlCreateTableFeaturePermissions() {
-        return sqlCreateTable(FeaturePermissionsColumns.values());
+    
+    /** Roles for a feature. */
+    public String sqlSelectCustomPropertiesOfFeature() {
+        return sqlSelectWhere(false, 
+                FeaturePropertyColumns.UID, FeaturePropertyColumns.values());
     }
     
-    public String sqlDropTableFeaturePermissions() {
-        return sqlDropTable(FeaturePermissionsColumns.FEATURE.tableName());
-    }
-	
-	// ---------------------------------
-    // -- TABLE Features_Usage        --
-    // ---------------------------------
-
-    public String getTableNameFeatureUsage() {
-        return getTableName(FeatureUsageColumns.UID.tableName());
+    /** Roles for a feature. */
+    public String sqlSelectCustomPropertyOfFeature() {
+        return sqlSelect(false, FeaturePropertyColumns.values()) + 
+                sqlPartWhere(FeaturePropertyColumns.UID) + " AND " +
+                FeaturePropertyColumns.UID + " = ?";
     }
     
     // ---------------------------------
-    // -- TABLE Properties        --
+    // -- TABLE Properties            --
     // ---------------------------------
 
     public String getTableNameProperties() {
@@ -427,6 +410,96 @@ public class JdbcQueryBuilder {
         return sqlDropTable(PropertyColumns.UID.tableName());
     }
     
+    // ---------------------------------
+    // -- TABLE Permissions           --
+    // ---------------------------------
+    
+    public String getTableNamePermissions() {
+        return getTableName(PermissionsColumns.PERMISSION.tableName());
+    }
+    
+    public String sqlDropTablePermissions() {
+        return sqlDropTable(PermissionsColumns.PERMISSION.tableName());
+    }
+    
+    public String sqlCreateTablePermissions() {
+        return sqlCreateTable(PermissionsColumns.values());
+    }
+    
+    public String sqlSelectglobalPermissions() {
+        return sqlSelect(false, PermissionsColumns.values());
+    }
+    
+    // ---------------------------------
+    // -- TABLE USERS                 --
+    // ---------------------------------
+    
+    public String getTableNameUser() {
+        return getTableName(UserColumns.UID.tableName());
+    }
+    
+    public String sqlDropTableUser() {
+        return sqlDropTable(UserColumns.UID.tableName());
+    }
+    
+    public String sqlCreateTableUser() {
+        return sqlCreateTable(UserColumns.values());
+    }
+    
+    public String sqlSelectUsers() {
+        return sqlSelect(false, UserColumns.values());
+    }
+    
+    // ---------------------------------
+    // -- TABLE ROLES                 --
+    // ---------------------------------
+    
+    public String getTableNameRoles() {
+        return getTableName(RolesColumns.NAME.tableName());
+    }
+    
+    public String sqlDropTableRoles() {
+        return sqlDropTable(RolesColumns.NAME.tableName());
+    }
+    
+    public String sqlCreateTableRoles() {
+        return sqlCreateTable(RolesColumns.values());
+    }
+    
+    public String sqlSelectAllRoles() {
+        return sqlSelect(false, RolesColumns.values());
+    }
+    
+    // ---------------------------------
+    // -- TABLE ROLE_USE              --
+    // ---------------------------------
+    
+    public String getTableNameRolesUsers() {
+        return getTableName(UserRoleAssociationColumns.REF_USER.tableName());
+    }
+    
+    public String sqlDropTableRolesUsers() {
+        return sqlDropTable(UserRoleAssociationColumns.REF_USER.tableName());
+    }
+    
+    public String sqlCreateTableRolesUsers() {
+        return sqlCreateTable(UserRoleAssociationColumns.values());
+    }
+    
+    public String sqlSelectAllRolesUsers() {
+        return sqlSelect(false, UserRoleAssociationColumns.values());
+    }
+    
+    
+    // ---------------------------------
+    // -- TABLE Features_Usage        --
+    // ---------------------------------
+
+    public String getTableNameFeatureUsage() {
+        return getTableName(UserRoleAssociationColumns.REF_USER.tableName());
+    }
+    // ---------------------------------
+    
     /** Get all features. */
     public String sqlSelectAllCustomProperties() {
         return sqlSelect(false, FeaturePropertyColumns.values());
@@ -438,9 +511,7 @@ public class JdbcQueryBuilder {
     }
     
     // 04
-    public String getTableNameFeatureStrategy() {
-        return getTableName(FeatureStrategyColumns.FEATURE.tableName());
-    }
+   
     
     // 05
     
@@ -450,20 +521,13 @@ public class JdbcQueryBuilder {
         return getTableName(PropertyPropertyColumns.PROPERTY.tableName());
     }
     
-    // 08
-    public String getTableNamePropertyPermissions() {
-        return getTableName(PropertyPermissionsColumns.RIGHTS.tableName());
-    }
-    
     // 09
     public String getTableNameUsers() {
         return getTableName(UserColumns.UID.tableName());
     }
     
     // 10
-    public String getTableNameUserRoles() {
-        return getTableName(RolesColumns.NAME.tableName());
-    }
+    
     
     // 11
     public String getTableNameUserRolesAssociation() {
@@ -476,17 +540,13 @@ public class JdbcQueryBuilder {
     }
     
     // 13
-    public String getTableNamePermissions() {
-        return getTableName(GlobalPermissionsColumns.RIGHTS.tableName());
-    }
+    
     
     public String sqlSelectFeatureAccessControlList() {
         return null;
     }
     
-    public String sqlInsertFeature() {
-        return sqlInsert(FeaturesColumns.values());
-    }
+    
     
     public String sqlInsertAuditTrail() {
         return sqlInsert(AuditTrailColumns.values());
@@ -505,28 +565,7 @@ public class JdbcQueryBuilder {
     }
     
     
-    // ----- Features -----
     
-    /** Get all groups. */
-    public String sqlSelectglobalPermissions() {
-        return sqlSelect(false, GlobalPermissionsColumns.values());
-    }
-    
-    /** Roles for a feature. */
-    public String sqlSelectCustomPropertiesOfFeature() {
-        return sqlSelectWhere(false, FeaturePropertyColumns.UID, FeaturePropertyColumns.values());
-    }
-    
-    public String sqlStrategyOfFeature() {
-        return sqlSelectWhere(false, FeatureStrategyColumns.FEATURE, FeatureStrategyColumns.values());
-    }
-    
-    /** Roles for a feature. */
-    public String sqlSelectCustomPropertyOfFeature() {
-        return sqlSelect(false, FeaturePropertyColumns.values()) + 
-               sqlPartWhere(FeaturePropertyColumns.UID) + " AND " +
-               FeaturePropertyColumns.UID + " = ?";
-    }
     
     // ----- Properties -----
     
@@ -633,10 +672,6 @@ public class JdbcQueryBuilder {
     
     public String sqlDeleteAllFeatures() {
         return sqlDeleteAll(FeaturesColumns.UID);
-    }
-    
-    public String sqlDeleteAllRolesOfFeature() {
-        return sqlDeleteWhere(FeaturePermissionsColumns.FEATURE);
     }
     
     public String sqlDeleteAllCustomPropertiesOfFeature() {

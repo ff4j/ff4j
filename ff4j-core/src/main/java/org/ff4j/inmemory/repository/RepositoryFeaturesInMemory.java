@@ -29,6 +29,8 @@ import java.util.stream.Stream;
 
 import org.ff4j.feature.AbstractRepositoryFeatures;
 import org.ff4j.feature.Feature;
+import org.ff4j.parser.AbstractConfigurationFileParser;
+import org.ff4j.parser.FF4jConfigFile;
 import org.ff4j.parser.xml.XmlParser;
 import org.ff4j.test.AssertUtils;
 
@@ -53,28 +55,63 @@ public class RepositoryFeaturesInMemory extends AbstractRepositoryFeatures {
 
     /** Default constructor. */
     public RepositoryFeaturesInMemory() {}
-
+    
     /**
-     * Constructor with configuration fileName.
-     * 
+     * Provide an xml file to initialize.
+     *
      * @param fileName
-     *            fileName present in classPath or on fileSystem.
+     *          target fileName
      */
     public RepositoryFeaturesInMemory(String fileName) {
-        AssertUtils.assertHasLength(fileName);
-        createSchema();
-        loadConfFile(fileName);
+        this(new XmlParser(), fileName);
     }
-
+    
+    /**
+     * Provide an xml file to initialize.
+     *
+     * @param fileName
+     *          target fileName
+     */
+    public RepositoryFeaturesInMemory(InputStream inputStream) {
+        this(new XmlParser(), inputStream);
+    }
+    
+    /**
+     * Load data with a Parser and a fileName.
+     *
+     * @param parser
+     *      target parser
+     * @param fileName
+     *      target file name
+     */
+    public RepositoryFeaturesInMemory(AbstractConfigurationFileParser parser, String fileName) {
+        AssertUtils.assertHasLength(fileName, "fileName");
+        AssertUtils.assertNotNull(parser,     "parser");
+        initWithConfig(parser.parse(fileName));
+    }
+    
+    /**
+     * Load data with a Parser and a fileName.
+     *
+     * @param parser
+     *      target parser
+     * @param fileName
+     *      target file name
+     */
+    public RepositoryFeaturesInMemory(AbstractConfigurationFileParser parser, InputStream in) {
+        AssertUtils.assertNotNull(parser,  "parser");
+        AssertUtils.assertNotNull(in, "inputStream");
+        initWithConfig(parser.parse(in));
+    }
+    
     /**
      * Constructor with inputstream fileName.
      * 
      * @param fileName
      *            fileName present in classPath or on fileSystem.
      */
-    public RepositoryFeaturesInMemory(InputStream xmlIN) {
-        createSchema();
-        loadConf(xmlIN);
+    public RepositoryFeaturesInMemory(FF4jConfigFile ff4jConfig) {
+        initWithConfig(ff4jConfig);
     }
 
     /**
@@ -84,6 +121,26 @@ public class RepositoryFeaturesInMemory extends AbstractRepositoryFeatures {
      *      collection of features to be created
      */
     public RepositoryFeaturesInMemory(Collection<Feature> features) {
+        initWithFeatures(features);
+    }
+    
+    /**
+     * Initialization of features and groups.
+     * 
+     * @param features
+     */
+    private void initWithConfig(FF4jConfigFile ff4jConfig) {
+        AssertUtils.assertNotNull(ff4jConfig);
+        AssertUtils.assertNotNull(ff4jConfig.getFeatures());
+        initWithFeatures(ff4jConfig.getFeatures().values());
+    }
+    
+    /**
+     * Initialization of features and groups.
+     * 
+     * @param features
+     */
+    private void initWithFeatures(Collection<Feature> features) {
         createSchema();
         if (null != features) {
             this.mapOfFeatures = features.stream().collect(
@@ -132,6 +189,7 @@ public class RepositoryFeaturesInMemory extends AbstractRepositoryFeatures {
     @Override
     public void deleteAllFeatures() {
        mapOfFeatures.clear();
+       mapOfGroups.clear();
     }
     
     /** {@inheritDoc} */
@@ -179,10 +237,10 @@ public class RepositoryFeaturesInMemory extends AbstractRepositoryFeatures {
      * @param conf
      *            xml filename
      */
-    public void loadConfFile(String conf) {
+    public void loadXmlConfFile(String conf) {
         assertHasLength(conf);
         this.fileName = conf;
-        loadConf(getClass().getClassLoader().getResourceAsStream(conf));
+        loadXmlConf(getClass().getClassLoader().getResourceAsStream(conf));
     }
 
     /**
@@ -191,8 +249,8 @@ public class RepositoryFeaturesInMemory extends AbstractRepositoryFeatures {
      * @param conf
      *            xml filename
      */
-    public void loadConf(InputStream xmlIN) {
-        this.mapOfFeatures = XmlParser.parseInputStream(xmlIN).getFeatures();
+    public void loadXmlConf(InputStream xmlIN) {
+        this.mapOfFeatures = new XmlParser().parse(xmlIN).getFeatures();
         buildGroupsFromFeatures();
     }
 
@@ -217,14 +275,12 @@ public class RepositoryFeaturesInMemory extends AbstractRepositoryFeatures {
                          feature.getGroup().get()).add(feature.getUid()));
     }
 
-    
-
     /** {@inheritDoc} */
     @Override
     public String toJson() {
         String json = super.toJson();
         // Remove last } to enrich the json document
-        json = json.substring(0, json.length() - 1) + ",\"xmlInputFile\":";
+        json = json.substring(0, json.length() - 1) + ",\"inputFile\":";
         // No filename inputstream, set to true)
         if (null == fileName) {
             json += "null";
@@ -242,7 +298,7 @@ public class RepositoryFeaturesInMemory extends AbstractRepositoryFeatures {
      *            new value for 'locations '
      */
     public void setLocation(String locations) {
-        loadConfFile(locations);
+        loadXmlConfFile(locations);
     }
 
     /**

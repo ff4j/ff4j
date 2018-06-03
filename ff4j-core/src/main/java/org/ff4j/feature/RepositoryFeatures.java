@@ -22,7 +22,7 @@ package org.ff4j.feature;
 
 import java.util.stream.Stream;
 
-import org.ff4j.exception.GroupNotFoundException;
+import org.ff4j.feature.exception.GroupNotFoundException;
 import org.ff4j.repository.FF4jRepository;
 
 /**

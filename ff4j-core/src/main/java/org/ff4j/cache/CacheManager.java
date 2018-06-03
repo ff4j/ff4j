@@ -26,8 +26,8 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.ff4j.FF4jEntity;
-import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.feature.Feature;
+import org.ff4j.feature.exception.FeatureNotFoundException;
 
 /**
  * Proposition for caching of features and properties locally.

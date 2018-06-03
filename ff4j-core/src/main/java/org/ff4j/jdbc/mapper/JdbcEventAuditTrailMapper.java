@@ -47,7 +47,7 @@ public class JdbcEventAuditTrailMapper extends AbstractJdbcMapper implements Eve
     
     /** {@inheritDoc} */
     @Override
-    public PreparedStatement toStore(Event evt) {
+    public PreparedStatement mapToRepository(Event evt) {
         PreparedStatement stmt = null;
         try {
             stmt = sqlConn.prepareStatement(queryBuilder.sqlInsertAuditTrail());
@@ -80,7 +80,7 @@ public class JdbcEventAuditTrailMapper extends AbstractJdbcMapper implements Eve
      *      cannot read SQL result
      */
     @Override
-    public Event fromStore(ResultSet rs) {
+    public Event mapFromRepository(ResultSet rs) {
         try {
             Event evt = new Event(rs.getString(AuditTrailColumns.UID.colname()));
             mapEntity(rs, evt);

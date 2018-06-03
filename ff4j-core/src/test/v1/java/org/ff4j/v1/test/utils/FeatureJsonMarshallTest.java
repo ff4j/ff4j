@@ -24,15 +24,14 @@ import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Constructor;
 import java.util.Map;
 
+import org.ff4j.test.TestConstantsFF4j;
 import org.ff4j.v1.FF4j;
 import org.ff4j.v1.core.Feature;
 import org.ff4j.v1.core.FeatureStore;
 import org.ff4j.v1.core.FlippingExecutionContext;
 import org.ff4j.v1.core.FlippingStrategy;
-import org.ff4j.v1.test.TestConstantsFF4j;
 import org.ff4j.v1.utils.JdbcUtils;
 import org.ff4j.v1.utils.JsonUtils;
-import org.ff4j.v1.utils.MappingUtil;
 import org.ff4j.v1.utils.Util;
 import org.junit.Assert;
 import org.junit.Before;
@@ -40,6 +39,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import MappingUtil;
 
 /**
  * Test class for JSON producer and consumer : {@link FeatureJsonMarshaller}

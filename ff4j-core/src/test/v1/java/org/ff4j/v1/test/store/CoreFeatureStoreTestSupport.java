@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.ff4j.test.TestConstantsFF4j;
 import org.ff4j.v1.FF4j;
 import org.ff4j.v1.core.Feature;
 import org.ff4j.v1.core.FeatureStore;
@@ -27,7 +28,6 @@ import org.ff4j.v1.property.PropertyInt;
 import org.ff4j.v1.property.PropertyString;
 import org.ff4j.v1.strategy.PonderationStrategy;
 import org.ff4j.v1.test.AssertFf4j;
-import org.ff4j.v1.test.TestConstantsFF4j;
 import org.ff4j.v1.utils.Util;
 import org.junit.Assert;
 import org.junit.Before;

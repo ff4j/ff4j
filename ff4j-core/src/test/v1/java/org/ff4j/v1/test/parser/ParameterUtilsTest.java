@@ -22,8 +22,9 @@ package org.ff4j.v1.test.parser;
 
 import java.lang.reflect.Constructor;
 
-import org.ff4j.v1.utils.MappingUtil;
 import org.junit.Test;
+
+import MappingUtil;
 
 /**
  * Check Constructor

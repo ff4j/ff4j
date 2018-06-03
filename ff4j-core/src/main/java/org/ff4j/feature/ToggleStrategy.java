@@ -1,10 +1,12 @@
 package org.ff4j.feature;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.ff4j.FF4jContext;
-import org.ff4j.exception.InvalidStrategyTypeException;
-import org.ff4j.feature.strategy.FF4jStrategy;
+import org.ff4j.feature.exception.InvalidStrategyTypeException;
+import org.ff4j.feature.strategy.FF4jToggleStrategy;
 
 /*
  * #%L
@@ -31,8 +33,11 @@ import org.ff4j.feature.strategy.FF4jStrategy;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public interface ToggleStrategy extends FF4jStrategy {
+public interface ToggleStrategy extends FF4jToggleStrategy {
     
+    /** Separator to propose parameters. */
+    String SEPARATOR = "&";
+   
     /**
      * Tell if flip should be realized.
      * 
@@ -60,6 +65,51 @@ public interface ToggleStrategy extends FF4jStrategy {
         } catch (Exception ie) {
             throw new InvalidStrategyTypeException(className, ie);
         } 
+    }
+    
+    /**
+     * Utility Method to convert Parameter Map into String.
+     * 
+     * @param params
+     *            parameter MAP
+     * @return parameters as String
+     */
+    public static String fromMap(Map < String, String > params) {
+        StringBuilder strBulBuilder = new StringBuilder();
+        boolean first = true;
+        if (params != null && !params.isEmpty()) {
+            for (Entry<String, String> entry : params.entrySet()) {
+                if (!first) {
+                    strBulBuilder.append(SEPARATOR);
+                }
+                strBulBuilder.append(entry.getKey() + "=" + entry.getValue());
+                first = false;
+            }
+        }
+        return strBulBuilder.toString();
+    }
+
+    /**
+     * Utility method to convert parameters as Map
+     * 
+     * @param strParam
+     *            convert String param as Map.
+     * @return map of parameters.
+     */
+    public static Map<String, String> toMap(String strParam) {
+        LinkedHashMap<String, String> parameters = new LinkedHashMap<String, String>();
+        if (strParam != null) {
+            String[] chunks = strParam.split("\\" + SEPARATOR);
+            for (String chunk : chunks) {
+                int idxEqual = chunk.indexOf("=");
+                if (idxEqual > 0 && idxEqual < chunk.length()) {
+                    String paramName = chunk.substring(0, idxEqual);
+                    String paramValue = chunk.substring(idxEqual + 1);
+                    parameters.put(paramName, paramValue);
+                }
+            }
+        }
+        return parameters;
     }
     
 }

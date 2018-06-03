@@ -1,6 +1,7 @@
 
 package org.ff4j.utils;
 
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -34,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -317,6 +319,12 @@ public class Util {
             }
         }
         return null;
+    }
+    
+    public static String fromInputStreamToString(InputStream in) {
+        try(Scanner scan = new Scanner(in)) { 
+            return scan.useDelimiter("\\A").hasNext() ? scan.next() : "";
+        }
     }
 
 }

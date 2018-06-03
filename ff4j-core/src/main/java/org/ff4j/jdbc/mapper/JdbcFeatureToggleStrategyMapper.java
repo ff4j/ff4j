@@ -25,8 +25,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.feature.ToggleStrategy;
+import org.ff4j.feature.exception.FeatureAccessException;
 import org.ff4j.jdbc.JdbcConstants.FeatureStrategyColumns;
 import org.ff4j.jdbc.JdbcQueryBuilder;
 import org.ff4j.mapper.ToggleStrategyMapper;
@@ -59,7 +59,7 @@ public class JdbcFeatureToggleStrategyMapper extends AbstractJdbcMapper implemen
 
     /** {@inheritDoc} */
     @Override
-    public PreparedStatement toStore(ToggleStrategy ts) {
+    public PreparedStatement mapToRepository(ToggleStrategy ts) {
         PreparedStatement ps;
         try {
             ps = sqlConn.prepareStatement(queryBuilder.sqlInsertToggleStrategy());
@@ -74,7 +74,7 @@ public class JdbcFeatureToggleStrategyMapper extends AbstractJdbcMapper implemen
 
     /** {@inheritDoc} */
     @Override
-    public ToggleStrategy fromStore(ResultSet rs) {
+    public ToggleStrategy mapFromRepository(ResultSet rs) {
         try {
             String uid       = rs.getString(FeatureStrategyColumns.FEATURE.colname());
             String className = rs.getString(FeatureStrategyColumns.CLASSNAME.colname());

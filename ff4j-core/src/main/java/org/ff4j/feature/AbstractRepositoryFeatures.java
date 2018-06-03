@@ -34,11 +34,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.ff4j.exception.FeatureAlreadyExistException;
-import org.ff4j.exception.FeatureNotFoundException;
-import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.exception.ItemAlreadyExistException;
 import org.ff4j.exception.ItemNotFoundException;
+import org.ff4j.feature.exception.FeatureAlreadyExistException;
+import org.ff4j.feature.exception.FeatureNotFoundException;
+import org.ff4j.feature.exception.GroupNotFoundException;
 import org.ff4j.monitoring.AuditTrail;
 import org.ff4j.parser.xml.XmlParser;
 import org.ff4j.repository.FF4jRepository;
@@ -159,7 +159,7 @@ public abstract class AbstractRepositoryFeatures
      *      xml configuration file
      */
     protected Stream < Feature > importFeaturesFromXmlFile(String xmlConfFile) {
-        Map < String, Feature > features = XmlParser.parseFile(xmlConfFile).getFeatures();
+        Map < String, Feature > features = new XmlParser().parse(xmlConfFile).getFeatures();
         save(features.values());
         return features.values().stream();
     }

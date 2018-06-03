@@ -51,6 +51,9 @@ public class RepositoryAuditTrailInMemory implements AuditTrail {
     /** Event <SCOPE> -> <ID> -> List Event related to user action in console (not featureUsage, not check OFF). */
     private static Map< String , Map < String, EventSeries>> auditTrail = new ConcurrentHashMap<>();
     
+    /** Default constructor. */
+    public RepositoryAuditTrailInMemory() {}
+    
     /** {@inheritDoc} */
     @Override
     public void createSchema() {}

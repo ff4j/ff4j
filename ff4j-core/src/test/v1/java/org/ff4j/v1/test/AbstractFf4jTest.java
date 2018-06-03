@@ -28,12 +28,13 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import org.junit.Assert;
+import org.ff4j.test.TestConstantsFF4j;
 import org.ff4j.v1.FF4j;
 import org.ff4j.v1.core.FeatureStore;
 import org.ff4j.v1.core.FlippingExecutionContext;
 import org.ff4j.v1.core.FlippingStrategy;
 import org.ff4j.v1.security.AuthorizationsManager;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 

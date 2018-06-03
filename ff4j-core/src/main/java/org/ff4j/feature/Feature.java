@@ -60,7 +60,7 @@ public class Feature extends FF4jEntity < Feature > {
     private Optional< String> group = Optional.empty();
     
     /** Custom behaviour to define if feature if enable or not e.g. A/B Testing capabilities. */
-    private Optional <List < ToggleStrategy >> toggleStrategies = Optional.empty();
+    private List < ToggleStrategy > toggleStrategies = new ArrayList<>();
     
     /**
      * Initialize {@link Feature} with id;
@@ -88,8 +88,8 @@ public class Feature extends FF4jEntity < Feature > {
         f.getGroup().ifPresent(g -> this.group = Optional.of(g));
         
         // COPY Strategies (not just reference => clone)
-        if (f.getToggleStrategies().isPresent()) {
-            for (ToggleStrategy strat : f.getToggleStrategies().get()) {
+        if (!f.getToggleStrategies().isEmpty()) {
+            for (ToggleStrategy strat : f.getToggleStrategies()) {
                 addToggleStrategy(ToggleStrategy.of(uid, strat.getClass().getName(), strat.getInitParams()));
             }
         }
@@ -131,8 +131,8 @@ public class Feature extends FF4jEntity < Feature > {
     public boolean isToggled(FF4jContext context) {
         if (!isEnable()) return false;
         boolean toggled = true;
-        if (toggleStrategies.isPresent()) {
-            Iterator<ToggleStrategy> iter = toggleStrategies.get().iterator();
+        if (!toggleStrategies.isEmpty()) {
+            Iterator<ToggleStrategy> iter = toggleStrategies.iterator();
             // Break as soon as one of the strategy return false
             while (toggled && iter.hasNext()) {
                 toggled = iter.next().isToggled(this, context);
@@ -200,10 +200,10 @@ public class Feature extends FF4jEntity < Feature > {
         json.append(super.baseJson());
         json.append(attributeAsJson("enable", enable));
         group.ifPresent(g -> attributeAsJson("group", g));
-        if (this.toggleStrategies.isPresent()) {
+        if (!this.toggleStrategies.isEmpty()) {
             json.append(",\"toggleStrategies\": [");
             boolean first = true;
-            for (ToggleStrategy element : getToggleStrategies().get()) {
+            for (ToggleStrategy element : getToggleStrategies()) {
                 json.append(first ? "" : ",");
                 json.append(element.toJson());
                 first = false;
@@ -242,7 +242,7 @@ public class Feature extends FF4jEntity < Feature > {
      * @return
      *       current value of 'toggleStrategies'
      */
-    public Optional <List<ToggleStrategy>> getToggleStrategies() {
+    public List<ToggleStrategy> getToggleStrategies() {
         return toggleStrategies;
     }
     
@@ -253,10 +253,7 @@ public class Feature extends FF4jEntity < Feature > {
      *       current value of 'toggleStrategies'
      */
     public Feature addToggleStrategy(ToggleStrategy ts) {
-        if (!getToggleStrategies().isPresent()) {
-            this.toggleStrategies = Optional.ofNullable(new ArrayList<>());
-        }
-        getToggleStrategies().get().add(ts);
+        getToggleStrategies().add(ts);
         updateLastModifiedDate();
         return this;
     }

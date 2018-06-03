@@ -24,13 +24,14 @@ import java.util.HashMap;
 
 import org.ff4j.v1.exception.FeatureAccessException;
 import org.ff4j.v1.store.JdbcFeatureStore;
-import org.ff4j.v1.utils.MappingUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+
+import MappingUtil;
 
 /**
  * This test is meant to access a Jfeature store in 'pure' JDBC.

@@ -75,6 +75,7 @@ public abstract class Property<T> extends FF4jEntity<Property<T>> implements Sup
      */
     protected Property(String uid) {
         super(uid);
+        this.type = getClass().getName();
     }
 
     /**

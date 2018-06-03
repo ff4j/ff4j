@@ -36,11 +36,11 @@ import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
-import org.ff4j.exception.PropertyAccessException;
 import org.ff4j.jdbc.JdbcConstants.PropertyColumns;
 import org.ff4j.jdbc.JdbcQueryBuilder;
 import org.ff4j.jdbc.mapper.JdbcPropertyMapper;
 import org.ff4j.property.Property;
+import org.ff4j.property.exception.PropertyAccessException;
 import org.ff4j.property.AbstractRepositoryProperties;
 
 /**
@@ -122,7 +122,7 @@ public class RepositoryPropertiesCoreJdbc extends AbstractRepositoryProperties {
         assertNotNull(ap);
         try (Connection sqlConn = getDataSource().getConnection()) {
             JdbcPropertyMapper pmapper = new JdbcPropertyMapper(sqlConn, getQueryBuilder());
-            try(PreparedStatement ps1 = pmapper.toStore(ap)) {
+            try(PreparedStatement ps1 = pmapper.mapToRepository(ap)) {
                 ps1.executeUpdate();
             }
         } catch (SQLException sqlEX) {
@@ -146,7 +146,7 @@ public class RepositoryPropertiesCoreJdbc extends AbstractRepositoryProperties {
                 ps1.setString(1, name);
                 try (ResultSet rs1 = ps1.executeQuery()) {
                     return (rs1.next()) ? 
-                            Optional.of(pmapper.fromStore(rs1)) : Optional.empty();
+                            Optional.of(pmapper.mapFromRepository(rs1)) : Optional.empty();
                 }
             }
         } catch (SQLException sqlEX) {
@@ -203,7 +203,7 @@ public class RepositoryPropertiesCoreJdbc extends AbstractRepositoryProperties {
             try(PreparedStatement ps1 = sqlConn.prepareStatement(getQueryBuilder().sqlSelectAllProperties())) {
                 try (ResultSet rs1 = ps1.executeQuery()) {
                     while (rs1.next()) {
-                        properties.add(pmapper.fromStore(rs1));
+                        properties.add(pmapper.mapFromRepository(rs1));
                     }
                 }
             }

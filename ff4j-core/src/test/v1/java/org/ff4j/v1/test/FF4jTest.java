@@ -30,6 +30,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+import org.ff4j.test.AbstractFf4jTest;
+import org.ff4j.test.DefinedPermissionSecurityManager;
 import org.ff4j.v1.FF4j;
 import org.ff4j.v1.audit.Event;
 import org.ff4j.v1.audit.EventConstants;

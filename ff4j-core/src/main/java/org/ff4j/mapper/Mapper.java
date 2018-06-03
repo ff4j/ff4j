@@ -25,14 +25,14 @@ package org.ff4j.mapper;
  *
  * @author Cedrick LUNVEN (@clunven)
  *
- * @param <FF4JBEAN>
+ * @param <BEAN>
  *      current java Bean
- * @param <STORE_REQ>
+ * @param <REQ>
  *      bean represent a request for storage to persist
- * @param <STORE_RES>
+ * @param <RES>
  *      bean represent a request for storage to persist
  */
-public interface Mapper < FF4JBEAN, STORE_REQ, STORE_RES > {
+public interface Mapper < BEAN, REQ, RES > {
     
     /**
      * Convert object from store driver/client to FF4J framework Object.
@@ -42,7 +42,7 @@ public interface Mapper < FF4JBEAN, STORE_REQ, STORE_RES > {
      * @return
      *      store object
      */
-    STORE_REQ toStore(FF4JBEAN bean);
+    REQ mapToRepository(BEAN bean);
     
     /**
      * From DB to Java transformation.
@@ -52,6 +52,6 @@ public interface Mapper < FF4JBEAN, STORE_REQ, STORE_RES > {
      * @return
      *      the JAVA BEAN
      */
-    FF4JBEAN fromStore(STORE_RES bean);
+    BEAN mapFromRepository(RES bean);
 
 }

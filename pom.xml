@@ -60,14 +60,13 @@
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <properties>
 
-        <!-- Compiling -->
+        <!-- COMPILATION -->
         <github.login />
         <encoding>UTF-8</encoding>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      
         <!-- License -->
         <license.licenseName>apache_v2</license.licenseName>
         <license.licenseResolver>${project.baseUri}src/license</license.licenseResolver>
@@ -75,44 +74,56 @@
         <!-- Versions -->
         <version.slf4j>1.8.0-beta0</version.slf4j>
         <version.logback>1.2.3</version.logback>
-
-        <version.junit>4.12</version.junit>
-        <version.junit5>5.0.2</version.junit5>
-        <version.powermock>1.7.3</version.powermock>
-        <version.mockito>2.0.2-beta</version.mockito>
-
-        <version.cglib>3.2.5</version.cglib>
+        <version.cglib>3.2.6</version.cglib>
         <version.aopalliance>1.0</version.aopalliance>
-        <version.spring>5.0.2.RELEASE</version.spring>
-        <version.spring.security>5.0.0.RELEASE</version.spring.security>
-
+        <commons.lang>3.2.1</commons.lang>
         <version.commons-lang>2.6</version.commons-lang>
         <version.commons-dbcp>1.4</version.commons-dbcp>
         <version.commons-io>2.6</version.commons-io>
         <version.commons-fileupload>1.3.3</version.commons-fileupload>
         <version.commons-cli>1.4</version.commons-cli>
-
+		
         <version.servlet-api>3.0-alpha-1</version.servlet-api>
         <version.jsp-api>2.2.1-b03</version.jsp-api>
         <version.jstl>1.2</version.jstl>
         <version.taglib>1.1.2</version.taglib>
         <version.jsr311>1.1.1</version.jsr311>
         <version.jacoco>0.7.9</version.jacoco>
-        <version.jackon2x>2.9.3</version.jackon2x>
+        <version.jackon2x>2.9.4</version.jackon2x>
         <version.jersey1x>1.19.4</version.jersey1x>
         <version.jersey2x>2.26</version.jersey2x>
         <version.httpclient>4.5.4</version.httpclient>
-
         <version.swagger>1.5.17</version.swagger>
-
         <version.metrics>4.0.0</version.metrics>
-        <version.hdldb>2.4.0</version.hdldb>
+        <version.snakeyaml>1.20</version.snakeyaml>
+        <cucumber.version>1.2.5</cucumber.version>
+        <gson.version>2.8.2</gson.version>
+        <swagger.version>2.7.0</swagger.version>
+        <meanbean.version>2.0.3</meanbean.version>
 
+		<!-- SPRING -->
+		<version.spring>5.0.4.RELEASE</version.spring>
+        <version.spring.security>5.0.0.RELEASE</version.spring.security>
+        <spring-boot.version>1.5.9.RELEASE</spring-boot.version>
+
+        <!-- DB DRIVERS -->
+        <apache.ignite.version>2.3.0</apache.ignite.version>
+		<version.hdldb>2.4.0</version.hdldb>
         <version.ehcache>2.10.1</version.ehcache>
         <version.jedis>2.5.1</version.jedis>
         <version.neo4j>2.3.1</version.neo4j>
+        
+        <!-- TESTS -->
+        <version.junit>4.12</version.junit>
+        <version.jupiter-unit>5.1.0</version.jupiter-unit>
+		<version.jupiter-platform>1.1.0</version.jupiter-platform>
+        <version.powermock>1.7.3</version.powermock>
+        <version.mockito>2.0.2-beta</version.mockito>
+		<assertj.version>3.8.0</assertj.version>
+        <jsonassert.version>1.5.0</jsonassert.version>
+        <easymock.version>3.5.1</easymock.version>
 
-        <!-- VERSIONS PLUGINS -->
+        <!-- MAVEN -->
         <version.maven.plugin.failsafe>2.18.1</version.maven.plugin.failsafe>
         <version.maven.plugin.redis>1.4.6</version.maven.plugin.redis>
         <version.maven.plugin.surefire>2.20.1</version.maven.plugin.surefire>
@@ -128,19 +139,7 @@
         <version.maven.plugin.nexus>1.6.8</version.maven.plugin.nexus>
         <version.maven.plugin.compiler>3.7.0</version.maven.plugin.compiler>
         <version.maven.plugin.jar>3.0.2</version.maven.plugin.jar>
-        <version.maven.plugin.dependency>3.0.2</version.maven.plugin.dependency>
-
-        <spring-boot.version>1.5.9.RELEASE</spring-boot.version>
-        <commons.lang>3.2.1</commons.lang>
-        <cucumber.version>1.2.5</cucumber.version>
-        <gson.version>2.8.2</gson.version>
-        <assertj.version>3.8.0</assertj.version>
-        <jsonassert.version>1.5.0</jsonassert.version>
-        <easymock.version>3.5.1</easymock.version>
-        <swagger.version>2.7.0</swagger.version>
-        <meanbean.version>2.0.3</meanbean.version>
-
-        <apache.ignite.version>2.3.0</apache.ignite.version>
+        <version.maven.plugin.dependency>3.0.2</version.maven.plugin.dependency>        
     </properties>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -149,6 +148,7 @@
     <modules>
 
         <module>ff4j-core</module>
+        <module>ff4j-utils-yaml</module>
         <!-- 
         <module>ff4j-aop</module>
         <module>ff4j-test</module>
@@ -329,6 +329,11 @@
                 <artifactId>spring-test</artifactId>
                 <version>${version.spring}</version>
             </dependency>
+             <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-aspects</artifactId>
+                <version>${version.spring}</version>
+            </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-jdbc</artifactId>
@@ -394,7 +399,6 @@
                 <version>${version.commons-cli}</version>
             </dependency>
 
-
             <dependency>
                 <groupId>io.dropwizard.metrics</groupId>
                 <artifactId>metrics-core</artifactId>
@@ -421,24 +425,40 @@
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-jersey2-jaxrs</artifactId>
                 <version>${version.swagger}</version>
-            </dependency>
-
-            <!-- Tests -->
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${version.junit}</version>
-            </dependency>
-            <dependency>
+		    </dependency>
+		
+			<!-- Tests -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${version.junit}</version>
+			</dependency>
+			<dependency>
 				<groupId>org.junit.jupiter</groupId>
 				<artifactId>junit-jupiter-engine</artifactId>
-				<version>${version.junit5}</version>
+				<version>${version.jupiter-unit}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.junit.jupiter</groupId>
 				<artifactId>junit-jupiter-params</artifactId>
-				<version>${version.junit5}</version>
+				<version>${version.jupiter-unit}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.junit.platform</groupId>
+				<artifactId>junit-platform-runner</artifactId>
+				<version>${version.jupiter-platform}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.platform</groupId>
+				<artifactId>junit-platform-launcher</artifactId>
+				<version>${version.jupiter-platform}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.platform</groupId>
+				<artifactId>junit-platform-console-standalone</artifactId>
+				<version>${version.jupiter-platform}</version>
+			</dependency>
+					
             <dependency>
                 <groupId>org.hsqldb</groupId>
                 <artifactId>hsqldb</artifactId>
@@ -493,6 +513,12 @@
                 <artifactId>jackson-core</artifactId>
                 <version>${version.jackon2x}</version>
             </dependency>
+            
+            <dependency>
+				<groupId>org.yaml</groupId>
+				<artifactId>snakeyaml</artifactId>
+				<version>${version.snakeyaml}</version>
+			</dependency>
 
             <dependency>
                 <artifactId>jsr311-api</artifactId>

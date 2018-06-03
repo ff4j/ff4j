@@ -23,11 +23,11 @@ package org.ff4j.v1.test.strategy;
 import java.text.ParseException;
 
 import org.junit.Assert;
+import org.ff4j.test.AbstractFf4jTest;
 import org.ff4j.v1.FF4j;
 import org.ff4j.v1.core.Feature;
 import org.ff4j.v1.core.FlippingExecutionContext;
 import org.ff4j.v1.strategy.ServerFilterStrategy;
-import org.ff4j.v1.test.AbstractFf4jTest;
 import org.junit.Test;
 
 public class ServerFilterStrategyTest extends AbstractFf4jTest {

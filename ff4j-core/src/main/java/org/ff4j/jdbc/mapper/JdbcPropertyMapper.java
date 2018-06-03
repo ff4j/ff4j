@@ -28,9 +28,8 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.ff4j.exception.FeatureAccessException;
-import org.ff4j.exception.PropertyAccessException;
-import org.ff4j.feature.strategy.FF4jStrategy;
+import org.ff4j.feature.exception.FeatureAccessException;
+import org.ff4j.feature.strategy.FF4jToggleStrategy;
 import org.ff4j.jdbc.JdbcConstants.PropertyColumns;
 import org.ff4j.jdbc.JdbcQueryBuilder;
 import org.ff4j.mapper.PropertyMapper;
@@ -38,6 +37,7 @@ import org.ff4j.property.Property;
 import org.ff4j.property.PropertyEvaluationStrategy;
 import org.ff4j.property.domain.PropertyFactory;
 import org.ff4j.property.domain.PropertyString;
+import org.ff4j.property.exception.PropertyAccessException;
 import org.ff4j.utils.JsonUtils;
 import org.ff4j.utils.Util;
 
@@ -105,7 +105,7 @@ public class JdbcPropertyMapper extends AbstractJdbcMapper  implements PropertyM
     }
     /** {@inheritDoc} */
     @Override
-    public PreparedStatement toStore(Property<?> property) {
+    public PreparedStatement mapToRepository(Property<?> property) {
         PreparedStatement ps;
         try {
             ps = sqlConn.prepareStatement(queryBuilder.sqlInsertProperty());
@@ -119,7 +119,7 @@ public class JdbcPropertyMapper extends AbstractJdbcMapper  implements PropertyM
     /** {@inheritDoc} */
     @Override
     @SuppressWarnings({"rawtypes","unchecked"})
-    public Property<?> fromStore(ResultSet rs) {
+    public Property<?> mapFromRepository(ResultSet rs) {
         try {
             Property<?> p = PropertyFactory.createProperty(
                     rs.getString(PropertyColumns.UID.colname()),  
@@ -140,7 +140,7 @@ public class JdbcPropertyMapper extends AbstractJdbcMapper  implements PropertyM
             String strategy = rs.getString(PropertyColumns.STRATCLASS.colname());
             if (Util.hasLength(strategy)) {
                 Map < String, String > initParams = JsonUtils.jsonAsMap(rs.getString(PropertyColumns.INITPARAMS.colname()));
-                FF4jStrategy ff4jStrategy = FF4jStrategy.of(p.getUid(), strategy, initParams);
+                FF4jToggleStrategy ff4jStrategy = FF4jToggleStrategy.of(p.getUid(), strategy, initParams);
                 if (ff4jStrategy instanceof PropertyEvaluationStrategy) {
                     p.setEvaluationStrategy((PropertyEvaluationStrategy) ff4jStrategy);
                 } else {

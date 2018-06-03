@@ -26,7 +26,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.ff4j.FF4jEntity;
-import org.ff4j.v1.utils.JsonUtils;
+import org.ff4j.utils.JsonUtils;
 
 /**
  * Represent a user in FF4J.

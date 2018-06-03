@@ -2,8 +2,8 @@ package org.ff4j.property.domain;
 
 import java.math.BigInteger;
 
-import org.ff4j.exception.InvalidPropertyTypeException;
 import org.ff4j.property.Property;
+import org.ff4j.property.exception.InvalidPropertyTypeException;
 
 /*
  * #%L

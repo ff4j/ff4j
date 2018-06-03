@@ -80,6 +80,17 @@ public class FF4jContext {
     public String toString() {
         return JsonUtils.mapAsJson(parameters);
     }
+
+    /**
+     * Check inexistence of key within map
+     * 
+     * @param key
+     *            target parameter key
+     * @return if the parameter exist
+     */
+    public boolean containsKey(String key) {
+        return parameters.containsKey(key);
+    }
     
     /**
      * Get Raw value of the parameter map.

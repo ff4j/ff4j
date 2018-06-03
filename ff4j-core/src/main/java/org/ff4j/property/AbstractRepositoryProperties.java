@@ -13,10 +13,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.ff4j.exception.PropertyAlreadyExistException;
-import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.monitoring.AuditTrail;
 import org.ff4j.parser.xml.XmlParser;
+import org.ff4j.property.exception.PropertyAlreadyExistException;
+import org.ff4j.property.exception.PropertyNotFoundException;
 import org.ff4j.repository.FF4jRepositoryListener;
 import org.ff4j.repository.FF4jRepositorySupport;
 
@@ -73,9 +73,9 @@ public abstract class AbstractRepositoryProperties
      * @param xmlConfFile
      *      xml configuration file
      */
-    public  Map<String, Property<?>> importPropertiesFromXmlFile(String xmlConfFile) {
-        Map<String, Property<?>> properties = XmlParser.parseFile(xmlConfFile).getProperties();
-        for (Map.Entry<String,Property<?>> featureName : properties.entrySet()) {
+    public  Map<String, ? extends Property<?>> importPropertiesFromXmlFile(String xmlConfFile) {
+        Map<String, ? extends Property<?>> properties = new XmlParser().parse(xmlConfFile).getProperties();
+        for (Map.Entry<String,? extends Property<?>> featureName : properties.entrySet()) {
             if (exists(featureName.getKey())) {
                 delete(featureName.getKey());
             }

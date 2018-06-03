@@ -25,8 +25,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.feature.Feature;
+import org.ff4j.feature.exception.FeatureAccessException;
 import org.ff4j.jdbc.JdbcConstants.FeaturesColumns;
 import org.ff4j.jdbc.JdbcQueryBuilder;
 import org.ff4j.mapper.FeatureMapper;
@@ -52,7 +52,7 @@ public class JdbcFeatureMapper extends AbstractJdbcMapper implements FeatureMapp
     
     /** {@inheritDoc} */
     @Override
-    public PreparedStatement toStore(Feature feature) {
+    public PreparedStatement mapToRepository(Feature feature) {
         PreparedStatement ps;
         try {
             ps = sqlConn.prepareStatement(queryBuilder.sqlInsertFeature());
@@ -78,7 +78,7 @@ public class JdbcFeatureMapper extends AbstractJdbcMapper implements FeatureMapp
      *             error accured when parsing resultSet
      */
     @Override
-    public Feature fromStore(ResultSet rs) {
+    public Feature mapFromRepository(ResultSet rs) {
         try {
              Feature f = new Feature(rs.getString(FeaturesColumns.UID.colname()));
              f.setGroup(rs.getString(FeaturesColumns.GROUPNAME.colname()));

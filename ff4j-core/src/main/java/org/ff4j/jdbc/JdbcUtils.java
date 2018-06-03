@@ -32,7 +32,7 @@ import java.sql.Statement;
 
 import javax.sql.DataSource;
 
-import org.ff4j.exception.FeatureAccessException;
+import org.ff4j.feature.exception.FeatureAccessException;
 
 /**
  * Group utilities methods to work with low-level JDBC.
@@ -41,7 +41,31 @@ import org.ff4j.exception.FeatureAccessException;
  */
 public class JdbcUtils {
     
+    private static final JdbcQueryBuilder QUERY_BUILDER =  new JdbcQueryBuilder();
+    
     private JdbcUtils() {
+    }
+    
+    /**
+     * Any repository may need some security (ACL).
+     * 
+     * @param ds
+     *      current data source
+     */
+    public static void createSchemaSecurity(DataSource ds) {
+        // SECURITY
+        if (!isTableExist(ds, QUERY_BUILDER.getTableNamePermissions())) {
+            executeUpdate(ds, QUERY_BUILDER.sqlCreateTablePermissions());
+        }
+        if (!isTableExist(ds, QUERY_BUILDER.getTableNameUsers())) {
+            executeUpdate(ds, QUERY_BUILDER.sqlCreateTableUser());
+        }
+        if (!isTableExist(ds, QUERY_BUILDER.getTableNameRoles())) {
+            executeUpdate(ds, QUERY_BUILDER.sqlCreateTableRoles());
+        }
+        if (!isTableExist(ds, QUERY_BUILDER.getTableNameRolesUsers())) {
+            executeUpdate(ds, QUERY_BUILDER.sqlCreateTableRolesUsers());
+        }
     }
     
     /**

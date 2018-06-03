@@ -205,5 +205,14 @@ public class FF4jAcl implements Serializable {
     public Map<FF4jPermission, FF4jGrantees> getPermissions() {
         return permissions;
     }
+
+    /**
+     * Setter accessor for attribute 'permissions'.
+     * @param permissions
+     * 		new value for 'permissions '
+     */
+    public void setPermissions(Map<FF4jPermission, FF4jGrantees> permissions) {
+        this.permissions = permissions;
+    }
     
 }

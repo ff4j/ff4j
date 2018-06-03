@@ -1,0 +1,115 @@
+# ------------------------------------------------------------------------
+# Configuration Related to FF4j
+# ------------------------------------------------------------------------
+ff4j:
+  autocreate: true
+  audit:      true
+  
+  # Everything related to features
+  feature-store:
+    class: org.ff4j.inmemory.repository.RepositoryFeaturesInMemory
+    params:
+      features:
+        #Feature A
+        - uid: first
+          enable: true
+          description: description
+          groupName: GRP1
+          toggle-strategies:
+            - class: org.ff4j.strategy.PonderationStrategy
+              param:
+                weight: 0.5
+            - class: org.ff4j.strategy.OfficeHourStrategy
+              param:
+                hour: 18
+                minutes: 00
+          custom-properties:
+            - name: ppListInt
+              value: [12, 13, 14]
+            - name: digitValue
+              value: 1
+              type: org.ff4j.property.domain.PropertyInt
+              fixedValues: [0, 1, 2, 3]
+          permissions:
+            - name: FEATURE_TOGGLE
+              users: [pierre]
+              roles: [ADMINISTRATOR]
+            - name: FEATURE_VIEW
+              users: [EVERYONE]
+        #Feature B
+        - uid: second
+          enable: true
+          description: description
+          groupName: GRP2
+        #Feature C
+        - uid: TOTO
+          enable: true
+          description: description
+          groupName: GRP2
+  
+  # Everything related to Properties
+  property-store:
+    class: org.ff4j.inmemory.repository.RepositoryPropertiesInMemory
+    params:
+      properties:
+        - name: a
+          value: AMER
+          description: Sample Property
+          fixedValues: [AMER, EAST]
+          readOnly: true
+        - name: b
+          value: 12
+        - name: c
+          value: 12.5
+        - name: d
+          value: true
+        - name: e
+          value: hello
+        - name: f
+          value: [12,13,14]
+        - name: g
+          value: DEBUG
+          type: org.ff4j.property.domain.PropertyLogLevel
+     
+  # Everything related to Cache
+  caching:
+    enable: true
+    cacheManager: org.ff4j.inmemory.cache.CacheManagerInMemory
+    params:
+      ttl_in_s : 3600
+         
+  # Security, role based ACCESS
+  acl-store:
+    class: org.ff4j.inmemory.repository.RepositoryAclsInMemory
+    params:
+      permissions:
+        - target: WEB_CONSOLE
+          name: ADMIN_FEATURES
+          users: [pierre]
+          roles: [SUPERUSER, ADMINISTRATOR]
+        - target: WEB_CONSOLE
+          name: ADMIN_PROPERTIES
+          users: [pierre]
+          roles: [SUPERUSER, ADMINISTRATOR]
+      roles:
+        - name: ADMINISTRATOR
+          permissions: [ADMIN_FEATURES, ADMIN_PROPERTIES, TOGGLE_FEATURES,  VIEW_FEATURES, VIEW_PROPERTIES, VIEW_AUDITTRAIL, VIEW_FEATUREUSAGE]
+        - name: SUPERUSER
+          permissions: [TOGGLE_FEATURES,  VIEW_FEATURES, VIEW_PROPERTIES, VIEW_AUDITTRAIL, VIEW_FEATUREUSAGE]
+        - name: USER
+          permissions: [VIEW_FEATURES, VIEW_PROPERTIES, VIEW_AUDITTRAIL, VIEW_FEATUREUSAGE]
+  
+  # Informations relative to users
+  users-store:
+    class: org.ff4j.inmemory.repository.RepositoryPropertiesInMemory
+    params:
+      users:
+        - uid: pierre
+          firstName: Pierre
+          lastName: Foioi
+          description: sample description if OK
+          permissions: [ADMIN_FEATURES, ADMIN_PROPERTIES ]
+          roles: [USER] 
+        - uid: paul
+          firstName: paulo
+      

@@ -23,11 +23,16 @@ import static org.ff4j.test.AssertUtils.assertHasLength;
  */
 
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.ff4j.parser.AbstractConfigurationFileParser;
+import org.ff4j.parser.FF4jConfigFile;
 import org.ff4j.parser.xml.XmlParser;
 import org.ff4j.property.AbstractRepositoryProperties;
 import org.ff4j.property.Property;
@@ -43,29 +48,58 @@ public class RepositoryPropertiesInMemory extends AbstractRepositoryProperties {
     /** serialVersionUID. */
     private static final long serialVersionUID = 5829690784801420235L;
 
-    /** InMemory Map. */
-    private RepositoryInMemory<Property<?>> repo = new RepositoryInMemory<>();
-   
-    /** XML File where features are load. */
-    private String fileName = null;
+    /** InMemory Property Map */
+    private Map<String, Property<?>> mapOfProperties = new LinkedHashMap<>();
     
-    /** InMemory Feature Map */
-    private Map<String, Property<?>> properties = new LinkedHashMap<>();
+    /** Default constructor. */
+    public RepositoryPropertiesInMemory() {}
     
     /**
-     * Default Constructor 
+     * Provide an xml file to initialize.
+     *
+     * @param fileName
+     *          target fileName
      */
-    public RepositoryPropertiesInMemory() {
+    public RepositoryPropertiesInMemory(String fileName) {
+        this(new XmlParser(), fileName);
     }
     
     /**
-     * Constructor with configuration fileName.
-     * 
+     * Provide an xml file to initialize.
+     *
      * @param fileName
-     *            fileName present in classPath or on fileSystem.
+     *          target fileName
      */
-    public RepositoryPropertiesInMemory(String fileName) {
-        repo = new RepositoryInMemory<>(fileName);
+    public RepositoryPropertiesInMemory(InputStream inputStream) {
+        this(new XmlParser(), inputStream);
+    }
+    
+    /**
+     * Load data with a Parser and a fileName.
+     *
+     * @param parser
+     *      target parser
+     * @param fileName
+     *      target file name
+     */
+    public RepositoryPropertiesInMemory(AbstractConfigurationFileParser parser, String fileName) {
+        AssertUtils.assertHasLength(fileName, "fileName");
+        AssertUtils.assertNotNull(parser,     "parser");
+        initWithConfig(parser.parse(fileName));
+    }
+    
+    /**
+     * Load data with a Parser and a fileName.
+     *
+     * @param parser
+     *      target parser
+     * @param fileName
+     *      target file name
+     */
+    public RepositoryPropertiesInMemory(AbstractConfigurationFileParser parser, InputStream in) {
+        AssertUtils.assertNotNull(parser,  "parser");
+        AssertUtils.assertNotNull(in, "inputStream");
+        initWithConfig(parser.parse(in));
     }
     
     /**
@@ -74,42 +108,50 @@ public class RepositoryPropertiesInMemory extends AbstractRepositoryProperties {
      * @param fileName
      *            fileName present in classPath or on fileSystem.
      */
-    public RepositoryPropertiesInMemory(InputStream xmlIN) {
-        loadConf(xmlIN);
+    public RepositoryPropertiesInMemory(FF4jConfigFile ff4jConfig) {
+        initWithConfig(ff4jConfig);
     }
-    
+
     /**
-     * Read configuration file (property name), retrieve users and populate in memory map.
-     */
-    private void populateUsersFromXmlConfigurationFile() {
-        AssertUtils.assertHasLength(fileName);
-        InputStream fileStream = getClass().getClassLoader().getResourceAsStream(fileName);
-        populateFromXmlConfigurationStream(fileStream);
-    }
-    
-    /**
-     * Read configuration from inputStream.
-     * @param xmlIN
-     */
-    private void populateFromXmlConfigurationStream(InputStream xmlIN) {
-        AssertUtils.assertNotNull(xmlIN, "xml Stream");
-        // TODO Invoke parser
-    }
-    
-    /**
-     * Constructor with full set of feature.
+     * Constructor with features to be imported immediately.
      * 
-     * @param maps
+     * @param features
+     *      collection of features to be created
      */
-    public RepositoryPropertiesInMemory(Map<String, Property<?>> maps) {
-        this.properties = maps;
+    public RepositoryPropertiesInMemory(Collection<Property<?>> properties) {
+        initWithProperties(properties);
+    }
+    
+    /**
+     * Initialization of features and groups.
+     * 
+     * @param features
+     */
+    private void initWithConfig(FF4jConfigFile ff4jConfig) {
+        AssertUtils.assertNotNull(ff4jConfig);
+        AssertUtils.assertNotNull(ff4jConfig.getProperties());
+        initWithProperties(ff4jConfig.getProperties().values());
+    }
+    
+    /**
+     * Initialization of features and groups.
+     * 
+     * @param features
+     */
+    private void initWithProperties(Collection<Property<?>> features) {
+        createSchema();
+        if (null != features) {
+            this.mapOfProperties = features
+                    .stream()
+                    .collect(Collectors.toMap(Property::getUid, Function.identity()));
+        }
     }
     
     /** {@inheritDoc} */
     @Override
     public boolean exists(String name) {
         assertHasLength(name);
-        return properties.containsKey(name);
+        return mapOfProperties.containsKey(name);
     }
     
     /** {@inheritDoc} */
@@ -117,62 +159,41 @@ public class RepositoryPropertiesInMemory extends AbstractRepositoryProperties {
     public void create(Property<?> value) {
         assertPropertyNotNull(value);
         assertPropertyNotExist(value.getUid());
-        properties.put(value.getUid(), value);
+        mapOfProperties.put(value.getUid(), value);
     }
     
     /** {@inheritDoc} */
     @Override
     public void delete(String name) {
         assertPropertyExist(name);
-        properties.remove(name);
+        mapOfProperties.remove(name);
     }
     
     /** {@inheritDoc} */
     @Override
     public Optional < Property<?> > findById(String uid) {
         assertHasLength(uid);
-        return Optional.ofNullable(properties.get(uid));
+        return Optional.ofNullable(mapOfProperties.get(uid));
     }
     
     /** {@inheritDoc} */
     @Override
     public Stream<String> findAllIds() {
-        if (properties == null) return null;
-        return properties.keySet().stream();
+        if (mapOfProperties == null) return null;
+        return mapOfProperties.keySet().stream();
     }
     
     /** {@inheritDoc} */
     @Override
     public void deleteAll() {
-        properties.clear();
+        mapOfProperties.clear();
     }
 
     /** {@inheritDoc} */
     @Override
     public Stream<Property<?>> findAll() {
-        if (properties == null) return null;
-        return properties.values().stream();
-    }
-    
-    /**
-     * Load configuration through FF4J.vml file.
-     * 
-     * @param conf
-     *            xml filename
-     */
-    private void loadConfFile(String conf) {
-        this.fileName = conf;
-        loadConf(getClass().getClassLoader().getResourceAsStream(conf));
-    }
-
-    /**
-     * Load configuration through FF4J.vml file.
-     * 
-     * @param conf
-     *            xml filename
-     */
-    private void loadConf(InputStream xmlIN) {
-       this.properties = XmlParser.parseInputStream(xmlIN).getProperties();
+        if (mapOfProperties == null) return null;
+        return mapOfProperties.values().stream();
     }
     
     /**
@@ -181,36 +202,7 @@ public class RepositoryPropertiesInMemory extends AbstractRepositoryProperties {
      * 		new value for 'properties '
      */
     public void setProperties(Map<String, Property<?>> properties) {
-        this.properties = properties;
-    }
-    
-    /**
-     * Setter accessor for attribute 'locations'.
-     * 
-     * @param locations
-     *            new value for 'locations '
-     */
-    public void setLocation(String locations) {
-        loadConfFile(locations);
-    }
-
-    /**
-     * Getter accessor for attribute 'fileName'.
-     *
-     * @return
-     *       current value of 'fileName'
-     */
-    public String getFileName() {
-        return fileName;
-    }
-
-    /**
-     * Setter accessor for attribute 'fileName'.
-     * @param fileName
-     * 		new value for 'fileName '
-     */
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+        this.mapOfProperties = properties;
     }
     
 }

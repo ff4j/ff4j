@@ -532,157 +532,21 @@ public class JdbcConstants {
     }
     
     // ---------------------------------------------
-    // ------- TABLES PERMISSIONS (ACL) -------------
+    // ------- TABLES PERMISSIONS (ACL) ------------
     // ---------------------------------------------
     
     /**
      * Representation of the JDBC Table ROLE.
      */
-    public static enum FeaturePermissionsColumns  implements SqlTableColumns {
-        
-        FEATURE("FEATURE",   SQLTypes.VARCHAR, 100, true),
-        
-        RIGHTS("RIGHTS", SQLTypes.VARCHAR, 100, true),
-        
-        GRANTEE("GRANTEE", SQLTypes.VARCHAR, 100, true),
-        
-        DESCRIPTION("DESCRIPTION", SQLTypes.VARCHAR, 255, false);
-        
-        /** Column attribute */
-        private final String name;
-        
-        /** Column attribute */
-        private final SQLTypes type;
-        
-        /** Column attribute */
-        private final int size;
-        
-        /** Column attribute */
-        private final boolean required;
-        
-        /**
-         * Private constructor.
-         *
-         * @param pname
-         *      column name
-         * @param ptype
-         *      column type (depends on underlying JDBC DB NUMBER, INTEGER, but still useful 
-         * @param psize
-         *      column size
-         * @param pnullabz
-         */
-        private FeaturePermissionsColumns(String pname, SQLTypes ptype, int psize, boolean pnullable) {
-            name = pname;
-            type = ptype;
-            size = psize;
-            required = pnullable;
-        }
-        
-        /** {@inheritDoc} */
-        public String colname() { return name; }
-        
-        /** {@inheritDoc} */
-        public SQLTypes type()  { return type; }
-        
-        /** {@inheritDoc} */
-        public int size()       { return size; }
-        
-        /** {@inheritDoc} */
-        public boolean nullable()  { return !required; }
-        
-        /** {@inheritDoc} */
-        public String tableName() { return "FEATURE_PERM"; }
-        
-        /** {@inheritDoc} */
-        public List < SqlTableColumns > primaryKey() { 
-            return Util.listOf(FEATURE, RIGHTS, GRANTEE); 
-        }
-        
-        /** {@inheritDoc} */
-        public Optional <Map < SqlTableColumns, SqlTableColumns >> foreignKey() { 
-            return Optional.of(Util.mapOf(FEATURE, FeaturesColumns.UID)); 
-        }
-    }
-    
-    /**
-     * Representation of the JDBC Table ROLE.
-     */
-    public static enum PropertyPermissionsColumns  implements SqlTableColumns {
-        
-        PROPERTY("PROPERTY",   SQLTypes.VARCHAR, 100, true),
-        
-        RIGHTS("RIGHTS", SQLTypes.VARCHAR, 100, true),
-        
-        GRANTEE("GRANTEE", SQLTypes.VARCHAR, 100, true),
-        
-        DESCRIPTION("DESCRIPTION", SQLTypes.VARCHAR, 255, false);
-        
-        /** Column attribute */
-        private final String name;
-        
-        /** Column attribute */
-        private final SQLTypes type;
-        
-        /** Column attribute */
-        private final int size;
-        
-        /** Column attribute */
-        private final boolean required;
-        
-        /**
-         * Private constructor.
-         *
-         * @param pname
-         *      column name
-         * @param ptype
-         *      column type (depends on underlying JDBC DB NUMBER, INTEGER, but still useful 
-         * @param psize
-         *      column size
-         * @param pnullabz
-         */
-        private PropertyPermissionsColumns(String pname, SQLTypes ptype, int psize, boolean pnullable) {
-            name = pname;
-            type = ptype;
-            size = psize;
-            required = pnullable;
-        }
-        
-        /** {@inheritDoc} */
-        public String colname() { return name; }
-        
-        /** {@inheritDoc} */
-        public SQLTypes type()  { return type; }
-        
-        /** {@inheritDoc} */
-        public int size()       { return size; }
-        
-        /** {@inheritDoc} */
-        public boolean nullable()  { return !required; }
-        
-        /** {@inheritDoc} */
-        public String tableName() { return "PROPERTY_PERM"; }
-        
-        /** {@inheritDoc} */
-        public List < SqlTableColumns > primaryKey() { 
-            return Util.listOf(PROPERTY, RIGHTS, GRANTEE); 
-        }
-        
-        /** {@inheritDoc} */
-        public Optional <Map < SqlTableColumns, SqlTableColumns >> foreignKey() { 
-            return Optional.of(Util.mapOf(PROPERTY, PropertyColumns.UID)); 
-        }
-    }
-    
-    /**
-     * Representation of the JDBC Table ROLE.
-     */
-    public static enum GlobalPermissionsColumns  implements SqlTableColumns {
+    public static enum PermissionsColumns  implements SqlTableColumns {
         
         TARGET("TARGET", SQLTypes.VARCHAR, 100, true),
         
-        RIGHTS("RIGHTS", SQLTypes.VARCHAR, 100, true),
+        PERMISSION("PERMISSION", SQLTypes.VARCHAR, 100, true),
         
         GRANTEE("GRANTEE", SQLTypes.VARCHAR, 100, true),
+        
+        GRANTEE_TYPE("GRANTEE_TYPE", SQLTypes.VARCHAR, 100, true),
         
         DESCRIPTION("DESCRIPTION", SQLTypes.VARCHAR, 255, false);
         
@@ -709,7 +573,7 @@ public class JdbcConstants {
          *      column size
          * @param pnullabz
          */
-        private GlobalPermissionsColumns(String pname, SQLTypes ptype, int psize, boolean pnullable) {
+        private PermissionsColumns(String pname, SQLTypes ptype, int psize, boolean pnullable) {
             name = pname;
             type = ptype;
             size = psize;
@@ -733,7 +597,7 @@ public class JdbcConstants {
         
         /** {@inheritDoc} */
         public List < SqlTableColumns > primaryKey() { 
-            return Util.listOf(RIGHTS, GRANTEE, TARGET); 
+            return Util.listOf(PERMISSION, GRANTEE, TARGET); 
         }
         
         /** {@inheritDoc} */
@@ -751,7 +615,7 @@ public class JdbcConstants {
      */
     public static enum FeatureStrategyColumns  implements SqlTableColumns {
         
-        FEATURE("FEATURE",   SQLTypes.VARCHAR, 100, true),
+        FEATURE("FEATURE_UID",   SQLTypes.VARCHAR, 100, true),
         
         CLASSNAME("CLASSNAME", SQLTypes.VARCHAR, 200, true),
         
@@ -958,7 +822,7 @@ public class JdbcConstants {
         // Columns shared by all entities
         REF_USER("REF_USER", SQLTypes.VARCHAR, 100, true),
         
-        REF_GROUP("REF_GROUP", SQLTypes.VARCHAR, 100, true);
+        REF_ROLE("REF_ROLE", SQLTypes.VARCHAR, 100, true);
         
         /** Column attribute */
         private final String name;
@@ -1007,14 +871,14 @@ public class JdbcConstants {
         
         /** {@inheritDoc} */
         public List < SqlTableColumns > primaryKey() { 
-            return Util.listOf(REF_USER, REF_GROUP); 
+            return Util.listOf(REF_USER, REF_ROLE); 
         }
         
         /** {@inheritDoc} */
         public Optional <Map < SqlTableColumns, SqlTableColumns >> foreignKey() {
             Map < SqlTableColumns, SqlTableColumns > foreignKeysMap = new HashMap<>();
             foreignKeysMap.put(REF_USER, UserColumns.UID);
-            foreignKeysMap.put(REF_GROUP, RolesColumns.NAME);
+            foreignKeysMap.put(REF_ROLE, RolesColumns.NAME);
             return Optional.of(foreignKeysMap);
         }
     }

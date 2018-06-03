@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.ff4j.test.DefinedPermissionSecurityManager;
 import org.ff4j.v1.FF4j;
 import org.ff4j.v1.audit.Event;
 import org.ff4j.v1.audit.EventBuilder;
@@ -37,7 +38,6 @@ import org.ff4j.v1.audit.chart.BarChart;
 import org.ff4j.v1.audit.chart.PieChart;
 import org.ff4j.v1.audit.chart.Serie;
 import org.ff4j.v1.audit.chart.TimeSeriesChart;
-import org.ff4j.v1.test.DefinedPermissionSecurityManager;
 import org.ff4j.v1.utils.Util;
 import org.junit.Assert;
 import org.junit.Test;

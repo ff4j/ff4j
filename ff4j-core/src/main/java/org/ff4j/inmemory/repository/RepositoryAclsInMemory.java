@@ -27,8 +27,12 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.ff4j.parser.AbstractConfigurationFileParser;
+import org.ff4j.parser.FF4jConfigFile;
+import org.ff4j.parser.xml.XmlParser;
 import org.ff4j.security.RepositoryAccessControlLists;
 import org.ff4j.security.domain.FF4jAcl;
+import org.ff4j.test.AssertUtils;
 
 /**
  * Default implementation of {@link RepositoryAccessControlLists} to work with an inmemory map.
@@ -43,19 +47,89 @@ public class RepositoryAclsInMemory implements RepositoryAccessControlLists, Ser
     /** Holder for different {@link FF4jAcl}. */
     private Map < String , FF4jAcl > mapOfAcl = new HashMap<>();
     
-    public RepositoryAclsInMemory() {
-    }
-    		
     /**
-     * Constructor with configuration fileName.
+     * Default constructor.
+     */
+    public RepositoryAclsInMemory() {}
+    
+    /**
+     * Provide an xml file to initialize.
+     *
+     * @param fileName
+     *          target fileName
+     */
+    public RepositoryAclsInMemory(String fileName) {
+        this(new XmlParser(), fileName);
+    }
+    
+    /**
+     * Provide an xml file to initialize.
+     *
+     * @param fileName
+     *          target fileName
+     */
+    public RepositoryAclsInMemory(InputStream inputStream) {
+        this(new XmlParser(), inputStream);
+    }
+    
+    /**
+     * Load data with a Parser and a fileName.
+     *
+     * @param parser
+     *      target parser
+     * @param fileName
+     *      target file name
+     */
+    public RepositoryAclsInMemory(AbstractConfigurationFileParser parser, String fileName) {
+        AssertUtils.assertHasLength(fileName, "fileName");
+        AssertUtils.assertNotNull(parser,     "parser");
+        initWithConfig(parser.parse(fileName));
+    }
+    
+    /**
+     * Load data with a Parser and a fileName.
+     *
+     * @param parser
+     *      target parser
+     * @param fileName
+     *      target file name
+     */
+    public RepositoryAclsInMemory(AbstractConfigurationFileParser parser, InputStream in) {
+        AssertUtils.assertNotNull(parser,  "parser");
+        AssertUtils.assertNotNull(in, "inputStream");
+        initWithConfig(parser.parse(in));
+    }
+    
+    /**
+     * Constructor with inputstream fileName.
      * 
      * @param fileName
      *            fileName present in classPath or on fileSystem.
      */
-    public RepositoryAclsInMemory(String fileName) {
+    public RepositoryAclsInMemory(FF4jConfigFile ff4jConfig) {
+        initWithConfig(ff4jConfig);
     }
     
-    public RepositoryAclsInMemory(InputStream xmlIN) {
+    /**
+     * Initialization of features and groups.
+     * 
+     * @param features
+     */
+    private void initWithConfig(FF4jConfigFile ff4jConfig) {
+        AssertUtils.assertNotNull(ff4jConfig);
+        AssertUtils.assertNotNull(ff4jConfig.getAcls());
+        initWithAcls(ff4jConfig.getAcls());
+    }
+    
+    /**
+     * Initialization of features and groups.
+     * 
+     * @param features
+     */
+    private void initWithAcls(Map<String, FF4jAcl> acls) {
+        if (null != acls) {
+            this.mapOfAcl = acls;
+        }
     }
     
     

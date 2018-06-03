@@ -50,7 +50,7 @@ public final class FF4jConfigFile {
     
     /** InMemory Feature Map */
     private Map <String, FF4jAcl > acls = new LinkedHashMap<String, FF4jAcl>();
-
+    
     /**
      * Getter accessor for attribute 'roles'.
      *

@@ -2,7 +2,6 @@ package org.ff4j.inmemory.repository;
 
 import static org.ff4j.test.AssertUtils.assertHasLength;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -67,27 +66,14 @@ public class RepositoryFeatureUsageInMemory extends AbstractRepositoryFeatureUsa
     /** Event <YYYYMMDD> / <featureUID> -> <Event> list (only action CHECK_ON) */
     private Map<String, Map<String, EventSeries>> events = 
             new ConcurrentHashMap<String, Map<String, EventSeries>>();
-
-    public RepositoryFeatureUsageInMemory(String fileName) {
-    }
-    
-    public RepositoryFeatureUsageInMemory(InputStream xmlIN) {
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public Stream<String> findAllIds() {
-        if (events ==  null) return null;
-        return events.keySet().stream();
-    }
-    
+ 
     /**
      * Default constructor with default capacity to 100.000
      */
     public RepositoryFeatureUsageInMemory() {
         this(DEFAULT_QUEUE_CAPACITY);
     }
-
+    
     /**
      * Constructor to tune capacity.
      * 
@@ -96,6 +82,13 @@ public class RepositoryFeatureUsageInMemory extends AbstractRepositoryFeatureUsa
      */
     public RepositoryFeatureUsageInMemory(int queueCapacity) {
         this.queueCapacity = queueCapacity;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public Stream<String> findAllIds() {
+        if (events ==  null) return null;
+        return events.keySet().stream();
     }
     
     /** {@inheritDoc} */

@@ -37,10 +37,11 @@ import org.ff4j.v1.property.PropertyString;
 import org.ff4j.v1.store.InMemoryFeatureStore;
 import org.ff4j.v1.utils.JdbcUtils;
 import org.ff4j.v1.utils.JsonUtils;
-import org.ff4j.v1.utils.MappingUtil;
 import org.ff4j.v1.utils.Util;
 import org.junit.Assert;
 import org.junit.Test;
+
+import MappingUtil;
 
 
 public class MappingUtilsTest {

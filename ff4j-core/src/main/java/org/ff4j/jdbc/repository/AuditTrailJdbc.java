@@ -38,7 +38,7 @@ import java.util.stream.Stream;
 import javax.sql.DataSource;
 
 import org.ff4j.event.Event;
-import org.ff4j.exception.FeatureAccessException;
+import org.ff4j.feature.exception.FeatureAccessException;
 import org.ff4j.jdbc.JdbcConstants.AuditTrailColumns;
 import org.ff4j.monitoring.AuditTrail;
 import org.ff4j.monitoring.AuditTrailQuery;

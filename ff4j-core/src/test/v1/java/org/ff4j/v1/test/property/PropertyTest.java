@@ -41,10 +41,11 @@ import org.ff4j.v1.property.PropertyLogLevel;
 import org.ff4j.v1.property.PropertyLong;
 import org.ff4j.v1.property.PropertyShort;
 import org.ff4j.v1.property.PropertyString;
-import org.ff4j.v1.property.util.PropertyJsonBean;
 import org.ff4j.v1.utils.Util;
 import org.junit.Assert;
 import org.junit.Test;
+
+import PropertyJsonBean;
 
 /**
  * Basic testing of {@link PropertyString}.

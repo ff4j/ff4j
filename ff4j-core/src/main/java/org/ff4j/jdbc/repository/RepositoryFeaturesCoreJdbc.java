@@ -41,11 +41,11 @@ import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
-import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.feature.Feature;
 import org.ff4j.feature.AbstractRepositoryFeatures;
 import org.ff4j.feature.RepositoryFeatures;
 import org.ff4j.feature.ToggleStrategy;
+import org.ff4j.feature.exception.FeatureAccessException;
 import org.ff4j.jdbc.JdbcConstants.FeaturePropertyColumns;
 import org.ff4j.jdbc.JdbcConstants.FeaturesColumns;
 import org.ff4j.jdbc.JdbcQueryBuilder;
@@ -118,7 +118,7 @@ public class RepositoryFeaturesCoreJdbc extends AbstractRepositoryFeatures {
         if (!isTableExist(ds, qb.getTableNameFeatures())) {
             executeUpdate(ds, qb.sqlCreateTableFeatures());
         }
-        // Toggle Strategies from features
+        // Strategies from features
         if (!isTableExist(ds, qb.getTableNameFeatureStrategy())) {
             executeUpdate(ds, qb.sqlCreateTableToggleStrategy());
         }
@@ -126,10 +126,7 @@ public class RepositoryFeaturesCoreJdbc extends AbstractRepositoryFeatures {
         if (!isTableExist(ds, qb.getTableNameFeatureProperties())) {
             executeUpdate(ds, qb.sqlCreateTableFeatureProperties());
         }
-        // permission from Features
-        if (!isTableExist(ds, qb.getTableNameFeaturePermissions())) {
-            executeUpdate(ds, qb.sqlCreateTableFeaturePermissions());
-        }
+        JdbcUtils.createSchemaSecurity(ds);
     }
     
     /** {@inheritDoc} */
@@ -223,7 +220,7 @@ public class RepositoryFeaturesCoreJdbc extends AbstractRepositoryFeatures {
                     if (!rs1.next()) {
                         return Optional.empty();
                     } else {
-                        f = fmapper.fromStore(rs1);
+                        f = fmapper.mapFromRepository(rs1);
                     }
                 }
             }
@@ -249,7 +246,7 @@ public class RepositoryFeaturesCoreJdbc extends AbstractRepositoryFeatures {
                 ps3.setString(1, uid);
                 try (ResultSet rs3 = ps3.executeQuery()) {
                     while (rs3.next()) {
-                        f.addCustomProperty(pmapper.fromStore(rs3));
+                        f.addCustomProperty(pmapper.mapFromRepository(rs3));
                     }   
                 }
             } 
@@ -305,7 +302,7 @@ public class RepositoryFeaturesCoreJdbc extends AbstractRepositoryFeatures {
             try(PreparedStatement ps1 = sqlConn.prepareStatement(getQueryBuilder().sqlFindAllFeatures())) {
                 try (ResultSet rs1 = ps1.executeQuery()) {
                     while (rs1.next()) {
-                        Feature f = fmapper.fromStore(rs1);
+                        Feature f = fmapper.mapFromRepository(rs1);
                         mapFP.put(f.getUid(), f);
                     }
                 }
@@ -325,7 +322,7 @@ public class RepositoryFeaturesCoreJdbc extends AbstractRepositoryFeatures {
                 try (ResultSet rs3 = ps3.executeQuery()) {
                     while (rs3.next()) {
                         mapFP.get(rs3.getString(FeaturePropertyColumns.UID.colname()))
-                             .addCustomProperty(pmapper.fromStore(rs3));
+                             .addCustomProperty(pmapper.mapFromRepository(rs3));
                     }   
                 }
             }
@@ -429,7 +426,7 @@ public class RepositoryFeaturesCoreJdbc extends AbstractRepositoryFeatures {
                 ps.setString(1, groupName);
                 try(ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
-                        Feature f = mapper.fromStore(rs);
+                        Feature f = mapper.mapFromRepository(rs);
                         mapFP.put(f.getUid(), f);
                     }
                 }
@@ -452,7 +449,7 @@ public class RepositoryFeaturesCoreJdbc extends AbstractRepositoryFeatures {
                     while (rs3.next()) {
                         String featureId = rs3.getString(FeaturePropertyColumns.UID.colname());
                         if (mapFP.containsKey(featureId)) {
-                            mapFP.get(featureId).addCustomProperty(pmapper.fromStore(rs3));
+                            mapFP.get(featureId).addCustomProperty(pmapper.mapFromRepository(rs3));
                         }
                     }   
                 }
@@ -486,15 +483,15 @@ public class RepositoryFeaturesCoreJdbc extends AbstractRepositoryFeatures {
             
             // Create Core Feature
             JdbcFeatureMapper mapper = new JdbcFeatureMapper(sqlConn, getQueryBuilder());
-            try (PreparedStatement ps1 = mapper.toStore(feature)) {
+            try (PreparedStatement ps1 = mapper.mapToRepository(feature)) {
                 ps1.executeUpdate();
             }
             
             // Create Toggle Strategies
-            if (feature.getToggleStrategies().isPresent()) {
+            if (null != feature.getToggleStrategies()) {
                 JdbcFeatureToggleStrategyMapper tmapper = new JdbcFeatureToggleStrategyMapper(sqlConn, getQueryBuilder(), feature.getUid());
-                for(ToggleStrategy ts : feature.getToggleStrategies().get()) {
-                    try(PreparedStatement ps = tmapper.toStore(ts)) {
+                for(ToggleStrategy ts : feature.getToggleStrategies()) {
+                    try(PreparedStatement ps = tmapper.mapToRepository(ts)) {
                         ps.executeUpdate();
                     }
                 }

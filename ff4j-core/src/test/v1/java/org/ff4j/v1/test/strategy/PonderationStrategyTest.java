@@ -1,10 +1,10 @@
 package org.ff4j.v1.test.strategy;
 
+import org.ff4j.test.AbstractFf4jTest;
 import org.ff4j.v1.FF4j;
 import org.ff4j.v1.core.Feature;
 import org.ff4j.v1.strategy.DarkLaunchStrategy;
 import org.ff4j.v1.strategy.PonderationStrategy;
-import org.ff4j.v1.test.AbstractFf4jTest;
 
 /*
  * #%L ff4j-core $Id:$ $HeadURL:$ %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License");

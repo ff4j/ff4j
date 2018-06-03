@@ -39,7 +39,6 @@ public abstract class AbstractRepositoryUsers
 
     /** serialVersionUID. */
     private static final long serialVersionUID = 2472380934533153376L;
-    
 
     /** {@inheritDoc} */
     @Override
@@ -55,13 +54,13 @@ public abstract class AbstractRepositoryUsers
     /** {@inheritDoc} */
     @Override
     public Stream<FF4jUser> findAll() {
-        return null;
+        return Stream.empty();
     }
 
     /** {@inheritDoc} */
     @Override
     public Optional<FF4jUser> findById(String id) {
-        return null;
+        return Optional.empty();
     }
 
     /** {@inheritDoc} */
