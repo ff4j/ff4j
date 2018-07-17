@@ -35,26 +35,6 @@ import java.lang.reflect.InvocationTargetException;
  * limitations under the License.
  * #L%
  */
-
-/*
- * #%L
- * ff4j-aop
- * %%
- * Copyright (C) 2013 Ff4J
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
- */
 @ActiveProfiles("cglib")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:applicationContext-ff4j-aop-test.xml")
@@ -74,7 +54,7 @@ public class FeatureAdvisorCGLIBTest {
     @Autowired
     @Qualifier("whole.english")
     private WholeClassFlipping wholeClassFlipping;
-    
+
     @Before
     public void createFeatures() {
         if (!ff4j.exist("language-english")) {

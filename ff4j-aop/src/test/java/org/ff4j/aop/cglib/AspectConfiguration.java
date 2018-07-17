@@ -8,9 +8,4 @@ import org.springframework.context.annotation.Profile;
 @Profile("cglib")
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class AspectConfiguration {
-
-//    @Bean
-//    public Aspect aop() {
-//        return new Aspect();
-//    }
 }
