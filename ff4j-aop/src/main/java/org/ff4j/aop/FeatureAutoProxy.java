@@ -18,6 +18,7 @@ import java.util.Map;
 import org.springframework.aop.TargetSource;
 import org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ClassUtils;
 
 /**
  * Spring bean used to scan classpath and create dynamic proxy on annotated beans (@Flip).
@@ -55,11 +56,19 @@ public class FeatureAutoProxy extends AbstractAutoProxyCreator {
     @Override
     protected Object[] getAdvicesAndAdvisorsForBean(Class<?> beanClass, String beanName, TargetSource targetSource) {
         // Do not used any AOP here as still working with classes and not objects
-        if (!beanClass.isInterface() && beanClass.getInterfaces() != null) {
-            for (Class<?> currentInterface : beanClass.getInterfaces()) {
-                Object[] r = scanInterface(currentInterface);
-                if (r != null) {
-                    return r;
+        if (!beanClass.isInterface()) {
+            Class<?>[] interfaces;
+            if (ClassUtils.isCglibProxyClass(beanClass)) {
+                interfaces = beanClass.getSuperclass().getInterfaces();
+            } else {
+                interfaces = beanClass.getInterfaces();
+            }
+            if (interfaces != null) {
+                for (Class<?> currentInterface: interfaces) {
+                    Object[] r = scanInterface(currentInterface);
+                    if (r != null) {
+                        return r;
+                    }
                 }
             }
         }

@@ -453,6 +453,11 @@
                 <artifactId>powermock-api-mockito</artifactId>
                 <version>${version.powermock}</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-aspects</artifactId>
+                <version>${version.spring}</version>
+            </dependency>
 
             <!-- web -->
             <dependency>
