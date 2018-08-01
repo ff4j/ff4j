@@ -74,7 +74,7 @@
 
         <!-- Versions -->
         <version.slf4j>1.7.7</version.slf4j>
-        <version.logback>1.1.2</version.logback>
+        <version.logback>1.1.11</version.logback>
 
         <version.junit>4.12</version.junit>
         <version.powermock>1.5.5</version.powermock>
