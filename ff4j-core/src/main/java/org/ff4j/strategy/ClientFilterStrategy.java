@@ -35,6 +35,9 @@ import org.ff4j.core.FlippingExecutionContext;
  */
 public class ClientFilterStrategy extends AbstractFlipStrategy {
 
+    /** Serial. */
+    private static final long serialVersionUID = -485058682902446581L;
+
     /** Threshold. */
     private static final String PARAM_CLIENTLIST = "grantedClients";
 

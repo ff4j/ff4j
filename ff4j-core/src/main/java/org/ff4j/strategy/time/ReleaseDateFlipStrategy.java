@@ -36,6 +36,9 @@ import org.ff4j.strategy.AbstractFlipStrategy;
  */
 public class ReleaseDateFlipStrategy extends AbstractFlipStrategy {
     
+    /** Serial. */
+    private static final long serialVersionUID = 3857531924888301636L;
+
     public static final String DATE_PATTERN = "yyyy-MM-dd-HH:mm";
     
     /** Pattern to create a release Date. */

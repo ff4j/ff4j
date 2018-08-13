@@ -27,6 +27,9 @@ package org.ff4j.strategy;
  */
 public class WhiteListStrategy extends ClientFilterStrategy {
     
+    /** Serial. */
+    private static final long serialVersionUID = -943815678614878988L;
+
     /**
      * Default Constructor.
      */

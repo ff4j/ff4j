@@ -87,8 +87,8 @@ public class PlaceHolderTest {
 
     @Test
     public void testPlaceHolderWithAnnotation() {
-        Assert.assertEquals(new Integer(1), pro.getValue());
-        Assert.assertEquals(new Integer(1), pro2);
+        Assert.assertEquals(Integer.valueOf(1), pro.getValue());
+        Assert.assertEquals(Integer.valueOf(1), pro2);
         Assert.assertEquals(1, pro3);
         Assert.assertNull(pro4);
 

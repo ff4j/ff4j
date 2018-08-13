@@ -25,8 +25,20 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.strategy.AbstractFlipStrategy;
 
+ 
+/**
+ * Unit testing the Context.
+ * 
+ * @author Cedrick LUNVEN (@clunven)
+ */
 public class ContextStrategy extends AbstractFlipStrategy {
-    @Override
+
+	/**
+	 * Serial
+	 */
+	private static final long serialVersionUID = -5903250663805657065L;
+
+	@Override
     public boolean evaluate(String featureName, FeatureStore store, FlippingExecutionContext executionContext) {
         return executionContext != null && "french".equals(executionContext.getString("user.settings.language", true));
     }

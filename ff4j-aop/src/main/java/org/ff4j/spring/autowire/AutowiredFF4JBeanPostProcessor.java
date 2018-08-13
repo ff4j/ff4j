@@ -115,7 +115,7 @@ public class AutowiredFF4JBeanPostProcessor implements BeanPostProcessor {
             if (Feature.class.isAssignableFrom(field.getType())) {
                 injectValue(field, bean, featureName, feature);
             } else if (Boolean.class.isAssignableFrom(field.getType())) {
-                injectValue(field, bean, featureName, new Boolean(feature.isEnable()));
+                injectValue(field, bean, featureName, Boolean.valueOf(feature.isEnable()));
             } else if (boolean.class.isAssignableFrom(field.getType())) {
                 injectValue(field, bean, featureName, feature.isEnable());
             } else {

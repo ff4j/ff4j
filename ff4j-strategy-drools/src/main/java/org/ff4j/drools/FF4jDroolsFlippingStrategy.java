@@ -61,6 +61,9 @@ import org.ff4j.strategy.AbstractFlipStrategy;
  */
 public class FF4jDroolsFlippingStrategy extends AbstractFlipStrategy {
 
+    /** Serial. */
+    private static final long serialVersionUID = -4214050389919819250L;
+
     /** key to be used in map initParam. */
     private static final String KEY_BASE_NAME = "basename";
     

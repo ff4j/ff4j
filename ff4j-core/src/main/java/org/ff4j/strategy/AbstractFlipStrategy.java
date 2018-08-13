@@ -34,6 +34,9 @@ import org.ff4j.utils.MappingUtil;
  */
 public abstract class AbstractFlipStrategy implements FlippingStrategy {
 
+    /** Serial. */
+    private static final long serialVersionUID = 8958769689574455621L;
+
     /** Initial parameters. */
     protected Map<String, String> initParams = new HashMap<String, String>();
 

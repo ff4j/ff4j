@@ -42,6 +42,9 @@ import org.ff4j.strategy.AbstractFlipStrategy;
  */
 public class OfficeHourStrategy extends AbstractFlipStrategy {
     
+    /** Serial. */
+    private static final long serialVersionUID = -4384808702026232747L;
+
     /** Parsing date expression. */
     private static final DateFormat SDF_DATE = new SimpleDateFormat("yyyy-MM-dd");
     

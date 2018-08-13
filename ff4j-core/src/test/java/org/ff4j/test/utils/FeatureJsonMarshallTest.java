@@ -132,6 +132,7 @@ public class FeatureJsonMarshallTest implements TestConstantsFF4j {
     @Test
     public void testJsonUtils() {
         FlippingStrategy ps = new FlippingStrategy() { 
+            private static final long serialVersionUID = 57519159472829480L;
             public void init(String featureName, Map<String, String> initParam)  {}
             public Map<String, String> getInitParams() { return null; }
             public boolean evaluate(String fn, FeatureStore s, FlippingExecutionContext ex) {  return false; }

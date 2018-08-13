@@ -82,15 +82,6 @@ public abstract class FF4jApiApplicationJersey2x extends ResourceConfig {
      * @param serviceLocator
      */
     public void init() {
-        log.info("  __  __ _  _   _ ");
-        log.info(" / _|/ _| || | (_)");
-        log.info("| |_| |_| || |_| |");
-        log.info("|  _|  _|__   _| |");
-        log.info("|_| |_|    |_|_/ |");
-        log.info("             |__/   WEB API Initialization...");
-        log.info(" ");
-
-        apiConfig = getWebApiConfiguration();
         packages(FF4jResource.class.getPackage().getName());
 
         register(new FF4jBinder());

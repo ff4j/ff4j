@@ -36,6 +36,9 @@ import org.ff4j.utils.IOUtil;
  */
 public class ServerFilterStrategy extends AbstractFlipStrategy {
 
+    /** Serial. */
+    private static final long serialVersionUID = -906325193127116574L;
+
     /** Threshold. */
     private static final String PARAM_SERVERLIST = "grantedServers";
 

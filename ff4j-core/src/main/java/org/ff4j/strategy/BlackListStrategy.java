@@ -30,6 +30,9 @@ import org.ff4j.core.FlippingExecutionContext;
  */
 public class BlackListStrategy extends ClientFilterStrategy {
 
+    /** Serial. */
+    private static final long serialVersionUID = -1367501598591468489L;
+
     /**
      * Default Constructor.
      */
