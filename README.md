@@ -4,7 +4,7 @@
 
 [![Build Status](https://travis-ci.org/ff4j/ff4j.svg?branch=master)](https://travis-ci.org/ff4j/ff4j)
 [![Backers on Open Collective](https://opencollective.com/ff4j/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/ff4j/sponsors/badge.svg)](#sponsors) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.ff4j/ff4j-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.ff4j/ff4j-core/) 
-[![Coverage Status](https://coveralls.io/repos/ff4j/ff4j/badge.svg?branch=master&service=github)](https://coveralls.io/github/ff4j/ff4j?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/ff4j/ff4j/badge.svg?branch=master)](https://coveralls.io/github/ff4j/ff4j?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/grade/c900676eb9674bc48c246dc112e60e16)](https://www.codacy.com/app/cedrick-lunven/ff4j)
 [![Join the chat at https://gitter.im/ff4j/ff4j](https://badges.gitter.im/ff4j/ff4j.svg)](https://gitter.im/ff4j/ff4j?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![License Apache2](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0)
