@@ -29,8 +29,9 @@
   </appender>
 
   <logger name="org.springframework" level="WARN" />
-
-  <root level="WARN">
+  <logger name="org.ff4j"            level="DEBUG" />
+ 
+  <root level="INFO">
     <appender-ref ref="STDOUT" />
   </root>
 

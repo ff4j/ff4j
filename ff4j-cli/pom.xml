@@ -71,19 +71,8 @@
 
 		<pluginManagement>
 
-			<plugins>
-
-				<!-- setup JDK X -->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<configuration>
-						<source>1.6</source>
-						<target>1.6</target>
-						<showWarnings>true</showWarnings>
-					</configuration>
-				</plugin>
-
+			<plugins> 				
+                
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>exec-maven-plugin</artifactId>
@@ -107,22 +96,6 @@
 						</additionalClasspathElements>
 					</configuration>
 					</plugin>
-					
-<!-- <configuration>
-		<executable>maven</executable>
-		<workingDirectory>/tmp</workingDirectory> 
-		<arguments> 
-			<argument>-X</argument> 
-			<argument>myproject:dist</argument> 
-		</arguments> 
-		<systemProperties>
-			<systemProperty>
-				<key>myproperty</key>
-				<value>myvalue</value>
-			</systemProperty>
-		</systemProperties>
-	</configuration> -->
-				
 
 			</plugins>
 		</pluginManagement>

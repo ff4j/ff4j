@@ -102,9 +102,10 @@ public class ExpressionFlipStrategy extends AbstractFlipStrategy implements Seri
         List<Feature> listOfFlip = new ArrayList<Feature>();
         listOfFlip.addAll(currentStore.readAll().values());
         for (Feature fp : listOfFlip) {
-            if (fp.isEnable() && null != fp.getFlippingStrategy() &&!(fp.getFlippingStrategy() instanceof ExpressionFlipStrategy)) {
-                bools.put(fp.getUid(), fp.getFlippingStrategy().evaluate(fp.getUid(), currentStore,
-                        executionContext));
+            if (fp.isEnable() && 
+                null != fp.getFlippingStrategy() &&
+                !(fp.getFlippingStrategy() instanceof ExpressionFlipStrategy)) {
+                bools.put(fp.getUid(), fp.getFlippingStrategy().evaluate(fp.getUid(), currentStore, executionContext));
             } else {
                 bools.put(fp.getUid(), fp.isEnable());
             }

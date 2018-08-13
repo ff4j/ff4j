@@ -24,7 +24,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response.Status;
 
+import org.ff4j.core.Feature;
 import org.ff4j.store.InMemoryFeatureStore;
+import org.ff4j.strategy.ClientFilterStrategy;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -108,6 +110,7 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
         ff4j.getFeatureStore().enable(F2);
         assertFF4J.assertThatFeatureExist(F4);
         ff4j.getFeatureStore().enable(F4);
+        // forth => expressionStrategy => First, Second 
         assertFF4J.assertThatFeatureFlipped(F4);
         
         // When
@@ -145,19 +148,25 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
     @Test
     public void testPostisFlippedInvalidParameter() {
         // Given
-        assertFF4J.assertThatFeatureExist(AWESOME);
+        Feature featureWithParameters = new Feature("FWIP", true);
+        featureWithParameters.setFlippingStrategy(new ClientFilterStrategy("C1,C2"));
+        ff4j.createFeature(featureWithParameters);
+        assertFF4J.assertThatFeatureExist("FWIP");
+        
         // When
         MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
         formData.add("InvalidParameter", "localhost");
         ClientResponse resHttp = resourceff4j().path(OPERATION_CHECK) //
-                .path(AWESOME) //
+                .path("FWIP") //
                 .type(MediaType.APPLICATION_FORM_URLENCODED).//
                 post(ClientResponse.class, formData);
         String resEntity = resHttp.getEntity(String.class);
+        
         // Then
         Assert.assertEquals("Expected status is 400", Status.BAD_REQUEST.getStatusCode(), resHttp.getStatus());
         Assert.assertNotNull(resEntity);
         Assert.assertTrue(resEntity.contains("Invalid parameter"));
+        ff4j.delete("FWIP");
     }
 
     /**
@@ -166,12 +175,15 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
     @Test
     public void testPostisFlippedWithParameters() {
         // Given
-        assertFF4J.assertThatFeatureExist(AWESOME);
+        Feature featureWithParameters = new Feature("FWP", true);
+        featureWithParameters.setFlippingStrategy(new ClientFilterStrategy("C1,C2"));
+        ff4j.createFeature(featureWithParameters);
+        assertFF4J.assertThatFeatureExist("FWP");
         // When
         MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
         formData.add("clientHostName", "localhost");
         ClientResponse resHttp = resourceff4j().path(OPERATION_CHECK) //
-                .path(AWESOME) //
+                .path("FWP") //
                 .type(MediaType.APPLICATION_FORM_URLENCODED).//
                 post(ClientResponse.class, formData);
         String resEntity = resHttp.getEntity(String.class);
@@ -180,6 +192,7 @@ public class FF4JResourceTestIT extends AbstractWebResourceTestIT {
         Assert.assertEquals("Expected status is 200", Status.OK.getStatusCode(), resHttp.getStatus());
         Assert.assertNotNull(resEntity);
         Assert.assertFalse(Boolean.valueOf(resEntity));
+        ff4j.delete("FWP");
     }    
 
 }

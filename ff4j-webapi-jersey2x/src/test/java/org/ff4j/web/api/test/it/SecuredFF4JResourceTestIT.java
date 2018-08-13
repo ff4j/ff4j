@@ -219,7 +219,7 @@ public class SecuredFF4JResourceTestIT  extends AbstractWebResourceTestIT {
         // Given
         Assert.assertEquals(InMemoryFeatureStore.class, ff4j.getFeatureStore().getClass());
         // When
-        String authent = ClientHttpUtils.buildAuthorization4UserName("incalidUser", "user");
+        String authent = ClientHttpUtils.buildAuthorization4UserName("invalidUser", "user");
         Response resHttp = resourceff4j() //
                 .request(MediaType.APPLICATION_JSON)
                 .header(HEADER_AUTHORIZATION, authent).get();

@@ -23,6 +23,7 @@
 	 xsi:schemaLocation="http://www.ff4j.org/schema/ff4j http://ff4j.org/schema/ff4j-1.4.0.xsd">
 	
 	<features>
+		
 		<feature uid="AwesomeFeature" enable="true" description="some desc" />
 	
 		<feature uid="first" enable="true" description="description" >

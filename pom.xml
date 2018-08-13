@@ -655,13 +655,10 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${version.maven.plugin.surefire}</version>
-
                 <configuration>
                     <skip>true</skip>
                 </configuration>
-
                 <executions>
-
                     <execution>
                         <id>unit-test</id>
                         <phase>test</phase>
@@ -809,12 +806,12 @@
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <useReleaseProfile>false</useReleaseProfile>
                         <releaseProfiles>release</releaseProfiles>
-                        <mavenExecutorId>forked-path</mavenExecutorId>
-						<arguments>-Dgpg.passphrase=${gpg.passphrase}</arguments>
+                        <arguments>-Dgpg.passphrase=${gpg.passphrase}</arguments>
                         <goals>deploy</goals>
                     </configuration>
                 </plugin>
 
+                <!-- Unit Testing -->
                 <!-- Unit Testing -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -822,7 +819,6 @@
                     <configuration>
                         <skip>false</skip>
                         <testFailureIgnore>false</testFailureIgnore>
-                        <argLine>-Xms128M -Xmx512M -enableassertions</argLine>
                         <forkMode>always</forkMode>
                     </configuration>
                 </plugin>

@@ -111,7 +111,6 @@ public class FeatureResource extends AbstractResource {
             String errMsg = "Invalid identifier expected " + id;
             return Response.status(Response.Status.BAD_REQUEST).entity(errMsg).build();
         }
-        
         Feature feat = new Feature(id);
         feat.setDescription(fApiBean.getDescription());
         feat.setEnable(fApiBean.isEnable());

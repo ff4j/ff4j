@@ -87,14 +87,16 @@ public abstract class FF4jApiApplicationJersey2x extends ResourceConfig {
         register(new FF4jBinder());
         register(JerseyApplicationEventListener.class);
         register(JerseyRequestEventListener.class);
+        apiConfig = getWebApiConfiguration();
         
         if (apiConfig != null) {
             if (apiConfig.isAutorize()) {
                 enableAuthenticationFilter();
                 enableAuthorizationFilter();
-                
             } else if (apiConfig.isAuthenticate()) {
                 enableAuthenticationFilter();
+            } else {
+                log.info("No authentication nor authorization");
             }
         
             // Swagger configuration
@@ -117,6 +119,7 @@ public abstract class FF4jApiApplicationJersey2x extends ResourceConfig {
                 register(io.swagger.jaxrs.listing.SwaggerSerializers.class);
                 log.info("Initialisation Swagger [OK]");
             }
+        } else {
         }
         log.info("Initialisation WebAPI [OK]");
     }

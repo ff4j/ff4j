@@ -168,6 +168,19 @@
                 </configuration>
             </plugin>
             
+             <!-- Unit Testing -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <configuration>
+                        <skip>false</skip>
+                        <testFailureIgnore>false</testFailureIgnore>
+                        <argLine>-Xms128M -Xmx512M -enableassertions</argLine>
+                        <forkMode>always</forkMode>
+                    </configuration>
+                </plugin>
+                
+            
 		</plugins>
 	</build>
 

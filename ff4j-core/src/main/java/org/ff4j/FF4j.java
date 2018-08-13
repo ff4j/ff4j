@@ -160,7 +160,7 @@ public class FF4j {
      * @return current feature status
      */
     public boolean check(String featureID) {
-        return check(featureID, null);
+        return check(featureID, currentExecutionContext.get());
     }
 
     /**
