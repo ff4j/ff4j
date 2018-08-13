@@ -29,9 +29,10 @@
   </appender>
 
   <logger name="org.springframework" level="WARN" />
-  <logger name="org.ff4j"            level="DEBUG" />
+  <!--  Raise the error level to succeed travis build -->
+  <logger name="org.ff4j"            level="WARN" />
  
-  <root level="INFO">
+  <root level="ERROR">
     <appender-ref ref="STDOUT" />
   </root>
 
