@@ -1,5 +1,12 @@
 package org.ff4j.cache;
 
+import static org.ff4j.redis.RedisContants.DEFAULT_TTL;
+import static org.ff4j.redis.RedisContants.KEY_FEATURE;
+import static org.ff4j.redis.RedisContants.KEY_PROPERTY;
+
+import java.util.HashSet;
+import java.util.List;
+
 /*
  * #%L
  * ff4j-cache-redis
@@ -30,7 +37,8 @@ import org.ff4j.utils.json.FeatureJsonParser;
 import org.ff4j.utils.json.PropertyJsonParser;
 
 import redis.clients.jedis.Jedis;
-import static org.ff4j.redis.RedisContants.*;
+import redis.clients.jedis.ScanParams;
+import redis.clients.jedis.ScanResult;
 
 /**
  * Implementation of ditributed cache to limit overhead, with REDIS (JEDIS).
@@ -89,7 +97,24 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            jedis.del(KEY_FEATURE + "*");
+            // --> This Pattern is not always supported
+            // jedis.del(KEY_FEATURE + "*");
+            // <--
+            Set<String> matchingKeys = new HashSet<>();
+            ScanParams params = new ScanParams();
+            params.match(KEY_FEATURE + "*");
+            String cursor = "0";
+            do {
+                ScanResult<String> scanResult = jedis.scan(cursor, params);
+                List<String> keys = scanResult.getResult();
+                cursor = scanResult.getStringCursor();
+                matchingKeys.addAll(keys);
+            } while (!cursor.equals("0"));
+
+            if (!matchingKeys.isEmpty()) {
+                jedis.del(matchingKeys.toArray(new String[matchingKeys.size()]));
+            }
+            
         } finally {
             if (jedis != null) {
                 jedis.close();
