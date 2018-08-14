@@ -1,5 +1,7 @@
 package org.ff4j.store.it;
 
+import org.junit.Ignore;
+
 /*
  * #%L
  * ff4j-store-redis
@@ -46,6 +48,7 @@ package org.ff4j.store.it;
  *   
  * @author CEL
  */
+@Ignore
 public class EventRepositoryTestIT {
 
 }

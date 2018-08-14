@@ -29,11 +29,13 @@ import org.ff4j.property.store.PropertyStore;
 import org.ff4j.store.PropertyStoreRedis;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
 import org.junit.After;
+import org.junit.Ignore;
 
 /**
  * Implementatino of tests with REDIS
  * @author Cedrick Lunven (@clunven)</a>
  */
+@Ignore
 public class PropertyStoreRedisTestIT extends PropertyStoreTestSupport {
 
     /** {@inheritDoc} */

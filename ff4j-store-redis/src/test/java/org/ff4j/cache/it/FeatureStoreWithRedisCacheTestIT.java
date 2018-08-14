@@ -1,5 +1,14 @@
 package org.ff4j.cache.it;
 
+import static org.ff4j.test.TestsFf4jConstants.F1;
+import static org.ff4j.test.TestsFf4jConstants.F2;
+import static org.ff4j.test.TestsFf4jConstants.F4;
+import static org.ff4j.test.TestsFf4jConstants.G0;
+import static org.ff4j.test.TestsFf4jConstants.G1;
+import static org.ff4j.test.TestsFf4jConstants.ROLE_NEW;
+import static org.ff4j.test.TestsFf4jConstants.ROLE_USER;
+import static org.ff4j.test.TestsFf4jConstants.TEST_FEATURES_FILE;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,8 +34,8 @@ import java.util.Set;
  */
 
 import org.ff4j.cache.FF4JCacheManager;
-import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.cache.FF4jCacheManagerRedis;
+import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.FeatureAlreadyExistException;
@@ -36,13 +45,12 @@ import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.ff4j.test.TestsFf4jConstants.*;
-
 /**
  * Class to test the REDIS {@link FeatureCacheProviderEhCache}.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
+@Ignore
 public class FeatureStoreWithRedisCacheTestIT extends FeatureStoreTestSupport {
 
     /** Initial feature number. */
