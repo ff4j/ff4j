@@ -6,10 +6,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.ff4j.FF4jContext;
-import org.ff4j.feature.Feature;
-import org.ff4j.feature.ToggleStrategy;
-
 /*
  * #%L
  * ff4j-core
@@ -35,7 +31,7 @@ import org.ff4j.feature.ToggleStrategy;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class ServerFilterToggleStrategy extends AbstractToggleStrategy implements ToggleStrategy {
+public class ServerFilterToggleStrategy extends AbstractToggleStrategy implements TogglePredicate {
 
     /** Threshold. */
     private static final String PARAM_SERVERLIST = "grantedServers";
@@ -85,7 +81,7 @@ public class ServerFilterToggleStrategy extends AbstractToggleStrategy implement
 
     /** {@inheritDoc} */
     @Override
-    public boolean isToggled(Feature feature, FF4jContext ctx) {
+    public boolean test(ToggleContext ctx) {
         if (null != ctx && ctx.getValue(SERVER_HOSTNAME).isPresent()) {
             return setOfTargetServer.contains(ctx.getString(SERVER_HOSTNAME).get());
         }

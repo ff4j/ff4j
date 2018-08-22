@@ -24,6 +24,11 @@ package org.ff4j.utils.json;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * Improve coverage.
+ *
+ * @author Cedrick LUNVEN (@clunven
+ */
 public class CustomObjectMapperTest {
     
     @Test

@@ -5,10 +5,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.ff4j.FF4jContext;
-import org.ff4j.feature.Feature;
-import org.ff4j.feature.ToggleStrategy;
-
 /*
  * #%L
  * ff4j-core
@@ -34,7 +30,7 @@ import org.ff4j.feature.ToggleStrategy;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class ClientFilterToggleStrategy extends AbstractToggleStrategy implements ToggleStrategy {
+public class ClientFilterToggleStrategy extends AbstractToggleStrategy implements TogglePredicate {
 
     /** Threshold. */
     public static final String PARAM_CLIENTLIST = "grantedClients";
@@ -82,12 +78,8 @@ public class ClientFilterToggleStrategy extends AbstractToggleStrategy implement
     
     /** {@inheritDoc} */
     @Override
-    public boolean isToggled(Feature feature, FF4jContext executionContext) {
-        if (null == executionContext || !executionContext.getString(CLIENT_HOSTNAME).isPresent()) {
-            throw new IllegalArgumentException("To work with " + getClass().getCanonicalName() + " you must provide '"
-                    + CLIENT_HOSTNAME + "' parameter in execution context");
-        }
-        return setOfGrantedClient.contains(executionContext.getString(CLIENT_HOSTNAME).get());
+    public boolean test(ToggleContext ctx) {
+        return setOfGrantedClient.contains(ctx.getString(CLIENT_HOSTNAME, true));
     }
 
 

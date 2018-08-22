@@ -2,37 +2,34 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!-- ~ COORDONATES ~ -->
+    <!-- ~ COORDONATES              ~ -->
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.ff4j</groupId>
     <artifactId>ff4j-parent</artifactId>
     <version>2.0.RC1</version>
-
+ 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!-- ~ MAIN INFO ~ -->
+    <!-- ~ MAIN INFO                ~ -->
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <name>Feature Flipping 4 Java</name>
     <packaging>pom</packaging>
     <url>http://ff4j.org</url>
     <inceptionYear>2013</inceptionYear>
     <description>
-        FF4J, stands for Feature Flipping for Java, helps you implementing the 'feature toggle' agile development
-        practice.
+        FF4J, stands for Feature Flipping for Java, helps you implementing the 'feature toggle' agile development practice.
         Features (services/behaviour/treatments/screen parts) can be enabled and disabled at runtime but also limited to
-        an authorized
-        sub-set of users (e.g : beta-testers for beta feature). Once the feature is enabled and granted you can
-        implement your own strategy
-        to flip through custom FlippingStrategy.
+        an authorized sub-set of users (e.g : beta-testers for beta feature). Once the feature is enabled and granted you can
+        implement your own strategy to flip through custom FlippingStrategy.
     </description>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!-- ~ GIT (GITHUB) ~ -->
+    <!-- ~ GIT (GITHUB)             ~ -->
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <scm>
-        <connection>scm:git:git@github.com:clun/ff4j.git</connection>
-        <developerConnection>scm:git:git@github.com:clun/ff4j.git</developerConnection>
-        <url>git@github.com:clun/ff4j.git</url>
+        <connection>scm:git:git@github.com:ff4j/ff4j.git</connection>
+        <developerConnection>scm:git:git@github.com:ff4j/ff4j.git</developerConnection>
+        <url>git@github.com:ff4j/ff4j.git</url>
         <tag>HEAD</tag>
     </scm>
 
@@ -52,7 +49,7 @@
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <organization>
         <name>FF4J</name>
-        <url>http://ff4j.org</url>
+        <url>http://ff4j.github.io</url>
     </organization>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -129,7 +126,6 @@
         <version.maven.plugin.surefire>2.20.1</version.maven.plugin.surefire>
         <version.maven.plugin.gpg>1.5</version.maven.plugin.gpg>
         <version.maven.plugin.graph>1.4</version.maven.plugin.graph>
-        <version.maven.plugin.site>3.6</version.maven.plugin.site>
         <version.maven.plugin.resources>3.0.2</version.maven.plugin.resources>
         <version.maven.plugin.release>2.5.3</version.maven.plugin.release>
         <version.maven.plugin.sonar>2.2</version.maven.plugin.sonar>
@@ -149,6 +145,7 @@
 
         <module>ff4j-core</module>
         <module>ff4j-utils-yaml</module>
+        <module>ff4j-utils-json</module>
         <!-- 
         <module>ff4j-aop</module>
         <module>ff4j-test</module>
@@ -160,7 +157,7 @@
         <module>ff4j-webapi-jersey1x</module>
         <module>ff4j-webapi-jersey2x</module>
 
-        <module>ff4j-utils-json</module>
+       
         <module>ff4j-security-spring</module>
         <module>ff4j-strategy-drools</module>
 
@@ -686,11 +683,9 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${version.maven.plugin.surefire}</version>
-
                 <configuration>
                     <skip>false</skip>
                 </configuration>
-
                 <executions>
 
                     <execution>
@@ -848,6 +843,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${version.maven.plugin.surefire}</version>
                     <configuration>
                         <skip>false</skip>
                         <testFailureIgnore>false</testFailureIgnore>
@@ -936,17 +932,7 @@
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
                     </configuration>
-                </plugin>
-
-                <!-- Site -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <version>${version.maven.plugin.site}</version>
-                    <configuration>
-                        <templateFile>${basedir}/src/site/ff4j-site.vm</templateFile>
-                    </configuration>
-                </plugin>
+                </plugin>               
 
             </plugins>
         </pluginManagement>
@@ -974,112 +960,6 @@
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
                             <additionalparam>-Xdoclint:none</additionalparam>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-site-plugin</artifactId>
-                        <configuration>
-                            <templateFile>${basedir}/src/site/ff4j-site.vm</templateFile>
-                            <reportPlugins>
-
-                                <plugin>
-                                    <groupId>org.apache.maven.plugins</groupId>
-                                    <artifactId>maven-javadoc-plugin</artifactId>
-                                    <configuration>
-                                        <additionalparam>-Xdoclint:none</additionalparam>
-                                    </configuration>
-                                </plugin>
-
-                                <plugin>
-                                    <artifactId>maven-dependency-plugin</artifactId>
-                                    <reportSets>
-                                        <reportSet>
-                                            <reports>
-                                                <report>analyze-report</report>
-                                            </reports>
-                                        </reportSet>
-                                    </reportSets>
-                                </plugin>
-
-                                <!-- changelog -->
-                                <plugin>
-                                    <artifactId>maven-changes-plugin</artifactId>
-                                    <version>2.8</version>
-                                </plugin>
-
-                                <!-- testings -->
-                                <plugin>
-                                    <artifactId>maven-surefire-report-plugin</artifactId>
-                                    <version>2.12.4</version>
-                                </plugin>
-
-                                <!-- readable source code with links -->
-                                <plugin>
-                                    <artifactId>maven-jxr-plugin</artifactId>
-                                    <version>2.3</version>
-                                </plugin>
-
-                                <!-- global quality -->
-                                <plugin>
-                                    <artifactId>maven-pmd-plugin</artifactId>
-                                    <configuration>
-                                        <linkXRef>true</linkXRef>
-                                        <targetJdk>1.6</targetJdk>
-                                    </configuration>
-                                    <version>2.7.1</version>
-                                </plugin>
-
-                                <!-- bugs -->
-                                <plugin>
-                                    <groupId>org.codehaus.mojo</groupId>
-                                    <artifactId>findbugs-maven-plugin</artifactId>
-                                    <version>3.0.3</version>
-                                </plugin>
-
-                                <!-- taglist -->
-                                <plugin>
-                                    <groupId>org.codehaus.mojo</groupId>
-                                    <artifactId>taglist-maven-plugin</artifactId>
-                                    <configuration>
-                                        <tags>
-                                            <tag>TODO</tag>
-                                            <tag>FIXME</tag>
-                                            <tag>@todo</tag>
-                                            <tag>@deprecated</tag>
-                                        </tags>
-                                    </configuration>
-                                    <version>2.4</version>
-                                </plugin>
-
-                                <!-- Changelog -->
-                                <plugin>
-                                    <groupId>org.apache.maven.plugins</groupId>
-                                    <artifactId>maven-changelog-plugin</artifactId>
-                                    <version>2.2</version>
-                                    <reportSets>
-                                        <reportSet>
-                                            <id>dual-report</id>
-                                            <configuration>
-                                                <type>range</type>
-                                                <range>30</range>
-                                            </configuration>
-                                            <reports>
-                                                <report>changelog</report>
-                                                <report>file-activity</report>
-                                            </reports>
-                                        </reportSet>
-                                    </reportSets>
-                                </plugin>
-
-                                <plugin>
-                                    <groupId>org.codehaus.mojo</groupId>
-                                    <artifactId>javancss-maven-plugin</artifactId>
-                                    <version>2.1</version>
-                                </plugin>
-
-
-                            </reportPlugins>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -1175,7 +1055,7 @@
             <email>cedrick.lunven@gmail.com</email>
             <url>https://github.com/clun</url>
             <organization>ff4j</organization>
-            <organizationUrl>ff4j.org</organizationUrl>
+            <organizationUrl>ff4j.github.io</organizationUrl>
             <roles>
                 <role>architect</role>
                 <role>developer</role>
@@ -1190,13 +1070,13 @@
     <!-- Builds on jenkins continuous integration -->
     <ciManagement>
         <system>Jenkins@Cloudbees</system>
-        <url>https://travis-ci.org/clun/ff4j/builds</url>
+        <url>https://travis-ci.org/ff4j/ff4j/builds</url>
     </ciManagement>
 
     <!-- Jira issue management -->
     <issueManagement>
         <system>IssueTracking@Github</system>
-        <url><![CDATA[https://github.com/clun/ff4j/issues?sort=created&direction=desc&state=open]]></url>
+        <url><![CDATA[https://github.com/ff4j/ff4j/issues?sort=created&direction=desc&state=open]]></url>
     </issueManagement>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -1211,10 +1091,6 @@
             <id>ossrh</id>
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
-        <site>
-            <id>website</id>
-            <url>file://C:/clunven/dev/mvnsite</url>
-        </site>
     </distributionManagement>
 
 </project>

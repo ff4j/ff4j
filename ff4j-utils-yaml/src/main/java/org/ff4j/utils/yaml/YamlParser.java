@@ -1,5 +1,25 @@
 package org.ff4j.utils.yaml;
 
+/*-
+ * #%L
+ * ff4j-utils-yaml
+ * %%
+ * Copyright (C) 2013 - 2018 FF4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
@@ -9,7 +29,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.ff4j.feature.Feature;
-import org.ff4j.feature.ToggleStrategy;
+import org.ff4j.feature.strategy.TogglePredicate;
 import org.ff4j.parser.AbstractConfigurationFileParser;
 import org.ff4j.parser.FF4jConfigFile;
 import org.ff4j.property.Property;
@@ -45,6 +65,14 @@ public class YamlParser extends AbstractConfigurationFileParser {
         Map<?,?> yamlConfigFile = yaml.load(inputStream);
         Map<?,?> ff4jYamlMap = (Map<?, ?>) yamlConfigFile.get(FF4J_TAG);
         FF4jConfigFile ff4jConfig = new FF4jConfigFile();
+        // Audit
+        if (ff4jYamlMap.containsKey(GLOBAL_AUDIT_TAG)) {
+            ff4jConfig.setAudit(Boolean.valueOf(ff4jYamlMap.containsKey(GLOBAL_AUDIT_TAG)));
+        }
+        // AutoCreate
+        if (ff4jYamlMap.containsKey(GLOBAL_AUTOCREATE)) {
+            ff4jConfig.setAutoCreate(Boolean.valueOf(ff4jYamlMap.containsKey(GLOBAL_AUTOCREATE)));
+        }
         if (ff4jYamlMap != null) {
             // Roles
             parseRoles(ff4jConfig, (List<Map<String, Object>>) ff4jYamlMap.get(SECURITY_ROLES_TAG));
@@ -248,7 +276,7 @@ public class YamlParser extends AbstractConfigurationFileParser {
     }
     
     @SuppressWarnings("unchecked")
-    private ToggleStrategy parseToggleStrategy(Feature feature, Map<String, Object> toggleStrategy) {
+    private TogglePredicate parseToggleStrategy(Feature feature, Map<String, Object> toggleStrategy) {
         Map <String, String > initParams = new HashMap<>();
         Map<String, Object> p = (Map<String, Object>) toggleStrategy.get(TOGGLE_STRATEGY_PARAMTAG);
         if (p != null) {
@@ -256,7 +284,7 @@ public class YamlParser extends AbstractConfigurationFileParser {
                      entry.getKey(), 
                      String.valueOf(entry.getValue())));
         }
-        return ToggleStrategy.of(
+        return TogglePredicate.of(
                 feature.getUid(), 
                 (String) toggleStrategy.get(TOGGLE_STRATEGY_ATTCLASS), 
                 initParams);

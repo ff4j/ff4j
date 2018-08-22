@@ -18,11 +18,28 @@
   limitations under the License.
   #L%
   -->
+<ff4j xmlns="http://www.ff4j.org/schema/ff4j" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ff4j.org/schema/ff4j-2.0.xsd">
 
-<features xmlns="http://www.ff4j.org/schema/ff4j" 
-     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	 xsi:schemaLocation="http://www.ff4j.org/schema/ff4j ../../main/resources/ff4j-1.2.0.xsd">
-
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~~ GLOBAL ACL (not entity)     ~~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<acl></acl>
+	
+	<!-- ~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~~ ROLES          ~~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~ -->
+	<roles></roles>
+	
+	<!-- ~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~~ USERS          ~~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~ -->
+	<users></users>
+	
+	<!-- ~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~~ FEATURES ~~       -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~ -->
+	<features>
 
 	<feature-group name="group1">
 	</feature-group>

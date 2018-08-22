@@ -24,16 +24,12 @@ import java.io.Serializable;
 
 import java.util.Map;
 
-import org.ff4j.FF4jContext;
-import org.ff4j.feature.Feature;
-import org.ff4j.feature.ToggleStrategy;
-
 /**
  * This strategy will flip feature as soon as the release date is reached.
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class PonderationToggleStrategy extends AbstractToggleStrategy implements ToggleStrategy, Serializable {
+public class PonderationToggleStrategy extends AbstractToggleStrategy implements TogglePredicate, Serializable {
 
     /** Serial number. */
     private static final long serialVersionUID = -2353911851539414159L;
@@ -68,14 +64,14 @@ public class PonderationToggleStrategy extends AbstractToggleStrategy implements
     @Override
     public void init(String featureName, Map<String, String> initParams) {
         super.init(featureName, initParams);
-        assertRequiredParameter(PARAM_WEIGHT);
+        assertParam(PARAM_WEIGHT);
         this.weight = Double.parseDouble(initParams.get(PARAM_WEIGHT));
         checkWeight();
     }
 
     /** {@inheritDoc} */
     @Override
-    public boolean isToggled(Feature feature, FF4jContext executionContext) {
+    public boolean test(ToggleContext ctx) {
         return Math.random() <= weight;
     }
 
@@ -101,8 +97,8 @@ public class PonderationToggleStrategy extends AbstractToggleStrategy implements
     /** {@inheritDoc} */
     @Override
     public Map<String, String> getInitParams() {
-        this.initParams.put(PARAM_WEIGHT, String.valueOf(weight));
-        return initParams;
+        this.params.put(PARAM_WEIGHT, String.valueOf(weight));
+        return params;
     }
 
 }

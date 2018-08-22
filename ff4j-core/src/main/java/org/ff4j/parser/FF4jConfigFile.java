@@ -28,6 +28,7 @@ import org.ff4j.feature.Feature;
 import org.ff4j.property.Property;
 import org.ff4j.security.domain.FF4jAcl;
 import org.ff4j.security.domain.FF4jUser;
+import org.ff4j.utils.JsonUtils;
 
 /**
  * Load settings for ff4j v2 with ACL and users management.
@@ -36,20 +37,41 @@ import org.ff4j.security.domain.FF4jUser;
  */
 public final class FF4jConfigFile {
 
-	/** Dedicated Parsing. */
+    /** Core Meta Data. **/ 
+    private boolean autoCreate = false;
+    
+    /** Core Meta Data. **/ 
+    private boolean audit = false; 
+    
+	/** InMemory Features parsed. */
     private Map <String, Feature > features = new LinkedHashMap<String, Feature>();
     
-    /** InMemory Feature Map */
+    /** InMemory Properties parsed. */
     private Map <String, Property<?> > properties = new LinkedHashMap<String, Property<?>>();
     
-    /** Load Tag <ROLES>. */
+    /** InMemory Roles parsed. */
     private Map < String, Set<String> > roles = new HashMap<>();
     
-    /** Dedicated Parsing. */
+    /** InMemory USers parsed. */
     private Map <String, FF4jUser > users = new LinkedHashMap<String, FF4jUser>();
     
-    /** InMemory Feature Map */
+    /** InMemory ACL (permissions) parsed. */
     private Map <String, FF4jAcl > acls = new LinkedHashMap<String, FF4jAcl>();
+    
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("{");
+        sb.append("\"autoCreate\":").append(autoCreate).append(",");
+        sb.append("\"audit\":").append(audit).append(",");
+        sb.append("\"features\":").append(JsonUtils.mapAsJson(features)).append(",");
+        sb.append("\"properties\":").append(JsonUtils.mapAsJson(properties)).append(",");
+        sb.append("\"roles\":").append(JsonUtils.mapAsJson(roles)).append(",");
+        sb.append("\"users\":").append(JsonUtils.mapAsJson(users)).append(",");
+        sb.append("\"acls\":").append(JsonUtils.mapAsJson(acls));
+        sb.append("}");
+        return sb.toString();
+    }
     
     /**
      * Getter accessor for attribute 'roles'.
@@ -145,5 +167,43 @@ public final class FF4jConfigFile {
     public void setProperties(Map<String, Property<?>> properties) {
         this.properties = properties;
     }
+
+    /**
+     * Getter accessor for attribute 'autoCreate'.
+     *
+     * @return
+     *       current value of 'autoCreate'
+     */
+    public boolean isAutoCreate() {
+        return autoCreate;
+    }
+
+    /**
+     * Setter accessor for attribute 'autoCreate'.
+     * @param autoCreate
+     * 		new value for 'autoCreate '
+     */
+    public void setAutoCreate(boolean autoCreate) {
+        this.autoCreate = autoCreate;
+    }
+
+    /**
+     * Getter accessor for attribute 'audit'.
+     *
+     * @return
+     *       current value of 'audit'
+     */
+    public boolean isAudit() {
+        return audit;
+    }
+
+    /**
+     * Setter accessor for attribute 'audit'.
+     * @param audit
+     * 		new value for 'audit '
+     */
+    public void setAudit(boolean audit) {
+        this.audit = audit;
+    }  
     
 }

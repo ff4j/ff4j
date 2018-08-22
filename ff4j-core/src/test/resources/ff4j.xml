@@ -11,7 +11,7 @@
 	xsi:schemaLocation="http://ff4j.org/schema/ff4j-2.0.xsd">
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~~ GLOBAL ACL (not entity) ~~ -->
+	<!-- ~~ GLOBAL ACL (not entity)     ~~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<acl>
 		<permission target="WEB_CONSOLE" name="WEB_CONSOLE"

@@ -1,4 +1,9 @@
+# ----------------------------------
+# - Settings for FF4j --------------
+# ----------------------------------
 ff4j:
+  autocreate: true
+  audit:      true
   
   features:
     - uid: first
@@ -6,7 +11,7 @@ ff4j:
       description: description
       groupName: GRP1
       toggle-strategies:
-        - class: org.ff4j.feature.strategy.PonderationStrategy
+        - class: org.ff4j.feature.strategy.PonderationToggleStrategy
           param:
             weight: 0.5
         - class: org.ff4j.feature.strategy.time.OfficeHourStrategy

@@ -33,7 +33,7 @@ import org.ff4j.monitoring.AuditTrail;
  *
  * @author Cedrick LUNVEN (@clunven)
  *
- * @param <TARGET>
+ * @param <ENTITY>
  *            current object to work with
  * @param <ID>
  *            unique identifier (String most of the case).

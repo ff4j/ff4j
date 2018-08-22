@@ -116,7 +116,7 @@ function ff4j_updateModalDeleteProperty(uid) {
 function ff4j_updateModalEditFeature(uid) {
 	var modalEdit = $("#modalEdit");
 	
-	 $.get('api/features/' + uid,
+	$.get('api/features/' + uid,
     function(feature) {
 	  modalEdit.find("#uid").val(feature.uid);
 	  modalEdit.find("#desc").val(feature.description);

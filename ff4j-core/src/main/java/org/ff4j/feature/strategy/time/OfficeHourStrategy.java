@@ -31,10 +31,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.ff4j.FF4jContext;
-import org.ff4j.feature.Feature;
-import org.ff4j.feature.ToggleStrategy;
 import org.ff4j.feature.strategy.AbstractToggleStrategy;
+import org.ff4j.feature.strategy.ToggleContext;
+import org.ff4j.feature.strategy.TogglePredicate;
 
 /**
  * Implemenetation of an office hour strategy.
@@ -43,7 +42,7 @@ import org.ff4j.feature.strategy.AbstractToggleStrategy;
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class OfficeHourStrategy extends AbstractToggleStrategy implements ToggleStrategy, Serializable {
+public class OfficeHourStrategy extends AbstractToggleStrategy implements TogglePredicate, Serializable {
     
     /** Serial. */
     private static final long serialVersionUID = -812341519896298400L;
@@ -186,11 +185,11 @@ public class OfficeHourStrategy extends AbstractToggleStrategy implements Toggle
     }
     
      @Override
-    public boolean isToggled(Feature feature, FF4jContext executionContext) {
+    public boolean test(ToggleContext ctx) {
         // Check current date agains interval
         Calendar now = Calendar.getInstance();
-        if (executionContext != null && executionContext.containsKey(OVERRIDE_DATE)) {
-            now = (Calendar) executionContext.getValue(OVERRIDE_DATE, false);
+        if (ctx != null && ctx.containsKey(OVERRIDE_DATE)) {
+            now = (Calendar) ctx.getValue(OVERRIDE_DATE, false);
         }
         
         // Priority 1 : Special Opening

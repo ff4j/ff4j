@@ -59,7 +59,7 @@ public class JdbcFeatureMapper extends AbstractJdbcMapper implements FeatureMapp
             // Set the 5 entity common fields
             populateEntity(ps, feature);
             // Enable
-            ps.setInt(6, feature.isEnable() ? 1 : 0);
+            ps.setInt(6, feature.isEnabled() ? 1 : 0);
             // GroupName
             ps.setString(7, feature.getGroup().orElse(null));
         } catch (SQLException sqlEx) {

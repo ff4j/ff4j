@@ -25,8 +25,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.ff4j.feature.ToggleStrategy;
 import org.ff4j.feature.exception.FeatureAccessException;
+import org.ff4j.feature.strategy.TogglePredicate;
 import org.ff4j.jdbc.JdbcConstants.FeatureStrategyColumns;
 import org.ff4j.jdbc.JdbcQueryBuilder;
 import org.ff4j.mapper.ToggleStrategyMapper;
@@ -59,7 +59,7 @@ public class JdbcFeatureToggleStrategyMapper extends AbstractJdbcMapper implemen
 
     /** {@inheritDoc} */
     @Override
-    public PreparedStatement mapToRepository(ToggleStrategy ts) {
+    public PreparedStatement mapToRepository(TogglePredicate ts) {
         PreparedStatement ps;
         try {
             ps = sqlConn.prepareStatement(queryBuilder.sqlInsertToggleStrategy());
@@ -74,12 +74,12 @@ public class JdbcFeatureToggleStrategyMapper extends AbstractJdbcMapper implemen
 
     /** {@inheritDoc} */
     @Override
-    public ToggleStrategy mapFromRepository(ResultSet rs) {
+    public TogglePredicate mapFromRepository(ResultSet rs) {
         try {
             String uid       = rs.getString(FeatureStrategyColumns.FEATURE.colname());
             String className = rs.getString(FeatureStrategyColumns.CLASSNAME.colname());
             String iMapStr   = rs.getString(FeatureStrategyColumns.INITPARAMS.colname());
-            return ToggleStrategy.of(uid, className, JsonUtils.jsonAsMap(iMapStr));
+            return TogglePredicate.of(uid, className, JsonUtils.jsonAsMap(iMapStr));
        } catch(SQLException sqlEx) {
            throw new FeatureAccessException("Cannot create statement to create event", sqlEx);
        }

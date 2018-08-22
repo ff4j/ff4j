@@ -27,17 +27,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
-import org.ff4j.FF4jContext;
-import org.ff4j.feature.Feature;
-import org.ff4j.feature.ToggleStrategy;
 import org.ff4j.feature.strategy.AbstractToggleStrategy;
+import org.ff4j.feature.strategy.ToggleContext;
+import org.ff4j.feature.strategy.TogglePredicate;
 
 /**
  * The feature will be flipped after release date is reached.
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class ReleaseDateFlipStrategy extends AbstractToggleStrategy implements ToggleStrategy, Serializable {
+public class ReleaseDateFlipStrategy extends AbstractToggleStrategy implements TogglePredicate, Serializable {
     
     /** Serial. */
     private static final long serialVersionUID = -6269110517013603914L;
@@ -86,7 +85,7 @@ public class ReleaseDateFlipStrategy extends AbstractToggleStrategy implements T
     @Override
     public void init(String featureName, Map<String, String> initParam) {
         super.init(featureName, initParam);
-        assertRequiredParameter(PARAMNAME_RELEASEDATE);
+        assertParam(PARAMNAME_RELEASEDATE);
         try {
             this.releaseDate = SDF.parse(initParam.get(PARAMNAME_RELEASEDATE));
         } catch (ParseException e) {
@@ -96,7 +95,7 @@ public class ReleaseDateFlipStrategy extends AbstractToggleStrategy implements T
     
     /** {@inheritDoc} */
     @Override
-    public boolean isToggled(Feature feature, FF4jContext executionContext) {
+    public boolean test(ToggleContext ctx) {
         // No use of featureName
         // No use of featureStore
         // No use of executionContext

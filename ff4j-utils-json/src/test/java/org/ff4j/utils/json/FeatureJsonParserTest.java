@@ -23,9 +23,10 @@ package org.ff4j.utils.json;
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.ff4j.FF4j;
-import org.ff4j.core.Feature;
+import org.ff4j.feature.Feature;
 import org.ff4j.property.Property;
 import org.ff4j.property.util.PropertyJsonBean;
 import org.ff4j.utils.Util;
@@ -44,27 +45,19 @@ public class FeatureJsonParserTest {
     
     @Test
     public void testMarshaling() throws Exception {
-       Map <String, Feature> features = ff4j.getFeatures();
-       for (String key : features.keySet()) {
-           // Check serialised
-           assertMarshalling(features.get(key));
-           Feature f1 = FeatureJsonParser.parseFeature(features.get(key).toJson());
-           assertMarshalling(f1);
-       }
+       for(Feature f : ff4j.getRepositoryFeatures().findAll().collect(Collectors.toList())) {
+          assertMarshalling(f);
+          assertMarshalling(FeatureJsonParser.parseFeature(f.toJson()));
+       };
     }
     
     @Test
     public void testArrays() throws Exception {
-        Map <String, Feature> features = ff4j.getFeatures();
-        int idx = 0;
-        Feature[] f= new Feature[features.size()];
-        for (String feature : features.keySet()) {
-            f[idx] = features.get(feature);
-            idx++;
-        }
-        String featuresArrayAsJson = marshallWithJackson(f);
-        Feature[] ff = FeatureJsonParser.parseFeatureArray(featuresArrayAsJson);
-        Assert.assertEquals(ff4j.getFeatures().size(), ff.length);
+        Feature[] arrayOfFeatures = 
+                ff4j.getRepositoryFeatures().findAll().toArray(Feature[]::new);
+        Feature[] resultArray = 
+                FeatureJsonParser.parseFeatureArray( marshallWithJackson(arrayOfFeatures));
+        Assert.assertEquals(arrayOfFeatures.length, resultArray.length);
     }
     
     @Test

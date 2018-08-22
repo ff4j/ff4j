@@ -24,9 +24,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.ff4j.FF4jContext;
-import org.ff4j.feature.Feature;
-import org.ff4j.feature.ToggleStrategy;
+import org.ff4j.feature.strategy.ToggleContext;
+import org.ff4j.feature.strategy.TogglePredicate;
 import org.ff4j.security.domain.FF4jGrantees;
 import org.ff4j.security.domain.FF4jUser;
 
@@ -35,7 +34,7 @@ import org.ff4j.security.domain.FF4jUser;
  *
  * @author Cedrick LUNVEN  (@clunven)
  */
-public class ToggleStrategyRbac implements ToggleStrategy {
+public class ToggleStrategyRbac implements TogglePredicate {
     
     /** role. */
     private static final String PARAM_GRANTED_ROLES = "roles";
@@ -71,9 +70,9 @@ public class ToggleStrategyRbac implements ToggleStrategy {
 
     /** {@inheritDoc} */
     @Override
-    public boolean isToggled(Feature feature, FF4jContext executionContext) {
-        if (executionContext.getCurrentUser().isPresent()) {
-            FF4jUser user = executionContext.getCurrentUser().get();
+    public boolean test(ToggleContext ctx) {
+        if (ctx != null && ctx.getCurrentUser().isPresent()) {
+            FF4jUser user = ctx.getCurrentUser().get();
             return grantees.isUserGranted(user);
         }
         // user not present or guest

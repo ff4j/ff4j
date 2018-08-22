@@ -239,7 +239,7 @@ public class AssertFF4j {
 	 */
 	public final AssertFF4j assertThatFeatureIsEnabled(String featureName) {
 		assertThatFeatureExist(featureName);
-		assertTrue(ff4j.getRepositoryFeatures().read(featureName).isEnable());
+		assertTrue(ff4j.getRepositoryFeatures().read(featureName).isEnabled());
 		return this;
 	}
 
@@ -252,7 +252,7 @@ public class AssertFF4j {
 	 */
 	public final AssertFF4j assertThatFeatureIsDisabled(String featureName) {
 	    assertThatFeatureExist(featureName);
-		assertFalse(ff4j.getRepositoryFeatures().read(featureName).isEnable(), 
+		assertFalse(ff4j.getRepositoryFeatures().read(featureName).isEnabled(), 
 		            String.format("'%s' must be disabled",featureName));
 		return this;
 	}

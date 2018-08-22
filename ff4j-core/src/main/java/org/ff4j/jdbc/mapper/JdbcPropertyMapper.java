@@ -29,7 +29,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.ff4j.feature.exception.FeatureAccessException;
-import org.ff4j.feature.strategy.FF4jToggleStrategy;
+import org.ff4j.feature.strategy.TogglePredicate;
 import org.ff4j.jdbc.JdbcConstants.PropertyColumns;
 import org.ff4j.jdbc.JdbcQueryBuilder;
 import org.ff4j.mapper.PropertyMapper;
@@ -140,7 +140,7 @@ public class JdbcPropertyMapper extends AbstractJdbcMapper  implements PropertyM
             String strategy = rs.getString(PropertyColumns.STRATCLASS.colname());
             if (Util.hasLength(strategy)) {
                 Map < String, String > initParams = JsonUtils.jsonAsMap(rs.getString(PropertyColumns.INITPARAMS.colname()));
-                FF4jToggleStrategy ff4jStrategy = FF4jToggleStrategy.of(p.getUid(), strategy, initParams);
+                TogglePredicate ff4jStrategy = TogglePredicate.of(p.getUid(), strategy, initParams);
                 if (ff4jStrategy instanceof PropertyEvaluationStrategy) {
                     p.setEvaluationStrategy((PropertyEvaluationStrategy) ff4jStrategy);
                 } else {

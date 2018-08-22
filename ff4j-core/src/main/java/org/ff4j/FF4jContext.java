@@ -1,6 +1,7 @@
 package org.ff4j;
 
-import static org.ff4j.test.AssertUtils.*;
+import static org.ff4j.test.AssertUtils.assertInstanceOf;
+import static org.ff4j.test.AssertUtils.assertNotNull;
 
 /*
  * #%L
@@ -28,13 +29,13 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.ff4j.exception.ItemNotFoundException;
-import org.ff4j.feature.ToggleStrategy;
+import org.ff4j.feature.strategy.TogglePredicate;
 import org.ff4j.security.domain.FF4jUser;
 import org.ff4j.utils.JsonUtils;
 
 
 /**
- * Context holder to perform {@link ToggleStrategy} evaluations but not only.
+ * Context holder to perform {@link TogglePredicate} evaluations but not only.
  * May be useful to evaluate security, ACL, tags
  *
  * @author Cedrick Lunven (@clunven)
@@ -43,7 +44,7 @@ public class FF4jContext {
     
     /** Get reference to ff4j. */
     private transient FF4j ff4j;
-
+    
     /** Current connected user. */
     private Optional < FF4jUser > currentUser = Optional.empty();
     

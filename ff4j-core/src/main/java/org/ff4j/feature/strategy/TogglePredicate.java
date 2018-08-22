@@ -1,12 +1,12 @@
-package org.ff4j.feature;
+package org.ff4j.feature.strategy;
 
-import java.util.LinkedHashMap;
+import static org.ff4j.utils.JsonUtils.mapAsJson;
+import static org.ff4j.utils.JsonUtils.valueAsJson;
+
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.function.Predicate;
 
-import org.ff4j.FF4jContext;
 import org.ff4j.feature.exception.InvalidStrategyTypeException;
-import org.ff4j.feature.strategy.FF4jToggleStrategy;
 
 /*
  * #%L
@@ -33,22 +33,51 @@ import org.ff4j.feature.strategy.FF4jToggleStrategy;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public interface ToggleStrategy extends FF4jToggleStrategy {
-    
-    /** Separator to propose parameters. */
-    String SEPARATOR = "&";
-   
+public interface TogglePredicate extends Predicate< ToggleContext > {
+            
     /**
-     * Tell if flip should be realized.
+     * Predicate with 2 params
+     * 
+     * @param ctx
+     *          toggle context
+     * @return
+     *      if the feature would be toggled or not
+     */
+    boolean test(ToggleContext ctx);
+    
+    /**
+     * Allow to parameterized Flipping Strategy
      * 
      * @param featureName
-     *            target featureName
-     * @param executionContext
-     *            custom params to make decision
-     * @return if flipping should be performed
+     *            current featureName
+     * @param initValue
+     *            initial Value
      */
-    boolean isToggled(Feature feature, FF4jContext executionContext);
+    void init(String uid, Map<String, String> initParam);
+
+    /**
+     * Initial Parameters required to insert this new flipping.
+     * 
+     * @return initial parameters for this strategy
+     */
+    Map<String, String> getInitParams();
     
+    /**
+     * Generate flipping strategy as json.
+     * 
+     * @return
+     *      flippling strategy as json.     
+     */
+     default String toJson() {
+        StringBuilder json = new StringBuilder("{");
+        json.append(valueAsJson("params") + ":");
+        json.append(mapAsJson(getInitParams()));
+        json.append("," + valueAsJson("className")  + ":");
+        json.append(valueAsJson(getClass().getCanonicalName()));
+        json.append("}");
+        return json.toString();
+    }
+     
     /**
      * Instanciate flipping strategy from its class name.
      *
@@ -57,14 +86,14 @@ public interface ToggleStrategy extends FF4jToggleStrategy {
      * @return
      *      the flipping strategy
      */
-    public static ToggleStrategy of(String uid, String className,  Map<String, String> initparams) {
+    public static TogglePredicate of(String uid, String className,  Map<String, String> initparams) {
         try {
-            ToggleStrategy strategy = (ToggleStrategy) Class.forName(className).newInstance();
+            TogglePredicate strategy = (TogglePredicate) Class.forName(className).newInstance();
             strategy.init(uid, initparams);
             return strategy;
         } catch (Exception ie) {
             throw new InvalidStrategyTypeException(className, ie);
-        } 
+        }
     }
     
     /**
@@ -73,8 +102,9 @@ public interface ToggleStrategy extends FF4jToggleStrategy {
      * @param params
      *            parameter MAP
      * @return parameters as String
-     */
-    public static String fromMap(Map < String, String > params) {
+     *
+    public static ToggleStrategy fromMap(Map < String, String > params) {
+        return JsonUtils.mapAsJson(params);
         StringBuilder strBulBuilder = new StringBuilder();
         boolean first = true;
         if (params != null && !params.isEmpty()) {
@@ -87,29 +117,8 @@ public interface ToggleStrategy extends FF4jToggleStrategy {
             }
         }
         return strBulBuilder.toString();
-    }
+    }*/
 
-    /**
-     * Utility method to convert parameters as Map
-     * 
-     * @param strParam
-     *            convert String param as Map.
-     * @return map of parameters.
-     */
-    public static Map<String, String> toMap(String strParam) {
-        LinkedHashMap<String, String> parameters = new LinkedHashMap<String, String>();
-        if (strParam != null) {
-            String[] chunks = strParam.split("\\" + SEPARATOR);
-            for (String chunk : chunks) {
-                int idxEqual = chunk.indexOf("=");
-                if (idxEqual > 0 && idxEqual < chunk.length()) {
-                    String paramName = chunk.substring(0, idxEqual);
-                    String paramValue = chunk.substring(idxEqual + 1);
-                    parameters.put(paramName, paramValue);
-                }
-            }
-        }
-        return parameters;
-    }
+   
     
 }

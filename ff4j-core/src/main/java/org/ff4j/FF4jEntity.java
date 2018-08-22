@@ -37,6 +37,7 @@ import org.ff4j.property.Property;
 import org.ff4j.property.domain.PropertyFactory;
 import org.ff4j.security.RestrictedAccessObject;
 import org.ff4j.security.domain.FF4jAcl;
+import org.ff4j.test.AssertUtils;
 
 /**
  * Superclass for FF4J objects.
@@ -79,8 +80,8 @@ public abstract class FF4jEntity<T extends FF4jEntity<?>> implements Comparable<
      *      unique identifier
      */
     protected FF4jEntity(String uid) {
+        AssertUtils.assertHasLength(uid);
         this.uid = uid;
-        assertNotNull(uid);
         updateLastModifiedDate();
     }
     

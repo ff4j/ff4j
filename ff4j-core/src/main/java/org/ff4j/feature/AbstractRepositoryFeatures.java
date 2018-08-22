@@ -247,7 +247,7 @@ public abstract class AbstractRepositoryFeatures
         assertHasLength(uid, "uid");
         assertHasLength(groupName, "groupName");
         this.notify(l -> l.onAddFeatureToGroup(uid, groupName));
-        updateFeature(read(uid).setGroup(groupName));
+        updateFeature(read(uid).group(groupName));
     }
     
     /** {@inheritDoc} */
@@ -256,7 +256,7 @@ public abstract class AbstractRepositoryFeatures
         assertFeatureExist(uid);
         assertGroupExist(groupName);
         this.notify(l -> l.onRemoveFeatureFromGroup(uid, groupName));
-        updateFeature(findById(uid).get().setGroup(""));
+        updateFeature(findById(uid).get().group(""));
     }
     
     /**

@@ -23,44 +23,39 @@ package org.ff4j.feature.strategy;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.ff4j.feature.ToggleStrategy;
-
 /**
- * Super class for {@link ToggleStrategy} implementation with utilities.
+ * Super class for {@link TogglePredicate} implementation with utilities.
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public abstract class AbstractToggleStrategy implements FF4jToggleStrategy {
+public abstract class AbstractToggleStrategy implements TogglePredicate {
 
-    /** Initial parameters. */
-    protected Map<String, String> initParams = new HashMap<String, String>();
-
-    /** ClassType. */
-    private final String type = getClass().getCanonicalName();
+    /** Parameters. */
+    protected Map<String, String> params = new HashMap<String, String>();
     
     /** {@inheritDoc} */
     @Override
     public void init(String featureName, Map<String, String> initParam) {
-        this.initParams = initParam;
-    }    
-    
-    /** {@inheritDoc} */
-    @Override
-    public Map<String, String> getInitParams() {
-        return this.initParams;
+        this.params = initParam;
     }
-
+    
     /**
      * Check presence of expected parameter.
      * 
      * @param paramName
      *            target parameter name
      */
-    public void assertRequiredParameter(String paramName) {
-        if (!initParams.containsKey(paramName)) {
+    public void assertParam(String paramName) {
+        if (!params.containsKey(paramName)) {
             String msg = String.format("Parameter '%s' is required for this FlippingStrategy", paramName);
             throw new IllegalArgumentException(msg);
         }
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, String> getInitParams() {
+        return this.params;
     }
 
     /** {@inheritDoc} */
@@ -68,14 +63,4 @@ public abstract class AbstractToggleStrategy implements FF4jToggleStrategy {
     public String toString() {
         return toJson();
     }
-    
-    /**
-     * Getter accessor for attribute 'classType'.
-     * 
-     * @return current value of 'classType'
-     */
-    public String getType() {
-        return type;
-    }
-
 }

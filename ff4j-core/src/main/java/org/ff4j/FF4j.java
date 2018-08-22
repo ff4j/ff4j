@@ -35,8 +35,9 @@ import org.ff4j.cache.CacheProxyProperties;
 import org.ff4j.event.Event;
 import org.ff4j.feature.Feature;
 import org.ff4j.feature.RepositoryFeatures;
-import org.ff4j.feature.ToggleStrategy;
 import org.ff4j.feature.exception.FeatureNotFoundException;
+import org.ff4j.feature.strategy.ToggleContext;
+import org.ff4j.feature.strategy.TogglePredicate;
 import org.ff4j.inmemory.repository.RepositoryAclsInMemory;
 import org.ff4j.inmemory.repository.RepositoryAuditTrailInMemory;
 import org.ff4j.inmemory.repository.RepositoryFeatureUsageInMemory;
@@ -99,7 +100,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
     // -------------------------------------------------------------------------
     
     /** Storage to persist event logs. */ 
-    private AuditTrail repositoryEventAudit = new RepositoryAuditTrailInMemory();
+    private AuditTrail auditTrail = new RepositoryAuditTrailInMemory();
     
     /** Storage to persist feature within {@link RepositoryFeatures}. */
     private RepositoryFeatures repositoryFeatures = new RepositoryFeaturesInMemory();
@@ -142,7 +143,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
         this.repositoryUsers              = new RepositoryUsersInMemory(xmlFile);
         this.repositoryAcl                = new RepositoryAclsInMemory(xmlFile);
         // History is empty
-        this.repositoryEventAudit         = new RepositoryAuditTrailInMemory();
+        this.auditTrail         = new RepositoryAuditTrailInMemory();
         this.repositoryEventFeaturesUsage = new RepositoryFeatureUsageInMemory();
     }
 
@@ -174,7 +175,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      *          current feature status.
      */
     public boolean check(String featureUid) {
-        return check(featureUid);
+        return check(featureUid, null, null);
     }
     
     /** {@inheritDoc} */
@@ -206,7 +207,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      *            current execution context
      * @return
      */
-    public boolean check(String uid, ToggleStrategy strats) {
+    public boolean check(String uid, TogglePredicate strats) {
         return check(uid, strats, getContext());
     }
 
@@ -219,18 +220,18 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      *            current execution context
      * @return
      */
-    public boolean check(String uid, ToggleStrategy strats, FF4jContext executionContext) {
+    public boolean check(String uid, TogglePredicate strats, FF4jContext executionContext) {
         // Read feature from store, must exist
         Feature feature = getFeature(uid);
         boolean featureToggled = false;
-        if (feature.isEnable()) {
+        if (feature.isEnabled()) {
             // Pick default context or override
             FF4jContext context = (executionContext == null) ? getContext() : executionContext;
             if (strats == null) {
                 featureToggled = feature.isToggled(context);
             } else {
                 // Overriding the toggleStreategy of the feature
-                featureToggled = strats.isToggled(feature, context);
+                featureToggled = strats.test(new ToggleContext(feature, context));
             }
         }
         // Send information that feature will be used
@@ -426,22 +427,22 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
         if (null != getRepositoryProperties()) {
             getRepositoryProperties().createSchema();
         }
+        // FeatureUsage
+        if (null != getRepositoryEventFeaturesUsage()) {
+            getRepositoryEventFeaturesUsage().createSchema();
+        }
         // AuditTrail
-        if (null != getRepositoryEventAudit()) {
-            getRepositoryEventAudit().createSchema();
-        }
-        // Audit
-        if (null != getRepositoryEventAudit()) {
-        	getRepositoryEventAudit().createSchema();
-        }
-        // Feature Usage
-        if (null != getRepositoryEventAudit()) {
-        	getRepositoryEventAudit().createSchema();
+        if (null != getAuditTrail()) {
+            getAuditTrail().createSchema();
         }
         // Users
-        
-        
-        // Acld
+        if (null != getRepositoryUsers()) {
+            getRepositoryUsers().createSchema();
+        }
+        // Acl
+        if (null != getRepositoryAcl()) {
+            getRepositoryAcl().createSchema();
+        }
     }
 
     /** {@inheritDoc} */
@@ -677,8 +678,8 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @return
      *       current value of 'auditTrail'
      */
-    public AuditTrail getRepositoryEventAudit() {
-        return repositoryEventAudit;
+    public AuditTrail getAuditTrail() {
+        return auditTrail;
     }
 
     /**
@@ -687,8 +688,8 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @param auditTrail
      *      new value for 'auditTrail '
      */
-    public void setRepositoryEventAudit(AuditTrail auditTrail) {
-        this.repositoryEventAudit = auditTrail;
+    public void setAudit(AuditTrail auditTrail) {
+        this.auditTrail = auditTrail;
         withAudit();
     }
     
@@ -700,7 +701,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @return
      */
     public FF4j withAudit(AuditTrail auditTrail) {
-        setRepositoryEventAudit(auditTrail);
+        setAudit(auditTrail);
         return this;
     }
     
@@ -711,9 +712,9 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      *      current ff4j instance
      */
     public FF4j withAudit() {
-        assertNotNull(getRepositoryEventAudit(), "Cannot register empty audit listerner");
-        getRepositoryFeatures().registerAuditListener(getRepositoryEventAudit());
-        getRepositoryProperties().registerAuditListener(getRepositoryEventAudit());
+        assertNotNull(getAuditTrail(), "Cannot register empty audit listerner");
+        getRepositoryFeatures().registerAuditListener(getAuditTrail());
+        getRepositoryProperties().registerAuditListener(getAuditTrail());
         return this;
     }
     
@@ -905,23 +906,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
         setSource(source);
         return this;
     }
-    
-    /**
-     * Required for Spring namespace XML configuration file. Setter must exists
-     *
-     * @param fname
-     *      target name
-     */
-    public void setFileName(String fname)    { /** empty setter for Spring framework */ }
-    
-    /**
-     * Required for Spring namespace XML configuration file. Setter must exists
-     *
-     * @param mnger
-     *      target mnger
-     */
-    public void setAuthManager(String mnger) { /** empty setter for Spring framework */}
-
+   
     /**
      * Getter accessor for attribute 'startTime'.
      *

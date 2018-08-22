@@ -29,11 +29,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.ff4j.core.Feature;
-import org.ff4j.core.FlippingStrategy;
+import org.ff4j.feature.ToggleStrategy;
+import org.ff4j.feature.Feature;
 import org.ff4j.property.Property;
-import org.ff4j.property.util.PropertyFactory;
-import org.ff4j.utils.MappingUtil;
+import org.ff4j.property.domain.PropertyFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -87,6 +86,7 @@ public class FeatureJsonParser {
         f.setGroup((String) fMap.get("group"));
         // permissions
         List<String> perm = (ArrayList<String>) fMap.get("permissions");
+        f.setAccessControlList(accessControlList);
         f.setPermissions(new HashSet<String>());
         if (perm != null) {
             f.getPermissions().addAll(perm);
@@ -176,7 +176,8 @@ public class FeatureJsonParser {
      * @return flip strategy
      */
     @SuppressWarnings("unchecked")
-    public static FlippingStrategy parseFlipStrategyAsJson(String uid, String json) {
+    public static ToggleStrategy parseFlipStrategyAsJson(String uid, String json) {
+        ToggleStrategy.fromMap(params)
         if (null == json || "".equals(json)) {
             return null;
         }

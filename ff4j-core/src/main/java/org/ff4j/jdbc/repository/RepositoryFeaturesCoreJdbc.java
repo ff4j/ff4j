@@ -44,8 +44,8 @@ import javax.sql.DataSource;
 import org.ff4j.feature.Feature;
 import org.ff4j.feature.AbstractRepositoryFeatures;
 import org.ff4j.feature.RepositoryFeatures;
-import org.ff4j.feature.ToggleStrategy;
 import org.ff4j.feature.exception.FeatureAccessException;
+import org.ff4j.feature.strategy.TogglePredicate;
 import org.ff4j.jdbc.JdbcConstants.FeaturePropertyColumns;
 import org.ff4j.jdbc.JdbcConstants.FeaturesColumns;
 import org.ff4j.jdbc.JdbcQueryBuilder;
@@ -490,7 +490,7 @@ public class RepositoryFeaturesCoreJdbc extends AbstractRepositoryFeatures {
             // Create Toggle Strategies
             if (null != feature.getToggleStrategies()) {
                 JdbcFeatureToggleStrategyMapper tmapper = new JdbcFeatureToggleStrategyMapper(sqlConn, getQueryBuilder(), feature.getUid());
-                for(ToggleStrategy ts : feature.getToggleStrategies()) {
+                for(TogglePredicate ts : feature.getToggleStrategies()) {
                     try(PreparedStatement ps = tmapper.mapToRepository(ts)) {
                         ps.executeUpdate();
                     }

@@ -40,7 +40,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.ff4j.feature.Feature;
-import org.ff4j.feature.ToggleStrategy;
+import org.ff4j.feature.strategy.TogglePredicate;
 import org.ff4j.parser.AbstractConfigurationFileParser;
 import org.ff4j.parser.FF4jConfigFile;
 import org.ff4j.property.Property;
@@ -457,9 +457,9 @@ public final class XmlParser extends AbstractConfigurationFileParser {
      * @return flipstrategy related to current feature.
      */
     @SuppressWarnings("unused")
-    private static ToggleStrategy parseFlipStrategy(Element flipStrategyTag, String uid) {
+    private static TogglePredicate parseFlipStrategy(Element flipStrategyTag, String uid) {
         NamedNodeMap nnm = flipStrategyTag.getAttributes();
-        ToggleStrategy flipStrategy;
+        TogglePredicate flipStrategy;
         if (nnm.getNamedItem(TOGGLE_STRATEGY_ATTCLASS) == null) {
             throw new IllegalArgumentException("Error syntax in configuration file : '" + TOGGLE_STRATEGY_ATTCLASS
                     + "' is required for each flipstrategy (feature=" + uid + ")");
@@ -468,7 +468,7 @@ public final class XmlParser extends AbstractConfigurationFileParser {
         try {
             // Attribute CLASS
             String clazzName = nnm.getNamedItem(TOGGLE_STRATEGY_ATTCLASS).getNodeValue();
-            flipStrategy = (ToggleStrategy) Class.forName(clazzName).newInstance();
+            flipStrategy = (TogglePredicate) Class.forName(clazzName).newInstance();
 
             // LIST OF PARAMS
             Map<String, String> parameters = new LinkedHashMap<String, String>();
@@ -665,7 +665,7 @@ public final class XmlParser extends AbstractConfigurationFileParser {
         StringBuilder sb = new StringBuilder();
         
         // <feature uid=.. enable=... <description=...> 
-        sb.append(MessageFormat.format(XML_FEATURE, feature.getUid(), feature.isEnable()));
+        sb.append(MessageFormat.format(XML_FEATURE, feature.getUid(), feature.isEnabled()));
         feature.getDescription().ifPresent(desc -> sb.append(" description=\"" + desc + "\""));
         sb.append(" >\n");
         

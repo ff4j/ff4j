@@ -24,6 +24,11 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<properties>
 		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
+		
+		<!-- Junit5 -->
+		<junit-platform.version>1.1.0</junit-platform.version>
+		<junit-jupiter.version>5.1.0</junit-jupiter.version>
+		
 	</properties>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -53,8 +58,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
-
 
 		<!-- Test -->
 		<dependency>
@@ -96,12 +99,10 @@
 					<dependency>
 						<groupId>org.junit.platform</groupId>
 						<artifactId>junit-platform-surefire-provider</artifactId>
-						<version>${junit-platform.version}</version>
 					</dependency>
 					<dependency>
 						<groupId>org.junit.jupiter</groupId>
 						<artifactId>junit-jupiter-engine</artifactId>
-						<version>${junit-jupiter.version}</version>
 					</dependency>
 				</dependencies>
 			</plugin>
