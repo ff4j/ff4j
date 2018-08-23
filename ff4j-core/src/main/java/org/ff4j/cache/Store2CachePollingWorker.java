@@ -46,6 +46,9 @@ public class Store2CachePollingWorker implements Runnable, Serializable {
     
     /** Target feature store to be proxified to cache features. */
     private FF4JCacheManager cacheManager;
+
+    /** Cache proxy. */
+    private FF4jCacheProxy ff4JCacheProxy;
     
     /**
      * Parameterized constructor.
@@ -62,12 +65,31 @@ public class Store2CachePollingWorker implements Runnable, Serializable {
         this.sourcePropertyStore = sp;
         this.cacheManager        = cp;
     }
+
+    /**
+     * Parameterized constructor.
+     *
+     * @param fcp
+     *      cache proxy
+     */
+    public Store2CachePollingWorker(FF4jCacheProxy fcp) {
+        this(fcp.getTargetFeatureStore(),fcp.getTargetPropertyStore(),null);
+        this.ff4JCacheProxy      = fcp;
+    }
+
     
     /** {@inheritDoc} */
     @Override
     public void run() {
+
         try {
-            
+            FF4JCacheManager cacheManager;
+            if (ff4JCacheProxy!=null) {
+                cacheManager = new InMemoryCacheManager();
+            } else {
+                cacheManager = this.cacheManager;
+            }
+
             if (sourceFeatureStore != null) {
                 // Access the store, if failed an error is raised and cache is not cleared.
                 Map < String, Feature > mapOfFeatures = sourceFeatureStore.readAll();
@@ -88,6 +110,10 @@ public class Store2CachePollingWorker implements Runnable, Serializable {
                 for (Property<?> p : mapOfProperties.values()) {
                     cacheManager.putProperty(p);
                 }
+            }
+
+            if (ff4JCacheProxy!=null) {
+                ff4JCacheProxy.setCacheManager(cacheManager);
             }
             
         } catch (Exception ex) {

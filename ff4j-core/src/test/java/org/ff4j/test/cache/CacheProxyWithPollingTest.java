@@ -76,7 +76,29 @@ public class CacheProxyWithPollingTest {
         FF4jCacheProxy proxy = new FF4jCacheProxy();
         proxy.stopPolling();
     }
-    
+
+
+    @Test
+    public void testCacheProxyManagerPropertyDuringRefresh() throws InterruptedException {
+        // When
+        FeatureStore  fs     = new InMemoryFeatureStore("ff4j.xml");
+        PropertyStore ps     = new InMemoryPropertyStore("ff4j.xml");
+        FF4JCacheManager cm  = new InMemoryCacheManager();
+        FF4jCacheProxy proxy = new FF4jCacheProxy(fs, ps, cm);
+
+        Store2CachePollingScheduler scheduler = proxy.getStore2CachePoller();
+        // Start polling on 10ms basis to refresh cache with properties and features
+        scheduler.setPollingDelay(10);
+        scheduler.start();
+
+        Thread.sleep(1000);
+
+        // Make a number of requests to get a property from the Cache Manager
+        // The property should never be null
+        for (int i=0; i<10000; i++) {
+            Assert.assertNotNull(proxy.getCacheManager().getProperty("a"));
+        }
+    }
     
     
 
