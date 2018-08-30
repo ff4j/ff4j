@@ -60,6 +60,11 @@ textarea {
   border-top: 1px solid #dddddd;
 }
 
+.table{
+	display:block;
+	overflow-x:auto;
+	overflow-y:hidden;
+}
 
 /*------------------------------------------------------------------
 [2. Navbar / .navbar]
