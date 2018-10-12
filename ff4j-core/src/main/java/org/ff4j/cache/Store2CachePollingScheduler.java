@@ -72,6 +72,23 @@ public class Store2CachePollingScheduler implements Serializable{
             }
         });
     }
+
+    /**
+     * Parameterized constructor.
+     * @param fcp
+     *      cache proxy
+     */
+    public Store2CachePollingScheduler(FF4jCacheProxy fcp) {
+        worker = new Store2CachePollingWorker(fcp);
+        executor = Executors.newScheduledThreadPool(1, new ThreadFactory() {
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread t = new Thread(r, "FF4j_Store2CachePollingWorker");
+                t.setDaemon(true);
+                return t;
+            }
+        });
+    }
     
     /**
      * Start polling with a polling

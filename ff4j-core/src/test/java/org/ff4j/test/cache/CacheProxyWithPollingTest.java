@@ -25,11 +25,19 @@ import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.cache.InMemoryCacheManager;
 import org.ff4j.cache.Store2CachePollingScheduler;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.property.Property;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class CacheProxyWithPollingTest {
     
@@ -76,7 +84,55 @@ public class CacheProxyWithPollingTest {
         FF4jCacheProxy proxy = new FF4jCacheProxy();
         proxy.stopPolling();
     }
-    
+
+
+    @Test
+    public void testCacheProxyManagerPropertyDuringRefresh() throws InterruptedException {
+
+        FeatureStore fs = new InMemoryFeatureStore("ff4j.xml");
+        PropertyStore ps = new InMemoryPropertyStore("ff4j.xml");
+        FF4JCacheManager cm = new InMemoryCacheManager();
+        final FF4jCacheProxy proxy = new FF4jCacheProxy(fs, ps, cm);
+
+        //scheduler refreshing cache through worker thread
+        Store2CachePollingScheduler store2CachePollingScheduler = new Store2CachePollingScheduler(proxy);
+        // setting polling delay 10ms
+        store2CachePollingScheduler.start(10);
+
+        // 20 threads trying to fetch property from cacheManager
+        ExecutorService fetchPropertyService  = Executors.newFixedThreadPool(20);
+
+        Callable<Property> callable = new Callable<Property>() {
+            @Override
+            public Property call() throws Exception {
+                try {
+                    return proxy.getCacheManager().getProperty("a");
+                } catch (Exception e) {
+                    throw e;
+                }
+
+            }
+        };
+
+        List<Callable<Property>> multiplePropertyFetchCalls = new ArrayList<Callable<Property>>(1000);
+        //generating 100000 requests
+        for (int i = 0; i < 100; i++) {
+            for (int j = 0; j < 10; j++) {
+                //clear to avoid accumulation of callables over multiple iterations
+                multiplePropertyFetchCalls.clear();
+            }
+            for (int k = 0; k < 100; k++) {
+                multiplePropertyFetchCalls.add(callable);
+            }
+            //execute 100 property fetch calls on 20 threads
+            List<Future<Property>> fetchPropertyCalls = fetchPropertyService.invokeAll(multiplePropertyFetchCalls);
+            //property should never be null
+            for (Future<Property> property : fetchPropertyCalls) {
+                Assert.assertNotNull(property);
+            }
+
+        }
+    }
     
     
 
