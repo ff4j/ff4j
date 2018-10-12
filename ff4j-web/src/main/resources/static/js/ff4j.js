@@ -21,7 +21,7 @@ function ff4j_disable(flip) {
     	ff4j_displayMessage("success", "Toggle OFF feature <b>" + $(flip).attr('id') + "</b>");
     },
     error : function(resultat, statut, erreur){
-       displayMessage("error", statut + "-" + erreur);
+       ff4j_displayMessage("error", statut + "-" + erreur);
  	   $(flip).prop('checked', false);
     },
     complete : function(resultat, statut){
@@ -41,7 +41,7 @@ function ff4j_enable(flip) {
      ff4j_displayMessage("success", "Toggle ON feature <b>" + $(flip).attr('id') + "</b>");
    },
    error : function(resultat, statut, erreur){
-     displayMessage("error", statut + "-" + erreur);
+     ff4j_displayMessage("error", statut + "-" + erreur);
 	 $(flip).prop('checked', false);
    },
    complete : function(resultat, statut){
@@ -574,7 +574,7 @@ function ff4j_toggleAudit() {
     	ff4j_displayMessage("success", "FF4J Audit is toggled");
     },
     error : function(resultat, statut, erreur){
-       displayMessage("error", statut + "-" + erreur);
+       ff4j_displayMessage("error", statut + "-" + erreur);
  	   $(flip).prop('checked', false);
     },
     complete : function(resultat, statut){}
