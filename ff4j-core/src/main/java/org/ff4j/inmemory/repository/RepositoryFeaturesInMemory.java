@@ -31,7 +31,7 @@ import org.ff4j.feature.AbstractRepositoryFeatures;
 import org.ff4j.feature.Feature;
 import org.ff4j.parser.AbstractConfigurationFileParser;
 import org.ff4j.parser.FF4jConfigFile;
-import org.ff4j.parser.xml.XmlParser;
+import org.ff4j.parser.xml.XmlParserV2;
 import org.ff4j.test.AssertUtils;
 
 /**
@@ -63,7 +63,7 @@ public class RepositoryFeaturesInMemory extends AbstractRepositoryFeatures {
      *          target fileName
      */
     public RepositoryFeaturesInMemory(String fileName) {
-        this(new XmlParser(), fileName);
+        this(new XmlParserV2(), fileName);
     }
     
     /**
@@ -73,7 +73,7 @@ public class RepositoryFeaturesInMemory extends AbstractRepositoryFeatures {
      *          target fileName
      */
     public RepositoryFeaturesInMemory(InputStream inputStream) {
-        this(new XmlParser(), inputStream);
+        this(new XmlParserV2(), inputStream);
     }
     
     /**
@@ -250,7 +250,7 @@ public class RepositoryFeaturesInMemory extends AbstractRepositoryFeatures {
      *            xml filename
      */
     public void loadXmlConf(InputStream xmlIN) {
-        this.mapOfFeatures = new XmlParser().parse(xmlIN).getFeatures();
+        this.mapOfFeatures = new XmlParserV2().parse(xmlIN).getFeatures();
         buildGroupsFromFeatures();
     }
 

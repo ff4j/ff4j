@@ -79,8 +79,8 @@ public class JdbcUtils {
     public static boolean isTableExist(DataSource ds, String tableName) {
         assertNotNull(ds);
         assertHasLength(tableName);
-        Connection          sqlConn = null;
-        ResultSet           rs = null;
+        Connection sqlConn = null;
+        ResultSet rs = null;
         try {
             sqlConn = ds.getConnection();
             DatabaseMetaData dbmd = sqlConn.getMetaData();

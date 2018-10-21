@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.ff4j.feature.ToggleStrategy;
 import org.ff4j.feature.Feature;
+import org.ff4j.feature.ToggleStrategy;
 import org.ff4j.property.Property;
 import org.ff4j.property.domain.PropertyFactory;
 

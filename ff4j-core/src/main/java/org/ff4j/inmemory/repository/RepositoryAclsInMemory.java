@@ -29,7 +29,7 @@ import java.util.Map;
 
 import org.ff4j.parser.AbstractConfigurationFileParser;
 import org.ff4j.parser.FF4jConfigFile;
-import org.ff4j.parser.xml.XmlParser;
+import org.ff4j.parser.xml.XmlParserV2;
 import org.ff4j.security.RepositoryAccessControlLists;
 import org.ff4j.security.domain.FF4jAcl;
 import org.ff4j.test.AssertUtils;
@@ -59,7 +59,7 @@ public class RepositoryAclsInMemory implements RepositoryAccessControlLists, Ser
      *          target fileName
      */
     public RepositoryAclsInMemory(String fileName) {
-        this(new XmlParser(), fileName);
+        this(new XmlParserV2(), fileName);
     }
     
     /**
@@ -69,7 +69,7 @@ public class RepositoryAclsInMemory implements RepositoryAccessControlLists, Ser
      *          target fileName
      */
     public RepositoryAclsInMemory(InputStream inputStream) {
-        this(new XmlParser(), inputStream);
+        this(new XmlParserV2(), inputStream);
     }
     
     /**

@@ -36,7 +36,7 @@ import org.ff4j.feature.strategy.TogglePredicate;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class ReleaseDateFlipStrategy extends AbstractToggleStrategy implements TogglePredicate, Serializable {
+public class ReleaseDateToggleStrategy extends AbstractToggleStrategy implements TogglePredicate, Serializable {
     
     /** Serial. */
     private static final long serialVersionUID = -6269110517013603914L;
@@ -55,14 +55,14 @@ public class ReleaseDateFlipStrategy extends AbstractToggleStrategy implements T
     /**
      * Default constructor for introspection.
      */
-    public ReleaseDateFlipStrategy() {}
+    public ReleaseDateToggleStrategy() {}
 
     /**
      * Initialization with a date expression.
      * 
      * @param date
      */
-    public ReleaseDateFlipStrategy(String strDate) {
+    public ReleaseDateToggleStrategy(String strDate) {
         try {
             this.releaseDate = SDF.parse(strDate);
         } catch (ParseException e) {
@@ -76,7 +76,7 @@ public class ReleaseDateFlipStrategy extends AbstractToggleStrategy implements T
      * 
      * @param releaseDate
      */
-    public ReleaseDateFlipStrategy(Date releaseDate) {
+    public ReleaseDateToggleStrategy(Date releaseDate) {
         this.releaseDate = releaseDate;
         getInitParams().put(PARAMNAME_RELEASEDATE, SDF.format(releaseDate));
     }

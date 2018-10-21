@@ -40,7 +40,7 @@ import org.ff4j.feature.exception.FeatureAlreadyExistException;
 import org.ff4j.feature.exception.FeatureNotFoundException;
 import org.ff4j.feature.exception.GroupNotFoundException;
 import org.ff4j.monitoring.AuditTrail;
-import org.ff4j.parser.xml.XmlParser;
+import org.ff4j.parser.xml.XmlParserV2;
 import org.ff4j.repository.FF4jRepository;
 import org.ff4j.repository.FF4jRepositoryListener;
 import org.ff4j.repository.FF4jRepositorySupport;
@@ -159,7 +159,7 @@ public abstract class AbstractRepositoryFeatures
      *      xml configuration file
      */
     protected Stream < Feature > importFeaturesFromXmlFile(String xmlConfFile) {
-        Map < String, Feature > features = new XmlParser().parse(xmlConfFile).getFeatures();
+        Map < String, Feature > features = new XmlParserV2().parse(xmlConfFile).getFeatures();
         save(features.values());
         return features.values().stream();
     }

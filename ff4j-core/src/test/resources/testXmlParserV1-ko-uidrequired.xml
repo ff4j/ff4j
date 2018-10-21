@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
   #%L
-  ff4j-aop
+  ff4j-core
   %%
   Copyright (C) 2013 Ff4J
   %%
@@ -18,20 +18,6 @@
   limitations under the License.
   #L%
   -->
-
-<!DOCTYPE configuration>
-<configuration >
-
-  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <encoder>
-      <pattern>%d{HH:mm:ss.SSS} %-5level %class{0} - %msg%n</pattern>
-    </encoder>
-  </appender>
-
-  <logger name="org.springframework" level="WARN" />
-
-  <root level="WARN">
-    <appender-ref ref="STDOUT" />
-  </root>
-
-</configuration>
+<features>
+	<feature enable="true" description="description" />
+</features>

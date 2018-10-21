@@ -23,6 +23,7 @@
 	 xsi:schemaLocation="http://www.ff4j.org/schema/ff4j http://ff4j.org/schema/ff4j-1.4.0.xsd">
 	
 	<features>
+		
 		<feature uid="AwesomeFeature" enable="true" description="some desc" />
 	
 		<feature uid="first" enable="true" description="description" >
@@ -32,13 +33,13 @@
 			</security>
 			
 			<custom-properties>
-			  <property name="ppint" 	  type="org.ff4j.property.PropertyInt" value="12"   />
+			  <property name="ppint" 	  type="org.ff4j.property.domain.PropertyInt" value="12"   />
 			  <property name="ppdouble"   type="double"  value="12.5" />
 			  <property name="ppboolean"  type="boolean" value="true" />
 			  <property name="ppstring"   value="hello" />
 			  <property name="ppListInt"  value="12,13,14" />
-			  <property name="myLogLevel" value="DEBUG" type="org.ff4j.property.PropertyLogLevel" />
-			  <property name="digitValue" value="1" type="org.ff4j.property.PropertyInt">
+			  <property name="myLogLevel" value="DEBUG" type="org.ff4j.property.domain.PropertyLogLevel" />
+			  <property name="digitValue" value="1" type="org.ff4j.property.domain.PropertyInt">
 			  	<fixedValues>
 			 		<value>0</value>
 			 		<value>1</value>
@@ -67,7 +68,7 @@
 		
 		<feature-group name="GRP1">
 			<feature uid="forth" enable="true" description="description" >
-				<flipstrategy class="org.ff4j.strategy.el.ExpressionFlipStrategy">
+				<flipstrategy class="org.ff4j.feature.strategy.expression.ExpressionToggleStrategy">
 					<param name="expression" value="third | second" />
 				</flipstrategy>
 				<security>
@@ -80,7 +81,7 @@
 					<role name="ADMINISTRATOR" />
 					<role name="BETA-TESTER" />
 				</security>
-				<flipstrategy class="org.ff4j.strategy.el.ExpressionFlipStrategy">
+				<flipstrategy class="org.ff4j.feature.strategy.expression.ExpressionToggleStrategy">
 					<param name="expression" value="third | second" />
 				</flipstrategy>
 			</feature>
@@ -103,7 +104,7 @@
 	 <property name="d"  type="boolean" value="true" />
 	 <property name="e"  type="string" value="hello" />
 	 <property name="f"  value="12,13,14" />
-	 <property name="g"  type="org.ff4j.property.PropertyLogLevel" value="DEBUG" />
+	 <property name="g"  type="org.ff4j.property.domain.PropertyLogLevel" value="DEBUG" />
 	 <property name="h"  type="float" value="3.4" />
 	 <property name="i"  type="byte" value="a" />
 	 <property name="j"  type="biginteger" value="100000000" />

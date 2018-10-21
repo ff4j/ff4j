@@ -42,7 +42,7 @@ import org.ff4j.feature.strategy.TogglePredicate;
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class OfficeHourStrategy extends AbstractToggleStrategy implements TogglePredicate, Serializable {
+public class OfficeHourToggleStrategy extends AbstractToggleStrategy implements TogglePredicate, Serializable {
     
     /** Serial. */
     private static final long serialVersionUID = -812341519896298400L;

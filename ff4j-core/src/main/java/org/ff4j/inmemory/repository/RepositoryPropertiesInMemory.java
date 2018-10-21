@@ -33,7 +33,7 @@ import java.util.stream.Stream;
 
 import org.ff4j.parser.AbstractConfigurationFileParser;
 import org.ff4j.parser.FF4jConfigFile;
-import org.ff4j.parser.xml.XmlParser;
+import org.ff4j.parser.xml.XmlParserV2;
 import org.ff4j.property.AbstractRepositoryProperties;
 import org.ff4j.property.Property;
 import org.ff4j.property.RepositoryProperties;
@@ -61,7 +61,7 @@ public class RepositoryPropertiesInMemory extends AbstractRepositoryProperties {
      *          target fileName
      */
     public RepositoryPropertiesInMemory(String fileName) {
-        this(new XmlParser(), fileName);
+        this(new XmlParserV2(), fileName);
     }
     
     /**
@@ -71,7 +71,7 @@ public class RepositoryPropertiesInMemory extends AbstractRepositoryProperties {
      *          target fileName
      */
     public RepositoryPropertiesInMemory(InputStream inputStream) {
-        this(new XmlParser(), inputStream);
+        this(new XmlParserV2(), inputStream);
     }
     
     /**

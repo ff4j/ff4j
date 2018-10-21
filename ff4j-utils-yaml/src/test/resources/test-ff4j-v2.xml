@@ -144,8 +144,7 @@
 		<property name="d" value="true" />
 		<property name="e" value="hello" />
 		<property name="f" value="12,13,14" />
-		<property name="g" value="DEBUG"
-			type="org.ff4j.property.domain.PropertyLogLevel" />
+		<property name="g" value="DEBUG" type="org.ff4j.property.domain.PropertyLogLevel" />
 	</properties>
 
 </ff4j>

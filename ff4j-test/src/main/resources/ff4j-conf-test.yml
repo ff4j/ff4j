@@ -6,8 +6,10 @@ ff4j:
   audit:      true
   
   features:
+  
     - uid: AwesomeFeature
       enable: true
+      description: some desc
       
     - uid: first
       enable: true
@@ -22,12 +24,30 @@ ff4j:
             hour: 18
             minutes: 00
       custom-properties:
+        - name: ppint
+          type: org.ff4j.property.PropertyInt
+          value: 12
+        - name: ppdouble
+          type: double
+          value: 12.5
+        - name: ppboolean
+          type: boolean
+          value: true
+        - name: ppstring
+          value: hello                              
         - name: ppListInt
           value: [12, 13, 14]
         - name: digitValue
           value: 1
           type: org.ff4j.property.domain.PropertyInt
           fixedValues: [0, 1, 2, 3]
+        - name: myLogLevel
+          type: org.ff4j.property.PropertyLogLevel
+          value: DEBUG
+        - name: myLogLevel
+          value: AMER
+          fixedValues: [AMER, SSSS, EAST, WEST]
+                   
       permissions:
         - name: FEATURE_TOGGLE
           users: [pierre]

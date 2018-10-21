@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.ff4j.monitoring.AuditTrail;
-import org.ff4j.parser.xml.XmlParser;
+import org.ff4j.parser.xml.XmlParserV2;
 import org.ff4j.property.exception.PropertyAlreadyExistException;
 import org.ff4j.property.exception.PropertyNotFoundException;
 import org.ff4j.repository.FF4jRepositoryListener;
@@ -74,7 +74,7 @@ public abstract class AbstractRepositoryProperties
      *      xml configuration file
      */
     public  Map<String, ? extends Property<?>> importPropertiesFromXmlFile(String xmlConfFile) {
-        Map<String, ? extends Property<?>> properties = new XmlParser().parse(xmlConfFile).getProperties();
+        Map<String, ? extends Property<?>> properties = new XmlParserV2().parse(xmlConfFile).getProperties();
         for (Map.Entry<String,? extends Property<?>> featureName : properties.entrySet()) {
             if (exists(featureName.getKey())) {
                 delete(featureName.getKey());

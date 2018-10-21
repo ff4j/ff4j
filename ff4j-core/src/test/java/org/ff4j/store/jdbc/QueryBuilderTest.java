@@ -28,9 +28,7 @@ public class QueryBuilderTest {
     @Test
     public void testQuery() {
         JdbcQueryBuilder builder = new JdbcQueryBuilder();
-        
         System.out.println(builder.sqlCreateSchema());
     }
-    
 
 }
