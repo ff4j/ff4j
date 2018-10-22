@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.ff4j</groupId>
         <artifactId>ff4j-parent</artifactId>
-        <version>1.7.3-SNAPSHOT</version>
+        <version>1.7.3</version>
     </parent>
     <properties>
         <version.spring>4.3.9.RELEASE</version.spring>
