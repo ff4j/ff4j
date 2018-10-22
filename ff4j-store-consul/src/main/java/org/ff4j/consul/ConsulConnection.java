@@ -166,7 +166,12 @@ public class ConsulConnection implements KeyValueDriver< String, String > {
     /** {@inheritDoc} */
     @Override
     public String getValue(String key) {
-        return getKeyValueClient().getValueAsString(key).get();
+        Optional<String> keyValue = getKeyValueClient().getValueAsString(key);
+        if (!keyValue.isPresent()) {
+            throw new IllegalArgumentException("Cannot read key '" + key + "' from consul. This error might error if you "
+                    + "remove the KEY from consul without editing FF4J/FEATURES_DICTIONARY.");
+        }
+        return keyValue.get();
     } 
     
     /** {@inheritDoc} */
