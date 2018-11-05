@@ -9,9 +9,9 @@
 [![Join the chat at https://gitter.im/ff4j/ff4j](https://badges.gitter.im/ff4j/ff4j.svg)](https://gitter.im/ff4j/ff4j?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![License Apache2](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
-FF4j is an implementation of [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html) pattern : Enable and disable features or your applications at runtime thanks to dedicated **web console, REST API, JMX or even CLI**.
+FF4j is an implementation of [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html) pattern : Enable and disable features for your applications at runtime thanks to a dedicated **web console, REST API, JMX or even CLI**.
 
-It handle also properties and provide generic interfaces to work with **configuration properties**, store them in 10 differents DB and integration with both **Archaius** and **Commons-Configuration**. 
+It also handles properties and provides generic interfaces to work with **configuration properties**, store them in one of 10 differents DBs and integrates with both **Archaius** and **Commons-Configuration**. 
 
 More information can be found at [ff4j.github.io](http://ff4j.github.io) or [Reference Documentation](https://github.com/ff4j/ff4j/wiki) in the wiki.
 
