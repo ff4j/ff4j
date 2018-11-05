@@ -108,7 +108,7 @@
         <version.hdldb>2.3.2</version.hdldb>
 
         <version.ehcache>2.10.1</version.ehcache>
-        <version.jedis>2.5.1</version.jedis>
+        <version.jedis>2.9.0</version.jedis>
         <version.neo4j>2.3.1</version.neo4j>
 
         <!-- VERSIONS PLUGINS -->

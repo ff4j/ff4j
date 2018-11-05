@@ -43,6 +43,8 @@ public class RedisConnection {
   
     /** used in protected redis cluster. */
     protected String redisPassword = null;
+
+    protected boolean redisSsl = false;
     
     /** redis. */ 
     protected int redisPoolMaxTotal =  8;
@@ -96,6 +98,24 @@ public class RedisConnection {
         this(predisHost, predisPort);
         this.redisPassword  = password;
     }
+
+  /**
+   * Constructor for authenticated connection.
+   *
+   * @param predisHost
+   * 		hostname
+   * @param predisPort
+   * 		port
+   * @param password
+   * 		redis password
+   * @param ssl
+   *    ssl
+   */
+  public RedisConnection(String predisHost, int predisPort, String password, boolean ssl) {
+    this(predisHost, predisPort);
+    this.redisPassword  = password;
+    this.redisSsl = ssl;
+  }
     
     /**
      * Getter accessor for attribute 'redisHost'.
@@ -133,13 +153,9 @@ public class RedisConnection {
      */
     public Jedis getJedis() {
         if (jedisPool == null) {
-            if (redisPassword != null && !"".equals(redisPassword)) {
-                JedisPoolConfig poolConfig = new JedisPoolConfig();
-                this.jedisPool = new JedisPool(poolConfig, 
-                        redisHost, redisport, redisPoolTimeout, redisPassword);
-            } else {
-                this.jedisPool = new JedisPool(redisHost, redisport);
-            }
+            JedisPoolConfig poolConfig = new JedisPoolConfig();
+            this.jedisPool = new JedisPool(poolConfig, redisHost,
+                redisport, redisPoolTimeout, redisPassword, redisSsl);
         }
         return jedisPool.getResource();
     }
