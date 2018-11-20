@@ -22,12 +22,11 @@ package org.ff4j.parser;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.ff4j.feature.Feature;
 import org.ff4j.property.Property;
-import org.ff4j.security.domain.FF4jAcl;
-import org.ff4j.security.domain.FF4jUser;
+import org.ff4j.user.FF4jRole;
+import org.ff4j.user.FF4jUser;
 import org.ff4j.utils.JsonUtils;
 
 /**
@@ -44,19 +43,16 @@ public final class FF4jConfigFile {
     private boolean audit = false; 
     
 	/** InMemory Features parsed. */
-    private Map <String, Feature > features = new LinkedHashMap<String, Feature>();
+    private Map < String, Feature > features = new LinkedHashMap<>();
     
     /** InMemory Properties parsed. */
-    private Map <String, Property<?> > properties = new LinkedHashMap<String, Property<?>>();
+    private Map < String, Property<?> > properties = new LinkedHashMap<>();
     
     /** InMemory Roles parsed. */
-    private Map < String, Set<String> > roles = new HashMap<>();
+    private Map < String, FF4jRole > roles = new HashMap<>();
     
     /** InMemory USers parsed. */
-    private Map <String, FF4jUser > users = new LinkedHashMap<String, FF4jUser>();
-    
-    /** InMemory ACL (permissions) parsed. */
-    private Map <String, FF4jAcl > acls = new LinkedHashMap<String, FF4jAcl>();
+    private Map < String, FF4jUser > users = new LinkedHashMap<>();
     
     /** {@inheritDoc} */
     @Override
@@ -68,7 +64,6 @@ public final class FF4jConfigFile {
         sb.append("\"properties\":").append(JsonUtils.mapAsJson(properties)).append(",");
         sb.append("\"roles\":").append(JsonUtils.mapAsJson(roles)).append(",");
         sb.append("\"users\":").append(JsonUtils.mapAsJson(users)).append(",");
-        sb.append("\"acls\":").append(JsonUtils.mapAsJson(acls));
         sb.append("}");
         return sb.toString();
     }
@@ -79,7 +74,7 @@ public final class FF4jConfigFile {
      * @return
      *       current value of 'roles'
      */
-    public Map<String, Set<String>> getRoles() {
+    public Map<String, FF4jRole > getRoles() {
         return roles;
     }
 
@@ -88,7 +83,7 @@ public final class FF4jConfigFile {
      * @param roles
      * 		new value for 'roles '
      */
-    public void setRoles(Map<String, Set<String>> roles) {
+    public void setRoles(Map<String, FF4jRole> roles) {
         this.roles = roles;
     }
 
@@ -109,25 +104,6 @@ public final class FF4jConfigFile {
      */
     public void setUsers(Map<String, FF4jUser> users) {
         this.users = users;
-    }
-
-    /**
-     * Getter accessor for attribute 'acls'.
-     *
-     * @return
-     *       current value of 'acls'
-     */
-    public Map<String, FF4jAcl> getAcls() {
-        return acls;
-    }
-
-    /**
-     * Setter accessor for attribute 'acls'.
-     * @param acls
-     * 		new value for 'acls '
-     */
-    public void setAcls(Map<String, FF4jAcl> acls) {
-        this.acls = acls;
     }
     
     /**

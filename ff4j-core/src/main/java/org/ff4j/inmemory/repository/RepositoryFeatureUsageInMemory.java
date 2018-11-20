@@ -43,9 +43,9 @@ import org.ff4j.chart.TimeSeriesChart;
 import org.ff4j.event.Event;
 import org.ff4j.event.EventQueryDefinition;
 import org.ff4j.event.EventSeries;
-import org.ff4j.monitoring.AbstractRepositoryFeatureUsage;
+import org.ff4j.event.repo.AbstractRepositoryFeatureUsage;
+import org.ff4j.event.repo.RepositoryEventFeatureUsage;
 import org.ff4j.monitoring.HitCount;
-import org.ff4j.monitoring.RepositoryEventFeatureUsage;
 
 /**
  * Implementation of in memory {@link RepositoryEventFeatureUsage} with limited events.
@@ -123,7 +123,7 @@ public class RepositoryFeatureUsageInMemory extends AbstractRepositoryFeatureUsa
     
     /** {@inheritDoc} */
     @Override
-    public Optional<Event> findById(String id) {
+    public Optional<Event> find(String id) {
        Optional < EventSeries > result = findEventSeries(id);
        return result.isPresent() ? result.get().getById(id) : Optional.empty();
     }
@@ -131,7 +131,7 @@ public class RepositoryFeatureUsageInMemory extends AbstractRepositoryFeatureUsa
     /** {@inheritDoc} */
     @Override
     public boolean exists(String id) {
-        return findById(id).isPresent();
+        return find(id).isPresent();
     }
     
     /** {@inheritDoc} */

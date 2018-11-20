@@ -18,9 +18,9 @@ import org.ff4j.feature.Feature;
 import org.ff4j.feature.strategy.TogglePredicate;
 import org.ff4j.parser.FF4jConfigFile;
 import org.ff4j.property.Property;
-import org.ff4j.property.domain.PropertyString;
-import org.ff4j.security.domain.FF4jGrantees;
-import org.ff4j.security.domain.FF4jPermission;
+import org.ff4j.property.PropertyString;
+import org.ff4j.security.FF4jGrantees;
+import org.ff4j.security.FF4jPermission;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -31,7 +31,7 @@ import org.w3c.dom.NodeList;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public final class XmlParserV1 extends AbstractXmlParser {
+public final class XmlParserV1 extends ConfigurationFileParserXml {
 
     /** TAG XML. */
     public static final String FEATURES_TAG = "features";

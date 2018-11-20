@@ -12,20 +12,20 @@ import org.ff4j.parser.FF4jConfigFile;
 import org.ff4j.parser.xml.XmlParserErrorHandler;
 import org.ff4j.parser.xml.XmlParserV1;
 import org.ff4j.property.Property;
-import org.ff4j.property.domain.PropertyLogLevel;
-import org.ff4j.property.domain.PropertyLogLevel.LogLevel;
+import org.ff4j.property.PropertyLogLevel;
+import org.ff4j.property.PropertyLogLevel.LogLevel;
 import org.junit.Assert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXParseException;
 
-@DisplayName("XML Parser Tests.")
+@DisplayName("XML Parser V1 Tests easy migration to v2")
 public class XmlParserV1Test {
   
     @Test
     @DisplayName("Parsing xml v1 files, should load features, groups")
     public void testLoaderXMLFile() {
-        InputStream in = getClass().getClassLoader().getResourceAsStream("testXmlParserV1-full-features.xml");
+        InputStream in = getClass().getClassLoader().getResourceAsStream("v1/testXmlParserV1-full-features.xml");
         Map<String, Feature> features = new XmlParserV1().parse(in).getFeatures();
         Assert.assertEquals(7, features.size());
         Assert.assertTrue(features.containsKey("f0"));
@@ -83,7 +83,7 @@ public class XmlParserV1Test {
        assertThrows(IllegalArgumentException.class, () -> {
          new XmlParserV1().parse(
                  getClass().getClassLoader()
-                 .getResourceAsStream("testXmlParserV1-ko-uidrequired.xml"));
+                 .getResourceAsStream("v1/testXmlParserV1-ko-uidrequired.xml"));
        });
     }
     
@@ -93,7 +93,7 @@ public class XmlParserV1Test {
        assertThrows(IllegalArgumentException.class, () -> {
          new XmlParserV1().parse(
                  getClass().getClassLoader()
-                 .getResourceAsStream("testXmlParserV1-ko-enablerequired.xml"));
+                 .getResourceAsStream("v1/testXmlParserV1-ko-enablerequired.xml"));
        });
     }
     
@@ -102,7 +102,7 @@ public class XmlParserV1Test {
     public void importThenExportFeatures() throws IOException {
         // Given
         XmlParserV1 parser = new XmlParserV1();
-        InputStream in = getClass().getClassLoader().getResourceAsStream("testXmlParserV1-import-export.xml");
+        InputStream in = getClass().getClassLoader().getResourceAsStream("v1/testXmlParserV1-import-export.xml");
         Map<String, Feature> features = parser.parse(in).getFeatures();
         Assert.assertNotNull(features);
         // When
@@ -117,7 +117,7 @@ public class XmlParserV1Test {
     public void importThenExportALL() throws IOException {
         // Given
         XmlParserV1 parser = new XmlParserV1();
-        InputStream in = getClass().getClassLoader().getResourceAsStream("testXmlParserV1-full.xml");
+        InputStream in = getClass().getClassLoader().getResourceAsStream("v1/testXmlParserV1-full.xml");
         FF4jConfigFile conf = parser.parse(in);
         Assert.assertNotNull(conf.getFeatures());
         Assert.assertNotNull(conf.getProperties());
@@ -134,7 +134,7 @@ public class XmlParserV1Test {
     public void testPropertiesParsing() throws IOException {
         // Given
         XmlParserV1 parser = new XmlParserV1();
-        InputStream in = getClass().getClassLoader().getResourceAsStream("testXmlParserV1-full.xml");
+        InputStream in = getClass().getClassLoader().getResourceAsStream("v1/testXmlParserV1-full.xml");
         // When
         FF4jConfigFile conf = parser.parse(in);
         // Then
@@ -169,73 +169,73 @@ public class XmlParserV1Test {
     @Test
     @DisplayName("Invalid fixed Value in Properties")
     public void testParsingProperties() throws IOException {
-        assertThrows(IllegalArgumentException.class, () -> parseFile("testXmlParserV1-property1.xml"));
+        assertThrows(IllegalArgumentException.class, () -> parseFile("v1/testXmlParserV1-property1.xml"));
     }
     
     @Test
     @DisplayName("Propertymust have a name")
     public void testParsingProperties2NoName() throws IOException {
-        assertThrows(IllegalArgumentException.class, () -> parseFile("testXmlParserV1-property2.xml"));
+        assertThrows(IllegalArgumentException.class, () -> parseFile("v1/testXmlParserV1-property2.xml"));
     }
     
     @Test
     @DisplayName("Property must have a value")
     public void testParsingProperties3NoValue() throws IOException {
-        assertThrows(IllegalArgumentException.class, () -> parseFile("testXmlParserV1-property3.xml"));
+        assertThrows(IllegalArgumentException.class, () -> parseFile("v1/testXmlParserV1-property3.xml"));
     }
     
     @Test
     @DisplayName("Property must have a proper type")
     public void testParsingPropertiesInvalidType() throws IOException {
-        assertThrows(IllegalArgumentException.class, () -> parseFile("testXmlParserV1-property4.xml"));
+        assertThrows(IllegalArgumentException.class, () -> parseFile("v1/testXmlParserV1-property4.xml"));
     }
     
     @Test
     @DisplayName("Property tag must be unique")
     public void testParsingPropertiesMoreTag() throws IOException {
-        assertThrows(IllegalArgumentException.class, () -> parseFile("testXmlParserV1-property5.xml"));
+        assertThrows(IllegalArgumentException.class, () -> parseFile("v1/testXmlParserV1-property5.xml"));
     }
     
     @Test
     @DisplayName("Feature class name is required")
     public void testParsingFeatureNoClass() throws IOException {
-        assertThrows(IllegalArgumentException.class, () -> parseFile("testXmlParserV1-feature-ko1.xml"));
+        assertThrows(IllegalArgumentException.class, () -> parseFile("v1/testXmlParserV1-feature-ko1.xml"));
     }
     
     @Test
     @DisplayName("Feature value name is require")
     public void testParsingFeatureNoValue() throws IOException {
-        assertThrows(IllegalArgumentException.class, () -> parseFile("testXmlParserV1-feature-ko2.xml"));
+        assertThrows(IllegalArgumentException.class, () -> parseFile("v1/testXmlParserV1-feature-ko2.xml"));
     }
     
     @Test
     @DisplayName("Feature tag must be unique")
     public void testParsingFeatureInvalidTag() throws IOException {
-        assertThrows(IllegalArgumentException.class, () -> parseFile("testXmlParserV1-feature-ko3.xml"));
+        assertThrows(IllegalArgumentException.class, () -> parseFile("v1/testXmlParserV1-feature-ko3.xml"));
     }
     
     @Test
     @DisplayName("Feature is the only allowed tag")
     public void testParsingFeatureInvalidTag2() throws IOException {
-        assertThrows(IllegalArgumentException.class, () -> parseFile("testXmlParserV1-feature-ko4.xml"));
+        assertThrows(IllegalArgumentException.class, () -> parseFile("v1/testXmlParserV1-feature-ko4.xml"));
     }
     
     @Test
     @DisplayName("Feature group tag are above features")
     public void testParsingFeatureInvalidTag5() throws IOException {
-        assertThrows(IllegalArgumentException.class, () -> parseFile("testXmlParserV1-feature-ko5.xml"));
+        assertThrows(IllegalArgumentException.class, () -> parseFile("v1/testXmlParserV1-feature-ko5.xml"));
     }
     
     @Test
-    @DisplayName("Feature name must be uniqeu")
+    @DisplayName("Feature name must be unique")
     public void testParsingFeatureInvalidTag4() throws IOException {
-        assertThrows(IllegalArgumentException.class, () -> parseFile("testXmlParserV1-feature-ko6.xml"));
+        assertThrows(IllegalArgumentException.class, () -> parseFile("v1/testXmlParserV1-feature-ko6.xml"));
     }
     
     @Test
     @DisplayName("Feature Toggle strategy param must have value")
     public void testParsingFeatureInvalidTag7() throws IOException {
-        assertThrows(IllegalArgumentException.class, () -> parseFile("testXmlParserV1-feature-ko7.xml"));
+        assertThrows(IllegalArgumentException.class, () -> parseFile("v1/testXmlParserV1-feature-ko7.xml"));
     }    
 
 }

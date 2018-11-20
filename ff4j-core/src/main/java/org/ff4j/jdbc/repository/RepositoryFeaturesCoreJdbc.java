@@ -42,9 +42,9 @@ import java.util.stream.Stream;
 import javax.sql.DataSource;
 
 import org.ff4j.feature.Feature;
-import org.ff4j.feature.AbstractRepositoryFeatures;
-import org.ff4j.feature.RepositoryFeatures;
 import org.ff4j.feature.exception.FeatureAccessException;
+import org.ff4j.feature.repo.AbstractRepositoryFeatures;
+import org.ff4j.feature.repo.RepositoryFeatures;
 import org.ff4j.feature.strategy.TogglePredicate;
 import org.ff4j.jdbc.JdbcConstants.FeaturePropertyColumns;
 import org.ff4j.jdbc.JdbcConstants.FeaturesColumns;
@@ -96,17 +96,6 @@ public class RepositoryFeaturesCoreJdbc extends AbstractRepositoryFeatures {
      */
     public RepositoryFeaturesCoreJdbc(DataSource jdbcDS) {
         this.dataSource = jdbcDS;
-    }
-
-    /**
-     * Constructor from DataSource.
-     *
-     * @param jdbcDS
-     *            native jdbc datasource
-     */
-    public RepositoryFeaturesCoreJdbc(DataSource jdbcDS, String xmlConfFile) {
-        this(jdbcDS);
-        importFeaturesFromXmlFile(xmlConfFile);
     }
     
     /** {@inheritDoc} */
@@ -205,7 +194,7 @@ public class RepositoryFeaturesCoreJdbc extends AbstractRepositoryFeatures {
 
     /** {@inheritDoc} */
     @Override
-    public Optional < Feature > findById(String uid) {
+    public Optional < Feature > find(String uid) {
         assertHasLength(uid);
         // Closeable sql connection
         Feature f = null;

@@ -26,8 +26,7 @@ import java.util.Map;
 
 import org.ff4j.feature.strategy.ToggleContext;
 import org.ff4j.feature.strategy.TogglePredicate;
-import org.ff4j.security.domain.FF4jGrantees;
-import org.ff4j.security.domain.FF4jUser;
+import org.ff4j.user.FF4jUser;
 
 /**
  * Will check if feature is toggled based on ACL and current user.

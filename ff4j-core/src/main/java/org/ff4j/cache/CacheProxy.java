@@ -28,7 +28,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.ff4j.FF4jEntity;
-import org.ff4j.monitoring.AuditTrail;
+import org.ff4j.event.repo.AuditTrail;
 import org.ff4j.repository.FF4jRepository;
 import org.ff4j.repository.FF4jRepositoryListener;
 import org.ff4j.repository.FF4jRepositoryObserver;
@@ -169,11 +169,11 @@ public class CacheProxy < K extends Serializable, V extends FF4jEntity<?> >
 
     /** {@inheritDoc} */
     @Override
-    public Optional<V> findById(String id) {
+    public Optional<V> find(String id) {
         Optional <V> fp = cacheManager.get(id);
         // not in cache but may has been created from now
         if (!fp.isPresent()) {
-            fp = getTargetStore().findById(id);
+            fp = getTargetStore().find(id);
             if (fp.isPresent()) {
                 cacheManager.put(fp.get().getUid(), fp.get());
             }

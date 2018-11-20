@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.ff4j.FF4jEntity;
-import org.ff4j.monitoring.AuditTrail;
+import org.ff4j.event.repo.AuditTrail;
 
 /**
  * Super Interface to work with features and properties.
@@ -106,7 +106,7 @@ public interface FF4jRepository<ID extends Serializable, ENTITY extends FF4jEnti
      *            target identifier
      * @return entity if exist
      */
-    Optional<ENTITY> findById(ID id);
+    Optional<ENTITY> find(ID id);
     
     /**
      * Retrieve a subset of store.
@@ -122,7 +122,7 @@ public interface FF4jRepository<ID extends Serializable, ENTITY extends FF4jEnti
      *
      * @return entities as an {@link Iterable}
      */
-    Stream<ENTITY> findAll();    
+    Stream<ENTITY> findAll();
     
     /**
      * Retriev all keys for a repository.
@@ -152,7 +152,7 @@ public interface FF4jRepository<ID extends Serializable, ENTITY extends FF4jEnti
      *      target entity
      */
     default ENTITY read(ID id, ENTITY defaultValue) {
-        return findById(id).orElse(defaultValue);
+        return find(id).orElse(defaultValue);
     }
 
     /**

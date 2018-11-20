@@ -31,12 +31,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.ff4j.parser.AbstractConfigurationFileParser;
+import org.ff4j.parser.ConfigurationFileParser;
 import org.ff4j.parser.FF4jConfigFile;
 import org.ff4j.parser.xml.XmlParserV2;
-import org.ff4j.property.AbstractRepositoryProperties;
 import org.ff4j.property.Property;
-import org.ff4j.property.RepositoryProperties;
+import org.ff4j.property.repo.AbstractRepositoryProperties;
+import org.ff4j.property.repo.RepositoryProperties;
 import org.ff4j.test.AssertUtils;
 /**
  * Implementation of {@link RepositoryProperties} to keep properties in memory.
@@ -82,7 +82,7 @@ public class RepositoryPropertiesInMemory extends AbstractRepositoryProperties {
      * @param fileName
      *      target file name
      */
-    public RepositoryPropertiesInMemory(AbstractConfigurationFileParser parser, String fileName) {
+    public RepositoryPropertiesInMemory(ConfigurationFileParser parser, String fileName) {
         AssertUtils.assertHasLength(fileName, "fileName");
         AssertUtils.assertNotNull(parser,     "parser");
         initWithConfig(parser.parse(fileName));
@@ -96,7 +96,7 @@ public class RepositoryPropertiesInMemory extends AbstractRepositoryProperties {
      * @param fileName
      *      target file name
      */
-    public RepositoryPropertiesInMemory(AbstractConfigurationFileParser parser, InputStream in) {
+    public RepositoryPropertiesInMemory(ConfigurationFileParser parser, InputStream in) {
         AssertUtils.assertNotNull(parser,  "parser");
         AssertUtils.assertNotNull(in, "inputStream");
         initWithConfig(parser.parse(in));
@@ -171,7 +171,7 @@ public class RepositoryPropertiesInMemory extends AbstractRepositoryProperties {
     
     /** {@inheritDoc} */
     @Override
-    public Optional < Property<?> > findById(String uid) {
+    public Optional < Property<?> > find(String uid) {
         assertHasLength(uid);
         return Optional.ofNullable(mapOfProperties.get(uid));
     }

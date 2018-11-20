@@ -32,9 +32,9 @@ import org.ff4j.FF4jEntity;
 import org.ff4j.feature.strategy.ToggleContext;
 import org.ff4j.feature.strategy.TogglePredicate;
 import org.ff4j.property.Property;
-import org.ff4j.property.domain.PropertyFactory;
-import org.ff4j.security.domain.FF4jGrantees;
-import org.ff4j.security.domain.FF4jPermission;
+import org.ff4j.property.PropertyFactory;
+import org.ff4j.security.FF4jGrantees;
+import org.ff4j.security.FF4jPermission;
 
 /**
  * Represents a feature flag identified by an unique identifier.

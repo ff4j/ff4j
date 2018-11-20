@@ -31,8 +31,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.ff4j.event.EventQueryDefinition;
+import org.ff4j.event.repo.RepositoryEventFeatureUsage;
 import org.ff4j.monitoring.HitCount;
-import org.ff4j.monitoring.RepositoryEventFeatureUsage;
 
 /**
  * Create graphs and charts base on data into UsageService.

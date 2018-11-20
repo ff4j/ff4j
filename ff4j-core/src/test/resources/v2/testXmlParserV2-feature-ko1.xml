@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ff4j xmlns="http://www.ff4j.org/schema/ff4j"
+	  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	  xsi:schemaLocation="http://ff4j.org/schema/ff4j-2.0.xsd">
+
+	<features>
+
+		<feature uid="sample" enable="true" description="description">
+			<toggle-strategies>
+				<toggle-strategy
+					class="org.ff4j.feature.strategy.expression.ExpressionToggleStrategy" >
+					<param name="expression" value="third | second" />
+				</toggle-strategy>
+			</toggle-strategies>
+
+		</feature>
+
+	</features>
+</ff4j>

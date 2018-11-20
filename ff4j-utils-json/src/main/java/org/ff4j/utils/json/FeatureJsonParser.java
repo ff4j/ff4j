@@ -32,7 +32,7 @@ import java.util.Set;
 import org.ff4j.feature.Feature;
 import org.ff4j.feature.ToggleStrategy;
 import org.ff4j.property.Property;
-import org.ff4j.property.domain.PropertyFactory;
+import org.ff4j.property.PropertyFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

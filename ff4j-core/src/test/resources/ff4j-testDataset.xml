@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- #%L ff4j-core %% Copyright (C) 2013 - 2017 FF4J %% Licensed under the 
+	Apache License, Version 2.0 (the "License"); you may not use this file except 
+	in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. 
+	#L% -->
+<ff4j xmlns="http://www.ff4j.org/schema/ff4j" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ff4j.org/schema/ff4j-2.0.xsd">
+	
+	<!-- ~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~~ ROLES          ~~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~ -->
+
+	<roles>
+		<role name="ADMINISTRATOR">
+			<permission>ADMIN_FEATURES</permission>
+			<permission>ADMIN_PROPERTIES</permission>
+			<permission>TOGGLE_FEATURES</permission>
+			<permission>VIEW_FEATURES</permission>
+			<permission>VIEW_PROPERTIES</permission>
+			<permission>VIEW_AUDITTRAIL</permission>
+			<permission>VIEW_FEATUREUSAGE</permission>
+		</role>
+
+		<role name="SUPERUSER">
+			<permission>TOGGLE_FEATURES</permission>
+			<permission>VIEW_FEATURES</permission>
+			<permission>VIEW_PROPERTIES</permission>
+			<permission>VIEW_AUDITTRAIL</permission>
+			<permission>VIEW_FEATUREUSAGE</permission>
+		</role>
+
+		<role name="USER">
+			<permission>VIEW_FEATURES</permission>
+			<permission>VIEW_PROPERTIES</permission>
+			<permission>VIEW_AUDITTRAIL</permission>
+			<permission>VIEW_FEATUREUSAGE</permission>
+		</role>
+	</roles>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~~ USERS          ~~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~ -->
+
+	<users>
+
+		<!-- Definition of User -->
+		<user uid="pierre" firstName="Pierre" lastName="Foioi"
+			description="sample description if OK">
+			<roles>
+				<role>USER</role>
+				<role>SUPERUSER</role>
+			</roles>
+			<permissions>
+				<permission>ADMIN_FEATURES</permission>
+				<permission>ADMIN_PROPERTIES</permission>
+			</permissions>
+		</user>
+
+	</users>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~~ FEATURES       ~~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~ -->
+
+	<features>
+	
+	    <feature uid="f1" enable="true" description="some desc" />
+	    
+		<feature uid="f2" enable="true" description="description" groupName="GRP1">
+			<acl>
+				<permission name="FEATURE_TOGGLE" grantedUsers="pierre" />
+				<permission name="FEATURE_VIEW"   grantedRoles="EVERYONE" />
+			</acl>
+			<custom-properties>
+			  <property name="ppint" 	  type="int"     value="12"   		/>
+			  <property name="ppdouble"   type="double"  value="12.5" 		/>
+			  <property name="ppboolean"  type="boolean" value="true" 		/>
+			  <property name="ppstring"   type="string"  value="hello"		/>
+			  <property name="ppListInt"  type="listint" value="12,13,14" 	/>
+			  <property name="myLogLevel" type="logLevel" value="DEBUG" 		/>
+			  <property name="digitValue" type="org.ff4j.property.PropertyInt" value="1" >
+			  	<fixedValues>
+			 		<value>0</value>
+			 		<value>1</value>
+			 		<value>2</value>
+			 		<value>3</value>
+			 	</fixedValues>
+			  </property>
+			  <property name="regionIdentifier" value="AMER" >
+			 	<fixedValues>
+			 		<value>AMER</value>
+			 		<value>SSSS</value>
+			 		<value>EAST</value>
+			 		<value>EAST</value>
+			 	</fixedValues>
+			 </property>
+			</custom-properties>
+		</feature>
+		
+		<feature-group name="GRP0">
+			<feature uid="f3" enable="false" description="description" >
+				<acl>
+					<permission name="FEATURE_VIEW"   grantedRoles="USER" />
+				</acl>
+			</feature>
+		</feature-group>
+		
+		<feature-group name="GRP1">
+			<feature uid="f4" enable="true" description="description" >
+				 <toggle-strategies>
+					<toggle-strategy class="org.ff4j.strategy.el.ExpressionFlipStrategy">
+						<param name="expression" value="f3 | f2" />
+					</toggle-strategy>
+			</toggle-strategies>
+			</feature>
+			
+		</feature-group>
+
+	</features>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~~ PROPERTIES     ~~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~ -->
+
+	<properties>
+		<property name="a" value="AMER" fixedValues="AMER,EAST" />
+		<property name="b" value="12" />
+		<property name="c" value="12.5" />
+		<property name="d" value="true" />
+		<property name="e" value="hello" />
+		<property name="f" value="12,13,14" />
+		<property name="g" value="DEBUG"
+			type="logLevel" />
+	</properties>
+
+</ff4j>

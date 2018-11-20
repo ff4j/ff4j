@@ -33,39 +33,35 @@ import org.ff4j.cache.CacheManager;
 import org.ff4j.cache.CacheProxyFeatures;
 import org.ff4j.cache.CacheProxyProperties;
 import org.ff4j.event.Event;
+import org.ff4j.event.repo.AbstractRepositoryFeatureUsage;
+import org.ff4j.event.repo.AuditTrail;
+import org.ff4j.event.repo.FeatureUsageEventListener;
+import org.ff4j.event.repo.RepositoryEventFeatureUsage;
 import org.ff4j.feature.Feature;
-import org.ff4j.feature.RepositoryFeatures;
 import org.ff4j.feature.exception.FeatureNotFoundException;
+import org.ff4j.feature.repo.RepositoryFeatures;
+import org.ff4j.feature.repo.RepositoryFeaturesInMemory;
 import org.ff4j.feature.strategy.ToggleContext;
 import org.ff4j.feature.strategy.TogglePredicate;
-import org.ff4j.inmemory.repository.RepositoryAclsInMemory;
 import org.ff4j.inmemory.repository.RepositoryAuditTrailInMemory;
 import org.ff4j.inmemory.repository.RepositoryFeatureUsageInMemory;
-import org.ff4j.inmemory.repository.RepositoryFeaturesInMemory;
 import org.ff4j.inmemory.repository.RepositoryPropertiesInMemory;
-import org.ff4j.inmemory.repository.RepositoryUsersInMemory;
-import org.ff4j.monitoring.AbstractRepositoryFeatureUsage;
-import org.ff4j.monitoring.AuditTrail;
-import org.ff4j.monitoring.FeatureUsageEventListener;
-import org.ff4j.monitoring.RepositoryEventFeatureUsage;
+import org.ff4j.parser.ConfigurationFileParser;
+import org.ff4j.parser.FF4jConfigFile;
+import org.ff4j.parser.xml.XmlParserV2;
 import org.ff4j.property.Property;
-import org.ff4j.property.RepositoryProperties;
+import org.ff4j.property.repo.RepositoryProperties;
 import org.ff4j.repository.FF4jRepositoryObserver;
-import org.ff4j.security.RepositoryAccessControlLists;
-import org.ff4j.security.RepositoryUsers;
-import org.ff4j.security.domain.FF4jAcl;
+import org.ff4j.user.repo.RepositoryRolesAndUsers;
+import org.ff4j.user.repo.RepositoryRolesAndUsersInMemory;
 
 /**
- * Main class and public api to work with FF4j. The framework manages features to implement
- * feature toggling patterns and properties for configuration management.
+ * Main class and public api to work with FF4j.
  * 
- * <ul>There are different storage unit to persist different assets
- *  <li>{@link RepositoryFeatures}   : CRUD operation on features 
- *  <li>{@link RepositoryProperties} : CRUD operation on properties 
- *  <li>{@link RepositoryEventFeatureUsage} : Publish and search into feature usages
- *  <li>{@link AuditTrail} : Publish and search into operations
- *  <li>
- * </ul>
+ * Instanciate this bean in you application to perform : 
+ * - feature toggling through {@link RepositoryFeatures}
+ * - Configuration and properties management with {@link RepositoryProperties}
+ * - Application monitoring with {@link RepositoryEventFeatureUsage}
  * 
  * @author Cedrick Lunven (@clunven)
  *
@@ -88,19 +84,10 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
    
     /** Flag to ask for automatically create the feature if not found in the store. */
     private boolean autoCreateFeatures = false;
-    
-    /** Hold properties related to each users. */
-    private ThreadLocal < FF4jContext > context = new ThreadLocal<>();
-    
-    /** Permission : by Default everyOne can use the Feature. */
-    protected FF4jAcl accessControlList = new FF4jAcl();
-
+   
     // -------------------------------------------------------------------------
     // ---------- Repositories (feature, property,event..) ---------------------
     // -------------------------------------------------------------------------
-    
-    /** Storage to persist event logs. */ 
-    private AuditTrail auditTrail = new RepositoryAuditTrailInMemory();
     
     /** Storage to persist feature within {@link RepositoryFeatures}. */
     private RepositoryFeatures repositoryFeatures = new RepositoryFeaturesInMemory();
@@ -108,14 +95,21 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
     /** Storage to persist properties within {@link RepositoryProperties}. */
     private RepositoryProperties repositoryProperties = new RepositoryPropertiesInMemory();
     
+    /** ReadOnly but can be extended to have full control on user (and dedicated screen in console). */
+    private RepositoryRolesAndUsers repositoryUsersRoles = new RepositoryRolesAndUsersInMemory();
+    
+    /** Storage to persist event logs. */ 
+    private AuditTrail auditTrail = new RepositoryAuditTrailInMemory();
+   
     /** Define feature usage. */
     private AbstractRepositoryFeatureUsage repositoryEventFeaturesUsage = new RepositoryFeatureUsageInMemory();
     
-    /** ReadOnly but can be extended to have full control on user (and dedicated screen in console). */
-    private RepositoryUsers repositoryUsers = new RepositoryUsersInMemory();
+    // -------------------------------------
+    // ---------- CONTEXT ------------------
+    // -------------------------------------
     
-    /** Storage to persist permissions for ff4j, web console, stores. */
-    private RepositoryAccessControlLists repositoryAcl = new RepositoryAclsInMemory();
+    /** Hold properties related to each users. */
+    private ThreadLocal < FF4jContext > context = new ThreadLocal<>();
     
     // -------------------------------------
     // ---------- INIT ---------------------
@@ -125,46 +119,62 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * Base constructor. It allows instantiation through IoC by default will initialized
      * all stores empty and working into memory.
      */
-    public FF4j() {
-    }
+    public FF4j() {}
     
     /**
-     * Constructor using an XML configuration file to initialized the stores. All operations
+     * Constructor using configuration file to initialized the stores. All operations
      * are performed in memory and lost on restart, useful for testing purposes mainly. 
      * 
      * You should condider to override Repositories to use external storage technology.
      *
+     * @param parser
+     *          multiple configuration format seems useful (Xml, Yaml...)
+     * @param confFile
+     *          target file
+     */
+    public FF4j(ConfigurationFileParser parser, String confFile) {
+        this(parser.parse(confFile));
+    }
+    public FF4j(ConfigurationFileParser parser, InputStream confFile) {
+        this(parser.parse(confFile));
+    }
+    
+    /**
+     * Default parser and embedded in FF4jCore is still XML and V2, but you can still use v1 and v1 configuration files
+     *
      * @param xmlFile
      *          Xml configuration file
      */
-    public FF4j(String xmlFile) {
-        this.repositoryFeatures           = new RepositoryFeaturesInMemory(xmlFile);
-        this.repositoryProperties         = new RepositoryPropertiesInMemory(xmlFile);
-        this.repositoryUsers              = new RepositoryUsersInMemory(xmlFile);
-        this.repositoryAcl                = new RepositoryAclsInMemory(xmlFile);
-        // History is empty
-        this.auditTrail         = new RepositoryAuditTrailInMemory();
-        this.repositoryEventFeaturesUsage = new RepositoryFeatureUsageInMemory();
+    public FF4j(String fileName) {
+        this(new XmlParserV2(), fileName);
     }
-
-    /**
-     * Constructor using an XML configuration stream to initialized the stores. All operations
-     * are performed in memory and lost on restart, useful for testing purposes mainly. 
-     * 
-     * @param xmlConfFileStream
-     *      binary stream for XML configuration
-     */
     public FF4j(InputStream xmlConfFileStream) {
-        this.repositoryFeatures   = new RepositoryFeaturesInMemory(xmlConfFileStream);
-        this.repositoryProperties = new RepositoryPropertiesInMemory(xmlConfFileStream);
-        this.repositoryUsers      = new RepositoryUsersInMemory(xmlConfFileStream);
-        this.repositoryAcl        = new RepositoryAclsInMemory(xmlConfFileStream);
+        this(new XmlParserV2(), xmlConfFileStream);
+    }
+    
+    /**
+     * Configuration loaded as an Object (from configuration file?)
+     * 
+     * @param config
+     *      configuration bean for ff4j.
+     */
+    protected FF4j(FF4jConfigFile config) {
+        this.repositoryFeatures           = new RepositoryFeaturesInMemory(config);
+        this.repositoryProperties         = new RepositoryPropertiesInMemory(config);
+        this.repositoryUsersRoles         = new RepositoryRolesAndUsersInMemory(config);
+        this.auditTrail                   = new RepositoryAuditTrailInMemory();
+        this.repositoryEventFeaturesUsage = new RepositoryFeatureUsageInMemory();
     }
     
     // -------------------------------------
-    // ------- FEATURE TOGGLING ------------
+    // -------     PREDICATE        --------
     // -------------------------------------
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean test(String featureUid) {
+        return check(featureUid);
+    }
     /**
      * Evaluate if a feature is toggled based on the information in store and
      * current execution context (key/value as threadLocal).
@@ -176,12 +186,6 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      */
     public boolean check(String featureUid) {
         return check(featureUid, null, null);
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public boolean test(String featureUid) {
-        return check(featureUid);
     }
 
     /**
@@ -240,6 +244,10 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
         }
         return featureToggled;
     }
+    
+    // ---------------------------------
+    // ----------- OPERATIONS  ---------
+    // ---------------------------------
     
     /**
      * Toggle on feature (even if already toggled)
@@ -303,7 +311,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @return target feature.
      */
     public Feature getFeature(String uid) {
-        Optional <Feature > oFeature = getRepositoryFeatures().findById(uid);
+        Optional <Feature > oFeature = getRepositoryFeatures().find(uid);
         if (!oFeature.isPresent()) {
             if (autoCreateFeatures) {
                 Feature autoFeature = new Feature(uid).toggleOff();
@@ -368,7 +376,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
     }
 
     // -------------------------
-    // ------ Caching --------
+    // ------ Caching ----------
     // -------------------------
     
     /**
@@ -436,12 +444,8 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
             getAuditTrail().createSchema();
         }
         // Users
-        if (null != getRepositoryUsers()) {
-            getRepositoryUsers().createSchema();
-        }
-        // Acl
-        if (null != getRepositoryAcl()) {
-            getRepositoryAcl().createSchema();
+        if (null != getRepositoryUsersRoles()) {
+            getRepositoryUsersRoles().createSchema();
         }
     }
 
@@ -471,9 +475,16 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
         if (getRepositoryProperties() != null) {
             sb.append(objectAsJson("propertiesStore", getRepositoryProperties().toString()));
         }
+        if (getRepositoryUsersRoles() != null) {
+            sb.append(objectAsJson("userRolesStore", getRepositoryUsersRoles().toString()));
+        }
         sb.append("}");
         return sb.toString();
     }
+    
+    // -------------------------
+    // ------ ACCESSORS --------
+    // -------------------------
     
     /**
      * Reach target implementation of the featureStore.
@@ -522,40 +533,6 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
             cacheProxy = (CacheProxyProperties) ps;
         }
         return Optional.ofNullable(cacheProxy);
-    }
-
-    // -------------------------------------------------------
-    // -------------------    ACL STORE      -----------------
-    // -------------------------------------------------------
-    
-    /**
-     * Getter accessor for attribute 'repositoryAcl'.
-     *
-     * @return
-     *       current value of 'repositoryAcl'
-     */
-    public RepositoryAccessControlLists getRepositoryAcl() {
-        return repositoryAcl;
-    }
-
-    /**
-     * Setter accessor for attribute 'repositoryAcl'.
-     * @param repositoryAcl
-     *      new value for 'repositoryAcl '
-     */
-    public void setRepositoryAcl(RepositoryAccessControlLists repositoryAcl) {
-        this.repositoryAcl = repositoryAcl;
-    }
-    
-    /**
-     * NON Static to be use by Injection of Control.
-     * 
-     * @param fbs
-     *            target store.
-     */
-    public FF4j repositoryAcl(RepositoryAccessControlLists aclStore) {
-        setRepositoryAcl(aclStore);
-        return this;
     }
     
     // -------------------------------------------------------------------------
@@ -628,12 +605,8 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
         return this;
     }
     
-    // -------------------------------------------------------------
-    // ------------------- USER STORE        -----------------------
-    // -------------------------------------------------------------
-    
- // -------------------------------------------------------------------------
-    // ------------------- PROPERTY STORE    -----------------------------------
+    // -------------------------------------------------------------------------
+    // ------------------- USERS STORE    -----------------------------------
     // -------------------------------------------------------------------------
     
     /**
@@ -642,8 +615,8 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @return
      *       current value of 'repositoryProperties'
      */
-    public RepositoryUsers getRepositoryUsers() {
-        return repositoryUsers;
+    public RepositoryRolesAndUsers getRepositoryUsersRoles() {
+        return repositoryUsersRoles;
     }
 
     /**
@@ -651,8 +624,8 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @param repositoryProperties
      *      new value for 'repositoryProperties '
      */
-    public void setRepositoryProperties(RepositoryUsers repositoryUsers) {
-        this.repositoryUsers = repositoryUsers;
+    public void setRepositoryUsersRoles(RepositoryRolesAndUsers repositoryUsers) {
+        this.repositoryUsersRoles = repositoryUsers;
     }
     
     /**
@@ -663,8 +636,8 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @return
      *      current ff4j instance
      */
-    public FF4j repositoryUsers(RepositoryUsers propertyStore) {
-        setRepositoryProperties(propertyStore);
+    public FF4j repositoryUsersRoles(RepositoryRolesAndUsers propertyStore) {
+        setRepositoryUsersRoles(propertyStore);
         return this;
     }
     

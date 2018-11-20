@@ -34,9 +34,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.ff4j.property.Property;
-import org.ff4j.property.domain.PropertyFactory;
+import org.ff4j.property.PropertyFactory;
+import org.ff4j.security.FF4jAcl;
 import org.ff4j.security.RestrictedAccessObject;
-import org.ff4j.security.domain.FF4jAcl;
 import org.ff4j.test.AssertUtils;
 
 /**
@@ -188,7 +188,7 @@ public abstract class FF4jEntity<T extends FF4jEntity<?>> implements Comparable<
      *      update target description
      */
     @SuppressWarnings("unchecked")
-    public T withDescription(String description) {
+    public T description(String description) {
         setDescription(description);
         return (T) this;
     }
@@ -212,7 +212,7 @@ public abstract class FF4jEntity<T extends FF4jEntity<?>> implements Comparable<
      * @return
      */
     @SuppressWarnings("unchecked")
-    public T withOwner(String owner) {
+    public T owner(String owner) {
         setOwner(owner);
         return (T) this;
     }

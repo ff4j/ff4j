@@ -21,7 +21,7 @@ package org.ff4j.cache;
  */
 
 import org.ff4j.feature.Feature;
-import org.ff4j.feature.RepositoryFeatures;
+import org.ff4j.feature.repo.RepositoryFeatures;
 
 
 /**

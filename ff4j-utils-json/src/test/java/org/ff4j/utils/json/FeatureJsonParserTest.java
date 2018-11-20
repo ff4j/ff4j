@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 import org.ff4j.FF4j;
 import org.ff4j.feature.Feature;
 import org.ff4j.feature.strategy.PonderationToggleStrategy;
-import org.ff4j.property.domain.PropertyString;
+import org.ff4j.property.PropertyString;
 import org.ff4j.utils.Util;
 import org.junit.Assert;
 import org.junit.Test;

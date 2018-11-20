@@ -23,9 +23,7 @@ package org.ff4j.security;
 import static org.ff4j.test.AssertUtils.assertHasLength;
 import static org.ff4j.test.AssertUtils.assertNotNull;
 
-import org.ff4j.security.domain.FF4jAcl;
-import org.ff4j.security.domain.FF4jPermission;
-import org.ff4j.security.domain.FF4jUser;
+import org.ff4j.user.FF4jUser;
 
 /**
  * Entities protected by permissions should implement this interface.

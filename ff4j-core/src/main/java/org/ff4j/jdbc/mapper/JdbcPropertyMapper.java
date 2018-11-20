@@ -26,19 +26,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.Map;
 
 import org.ff4j.feature.exception.FeatureAccessException;
-import org.ff4j.feature.strategy.TogglePredicate;
 import org.ff4j.jdbc.JdbcConstants.PropertyColumns;
 import org.ff4j.jdbc.JdbcQueryBuilder;
 import org.ff4j.mapper.PropertyMapper;
 import org.ff4j.property.Property;
-import org.ff4j.property.PropertyEvaluationStrategy;
-import org.ff4j.property.domain.PropertyFactory;
-import org.ff4j.property.domain.PropertyString;
+import org.ff4j.property.PropertyFactory;
+import org.ff4j.property.PropertyString;
 import org.ff4j.property.exception.PropertyAccessException;
-import org.ff4j.utils.JsonUtils;
 import org.ff4j.utils.Util;
 
 /**
@@ -89,11 +85,6 @@ public class JdbcPropertyMapper extends AbstractJdbcMapper  implements PropertyM
         // Evaluation Strategy + InitParams
         String strategy  = null;
         String initParam = null;
-        if (property.getEvaluationStrategy().isPresent()) {
-            PropertyEvaluationStrategy<?> pes = property.getEvaluationStrategy().get();
-            strategy  = pes.getClass().getCanonicalName();
-            initParam = JsonUtils.mapAsJson(pes.getInitParams());
-        }
         ps.setString(9, strategy);
         ps.setString(10, initParam);
         if (property.getFixedValues().isPresent()) {
@@ -118,7 +109,6 @@ public class JdbcPropertyMapper extends AbstractJdbcMapper  implements PropertyM
 
     /** {@inheritDoc} */
     @Override
-    @SuppressWarnings({"rawtypes","unchecked"})
     public Property<?> mapFromRepository(ResultSet rs) {
         try {
             Property<?> p = PropertyFactory.createProperty(
@@ -135,22 +125,6 @@ public class JdbcPropertyMapper extends AbstractJdbcMapper  implements PropertyM
             if (Util.hasLength(fixedValues)) {
                 Arrays.stream(fixedValues.split(",")).forEach(v-> p.add2FixedValueFromString(v.trim()) );
             }
-            
-            // Eval Strategy
-            String strategy = rs.getString(PropertyColumns.STRATCLASS.colname());
-            if (Util.hasLength(strategy)) {
-                Map < String, String > initParams = JsonUtils.jsonAsMap(rs.getString(PropertyColumns.INITPARAMS.colname()));
-                TogglePredicate ff4jStrategy = TogglePredicate.of(p.getUid(), strategy, initParams);
-                if (ff4jStrategy instanceof PropertyEvaluationStrategy) {
-                    p.setEvaluationStrategy((PropertyEvaluationStrategy) ff4jStrategy);
-                } else {
-                    throw new IllegalArgumentException("Property '" + p.getUid() 
-                            + "' has invalid strategy in (" + PropertyColumns.CLASSNAME.colname()
-                            + ") with " + ff4jStrategy 
-                            + "' as does not extend " + PropertyEvaluationStrategy.class.getName());
-                }
-            }
-            
             return p;
         } catch (SQLException sqlEx) {
             throw new PropertyAccessException("Cannot map Resultset into property", sqlEx);

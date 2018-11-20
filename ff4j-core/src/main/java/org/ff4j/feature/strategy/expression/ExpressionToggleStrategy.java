@@ -24,7 +24,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.ff4j.feature.AbstractRepositoryFeatures;
+import org.ff4j.feature.repo.AbstractRepositoryFeatures;
 import org.ff4j.feature.strategy.AbstractToggleStrategy;
 import org.ff4j.feature.strategy.ToggleContext;
 import org.ff4j.feature.strategy.TogglePredicate;

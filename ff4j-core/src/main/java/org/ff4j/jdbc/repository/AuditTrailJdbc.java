@@ -38,12 +38,12 @@ import java.util.stream.Stream;
 import javax.sql.DataSource;
 
 import org.ff4j.event.Event;
+import org.ff4j.event.repo.AuditTrail;
+import org.ff4j.event.repo.RepositoryEventFeatureUsage;
 import org.ff4j.feature.exception.FeatureAccessException;
 import org.ff4j.jdbc.JdbcConstants.AuditTrailColumns;
-import org.ff4j.monitoring.AuditTrail;
 import org.ff4j.monitoring.AuditTrailQuery;
 import org.ff4j.monitoring.HitCount;
-import org.ff4j.monitoring.RepositoryEventFeatureUsage;
 import org.ff4j.jdbc.JdbcQueryBuilder;
 
 /**

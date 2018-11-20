@@ -92,7 +92,7 @@ public abstract class FF4jRepositorySupport < E extends FF4jEntity<?>, LISTENER 
                 // Iterable to Stream \_(o^o')_/
                 .stream(ids.spliterator(),  false)
                 // N+1 Select 'find' 
-                .map(this::findById)
+                .map(this::find)
                 // Get only if found
                 .filter(Optional::isPresent)
                 // Access data
@@ -135,7 +135,7 @@ public abstract class FF4jRepositorySupport < E extends FF4jEntity<?>, LISTENER 
         if (!exists(uid)) {
             throw new ItemNotFoundException(uid);
         }
-        return findById(uid).get();
+        return find(uid).get();
     }
     
     // ---------------------------------------------------------------

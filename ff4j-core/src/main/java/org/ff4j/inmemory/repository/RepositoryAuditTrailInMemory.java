@@ -31,7 +31,7 @@ import java.util.stream.Stream;
 
 import org.ff4j.event.Event;
 import org.ff4j.event.EventSeries;
-import org.ff4j.monitoring.AuditTrail;
+import org.ff4j.event.repo.AuditTrail;
 import org.ff4j.monitoring.AuditTrailQuery;
 import org.ff4j.utils.Util;
 

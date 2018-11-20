@@ -18,10 +18,11 @@ import org.ff4j.feature.Feature;
 import org.ff4j.feature.strategy.TogglePredicate;
 import org.ff4j.parser.FF4jConfigFile;
 import org.ff4j.property.Property;
-import org.ff4j.property.domain.PropertyString;
-import org.ff4j.security.domain.FF4jPermission;
-import org.ff4j.security.domain.FF4jUser;
+import org.ff4j.property.PropertyString;
+import org.ff4j.security.FF4jPermission;
 import org.ff4j.test.AssertUtils;
+import org.ff4j.user.FF4jRole;
+import org.ff4j.user.FF4jUser;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -32,7 +33,7 @@ import org.w3c.dom.NodeList;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public final class XmlParserV2 extends AbstractXmlParser {
+public final class XmlParserV2 extends ConfigurationFileParserXml {
    
     /** Document Builder use to parse XML. */
     private static DocumentBuilder builder = null;
@@ -168,8 +169,8 @@ public final class XmlParserV2 extends AbstractXmlParser {
      * @throws IOException
      *             exception raised when reading inputstream
      */
-    private static Map<String, Set < String > > parseRolesTag(Element rolesTag) {
-        Map<String, Set < String > > mapOfRoles = new HashMap<>();
+    private static Map<String, FF4jRole > parseRolesTag(Element rolesTag) {
+        Map<String, FF4jRole> mapOfRoles = new HashMap<>();
         NodeList roleNodes = rolesTag.getChildNodes();
         for (int i = 0; i < roleNodes.getLength(); i++) {
             if (roleNodes.item(i) instanceof Element) {
@@ -179,20 +180,23 @@ public final class XmlParserV2 extends AbstractXmlParser {
         return mapOfRoles;
     }
     
-    private static void parseRoleTag(Element roleNode, Map<String, Set < String > > mapOfRoles) {
+    private static void parseRoleTag(Element roleNode, Map<String, FF4jRole > mapOfRoles) {
         NamedNodeMap nnm = roleNode.getAttributes();
         Node attributeName = nnm.getNamedItem(SECURITY_ROLE_ATTNAME);
         AssertUtils.assertNotNull(attributeName);
-        mapOfRoles.put(attributeName.getNodeValue(), parseRolePermissionsTag(roleNode));
+        Set<FF4jPermission> setOfPermissions = parseRolePermissionsTag(roleNode);
+        FF4jRole role = new FF4jRole(attributeName.getNodeValue());
+        role.grant(setOfPermissions.toArray(new FF4jPermission[0]));
+        mapOfRoles.put(attributeName.getNodeValue(), role);
     }
     
-    private static Set < String > parseRolePermissionsTag(Element roleNode) {
-        Set<String> setOfPermissions = new HashSet<>();
+    private static Set<FF4jPermission> parseRolePermissionsTag(Element roleNode) {
+        Set<FF4jPermission> setOfPermissions = new HashSet<>();
         NodeList permissionNodes = roleNode.getChildNodes();
         for (int j = 0; j < permissionNodes.getLength(); j++) {
             if (permissionNodes.item(j) instanceof Element) {
                 Element permissionNode = (Element) permissionNodes.item(j);
-                setOfPermissions.add(permissionNode.getTextContent().trim());
+                setOfPermissions.add(FF4jPermission.valueOf(permissionNode.getTextContent().trim()));
             }
         }
         return setOfPermissions;
@@ -277,7 +281,7 @@ public final class XmlParserV2 extends AbstractXmlParser {
 
         // Create Feature with description
         Feature f = new Feature(uid).toggle(enable)
-                                    .withDescription(parseDescription(nnm));
+                                    .description(parseDescription(nnm));
         
         /* Strategy
         NodeList flipStrategies = featXmlTag.getElementsByTagName(FLIPSTRATEGY_TAG);
@@ -324,7 +328,7 @@ public final class XmlParserV2 extends AbstractXmlParser {
             // If specific type defined ?
             if (null != attMap.getNamedItem(PROPERTY_PARAMTYPE)) {
                 String optionalType = attMap.getNamedItem(PROPERTY_PARAMTYPE).getNodeValue();
-               
+                
                 // Substitution if relevant (e.g. 'int' -> 'org.ff4j.property.PropertyInt')
                 optionalType = Property.mapPropertyType(optionalType);
                 

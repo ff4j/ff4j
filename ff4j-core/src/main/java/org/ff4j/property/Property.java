@@ -22,20 +22,6 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import org.ff4j.FF4jEntity;
-import org.ff4j.property.domain.PropertyBigDecimal;
-import org.ff4j.property.domain.PropertyBigInteger;
-import org.ff4j.property.domain.PropertyBoolean;
-import org.ff4j.property.domain.PropertyByte;
-import org.ff4j.property.domain.PropertyCalendar;
-import org.ff4j.property.domain.PropertyDate;
-import org.ff4j.property.domain.PropertyDouble;
-import org.ff4j.property.domain.PropertyFloat;
-import org.ff4j.property.domain.PropertyInt;
-import org.ff4j.property.domain.PropertyLogLevel;
-import org.ff4j.property.domain.PropertyLong;
-import org.ff4j.property.domain.PropertyShort;
-import org.ff4j.property.domain.PropertyString;
-import org.ff4j.FF4jContext;
 import org.ff4j.utils.JsonUtils;
 import org.ff4j.utils.Util;
 
@@ -50,7 +36,7 @@ public abstract class Property<T> extends FF4jEntity<Property<T>> implements Sup
     private static final long serialVersionUID = -2484426537747694712L;
     
     /** Mapping of some property. */
-    private static Map < String, String > PROPERTY_TYPES;
+    protected static Map < String, String > PROPERTY_TYPES;
     
     /** Type of property. */
     protected String type;
@@ -63,10 +49,7 @@ public abstract class Property<T> extends FF4jEntity<Property<T>> implements Sup
 
     /** If value have a limited set of values. */
     protected Set<T> fixedValues = null;
-
-    /** Can compute the property value based on your own implementation. */
-    protected Optional < PropertyEvaluationStrategy<T> > evaluationStrategy = Optional.empty();
-
+    
     /**
      * Constructor by property name.
      *
@@ -138,6 +121,7 @@ public abstract class Property<T> extends FF4jEntity<Property<T>> implements Sup
      */
     static {
         PROPERTY_TYPES = new HashMap<String, String >();
+        
         PROPERTY_TYPES.put("byte",       PropertyByte.class.getName());
         PROPERTY_TYPES.put("boolean",    PropertyBoolean.class.getName());
         PROPERTY_TYPES.put("bigdecimal", PropertyBigDecimal.class.getName());
@@ -150,7 +134,10 @@ public abstract class Property<T> extends FF4jEntity<Property<T>> implements Sup
         PROPERTY_TYPES.put("loglevel",   PropertyLogLevel.class.getName());
         PROPERTY_TYPES.put("short",      PropertyShort.class.getName());
         PROPERTY_TYPES.put("long",       PropertyLong.class.getName());
-        PROPERTY_TYPES.put("string",     PropertyString.class.getName());
+        
+        PROPERTY_TYPES.put("string",         PropertyString.class.getName());
+        PROPERTY_TYPES.put("listString",  PropertyListString.class.getName());
+        PROPERTY_TYPES.put("listint",  PropertyListInt.class.getName());
     }
     
     /**
@@ -204,30 +191,12 @@ public abstract class Property<T> extends FF4jEntity<Property<T>> implements Sup
     /** {@inheritDoc} */
     @Override
     public T get() {
-        return getValue();
-    }
-    
-    /** {@inheritDoc} */
-    public T get(FF4jContext ctx) {
-        return getValue(ctx);
+        return value;
     }
     
     /** {@inheritDoc} */
     public T getValue() {
-        // no context
-       return getValue(null);
-    }
-
-    /**
-     * If an execution is provided evaluate the property value.
-     *
-     * @param pec
-     *            evaluation strategy
-     * @return property value
-     */
-    public T getValue(FF4jContext ctx) {
-        if (!evaluationStrategy.isPresent()) return value;
-        return evaluationStrategy.get().getValue(this, ctx);
+       return get();
     }
     
     /**
@@ -332,7 +301,7 @@ public abstract class Property<T> extends FF4jEntity<Property<T>> implements Sup
                         + getValue() + "> expected one of " + getFixedValues());
         }
     }
-
+    
     @SuppressWarnings("unchecked")
     public Property<T> setFixedValues(T... perms) {
         return setFixedValues(setOf(perms));
@@ -382,26 +351,7 @@ public abstract class Property<T> extends FF4jEntity<Property<T>> implements Sup
         this.readOnly = readOnly;
         return this;
     }
-
-    /**
-     * Getter accessor for attribute 'evaluationStrategy'.
-     *
-     * @return
-     *       current value of 'evaluationStrategy'
-     */
-    public Optional < PropertyEvaluationStrategy<T> > getEvaluationStrategy() {
-        return evaluationStrategy;
-    }
-
-    /**
-     * Setter accessor for attribute 'evaluationStrategy'.
-     * @param evaluationStrategy
-     * 		new value for 'evaluationStrategy '
-     */
-    public void setEvaluationStrategy(PropertyEvaluationStrategy<T> evaluationStrategy) {
-        this.evaluationStrategy = Optional.ofNullable(evaluationStrategy);
-    }
-
+    
     /**
      * Getter accessor for attribute 'type'.
      *

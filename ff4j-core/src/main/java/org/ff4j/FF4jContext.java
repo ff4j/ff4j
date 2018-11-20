@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.ff4j.exception.ItemNotFoundException;
 import org.ff4j.feature.strategy.TogglePredicate;
-import org.ff4j.security.domain.FF4jUser;
+import org.ff4j.user.FF4jUser;
 import org.ff4j.utils.JsonUtils;
 
 

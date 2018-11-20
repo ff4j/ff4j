@@ -37,6 +37,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -53,8 +54,7 @@ import org.ff4j.test.AssertUtils;
  */
 public class Util {
     
-    private Util() {
-    }
+    private Util() {}
 
     /**
      * Find a feature or property in a stream
@@ -66,6 +66,16 @@ public class Util {
         if (stream == null || uid == null) return Optional.empty();
         return stream.filter(t -> uid.equals(t.getUid())).findFirst();
     }
+    
+    /**
+     * Retrieve all entities as a MAP and not stream collecting by UID.
+    *
+    * @return entities as an {@link Iterable}
+    */
+    public static < T extends FF4jEntity<?> > Map < String, T > toMap(Stream<T> stream) {
+       if (stream == null) return new HashMap<>(); 
+       return stream.collect(Collectors.toMap(T::getUid, Function.identity()));
+   } 
     
     /**
      * Create an HashSet.

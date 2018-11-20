@@ -23,9 +23,9 @@ package org.ff4j.cache;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.ff4j.feature.RepositoryFeatures;
+import org.ff4j.feature.repo.RepositoryFeatures;
 import org.ff4j.property.Property;
-import org.ff4j.property.RepositoryProperties;
+import org.ff4j.property.repo.RepositoryProperties;
 
 /**
  * Access to {@link RepositoryFeatures} could generate some overhead and decrease performances. This is the reason why cache is provided

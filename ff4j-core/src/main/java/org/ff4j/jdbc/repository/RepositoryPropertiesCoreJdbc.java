@@ -41,7 +41,7 @@ import org.ff4j.jdbc.JdbcQueryBuilder;
 import org.ff4j.jdbc.mapper.JdbcPropertyMapper;
 import org.ff4j.property.Property;
 import org.ff4j.property.exception.PropertyAccessException;
-import org.ff4j.property.AbstractRepositoryProperties;
+import org.ff4j.property.repo.AbstractRepositoryProperties;
 
 /**
  * Access information related to properties within database.
@@ -138,7 +138,7 @@ public class RepositoryPropertiesCoreJdbc extends AbstractRepositoryProperties {
 
     /** {@inheritDoc} */
     @Override
-    public Optional < Property<?> > findById(String name) {
+    public Optional < Property<?> > find(String name) {
         assertHasLength(name);
         try (Connection sqlConn = getDataSource().getConnection()) {
             JdbcPropertyMapper pmapper = new JdbcPropertyMapper(sqlConn, getQueryBuilder());

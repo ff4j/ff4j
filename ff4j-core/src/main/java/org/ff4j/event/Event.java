@@ -79,8 +79,8 @@ public class Event extends FF4jEntity<Event> implements Serializable, Comparable
     }
     
     public enum Scope {
-        FF4J, FEATURE, FEATURE_GROUP, PROPERTY, 
-        FEATURESTORE, PROPERTYSTORE, USER, UNKNOWN;
+        FF4J, FEATURE, FEATURE_GROUP, PROPERTY, USER, ROLE,
+        FEATURESTORE, PROPERTYSTORE, USERSTORE, UNKNOWN;
     }
     
     public enum Source {
