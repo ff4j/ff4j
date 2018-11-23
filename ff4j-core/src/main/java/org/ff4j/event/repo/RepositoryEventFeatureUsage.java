@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
+import org.ff4j.FF4jRepository;
 import org.ff4j.chart.TimeSeriesChart;
 import org.ff4j.event.Event;
 import org.ff4j.event.Event.Scope;
@@ -36,7 +37,6 @@ import org.ff4j.event.EventQueryDefinition;
 import org.ff4j.event.EventSeries;
 import org.ff4j.feature.Feature;
 import org.ff4j.monitoring.HitCount;
-import org.ff4j.repository.FF4jRepository;
 
 /**
  * Persistence store for {@link Event} messages.
@@ -142,7 +142,7 @@ public interface RepositoryEventFeatureUsage extends FF4jRepository < String, Ev
      */
     default void featureUsageHit(Feature f) {
         Objects.requireNonNull(f);
-        create(new Event().scope(Scope.FEATURE)
+        save(new Event().scope(Scope.FEATURE)
                 .targetUid(f.getUid())
                 .action(Event.Action.HIT));
     }

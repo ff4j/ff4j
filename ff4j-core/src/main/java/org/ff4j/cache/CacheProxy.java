@@ -21,17 +21,14 @@ package org.ff4j.cache;
  */
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.ff4j.FF4jEntity;
+import org.ff4j.FF4jRepository;
+import org.ff4j.FF4jRepositoryListener;
+import org.ff4j.FF4jRepositoryObserver;
 import org.ff4j.event.repo.AuditTrail;
-import org.ff4j.repository.FF4jRepository;
-import org.ff4j.repository.FF4jRepositoryListener;
-import org.ff4j.repository.FF4jRepositoryObserver;
 
 /**
  * Cache abstraction for ff4j.
@@ -89,13 +86,6 @@ public class CacheProxy < K extends Serializable, V extends FF4jEntity<?> >
     
     /** {@inheritDoc} */
     @Override
-    public void create(V fp) {
-        getTargetStore().create(fp);
-        cacheManager.put(fp.getUid(), fp);
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public V read(String uid) {
         Optional<V> fp = cacheManager.get(uid);
         // not in cache but may has been created from now
@@ -113,22 +103,27 @@ public class CacheProxy < K extends Serializable, V extends FF4jEntity<?> >
         // Cannot be sure of whole cache - do not test any feature one-by-one : accessing FeatureStore
         return getTargetStore().findAll();
     }    
-
+    
     /** {@inheritDoc} */
     @Override
-    public void delete(String uid) {
-        // Access target store
-        getTargetStore().delete(uid);
-        // even is not present, evict won't failed
-        cacheManager.evict(uid);
+    public void save(Iterable<V> entities) {
+        if (entities != null) {
+            getTargetStore().save(entities);
+            entities.forEach(p -> cacheManager.put(p.getUid(), p));
+        }
     }
 
     /** {@inheritDoc} */
     @Override
-    public void update(V fp) {
-        getTargetStore().update(fp);
-        cacheManager.evict(fp.getUid());
-    }    
+    public void delete(Iterable<String> entities) {
+        if (entities != null) {
+            // Access target store
+            getTargetStore().delete(entities);
+            // even is not present, evict won't failed
+            entities.forEach(p -> cacheManager.evict(p));
+        }
+    }
+    
 
     /** {@inheritDoc} */
     @Override
@@ -140,31 +135,6 @@ public class CacheProxy < K extends Serializable, V extends FF4jEntity<?> >
     @Override
     public boolean isEmpty() {
         return getTargetStore().isEmpty();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void delete(Iterable<? extends V> entities) {
-        if (entities != null) {
-            entities.forEach(this::delete);
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void delete(V entity) {
-        // Access target store
-        getTargetStore().delete(entity.getUid());
-        // even is not present, evict won't failed
-        cacheManager.evict(entity.getUid());
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Stream<V> find(Iterable<String> ids) {
-        List<V> listOfFeatures = new ArrayList<>();
-        ids.forEach(id -> listOfFeatures.add(this.read(id)));
-        return listOfFeatures.stream();
     }
 
     /** {@inheritDoc} */
@@ -187,13 +157,6 @@ public class CacheProxy < K extends Serializable, V extends FF4jEntity<?> >
         // Cache Operations : As modification, flush cache for this
         cacheManager.clear();
         getTargetStore().deleteAll();
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void save(Collection<V> features) {
-        cacheManager.clear();
-        getTargetStore().save(features);
     }
     
     /** {@inheritDoc} */
@@ -248,13 +211,10 @@ public class CacheProxy < K extends Serializable, V extends FF4jEntity<?> >
     }
 
     @Override
-    public void registerAuditListener(AuditTrail auditTrail) {
-    }
+    public void registerAuditListener(AuditTrail auditTrail) {}
 
     @Override
-    public void unRegisterAuditListener() {
-    }
-
+    public void unRegisterAuditListener() {}
 	
 
 }

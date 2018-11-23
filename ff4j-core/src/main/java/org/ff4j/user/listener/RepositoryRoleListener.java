@@ -21,10 +21,10 @@ package org.ff4j.user.listener;
  */
 
 import org.ff4j.FF4jEntity;
+import org.ff4j.FF4jRepositoryListener;
 import org.ff4j.event.Event.Scope;
 import org.ff4j.event.repo.AbstractAuditTrailListener;
 import org.ff4j.event.repo.AuditTrail;
-import org.ff4j.repository.FF4jRepositoryListener;
 import org.ff4j.user.FF4jRole;
 
 /**

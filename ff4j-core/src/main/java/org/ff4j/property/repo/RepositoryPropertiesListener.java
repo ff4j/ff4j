@@ -21,8 +21,8 @@ package org.ff4j.property.repo;
  */
 
 import org.ff4j.FF4jEntity;
+import org.ff4j.FF4jRepositoryListener;
 import org.ff4j.property.Property;
-import org.ff4j.repository.FF4jRepositoryListener;
 
 /**
  * Public Interface of a Listener on CRUD repository.

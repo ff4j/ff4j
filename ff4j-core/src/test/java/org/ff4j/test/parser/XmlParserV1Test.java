@@ -1,5 +1,25 @@
 package org.ff4j.test.parser;
 
+/*-
+ * #%L
+ * ff4j-core
+ * %%
+ * Copyright (C) 2013 - 2018 FF4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayInputStream;
@@ -143,15 +163,15 @@ public class XmlParserV1Test {
         Feature f = features.get("first");
         Assert.assertNotNull(f);
         Assert.assertNotNull(f.getUid());
-        Assert.assertNotNull(f.getCustomProperties().isPresent());
-        Assert.assertNotNull(f.getCustomProperties().get().get("ppint"));
-        Assert.assertEquals(f.getCustomProperties().get().get("ppint").asInt(), 12);
-        Assert.assertEquals(f.getCustomProperties().get().get("ppdouble").asDouble(), 12.5,0);
-        Assert.assertEquals(f.getCustomProperties().get().get("ppboolean").asBoolean(),true);
-        Assert.assertEquals(f.getCustomProperties().get().get("ppstring").asString(), "hello");
-        Assert.assertEquals(f.getCustomProperties().get().get("regionIdentifier").asString(), "AMER");
-        Assert.assertTrue(f.getCustomProperties().get().get("regionIdentifier").getFixedValues().isPresent());
-        PropertyLogLevel pll = (PropertyLogLevel) f.getCustomProperties().get().get("myLogLevel");
+        Assert.assertNotNull(f.getProperties());
+        Assert.assertNotNull(f.getProperties().get("ppint"));
+        Assert.assertEquals(f.getProperties().get("ppint").asInt(), 12);
+        Assert.assertEquals(f.getProperties().get("ppdouble").asDouble(), 12.5,0);
+        Assert.assertEquals(f.getProperties().get("ppboolean").asBoolean(),true);
+        Assert.assertEquals(f.getProperties().get("ppstring").asString(), "hello");
+        Assert.assertEquals(f.getProperties().get("regionIdentifier").asString(), "AMER");
+        Assert.assertTrue(f.getProperties().get("regionIdentifier").getFixedValues().isPresent());
+        PropertyLogLevel pll = (PropertyLogLevel) f.getProperties().get("myLogLevel");
         Assert.assertEquals(pll.getValue(), LogLevel.DEBUG);
         // Then
         Map < String, Property<?>> properties = conf.getProperties();

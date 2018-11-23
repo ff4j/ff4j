@@ -28,6 +28,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -71,7 +72,7 @@ public abstract class FF4jEntity<T extends FF4jEntity<?>> implements Comparable<
     protected Optional < LocalDateTime > lastModifiedDate = Optional.empty();
 
     /** Add you own attributes to a feature. */
-    protected Optional<Map<String, Property<?>>> customProperties = Optional.empty();
+    protected Map<String, Property<?>> properties = new HashMap<>();
     
     /**
      * Parameterized constructor.
@@ -99,8 +100,7 @@ public abstract class FF4jEntity<T extends FF4jEntity<?>> implements Comparable<
         this.accessControlList = e.getAccessControlList();
         e.getOwner().ifPresent(o -> this.owner = Optional.of(o));
         e.getDescription().ifPresent(d -> this.description = Optional.of(d));
-        e.getCustomProperties().ifPresent(cp -> cp.values().stream().forEach(
-                        p -> addCustomProperty(PropertyFactory.createProperty(p))));
+        properties.values().stream().forEach(sp -> addProperty(PropertyFactory.createProperty(sp)));
         updateLastModifiedDate();
     }
     
@@ -121,18 +121,16 @@ public abstract class FF4jEntity<T extends FF4jEntity<?>> implements Comparable<
                 d -> json.append(attributeAsJson("creationDate", d.format(FORMATTER))));
         lastModifiedDate.ifPresent(
                 d -> json.append(attributeAsJson("lastModifiedDate", d.format(FORMATTER))));
-        customProperties.ifPresent( cp -> {
-            json.append(", \"customProperties\":[");
-            boolean first = true;
-            for (Property<?> customProperty : cp.values()) {
-                json.append(first ? "" : ",");
-                json.append(customProperty.toJson());
-                first = false;
-            }
-            json.append("]");
-        });
-        json.append(", \"accessControlList\":" + getAccessControlList().toJson());
-        return json.toString();   
+         json.append(", \"properties\":[");
+         boolean first = true;
+         for (Property<?> customProperty : properties.values()) {
+             json.append(first ? "" : ",");
+             json.append(customProperty.toJson());
+             first = false;
+         }
+         json.append("]");
+         json.append(", \"accessControlList\":" + getAccessControlList().toJson());
+         return json.toString();   
     }
     
     /** {@inheritDoc} */
@@ -264,7 +262,7 @@ public abstract class FF4jEntity<T extends FF4jEntity<?>> implements Comparable<
     
     @SuppressWarnings("unchecked")
     public T setCustomProperties(Map<String, Property<?>> custom) {
-        customProperties = Optional.ofNullable(custom);
+        properties = custom;
         updateLastModifiedDate();
         return (T) this;
     }
@@ -286,16 +284,11 @@ public abstract class FF4jEntity<T extends FF4jEntity<?>> implements Comparable<
      *      the new value for current eneityt
      */
     @SuppressWarnings("unchecked")
-    public T addCustomProperties(Property<?>... properties) {
-        if (properties != null) {
-            // Convert as Map
-            Map<String, Property<?>> mapOfProperties = Arrays.stream(properties)
-                    .collect(Collectors.toMap(Property::getUid, Function.identity()));
-            if (customProperties.isPresent()) {
-                customProperties.get().putAll(mapOfProperties);
-            } else {
-                customProperties = Optional.of(mapOfProperties);
-            }
+    public T addCustomProperties(Property<?>... myProperties) {
+        if (myProperties != null) {
+            properties.putAll(
+                    Arrays.stream(myProperties).collect(
+                            Collectors.toMap(Property::getUid, Function.identity())));
         }
         updateLastModifiedDate();
         return (T) this;
@@ -335,8 +328,8 @@ public abstract class FF4jEntity<T extends FF4jEntity<?>> implements Comparable<
      *
      * @return current value of 'customProperties'
      */
-    public Optional<Map<String, Property<?>>> getCustomProperties() {
-        return customProperties;
+    public Map< String, Property<?> > getProperties() {
+        return properties;
     }
     
     /**
@@ -346,12 +339,9 @@ public abstract class FF4jEntity<T extends FF4jEntity<?>> implements Comparable<
      *            property
      * @return property value (if exist)
      */
-    public Optional<Property<?>> getCustomProperty(String propId) {
+    public Optional<Property<?>> getProperty(String propId) {
         assertNotNull(propId);
-        if (customProperties.isPresent()) {
-            return Optional.ofNullable(customProperties.get().get(propId));
-        }
-        return Optional.empty();
+        return Optional.ofNullable(properties.get(propId));
     }
     
     /**
@@ -362,7 +352,7 @@ public abstract class FF4jEntity<T extends FF4jEntity<?>> implements Comparable<
      * @return
      *      current object
      */
-    public T addCustomProperty(Property<?> property) {
+    public T addProperty(Property<?> property) {
         return addCustomProperties(property);
     }
 

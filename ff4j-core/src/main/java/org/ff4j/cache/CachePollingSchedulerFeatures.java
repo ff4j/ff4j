@@ -21,7 +21,7 @@ package org.ff4j.cache;
  */
 
 import org.ff4j.feature.Feature;
-import org.ff4j.feature.repo.RepositoryFeatures;
+import org.ff4j.feature.repository.FeaturesRepository;
 
 
 /**
@@ -44,7 +44,7 @@ public class CachePollingSchedulerFeatures extends CachePollingScheduler < Featu
      * @param cp
      *      current cache manager
      */
-    public CachePollingSchedulerFeatures(RepositoryFeatures sf, CacheManager<String, Feature> cp) {
+    public CachePollingSchedulerFeatures(FeaturesRepository sf, CacheManager<String, Feature> cp) {
         worker = new CacheWorker<Feature>(sf, cp);
         initExecutor("FF4j_Polling_FeatureStore2Cache");
     }

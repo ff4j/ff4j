@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.ff4j.feature.Feature;
-import org.ff4j.feature.strategy.TogglePredicate;
+import org.ff4j.feature.togglestrategy.TogglePredicate;
 import org.ff4j.parser.ConfigurationFileParser;
 import org.ff4j.parser.FF4jConfigFile;
 import org.ff4j.property.Property;
@@ -41,6 +41,7 @@ import org.ff4j.security.FF4jAcl;
 import org.ff4j.security.FF4jGrantees;
 import org.ff4j.security.FF4jPermission;
 import org.ff4j.test.AssertUtils;
+import org.ff4j.user.FF4jRole;
 import org.ff4j.user.FF4jUser;
 import org.yaml.snakeyaml.Yaml;
 
@@ -75,7 +76,7 @@ public class YamlParser extends ConfigurationFileParser {
         }
         if (ff4jYamlMap != null) {
             // Roles
-            parseRoles(ff4jConfig, (List<Map<String, Object>>) ff4jYamlMap.get(SECURITY_ROLES_TAG));
+            parseRoles(ff4jConfig, (List<Map<String, Object>>) ff4jYamlMap.get(ROLES_TAG));
             // Users
             parseUsers(ff4jConfig, (List<Map<String, Object>>) ff4jYamlMap.get(USERS_TAG));
             // Properties
@@ -100,12 +101,13 @@ public class YamlParser extends ConfigurationFileParser {
     private void parseRoles(FF4jConfigFile ff4jConfig, List<Map<String, Object>> roleItems) {
         if (null != roleItems) {
             roleItems.forEach(role -> {
-                ff4jConfig.getRoles().put(
-                        (String) role.get(SECURITY_ROLE_ATTNAME), 
-                        ((Collection<String>) role.get(SECURITY_PERMISSIONS_TAG))
-                            .stream()
-                            .map(FF4jPermission::valueOf)
-                            .collect(Collectors.toSet()));
+                String roleName = (String) role.get(SECURITY_ROLE_ATTNAME);
+                FF4jRole targetRole = new FF4jRole(roleName);
+                ((Collection<String>) role.get(SECURITY_PERMISSIONS_TAG))
+                        .stream()
+                        .map(FF4jPermission::valueOf)
+                        .forEach(targetRole::grant);
+                ff4jConfig.getRoles().put(roleName, targetRole);
             }); 
         }
     }

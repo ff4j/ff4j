@@ -1,5 +1,7 @@
 package org.ff4j.event.repo;
 
+import org.ff4j.FF4jRepository;
+
 /*-
  * #%L
  * ff4j-core
@@ -21,7 +23,6 @@ package org.ff4j.event.repo;
  */
 
 import org.ff4j.feature.Feature;
-import org.ff4j.repository.FF4jRepository;
 
 /**
  * Listener invoked by the observer (notify) when a feature is used. 

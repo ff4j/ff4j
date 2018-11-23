@@ -1,5 +1,25 @@
 package org.ff4j.test.parser;
 
+/*-
+ * #%L
+ * ff4j-core
+ * %%
+ * Copyright (C) 2013 - 2018 FF4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayInputStream;
@@ -14,30 +34,40 @@ import org.ff4j.parser.xml.XmlParserV2;
 import org.ff4j.property.Property;
 import org.ff4j.property.PropertyLogLevel;
 import org.ff4j.property.PropertyLogLevel.LogLevel;
+import org.ff4j.test.FF4jTestDataSet;
 import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("XML Parser Tests.")
-public class XmlParserV2Test {
+public class XmlParserV2Test implements FF4jTestDataSet {
   
+    /** DataSet. **/
+    protected FF4jConfigFile testDataSet;
+    
+    /** {@inheritDoc} */
+    @BeforeEach
+    public void setUp() throws Exception {
+        testDataSet = expectConfig();
+    }
+    
     @Test
     @DisplayName("Parsing xml v1 files, should load features, groups")
     public void testLoaderXMLFile() {
-        InputStream in = getClass().getClassLoader().getResourceAsStream("testXmlParserV1-full-features.xml");
+        // Given
+        InputStream in = getClass().getClassLoader().getResourceAsStream("ff4j-testDataset.xml");
         Map<String, Feature> features = new XmlParserV2().parse(in).getFeatures();
-        Assert.assertEquals(7, features.size());
-        Assert.assertTrue(features.containsKey("f0"));
-        Assert.assertNotNull(features.get("f0").getDescription());
-        Assert.assertNotNull(features.get("f0").getToggleStrategies().get(0));
-        Assert.assertEquals(1, features.get("f0").getToggleStrategies().get(0).getInitParams().size());
-        Assert.assertTrue(features.get("f0").getGroup().isPresent());
-        Assert.assertEquals("group3", features.get("f0").getGroup().get());
-        Assert.assertTrue(features.containsKey("f1"));
-        Assert.assertTrue(features.containsKey("f2"));
-        Assert.assertTrue(features.containsKey("f3"));
-        Assert.assertTrue(features.containsKey("f4"));
-        Assert.assertTrue(features.containsKey("f5"));
+        // Then
+        Assert.assertTrue(features.containsKey(F1));
+        Assert.assertTrue(features.containsKey(F2));
+        Assert.assertTrue(features.containsKey(F3));
+        Assert.assertTrue(features.containsKey(F4));
+        Assertions.assertEquals(testDataSet.getFeatures().size(), features.size());
+        Feature f4 = features.get(F4);
+        Assertions.assertEquals(F4, f4.getUid());
+        Assertions.assertTrue(f4.getDescription().isPresent() && !"".equals(f4.getDescription().get()));
     }
     
     @Test
@@ -77,26 +107,11 @@ public class XmlParserV2Test {
     }
     
     @Test
-    @DisplayName("Import features from XML export and count")
-    public void importThenExportFeatures() throws IOException {
-        // Given
-        XmlParserV2 parser = new XmlParserV2();
-        InputStream in = getClass().getClassLoader().getResourceAsStream("testXmlParserV1-import-export.xml");
-        Map<String, Feature> features = parser.parse(in).getFeatures();
-        Assert.assertNotNull(features);
-        // When
-        InputStream in2 = XmlParserV1.exportFeatures(features.values().stream());
-        Map<String, Feature> features2 = parser.parse(in2).getFeatures();
-        Assert.assertNotNull(features2);
-        Assert.assertEquals(features.size(), features2.size());
-    }
-    
-    @Test
     @DisplayName("Import All from XML export and count")
     public void importThenExportALL() throws IOException {
         // Given
-        XmlParserV2 parser = new XmlParserV2();
-        InputStream in = getClass().getClassLoader().getResourceAsStream("testXmlParserV1-full.xml");
+        XmlParserV1 parser = new XmlParserV1();
+        InputStream in = getClass().getClassLoader().getResourceAsStream("v1/testXmlParserV1-full.xml");
         FF4jConfigFile conf = parser.parse(in);
         Assert.assertNotNull(conf.getFeatures());
         Assert.assertNotNull(conf.getProperties());
@@ -119,18 +134,18 @@ public class XmlParserV2Test {
         // Then
         Map<String, Feature> features = conf.getFeatures();
         Assert.assertNotNull(features);
-        Feature f = features.get("first");
+        Feature f = features.get(F2);
         Assert.assertNotNull(f);
         Assert.assertNotNull(f.getUid());
-        Assert.assertNotNull(f.getCustomProperties().isPresent());
-        Assert.assertNotNull(f.getCustomProperties().get().get("ppint"));
-        Assert.assertEquals(f.getCustomProperties().get().get("ppint").asInt(), 12);
-        Assert.assertEquals(f.getCustomProperties().get().get("ppdouble").asDouble(), 12.5,0);
-        Assert.assertEquals(f.getCustomProperties().get().get("ppboolean").asBoolean(),true);
-        Assert.assertEquals(f.getCustomProperties().get().get("ppstring").asString(), "hello");
-        Assert.assertEquals(f.getCustomProperties().get().get("regionIdentifier").asString(), "AMER");
-        Assert.assertTrue(f.getCustomProperties().get().get("regionIdentifier").getFixedValues().isPresent());
-        PropertyLogLevel pll = (PropertyLogLevel) f.getCustomProperties().get().get("myLogLevel");
+        Assert.assertNotNull(f.getProperties());
+        Assert.assertNotNull(f.getProperties().get("ppint"));
+        Assert.assertEquals(f.getProperties().get("ppint").asInt(), 12);
+        Assert.assertEquals(f.getProperties().get("ppdouble").asDouble(), 12.5,0);
+        Assert.assertEquals(f.getProperties().get("ppboolean").asBoolean(),true);
+        Assert.assertEquals(f.getProperties().get("ppstring").asString(), "hello");
+        Assert.assertEquals(f.getProperties().get("regionIdentifier").asString(), "AMER");
+        Assert.assertTrue(f.getProperties().get("regionIdentifier").getFixedValues().isPresent());
+        PropertyLogLevel pll = (PropertyLogLevel) f.getProperties().get("myLogLevel");
         Assert.assertEquals(pll.getValue(), LogLevel.DEBUG);
         // Then
         Map < String, Property<?>> properties = conf.getProperties();

@@ -40,6 +40,7 @@ public interface RestrictedAccessObject {
     
     default <T> T grantUser(String userName, FF4jPermission... perm) {
         assertHasLength(userName);
+        assertNotNull(perm);
         FF4jAcl acl = getAccessControlList();
         assertNotNull(acl);
         acl.grantUser(userName, perm);
@@ -47,6 +48,8 @@ public interface RestrictedAccessObject {
     }
     
     default <T> T grantUsers(FF4jPermission perm, String... users) {
+        assertNotNull(perm);
+        assertNotNull(users);
         FF4jAcl acl = getAccessControlList();
         assertNotNull(acl);
         acl.grantUsers(perm, users);
@@ -54,6 +57,8 @@ public interface RestrictedAccessObject {
     }
     
     default <T> T grantRoles(FF4jPermission perm, String... roles) {
+        assertNotNull(perm);
+        assertNotNull(roles);
         FF4jAcl acl = getAccessControlList();
         assertNotNull(acl);
         acl.grantRoles(perm, roles);
@@ -61,18 +66,24 @@ public interface RestrictedAccessObject {
     }
    
     default boolean isUserGranted(String userName, FF4jPermission perm) {
+        assertHasLength(userName);
+        assertNotNull(perm);
         FF4jAcl acl = getAccessControlList();
         assertNotNull(acl);
         return acl.isUserGranted(userName, perm);
     }
     
     default boolean isUserGranted(FF4jUser user, FF4jPermission perm) {
+        assertNotNull(user);
+        assertNotNull(perm);
         FF4jAcl acl = getAccessControlList();
         assertNotNull(acl);
         return acl.isUserGranted(user, perm);
     }
     
     default boolean isRoleGranted(String roleName, FF4jPermission perm) {
+        assertHasLength(roleName);
+        assertNotNull(perm);
         FF4jAcl acl = getAccessControlList();
         assertNotNull(acl);
         return acl.isRoleGranted(roleName, perm);

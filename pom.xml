@@ -71,7 +71,7 @@
         <!-- Versions -->
         <version.slf4j>1.8.0-beta0</version.slf4j>
         <version.logback>1.2.3</version.logback>
-        <version.cglib>3.2.6</version.cglib>
+        <version.cglib>3.2.9</version.cglib>
         <version.aopalliance>1.0</version.aopalliance>
         <commons.lang>3.2.1</commons.lang>
         <version.commons-lang>2.6</version.commons-lang>
@@ -86,7 +86,7 @@
         <version.taglib>1.1.2</version.taglib>
         <version.jsr311>1.1.1</version.jsr311>
         <version.jacoco>0.7.9</version.jacoco>
-        <version.jackon2x>2.9.4</version.jackon2x>
+        <version.jackon2x>2.9.7</version.jackon2x>
         <version.jersey1x>1.19.4</version.jersey1x>
         <version.jersey2x>2.26</version.jersey2x>
         <version.httpclient>4.5.4</version.httpclient>
@@ -99,9 +99,9 @@
         <meanbean.version>2.0.3</meanbean.version>
 
 		<!-- SPRING -->
-		<version.spring>5.0.4.RELEASE</version.spring>
-        <version.spring.security>5.0.0.RELEASE</version.spring.security>
-        <spring-boot.version>1.5.9.RELEASE</spring-boot.version>
+		<version.spring>5.1.2.RELEASE</version.spring>
+        <version.spring.security>5.1.1.RELEASE</version.spring.security>
+        <spring-boot.version>2.1.0.RELEASE</spring-boot.version>
 
         <!-- DB DRIVERS -->
         <apache.ignite.version>2.3.0</apache.ignite.version>
@@ -146,9 +146,9 @@
         <module>ff4j-core</module>
         <module>ff4j-utils-yaml</module>
         <module>ff4j-utils-json</module>
+        <module>ff4j-test</module>
         <!-- 
         <module>ff4j-aop</module>
-        <module>ff4j-test</module>
         <module>ff4j-cli</module>
         <module>ff4j-jmx</module>
 

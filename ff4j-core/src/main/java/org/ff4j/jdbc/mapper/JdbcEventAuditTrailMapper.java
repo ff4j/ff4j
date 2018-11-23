@@ -61,8 +61,7 @@ public class JdbcEventAuditTrailMapper extends AbstractJdbcMapper implements Eve
             stmt.setString(11, evt.getSource());
             stmt.setLong(  12, evt.getDuration().orElse(0L));
             stmt.setString(13, evt.getValue().orElse(null));
-            stmt.setString(14, evt.getCustomProperties().isPresent() ? 
-                                   JsonUtils.mapAsJson(evt.getCustomProperties().get()) : null);
+            stmt.setString(14, JsonUtils.mapAsJson(evt.getProperties()));
         } catch(SQLException sqlEx) {
             throw new AuditAccessException("Cannot create statement to create event", sqlEx);
         }

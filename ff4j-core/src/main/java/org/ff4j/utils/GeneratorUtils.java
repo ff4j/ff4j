@@ -75,7 +75,7 @@ public class GeneratorUtils {
         sb.append("\r\n   //  Groups ");
         sb.append("\r\n   // -------------------------");
         sb.append("\r\n");
-        ff4j.getRepositoryFeatures().listAllGroupNames().forEach(g -> {
+        ff4j.getRepositoryFeatures().listGroupNames().forEach(g -> {
             sb.append("\r\n   /* Group '" + g + "' */");
             sb.append("\r\n   String FEATURE_GROUP_" + g.replaceAll(" ", "_").toUpperCase() + " = \"" + g + "\";");
             sb.append("\r\n");

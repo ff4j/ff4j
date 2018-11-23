@@ -1,5 +1,9 @@
 package org.ff4j.event.repo;
 
+import org.ff4j.FF4jRepositoryEventListener;
+import org.ff4j.FF4jRepositoryListener;
+import org.ff4j.FF4jRepositorySupport;
+
 /*-
  * #%L
  * ff4j-core
@@ -22,9 +26,6 @@ package org.ff4j.event.repo;
 
 import org.ff4j.event.Event;
 import org.ff4j.feature.Feature;
-import org.ff4j.repository.FF4jRepositoryEventListener;
-import org.ff4j.repository.FF4jRepositoryListener;
-import org.ff4j.repository.FF4jRepositorySupport;
 
 /**
  * Allow to track features usage.

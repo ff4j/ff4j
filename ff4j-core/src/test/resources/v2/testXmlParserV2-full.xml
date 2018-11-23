@@ -1,29 +1,103 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!-- #%L ff4j-core %% Copyright (C) 2013 - 2017 FF4J %% Licensed under the 
+	Apache License, Version 2.0 (the "License"); you may not use this file except 
+	in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. 
+	#L% -->
 <ff4j xmlns="http://www.ff4j.org/schema/ff4j" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://ff4j.org/schema/ff4j-2.0.xsd">
 	
 	<!-- ~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~~ ROLES          ~~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~ -->
+
+	<roles>
+		<role name="EVERYONE">
+			<permission>VIEW_FEATURES</permission>
+			<permission>VIEW_PROPERTIES</permission>
+		</role>
+		<role name="USER">
+			<permission>VIEW_FEATURES</permission>
+			<permission>VIEW_PROPERTIES</permission>
+			<permission>VIEW_AUDITTRAIL</permission>
+			<permission>VIEW_FEATUREUSAGE</permission>
+		</role>
+		<role name="SUPERUSER">
+			<permission>TOGGLE_FEATURES</permission>
+			<permission>VIEW_FEATURES</permission>
+			<permission>VIEW_PROPERTIES</permission>
+			<permission>VIEW_AUDITTRAIL</permission>
+			<permission>VIEW_FEATUREUSAGE</permission>
+		</role>
+		<role name="ADMINISTRATOR">
+			<permission>ADMIN_FEATURES</permission>
+			<permission>ADMIN_PROPERTIES</permission>
+			<permission>TOGGLE_FEATURES</permission>
+			<permission>VIEW_FEATURES</permission>
+			<permission>VIEW_PROPERTIES</permission>
+			<permission>VIEW_AUDITTRAIL</permission>
+			<permission>VIEW_FEATUREUSAGE</permission>
+		</role>
+	</roles>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~~ USERS          ~~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~ -->
+
+	<users>
+		<user uid="john" firstName="John" lastName="Connor"
+			description="sample description if OK">
+			<roles>
+				<role>ADMINISTRATOR</role>
+			</roles>
+			<permissions>
+				<permission>ADMIN_FEATURES</permission>
+			</permissions>
+		</user>
+		<user uid="sarah" firstName="Sarah" lastName="Connor"
+			description="sample description if OK">
+			<roles>
+				<role>USER</role>
+			</roles>
+			<permissions>
+				<permission>FEATURE_VIEW</permission>
+			</permissions>
+		</user>
+
+	</users>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~~ FEATURES       ~~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~ -->
-	
+
 	<features>
-		
-		<feature uid="AwesomeFeature" enable="true" description="some desc" />
 	
-		<feature uid="first" enable="true" description="description" >
-			
-			<security>
-				<role name="USER" />
-			</security>
-			
-			<custom-properties>
-			  <property name="ppint" 	  type="org.ff4j.property.domain.PropertyInt" value="12"   />
-			  <property name="ppdouble"   type="double"  value="12.5" />
-			  <property name="ppboolean"  type="boolean" value="true" />
-			  <property name="ppstring"   value="hello" />
-			  <property name="ppListInt"  value="12,13,14" />
-			  <property name="myLogLevel" value="DEBUG" type="org.ff4j.property.domain.PropertyLogLevel" />
-			  <property name="digitValue" value="1" type="org.ff4j.property.domain.PropertyInt">
+	    <feature uid="f1" enable="false" description="some desc" />
+	    
+		<feature uid="f2" enable="true" description="description" groupName="GRP1">
+			<permissions>
+				<permission name="FEATURE_TOGGLE">
+					 <users>
+					 	<user>john</user>
+					 </users>
+				</permission>
+				<permission name="FEATURE_VIEW">
+				 	<roles>
+						<role>EVERYONE</role>
+					</roles>
+				</permission>
+			</permissions>
+			<properties>
+			  <property name="ppint" 	  type="int"     value="12"   		/>
+			  <property name="ppdouble"   type="double"  value="12.5" 		/>
+			  <property name="ppboolean"  type="boolean" value="true" 		/>
+			  <property name="ppstring"   type="string"  value="hello"		/>
+			  <property name="ppListInt"  type="listint" value="12,13,14" 	/>
+			  <property name="myLogLevel" type="logLevel" value="DEBUG" 		/>
+			  <property name="digitValue" type="org.ff4j.property.PropertyInt" value="1" >
 			  	<fixedValues>
 			 		<value>0</value>
 			 		<value>1</value>
@@ -39,62 +113,50 @@
 			 		<value>EAST</value>
 			 	</fixedValues>
 			 </property>
-			</custom-properties>
+			</properties>
+			<toggleStrategies>
+			  <toggleStrategy class="org.ff4j.feature.strategy.PonderationToggleStrategy">
+			     <param name="weight" value="1" />
+			  </toggleStrategy>
+			</toggleStrategies>
 		</feature>
 		
-		<feature-group name="GRP0">
-			<feature uid="second" enable="false" description="description" >
-				<security>
-					<role name="USER" />
-				</security>
+		<featureGroup name="GRP0">
+			<feature uid="f3" enable="false" description="description" >
+				<permissions>
+				  <permission name="FEATURE_VIEW">
+				 	<roles>
+						<role>USER</role>
+					</roles>
+				  </permission>
+			    </permissions>
 			</feature>
-		</feature-group>
+		</featureGroup>
 		
-		<feature-group name="GRP1">
-			<feature uid="forth" enable="true" description="description" >
-				<flipstrategy class="org.ff4j.feature.strategy.expression.ExpressionToggleStrategy">
-					<param name="expression" value="third | second" />
-				</flipstrategy>
-				<security>
-					<role name="ADMINISTRATOR" />
-					<role name="BETA-TESTER" />
-				</security>
+		<featureGroup name="GRP1">
+			<feature uid="f4" enable="true" description="description" >
+				 <toggleStrategies>
+					<toggleStrategy class="org.ff4j.feature.strategy.expression.ExpressionToggleStrategy">
+						<param name="expression" value="f3 | f2" />
+					</toggleStrategy>
+				</toggleStrategies>
 			</feature>
-			<feature uid="third" enable="false" >
-				<security>
-					<role name="ADMINISTRATOR" />
-					<role name="BETA-TESTER" />
-				</security>
-				<flipstrategy class="org.ff4j.feature.strategy.expression.ExpressionToggleStrategy">
-					<param name="expression" value="third | second" />
-				</flipstrategy>
-			</feature>
-		</feature-group>
-	
+		</featureGroup>
+
 	</features>
-	
-	<properties>	
-	 <property name="a" value="AMER" >
-	 	<fixedValues>
-	 		<value>AMER</value>
-	 		<value>EAST</value>
-	 		<value>EAST</value>
-	 		<value>EAST</value>
-	 	</fixedValues>
-	 </property>
-	 <property name="b"	 type="int" value="12"   />
-	 <property name="b" type="short" value="12"   />
-	 <property name="c"  type="double" value="12.5" />
-	 <property name="d"  type="boolean" value="true" />
-	 <property name="e"  type="string" value="hello" />
-	 <property name="f"  value="12,13,14" />
-	 <property name="g"  type="org.ff4j.property.domain.PropertyLogLevel" value="DEBUG" />
-	 <property name="h"  type="float" value="3.4" />
-	 <property name="i"  type="byte" value="a" />
-	 <property name="j"  type="biginteger" value="100000000" />
-	 <property name="k"  type="bigdecimal" value="200000000.1234567" />
-	 <property name="l"  type="long" value="1234567890" />
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~~ PROPERTIES     ~~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~ -->
+
+	<properties>
+		<property name="a" value="AMER" fixedValues="AMER,EAST" />
+		<property name="b" value="12" />
+		<property name="c" value="12.5" />
+		<property name="d" value="true" />
+		<property name="e" value="hello" />
+		<property name="f" value="12,13,14" />
+		<property name="g" value="DEBUG" type="logLevel" />
 	</properties>
-	
-	
+
 </ff4j>

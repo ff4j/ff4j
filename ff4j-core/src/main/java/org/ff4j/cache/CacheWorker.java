@@ -23,7 +23,7 @@ package org.ff4j.cache;
 import java.io.Serializable;
 
 import org.ff4j.FF4jEntity;
-import org.ff4j.repository.FF4jRepository;
+import org.ff4j.FF4jRepository;
 
 /**
  * Worker invoke on fixed delay basis.

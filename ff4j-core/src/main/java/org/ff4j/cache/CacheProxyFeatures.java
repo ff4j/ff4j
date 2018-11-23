@@ -23,10 +23,10 @@ package org.ff4j.cache;
 import java.util.stream.Stream;
 
 import org.ff4j.feature.Feature;
-import org.ff4j.feature.repo.RepositoryFeatures;
+import org.ff4j.feature.repository.FeaturesRepository;
 
 /**
- * Access to {@link RepositoryFeatures} could generate some overhead and decrease performances. This is the reason why cache is provided
+ * Access to {@link FeaturesRepository} could generate some overhead and decrease performances. This is the reason why cache is provided
  * though proxies.
  * 
  * As applications are distributed, the cache itself could be distributed. The default implement is
@@ -34,7 +34,7 @@ import org.ff4j.feature.repo.RepositoryFeatures;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class CacheProxyFeatures extends CacheProxy< String, Feature> implements RepositoryFeatures {
+public class CacheProxyFeatures extends CacheProxy< String, Feature> implements FeaturesRepository {
 
     /**
      * Initialization through constructor.
@@ -44,10 +44,24 @@ public class CacheProxyFeatures extends CacheProxy< String, Feature> implements 
      * @param cache
      *            cache manager to limit overhead of store
      */
-    public CacheProxyFeatures(RepositoryFeatures fStore, CacheManager< String, Feature > cache) {
+    public CacheProxyFeatures(FeaturesRepository fStore, CacheManager< String, Feature > cache) {
         this.cacheManager = cache;
         this.targetStore  = fStore;
         this.scheduler    = new CachePollingSchedulerFeatures(fStore, cache);
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void saveFeature(Feature feature) {
+        getTargetFeatureStore().saveFeature(feature);
+        cacheManager.put(feature.getUid(), feature);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void deleteFeature(String uid) {
+        getTargetFeatureStore().deleteFeature(uid);
+        cacheManager.evict(uid);
     }
 
     /** {@inheritDoc} */
@@ -77,9 +91,9 @@ public class CacheProxyFeatures extends CacheProxy< String, Feature> implements 
     
     /** {@inheritDoc} */
     @Override
-    public Stream <String> listAllGroupNames() {
+    public Stream <String> listGroupNames() {
         // Cannot be sure of whole cache - do not test any feature one-by-one : accessing FeatureStore
-        return getTargetFeatureStore().listAllGroupNames();
+        return getTargetFeatureStore().listGroupNames();
     }
     
     /** {@inheritDoc} */
@@ -131,11 +145,11 @@ public class CacheProxyFeatures extends CacheProxy< String, Feature> implements 
      * 
      * @return current value of 'target'
      */
-    public RepositoryFeatures getTargetFeatureStore() {
+    public FeaturesRepository getTargetFeatureStore() {
         if (targetStore == null) {
             throw new IllegalArgumentException("ff4j-core: Target for cache proxy has not been provided");
         }
-        return (RepositoryFeatures) targetStore;
-    }
+        return (FeaturesRepository) targetStore;
+    }    
 
 }

@@ -41,14 +41,14 @@ import org.ff4j.jdbc.JdbcQueryBuilder;
 import org.ff4j.jdbc.mapper.JdbcPropertyMapper;
 import org.ff4j.property.Property;
 import org.ff4j.property.exception.PropertyAccessException;
-import org.ff4j.property.repo.AbstractRepositoryProperties;
+import org.ff4j.property.repo.RepositoryPropertiesSupport;
 
 /**
  * Access information related to properties within database.
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class RepositoryPropertiesCoreJdbc extends AbstractRepositoryProperties {
+public class RepositoryPropertiesCoreJdbc extends RepositoryPropertiesSupport {
 
     /** serialVersionUID. */
     private static final long serialVersionUID = -1746222910983624609L;
@@ -118,7 +118,7 @@ public class RepositoryPropertiesCoreJdbc extends AbstractRepositoryProperties {
 
     /** {@inheritDoc} */
     @Override
-    public void create(Property<?> ap) {
+    public void saveProperty(Property<?> ap) {
         assertNotNull(ap);
         try (Connection sqlConn = getDataSource().getConnection()) {
             JdbcPropertyMapper pmapper = new JdbcPropertyMapper(sqlConn, getQueryBuilder());
@@ -170,19 +170,10 @@ public class RepositoryPropertiesCoreJdbc extends AbstractRepositoryProperties {
             throw new PropertyAccessException("Cannot update property database, SQL ERROR", sqlEX);
         }
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public void update(Property<?> prop) {
-        assertNotNull(prop);
-        assertHasLength(prop.getUid());
-        delete(prop.getUid());
-        create(prop);
-    }
    
     /** {@inheritDoc} */
     @Override
-    public void delete(String name) {
+    public void deleteProperty(String name) {
         assertHasLength(name);
         assertPropertyExist(name);
         try (Connection sqlConn = getDataSource().getConnection()) {
@@ -277,6 +268,5 @@ public class RepositoryPropertiesCoreJdbc extends AbstractRepositoryProperties {
 	 */
 	public void setQueryBuilder(JdbcQueryBuilder queryBuilder) {
 		this.queryBuilder = queryBuilder;
-	}
-        
+	}  
 }

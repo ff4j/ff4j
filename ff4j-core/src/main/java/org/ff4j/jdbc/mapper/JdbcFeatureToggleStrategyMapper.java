@@ -26,7 +26,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.ff4j.feature.exception.FeatureAccessException;
-import org.ff4j.feature.strategy.TogglePredicate;
+import org.ff4j.feature.togglestrategy.TogglePredicate;
 import org.ff4j.jdbc.JdbcConstants.FeatureStrategyColumns;
 import org.ff4j.jdbc.JdbcQueryBuilder;
 import org.ff4j.mapper.ToggleStrategyMapper;

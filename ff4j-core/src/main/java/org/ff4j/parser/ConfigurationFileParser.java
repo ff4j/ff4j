@@ -66,15 +66,17 @@ public abstract class ConfigurationFileParser {
     public static final String FEATURE_ATT_ENABLE   = "enable";
     public static final String FEATURE_ATT_GROUP    = "groupName";
     public static final String FEATUREGROUP_TAG     = "feature-group";
+    public static final String FEATUREGROUP_TAG2    = "featureGroup";
     public static final String FEATUREGROUP_ATTNAME = "name";
     
-    public static final String TOGGLE_STRATEGIES_TAG      = "toggle-strategies";
-    public static final String TOGGLE_STRATEGY_TAG        = "toggle-strategy";
+    public static final String TOGGLE_STRATEGIES_TAG      = "toggleStrategies";
+    public static final String TOGGLE_STRATEGY_TAG        = "toggleStrategy";
     public static final String TOGGLE_STRATEGY_ATTCLASS   = "class";
     public static final String TOGGLE_STRATEGY_PARAMTAG   = "param";
     public static final String TOGGLE_STRATEGY_PARAMNAME  = "name";
     public static final String TOGGLE_STRATEGY_PARAMVALUE = "value";
     public static final String PROPERTIES_CUSTOM_TAG      = "custom-properties";
+    public static final String PROPERTIES_CUSTOM_TAG2     = "properties";
     public static final String PROPERTIES_TAG             = "properties";
     
     /**
@@ -98,11 +100,33 @@ public abstract class ConfigurationFileParser {
      *   </role>
      * </roles>
      */ 
-    public static final String SECURITY_ROLES_TAG       = "roles";
+    public static final String ROLES_TAG       = "roles";
     public static final String SECURITY_ROLE_TAG        = "role";
     public static final String SECURITY_ROLE_ATTNAME    = "name";
     public static final String SECURITY_PERMISSION_TAG  = "permission";
     public static final String SECURITY_PERMISSIONS_TAG = "permissions";
+    
+    /**
+     * <permissions>
+     *  <permission name='FEATURE_TOGGLE'>
+     *   <users>
+     *    <user>pierre</user>
+     *   </users>
+     *  </permission>
+     *  <permission name="FEATURE_VIEW">
+     *   <roles>
+     *    <role>EVERYONE</role>
+     *   </roles>
+     *  </permission>
+     * </permissions>
+     */ 
+    public static final String PERMISSIONS_TAG      = "permissions";
+    public static final String PERMISSION_TAG       = "permission";
+    public static final String PERMISSION_ATTNAME   = "name";
+    public static final String PERMISSION_USERS_TAG = "users";
+    public static final String PERMISSION_USER_TAG  = "user";
+    public static final String PERMISSION_ROLES_TAG = "roles";
+    public static final String PERMISSION_ROLE_TAG  = "role";
     
     /** 
      * <users>
@@ -136,6 +160,13 @@ public abstract class ConfigurationFileParser {
     
     /** Do not parse the same file multiple times. */
     protected static Map < String, FF4jConfigFile > cachedConfiguration = new HashMap<>();
+    
+    /**
+     * During unit tests do not want to reuse
+     */
+    public static void clearCache() {
+        cachedConfiguration.clear();
+    }
     
     /**
      * Parse file and marshall configuration for this object.

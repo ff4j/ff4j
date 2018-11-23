@@ -24,8 +24,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.ff4j.feature.strategy.ToggleContext;
-import org.ff4j.feature.strategy.TogglePredicate;
+import org.ff4j.feature.togglestrategy.ToggleContext;
+import org.ff4j.feature.togglestrategy.TogglePredicate;
 import org.ff4j.user.FF4jUser;
 
 /**

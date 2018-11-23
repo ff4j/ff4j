@@ -91,7 +91,7 @@ public class JsonUtils {
     /**
      * Serialize a map of objects as Json. Elements should override <code>toString()</code> to produce JSON.
      *
-     * @param customProperties
+     * @param properties
      *      target properties
      * @return
      *      target json expression
@@ -114,7 +114,7 @@ public class JsonUtils {
     /**
      * Serialize a map of objects as Json. Elements should override <code>toString()</code> to produce JSON.
      *
-     * @param customProperties
+     * @param properties
      *      target properties
      * @return
      *      target json expression

@@ -1,6 +1,7 @@
 package org.ff4j.inmemory.repository;
 
 import static org.ff4j.test.AssertUtils.assertHasLength;
+import static org.ff4j.test.AssertUtils.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -133,29 +134,44 @@ public class RepositoryFeatureUsageInMemory extends AbstractRepositoryFeatureUsa
     public boolean exists(String id) {
         return find(id).isPresent();
     }
-    
+
+
     /** {@inheritDoc} */
     @Override
-    public void delete(String entityId) {
+    public void save(Iterable<Event> entities) {
+        assertNotNull(entities);
+        entities.forEach(evt -> {
+            Optional < EventSeries > result = findEventSeries(evt.getUid());
+        if (result.isPresent()) {
+            result.get().removeIf(e -> evt.getUid().equals(e.getUid()));
+            result.get().add(evt);
+        } else {
+            // Does not exist, create
+            saveEvent(evt);
+        }});
+    }
+    
+    /** {@inheritDoc} */
+    protected void update(Event entity) {
+        // Does this event exist ? 
+        
+    }
+
+    @Override
+    public void delete(Iterable<String> entities) {
+        assertNotNull(entities);
+        entities.forEach(this::deleteEvent);
+    }
+    
+    /** {@inheritDoc} */
+    public void deleteEvent(String entityId) {
         Optional < EventSeries > result = findEventSeries(entityId);
         if (result.isPresent()) {
             result.get().removeIf(e -> entityId.equals(e.getUid()));
         }
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void update(Event entity) {
-        // Does this event exist ? 
-        Optional < EventSeries > result = findEventSeries(entity.getUid());
-        if (result.isPresent()) {
-            result.get().removeIf(e -> entity.getUid().equals(e.getUid()));
-            result.get().add(entity);
-        } else {
-            // Does not exist, create
-            create(entity);
-        }
-    }
+   
     
     private boolean match(Event e) {
         return (e!= null) && e.getScope().equals(Event.Scope.FEATURE.name())
@@ -163,8 +179,7 @@ public class RepositoryFeatureUsageInMemory extends AbstractRepositoryFeatureUsa
     }
     
     /** {@inheritDoc} */
-    @Override
-    public void create(Event e) {
+    public void saveEvent(Event e) {
         if (match(e)) saveEvent(e, events);
     }
     
@@ -390,6 +405,5 @@ public class RepositoryFeatureUsageInMemory extends AbstractRepositoryFeatureUsa
         }
         return null;
     }
-
 
 }

@@ -2,8 +2,8 @@ package org.ff4j.property.repo;
 
 import java.util.stream.Stream;
 
+import org.ff4j.FF4jRepository;
 import org.ff4j.property.Property;
-import org.ff4j.repository.FF4jRepository;
 
 /*
  * #%L

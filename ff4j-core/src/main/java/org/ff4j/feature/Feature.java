@@ -29,8 +29,8 @@ import java.util.Optional;
 
 import org.ff4j.FF4jContext;
 import org.ff4j.FF4jEntity;
-import org.ff4j.feature.strategy.ToggleContext;
-import org.ff4j.feature.strategy.TogglePredicate;
+import org.ff4j.feature.togglestrategy.ToggleContext;
+import org.ff4j.feature.togglestrategy.TogglePredicate;
 import org.ff4j.property.Property;
 import org.ff4j.property.PropertyFactory;
 import org.ff4j.security.FF4jGrantees;
@@ -97,17 +97,15 @@ public class Feature extends FF4jEntity < Feature > {
         }
         
         // COPY Properties
-        if (getCustomProperties().isPresent()) {
-            for (Property<?> p : f.getCustomProperties().get().values()) {
-                Property<?> pTmp = PropertyFactory.createProperty(p.getUid(), p.getClass().getName(), p.asString());
-                p.getDescription().ifPresent(pTmp::setDescription);
-                if (p.getFixedValues().isPresent()) {
-                    for (Object fixValue : p.getFixedValues().get()) {
-                        pTmp.add2FixedValueFromString(fixValue.toString());
-                    }
+        for (Property<?> p : f.getProperties().values()) {
+            Property<?> pTmp = PropertyFactory.createProperty(p.getUid(), p.getClass().getName(), p.asString());
+            p.getDescription().ifPresent(pTmp::setDescription);
+            if (p.getFixedValues().isPresent()) {
+                for (Object fixValue : p.getFixedValues().get()) {
+                    pTmp.add2FixedValueFromString(fixValue.toString());
                 }
-                addCustomProperty(pTmp);
             }
+            addProperty(pTmp);
         }
         
         // COPY Permissions
@@ -290,7 +288,11 @@ public class Feature extends FF4jEntity < Feature > {
      *      target groupName
      */
     public void setGroup(String groupName) {
-        this.group = Optional.ofNullable(groupName);
+        if (null == groupName || "".equals(groupName)) {
+            this.group = Optional.empty();
+        } else {
+            this.group = Optional.ofNullable(groupName);
+        }
         updateLastModifiedDate();
     }
     

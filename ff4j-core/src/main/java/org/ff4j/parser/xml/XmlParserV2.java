@@ -1,11 +1,33 @@
 package org.ff4j.parser.xml;
 
+/*-
+ * #%L
+ * ff4j-core
+ * %%
+ * Copyright (C) 2013 - 2018 FF4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -15,10 +37,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.ff4j.feature.Feature;
-import org.ff4j.feature.strategy.TogglePredicate;
+import org.ff4j.feature.togglestrategy.TogglePredicate;
 import org.ff4j.parser.FF4jConfigFile;
 import org.ff4j.property.Property;
 import org.ff4j.property.PropertyString;
+import org.ff4j.security.FF4jAcl;
+import org.ff4j.security.FF4jGrantees;
 import org.ff4j.security.FF4jPermission;
 import org.ff4j.test.AssertUtils;
 import org.ff4j.user.FF4jRole;
@@ -62,16 +86,28 @@ public final class XmlParserV2 extends ConfigurationFileParserXml {
                 if (firstLevelNodes.item(i) instanceof Element) {
                     Element currentCore = (Element) firstLevelNodes.item(i);
                     
-                    if (SECURITY_ROLES_TAG.equals(currentCore.getNodeName())) {
+                    if (ROLES_TAG.equals(currentCore.getNodeName())) {
+                        if (!xmlConf.getRoles().isEmpty()) {
+                            throw new IllegalArgumentException("<roles> tag must be unique ");
+                        }
                         xmlConf.setRoles(parseRolesTag(currentCore));
                         
                     } else if (USERS_TAG.equals(currentCore.getNodeName())) {
+                        if (!xmlConf.getUsers().isEmpty()) {
+                            throw new IllegalArgumentException("<users> tag must be unique ");
+                        }
                         xmlConf.setUsers(parseUsersTag(currentCore));
                         
                     } else if (FEATURES_TAG.equals(currentCore.getNodeName())) {
+                        if (!xmlConf.getFeatures().isEmpty()) {
+                            throw new IllegalArgumentException("<features> tag must be unique ");
+                        }
                         xmlConf.setFeatures(parseFeaturesTag(currentCore));
                         
                     } else if (PROPERTIES_TAG.equals(currentCore.getNodeName())) {
+                        if (!xmlConf.getProperties().isEmpty()) {
+                            throw new IllegalArgumentException("<properties> tag must be unique ");
+                        }
                         xmlConf.setProperties(parsePropertiesTag(currentCore));
                     }
                 }
@@ -79,7 +115,7 @@ public final class XmlParserV2 extends ConfigurationFileParserXml {
             return xmlConf;
             
         } catch (Exception e) {
-            throw new IllegalArgumentException("Cannot parse XML data, please check file access ", e);
+            throw new IllegalArgumentException("Cannot parse XML data, please check file format ", e);
         }
     }
     
@@ -133,7 +169,7 @@ public final class XmlParserV2 extends ConfigurationFileParserXml {
             if (firstLevelNodes.item(i) instanceof Element) {
                 Element currentCore = (Element) firstLevelNodes.item(i);
                 // Roles
-                if (SECURITY_ROLES_TAG.equals(currentCore.getNodeName())) {
+                if (ROLES_TAG.equals(currentCore.getNodeName())) {
                     NodeList roleNodes = currentCore.getChildNodes();
                     for (int j = 0; j < roleNodes.getLength(); j++) {
                         if (roleNodes.item(j) instanceof Element) {
@@ -220,7 +256,7 @@ public final class XmlParserV2 extends ConfigurationFileParserXml {
                 if (FEATURE_TAG.equals(currentCore.getNodeName())) {
                     Feature singleFeature = parseFeatureTag(currentCore);
                     xmlFeatures.put(singleFeature.getUid(), singleFeature);
-                } else if (FEATUREGROUP_TAG.equals(currentCore.getNodeName())) {
+                } else if (FEATUREGROUP_TAG2.equals(currentCore.getNodeName())) {
                     xmlFeatures.putAll(parseFeatureGroupTag(currentCore));
                 } else {
                     throw new IllegalArgumentException("Invalid XML Format, Features sub nodes are [feature,feature-group]");
@@ -265,37 +301,102 @@ public final class XmlParserV2 extends ConfigurationFileParserXml {
      */
     private static Feature parseFeatureTag(Element featXmlTag) {
         NamedNodeMap nnm = featXmlTag.getAttributes();
-        // Identifier
-        String uid;
         if (nnm.getNamedItem(FEATURE_ATT_UID) == null) {
             throw new IllegalArgumentException(ERROR_SYNTAX_IN_CONFIGURATION_FILE + "'uid' is required for each feature");
         }
-        uid = nnm.getNamedItem(FEATURE_ATT_UID).getNodeValue();
-        // Enable
         if (nnm.getNamedItem(FEATURE_ATT_ENABLE) == null) {
             throw new IllegalArgumentException(ERROR_SYNTAX_IN_CONFIGURATION_FILE
-                    + "'enable' is required for each feature (check " + uid + ")");
+                    + "'enable' is required for each feature");
         }
-        boolean enable = 
-                Boolean.parseBoolean(nnm.getNamedItem(FEATURE_ATT_ENABLE).getNodeValue());
+        
+        // Identifier
+        String uid = nnm.getNamedItem(FEATURE_ATT_UID).getNodeValue();
+        
+        // Enable
+        boolean enable = Boolean.parseBoolean(nnm.getNamedItem(FEATURE_ATT_ENABLE).getNodeValue());
 
         // Create Feature with description
-        Feature f = new Feature(uid).toggle(enable)
-                                    .description(parseDescription(nnm));
+        Feature f = new Feature(uid).toggle(enable).description(parseDescription(nnm));
         
-        /* Strategy
-        NodeList flipStrategies = featXmlTag.getElementsByTagName(FLIPSTRATEGY_TAG);
-        if (flipStrategies.getLength() > 0) {
-            f.setFlippingStrategy(parseFlipStrategy((Element) flipStrategies.item(0), f.getUid()));
-        }*/
+        // Permissions
+        NodeList acl = featXmlTag.getElementsByTagName(PERMISSIONS_TAG);
+        if (acl.getLength() > 0) {
+            f.setAccessControlList(parseFeaturePermissionsTag((Element) acl.item(0)));
+        }
         
+        // Group
+        if (nnm.getNamedItem(FEATURE_ATT_GROUP) != null) {
+            f.setGroup(nnm.getNamedItem(FEATURE_ATT_GROUP).getNodeValue());
+        }
+       
         // Properties
-        NodeList properties = featXmlTag.getElementsByTagName(PROPERTIES_CUSTOM_TAG);
+        NodeList properties = featXmlTag.getElementsByTagName(PROPERTIES_CUSTOM_TAG2);
         if (properties.getLength() > 0) {
             f.setCustomProperties(parsePropertiesTag((Element) properties.item(0)));
         }
+        
+        // Toggle Strategies
+        NodeList toggleStrategies = featXmlTag.getElementsByTagName(TOGGLE_STRATEGIES_TAG);
+        if (toggleStrategies.getLength() > 0) {
+            f.getToggleStrategies().addAll(parseToggleStrategies((Element) toggleStrategies.item(0), f.getUid()));
+        }
 
         return f;
+    }
+    
+    /**
+     * <permissions>
+     *  <permission name='FEATURE_TOGGLE'>
+     *   <users>
+     *    <user>pierre</user>
+     *   </users>
+     *  </permission>
+     *  <permission name="FEATURE_VIEW">
+     *   <roles>
+     *    <role>EVERYONE</role>
+     *   </roles>
+     *  </permission>
+     * </permissions>
+     */ 
+    private static FF4jAcl parseFeaturePermissionsTag(Element aclTag) {
+        FF4jAcl targetAcl = new FF4jAcl();
+        NodeList lisOfPermissions = aclTag.getElementsByTagName(PERMISSION_TAG);
+        //<permission>...</permission>
+        for (int k = 0; k < lisOfPermissions.getLength(); k++) {
+            Element permissionTag = (Element) lisOfPermissions.item(k);
+            NamedNodeMap attMap = permissionTag.getAttributes();
+            if (attMap.getNamedItem(PERMISSION_ATTNAME) == null) {
+                throw new IllegalArgumentException("Invalid XML Syntax, 'name' is a required attribute of 'Permission' in ACL TAG");
+            }
+            String permissionName  = attMap.getNamedItem(PERMISSION_ATTNAME).getNodeValue();
+            FF4jGrantees grantees = new FF4jGrantees();
+            // <users>
+            NodeList grantedUsersTag = permissionTag.getElementsByTagName(PERMISSION_USERS_TAG);
+            if (grantedUsersTag.getLength() > 0) {
+                NodeList userNodes = ((Element) grantedUsersTag.item(0)).getChildNodes();
+                // <user>...</user>
+                for (int j = 0; j < userNodes.getLength(); j++) {
+                    if (userNodes.item(j) instanceof Element) {
+                        Element permissionNode = (Element) userNodes.item(j);
+                        grantees.getUsers().add(permissionNode.getTextContent().trim());
+                    }
+                }
+            }
+            // <roles>
+            NodeList grantedRolesTag = permissionTag.getElementsByTagName(PERMISSION_ROLES_TAG);
+            if (grantedRolesTag.getLength() > 0) {
+                NodeList roleNodes = ((Element) grantedRolesTag.item(0)).getChildNodes();
+                // <user>...</user>
+                for (int j = 0; j < roleNodes.getLength(); j++) {
+                    if (roleNodes.item(j) instanceof Element) {
+                        Element permissionNode = (Element) roleNodes.item(j);
+                        grantees.getRoles().add(permissionNode.getTextContent().trim());
+                    }
+                }
+            }
+            targetAcl.getPermissions().put(FF4jPermission.valueOf(permissionName), grantees);
+        }
+        return targetAcl;
     }
     
     /**
@@ -369,57 +470,60 @@ public final class XmlParserV2 extends ConfigurationFileParserXml {
     }
 
     /**
-     * Parsing strategy TAG.
-     * 
-     * @param nnm
-     *            current parend node
-     * @param uid
-     *            current feature uid
-     * @return flipstrategy related to current feature.
+     * <toggleStrategies>
+     *  <toggleStrategy class="org.ff4j.strategy.el.ExpressionFlipStrategy">
+     *      <param name="expression" value="F3 | F2" />
+     *  </toggleStrategy>
+     * </toggleStrategies>
      */
     @SuppressWarnings("unused")
-    private static TogglePredicate parseFlipStrategy(Element flipStrategyTag, String uid) {
-        NamedNodeMap nnm = flipStrategyTag.getAttributes();
-        TogglePredicate flipStrategy;
-        if (nnm.getNamedItem(TOGGLE_STRATEGY_ATTCLASS) == null) {
-            throw new IllegalArgumentException("Error syntax in configuration file : '" + TOGGLE_STRATEGY_ATTCLASS
-                    + "' is required for each flipstrategy (feature=" + uid + ")");
-        }
-
-        try {
-            // Attribute CLASS
-            String clazzName = nnm.getNamedItem(TOGGLE_STRATEGY_ATTCLASS).getNodeValue();
-            flipStrategy = (TogglePredicate) Class.forName(clazzName).newInstance();
-
-            // LIST OF PARAMS
-            Map<String, String> parameters = new LinkedHashMap<String, String>();
-            NodeList initparamsNodes = flipStrategyTag.getElementsByTagName(TOGGLE_STRATEGY_PARAMTAG);
-            for (int k = 0; k < initparamsNodes.getLength(); k++) {
-                Element param = (Element) initparamsNodes.item(k);
-                NamedNodeMap nnmap = param.getAttributes();
-                // Check for required attribute name
-                String currentParamName;
-                if (nnmap.getNamedItem(TOGGLE_STRATEGY_PARAMNAME) == null) {
-                    throw new IllegalArgumentException(ERROR_SYNTAX_IN_CONFIGURATION_FILE
-                            + "'name' is required for each param in flipstrategy(check " + uid + ")");
-                }
-                currentParamName = nnmap.getNamedItem(TOGGLE_STRATEGY_PARAMNAME).getNodeValue();
-                // Check for value attribute
-                if (nnmap.getNamedItem(TOGGLE_STRATEGY_PARAMVALUE) != null) {
-                    parameters.put(currentParamName, nnmap.getNamedItem(TOGGLE_STRATEGY_PARAMVALUE).getNodeValue());
-                } else if (param.getFirstChild() != null) {
-                    parameters.put(currentParamName, param.getFirstChild().getNodeValue());
-                } else {
-                    throw new IllegalArgumentException("Parameter '" + currentParamName + "' in feature '" + uid
-                            + "' has no value, please check XML");
-                }
+    private static List <TogglePredicate> parseToggleStrategies(Element toggleStrategies, String uid) {
+        List <TogglePredicate> listOfStrategies = new ArrayList<>();
+         // Look for list of <toggleStrategy>
+        NodeList lisOfToggleStrategy = toggleStrategies.getElementsByTagName(TOGGLE_STRATEGY_TAG);
+        //<toggleStrategy>
+        for (int k = 0; k < lisOfToggleStrategy.getLength(); k++) {
+            Element permissionTag = (Element) lisOfToggleStrategy.item(k);
+            NamedNodeMap toggleStrategyAtributes = permissionTag.getAttributes();
+            if (toggleStrategyAtributes.getNamedItem(TOGGLE_STRATEGY_ATTCLASS) == null) {
+                throw new IllegalArgumentException("Error syntax in configuration file : '" + TOGGLE_STRATEGY_ATTCLASS
+                        + "' is required for each flipstrategy (feature=" + uid + ")");
             }
-
-            flipStrategy.init(uid, parameters);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("An error occurs during flipstrategy parsing TAG" + uid, e);
+            try {
+                // <toggleStrategy class="..">
+                String clazzName = toggleStrategyAtributes.getNamedItem(TOGGLE_STRATEGY_ATTCLASS).getNodeValue();
+                TogglePredicate currentStrategy = (TogglePredicate) Class.forName(clazzName).newInstance();
+    
+                // <param>
+                Map<String, String> parameters = new LinkedHashMap<String, String>();
+                NodeList initparamsNodes = toggleStrategies.getElementsByTagName(TOGGLE_STRATEGY_PARAMTAG);
+                for (int idxParam = 0; idxParam < initparamsNodes.getLength(); idxParam++) {
+                    Element param = (Element) initparamsNodes.item(idxParam);
+                    NamedNodeMap nnmap = param.getAttributes();
+                    // Check for required attribute name
+                    String currentParamName;
+                    if (nnmap.getNamedItem(TOGGLE_STRATEGY_PARAMNAME) == null) {
+                        throw new IllegalArgumentException(ERROR_SYNTAX_IN_CONFIGURATION_FILE
+                                + "'name' is required for each param in flipstrategy(check " + uid + ")");
+                    }
+                    currentParamName = nnmap.getNamedItem(TOGGLE_STRATEGY_PARAMNAME).getNodeValue();
+                    // Check for value attribute
+                    if (nnmap.getNamedItem(TOGGLE_STRATEGY_PARAMVALUE) != null) {
+                        parameters.put(currentParamName, nnmap.getNamedItem(TOGGLE_STRATEGY_PARAMVALUE).getNodeValue());
+                    } else if (param.getFirstChild() != null) {
+                        parameters.put(currentParamName, param.getFirstChild().getNodeValue());
+                    } else {
+                        throw new IllegalArgumentException("Parameter '" + currentParamName + "' in feature '" + uid
+                                + "' has no value, please check XML");
+                    }
+                }
+                currentStrategy.init(uid, parameters);
+                listOfStrategies.add(currentStrategy);
+            } catch (Exception e) {
+                throw new IllegalArgumentException("An error occurs during flipstrategy parsing TAG" + uid, e);
+            }
         }
-        return flipStrategy;
+        return listOfStrategies;
     }
 
     /**

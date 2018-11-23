@@ -26,7 +26,7 @@ ff4j:
           value: [12, 13, 14]
         - name: digitValue
           value: 1
-          type: org.ff4j.property.domain.PropertyInt
+          type: org.ff4j.property.PropertyInt
           fixedValues: [0, 1, 2, 3]
       permissions:
         - name: FEATURE_TOGGLE
@@ -63,7 +63,7 @@ ff4j:
       value: [12,13,14]
     - name: g
       value: DEBUG
-      type: org.ff4j.property.domain.PropertyLogLevel
+      type: org.ff4j.property.PropertyLogLevel
      
   permissions:
      - target: WEB_CONSOLE

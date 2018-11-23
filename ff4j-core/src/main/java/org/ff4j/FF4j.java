@@ -39,27 +39,26 @@ import org.ff4j.event.repo.FeatureUsageEventListener;
 import org.ff4j.event.repo.RepositoryEventFeatureUsage;
 import org.ff4j.feature.Feature;
 import org.ff4j.feature.exception.FeatureNotFoundException;
-import org.ff4j.feature.repo.RepositoryFeatures;
-import org.ff4j.feature.repo.RepositoryFeaturesInMemory;
-import org.ff4j.feature.strategy.ToggleContext;
-import org.ff4j.feature.strategy.TogglePredicate;
+import org.ff4j.feature.repository.FeaturesRepository;
+import org.ff4j.feature.repository.FeaturesRepositoryInMemory;
+import org.ff4j.feature.togglestrategy.ToggleContext;
+import org.ff4j.feature.togglestrategy.TogglePredicate;
 import org.ff4j.inmemory.repository.RepositoryAuditTrailInMemory;
 import org.ff4j.inmemory.repository.RepositoryFeatureUsageInMemory;
-import org.ff4j.inmemory.repository.RepositoryPropertiesInMemory;
 import org.ff4j.parser.ConfigurationFileParser;
 import org.ff4j.parser.FF4jConfigFile;
 import org.ff4j.parser.xml.XmlParserV2;
 import org.ff4j.property.Property;
 import org.ff4j.property.repo.RepositoryProperties;
-import org.ff4j.repository.FF4jRepositoryObserver;
-import org.ff4j.user.repo.RepositoryRolesAndUsers;
-import org.ff4j.user.repo.RepositoryRolesAndUsersInMemory;
+import org.ff4j.property.repo.RepositoryPropertiesInMemory;
+import org.ff4j.user.repo.RolesAndUsersRepository;
+import org.ff4j.user.repo.RolesAndUsersRepositoryInMemory;
 
 /**
  * Main class and public api to work with FF4j.
  * 
  * Instanciate this bean in you application to perform : 
- * - feature toggling through {@link RepositoryFeatures}
+ * - feature toggling through {@link FeaturesRepository}
  * - Configuration and properties management with {@link RepositoryProperties}
  * - Application monitoring with {@link RepositoryEventFeatureUsage}
  * 
@@ -89,14 +88,14 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
     // ---------- Repositories (feature, property,event..) ---------------------
     // -------------------------------------------------------------------------
     
-    /** Storage to persist feature within {@link RepositoryFeatures}. */
-    private RepositoryFeatures repositoryFeatures = new RepositoryFeaturesInMemory();
+    /** Storage to persist feature within {@link FeaturesRepository}. */
+    private FeaturesRepository repositoryFeatures = new FeaturesRepositoryInMemory();
    
     /** Storage to persist properties within {@link RepositoryProperties}. */
     private RepositoryProperties repositoryProperties = new RepositoryPropertiesInMemory();
     
     /** ReadOnly but can be extended to have full control on user (and dedicated screen in console). */
-    private RepositoryRolesAndUsers repositoryUsersRoles = new RepositoryRolesAndUsersInMemory();
+    private RolesAndUsersRepository repositoryUsersRoles = new RolesAndUsersRepositoryInMemory();
     
     /** Storage to persist event logs. */ 
     private AuditTrail auditTrail = new RepositoryAuditTrailInMemory();
@@ -159,9 +158,9 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      *      configuration bean for ff4j.
      */
     protected FF4j(FF4jConfigFile config) {
-        this.repositoryFeatures           = new RepositoryFeaturesInMemory(config);
+        this.repositoryFeatures           = new FeaturesRepositoryInMemory(config);
         this.repositoryProperties         = new RepositoryPropertiesInMemory(config);
-        this.repositoryUsersRoles         = new RepositoryRolesAndUsersInMemory(config);
+        this.repositoryUsersRoles         = new RolesAndUsersRepositoryInMemory(config);
         this.auditTrail                   = new RepositoryAuditTrailInMemory();
         this.repositoryEventFeaturesUsage = new RepositoryFeatureUsageInMemory();
     }
@@ -260,7 +259,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
             getRepositoryFeatures().toggleOn(uid);
         } catch (FeatureNotFoundException fnfe) {
             if (this.autoCreateFeatures) {
-                getRepositoryFeatures().create(new Feature(uid).toggleOn());
+                getRepositoryFeatures().save(new Feature(uid).toggleOn());
             } else {
                 throw fnfe;
             }
@@ -280,7 +279,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
             getRepositoryFeatures().toggleOff(uid);
         } catch (FeatureNotFoundException fnfe) {
              if (this.autoCreateFeatures) {
-                 getRepositoryFeatures().create(new Feature(uid).toggleOff());
+                 getRepositoryFeatures().save(new Feature(uid).toggleOff());
              } else {
                 throw fnfe;
              }
@@ -299,7 +298,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      *            unique feature identifier.
      */
     public FF4j createFeature(Feature fp) {
-        getRepositoryFeatures().create(fp);
+        getRepositoryFeatures().save(fp);
         return this;
     }
 
@@ -315,7 +314,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
         if (!oFeature.isPresent()) {
             if (autoCreateFeatures) {
                 Feature autoFeature = new Feature(uid).toggleOff();
-                getRepositoryFeatures().create(autoFeature);
+                getRepositoryFeatures().save(autoFeature);
                 return autoFeature;
             }
             throw new FeatureNotFoundException(uid);
@@ -347,7 +346,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      *            unique feature identifier.
      */
     public FF4j createProperty(Property<?> prop) {
-        getRepositoryProperties().create(prop);
+        getRepositoryProperties().save(prop);
         return this;
     }
     
@@ -491,8 +490,8 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      *
      * @return
      */
-    public RepositoryFeatures getTargetRepositoryFeatures() {
-        RepositoryFeatures rf = getRepositoryFeatures();
+    public FeaturesRepository getTargetRepositoryFeatures() {
+        FeaturesRepository rf = getRepositoryFeatures();
         return (rf instanceof CacheProxyFeatures) ?
                ((CacheProxyFeatures) rf).getTargetFeatureStore() : rf;
     }
@@ -514,7 +513,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @return
      */
     public Optional < CacheProxyFeatures > getRepositoryFeaturesCacheProxy() {
-        RepositoryFeatures fs = getRepositoryFeatures();
+        FeaturesRepository fs = getRepositoryFeatures();
         CacheProxyFeatures cacheProxy = null;
         if (fs instanceof CacheProxyFeatures) {
             cacheProxy = (CacheProxyFeatures) fs;
@@ -545,7 +544,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @return
      *       current value of 'repositoryFeatures'
      */
-    public RepositoryFeatures getRepositoryFeatures() {
+    public FeaturesRepository getRepositoryFeatures() {
         return repositoryFeatures;
     }
 
@@ -554,7 +553,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @param repositoryFeatures
      *      new value for 'repositoryFeatures '
      */
-    public void setRepositoryFeatures(RepositoryFeatures repositoryFeatures) {
+    public void setRepositoryFeatures(FeaturesRepository repositoryFeatures) {
         this.repositoryFeatures = repositoryFeatures;
     }
     
@@ -564,7 +563,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @param featureStore
      *            target store.
      */
-    public FF4j repositoryFeatures(RepositoryFeatures featureStore) {
+    public FF4j repositoryFeatures(FeaturesRepository featureStore) {
         setRepositoryFeatures(featureStore);
         return this;
     }
@@ -615,7 +614,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @return
      *       current value of 'repositoryProperties'
      */
-    public RepositoryRolesAndUsers getRepositoryUsersRoles() {
+    public RolesAndUsersRepository getRepositoryUsersRoles() {
         return repositoryUsersRoles;
     }
 
@@ -624,7 +623,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @param repositoryProperties
      *      new value for 'repositoryProperties '
      */
-    public void setRepositoryUsersRoles(RepositoryRolesAndUsers repositoryUsers) {
+    public void setRepositoryUsersRoles(RolesAndUsersRepository repositoryUsers) {
         this.repositoryUsersRoles = repositoryUsers;
     }
     
@@ -636,7 +635,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @return
      *      current ff4j instance
      */
-    public FF4j repositoryUsersRoles(RepositoryRolesAndUsers propertyStore) {
+    public FF4j repositoryUsersRoles(RolesAndUsersRepository propertyStore) {
         setRepositoryUsersRoles(propertyStore);
         return this;
     }

@@ -23,12 +23,12 @@ package org.ff4j.cache;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.ff4j.feature.repo.RepositoryFeatures;
+import org.ff4j.feature.repository.FeaturesRepository;
 import org.ff4j.property.Property;
 import org.ff4j.property.repo.RepositoryProperties;
 
 /**
- * Access to {@link RepositoryFeatures} could generate some overhead and decrease performances. This is the reason why cache is provided
+ * Access to {@link FeaturesRepository} could generate some overhead and decrease performances. This is the reason why cache is provided
  * though proxies.
  * 
  * As applications are distributed, the cache itself could be distributed. The default implement is
@@ -81,7 +81,7 @@ public class CacheProxyProperties extends CacheProxy< String, Property<?>> imple
         Property<?> fp = getTargetPropertyStore().read(name);
         fp.setValueFromString(newValue);
         // Update value in target store
-        getTargetPropertyStore().update(fp);
+        getTargetPropertyStore().save(fp);
         // Remove from cache old value
         getCacheManager().evict(fp.getUid());
         // Add new value in the cache
