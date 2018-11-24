@@ -54,7 +54,7 @@ public abstract class AbstractToggleStrategy implements TogglePredicate {
     
     /** {@inheritDoc} */
     @Override
-    public Map<String, String> getInitParams() {
+    public Map<String, String> getParams() {
         return this.params;
     }
 

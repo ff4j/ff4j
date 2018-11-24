@@ -1,5 +1,7 @@
 package org.ff4j.utils.json;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 /*
  * #%L
  * ff4j-utils-json
@@ -23,35 +25,32 @@ package org.ff4j.utils.json;
 
 import org.ff4j.property.Property;
 import org.ff4j.utils.Util;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 
 public class PropertyJsonParserTest {
     
     
     @Test
     public void testInit() throws Exception {
-        Assert.assertNotNull(Util.instanciatePrivate(PropertyJsonParser.class));
+        Assertions.assertNotNull(Util.instanciatePrivate(PropertyJsonParser.class));
     }
     
     @Test
-    public void testParsePropertyEmpty() {
-        Assert.assertNull(PropertyJsonParser.parseProperty(""));
-        Assert.assertNull(PropertyJsonParser.parseProperty(null));
-    }
-    
-    @Test(expected = IllegalArgumentException.class)
     public void testParsePropertyError() {
-        Assert.assertNull(PropertyJsonParser.parseProperty("something:invalid"));
+        assertThrows(IllegalArgumentException.class, () -> PropertyJsonParser.parseJsonProperty(null) );
+        assertThrows(IllegalArgumentException.class, () -> PropertyJsonParser.parseJsonProperty("") );
+        assertThrows(IllegalArgumentException.class, () -> PropertyJsonParser.parseJsonProperty("invalid:x") );
     }
     
     @Test
     public void testFull() {
         String pExp = "{\"name\":\"p1\",\"description\":null,\"type\":\"org.ff4j.property.PropertyString\",\"value\":\"v1\",\"fixedValues\":null}";
-        Property<?> p = PropertyJsonParser.parseProperty(pExp);
-        Assert.assertNotNull(p);
-        Assert.assertNotNull(p.getType());
-        Assert.assertEquals("v1", p.getValue());
+        Property<?> p = PropertyJsonParser.parseJsonProperty(pExp);
+        Assertions.assertNotNull(p);
+        Assertions.assertNotNull(p.getType());
+        Assertions.assertEquals("v1", p.getValue());
     }
     
     

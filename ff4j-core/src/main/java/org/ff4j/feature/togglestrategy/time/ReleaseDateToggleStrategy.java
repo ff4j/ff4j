@@ -68,7 +68,7 @@ public class ReleaseDateToggleStrategy extends AbstractToggleStrategy implements
         } catch (ParseException e) {
             throw new IllegalArgumentException("Cannot parse release date, invalid format correct is '" + DATE_PATTERN + "'", e);
         }
-        getInitParams().put(PARAMNAME_RELEASEDATE, strDate);
+        getParams().put(PARAMNAME_RELEASEDATE, strDate);
     }
 
     /**
@@ -78,7 +78,7 @@ public class ReleaseDateToggleStrategy extends AbstractToggleStrategy implements
      */
     public ReleaseDateToggleStrategy(Date releaseDate) {
         this.releaseDate = releaseDate;
-        getInitParams().put(PARAMNAME_RELEASEDATE, SDF.format(releaseDate));
+        getParams().put(PARAMNAME_RELEASEDATE, SDF.format(releaseDate));
     }
 
     /** {@inheritDoc} */

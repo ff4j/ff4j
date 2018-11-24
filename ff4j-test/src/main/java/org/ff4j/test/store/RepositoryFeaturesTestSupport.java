@@ -150,8 +150,8 @@ public abstract class RepositoryFeaturesTestSupport implements FF4jTestDataSet {
 		            expectedF2.getToggleStrategies().get(0).getClass(), 
 		            f2.getToggleStrategies().get(0).getClass());
 		Assertions.assertEquals(
-		   expectedF2.getToggleStrategies().get(0).getInitParams().get(PonderationToggleStrategy.PARAM_WEIGHT), 
-		           f2.getToggleStrategies().get(0).getInitParams().get(PonderationToggleStrategy.PARAM_WEIGHT));
+		   expectedF2.getToggleStrategies().get(0).getParams().get(PonderationToggleStrategy.PARAM_WEIGHT), 
+		           f2.getToggleStrategies().get(0).getParams().get(PonderationToggleStrategy.PARAM_WEIGHT));
         // properties
 		Assertions.assertFalse(f2.getProperties().isEmpty());
 		Assertions.assertEquals(expectedF2.getProperties().size(), f2.getProperties().size());

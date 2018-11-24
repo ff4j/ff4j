@@ -261,17 +261,17 @@ public abstract class FF4jEntity<T extends FF4jEntity<?>> implements Comparable<
     }
     
     @SuppressWarnings("unchecked")
-    public T setCustomProperties(Map<String, Property<?>> custom) {
+    public T setProperties(Map<String, Property<?>> custom) {
         properties = custom;
         updateLastModifiedDate();
         return (T) this;
     }
 
     @SuppressWarnings("unchecked")
-    public T setCustomProperties(Property<?>... properties) {
+    public T setProperties(Property<?>... properties) {
         if (properties == null) return (T) this;;
         updateLastModifiedDate();
-        return setCustomProperties(Arrays.stream(properties).
+        return setProperties(Arrays.stream(properties).
                 collect(Collectors.toMap(Property::getUid, Function.identity())));
     }
     
@@ -284,7 +284,7 @@ public abstract class FF4jEntity<T extends FF4jEntity<?>> implements Comparable<
      *      the new value for current eneityt
      */
     @SuppressWarnings("unchecked")
-    public T addCustomProperties(Property<?>... myProperties) {
+    public T addProperties(Property<?>... myProperties) {
         if (myProperties != null) {
             properties.putAll(
                     Arrays.stream(myProperties).collect(
@@ -353,7 +353,7 @@ public abstract class FF4jEntity<T extends FF4jEntity<?>> implements Comparable<
      *      current object
      */
     public T addProperty(Property<?> property) {
-        return addCustomProperties(property);
+        return addProperties(property);
     }
 
 }

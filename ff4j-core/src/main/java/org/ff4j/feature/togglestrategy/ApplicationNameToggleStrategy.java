@@ -60,7 +60,7 @@ public class ApplicationNameToggleStrategy extends AbstractToggleStrategy implem
      */
     public ApplicationNameToggleStrategy(String clientList) {
         this.rawClientList = clientList;
-        getInitParams().put(PARAM_CLIENTLIST, clientList);
+        getParams().put(PARAM_CLIENTLIST, clientList);
         for (String client : rawClientList.split(SPLITTER)) {
             setOfGrantedClient.add(client.trim());
         }

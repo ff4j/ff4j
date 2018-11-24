@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import org.ff4j.event.repo.AuditTrail;
+import org.ff4j.event.repository.AuditTrail;
 import org.ff4j.exception.ItemNotFoundException;
 
 /**

@@ -682,7 +682,6 @@
             <!-- Junit -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>${version.maven.plugin.surefire}</version>
                 <configuration>
                     <skip>false</skip>
                 </configuration>

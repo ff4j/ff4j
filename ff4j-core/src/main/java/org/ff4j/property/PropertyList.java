@@ -77,6 +77,10 @@ public abstract class PropertyList<T, K extends Property<T>> extends Property < 
     @Override
     public List<T> fromString(String v) {
         if (v == null) return null;
+        // Brackets ?
+        if (v.startsWith("[")) {
+           v = v.substring(1, v.length()-1);
+        }
         if (property == null) initProperty(uid);
         return Arrays.stream(v.split(listDelimiter))
                      .map(String::trim)

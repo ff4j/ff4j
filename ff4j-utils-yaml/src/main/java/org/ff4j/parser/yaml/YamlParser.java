@@ -255,7 +255,7 @@ public class YamlParser extends ConfigurationFileParser {
                 List<Map<String, Object>> customProperties = 
                         (List<Map<String, Object>>) feature.get(PROPERTIES_CUSTOM_TAG);
                 if (customProperties != null) {
-                    f.setCustomProperties(parseProperties(customProperties));
+                    f.setProperties(parseProperties(customProperties));
                 }
                 
                 ff4jConfig.getFeatures().put(f.getUid(), f);

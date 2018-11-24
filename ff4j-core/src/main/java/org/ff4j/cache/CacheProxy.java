@@ -28,7 +28,7 @@ import org.ff4j.FF4jEntity;
 import org.ff4j.FF4jRepository;
 import org.ff4j.FF4jRepositoryListener;
 import org.ff4j.FF4jRepositoryObserver;
-import org.ff4j.event.repo.AuditTrail;
+import org.ff4j.event.repository.AuditTrail;
 
 /**
  * Cache abstraction for ff4j.

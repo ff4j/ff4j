@@ -21,7 +21,7 @@ public class JsonStringPropertyMapper implements PropertyMapper<String, String >
     /** {@inheritDoc} */
     @Override
     public Property<?> mapFromRepository(String json) {
-        return PropertyJsonParser.parseProperty(json);
+        return PropertyJsonParser.parseJsonProperty(json);
     }
 
 }

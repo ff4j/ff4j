@@ -57,7 +57,7 @@ public class ExpressionToggleStrategy extends AbstractToggleStrategy implements 
     public ExpressionToggleStrategy() {}
     
     public ExpressionToggleStrategy(String featureName, String expression) {
-        getInitParams().put(PARAM_EXPRESSION, expression);
+        getParams().put(PARAM_EXPRESSION, expression);
         mapOfValue.put(featureName, expression);
     }
 

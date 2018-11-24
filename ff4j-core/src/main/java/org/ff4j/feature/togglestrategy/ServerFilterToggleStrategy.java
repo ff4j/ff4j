@@ -61,7 +61,7 @@ public class ServerFilterToggleStrategy extends AbstractToggleStrategy implement
      */
     public ServerFilterToggleStrategy(String targetServers) {
         this.rawServerList = targetServers;
-        getInitParams().put(PARAM_SERVERLIST, targetServers);
+        getParams().put(PARAM_SERVERLIST, targetServers);
         for (String server : rawServerList.split(SPLITTER)) {
             setOfTargetServer.add(server.trim());
         }

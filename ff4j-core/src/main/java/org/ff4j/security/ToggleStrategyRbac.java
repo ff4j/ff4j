@@ -60,7 +60,7 @@ public class ToggleStrategyRbac implements TogglePredicate {
 
     /** {@inheritDoc} */
     @Override
-    public Map<String, String> getInitParams() {
+    public Map<String, String> getParams() {
         Map <String, String> mapOfParams = new HashMap<>();
         mapOfParams.put(PARAM_GRANTED_ROLES, String.join(",", grantees.getRoles()));
         mapOfParams.put(PARAM_GRANTED_USERS, String.join(",", grantees.getUsers()));

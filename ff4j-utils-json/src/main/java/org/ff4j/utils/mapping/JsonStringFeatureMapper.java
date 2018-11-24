@@ -21,7 +21,7 @@ public class JsonStringFeatureMapper implements FeatureMapper < String, String >
     /** {@inheritDoc} */
     @Override
     public Feature mapFromRepository(String bean) {
-        return FeatureJsonParser.parseFeature(bean);
+        return FeatureJsonParser.parseJsonFeature(bean);
     }
 
 }

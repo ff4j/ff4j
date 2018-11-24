@@ -60,7 +60,17 @@ public interface TogglePredicate extends Predicate< ToggleContext > {
      * 
      * @return initial parameters for this strategy
      */
-    Map<String, String> getInitParams();
+    Map<String, String> getParams();
+    
+    /**
+     * To be used on the Json generation.
+     *
+     * @return
+     *      current implementation
+     */
+    default String getClassName() {
+        return getClass().getName();
+    }
     
     /**
      * Generate flipping strategy as json.
@@ -71,7 +81,7 @@ public interface TogglePredicate extends Predicate< ToggleContext > {
      default String toJson() {
         StringBuilder json = new StringBuilder("{");
         json.append(valueAsJson("params") + ":");
-        json.append(mapAsJson(getInitParams()));
+        json.append(mapAsJson(getParams()));
         json.append("," + valueAsJson("className")  + ":");
         json.append(valueAsJson(getClass().getCanonicalName()));
         json.append("}");

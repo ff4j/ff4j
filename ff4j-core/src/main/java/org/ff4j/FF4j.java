@@ -33,26 +33,26 @@ import org.ff4j.cache.CacheManager;
 import org.ff4j.cache.CacheProxyFeatures;
 import org.ff4j.cache.CacheProxyProperties;
 import org.ff4j.event.Event;
-import org.ff4j.event.repo.AbstractRepositoryFeatureUsage;
-import org.ff4j.event.repo.AuditTrail;
-import org.ff4j.event.repo.FeatureUsageEventListener;
-import org.ff4j.event.repo.RepositoryEventFeatureUsage;
+import org.ff4j.event.repository.AbstractRepositoryFeatureUsage;
+import org.ff4j.event.repository.AuditTrail;
+import org.ff4j.event.repository.FeatureUsageEventListener;
+import org.ff4j.event.repository.RepositoryAuditTrailInMemory;
+import org.ff4j.event.repository.RepositoryEventFeatureUsage;
+import org.ff4j.event.repository.RepositoryFeatureUsageInMemory;
 import org.ff4j.feature.Feature;
 import org.ff4j.feature.exception.FeatureNotFoundException;
 import org.ff4j.feature.repository.FeaturesRepository;
 import org.ff4j.feature.repository.FeaturesRepositoryInMemory;
 import org.ff4j.feature.togglestrategy.ToggleContext;
 import org.ff4j.feature.togglestrategy.TogglePredicate;
-import org.ff4j.inmemory.repository.RepositoryAuditTrailInMemory;
-import org.ff4j.inmemory.repository.RepositoryFeatureUsageInMemory;
 import org.ff4j.parser.ConfigurationFileParser;
 import org.ff4j.parser.FF4jConfigFile;
 import org.ff4j.parser.xml.XmlParserV2;
 import org.ff4j.property.Property;
-import org.ff4j.property.repo.RepositoryProperties;
-import org.ff4j.property.repo.RepositoryPropertiesInMemory;
-import org.ff4j.user.repo.RolesAndUsersRepository;
-import org.ff4j.user.repo.RolesAndUsersRepositoryInMemory;
+import org.ff4j.property.repository.RepositoryProperties;
+import org.ff4j.property.repository.RepositoryPropertiesInMemory;
+import org.ff4j.user.repository.RolesAndUsersRepository;
+import org.ff4j.user.repository.RolesAndUsersRepositoryInMemory;
 
 /**
  * Main class and public api to work with FF4j.

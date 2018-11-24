@@ -241,7 +241,7 @@ public final class XmlParserV1 extends ConfigurationFileParserXml {
         // Properties
         NodeList properties = featXmlTag.getElementsByTagName(PROPERTIES_CUSTOM_TAG);
         if (properties.getLength() > 0) {
-            f.setCustomProperties(parsePropertiesTag((Element) properties.item(0)));
+            f.setProperties(parsePropertiesTag((Element) properties.item(0)));
         }
 
         return f;

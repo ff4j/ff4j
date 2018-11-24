@@ -332,7 +332,7 @@ public final class XmlParserV2 extends ConfigurationFileParserXml {
         // Properties
         NodeList properties = featXmlTag.getElementsByTagName(PROPERTIES_CUSTOM_TAG2);
         if (properties.getLength() > 0) {
-            f.setCustomProperties(parsePropertiesTag((Element) properties.item(0)));
+            f.setProperties(parsePropertiesTag((Element) properties.item(0)));
         }
         
         // Toggle Strategies

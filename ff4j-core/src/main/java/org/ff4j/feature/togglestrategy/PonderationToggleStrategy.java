@@ -57,7 +57,7 @@ public class PonderationToggleStrategy extends AbstractToggleStrategy implements
     public PonderationToggleStrategy(double threshold) {
         this.weight = threshold;
         checkWeight();
-        getInitParams().put(PARAM_WEIGHT, String.valueOf(threshold));
+        getParams().put(PARAM_WEIGHT, String.valueOf(threshold));
     }
 
     /** {@inheritDoc} */
@@ -96,7 +96,7 @@ public class PonderationToggleStrategy extends AbstractToggleStrategy implements
     
     /** {@inheritDoc} */
     @Override
-    public Map<String, String> getInitParams() {
+    public Map<String, String> getParams() {
         this.params.put(PARAM_WEIGHT, String.valueOf(weight));
         return params;
     }

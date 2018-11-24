@@ -1,5 +1,8 @@
 package org.ff4j.utils.json;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 /*
  * #%L
  * ff4j-utils-json
@@ -20,10 +23,6 @@ package org.ff4j.utils.json;
  * #L%
  */
 
-
-import org.junit.Assert;
-import org.junit.Test;
-
 /**
  * Improve coverage.
  *
@@ -33,7 +32,7 @@ public class CustomObjectMapperTest {
     
     @Test
     public void init() {
-        Assert.assertNotNull(new FF4jCustomObjectMapper ()); 
+        Assertions.assertNotNull(new FF4jCustomObjectMapper ()); 
     }
 
 }

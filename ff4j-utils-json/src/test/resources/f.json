@@ -1,0 +1,26 @@
+{
+	
+	"accessControlList": {
+		"FEATURE_TOGGLE": {
+			"users": [
+				"john"
+			],
+			"roles": []
+		},
+		"FEATURE_VIEW": {
+			"users": [],
+			"roles": [
+				"EVERYONE"
+			]
+		}
+	},
+	
+	"toggleStrategies": [
+		{
+			"params": {
+				"weight": "1.0"
+			},
+			"className": "org.ff4j.feature.togglestrategy.PonderationToggleStrategy"
+		}
+	]
+}

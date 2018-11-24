@@ -21,35 +21,89 @@ package org.ff4j.utils.json;
  */
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.ff4j.feature.Feature;
-import org.ff4j.feature.ToggleStrategy;
-import org.ff4j.property.Property;
-import org.ff4j.property.PropertyFactory;
+import org.ff4j.feature.togglestrategy.TogglePredicate;
+import org.ff4j.security.FF4jAcl;
+import org.ff4j.security.FF4jGrantees;
+import org.ff4j.security.FF4jPermission;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Unmarshalling data from JSON with Jackson.
  *
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * @author Cedrick LUNVEN (@clunven)
  */
 public class FeatureJsonParser {
 
     /** Jackson mapper. */
-    private static ObjectMapper objectMapper = new ObjectMapper();
+    private static ObjectMapper objectMapper = FF4jCustomObjectMapper.createDefaultMapper();
+    
+    /** Constants. */
+    public static String UID                        = "uid";
+    public static String ENABLED                    = "enabled";
+    public static String GROUP                      = "group";
+    public static String CLAZZ                      = "clazz";
+    public static String CREATION_DATE              = "creationDate";
+    public static String DESCRIPTION                = "description";
+    public static String PROPERTIES                 = "properties";
+    public static String MODIF_DATE                 = "lastModifiedDate";
+    public static String ACCESSCONTROL              = "accessControlList";
+    public static String TOGGLE_STRATEGIES          = "toggleStrategies";
+    public static String TOGGLE_PREDICATE_CLASSNAME = "className";
+    public static String TOGGLE_PREDICATE_PARAMS    = "params";
+    public static String EMPTY                      = "empty";
+    public static String PERMISSIONS                = "permissions";
+    public static String PERM_USERS                 = "users";
+    public static String PERM_ROLES                 = "roles";
+    
+    /** Parsing Dates. */
+    public static final String            DATEPATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+    public static final SimpleDateFormat  SDF         = new SimpleDateFormat(DATEPATTERN);
+    public static final DateTimeFormatter DF          = DateTimeFormatter.ofPattern(DATEPATTERN);
+    
+    /** Hide constructor. */
+    private FeatureJsonParser() {}
+    
+    // -----------------------------------
+    // ---------- Features ---------------
+    // -----------------------------------
     
     /**
-     * Hide constructor.
+     * Parse the json expression as array of {@link Feature}.
+     *
+     * @param json
+     *      json expression
+     * @return
+     *      array of feature
      */
-    private FeatureJsonParser() {
+    @SuppressWarnings("unchecked")
+    public static Feature[] parseJsonFeatureArray(String json) {
+        if (null == json || "".equals(json)) {
+            return null;
+        }
+        try {
+            List<LinkedHashMap<String, Object>> flipMap = objectMapper.readValue(json, List.class);
+            Feature[] fArray = new Feature[flipMap.size()];
+            int idx = 0;
+            for (LinkedHashMap<String, Object> ll : flipMap) {
+                fArray[idx++] = parseFeature(ll);
+            }
+            return fArray;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Cannot parse JSON " + json, e);
+        }
     }
     
     /**
@@ -60,90 +114,87 @@ public class FeatureJsonParser {
      * @return feature object
      */
     @SuppressWarnings("unchecked")
-    public static Feature parseFeature(String json) {
+    public static Feature parseJsonFeature(String json) {
         try {
-            return parseFeatureMap(objectMapper.readValue(json, HashMap.class));
+            return parseFeature(objectMapper.readValue(json, HashMap.class));
         } catch (IOException e) {
             throw new IllegalArgumentException("Cannot parse json as Feature " + json, e);
         }
     }
     
     @SuppressWarnings("unchecked")
-    public static Set<String> parsePermissions(String json) {
+    private static Feature parseFeature(Map<String, Object> fMap) {
+        Feature f = new Feature((String) fMap.get(UID));
+        if (fMap.containsKey(ENABLED)) {
+            f.setEnable((Boolean) fMap.get(ENABLED));
+        }
+        if (fMap.containsKey(DESCRIPTION)) {
+            f.setDescription((String) fMap.get(DESCRIPTION));
+        }
+        if (fMap.containsKey(GROUP)) {
+            f.setGroup((String) fMap.get(GROUP));
+        }
+        if (fMap.containsKey(CREATION_DATE)) {
+            f.setCreationDate(parseLocalDateTime((String) fMap.get(CREATION_DATE)));
+        }
+        if (fMap.containsKey(MODIF_DATE)) {
+            f.setLastModified(parseLocalDateTime((String) fMap.get(MODIF_DATE)));
+        }
+        // AccessControl List
+        f.setAccessControlList(
+                parseAccessControlList((LinkedHashMap<String, Object>) fMap.get(ACCESSCONTROL)));
+        // Properties
+        f.setProperties(PropertyJsonParser.
+                parseProperties((LinkedHashMap<String, Object>) fMap.get(PROPERTIES)));
+        // ToggleStrategies
+        f.setToggleStrategies(
+                parseTogglePredicates(f.getUid(), (List<Object>) fMap.get(TOGGLE_STRATEGIES)));
+        return f;
+    }
+    
+    private static LocalDateTime parseLocalDateTime(String value) {
+        while (value.length() != 23) {
+            value = value + "0";
+        }
+        return LocalDateTime.parse(value, DF);
+    }
+    
+    // -----------------------------------
+    // ------ AccessControlList ----------
+    // -----------------------------------
+    
+    @SuppressWarnings("unchecked")
+    public static FF4jAcl parseAccessControlList(Map<String, Object> fMap) {
+        FF4jAcl acl = new FF4jAcl();
+        boolean isEmpty = (Boolean) fMap.get(EMPTY);
+        if (!isEmpty) {
+            Map<String, Object> permsMap = (LinkedHashMap<String, Object>) fMap.get(PERMISSIONS);
+            for (String currentPermission : permsMap.keySet()) {
+                Map < String, List < String> > mapOfGrantees = 
+                        (Map<String, List<String>>) permsMap.get(currentPermission);
+                FF4jGrantees grantees = new FF4jGrantees();
+                grantees.getUsers().addAll(mapOfGrantees.get(PERM_USERS));
+                grantees.getRoles().addAll(mapOfGrantees.get(PERM_ROLES));
+                acl.getPermissions().put(FF4jPermission.valueOf(currentPermission), grantees);
+            }
+        }
+        return acl;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Set<FF4jPermission> parseJsonPermissions(String json) {
         if (json == null) return null;
         try {
-            return objectMapper.readValue(json, Set.class);
+            Set<String>  perms = objectMapper.readValue(json, Set.class);
+            return perms.stream().map(FF4jPermission::valueOf).collect(Collectors.toSet());
         } catch (Exception e) {
             throw new IllegalArgumentException("Cannot parse json list");
         }
     }
-
-    @SuppressWarnings("unchecked")
-    private static Feature parseFeatureMap(Map<String, Object> fMap) {
-        Feature f = new Feature((String) fMap.get("uid"));
-        f.setEnable((Boolean) fMap.get("enable"));
-        f.setDescription((String) fMap.get("description"));
-        f.setGroup((String) fMap.get("group"));
-        // permissions
-        List<String> perm = (ArrayList<String>) fMap.get("permissions");
-        f.setAccessControlList(accessControlList);
-        f.setPermissions(new HashSet<String>());
-        if (perm != null) {
-            f.getPermissions().addAll(perm);
-        }
-        // flipping strategy
-        f.setFlippingStrategy(parseFlipStrategy(f.getUid(), (LinkedHashMap<String, Object>) fMap.get("flippingStrategy")));
-        // custom properties
-        Map <String, Object > propertyMap = (Map < String, Object >) fMap.get("customProperties");
-        f.setCustomProperties(parseCustomProperties(propertyMap));
-        return f;
-    }    
     
-    /**
-     * Parse the "customproperties" JSOn attribute.
-     *
-     * @param uid
-     *      current feature identifier
-     * @param tag
-     *      current TAG
-     * @return
-     *      target map of properties
-     */
-    @SuppressWarnings("unchecked")
-    private static Map < String, Property<?>> parseCustomProperties(Map <String, Object > customPTag) {
-        Map < String, Property<?>> myProperties = new LinkedHashMap<String, Property<?>>();
-        if (null != customPTag && !customPTag.isEmpty()) {
-            // Loop over properties
-            for (Object property : customPTag.values()) {
-                HashMap<String, Object> propertyJson = (HashMap<String, Object>) property;
-                String propertyName = (String) propertyJson.get("name");
-                String propertyVal  = String.valueOf(propertyJson.get("value"));
-                String propertyType = (String) propertyJson.get("type");
-                Property<?> ap = PropertyFactory.createProperty(propertyName, propertyType, propertyVal);
-                // FixedValued
-                List <Object> listOfFixedValue = (List<Object>) propertyJson.get("fixedValues");
-                addFixedValuesToProperty(ap, listOfFixedValue);
-                myProperties.put(ap.getName(), ap);
-            }
-        }
-        return myProperties;
-        
-    }
-
-    private static void addFixedValuesToProperty(Property<?> ap, List<Object> listOfFixedValue) {
-        if (listOfFixedValue != null) {
-            for (Object v : listOfFixedValue) {
-                ap.add2FixedValueFromString(String.valueOf(v));
-            }
-            // Check fixed value
-            if (ap.getFixedValues() != null && !ap.getFixedValues().contains(ap.getValue())) {
-                throw new IllegalArgumentException("Cannot create property <" + ap.getName() + 
-                        "> invalid value <" + ap.getValue() + 
-                        "> expected one of " + ap.getFixedValues());
-            }
-        }
-    }
-
+    
+   
+    
     /**
      * Convert feature array to json.
      *
@@ -165,7 +216,22 @@ public class FeatureJsonParser {
         sb.append("]");
         return sb.toString();
     }
-
+    
+    // -----------------------------------
+    // ------- TogglePredicate -----------
+    // -----------------------------------
+    
+    @SuppressWarnings("unchecked")
+    private static List < TogglePredicate > parseTogglePredicates(String uid, List <Object> toggleMap) {
+        List < TogglePredicate > listOfPredicates = new ArrayList<TogglePredicate>();
+        if (toggleMap != null) {
+            for (Object togglePredicate : toggleMap) {
+                listOfPredicates.add(parseTogglePredicate(uid, (Map<String, Object>) togglePredicate));
+            }
+        }
+        return listOfPredicates;
+    }
+    
     /**
      * Parse json string to get {@link FlippingStrategy}.
      * 
@@ -176,13 +242,12 @@ public class FeatureJsonParser {
      * @return flip strategy
      */
     @SuppressWarnings("unchecked")
-    public static ToggleStrategy parseFlipStrategyAsJson(String uid, String json) {
-        ToggleStrategy.fromMap(params)
+    public static TogglePredicate parseJsonTogglePredicate(String uid, String json) {
         if (null == json || "".equals(json)) {
             return null;
         }
         try {
-            return parseFlipStrategy(uid, (HashMap<String, Object>) objectMapper.readValue(json, HashMap.class));
+            return parseTogglePredicate(uid, (HashMap<String, Object>) objectMapper.readValue(json, HashMap.class));
         } catch (Exception e) {
             throw new IllegalArgumentException("Cannot parse JSON " + json, e);
         }
@@ -198,39 +263,13 @@ public class FeatureJsonParser {
      * @return flip strategy
      */
     @SuppressWarnings("unchecked")
-    public static FlippingStrategy parseFlipStrategy(String uid, Map<String, Object> flipMap) {
+    private static TogglePredicate parseTogglePredicate(String uid, Map<String, Object> flipMap) {
         if (null == flipMap || flipMap.isEmpty()) {
             return null;
         }
-        String classType = (String) flipMap.get("type");
-        HashMap<String, String> initparams = (HashMap<String, String>) flipMap.get("initParams");
-        return MappingUtil.instanceFlippingStrategy(uid, classType, initparams);
-    }
-    
-    /**
-     * Parse the json expression as array of {@link Feature}.
-     *
-     * @param json
-     *      json expression
-     * @return
-     *      array of feature
-     */
-    @SuppressWarnings("unchecked")
-    public static Feature[] parseFeatureArray(String json) {
-        if (null == json || "".equals(json)) {
-            return null;
-        }
-        try {
-            List<LinkedHashMap<String, Object>> flipMap = objectMapper.readValue(json, List.class);
-            Feature[] fArray = new Feature[flipMap.size()];
-            int idx = 0;
-            for (LinkedHashMap<String, Object> ll : flipMap) {
-                fArray[idx++] = parseFeatureMap(ll);
-            }
-            return fArray;
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Cannot parse JSON " + json, e);
-        }
+        String classType = (String) flipMap.get(TOGGLE_PREDICATE_CLASSNAME);
+        HashMap<String, String> initparams = (HashMap<String, String>) flipMap.get(TOGGLE_PREDICATE_PARAMS);
+        return TogglePredicate.of(uid, classType, initparams);
     }
 
 }

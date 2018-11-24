@@ -65,7 +65,7 @@ public class JdbcFeatureToggleStrategyMapper extends AbstractJdbcMapper implemen
             ps = sqlConn.prepareStatement(queryBuilder.sqlInsertToggleStrategy());
             ps.setString(1, getFeatureUid());
             ps.setString(2, ts.getClass().getName());
-            ps.setString(3, JsonUtils.mapAsJson(ts.getInitParams()));
+            ps.setString(3, JsonUtils.mapAsJson(ts.getParams()));
         } catch (SQLException sqlEx) {
             throw new FeatureAccessException("Cannot create statement to create feature", sqlEx);
         }

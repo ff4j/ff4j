@@ -22,6 +22,7 @@ package org.ff4j.feature;
 import static org.ff4j.utils.JsonUtils.attributeAsJson;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -92,7 +93,7 @@ public class Feature extends FF4jEntity < Feature > {
         // COPY Strategies (not just reference => clone)
         if (!f.getToggleStrategies().isEmpty()) {
             for (TogglePredicate strat : f.getToggleStrategies()) {
-                addToggleStrategy(TogglePredicate.of(uid, strat.getClass().getName(), strat.getInitParams()));
+                addToggleStrategy(TogglePredicate.of(uid, strat.getClass().getName(), strat.getParams()));
             }
         }
         
@@ -266,6 +267,33 @@ public class Feature extends FF4jEntity < Feature > {
      */
     public Feature addToggleStrategy(TogglePredicate ts) {
         getToggleStrategies().add(ts);
+        updateLastModifiedDate();
+        return this;
+    }
+    
+    /**
+     * Update toggle strategies
+     *
+     * @param toggles
+     *      list of toggles
+     * @return
+     *      cuurent value for toggle
+     */
+    public Feature setToggleStrategies(TogglePredicate... toggles) {
+        return setToggleStrategies((toggles == null) ? 
+                new ArrayList<>() : Arrays.asList(toggles));
+    }
+    
+    /**
+     * Update toggle strategies
+     *
+     * @param toggles
+     *      list of toggles
+     * @return
+     *      cuurent value for toggle
+     */
+    public Feature setToggleStrategies(List<TogglePredicate > collec) {
+        toggleStrategies = collec;
         updateLastModifiedDate();
         return this;
     }

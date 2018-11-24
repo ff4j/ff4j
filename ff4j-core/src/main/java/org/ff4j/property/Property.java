@@ -1,6 +1,5 @@
 package org.ff4j.property;
 
-import static org.ff4j.test.AssertUtils.assertNotNull;
 /*
  * #%L ff4j-core %% Copyright (C) 2013 - 2016 FF4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of the License at
@@ -294,11 +293,12 @@ public abstract class Property<T> extends FF4jEntity<Property<T>> implements Sup
     }
     
     public void addFixedValues(Set<String> fixedValues) {
-        assertNotNull(fixedValues);
-        fixedValues.stream().forEach(v -> add2FixedValueFromString(v.trim()));
-        if (!fixedValues.contains(getValue())) {
-            throw new IllegalArgumentException("Cannot create property <" + getUid() + "> invalid value <"
-                        + getValue() + "> expected one of " + getFixedValues());
+        if (fixedValues != null) {
+            fixedValues.stream().forEach(v -> add2FixedValueFromString(v.trim()));
+            if (!fixedValues.contains(getValue())) {
+                throw new IllegalArgumentException("Cannot create property <" + getUid() + "> invalid value <"
+                            + getValue() + "> expected one of " + getFixedValues());
+            }
         }
     }
     

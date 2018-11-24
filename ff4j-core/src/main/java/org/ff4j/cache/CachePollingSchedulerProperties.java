@@ -21,7 +21,7 @@ package org.ff4j.cache;
  */
 
 import org.ff4j.property.Property;
-import org.ff4j.property.repo.RepositoryProperties;
+import org.ff4j.property.repository.RepositoryProperties;
 
 
 /**

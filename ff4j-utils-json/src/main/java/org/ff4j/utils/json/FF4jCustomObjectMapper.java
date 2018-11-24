@@ -29,6 +29,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 
 public class FF4jCustomObjectMapper {
     
@@ -47,7 +50,7 @@ public class FF4jCustomObjectMapper {
      * @return
      *      target object mapper
      */
-    private static ObjectMapper createDefaultMapper() {
+    public static ObjectMapper createDefaultMapper() {
         final ObjectMapper mapper = new ObjectMapper();
         mapper.setAnnotationIntrospector(new JacksonAnnotationIntrospector());
         mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
@@ -57,7 +60,10 @@ public class FF4jCustomObjectMapper {
         mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         mapper.configure(JsonGenerator.Feature.ESCAPE_NON_ASCII, true);
         mapper.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
+        mapper.registerModule(new Jdk8Module());
+        mapper.registerModule(new ParameterNamesModule());
+        mapper.registerModule(new JavaTimeModule());
         return mapper;
     }
-
+    
 }
