@@ -115,7 +115,7 @@
 			 </property>
 			</properties>
 			<toggleStrategies>
-			  <toggleStrategy class="org.ff4j.feature.strategy.PonderationToggleStrategy">
+			  <toggleStrategy class="org.ff4j.feature.togglestrategy.PonderationToggleStrategy">
 			     <param name="weight" value="1" />
 			  </toggleStrategy>
 			</toggleStrategies>
@@ -136,7 +136,7 @@
 		<featureGroup name="GRP1">
 			<feature uid="f4" enable="true" description="description" >
 				 <toggleStrategies>
-					<toggleStrategy class="org.ff4j.feature.strategy.expression.ExpressionToggleStrategy">
+					<toggleStrategy class="org.ff4j.feature.togglestrategy.expression.ExpressionToggleStrategy">
 						<param name="expression" value="f3 | f2" />
 					</toggleStrategy>
 				</toggleStrategies>

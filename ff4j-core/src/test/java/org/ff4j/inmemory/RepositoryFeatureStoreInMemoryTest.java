@@ -22,12 +22,14 @@ package org.ff4j.inmemory;
 
 import org.ff4j.feature.repository.FeaturesRepository;
 import org.ff4j.feature.repository.FeaturesRepositoryInMemory;
+import org.junit.jupiter.api.DisplayName;
 
 /**
  * Testing implementation of {@link FeaturesRepository} for DB : MEMORY
  *
  * @author Cedrick LUNVEN (@clunven)
  */
+@DisplayName("Testing FEATURES & INMEMORY Repository")
 public class RepositoryFeatureStoreInMemoryTest extends RepositoryFeaturesTestSupport {
 
     /** {@inheritDoc} */

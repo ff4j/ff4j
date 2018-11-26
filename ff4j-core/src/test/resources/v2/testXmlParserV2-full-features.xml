@@ -34,7 +34,7 @@
 
 	<feature-group name="group3">
 		<feature uid="f0" enable="true" description="description">
-			<flipstrategy class="org.ff4j.feature.strategy.expression.ExpressionToggleStrategy">
+			<flipstrategy class="org.ff4j.feature.togglestrategy.expression.ExpressionToggleStrategy">
 				<param name="expression"><![CDATA[A | B]]></param>
 			</flipstrategy>
 			<security>
@@ -45,13 +45,13 @@
 	</feature-group>
 
 	<feature uid="f4" enable="true" description="description">
-		<flipstrategy class="org.ff4j.feature.strategy.time.ReleaseDateToggleStrategy">
+		<flipstrategy class="org.ff4j.feature.togglestrategy.time.ReleaseDateToggleStrategy">
 			<param name="releaseDate" value="2013-07-14-14:00" />
 		</flipstrategy>
 	</feature>
 	
 	<feature uid="f6" enable="true" description="description">
-		<flipstrategy class="org.ff4j.feature.strategy.time.ReleaseDateToggleStrategy">
+		<flipstrategy class="org.ff4j.feature.togglestrategy.time.ReleaseDateToggleStrategy">
 			<param name="releaseDate">2013-07-14-14:00</param>
 		</flipstrategy>
 	</feature>

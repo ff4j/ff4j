@@ -21,7 +21,7 @@
 
 <features>
 	<feature uid="sample" enable="true" description="description" >
-		<flipstrategy class="org.ff4j.strategy.el.ExpressionFlipStrategy">
+		<flipstrategy class="org.ff4j.togglestrategy.expression.ExpressionFlipStrategy">
 			<param name="expression" />
 		</flipstrategy>
 	</feature>

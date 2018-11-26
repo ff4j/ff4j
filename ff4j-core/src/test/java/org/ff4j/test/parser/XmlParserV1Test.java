@@ -39,7 +39,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXParseException;
 
-@DisplayName("XML Parser V1 Tests easy migration to v2")
+@DisplayName("Testing XMLParser for v1 configuration files")
 public class XmlParserV1Test {
   
     @Test

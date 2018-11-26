@@ -47,31 +47,31 @@
 	<feature-group name="strategies">
 
 		<feature uid="feat3" description="exp" enable="true">
-			<flipstrategy class="org.ff4j.feature.strategy.expression.ExpressionToggleStrategy">
+			<flipstrategy class="org.ff4j.feature.togglestrategy.expression.ExpressionToggleStrategy">
 				<param name="expression" value="third | second" />
 			</flipstrategy>
 		</feature>
 
 		<feature uid="feat4" description="null" enable="true" >
-			<flipstrategy class="org.ff4j.feature.strategy.time.ReleaseDateToggleStrategy">
+			<flipstrategy class="org.ff4j.feature.togglestrategy.time.ReleaseDateToggleStrategy">
 				<param name="releaseDate" value="2013-07-14-14:00" />
 			</flipstrategy>
 		</feature>
 
 		<feature uid="feat5" description="null" enable="true">
-			<flipstrategy class="org.ff4j.feature.strategy.PonderationToggleStrategy">
+			<flipstrategy class="org.ff4j.feature.togglestrategy.PonderationToggleStrategy">
 				<param name="weight" value="0.5" />
 			</flipstrategy>
 		</feature>
 
 		<feature uid="feat6" description="z" enable="true">
-			<flipstrategy class="org.ff4j.feature.strategy.ClientFilterToggleStrategy">
+			<flipstrategy class="org.ff4j.feature.togglestrategy.ClientFilterToggleStrategy">
 				<param name="grantedClients" value="c1,c2" />
 			</flipstrategy>
 		</feature>
 
 		<feature uid="feat7" description="null" enable="true">
-			<flipstrategy class="org.ff4j.feature.strategy.ServerFilterToggleStrategy">
+			<flipstrategy class="org.ff4j.feature.togglestrategy.ServerFilterToggleStrategy">
 				<param name="grantedServers" value="s1,s2" />
 			</flipstrategy>
 		</feature>

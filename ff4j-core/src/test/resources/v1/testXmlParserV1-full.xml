@@ -68,7 +68,7 @@
 		
 		<feature-group name="GRP1">
 			<feature uid="forth" enable="true" description="description" >
-				<flipstrategy class="org.ff4j.feature.strategy.expression.ExpressionToggleStrategy">
+				<flipstrategy class="org.ff4j.feature.togglestrategy.expression.ExpressionToggleStrategy">
 					<param name="expression" value="third | second" />
 				</flipstrategy>
 				<security>
@@ -81,7 +81,7 @@
 					<role name="ADMINISTRATOR" />
 					<role name="BETA-TESTER" />
 				</security>
-				<flipstrategy class="org.ff4j.feature.strategy.expression.ExpressionToggleStrategy">
+				<flipstrategy class="org.ff4j.feature.togglestrategy.expression.ExpressionToggleStrategy">
 					<param name="expression" value="third | second" />
 				</flipstrategy>
 			</feature>

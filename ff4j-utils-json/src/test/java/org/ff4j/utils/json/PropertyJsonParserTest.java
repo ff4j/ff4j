@@ -1,12 +1,10 @@
 package org.ff4j.utils.json;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-/*
+/*-
  * #%L
  * ff4j-utils-json
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2018 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * #L%
  */
 
-
-import org.ff4j.property.Property;
-import org.ff4j.utils.Util;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-
 public class PropertyJsonParserTest {
-    
+    /*
     
     @Test
     public void testInit() throws Exception {
@@ -52,7 +43,7 @@ public class PropertyJsonParserTest {
         Assertions.assertNotNull(p.getType());
         Assertions.assertEquals("v1", p.getValue());
     }
-    
+    */
     
 
 }
