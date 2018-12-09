@@ -21,7 +21,6 @@ package org.ff4j.feature.repository;
  */
 
 import static org.ff4j.jdbc.JdbcUtils.buildStatement;
-import static org.ff4j.jdbc.JdbcUtils.closeConnection;
 import static org.ff4j.jdbc.JdbcUtils.executeUpdate;
 import static org.ff4j.jdbc.JdbcUtils.isTableExist;
 import static org.ff4j.test.AssertUtils.assertHasLength;
@@ -30,9 +29,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -42,14 +45,18 @@ import javax.sql.DataSource;
 import org.ff4j.feature.Feature;
 import org.ff4j.feature.exception.FeatureAccessException;
 import org.ff4j.feature.togglestrategy.TogglePredicate;
+import org.ff4j.jdbc.JdbcConstants.FeaturePermissionColumns;
 import org.ff4j.jdbc.JdbcConstants.FeaturePropertyColumns;
+import org.ff4j.jdbc.JdbcConstants.FeatureToggleStrategyColumns;
+import org.ff4j.jdbc.JdbcConstants.FeatureToggleStrategyPropertiesColumns;
 import org.ff4j.jdbc.JdbcConstants.FeaturesColumns;
 import org.ff4j.jdbc.JdbcQueryBuilder;
 import org.ff4j.jdbc.JdbcUtils;
 import org.ff4j.jdbc.mapper.JdbcFeatureMapper;
-import org.ff4j.jdbc.mapper.JdbcFeatureToggleStrategyMapper;
 import org.ff4j.jdbc.mapper.JdbcPropertyMapper;
 import org.ff4j.property.Property;
+import org.ff4j.security.FF4jGrantees;
+import org.ff4j.security.FF4jPermission;
 import org.ff4j.utils.Util;
 
 /**
@@ -99,17 +106,24 @@ public class FeaturesRepositoryJdbc extends FeaturesRepositorySupport {
     public void createSchema() {
         DataSource       ds = getDataSource();
         JdbcQueryBuilder qb = getQueryBuilder();
-        // Core Features
+        // Features
         if (!isTableExist(ds, qb.getTableNameFeatures())) {
             executeUpdate(ds, qb.sqlCreateTableFeatures());
         }
-        // Strategies from features
-        if (!isTableExist(ds, qb.getTableNameFeatureStrategy())) {
-            executeUpdate(ds, qb.sqlCreateTableToggleStrategy());
+        // Permission
+        if (!isTableExist(ds, qb.getTableNameFeaturePermission())) {
+            executeUpdate(ds, qb.sqlCreateTableFeaturePermission());
         }
-        // Properties from features
+        // Properties
         if (!isTableExist(ds, qb.getTableNameFeatureProperties())) {
             executeUpdate(ds, qb.sqlCreateTableFeatureProperties());
+        }
+        // Toggle Strategy
+        if (!isTableExist(ds, qb.getTableNameToggleStrategy())) {
+            executeUpdate(ds, qb.sqlCreateTableToggleStrategy());
+        }
+        if (!isTableExist(ds, qb.getTableNameToggleStrategyProperties())) {
+            executeUpdate(ds, qb.sqlCreateTableToggleStrategyProperties());
         }
         JdbcUtils.createSchemaSecurity(ds);
     }
@@ -136,7 +150,6 @@ public class FeaturesRepositoryJdbc extends FeaturesRepositorySupport {
     }
 
     /** {@inheritDoc} */
-    @Override
     public void addToGroup(String uid, String groupName) {
         assertFeatureExist(uid);
         assertHasLength(groupName);
@@ -148,11 +161,10 @@ public class FeaturesRepositoryJdbc extends FeaturesRepositorySupport {
     public void removeFromGroup(String uid, String groupName) {
         assertFeatureExist(uid);
         assertGroupExist(groupName);
-        Feature feat = read(uid);
-        if (feat.getGroup().isPresent() && !feat.getGroup().get().equals(groupName)) {
-            throw new IllegalArgumentException("'" + uid + "' is not in group '" + groupName + "'");
+        Feature f = read(uid);
+        if (f.getGroup().isPresent() && groupName.equals(f.getGroup().get())) {
+            update(getQueryBuilder().sqlEditFeatureToGroup(), "", uid);
         }
-        update(getQueryBuilder().sqlEditFeatureToGroup(), "", uid);
     }
     
     /** {@inheritDoc} */
@@ -192,14 +204,12 @@ public class FeaturesRepositoryJdbc extends FeaturesRepositorySupport {
     @Override
     public Optional < Feature > find(String uid) {
         assertHasLength(uid);
-        // Closeable sql connection
         Feature f = null;
         try (Connection sqlConn = getDataSource().getConnection()) {
             JdbcFeatureMapper  fmapper = new JdbcFeatureMapper(sqlConn, getQueryBuilder());
             JdbcPropertyMapper pmapper = new JdbcPropertyMapper(sqlConn, getQueryBuilder());
-            // Get core feature
-            try(PreparedStatement ps1 = sqlConn.prepareStatement(
-                    getQueryBuilder().sqlFindFeatureById())) {
+            // CORE FEATURE
+            try(PreparedStatement ps1 = sqlConn.prepareStatement(getQueryBuilder().sqlFindFeatureById())) {
                 ps1.setString(1, uid);
                 try (ResultSet rs1 = ps1.executeQuery()) {
                     if (!rs1.next()) {
@@ -209,32 +219,60 @@ public class FeaturesRepositoryJdbc extends FeaturesRepositorySupport {
                     }
                 }
             }
-            
-            
-            // Get strategies related to features
-            try(PreparedStatement ps2 = sqlConn.prepareStatement(getQueryBuilder().sqlStrategyOfFeature())) {
-                
-            }
-            
-            /* Get AccessControlList related to features
-            try(PreparedStatement ps2 = sqlConn.prepareStatement(getQueryBuilder().sqlSelectFeatureAccessControlList())) {
-                ps2.setString(1, uid);
-                try (ResultSet rs2 = ps2.executeQuery()) {
-                    while (rs2.next()) {
-                        f.addPermissions(rs2.getString(RolesColumns.ROLE.colname()));
-                    }   
-                }
-            }*/
-            
-            // Get Custom properties related to features
-            try(PreparedStatement ps3 = sqlConn.prepareStatement(getQueryBuilder().sqlSelectCustomPropertiesOfFeature())) {
+            // PROPERTIES
+            try(PreparedStatement ps3 = sqlConn.prepareStatement(getQueryBuilder().sqlSelectPropertiesForFeature())) {
                 ps3.setString(1, uid);
                 try (ResultSet rs3 = ps3.executeQuery()) {
                     while (rs3.next()) {
-                        f.addProperty(pmapper.mapFromRepository(rs3));
-                    }   
+                        f.addProperty(pmapper.mapFeaturePropertyRepository(rs3));
+                    }
                 }
             } 
+            
+            // TOGGLE STRATEGY
+            Map < String, Set < Property<?> > > toggleStratProperties = new HashMap<>();
+            try(PreparedStatement psToggleStratParam = sqlConn.prepareStatement(getQueryBuilder().sqlSelectToggleStrategiesPropOfFeature())) {
+                psToggleStratParam.setString(1, uid);
+                try (ResultSet rsToggleStratParam = psToggleStratParam.executeQuery()) {
+                    while (rsToggleStratParam.next()) {
+                        String featureUid = rsToggleStratParam.getString(FeatureToggleStrategyPropertiesColumns.STRAT_FEAT_UID.colname());
+                        if (!toggleStratProperties.containsKey(featureUid)) {
+                            toggleStratProperties.put(featureUid, new HashSet<>());
+                        }
+                        toggleStratProperties.get(featureUid).add(pmapper.mapFeaturePropertyRepository(rsToggleStratParam));
+                    }   
+                }
+            }
+            try(PreparedStatement psToggleStrategies = sqlConn.prepareStatement(getQueryBuilder().sqlSelectToggleStrategiesForFeature())) {
+                psToggleStrategies.setString(1, uid);
+                try (ResultSet rsToggleStrat = psToggleStrategies.executeQuery()) {
+                    while (rsToggleStrat.next()) {
+                        String toggleStrategyClassName = rsToggleStrat.getString(FeatureToggleStrategyColumns.TOGGLE_CLASS.colname());
+                        f.addToggleStrategy(TogglePredicate.of(uid, toggleStrategyClassName, toggleStratProperties.get(uid)));
+                    }
+                }
+            }
+             
+            // PERMISSION
+            try(PreparedStatement ps3 = sqlConn.prepareStatement(getQueryBuilder().sqlSelectPermissionsOfFeature())) {
+                ps3.setString(1, uid);
+                try (ResultSet rsPerm = ps3.executeQuery()) {
+                    while (rsPerm.next()) {
+                        FF4jGrantees grantees = new FF4jGrantees();
+                        String permissionName = rsPerm.getString(FeaturePermissionColumns.PERMISSION.colname());
+                        String userList       = rsPerm.getString(FeaturePermissionColumns.USERS.colname());
+                        String roleList       = rsPerm.getString(FeaturePermissionColumns.ROLES.colname());
+                        if (userList != null) {
+                            grantees.getUsers().addAll(Arrays.asList(userList.split(",")));
+                        }
+                        if (roleList != null) {
+                            grantees.getRoles().addAll(Arrays.asList(roleList.split(",")));
+                        }
+                        f.getAccessControlList().getPermissions().put(FF4jPermission.valueOf(permissionName), grantees);
+                    }
+                }
+            }
+            
         } catch (SQLException sqlEX) {
             throw new FeatureAccessException(CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE, sqlEX);
         }
@@ -248,23 +286,33 @@ public class FeaturesRepositoryJdbc extends FeaturesRepositorySupport {
         try (Connection sqlConn = getDataSource().getConnection()) {
             sqlConn.setAutoCommit(false);
             Feature fp = read(uid);
-            if (!fp.getProperties().isEmpty()) {
-                try (PreparedStatement ps1 = 
-                        sqlConn.prepareStatement(getQueryBuilder().sqlDeleteAllCustomPropertiesOfFeature())) {
-                    ps1.setString(1, fp.getUid());
-                    ps1.executeUpdate();
-                }
+            // Properties
+            try (PreparedStatement psProperties = sqlConn.prepareStatement(
+                    getQueryBuilder().sqlDeleteAllPropertiesFromFeature())) {
+                psProperties.setString(1, fp.getUid());
+                psProperties.executeUpdate();
             }
-            /* Delete Roles
-            if (fp.getPermissions().isPresent()) {
-                try (PreparedStatement ps1 = 
-                        sqlConn.prepareStatement(getQueryBuilder().sqlDeleteAllRolesOfFeature())) {
-                    ps1.setString(1, fp.getUid());
-                    ps1.executeUpdate();
-                }
-            }*/
-            // Delete Feature
-            try (PreparedStatement ps1 = sqlConn.prepareStatement(getQueryBuilder().sqlDeleteFeature())) {
+            // Permissions
+            try (PreparedStatement psPermissions = sqlConn.prepareStatement(
+                    getQueryBuilder().sqlDeleteAllFeaturePermissionForFeature())) {
+                psPermissions.setString(1, fp.getUid());
+                psPermissions.executeUpdate();
+            }
+            // Toggle StrategiesParams
+            try (PreparedStatement psToggleStrategyParams = sqlConn.prepareStatement(
+                    getQueryBuilder().sqlDeleteAllToggleStrategyPropertiesForFeature())) {
+                psToggleStrategyParams.setString(1, fp.getUid());
+                psToggleStrategyParams.executeUpdate();
+            }
+            // Toggle Strategies
+            try (PreparedStatement psToggleStrategy = sqlConn.prepareStatement(
+                    getQueryBuilder().sqlDeleteAllToggleStrategieForFeature())) {
+                psToggleStrategy.setString(1, fp.getUid());
+                psToggleStrategy.executeUpdate();
+            }
+            // Core Feature
+            try (PreparedStatement ps1 = sqlConn.prepareStatement(
+                    getQueryBuilder().sqlDeleteFeature())) {
                 ps1.setString(1, fp.getUid());
                 ps1.executeUpdate();
             }
@@ -280,9 +328,9 @@ public class FeaturesRepositoryJdbc extends FeaturesRepositorySupport {
     @Override
     public Stream < Feature > findAll() {
         LinkedHashMap<String, Feature> mapFP = new LinkedHashMap<String, Feature>();
-        // Closeable sql connection
         try (Connection sqlConn = getDataSource().getConnection()) {
-            // Get core feature
+        
+            // CORE FEATURES
             JdbcFeatureMapper  fmapper = new JdbcFeatureMapper(sqlConn, getQueryBuilder());
             try(PreparedStatement ps1 = sqlConn.prepareStatement(getQueryBuilder().sqlFindAllFeatures())) {
                 try (ResultSet rs1 = ps1.executeQuery()) {
@@ -292,89 +340,104 @@ public class FeaturesRepositoryJdbc extends FeaturesRepositorySupport {
                     }
                 }
             }
-            /* Get Roles related to features
-            try(PreparedStatement ps2 = sqlConn.prepareStatement(getQueryBuilder().sqlSelectAllRoles())) {
-                try (ResultSet rs2 = ps2.executeQuery()) {
-                    while (rs2.next()) {
-                        mapFP.get(rs2.getString(RolesColumns.FEATURE_UID.colname()))
-                            .addPermission(rs2.getString(RolesColumns.ROLE.colname()));
-                    }   
-                }
-            }*/
-            // Get Custom properties related to features
+            
+            // FEATURE PROPERTIES
             JdbcPropertyMapper pmapper = new JdbcPropertyMapper(sqlConn, getQueryBuilder());
-            try(PreparedStatement ps3 = sqlConn.prepareStatement(getQueryBuilder().sqlSelectAllCustomProperties())) {
+            try(PreparedStatement ps3 = sqlConn.prepareStatement(getQueryBuilder().sqlSelectAllFeatureProperties())) {
                 try (ResultSet rs3 = ps3.executeQuery()) {
                     while (rs3.next()) {
-                        mapFP.get(rs3.getString(FeaturePropertyColumns.UID.colname()))
-                             .addProperty(pmapper.mapFromRepository(rs3));
+                        String featureId =  rs3.getString(FeaturePropertyColumns.FEATURE.colname());
+                        mapFP.get(featureId).addProperty(pmapper.mapFeaturePropertyRepository(rs3));
                     }   
                 }
             }
+            
+            // FEATURE TOGGLE STRATEGIES
+            Map < String, Map < String, Set < Property<?> > > > toggleStratProperties = new HashMap<>();
+            try(PreparedStatement psToggleStratParam = sqlConn.prepareStatement(getQueryBuilder().sqlSelectAllToggleStrategiesProperties())) {
+                try (ResultSet rsToggleStratParam = psToggleStratParam.executeQuery()) {
+                    while (rsToggleStratParam.next()) {
+                        String featureUid      = rsToggleStratParam.getString(
+                                FeatureToggleStrategyPropertiesColumns.STRAT_FEAT_UID.colname());
+                        String toggleClassName = rsToggleStratParam.getString(
+                                FeatureToggleStrategyPropertiesColumns.STRAT_CLASS.colname());
+                        if (!toggleStratProperties.containsKey(featureUid)) {
+                            toggleStratProperties.put(featureUid, new HashMap<>());
+                        }
+                        if (!toggleStratProperties.get(featureUid).containsKey(toggleClassName)) {
+                            toggleStratProperties.get(featureUid).put(toggleClassName, new HashSet<>());
+                        }
+                        toggleStratProperties.get(featureUid).get(toggleClassName).add(pmapper.mapFeaturePropertyRepository(rsToggleStratParam));
+                    }   
+                }
+            }
+            try(PreparedStatement psToggleStrat = sqlConn.prepareStatement(getQueryBuilder().sqlSelectAllToggleStrategies())) {
+                try (ResultSet rsToggleStrat = psToggleStrat.executeQuery()) {
+                    while (rsToggleStrat.next()) {
+                        String featureUid              = rsToggleStrat.getString(FeatureToggleStrategyColumns.FEATURE_UID.colname());
+                        String toggleStrategyClassName = rsToggleStrat.getString(FeatureToggleStrategyColumns.TOGGLE_CLASS.colname());
+                        mapFP.get(featureUid).addToggleStrategy(
+                                TogglePredicate.of(featureUid, toggleStrategyClassName, 
+                                        toggleStratProperties.get(featureUid).get(toggleStrategyClassName)));
+                    }
+                }
+            }
+            
+            // FEATURE PERMISSIONS
+            try(PreparedStatement psPerm = sqlConn.prepareStatement(getQueryBuilder().sqlSelectAllFeaturePermissions())) {
+                try (ResultSet rsPerm = psPerm.executeQuery()) {
+                    while (rsPerm.next()) {
+                        FF4jGrantees grantees = new FF4jGrantees();
+                        String relatedFeature = rsPerm.getString(FeaturePermissionColumns.FEAT_UID.colname());
+                        String permissionName = rsPerm.getString(FeaturePermissionColumns.PERMISSION.colname());
+                        String userList       = rsPerm.getString(FeaturePermissionColumns.USERS.colname());
+                        String roleList       = rsPerm.getString(FeaturePermissionColumns.ROLES.colname());
+                        if (userList != null) {
+                            grantees.getUsers().addAll(Arrays.asList(userList.split(",")));
+                        }
+                        if (roleList != null) {
+                            grantees.getRoles().addAll(Arrays.asList(roleList.split(",")));
+                        }
+                        mapFP.get(relatedFeature)
+                             .getAccessControlList()
+                             .getPermissions()
+                             .put(FF4jPermission.valueOf(permissionName), grantees);
+                    }
+                }
+            }
+            
             return mapFP.values().stream();
         } catch (SQLException sqlEX) {
             throw new FeatureAccessException(CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE, sqlEX);
         }
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public Stream<String> listGroupNames() {
-        Set<String> setOFGroup = new HashSet<String>();
-        try (Connection sqlConn = getDataSource().getConnection()) {
-            try(PreparedStatement ps1 = sqlConn.prepareStatement(getQueryBuilder().sqlSelectAllGroups())) {
-                try (ResultSet rs1 = ps1.executeQuery()) {
-                    while (rs1.next()) {
-                        String groupName = rs1.getString(FeaturesColumns.GROUPNAME.colname());
-                        if (Util.hasLength(groupName)) {
-                            setOFGroup.add(groupName);
-                        }  
-                    }
-                }
-            }
-            return setOFGroup.stream();
-        } catch (SQLException sqlEX) {
-            throw new FeatureAccessException("Cannot list groups, error related to database", sqlEX);
-        }
-    }
-
+    
     /** {@inheritDoc} */
     @Override
     public void deleteAll() {
         try (Connection sqlConn = getDataSource().getConnection()) {
+            sqlConn.setAutoCommit(false);
+            // Toggle Strategy properties
+            try(PreparedStatement ps1 = sqlConn.prepareStatement(getQueryBuilder().sqlDeleteAllToggleStrategyProperties())) {
+                ps1.executeUpdate();
+            }
+            // Toggle Strategy 
+            try(PreparedStatement ps1 = sqlConn.prepareStatement(getQueryBuilder().sqlDeleteAllToggleStrategies())) {
+                ps1.executeUpdate();
+            }
+            // Properties
             try(PreparedStatement ps1 = sqlConn.prepareStatement(getQueryBuilder().sqlDeleteAllCustomProperties())) {
                 ps1.executeUpdate();
             }
+            // Permissions
+            try(PreparedStatement ps1 = sqlConn.prepareStatement(getQueryBuilder().sqlDeleteAllFeaturePermission())) {
+                ps1.executeUpdate();
+            }
+            // Features
             try(PreparedStatement ps3 = sqlConn.prepareStatement(getQueryBuilder().sqlDeleteAllFeatures())) {
                 ps3.executeUpdate();
             }
-        } catch (SQLException sqlEX) {
-            throw new FeatureAccessException(CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE, sqlEX);
-        }
-    }
-
-    /**
-     * Ease creation of properties in Database.
-     *
-     * @param uid
-     *      target unique identifier
-     * @param props
-     *      target properties.
-     */
-    public void createCustomProperties(String uid, Collection <Property<?> > props) {
-        assertHasLength(uid);
-        if (props == null) return;
-        try (Connection sqlConn = getDataSource().getConnection()) {
-            // Begin TX
-            sqlConn.setAutoCommit(false);
-            // Queries
-            for (Property<?> pp : props) {
-                JdbcPropertyMapper mapper = new JdbcPropertyMapper(sqlConn, getQueryBuilder());
-                try(PreparedStatement ps = mapper.customPropertytoStore(pp, uid)) {
-                    ps.executeUpdate();
-                }
-            }
-            // End TX
+            // Commit
             sqlConn.commit();
             sqlConn.setAutoCommit(true);
         } catch (SQLException sqlEX) {
@@ -403,43 +466,17 @@ public class FeaturesRepositoryJdbc extends FeaturesRepositorySupport {
     @Override
     public Stream <Feature> readGroup(String groupName) {
     	assertGroupExist(groupName);
-    	LinkedHashMap<String, Feature> mapFP = new LinkedHashMap<String, Feature>();
+    	List<Feature> listOfFeatures = new ArrayList<>();
     	try (Connection sqlConn = dataSource.getConnection()) {
-            // Feature Core
-    	    JdbcFeatureMapper mapper = new JdbcFeatureMapper(sqlConn, getQueryBuilder());
     	    try(PreparedStatement ps = sqlConn.prepareStatement(getQueryBuilder().sqlSelectFeaturesOfGroup())) {
                 ps.setString(1, groupName);
                 try(ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
-                        Feature f = mapper.mapFromRepository(rs);
-                        mapFP.put(f.getUid(), f);
+                        listOfFeatures.add(read(rs.getString(FeaturesColumns.UID.colname())));
                     }
                 }
-            }
-    	    /* Get Roles related to features
-            try(PreparedStatement ps2 = sqlConn.prepareStatement(getQueryBuilder().sqlSelectAllRoles())) {
-                try (ResultSet rs2 = ps2.executeQuery()) {
-                    while (rs2.next()) {
-                        String featureId = rs2.getString(RolesColumns.FEATURE_UID.colname());
-                        if (mapFP.containsKey(featureId)) {
-                            mapFP.get(featureId).addPermission(rs2.getString(RolesColumns.ROLE.colname()));
-                        }
-                    }   
-                }
-            }*/
-            // Get Custom properties related to features
-            JdbcPropertyMapper pmapper = new JdbcPropertyMapper(sqlConn, getQueryBuilder());
-            try(PreparedStatement ps3 = sqlConn.prepareStatement(getQueryBuilder().sqlSelectAllCustomProperties())) {
-                try (ResultSet rs3 = ps3.executeQuery()) {
-                    while (rs3.next()) {
-                        String featureId = rs3.getString(FeaturePropertyColumns.UID.colname());
-                        if (mapFP.containsKey(featureId)) {
-                            mapFP.get(featureId).addProperty(pmapper.mapFromRepository(rs3));
-                        }
-                    }   
-                }
-            }
-            return mapFP.values().stream();
+            } 
+            return listOfFeatures.stream();
     	} catch (SQLException sqlEX) {
             throw new FeatureAccessException(CANNOT_CHECK_FEATURE_EXISTENCE_ERROR_RELATED_TO_DATABASE, sqlEX);
         }
@@ -450,58 +487,76 @@ public class FeaturesRepositoryJdbc extends FeaturesRepositorySupport {
     public void saveFeature(Feature feature) {
         assertFeatureNotNull(feature);
         assertHasLength(feature.getUid());
-        Connection sqlConn = null;
-        try {
-            
-            if (exists(feature.getUid())) {
-                deleteFeature(feature.getUid());
-            }
-            
-            // Create Connection
-            sqlConn = getDataSource().getConnection();
+        if (exists(feature.getUid())) {
+            deleteFeature(feature.getUid());
+        }
+        try (Connection sqlConn = dataSource.getConnection()) {
             sqlConn.setAutoCommit(false);
-            
-            // Create Core Feature
             JdbcFeatureMapper mapper = new JdbcFeatureMapper(sqlConn, getQueryBuilder());
+            // Create FeatureCore
             try (PreparedStatement ps1 = mapper.mapToRepository(feature)) {
                 ps1.executeUpdate();
             }
-            
-            // Create Toggle Strategies
-            if (null != feature.getToggleStrategies()) {
-                JdbcFeatureToggleStrategyMapper tmapper = new JdbcFeatureToggleStrategyMapper(sqlConn, getQueryBuilder(), feature.getUid());
-                for(TogglePredicate ts : feature.getToggleStrategies()) {
-                    try(PreparedStatement ps = tmapper.mapToRepository(ts)) {
-                        ps.executeUpdate();
-                    }
-                }
-            }
-            
-            // Create Custom Properties
+            // Create FeatureProperties
             if (!feature.getProperties().isEmpty()) {
-                JdbcPropertyMapper pmapper = new JdbcPropertyMapper(sqlConn, getQueryBuilder());
                 for(Property<?> property : feature.getProperties().values()) {
-                    try(PreparedStatement ps = pmapper.customPropertytoStore(property, feature.getUid())) {
+                    try(PreparedStatement ps = mapper.insertFeaturePropertyStatement(property, feature.getUid())) {
                         ps.executeUpdate();
                     }
                 }
             }
-           
-            // Create Permissions
-            if (feature.getAccessControlList() != null && !feature.getAccessControlList().isEmpty()) {
-                
-            }            
-            
+            // Create FeaturePermission
+            if (!feature.getAccessControlList().getPermissions().isEmpty()) {
+                for(Map.Entry<FF4jPermission,FF4jGrantees> entry : feature.getAccessControlList().getPermissions().entrySet()) {
+                    try(PreparedStatement ps = mapper.insertFeaturePermissionStatement(
+                            feature.getUid(), entry.getKey(), entry.getValue())) {
+                        ps.executeUpdate();
+                    }
+                }
+            }
+            // Create ToggleStrategy
+            if (!feature.getToggleStrategies().isEmpty()) {
+                for(TogglePredicate tp : feature.getToggleStrategies()) {
+                    try(PreparedStatement ps = mapper.insertToggleStrategyStatement(feature.getUid(), tp)) {
+                        ps.executeUpdate();
+                    }
+                    // Create ToggleStrategyProperties
+                    for(Property<?> pf : tp.getPropertiesAsMap().values()) {
+                        try(PreparedStatement ps = mapper.insertToggleStrategyPropertyStatement(feature.getUid(), tp, pf)) {
+                            ps.executeUpdate();
+                        }
+                    }
+                }
+            }
             // Commit
             sqlConn.commit();
             sqlConn.setAutoCommit(true);
-            
         } catch (SQLException sqlEX) {
             throw new FeatureAccessException(CANNOT_UPDATE_FEATURES_DATABASE_SQL_ERROR, sqlEX);
-        } finally {
-            closeConnection(sqlConn);
         }
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public Stream<String> listGroupNames() {
+        Set<String> setOFGroup = new HashSet<String>();
+        try (Connection sqlConn = getDataSource().getConnection()) {
+            try(PreparedStatement ps1 = sqlConn.prepareStatement(getQueryBuilder().sqlSelectAllGroups())) {
+                try (ResultSet rs1 = ps1.executeQuery()) {
+                    while (rs1.next()) {
+                        String groupName = rs1.getString(FeaturesColumns.GROUPNAME.colname());
+                        if (Util.hasLength(groupName)) {
+                            setOFGroup.add(groupName);
+                        }  
+                    }
+                }
+            }
+            return setOFGroup.stream();
+        } catch (SQLException sqlEX) {
+            throw new FeatureAccessException("Cannot list groups, error related to database", sqlEX);
+        }
+    }
+
     
     /**
      * Utility method to perform UPDATE and DELETE operations.
@@ -511,7 +566,7 @@ public class FeaturesRepositoryJdbc extends FeaturesRepositorySupport {
      * @param params
      *            sql query params
      */
-    public void update(String query, Object... params) {
+    private void update(String query, Object... params) {
         try (Connection sqlConn = dataSource.getConnection()) {
             try (PreparedStatement ps = buildStatement(sqlConn, query, params)) {
                 ps.executeUpdate();

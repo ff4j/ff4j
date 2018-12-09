@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 
 import org.ff4j.feature.repository.FeaturesRepository;
 import org.ff4j.property.Property;
-import org.ff4j.property.repository.RepositoryProperties;
+import org.ff4j.property.repository.PropertiesRepository;
 
 /**
  * Access to {@link FeaturesRepository} could generate some overhead and decrease performances. This is the reason why cache is provided
@@ -36,10 +36,10 @@ import org.ff4j.property.repository.RepositoryProperties;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class CacheProxyProperties extends CacheProxy< String, Property<?>> implements RepositoryProperties {
+public class CacheProxyProperties extends CacheProxy< String, Property<?>> implements PropertiesRepository {
 
     /** Target property store to be proxified to cache properties. */
-    private RepositoryProperties targetPropertyStore;
+    private PropertiesRepository targetPropertyStore;
     
     /**
      * Initialization through constructor.
@@ -49,7 +49,7 @@ public class CacheProxyProperties extends CacheProxy< String, Property<?>> imple
      * @param cache
      *            cache manager to limit overhead of store
      */
-    public CacheProxyProperties(RepositoryProperties fStore, CacheManager< String, Property<?> > cache) {
+    public CacheProxyProperties(PropertiesRepository fStore, CacheManager< String, Property<?> > cache) {
         this.cacheManager        = cache;
         this.targetPropertyStore  = fStore;
         this.scheduler = new CachePollingSchedulerProperties(fStore, cache);
@@ -87,7 +87,27 @@ public class CacheProxyProperties extends CacheProxy< String, Property<?>> imple
         // Add new value in the cache
         getCacheManager().put(fp);
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void saveProperty(Property<?> fp) {
+        // Update value in target store
+        getTargetPropertyStore().save(fp);
+        // Remove from cache old value
+        getCacheManager().evict(fp.getUid());
+        // Add new value in the cache
+        getCacheManager().put(fp);
+    }
 
+    /** {@inheritDoc} */
+    @Override
+    public void deleteProperty(String uid) {
+        // Update value in target store
+        getTargetPropertyStore().delete(uid);
+        // Remove from cache old value
+        getCacheManager().evict(uid);
+    }
+    
     /** {@inheritDoc} */
     @Override
     public Stream<String> listPropertyNames() {
@@ -105,12 +125,10 @@ public class CacheProxyProperties extends CacheProxy< String, Property<?>> imple
      * 
      * @return current value of 'target'
      */
-    public RepositoryProperties getTargetPropertyStore() {
+    public PropertiesRepository getTargetPropertyStore() {
         if (targetPropertyStore == null) {
             throw new IllegalArgumentException("ff4j-core: Target for cache proxy has not been provided");
         }
         return targetPropertyStore;
-    }
-
-     
+    }     
 }

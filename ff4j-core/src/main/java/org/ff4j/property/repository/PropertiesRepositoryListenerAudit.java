@@ -1,4 +1,4 @@
-package org.ff4j.jdbc.mapper;
+package org.ff4j.property.repository;
 
 /*-
  * #%L
@@ -20,6 +20,20 @@ package org.ff4j.jdbc.mapper;
  * #L%
  */
 
-public class JdbcFeaturePermissionMapper {
+import org.ff4j.event.Event.Scope;
+import org.ff4j.event.repository.AbstractAuditTrailListener;
+import org.ff4j.event.repository.AuditTrail;
+import org.ff4j.property.Property;
 
+/**
+ * Proposition of superclass to allow audit trail trackings.
+ * 
+ * @author Cedrick LUNVEN  (@clunven)
+ */
+public class PropertiesRepositoryListenerAudit extends AbstractAuditTrailListener<Property<?>> implements PropertiesRepositoryListener {
+
+    public PropertiesRepositoryListenerAudit(AuditTrail auditTrail) {
+        super(auditTrail, Scope.PROPERTY, Scope.PROPERTYSTORE);
+    }
+    
 }

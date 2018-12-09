@@ -21,7 +21,6 @@ package org.ff4j.property;
  */
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
@@ -32,9 +31,6 @@ public class PropertyCalendar extends Property< Calendar > {
 
     /** serial. */
     private static final long serialVersionUID = -134543098672660987L;
-    
-    /** expected expression. */
-    public  static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     
     /**
      * Constructor by property name.

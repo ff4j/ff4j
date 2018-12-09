@@ -93,7 +93,7 @@ public class Feature extends FF4jEntity < Feature > {
         // COPY Strategies (not just reference => clone)
         if (!f.getToggleStrategies().isEmpty()) {
             for (TogglePredicate strat : f.getToggleStrategies()) {
-                addToggleStrategy(TogglePredicate.of(uid, strat.getClass().getName(), strat.getParams()));
+                addToggleStrategy(TogglePredicate.of(uid, strat.getClass().getName(), strat.getProperties()));
             }
         }
         

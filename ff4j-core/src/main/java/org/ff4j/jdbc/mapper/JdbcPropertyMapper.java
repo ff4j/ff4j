@@ -56,19 +56,6 @@ public class JdbcPropertyMapper extends AbstractJdbcMapper  implements PropertyM
         super(sqlConn, qbd);
     }
     
-    /** {@inheritDoc} */
-    public PreparedStatement customPropertytoStore(Property<?> property, String featureId) {
-        PreparedStatement ps;
-        try {
-            ps = sqlConn.prepareStatement(queryBuilder.sqlInsertCustomProperties());
-            populatePrepareStatement(property, ps);
-            ps.setString(12, featureId);
-        } catch (SQLException sqlEx) {
-            throw new FeatureAccessException("Cannot create statement to create feature", sqlEx);
-        }
-        return ps;
-    }
-    
     /**
      * Propvision user to generate query.
      * @param property
@@ -82,11 +69,6 @@ public class JdbcPropertyMapper extends AbstractJdbcMapper  implements PropertyM
         ps.setString(7, property.getType());
         // Value
         ps.setString(8, property.asString());
-        // Evaluation Strategy + InitParams
-        String strategy  = null;
-        String initParam = null;
-        ps.setString(9, strategy);
-        ps.setString(10, initParam);
         if (property.getFixedValues().isPresent()) {
             String fixedValues = property.getFixedValues().get().toString();
             ps.setString(11, fixedValues.substring(1, fixedValues.length() - 1));
@@ -106,25 +88,38 @@ public class JdbcPropertyMapper extends AbstractJdbcMapper  implements PropertyM
         }
         return ps;
     }
+    
+    /** {@inheritDoc} */
+    public Property<?> mapFeaturePropertyRepository(ResultSet rs) {
+        try {
+            String propertyUid   = rs.getString(PropertyColumns.UID.colname());
+            String propertyClass = Property.mapPropertyType(rs.getString(PropertyColumns.CLASSNAME.colname()));
+            String propertyValue = rs.getString(PropertyColumns.VALUE.colname());
+            String fixedValues   = rs.getString(PropertyColumns.FIXEDVALUES.colname());
+            Property<?> p = PropertyFactory.createProperty(propertyUid, propertyClass, propertyValue);
+            populateFixedValues(fixedValues, p);
+            return p;
+        } catch (SQLException sqlEx) {
+            throw new PropertyAccessException("Cannot map Resultset into property", sqlEx);
+        }
+    }
+    
+    private void populateFixedValues(String fixedValuesString, Property<?> currentProperty) {
+        if (Util.hasLength(fixedValuesString)) {
+            Arrays.stream(fixedValuesString.split(","))
+                  .forEach(v-> currentProperty.add2FixedValueFromString(v.trim()) );
+        }
+    }
 
     /** {@inheritDoc} */
     @Override
     public Property<?> mapFromRepository(ResultSet rs) {
         try {
-            Property<?> p = PropertyFactory.createProperty(
-                    rs.getString(PropertyColumns.UID.colname()),  
-                    rs.getString(PropertyColumns.CLASSNAME.colname()), 
-                    rs.getString(PropertyColumns.VALUE.colname()));
-            
-            // Common properties for entities (description, owner...)
-            mapEntity(rs, p);
-            
+            Property<?> p = mapFeaturePropertyRepository(rs);
             // Special elements
             p.setReadOnly(rs.getInt(PropertyColumns.READONLY.colname()) == 1);
-            String fixedValues  = rs.getString(PropertyColumns.FIXEDVALUES.colname());
-            if (Util.hasLength(fixedValues)) {
-                Arrays.stream(fixedValues.split(",")).forEach(v-> p.add2FixedValueFromString(v.trim()) );
-            }
+            // Common properties for entities (description, owner...)
+            mapEntity(rs, p);
             return p;
         } catch (SQLException sqlEx) {
             throw new PropertyAccessException("Cannot map Resultset into property", sqlEx);

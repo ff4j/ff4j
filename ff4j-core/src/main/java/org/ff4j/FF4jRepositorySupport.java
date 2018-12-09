@@ -45,6 +45,9 @@ public abstract class FF4jRepositorySupport < E extends FF4jEntity<?>, LISTENER 
 
     /** Denerated Serial Number . */
     private static final long serialVersionUID = -2865266843791651125L;
+    
+    /** Json Attribute. */
+    public static final String JSON_ATTRIBUTE_CLASSNAME = "className";
    
     /**
      * Controls before updating and update modified date.

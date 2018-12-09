@@ -107,8 +107,8 @@
 	 <property name="g"  type="org.ff4j.property.PropertyLogLevel" value="DEBUG" />
 	 <property name="h"  type="float" value="3.4" />
 	 <property name="i"  type="byte" value="a" />
-	 <property name="j"  type="biginteger" value="100000000" />
-	 <property name="k"  type="bigdecimal" value="200000000.1234567" />
+	 <property name="j"  type="bigInteger" value="100000000" />
+	 <property name="k"  type="bigDecimal" value="200000000.1234567" />
 	 <property name="l"  type="long" value="1234567890" />
 	</properties>
 	

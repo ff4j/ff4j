@@ -3,10 +3,17 @@ package org.ff4j.feature.togglestrategy;
 import static org.ff4j.utils.JsonUtils.mapAsJson;
 import static org.ff4j.utils.JsonUtils.valueAsJson;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.ff4j.feature.exception.InvalidStrategyTypeException;
+import org.ff4j.property.Property;
 
 /*
  * #%L
@@ -44,23 +51,44 @@ public interface TogglePredicate extends Predicate< ToggleContext > {
      *      if the feature would be toggled or not
      */
     boolean test(ToggleContext ctx);
+   
+    /**
+     * Initialize Toggle predicate with some parameters.
+     *
+     * @param uid
+     *          feature identifier
+     * @param params
+     *          set of metadata
+     */
+    void init(String uid, Set<Property<?>> params);
     
     /**
-     * Allow to parameterized Flipping Strategy
-     * 
-     * @param featureName
-     *            current featureName
-     * @param initValue
-     *            initial Value
+     * Syntaxic Sugar.
      */
-    void init(String uid, Map<String, String> initParam);
-
+    default void init(String uid, Property<?>... params) {
+        if (params != null) {
+            init(uid, new HashSet<Property<?>>(Arrays.asList(params)));
+        }
+    }
+    
     /**
      * Initial Parameters required to insert this new flipping.
      * 
      * @return initial parameters for this strategy
      */
-    Map<String, String> getParams();
+    Stream<Property<?>> getProperties();
+    
+    /**
+     * Syntaxic Sugar : Return properties as a MAP.
+     * 
+     * @return
+     *      map with properties
+     */
+    default Map < String, Property<?>> getPropertiesAsMap() {
+        Stream<Property<?>> props = getProperties();
+        if (props == null) return null;
+        return props.collect(Collectors.toMap(Property::getUid, Function.identity()));
+    }
     
     /**
      * To be used on the Json generation.
@@ -80,8 +108,8 @@ public interface TogglePredicate extends Predicate< ToggleContext > {
      */
      default String toJson() {
         StringBuilder json = new StringBuilder("{");
-        json.append(valueAsJson("params") + ":");
-        json.append(mapAsJson(getParams()));
+        json.append(valueAsJson("properties") + ":");
+        json.append(mapAsJson(getPropertiesAsMap()));
         json.append("," + valueAsJson("className")  + ":");
         json.append(valueAsJson(getClass().getCanonicalName()));
         json.append("}");
@@ -96,39 +124,18 @@ public interface TogglePredicate extends Predicate< ToggleContext > {
      * @return
      *      the flipping strategy
      */
-    public static TogglePredicate of(String uid, String className,  Map<String, String> initparams) {
+    public static TogglePredicate of(String uid, String className, Set <Property<?>> params) {
         try {
             TogglePredicate strategy = (TogglePredicate) Class.forName(className).newInstance();
-            strategy.init(uid, initparams);
+            strategy.init(uid, params);
             return strategy;
         } catch (Exception ie) {
             throw new InvalidStrategyTypeException(className, ie);
         }
     }
     
-    /**
-     * Utility Method to convert Parameter Map into String.
-     * 
-     * @param params
-     *            parameter MAP
-     * @return parameters as String
-     *
-    public static ToggleStrategy fromMap(Map < String, String > params) {
-        return JsonUtils.mapAsJson(params);
-        StringBuilder strBulBuilder = new StringBuilder();
-        boolean first = true;
-        if (params != null && !params.isEmpty()) {
-            for (Entry<String, String> entry : params.entrySet()) {
-                if (!first) {
-                    strBulBuilder.append(SEPARATOR);
-                }
-                strBulBuilder.append(entry.getKey() + "=" + entry.getValue());
-                first = false;
-            }
-        }
-        return strBulBuilder.toString();
-    }*/
-
-   
+    public static TogglePredicate of(String uid, String className,  Stream<Property<?>> params) {
+        return of(uid, className, (params != null) ? params.collect(Collectors.toSet()) : new HashSet<>());
+    }
     
 }

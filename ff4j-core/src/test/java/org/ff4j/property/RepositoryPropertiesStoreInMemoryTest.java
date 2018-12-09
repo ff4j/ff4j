@@ -1,4 +1,4 @@
-package org.ff4j.inmemory;
+package org.ff4j.property;
 
 /*-
  * #%L
@@ -21,7 +21,8 @@ package org.ff4j.inmemory;
  */
 
 import org.ff4j.feature.repository.FeaturesRepository;
-import org.ff4j.feature.repository.FeaturesRepositoryInMemory;
+import org.ff4j.property.repository.PropertiesRepository;
+import org.ff4j.property.repository.PropertiesRepositoryInMemory;
 import org.junit.jupiter.api.DisplayName;
 
 /**
@@ -29,13 +30,13 @@ import org.junit.jupiter.api.DisplayName;
  *
  * @author Cedrick LUNVEN (@clunven)
  */
-@DisplayName("Testing FEATURES & INMEMORY Repository")
-public class RepositoryFeatureStoreInMemoryTest extends RepositoryFeaturesTestSupport {
+@DisplayName("Testing INMEMORY | PROPERTIES Repository")
+public class RepositoryPropertiesStoreInMemoryTest extends RepositoryPropertiesTestSupport {
 
     /** {@inheritDoc} */
     @Override
-    public FeaturesRepository initStore() {
-        return new FeaturesRepositoryInMemory("ff4j-testDataset.xml");
+    public PropertiesRepository initStore() {
+        return new PropertiesRepositoryInMemory("ff4j-testDataset.xml");
     }
     
 }

@@ -21,7 +21,6 @@ package org.ff4j.property;
  */
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -33,12 +32,6 @@ public class PropertyDate extends Property< Date > {
 
     /** serial. */
     private static final long serialVersionUID = -134543098672660987L;
-    
-    /** Date format expected when using string expression. */
-    public static final String EXPECTED_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    
-    /** expected expression. */
-    protected static final SimpleDateFormat SDF = new SimpleDateFormat(EXPECTED_FORMAT);
     
     /**
      * Constructor by property name.

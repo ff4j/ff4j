@@ -1,5 +1,7 @@
 package org.ff4j.feature.togglestrategy;
 
+import java.io.Serializable;
+
 /*
  * #%L
  * ff4j-core
@@ -22,45 +24,92 @@ package org.ff4j.feature.togglestrategy;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Stream;
+
+import org.ff4j.property.Property;
+import org.ff4j.test.AssertUtils;
 
 /**
  * Super class for {@link TogglePredicate} implementation with utilities.
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public abstract class AbstractToggleStrategy implements TogglePredicate {
+public abstract class AbstractToggleStrategy implements TogglePredicate,Serializable {
 
+    /** Serial. */
+    private static final long serialVersionUID = -2440547428499432159L;
+    
     /** Parameters. */
-    protected Map<String, String> params = new HashMap<String, String>();
+    protected Map<String, Property<?>> properties = new HashMap<String, Property<?>>();
+    
+    /** Hold featureId. */
+    protected String featureUid;
+    
+    /** default constructor for instrospection. */
+    public AbstractToggleStrategy() {}
+    
+    /**
+     * Post parameter parsing.
+     */
+    public abstract void initialize();
     
     /** {@inheritDoc} */
     @Override
-    public void init(String featureName, Map<String, String> initParam) {
-        this.params = initParam;
+    public void init(String uid, Set<Property<?>> setOfProperties) {
+        AssertUtils.assertHasLength(uid);
+        this.featureUid = uid;
+        if (setOfProperties != null) { 
+            setOfProperties.forEach(p -> properties.put(p.getUid(), p));
+        }
+        initialize();
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public Stream<Property<?>> getProperties() {
+        return this.properties.values().stream();
     }
     
     /**
-     * Check presence of expected parameter.
-     * 
-     * @param paramName
-     *            target parameter name
+     * Get property based on its key.
+     *
+     * @param myKey
+     * @return
      */
-    public void assertParam(String paramName) {
-        if (!params.containsKey(paramName)) {
-            String msg = String.format("Parameter '%s' is required for this FlippingStrategy", paramName);
-            throw new IllegalArgumentException(msg);
-        }
+    public Optional<Property<?>> getProperty(String myKey) {
+        return Optional.ofNullable(properties.get(myKey));
     }
     
-    /** {@inheritDoc} */
-    @Override
-    public Map<String, String> getParams() {
-        return this.params;
+    /**
+     * Get property based on its key.
+     *
+     * @param myKey
+     *          list key
+     * @return
+     */
+    public Property<?> getRequiredProperty(String myKey) {
+        if (!properties.containsKey(myKey)) {
+            throw new IllegalArgumentException(String.format("Property '%s' is "
+                    + "required for TogglePredicate in feature '%s'", myKey, featureUid));
+        }
+        return properties.get(myKey);
     }
-
+    
     /** {@inheritDoc} */
     @Override
     public String toString() {
         return toJson();
+    }
+    
+    /**
+     * Getter accessor for attribute 'featureUid'.
+     *
+     * @return
+     *       current value of 'featureUid'
+     */
+    public String getFeatureUid() {
+        return featureUid;
     }
 }

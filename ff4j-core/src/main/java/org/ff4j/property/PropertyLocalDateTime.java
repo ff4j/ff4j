@@ -21,7 +21,6 @@ package org.ff4j.property;
  */
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 /**
  * Creatoin of property.
@@ -33,9 +32,6 @@ public class PropertyLocalDateTime extends Property< LocalDateTime > {
     /** serialVersionUID. */
     private static final long serialVersionUID = -620523134883483837L;
     
-    /** formatter for creation date and last modified. */
-    protected static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-
     /**
      * Constructor by property name.
      *

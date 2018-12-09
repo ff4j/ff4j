@@ -13,6 +13,9 @@ package org.ff4j.property;
 import static org.ff4j.utils.Util.setOf;
 
 import java.lang.reflect.ParameterizedType;
+import java.text.SimpleDateFormat;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -33,6 +36,18 @@ public abstract class Property<T> extends FF4jEntity<Property<T>> implements Sup
 
     /** serialVersionUID. */
     private static final long serialVersionUID = -2484426537747694712L;
+    
+    /** Date time format. */
+    public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    
+    /** expected expression. */
+    public  static final SimpleDateFormat SDF = new SimpleDateFormat(DATE_FORMAT);
+    
+    /** formatter for creation date and last modified. */
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(DATE_FORMAT);
+    
+    /** zone offset. */
+    public static ZoneOffset ZONE = ZoneOffset.UTC;
     
     /** Mapping of some property. */
     protected static Map < String, String > PROPERTY_TYPES;
@@ -120,23 +135,39 @@ public abstract class Property<T> extends FF4jEntity<Property<T>> implements Sup
      */
     static {
         PROPERTY_TYPES = new HashMap<String, String >();
-        
-        PROPERTY_TYPES.put("byte",       PropertyByte.class.getName());
+        PROPERTY_TYPES.put("bigDecimal", PropertyBigDecimal.class.getName());
+        PROPERTY_TYPES.put("bigInteger", PropertyBigInteger.class.getName());
         PROPERTY_TYPES.put("boolean",    PropertyBoolean.class.getName());
-        PROPERTY_TYPES.put("bigdecimal", PropertyBigDecimal.class.getName());
-        PROPERTY_TYPES.put("biginteger", PropertyBigInteger.class.getName());
+        PROPERTY_TYPES.put("byte",       PropertyByte.class.getName());
         PROPERTY_TYPES.put("calendar",   PropertyCalendar.class.getName());
+        PROPERTY_TYPES.put("class",      PropertyClass.class.getName());
         PROPERTY_TYPES.put("date",       PropertyDate.class.getName());
         PROPERTY_TYPES.put("double",     PropertyDouble.class.getName());
         PROPERTY_TYPES.put("float",      PropertyFloat.class.getName());
+        PROPERTY_TYPES.put("instant",    PropertyInstant.class.getName());
         PROPERTY_TYPES.put("int",        PropertyInt.class.getName());
-        PROPERTY_TYPES.put("loglevel",   PropertyLogLevel.class.getName());
-        PROPERTY_TYPES.put("short",      PropertyShort.class.getName());
+        PROPERTY_TYPES.put("localDateTime",  PropertyLocalDateTime.class.getName());
+        PROPERTY_TYPES.put("logLevel",   PropertyLogLevel.class.getName());
         PROPERTY_TYPES.put("long",       PropertyLong.class.getName());
+        PROPERTY_TYPES.put("short",      PropertyShort.class.getName());
+        PROPERTY_TYPES.put("string",     PropertyString.class.getName());
         
-        PROPERTY_TYPES.put("string",         PropertyString.class.getName());
-        PROPERTY_TYPES.put("listString",  PropertyListString.class.getName());
-        PROPERTY_TYPES.put("listint",  PropertyListInt.class.getName());
+        PROPERTY_TYPES.put("listBigDecimal", PropertyListBigDecimal.class.getName());
+        PROPERTY_TYPES.put("listBigInteger", PropertyListBigInteger.class.getName());
+        PROPERTY_TYPES.put("listBoolean",    PropertyListBoolean.class.getName());
+        PROPERTY_TYPES.put("listByte",       PropertyListByte.class.getName());
+        PROPERTY_TYPES.put("listCalendar",   PropertyListCalendar.class.getName());
+        PROPERTY_TYPES.put("listClass",      PropertyListClass.class.getName());
+        PROPERTY_TYPES.put("listDate",       PropertyListDate.class.getName());
+        PROPERTY_TYPES.put("listDouble",     PropertyListDouble.class.getName());
+        PROPERTY_TYPES.put("listFloat",      PropertyListFloat.class.getName());
+        PROPERTY_TYPES.put("listInstant",    PropertyListInstant.class.getName());
+        PROPERTY_TYPES.put("listInt",        PropertyListInt.class.getName());
+        PROPERTY_TYPES.put("listLocalDateTime",  PropertyListLocalDateTime.class.getName());
+        PROPERTY_TYPES.put("listLogLevel",   PropertyListLogLevel.class.getName());
+        PROPERTY_TYPES.put("listLong",       PropertyListLong.class.getName());
+        PROPERTY_TYPES.put("listShort",      PropertyListShort.class.getName());
+        PROPERTY_TYPES.put("listString",     PropertyListString.class.getName());
     }
     
     /**
@@ -147,8 +178,8 @@ public abstract class Property<T> extends FF4jEntity<Property<T>> implements Sup
      */
     public static String mapPropertyType(String pType) {
         if (pType == null) return null;
-        if (PROPERTY_TYPES.containsKey(pType.toLowerCase())) {
-           return PROPERTY_TYPES.get(pType.toLowerCase());
+        if (PROPERTY_TYPES.containsKey(pType)) {
+           return PROPERTY_TYPES.get(pType);
         }
         return pType;
     }

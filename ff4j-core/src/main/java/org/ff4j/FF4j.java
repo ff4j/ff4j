@@ -49,8 +49,8 @@ import org.ff4j.parser.ConfigurationFileParser;
 import org.ff4j.parser.FF4jConfigFile;
 import org.ff4j.parser.xml.XmlParserV2;
 import org.ff4j.property.Property;
-import org.ff4j.property.repository.RepositoryProperties;
-import org.ff4j.property.repository.RepositoryPropertiesInMemory;
+import org.ff4j.property.repository.PropertiesRepository;
+import org.ff4j.property.repository.PropertiesRepositoryInMemory;
 import org.ff4j.user.repository.RolesAndUsersRepository;
 import org.ff4j.user.repository.RolesAndUsersRepositoryInMemory;
 
@@ -59,7 +59,7 @@ import org.ff4j.user.repository.RolesAndUsersRepositoryInMemory;
  * 
  * Instanciate this bean in you application to perform : 
  * - feature toggling through {@link FeaturesRepository}
- * - Configuration and properties management with {@link RepositoryProperties}
+ * - Configuration and properties management with {@link PropertiesRepository}
  * - Application monitoring with {@link RepositoryEventFeatureUsage}
  * 
  * @author Cedrick Lunven (@clunven)
@@ -91,8 +91,8 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
     /** Storage to persist feature within {@link FeaturesRepository}. */
     private FeaturesRepository repositoryFeatures = new FeaturesRepositoryInMemory();
    
-    /** Storage to persist properties within {@link RepositoryProperties}. */
-    private RepositoryProperties repositoryProperties = new RepositoryPropertiesInMemory();
+    /** Storage to persist properties within {@link PropertiesRepository}. */
+    private PropertiesRepository repositoryProperties = new PropertiesRepositoryInMemory();
     
     /** ReadOnly but can be extended to have full control on user (and dedicated screen in console). */
     private RolesAndUsersRepository repositoryUsersRoles = new RolesAndUsersRepositoryInMemory();
@@ -159,7 +159,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      */
     protected FF4j(FF4jConfigFile config) {
         this.repositoryFeatures           = new FeaturesRepositoryInMemory(config);
-        this.repositoryProperties         = new RepositoryPropertiesInMemory(config);
+        this.repositoryProperties         = new PropertiesRepositoryInMemory(config);
         this.repositoryUsersRoles         = new RolesAndUsersRepositoryInMemory(config);
         this.auditTrail                   = new RepositoryAuditTrailInMemory();
         this.repositoryEventFeaturesUsage = new RepositoryFeatureUsageInMemory();
@@ -501,8 +501,8 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      *
      * @return
      */
-    public RepositoryProperties getTargetRepositoryProperties() {
-        RepositoryProperties rp = getRepositoryProperties();
+    public PropertiesRepository getTargetRepositoryProperties() {
+        PropertiesRepository rp = getRepositoryProperties();
         return (rp instanceof CacheProxyProperties) ?
                 ((CacheProxyProperties) rp).getTargetPropertyStore() : rp;
     }
@@ -526,7 +526,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @return
      */
     public Optional < CacheProxyProperties> getRepositoryPropertiesCacheProxy() {
-        RepositoryProperties ps = getRepositoryProperties();
+        PropertiesRepository ps = getRepositoryProperties();
         CacheProxyProperties cacheProxy = null;
         if (ps instanceof CacheProxyProperties) {
             cacheProxy = (CacheProxyProperties) ps;
@@ -578,7 +578,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @return
      *       current value of 'repositoryProperties'
      */
-    public RepositoryProperties getRepositoryProperties() {
+    public PropertiesRepository getRepositoryProperties() {
         return repositoryProperties;
     }
 
@@ -587,7 +587,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @param repositoryProperties
      *      new value for 'repositoryProperties '
      */
-    public void setRepositoryProperties(RepositoryProperties repositoryProperties) {
+    public void setRepositoryProperties(PropertiesRepository repositoryProperties) {
         this.repositoryProperties = repositoryProperties;
     }
     
@@ -599,7 +599,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @return
      *      current ff4j instance
      */
-    public FF4j repositoryProperties(RepositoryProperties propertyStore) {
+    public FF4j repositoryProperties(PropertiesRepository propertyStore) {
         setRepositoryProperties(propertyStore);
         return this;
     }

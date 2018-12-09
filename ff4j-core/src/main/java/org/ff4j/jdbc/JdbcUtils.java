@@ -53,15 +53,17 @@ public class JdbcUtils {
      *      current data source
      */
     public static void createSchemaSecurity(DataSource ds) {
-        // SECURITY
-        if (!isTableExist(ds, QUERY_BUILDER.getTableNamePermissions())) {
-            executeUpdate(ds, QUERY_BUILDER.sqlCreateTablePermissions());
-        }
-        if (!isTableExist(ds, QUERY_BUILDER.getTableNameUsers())) {
+        if (!isTableExist(ds, QUERY_BUILDER.getTableNameUser())) {
             executeUpdate(ds, QUERY_BUILDER.sqlCreateTableUser());
+        }
+        if (!isTableExist(ds, QUERY_BUILDER.getTableNameUserPermissions())) {
+            executeUpdate(ds, QUERY_BUILDER.sqlCreateTableUserPermissions());
         }
         if (!isTableExist(ds, QUERY_BUILDER.getTableNameRoles())) {
             executeUpdate(ds, QUERY_BUILDER.sqlCreateTableRoles());
+        }
+        if (!isTableExist(ds, QUERY_BUILDER.getTableNameRolesPermissions())) {
+            executeUpdate(ds, QUERY_BUILDER.sqlCreateTableRolesPermissions());
         }
         if (!isTableExist(ds, QUERY_BUILDER.getTableNameRolesUsers())) {
             executeUpdate(ds, QUERY_BUILDER.sqlCreateTableRolesUsers());

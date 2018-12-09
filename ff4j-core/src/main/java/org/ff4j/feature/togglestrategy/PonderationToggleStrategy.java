@@ -1,104 +1,44 @@
 package org.ff4j.feature.togglestrategy;
 
-import java.io.Serializable;
-
-/*
- * #%L
- * ff4j-core
- * %%
- * Copyright (C) 2013 Ff4J
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
- */
-
-import java.util.Map;
+import org.ff4j.property.Property;
+import org.ff4j.property.PropertyDouble;
+import org.ff4j.property.PropertyString;
 
 /**
- * This strategy will flip feature as soon as the release date is reached.
+ * Toggle for a random subset 
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class PonderationToggleStrategy extends AbstractToggleStrategy implements TogglePredicate, Serializable {
+public class PonderationToggleStrategy extends AbstractToggleStrategy {
 
     /** Serial number. */
     private static final long serialVersionUID = -2353911851539414159L;
 
-    /** Return equiprobability as 50%. */
-    private static final double HALF = 0.5;
-
-    /** Threshold. */
+    /** Params. */
     public static final String PARAM_WEIGHT = "weight";
-
-    /** Change threshold. */
-    private double weight = HALF;
-
-    /**
-     * Default Constructor.
-     */
-    public PonderationToggleStrategy() {}
-
-    /**
-     * Parameterized constructor.
-     * 
-     * @param threshold
-     *            threshold
-     */
-    public PonderationToggleStrategy(double threshold) {
-        this.weight = threshold;
-        checkWeight();
-        getParams().put(PARAM_WEIGHT, String.valueOf(threshold));
-    }
-
+    
+    /** Expected Parameters. */
+    private Double weight = null;
+    
     /** {@inheritDoc} */
     @Override
-    public void init(String featureName, Map<String, String> initParams) {
-        super.init(featureName, initParams);
-        assertParam(PARAM_WEIGHT);
-        this.weight = Double.parseDouble(initParams.get(PARAM_WEIGHT));
-        checkWeight();
+    public void initialize() {
+        Property<?> p = getRequiredProperty(PARAM_WEIGHT);
+        // Parsing V1 file with Map<String, String> and not typed params
+        if (p instanceof PropertyString) {
+            weight = p.asDouble();
+        } else {
+            weight = ((PropertyDouble) p).getValue();
+        }
+        if (weight < 0 || weight > 1) {
+            throw new IllegalArgumentException("Weight is a percentage and should be between 0 and 1");
+        }
     }
-
+    
     /** {@inheritDoc} */
     @Override
     public boolean test(ToggleContext ctx) {
         return Math.random() <= weight;
     }
-
-    /**
-     * Check that the threshold is a value proportion (0 < P < 1).
-     */
-    private void checkWeight() {
-        if (weight < 0 || weight > 1) {
-            throw new IllegalArgumentException("The ponderation value is a percentage and should be set between 0 and 1");
-        }
-    }
-
-    /**
-     * Setter accessor for attribute 'weight'.
-     * 
-     * @param weight
-     *            new value for 'weight '
-     */
-    public void setWeight(double weight) {
-        this.weight = weight;
-    }
     
-    /** {@inheritDoc} */
-    @Override
-    public Map<String, String> getParams() {
-        this.params.put(PARAM_WEIGHT, String.valueOf(weight));
-        return params;
-    }
-
 }

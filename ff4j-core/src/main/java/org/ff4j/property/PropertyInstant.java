@@ -22,8 +22,6 @@ package org.ff4j.property;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 
 /**
  * Creatoin of property.
@@ -34,13 +32,7 @@ public class PropertyInstant extends Property< Instant > {
 
     /** serialVersionUID. */
     private static final long serialVersionUID = -620523134883483837L;
-    
-    /** formatter for creation date and last modified. */
-    protected static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-    
-    /** zone offset. */
-    protected ZoneOffset zone = ZoneOffset.UTC;
-
+   
     /**
      * Constructor by property name.
      *
@@ -76,7 +68,7 @@ public class PropertyInstant extends Property< Instant > {
     }    
 
     public LocalDateTime toLocalDateTime() {
-        return LocalDateTime.ofInstant(value, zone);
+        return LocalDateTime.ofInstant(value, ZONE);
     }
     
     /** 
@@ -93,26 +85,7 @@ public class PropertyInstant extends Property< Instant > {
     /** {@inheritDoc} */
     @Override
     public Instant fromString(String v) {
-        return LocalDateTime.parse(v, FORMATTER).toInstant(zone);
-    }
-
-    /**
-     * Getter accessor for attribute 'zone'.
-     *
-     * @return
-     *       current value of 'zone'
-     */
-    public ZoneOffset getZone() {
-        return zone;
-    }
-
-    /**
-     * Setter accessor for attribute 'zone'.
-     * @param zone
-     * 		new value for 'zone '
-     */
-    public void setZone(ZoneOffset zone) {
-        this.zone = zone;
+        return LocalDateTime.parse(v, FORMATTER).toInstant(ZONE);
     }
 
 }

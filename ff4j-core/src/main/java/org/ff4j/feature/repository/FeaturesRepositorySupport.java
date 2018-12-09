@@ -66,9 +66,6 @@ public abstract class FeaturesRepositorySupport
     /** Json Attribute. */
     public static final String JSON_ATTRIBUTE_GROUPNAMES   = "groupNames";
     
-    /** Json Attribute. */
-    public static final String JSON_ATTRIBUTE_CLASSNAME    = "className";
-    
     /** Listener Name. */
     private static final String LISTENERNAME_AUDIT = "FeatureStoreAuditListener";
    
@@ -219,9 +216,7 @@ public abstract class FeaturesRepositorySupport
             currentFeature.getGroup().get().equals(groupName)) {
             saveFeature(find(uid).get().group(null));
         }
-    }
-  
-   
+    } 
     
     /** {@inheritDoc} */
     @Override

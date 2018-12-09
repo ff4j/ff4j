@@ -95,7 +95,7 @@
 			  <property name="ppdouble"   type="double"  value="12.5" 		/>
 			  <property name="ppboolean"  type="boolean" value="true" 		/>
 			  <property name="ppstring"   type="string"  value="hello"		/>
-			  <property name="ppListInt"  type="listint" value="12,13,14" 	/>
+			  <property name="ppListInt"  type="listInt" value="12,13,14" 	/>
 			  <property name="myLogLevel" type="logLevel" value="DEBUG" 		/>
 			  <property name="digitValue" type="org.ff4j.property.PropertyInt" value="1" >
 			  	<fixedValues>
@@ -105,18 +105,19 @@
 			 		<value>3</value>
 			 	</fixedValues>
 			  </property>
-			  <property name="regionIdentifier" value="AMER" >
+			  <property name="regionIdentifier" value="NA" >
 			 	<fixedValues>
-			 		<value>AMER</value>
-			 		<value>SSSS</value>
-			 		<value>EAST</value>
-			 		<value>EAST</value>
+			 		<value>NA</value>
+			 		<value>EMEA</value>
+			 		<value>APAC</value>
 			 	</fixedValues>
 			 </property>
 			</properties>
 			<toggleStrategies>
 			  <toggleStrategy class="org.ff4j.feature.togglestrategy.PonderationToggleStrategy">
-			     <param name="weight" value="1" />
+			     <properties>
+			  		<property name="weight" type="double" value="1" />
+			     </properties>
 			  </toggleStrategy>
 			</toggleStrategies>
 		</feature>
@@ -137,7 +138,9 @@
 			<feature uid="f4" enable="true" description="description" >
 				 <toggleStrategies>
 					<toggleStrategy class="org.ff4j.feature.togglestrategy.expression.ExpressionToggleStrategy">
-						<param name="expression" value="f3 | f2" />
+						 <properties>
+			  				<property name="expression" type="string" value="f3 | f2" />
+			     		 </properties>
 					</toggleStrategy>
 				</toggleStrategies>
 			</feature>
@@ -146,17 +149,42 @@
 	</features>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~~ PROPERTIES     ~~ -->
+	<!-- ~~   PROPERTIES   ~~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~ -->
 
 	<properties>
-		<property name="a" value="AMER" fixedValues="AMER,EAST" />
-		<property name="b" value="12" />
-		<property name="c" value="12.5" />
-		<property name="d" value="true" />
-		<property name="e" value="hello" />
-		<property name="f" value="12,13,14" />
-		<property name="g" value="DEBUG" type="logLevel" />
+		<property name="pBigDecimal" 	 type="bigDecimal"     value="1.5" 	  				/>
+		<property name="pBigInteger" 	 type="bigInteger"     value="123456" 				/>
+		<property name="pBoolean" 	 	 type="boolean"        value="true"   				/>
+		<property name="pByte"       	 type="byte" 	       value="p" 	  				/>
+		<property name="pCalendar"   	 type="calendar"       value="2018-12-24 23:00:00" 	/>
+		<property name="pDate"   	     type="date"           value="2018-12-24 23:00:00" 	/>
+		<property name="pClass"      	 type="class" 	       value="java.lang.String" 	/>
+		<property name="pDouble"    	 type="double"         value="20.0" 	  			/>
+		<property name="pFloat"      	 type="float" 	   	   value="20.0" 	  			/>
+		<property name="pInstant"    	 type="instant"        value="2018-12-24 23:00:00" 	/>
+		<property name="pLocal"      	 type="localDateTime"  value="2018-12-24 23:00:00" 	/>
+		<property name="pInt"        	 type="int" 	       value="10" 	  				/>
+		<property name="pLogLevel"   	 type="logLevel" 	   value="INFO" 	  			/>
+		<property name="pLong"       	 type="long" 	  	      value="123" 	  			    />
+		<property name="pShort"      	 type="short" 	          value="5" 	  			    />
+		<property name="pString"     	 type="string" 	          value="pString" 	  		    />
+		<property name="pListBigDecimal" type="listBigDecimal" 	  value="1.5,2.5" 	  		    />
+		<property name="pListBigInteger" type="listBigInteger"    value="123456,789012" 	  	/>
+		<property name="pListBoolean"    type="listBoolean"       value="true,false" 	  		/>
+		<property name="pListByte"       type="listByte" 	   	  value="p,l" 	  		        />
+		<property name="pListCalendar"   type="listCalendar"   	  value="2018-12-24 23:00:00,2019-01-01 23:00:00" />
+		<property name="pListDate"   	 type="listDate"          value="2018-12-24 23:00:00,2019-01-01 23:00:00" 	/>
+		<property name="pListClass"      type="listClass" 	      value="java.lang.String,java.lang.Integer" 	   />
+		<property name="pListDouble"     type="listDouble" 	      value="20.0,30.0" 	  		    			   />
+		<property name="pListFloat"      type="listFloat"         value="20.0,30.0" 	  		    			   />
+		<property name="plistInstant"    type="listInstant"       value="2018-12-24 23:00:00,2019-01-01 23:00:00" />
+		<property name="pListInt"        type="listInt" 	      value="10,20" 	  		    				   />
+		<property name="pListLogLevel"   type="listLogLevel"      value="INFO,DEBUG" 	  		                   />
+		<property name="pListLong"       type="listLong" 	      value="123,456" 	  		                       />
+		<property name="pListShort"      type="listShort" 	      value="5,6" 	  		    					   />
+		<property name="pListString"     type="listString" 	      value="pString,listString" 	  		    	   />
+		<property name="pListLocal"      type="listLocalDateTime" value="2018-12-24 23:00:00,2019-01-01 23:00:00" />
 	</properties>
 
 </ff4j>

@@ -119,7 +119,7 @@ public class JsonUtils {
      * @return
      *      target json expression
      */
-    public static final Map <String, String> jsonAsMap(String jsonString) {
+    public static final Map <String, Property<?>> jsonAsMap(String jsonString) {
       if (jsonString == null) {
           return null;
       } else if (jsonString.charAt(0) != '{' || jsonString.charAt(jsonString.length()-1) != '}') {
@@ -127,13 +127,13 @@ public class JsonUtils {
       } else if ("{}".equals(jsonString)) {
           return new HashMap<>();
       }
-      Map <String, String> response = new HashMap<>();
+      Map <String, Property<?>> response = new HashMap<>();
       // trim { and }
       jsonString = jsonString.substring(1, jsonString.length()-1);
       // Will fail if a string value ends by ','
       Arrays.stream(jsonString.split(",\"")).forEach(chunk -> {
-          String[] pair = chunk.split("\":");
-          response.put(pair[0].replaceAll("\"", ""), pair[1].replaceAll("\"", ""));
+          //sString[] pair = chunk.split("\":");
+          //response.put(pair[0].replaceAll("\"", ""), pair[1].replaceAll("\"", ""));
       });
       return response;
     }

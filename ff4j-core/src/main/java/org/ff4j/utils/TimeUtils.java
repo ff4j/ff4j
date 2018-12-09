@@ -72,10 +72,12 @@ public class TimeUtils {
 	}
 	
 	public static LocalDateTime asLocalDateTime(java.sql.Timestamp sqlTimeStamp) {
+	    if (sqlTimeStamp == null) return null;
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(sqlTimeStamp.getTime()), ZoneId.systemDefault());
     }
     
     public static java.sql.Timestamp asSqlTimeStamp(LocalDateTime jdk8Date) {
+        if (jdk8Date == null) return null;
         ZoneOffset zof = ZoneId.systemDefault().getRules().getOffset(jdk8Date);
         return new java.sql.Timestamp(jdk8Date.toEpochSecond(zof));
     }

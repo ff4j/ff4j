@@ -1,7 +1,5 @@
 package org.ff4j.feature.togglestrategy.time;
 
-import java.io.Serializable;
-
 /*
  * #%L
  * ff4j-core
@@ -33,7 +31,7 @@ import java.util.Map;
 
 import org.ff4j.feature.togglestrategy.AbstractToggleStrategy;
 import org.ff4j.feature.togglestrategy.ToggleContext;
-import org.ff4j.feature.togglestrategy.TogglePredicate;
+import org.ff4j.property.PropertyListString;
 
 /**
  * Implemenetation of an office hour strategy.
@@ -42,7 +40,7 @@ import org.ff4j.feature.togglestrategy.TogglePredicate;
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class OfficeHourToggleStrategy extends AbstractToggleStrategy implements TogglePredicate, Serializable {
+public class OfficeHourToggleStrategy extends AbstractToggleStrategy {
     
     /** Serial. */
     private static final long serialVersionUID = -812341519896298400L;
@@ -51,34 +49,16 @@ public class OfficeHourToggleStrategy extends AbstractToggleStrategy implements 
     private static final DateFormat SDF_DATE = new SimpleDateFormat("yyyy-MM-dd");
     
     /** Constants. */
-    private static final String MONDAY = "monday";
-    
-    /** Constants. */
-    private static final String TUESDAY = "tuesday";
-    
-    /** Constants. */
-    private static final String WEDNESDAY = "wednesday";
-    
-    /** Constants. */
-    private static final String THURSDAY = "thursday";
-    
-    /** Constants. */
-    private static final String FRIDAY = "friday";
-    
-    /** Constants. */
-    private static final String SATURDAY = "saturday";
-    
-    /** Constants. */
-    private static final String SUNDAY = "sunday";
-    
-    /** Constants. */
-    private static final String PUBLICHOLIDAY = "publicHolidays";
-    
-    /** Constants. */
-    private static final String SPECIAL_OPENINGS = "specialOpenings";
-    
-    /** Contacts. */
-    public static final String OVERRIDE_DATE = "overridedDate";
+    public static final String MONDAY           = "monday";
+    public static final String TUESDAY          = "tuesday";
+    public static final String WEDNESDAY        = "wednesday";
+    public static final String THURSDAY         = "thursday";
+    public static final String FRIDAY           = "friday";
+    public static final String SATURDAY         = "saturday";
+    public static final String SUNDAY           = "sunday";
+    public static final String PUBLICHOLIDAY    = "publicHolidays";
+    public static final String SPECIAL_OPENINGS = "specialOpenings";
+    public static final String OVERRIDE_DATE    = "overridedDate";
     
     /** time table. */
     private Map < Integer, List <HourInterval>> weekTimeTable = new HashMap<Integer, List<HourInterval>>();
@@ -88,25 +68,31 @@ public class OfficeHourToggleStrategy extends AbstractToggleStrategy implements 
     
     /** public holiday. */
     private List < String > publicHolidays = new ArrayList<String>();
-    
+   
     /** {@inheritDoc} */
     @Override
-    public void init(String featureName, Map<String, String> initParam) {
-        super.init(featureName, initParam);
+    public void initialize() {
         
-        // Update week timetable
-        weekTimeTable.put(Calendar.MONDAY,      parseIntervalsExpression(initParam.get(MONDAY)));
-        weekTimeTable.put(Calendar.TUESDAY,     parseIntervalsExpression(initParam.get(TUESDAY)));
-        weekTimeTable.put(Calendar.WEDNESDAY,   parseIntervalsExpression(initParam.get(WEDNESDAY)));
-        weekTimeTable.put(Calendar.THURSDAY,    parseIntervalsExpression(initParam.get(THURSDAY)));
-        weekTimeTable.put(Calendar.FRIDAY,      parseIntervalsExpression(initParam.get(FRIDAY)));
-        weekTimeTable.put(Calendar.SATURDAY,    parseIntervalsExpression(initParam.get(SATURDAY)));
-        weekTimeTable.put(Calendar.SUNDAY,      parseIntervalsExpression(initParam.get(SUNDAY)));
+        // Update Days
+        getProperty(MONDAY).ifPresent( 
+                p -> weekTimeTable.put(Calendar.MONDAY, parseIntervalsExpression(p.asString())));
+        getProperty(TUESDAY).ifPresent(
+                p -> weekTimeTable.put(Calendar.TUESDAY, parseIntervalsExpression(p.asString())));
+        getProperty(WEDNESDAY).ifPresent(
+                p -> weekTimeTable.put(Calendar.WEDNESDAY, parseIntervalsExpression(p.asString())));
+        getProperty(THURSDAY).ifPresent(
+                p -> weekTimeTable.put(Calendar.THURSDAY, parseIntervalsExpression(p.asString())));
+        getProperty(FRIDAY).ifPresent(
+                p -> weekTimeTable.put(Calendar.FRIDAY, parseIntervalsExpression(p.asString())));
+        getProperty(SATURDAY).ifPresent(
+                p -> weekTimeTable.put(Calendar.SATURDAY, parseIntervalsExpression(p.asString())));
+        getProperty(SUNDAY).ifPresent(
+                p -> weekTimeTable.put(Calendar.SUNDAY, parseIntervalsExpression(p.asString())));
         
         // Update publiholidays
-        if (initParam.containsKey(PUBLICHOLIDAY)) {
-            String[] days = initParam.get(PUBLICHOLIDAY).split(",");
-            for (String day : days) {
+        getProperty(PUBLICHOLIDAY).ifPresent(publicHoliday -> {
+            PropertyListString pls = (PropertyListString) publicHoliday;
+            for (String day : pls.get()) {
                try {
                    Calendar c = Calendar.getInstance();
                    c.setTime(SDF_DATE.parse(day.trim()));
@@ -119,72 +105,32 @@ public class OfficeHourToggleStrategy extends AbstractToggleStrategy implements 
                    throw new IllegalArgumentException("Invalid Syntax for <" + day + "> expected 'yyyy-MM-dd'", e);
                 }
             }
-        }
+        });
         
         // Update exclusive openings
-        if (initParam.containsKey(SPECIAL_OPENINGS)) {
-            String[] days = initParam.get(SPECIAL_OPENINGS).split(";");
-            for (String day : days) {
-              String[] partDay = day.split("@");
-              if (partDay.length != 2) {
-                  throw new IllegalArgumentException("Invalid Syntax");
-              }
-                    
-              // Check format at loading
-              String dateExpression = partDay[1].trim();
-              try {
-                  SDF_DATE.parse(dateExpression);
-                  String inter = partDay[0].trim();
-                  String extractIntervals = inter.substring(1, inter.length() -1);
-                  specialTimeTable.put(dateExpression,  parseIntervalsExpression(extractIntervals));
-               } catch (ParseException e) {
-                   throw new IllegalArgumentException("Invalid Syntax for '" + dateExpression + "' expected 'yyyy-MM-dd'", e);
-               }
-           }
-        }
+        getProperty(SPECIAL_OPENINGS).ifPresent(specialOpenings -> {
+            PropertyListString pls = (PropertyListString) specialOpenings;
+            for (String day : pls.get()) {
+                String[] partDay = day.split("@");
+                if (partDay.length != 2) {
+                    throw new IllegalArgumentException("Invalid Syntax");
+                }
+                      
+                // Check format at loading
+                String dateExpression = partDay[1].trim();
+                try {
+                    SDF_DATE.parse(dateExpression);
+                    String inter = partDay[0].trim();
+                    String extractIntervals = inter.substring(1, inter.length() -1);
+                    specialTimeTable.put(dateExpression,  parseIntervalsExpression(extractIntervals));
+                 } catch (ParseException e) {
+                     throw new IllegalArgumentException("Invalid Syntax for '" + dateExpression + "' expected 'yyyy-MM-dd'", e);
+                 }
+             }
+        });
     }
     
-    /**
-     * Parse Target expression.
-     *
-     * @param expression
-     *      target expression
-     * @return
-     *      list of hour interval
-     */
-    public List < HourInterval > parseIntervalsExpression(String expression) {
-        // Always close
-        List < HourInterval > lhi = new ArrayList<HourInterval>();
-        if (expression != null && !"".equals(expression)) {
-            String[] chunks = expression.split(",");
-           for (String chunk : chunks) {
-               lhi.add(new HourInterval(chunk));
-           }
-        }
-        return lhi;
-       
-    }
-    
-    /**
-     * Check if present time is at least in of the hour Interval.
-     *
-     * @param listOfHI
-     *      enable to list hour intervals 
-     * @return
-     *      if one of the interval matches
-     */
-    public boolean matches(Calendar cal, List < HourInterval > listOfHI) {
-        if (listOfHI == null) return false;
-        int idx = 0;
-        boolean found = false;
-        while (!found && idx<listOfHI.size()) {
-            found = listOfHI.get(idx).matches(cal);
-            idx++;
-        }
-        return found;
-    }
-    
-     @Override
+    @Override
     public boolean test(ToggleContext ctx) {
         // Check current date agains interval
         Calendar now = Calendar.getInstance();
@@ -204,8 +150,47 @@ public class OfficeHourToggleStrategy extends AbstractToggleStrategy implements 
             return false;
         }
         
-        // Default behavior, get current day, retrive intervals and check
+        // Default behavior, get current day, retriesve intervals and check
         return matches(now, weekTimeTable.get(now.get(Calendar.DAY_OF_WEEK)));
+    }
+    
+    /**
+     * Parse Target expression.
+     *
+     * @param expression
+     *      target expression
+     * @return
+     *      list of hour interval
+     */
+    public List < HourInterval > parseIntervalsExpression(String expression) {
+        // Always close
+        List < HourInterval > lhi = new ArrayList<HourInterval>();
+        if (expression != null && !"".equals(expression)) {
+           String[] chunks = expression.split(",");
+           for (String chunk : chunks) {
+               lhi.add(new HourInterval(chunk));
+           }
+        }
+        return lhi;
+    }
+    
+    /**
+     * Check if present time is at least in of the hour Interval.
+     *
+     * @param listOfHI
+     *      enable to list hour intervals 
+     * @return
+     *      if one of the interval matches
+     */
+    public boolean matches(Calendar cal, List < HourInterval > listOfHI) {
+        if (listOfHI == null) return false;
+        int idx = 0;
+        boolean found = false;
+        while (!found && idx<listOfHI.size()) {
+            found = listOfHI.get(idx).matches(cal);
+            idx++;
+        }
+        return found;
     }
 
 }

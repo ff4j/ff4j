@@ -336,7 +336,7 @@ public final class XmlParserV1 extends ConfigurationFileParserXml {
             // Attribute CLASS
             String clazzName = nnm.getNamedItem(FLIPSTRATEGY_ATTCLASS).getNodeValue();
             
-            // LIST OF PARAMS
+            // LIST OF PARAMS ; Will be map as PropertyString...
             Map<String, String> parameters = new LinkedHashMap<String, String>();
             NodeList initparamsNodes = flipStrategyTag.getElementsByTagName(FLIPSTRATEGY_PARAMTAG);
             for (int k = 0; k < initparamsNodes.getLength(); k++) {
@@ -359,7 +359,15 @@ public final class XmlParserV1 extends ConfigurationFileParserXml {
                             + "' has no value, please check XML");
                 }
             }
-            return TogglePredicate.of(uid, clazzName, parameters);
+            
+            // V1 --> V2
+            Set < Property<?>> setOfProperties = new HashSet<>();
+            if (parameters != null) {
+               parameters.entrySet().stream()
+                          .map(entry -> new PropertyString(entry.getKey(), entry.getValue()))
+                          .forEach(setOfProperties::add);
+            }
+            return TogglePredicate.of(uid, clazzName, setOfProperties);
         } catch (Exception e) {
             throw new IllegalArgumentException("An error occurs during flipstrategy parsing TAG" + uid, e);
         }

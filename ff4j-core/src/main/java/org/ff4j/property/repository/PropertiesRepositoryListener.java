@@ -33,7 +33,7 @@ import org.ff4j.property.Property;
  * @param <ENTITY>
  *    {@link FF4jEntity} to be specialized by type of store 
  */
-public interface RepositoryPropertiesListener extends FF4jRepositoryListener< Property<?> > {
+public interface PropertiesRepositoryListener extends FF4jRepositoryListener< Property<?> > {
     
     
 }

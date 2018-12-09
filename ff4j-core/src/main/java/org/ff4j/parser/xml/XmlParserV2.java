@@ -429,7 +429,7 @@ public final class XmlParserV2 extends ConfigurationFileParserXml {
             // If specific type defined ?
             if (null != attMap.getNamedItem(PROPERTY_PARAMTYPE)) {
                 String optionalType = attMap.getNamedItem(PROPERTY_PARAMTYPE).getNodeValue();
-                
+                    
                 // Substitution if relevant (e.g. 'int' -> 'org.ff4j.property.PropertyInt')
                 optionalType = Property.mapPropertyType(optionalType);
                 
@@ -470,55 +470,37 @@ public final class XmlParserV2 extends ConfigurationFileParserXml {
     }
 
     /**
-     * <toggleStrategies>
-     *  <toggleStrategy class="org.ff4j.strategy.el.ExpressionFlipStrategy">
-     *      <param name="expression" value="F3 | F2" />
-     *  </toggleStrategy>
-     * </toggleStrategies>
+     *  <toggleStrategies>
+            <toggleStrategy class="org.ff4j.feature.togglestrategy.PonderationToggleStrategy">
+                <properties>
+                    <property name="weight" type="double" value="1" />
+                </properties>
+            </toggleStrategy>
+        </toggleStrategies>
      */
-    @SuppressWarnings("unused")
     private static List <TogglePredicate> parseToggleStrategies(Element toggleStrategies, String uid) {
         List <TogglePredicate> listOfStrategies = new ArrayList<>();
          // Look for list of <toggleStrategy>
         NodeList lisOfToggleStrategy = toggleStrategies.getElementsByTagName(TOGGLE_STRATEGY_TAG);
         //<toggleStrategy>
         for (int k = 0; k < lisOfToggleStrategy.getLength(); k++) {
-            Element permissionTag = (Element) lisOfToggleStrategy.item(k);
-            NamedNodeMap toggleStrategyAtributes = permissionTag.getAttributes();
-            if (toggleStrategyAtributes.getNamedItem(TOGGLE_STRATEGY_ATTCLASS) == null) {
+            Element toggleStrategy = (Element) lisOfToggleStrategy.item(k);
+            NamedNodeMap toggleStrategyAttributes = toggleStrategy.getAttributes();
+            if (toggleStrategyAttributes.getNamedItem(TOGGLE_STRATEGY_ATTCLASS) == null) {
                 throw new IllegalArgumentException("Error syntax in configuration file : '" + TOGGLE_STRATEGY_ATTCLASS
                         + "' is required for each flipstrategy (feature=" + uid + ")");
             }
             try {
                 // <toggleStrategy class="..">
-                String clazzName = toggleStrategyAtributes.getNamedItem(TOGGLE_STRATEGY_ATTCLASS).getNodeValue();
-                TogglePredicate currentStrategy = (TogglePredicate) Class.forName(clazzName).newInstance();
-    
-                // <param>
-                Map<String, String> parameters = new LinkedHashMap<String, String>();
-                NodeList initparamsNodes = toggleStrategies.getElementsByTagName(TOGGLE_STRATEGY_PARAMTAG);
-                for (int idxParam = 0; idxParam < initparamsNodes.getLength(); idxParam++) {
-                    Element param = (Element) initparamsNodes.item(idxParam);
-                    NamedNodeMap nnmap = param.getAttributes();
-                    // Check for required attribute name
-                    String currentParamName;
-                    if (nnmap.getNamedItem(TOGGLE_STRATEGY_PARAMNAME) == null) {
-                        throw new IllegalArgumentException(ERROR_SYNTAX_IN_CONFIGURATION_FILE
-                                + "'name' is required for each param in flipstrategy(check " + uid + ")");
-                    }
-                    currentParamName = nnmap.getNamedItem(TOGGLE_STRATEGY_PARAMNAME).getNodeValue();
-                    // Check for value attribute
-                    if (nnmap.getNamedItem(TOGGLE_STRATEGY_PARAMVALUE) != null) {
-                        parameters.put(currentParamName, nnmap.getNamedItem(TOGGLE_STRATEGY_PARAMVALUE).getNodeValue());
-                    } else if (param.getFirstChild() != null) {
-                        parameters.put(currentParamName, param.getFirstChild().getNodeValue());
-                    } else {
-                        throw new IllegalArgumentException("Parameter '" + currentParamName + "' in feature '" + uid
-                                + "' has no value, please check XML");
-                    }
+                String clazzName = toggleStrategyAttributes.getNamedItem(TOGGLE_STRATEGY_ATTCLASS).getNodeValue();
+                // <properties>
+                NodeList propertiesTaglist = toggleStrategy.getElementsByTagName(PROPERTIES_TAG);
+                Set<Property<?>> properties = new HashSet<>();
+                if (propertiesTaglist.getLength() != 0) {
+                    Element propertiesTag = (Element) propertiesTaglist.item(0);
+                    parsePropertiesTag(propertiesTag).values().stream().forEach(properties::add);
                 }
-                currentStrategy.init(uid, parameters);
-                listOfStrategies.add(currentStrategy);
+                listOfStrategies.add(TogglePredicate.of(uid, clazzName, properties));
             } catch (Exception e) {
                 throw new IllegalArgumentException("An error occurs during flipstrategy parsing TAG" + uid, e);
             }

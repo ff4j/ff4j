@@ -47,7 +47,7 @@ import org.ff4j.property.exception.PropertyAccessException;
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class RepositoryPropertiesCoreJdbc extends RepositoryPropertiesSupport {
+public class PropertiesRepositoryJdbc extends PropertiesRepositorySupport {
 
     /** serialVersionUID. */
     private static final long serialVersionUID = -1746222910983624609L;
@@ -64,7 +64,7 @@ public class RepositoryPropertiesCoreJdbc extends RepositoryPropertiesSupport {
 	}
     
     /** Default Constructor. */
-    public RepositoryPropertiesCoreJdbc() {}
+    public PropertiesRepositoryJdbc() {}
     
     /**
      * Constructor from DataSource.
@@ -72,19 +72,8 @@ public class RepositoryPropertiesCoreJdbc extends RepositoryPropertiesSupport {
      * @param jdbcDS
      *            native jdbc datasource
      */
-    public RepositoryPropertiesCoreJdbc(DataSource jdbcDS) {
+    public PropertiesRepositoryJdbc(DataSource jdbcDS) {
         this.dataSource = jdbcDS;
-    }
-    
-    /**s
-     * Constructor from DataSource.
-     * 
-     * @param jdbcDS
-     *            native jdbc datasource
-     */
-    public RepositoryPropertiesCoreJdbc(DataSource jdbcDS, String xmlConfFile) {
-        this(jdbcDS);
-        importPropertiesFromXmlFile(xmlConfFile);
     }
     
 

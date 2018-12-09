@@ -1,10 +1,10 @@
-package org.ff4j.property.repository;
+package org.ff4j.features;
 
 /*-
  * #%L
  * ff4j-core
  * %%
- * Copyright (C) 2013 - 2017 FF4J
+ * Copyright (C) 2013 - 2018 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,20 +20,22 @@ package org.ff4j.property.repository;
  * #L%
  */
 
-import org.ff4j.event.Event.Scope;
-import org.ff4j.event.repository.AbstractAuditTrailListener;
-import org.ff4j.event.repository.AuditTrail;
-import org.ff4j.property.Property;
+import org.ff4j.feature.repository.FeaturesRepository;
+import org.ff4j.feature.repository.FeaturesRepositoryInMemory;
+import org.junit.jupiter.api.DisplayName;
 
 /**
- * Proposition of superclass to allow audit trail trackings.
- * 
- * @author Cedrick LUNVEN  (@clunven)
+ * Testing implementation of {@link FeaturesRepository} for DB : MEMORY
+ *
+ * @author Cedrick LUNVEN (@clunven)
  */
-public class RepositoryPropertiesListenerAudit extends AbstractAuditTrailListener<Property<?>> implements RepositoryPropertiesListener {
+@DisplayName("Testing INMEMORY | FEATURES  Repository")
+public class RepositoryFeatureInMemoryTest extends RepositoryFeaturesTestSupport {
 
-    public RepositoryPropertiesListenerAudit(AuditTrail auditTrail) {
-        super(auditTrail, Scope.PROPERTY, Scope.PROPERTYSTORE);
+    /** {@inheritDoc} */
+    @Override
+    public FeaturesRepository initStore() {
+        return new FeaturesRepositoryInMemory("ff4j-testDataset.xml");
     }
     
 }

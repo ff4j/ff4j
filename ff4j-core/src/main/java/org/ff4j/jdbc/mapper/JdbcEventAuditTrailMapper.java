@@ -90,7 +90,7 @@ public class JdbcEventAuditTrailMapper extends AbstractJdbcMapper implements Eve
             evt.source(rs.getString(AuditTrailColumns.SOURCE.colname()));
             evt.duration(rs.getLong(AuditTrailColumns.DURATION.colname()));
             evt.value(rs.getString(AuditTrailColumns.VALUE.colname()));
-            evt.setCustomKeys(JsonUtils.jsonAsMap(rs.getString(AuditTrailColumns.KEYS.colname())));
+            //evt.setCustomKeys(JsonUtils.jsonAsMap(rs.getString(AuditTrailColumns.KEYS.colname())));
             ZoneOffset zof = ZoneId.systemDefault().getRules().getOffset(evt.getCreationDate().get());
             evt.setTimestamp(evt.getCreationDate().get().toEpochSecond(zof));
             return evt;

@@ -192,6 +192,13 @@ public class FeaturesRepositoryInMemory extends FeaturesRepositorySupport {
     public Stream <Feature> findAll() {
         return mapOfFeatures.values().stream();
     } 
+
+    /** {@inheritDoc} */
+    @Override
+    public Stream<String> findAllIds() {
+        if (mapOfFeatures ==  null) return null;
+        return mapOfFeatures.keySet().stream();
+    }
     
     // --- FeatureStore Methods ---
     
@@ -225,30 +232,7 @@ public class FeaturesRepositoryInMemory extends FeaturesRepositorySupport {
     }
     
     // --- Utility Methods ---
-    
-    /**
-     * Load configuration through FF4J.vml file.
-     * 
-     * @param conf
-     *            xml filename
-     */
-    public void loadXmlConfFile(String conf) {
-        assertHasLength(conf);
-        this.fileName = conf;
-        loadXmlConf(getClass().getClassLoader().getResourceAsStream(conf));
-    }
-
-    /**
-     * Load configuration through FF4J.vml file.
-     * 
-     * @param conf
-     *            xml filename
-     */
-    public void loadXmlConf(InputStream xmlIN) {
-        this.mapOfFeatures = new XmlParserV2().parse(xmlIN).getFeatures();
-        buildGroupsFromFeatures();
-    }
-
+  
     /**
      * Group is an attribute of the feature and the group structure is rebuild from it.
      */
@@ -287,29 +271,12 @@ public class FeaturesRepositoryInMemory extends FeaturesRepositorySupport {
     }
 
     /**
-     * Setter accessor for attribute 'locations'.
-     * 
-     * @param locations
-     *            new value for 'locations '
-     */
-    public void setLocation(String locations) {
-        loadXmlConfFile(locations);
-    }
-
-    /**
      * Getter accessor for attribute 'fileName'.
      * 
      * @return current value of 'fileName'
      */
     public String getFileName() {
         return fileName;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Stream<String> findAllIds() {
-        if (mapOfFeatures ==  null) return null;
-        return mapOfFeatures.keySet().stream();
     }
     
 }

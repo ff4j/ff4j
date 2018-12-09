@@ -250,13 +250,13 @@ public abstract class FF4jEntity<T extends FF4jEntity<?>> implements Comparable<
     
     @SuppressWarnings("unchecked")
     public T setCreationDate(LocalDateTime currentDate) {
-        this.creationDate = Optional.of(currentDate);
+        this.creationDate = Optional.ofNullable(currentDate);
         return (T) this;
     }
     
     @SuppressWarnings("unchecked")
     public T setLastModified(LocalDateTime currentDate) {
-        this.lastModifiedDate = Optional.of(currentDate);
+        this.lastModifiedDate = Optional.ofNullable(currentDate);
         return (T) this;
     }
     

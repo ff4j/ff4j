@@ -1,4 +1,4 @@
-package org.ff4j.inmemory;
+package org.ff4j.features;
 
 /*-
  * #%L
@@ -35,10 +35,12 @@ import org.ff4j.feature.exception.FeatureNotFoundException;
 import org.ff4j.feature.exception.GroupNotFoundException;
 import org.ff4j.feature.repository.FeaturesRepository;
 import org.ff4j.feature.togglestrategy.PonderationToggleStrategy;
+import org.ff4j.feature.togglestrategy.TogglePredicate;
 import org.ff4j.parser.ConfigurationFileParser;
 import org.ff4j.parser.FF4jConfigFile;
 import org.ff4j.property.Property;
 import org.ff4j.property.PropertyBoolean;
+import org.ff4j.property.PropertyDouble;
 import org.ff4j.property.PropertyInt;
 import org.ff4j.test.AssertFF4j;
 import org.ff4j.test.FF4jTestDataSet;
@@ -150,8 +152,8 @@ public abstract class RepositoryFeaturesTestSupport implements FF4jTestDataSet {
 		            expectedF2.getToggleStrategies().get(0).getClass(), 
 		            f2.getToggleStrategies().get(0).getClass());
 		Assertions.assertEquals(
-		   expectedF2.getToggleStrategies().get(0).getParams().get(PonderationToggleStrategy.PARAM_WEIGHT), 
-		           f2.getToggleStrategies().get(0).getParams().get(PonderationToggleStrategy.PARAM_WEIGHT));
+		   expectedF2.getToggleStrategies().get(0).getPropertiesAsMap().get(PonderationToggleStrategy.PARAM_WEIGHT).asString(), 
+		           f2.getToggleStrategies().get(0).getPropertiesAsMap().get(PonderationToggleStrategy.PARAM_WEIGHT).asString());
         // properties
 		Assertions.assertFalse(f2.getProperties().isEmpty());
 		Assertions.assertEquals(expectedF2.getProperties().size(), f2.getProperties().size());
@@ -264,15 +266,17 @@ public abstract class RepositoryFeaturesTestSupport implements FF4jTestDataSet {
 		// When
 		Feature fpBis = testedStore.read(F1);
 		fpBis.setDescription(newDescription);
-		fpBis.getToggleStrategies().add(new PonderationToggleStrategy(0.12));
+		fpBis.getToggleStrategies().add(TogglePredicate.of(F1,
+		        PonderationToggleStrategy.class.getName(), 
+		        Util.setOf(new PropertyDouble(PonderationToggleStrategy.PARAM_WEIGHT, new Double(0.12)))));
 		testedStore.save(fpBis);
 		// Then
 		Feature updatedFeature = testedStore.read(F1);
 		Assertions.assertTrue(newDescription.equals(updatedFeature.getDescription().get()));
 		Assertions.assertFalse(testedStore.read(F1).getToggleStrategies().isEmpty());
 		Assertions.assertEquals(
-		        testedStore.read(F1).getToggleStrategies().get(0), 
-		        updatedFeature.getToggleStrategies().get(0));
+		        testedStore.read(F1).getToggleStrategies().get(0).getPropertiesAsMap().get(PonderationToggleStrategy.PARAM_WEIGHT).asDouble(), 
+		        updatedFeature.getToggleStrategies().get(0).getPropertiesAsMap().get(PonderationToggleStrategy.PARAM_WEIGHT).asDouble());
 	}
 
 	@Test
@@ -490,8 +494,11 @@ public abstract class RepositoryFeaturesTestSupport implements FF4jTestDataSet {
 	    Feature startFeature = testedStore.read(F3);
 	    Assertions.assertTrue(startFeature.getToggleStrategies().isEmpty());
 		// When
-	    startFeature.addToggleStrategy(new PonderationToggleStrategy(1));
-		testedStore.save(startFeature);
+	    startFeature.addToggleStrategy(TogglePredicate.of(F3,
+                PonderationToggleStrategy.class.getName(), 
+                Util.setOf(new PropertyDouble(PonderationToggleStrategy.PARAM_WEIGHT, new Double(1)))));
+	    
+	    testedStore.save(startFeature);
 		// Then
 		assertFF4j.assertThatFeatureHasFlippingStrategy(F3);
 		Feature endFeature = testedStore.read(F3);

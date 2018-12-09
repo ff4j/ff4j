@@ -37,11 +37,11 @@ import org.ff4j.parser.xml.XmlParserV2;
 import org.ff4j.property.Property;
 import org.ff4j.test.AssertUtils;
 /**
- * Implementation of {@link RepositoryProperties} to keep properties in memory.
+ * Implementation of {@link PropertiesRepository} to keep properties in memory.
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class RepositoryPropertiesInMemory extends RepositoryPropertiesSupport {
+public class PropertiesRepositoryInMemory extends PropertiesRepositorySupport {
 
     /** serialVersionUID. */
     private static final long serialVersionUID = 5829690784801420235L;
@@ -50,7 +50,7 @@ public class RepositoryPropertiesInMemory extends RepositoryPropertiesSupport {
     private Map<String, Property<?>> mapOfProperties = new LinkedHashMap<>();
     
     /** Default constructor. */
-    public RepositoryPropertiesInMemory() {}
+    public PropertiesRepositoryInMemory() {}
     
     /**
      * Provide an xml file to initialize.
@@ -58,7 +58,7 @@ public class RepositoryPropertiesInMemory extends RepositoryPropertiesSupport {
      * @param fileName
      *          target fileName
      */
-    public RepositoryPropertiesInMemory(String fileName) {
+    public PropertiesRepositoryInMemory(String fileName) {
         this(new XmlParserV2(), fileName);
     }
     
@@ -68,7 +68,7 @@ public class RepositoryPropertiesInMemory extends RepositoryPropertiesSupport {
      * @param fileName
      *          target fileName
      */
-    public RepositoryPropertiesInMemory(InputStream inputStream) {
+    public PropertiesRepositoryInMemory(InputStream inputStream) {
         this(new XmlParserV2(), inputStream);
     }
     
@@ -80,7 +80,7 @@ public class RepositoryPropertiesInMemory extends RepositoryPropertiesSupport {
      * @param fileName
      *      target file name
      */
-    public RepositoryPropertiesInMemory(ConfigurationFileParser parser, String fileName) {
+    public PropertiesRepositoryInMemory(ConfigurationFileParser parser, String fileName) {
         AssertUtils.assertHasLength(fileName, "fileName");
         AssertUtils.assertNotNull(parser,     "parser");
         initWithConfig(parser.parse(fileName));
@@ -94,7 +94,7 @@ public class RepositoryPropertiesInMemory extends RepositoryPropertiesSupport {
      * @param fileName
      *      target file name
      */
-    public RepositoryPropertiesInMemory(ConfigurationFileParser parser, InputStream in) {
+    public PropertiesRepositoryInMemory(ConfigurationFileParser parser, InputStream in) {
         AssertUtils.assertNotNull(parser,  "parser");
         AssertUtils.assertNotNull(in, "inputStream");
         initWithConfig(parser.parse(in));
@@ -106,7 +106,7 @@ public class RepositoryPropertiesInMemory extends RepositoryPropertiesSupport {
      * @param fileName
      *            fileName present in classPath or on fileSystem.
      */
-    public RepositoryPropertiesInMemory(FF4jConfigFile ff4jConfig) {
+    public PropertiesRepositoryInMemory(FF4jConfigFile ff4jConfig) {
         initWithConfig(ff4jConfig);
     }
 
@@ -116,7 +116,7 @@ public class RepositoryPropertiesInMemory extends RepositoryPropertiesSupport {
      * @param features
      *      collection of features to be created
      */
-    public RepositoryPropertiesInMemory(Collection<Property<?>> properties) {
+    public PropertiesRepositoryInMemory(Collection<Property<?>> properties) {
         initWithProperties(properties);
     }
     
@@ -128,6 +128,7 @@ public class RepositoryPropertiesInMemory extends RepositoryPropertiesSupport {
     private void initWithConfig(FF4jConfigFile ff4jConfig) {
         AssertUtils.assertNotNull(ff4jConfig);
         AssertUtils.assertNotNull(ff4jConfig.getProperties());
+        mapOfProperties.clear();
         initWithProperties(ff4jConfig.getProperties().values());
     }
     
@@ -136,12 +137,11 @@ public class RepositoryPropertiesInMemory extends RepositoryPropertiesSupport {
      * 
      * @param features
      */
-    private void initWithProperties(Collection<Property<?>> features) {
+    private void initWithProperties(Collection<Property<?>> properties) {
         createSchema();
-        if (null != features) {
-            this.mapOfProperties = features
-                    .stream()
-                    .collect(Collectors.toMap(Property::getUid, Function.identity()));
+        if (null != properties) {
+            this.mapOfProperties = properties.stream().collect(
+                    Collectors.toMap(Property::getUid, Function.identity()));
         }
     }
     
@@ -153,9 +153,15 @@ public class RepositoryPropertiesInMemory extends RepositoryPropertiesSupport {
     }
     
     /** {@inheritDoc} */
+    @Override
+    public Optional < Property<?> > find(String uid) {
+        assertHasLength(uid);
+        return Optional.ofNullable(mapOfProperties.get(uid));
+    }
+    
+    /** {@inheritDoc} */
     public void saveProperty(Property<?> value) {
         assertPropertyNotNull(value);
-        assertPropertyNotExist(value.getUid());
         mapOfProperties.put(value.getUid(), value);
     }
     
@@ -163,13 +169,6 @@ public class RepositoryPropertiesInMemory extends RepositoryPropertiesSupport {
     public void deleteProperty(String name) {
         assertPropertyExist(name);
         mapOfProperties.remove(name);
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public Optional < Property<?> > find(String uid) {
-        assertHasLength(uid);
-        return Optional.ofNullable(mapOfProperties.get(uid));
     }
     
     /** {@inheritDoc} */
