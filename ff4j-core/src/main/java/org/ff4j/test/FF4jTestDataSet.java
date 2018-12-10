@@ -142,6 +142,7 @@ public interface FF4jTestDataSet {
     // -- User --
     String USER_JOHN        = "john";
     String USER_SARAH       = "sarah";
+    String USER_FOR_TEST    = "userTest";
     
     // -- Roles --
     String ROLE_ADMIN       = "ADMINISTRATOR";

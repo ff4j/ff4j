@@ -1,4 +1,4 @@
-package org.ff4j.jdbc;
+package org.ff4j.test.jdbc;
 
 /*
  * #%L

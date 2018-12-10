@@ -29,6 +29,11 @@ import org.ff4j.FF4jRepository;
 import org.ff4j.user.FF4jRole;
 import org.ff4j.user.FF4jUser;
 
+/**
+ * Common operations with Users.
+ *
+ * @author Cedrick LUNVEN (@clunven)
+ */
 public interface RolesAndUsersRepository extends FF4jRepository<String, FF4jUser > {
     
     /**

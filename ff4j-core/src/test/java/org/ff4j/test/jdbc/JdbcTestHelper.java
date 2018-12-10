@@ -1,4 +1,4 @@
-package org.ff4j.jdbc;
+package org.ff4j.test.jdbc;
 
 /*
  * #%L
@@ -28,6 +28,7 @@ import java.sql.Connection;
 import javax.sql.DataSource;
 
 import org.apache.commons.dbcp.BasicDataSource;
+import org.ff4j.jdbc.JdbcQueryBuilder;
 import org.ff4j.jdbc.JdbcUtils;
 
 

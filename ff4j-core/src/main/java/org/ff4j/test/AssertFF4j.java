@@ -106,6 +106,19 @@ public class AssertFF4j {
                 timeout, pollingInterval);
         return this;
 	}
+	
+	/**
+     * Check existence of the traget property
+     * 
+     * @param featureName
+     *            targte featurename
+     * @return current object
+     */
+    public final AssertFF4j assertThatUserExist(String userName) {
+        assertTrue(ff4j.getRepositoryUsersRoles().exists(userName),
+                "User '" + userName + IS_MANDATORY);
+        return this;
+    }
 
 	/**
 	 * Check inexistence of the traget feature
@@ -133,6 +146,19 @@ public class AssertFF4j {
 		        "Property '" + propertyName + IS_MANDATORY);
 		return this;
 	}
+	
+	/**
+     * Check existence of the traget property
+     * 
+     * @param featureName
+     *            targte featurename
+     * @return current object
+     */
+    public final AssertFF4j assertThatUserDoesNotExist(String userName) {
+        assertFalse(ff4j.getRepositoryUsersRoles().exists(userName),
+                "User '" + userName + IS_MANDATORY);
+        return this;
+    }
 
 	/**
 	 * Check Feature Flipped
@@ -183,6 +209,19 @@ public class AssertFF4j {
 		assertEquals(expectedNumber, new Long(ff4j.getRepositoryProperties().findAll().count()).intValue());
 		return this;
 	}
+	
+
+    /**
+     * Check Number of features
+     * 
+     * @param featureName
+     *            target featureName
+     * @return current object
+     */
+    public final AssertFF4j assertThatUserStoreHasSize(int expectedNumber) {
+        assertEquals(expectedNumber, new Long(ff4j.getRepositoryUsersRoles().findAll().count()).intValue());
+        return this;
+    }
 
 	/**
 	 * Check Number of features

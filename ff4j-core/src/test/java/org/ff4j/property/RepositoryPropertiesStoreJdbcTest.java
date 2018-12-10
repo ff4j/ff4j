@@ -23,9 +23,9 @@ import javax.sql.DataSource;
  */
 
 import org.ff4j.feature.repository.FeatureRepository;
-import org.ff4j.jdbc.JdbcTestHelper;
 import org.ff4j.property.repository.PropertyRepository;
 import org.ff4j.property.repository.PropertyRepositoryJdbc;
+import org.ff4j.test.jdbc.JdbcTestHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 
