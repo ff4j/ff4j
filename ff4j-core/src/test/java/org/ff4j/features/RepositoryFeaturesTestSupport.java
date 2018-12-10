@@ -33,7 +33,7 @@ import org.ff4j.exception.AssertionViolationException;
 import org.ff4j.feature.Feature;
 import org.ff4j.feature.exception.FeatureNotFoundException;
 import org.ff4j.feature.exception.GroupNotFoundException;
-import org.ff4j.feature.repository.FeaturesRepository;
+import org.ff4j.feature.repository.FeatureRepository;
 import org.ff4j.feature.togglestrategy.PonderationToggleStrategy;
 import org.ff4j.feature.togglestrategy.TogglePredicate;
 import org.ff4j.parser.ConfigurationFileParser;
@@ -42,6 +42,7 @@ import org.ff4j.property.Property;
 import org.ff4j.property.PropertyBoolean;
 import org.ff4j.property.PropertyDouble;
 import org.ff4j.property.PropertyInt;
+import org.ff4j.security.FF4jPermission;
 import org.ff4j.test.AssertFF4j;
 import org.ff4j.test.FF4jTestDataSet;
 import org.ff4j.utils.Util;
@@ -51,7 +52,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Abtract class used to test multiple implementation of {@link FeaturesRepository} in order to behave the
+ * Abtract class used to test multiple implementation of {@link FeatureRepository} in order to behave the
  * same.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
@@ -62,7 +63,7 @@ public abstract class RepositoryFeaturesTestSupport implements FF4jTestDataSet {
 	protected FF4j ff4j = null;
 
 	/** Tested Store. */
-	protected FeaturesRepository testedStore;
+	protected FeatureRepository testedStore;
 
 	/** Test Values */
 	protected AssertFF4j assertFF4j;
@@ -87,7 +88,7 @@ public abstract class RepositoryFeaturesTestSupport implements FF4jTestDataSet {
 	 * @throws Exception
 	 *          Hi guys, just let you know I did the update in the presentation : changing instructors names to put the 2 of you    error during building feature store
 	 */
-	protected abstract FeaturesRepository initStore();
+	protected abstract FeatureRepository initStore();
 
 	@Test
 	@DisplayName("When configuration file is null, expecting violation exception")
@@ -118,6 +119,29 @@ public abstract class RepositoryFeaturesTestSupport implements FF4jTestDataSet {
         Assertions.assertEquals(F4, f4.getUid());
         Assertions.assertTrue(f4.getDescription().isPresent() && !"".equals(f4.getDescription().get()));
         assertFF4j.assertThatFeatureIsInGroup(F4, GRP1);
+      
+        Feature f2 = features.get(F2);
+        Assertions.assertNotNull(f2);
+        Assertions.assertNotNull(f2.getUid());
+        // Features -- Properties
+        Assertions.assertNotNull(f2.getProperties());
+        Assertions.assertNotNull(f2.getProperties().get("ppint"));
+        Assertions.assertEquals(12, f2.getProperties().get("ppint").asInt());
+        Assertions.assertEquals(12.5, f2.getProperties().get("ppdouble").asDouble());
+        Assertions.assertEquals(true, f2.getProperties().get("ppboolean").asBoolean());
+        Assertions.assertEquals("hello", f2.getProperties().get("ppstring").asString(), "hello");
+        Assertions.assertEquals("NA",    f2.getProperties().get("regionIdentifier").asString());
+        Assertions.assertTrue(f2.getProperties().get("regionIdentifier").getFixedValues().isPresent());
+        // Features -- ToggleStrategies
+        Assertions.assertFalse(f2.getToggleStrategies().isEmpty());
+        TogglePredicate tp = f2.getToggleStrategies().get(0);
+        Assertions.assertEquals(PonderationToggleStrategy.class.getName(), tp.getClass().getName());
+        PonderationToggleStrategy pts = (PonderationToggleStrategy) tp;
+        Assertions.assertEquals(new Double(1), 
+                pts.getPropertiesAsMap().get(PonderationToggleStrategy.PARAM_WEIGHT).getValue());
+        // Features -- Permissions
+        Assertions.assertFalse(f2.getAccessControlList().getPermissions().isEmpty());
+        Assertions.assertTrue(f2.getAccessControlList().getPermissions().containsKey(FF4jPermission.FEATURE_TOGGLE));
     }
 	
 	@Test

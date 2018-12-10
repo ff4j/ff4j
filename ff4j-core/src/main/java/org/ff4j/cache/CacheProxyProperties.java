@@ -23,12 +23,12 @@ package org.ff4j.cache;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.ff4j.feature.repository.FeaturesRepository;
+import org.ff4j.feature.repository.FeatureRepository;
 import org.ff4j.property.Property;
-import org.ff4j.property.repository.PropertiesRepository;
+import org.ff4j.property.repository.PropertyRepository;
 
 /**
- * Access to {@link FeaturesRepository} could generate some overhead and decrease performances. This is the reason why cache is provided
+ * Access to {@link FeatureRepository} could generate some overhead and decrease performances. This is the reason why cache is provided
  * though proxies.
  * 
  * As applications are distributed, the cache itself could be distributed. The default implement is
@@ -36,10 +36,10 @@ import org.ff4j.property.repository.PropertiesRepository;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class CacheProxyProperties extends CacheProxy< String, Property<?>> implements PropertiesRepository {
+public class CacheProxyProperties extends CacheProxy< String, Property<?>> implements PropertyRepository {
 
     /** Target property store to be proxified to cache properties. */
-    private PropertiesRepository targetPropertyStore;
+    private PropertyRepository targetPropertyStore;
     
     /**
      * Initialization through constructor.
@@ -49,7 +49,7 @@ public class CacheProxyProperties extends CacheProxy< String, Property<?>> imple
      * @param cache
      *            cache manager to limit overhead of store
      */
-    public CacheProxyProperties(PropertiesRepository fStore, CacheManager< String, Property<?> > cache) {
+    public CacheProxyProperties(PropertyRepository fStore, CacheManager< String, Property<?> > cache) {
         this.cacheManager        = cache;
         this.targetPropertyStore  = fStore;
         this.scheduler = new CachePollingSchedulerProperties(fStore, cache);
@@ -125,7 +125,7 @@ public class CacheProxyProperties extends CacheProxy< String, Property<?>> imple
      * 
      * @return current value of 'target'
      */
-    public PropertiesRepository getTargetPropertyStore() {
+    public PropertyRepository getTargetPropertyStore() {
         if (targetPropertyStore == null) {
             throw new IllegalArgumentException("ff4j-core: Target for cache proxy has not been provided");
         }

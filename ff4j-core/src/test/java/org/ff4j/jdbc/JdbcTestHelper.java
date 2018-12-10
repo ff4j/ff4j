@@ -50,7 +50,6 @@ public class JdbcTestHelper {
      *      current data source
      */
     public static DataSource createInMemoryHQLDataSource() {
-        // Init DataSource
         BasicDataSource dbcpDataSource = new BasicDataSource();
         dbcpDataSource.setDriverClassName("org.hsqldb.jdbcDriver");
         dbcpDataSource.setUsername("sa");
@@ -67,16 +66,17 @@ public class JdbcTestHelper {
     /**
      * Execute expected SQL scripts.
      */
-    public static void initDBSchema(DataSource dataSource, boolean dropTable) {
+    public static void initDBSchema(DataSource dataSource) {
         Connection sqlConnection = null;
         try {
             sqlConnection = dataSource.getConnection();
             SqlScriptRunner ssr = new SqlScriptRunner(sqlConnection, true, true);
-            if (dropTable) {
-                //ssr.runScript(new FileReader("src/main/resources/v2/schema-drop-v2.sql"));
+            
+            try {
                 ssr.runScript(new StringReader(new JdbcQueryBuilder().sqlDropSchema()));
+            } catch(Exception e) { 
+                // if table does not exist you may failed, not a big deal
             }
-            //ssr.runScript(new FileReader("src/main/resources/v2/schema-ddl-v2.sql"));
             ssr.runScript(new StringReader(new JdbcQueryBuilder().sqlCreateSchema()));
             ssr.runScript(new FileReader("src/test/resources/ff4j-testDataset.sql"));
             

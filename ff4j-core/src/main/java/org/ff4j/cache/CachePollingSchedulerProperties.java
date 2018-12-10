@@ -21,7 +21,7 @@ package org.ff4j.cache;
  */
 
 import org.ff4j.property.Property;
-import org.ff4j.property.repository.PropertiesRepository;
+import org.ff4j.property.repository.PropertyRepository;
 
 
 /**
@@ -44,7 +44,7 @@ public class CachePollingSchedulerProperties extends CachePollingScheduler < Pro
      * @param cp
      *      current cache manager
      */
-    public CachePollingSchedulerProperties(PropertiesRepository sf, CacheManager<String, Property<?>> cp) {
+    public CachePollingSchedulerProperties(PropertyRepository sf, CacheManager<String, Property<?>> cp) {
         worker = new CacheWorker<Property<?>>(sf, cp);
         initExecutor("FF4j_Polling_PropertyStore2Cache");
     }

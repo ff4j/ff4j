@@ -75,7 +75,6 @@ public abstract class ConfigurationFileParser {
     public static final String TOGGLE_STRATEGY_PARAMTAG   = "param";
     public static final String TOGGLE_STRATEGY_PARAMNAME  = "name";
     public static final String TOGGLE_STRATEGY_PARAMVALUE = "value";
-    public static final String PROPERTIES_CUSTOM_TAG      = "custom-properties";
     public static final String PROPERTIES_CUSTOM_TAG2     = "properties";
     public static final String PROPERTIES_TAG             = "properties";
     

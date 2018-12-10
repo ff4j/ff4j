@@ -1,10 +1,30 @@
 package org.ff4j.feature.togglestrategy.expression;
 
+/*-
+ * #%L
+ * ff4j-core
+ * %%
+ * Copyright (C) 2013 - 2018 FF4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.ff4j.feature.repository.FeaturesRepository;
+import org.ff4j.feature.repository.FeatureRepository;
 import org.ff4j.feature.togglestrategy.AbstractToggleStrategy;
 import org.ff4j.feature.togglestrategy.ToggleContext;
 import org.ff4j.property.PropertyString;
@@ -57,7 +77,7 @@ public class ExpressionToggleStrategy extends AbstractToggleStrategy {
      *            target expression
      * @return expression evaluation value
      */
-    private boolean evaluateExpression(FeaturesRepository featureRepository, String expressions) {
+    private boolean evaluateExpression(FeatureRepository featureRepository, String expressions) {
         if (!cachedExpression.containsKey(expression)) {
             cachedExpression.put(expression, ExpressionParser.parseExpression(expressions));
         }
@@ -71,7 +91,7 @@ public class ExpressionToggleStrategy extends AbstractToggleStrategy {
      *            current store for features
      * @return current statuses for stores
      */
-    private Map<String, Boolean> getFeaturesStatus(FeaturesRepository currentStore) {
+    private Map<String, Boolean> getFeaturesStatus(FeatureRepository currentStore) {
         Map<String, Boolean> bools = new HashMap<String, Boolean>();
         currentStore.findAll().forEach(fp ->  bools.put(fp.getUid(), fp.isEnabled()));
         return bools;

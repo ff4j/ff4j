@@ -43,9 +43,9 @@ import org.ff4j.property.exception.PropertyNotFoundException;
  *
  * @author Cedrick Lunven (@clunven)
  */
-public abstract class PropertiesRepositorySupport 
-    extends FF4jRepositorySupport<Property<?>, PropertiesRepositoryListener> 
-    implements PropertiesRepository {
+public abstract class PropertyRepositorySupport 
+    extends FF4jRepositorySupport<Property<?>, PropertyRepositoryListener> 
+    implements PropertyRepository {
     
     /** serialVersionUID. */
     private static final long serialVersionUID = -5638535944745337074L;
@@ -147,13 +147,13 @@ public abstract class PropertiesRepositorySupport
     /** {@inheritDoc} */
     @Override
     public void registerListener(String name, FF4jRepositoryListener<Property<?>> listener) {
-        registerListener(name, (PropertiesRepositoryListener) listener);
+        registerListener(name, (PropertyRepositoryListener) listener);
     }
     
     /** {@inheritDoc} */
     @Override
     public void registerAuditListener(AuditTrail auditTrail) {
-        this.registerListener(LISTENERNAME_AUDIT, new PropertiesRepositoryListenerAudit(auditTrail));
+        this.registerListener(LISTENERNAME_AUDIT, new PropertyRepositoryListenerAudit(auditTrail));
     }
     
     /** {@inheritDoc} */

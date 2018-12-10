@@ -1,4 +1,6 @@
-package org.ff4j.test.store;
+package org.ff4j.parser.yaml;
+
+import java.io.InputStream;
 
 /*-
  * #%L
@@ -21,19 +23,24 @@ package org.ff4j.test.store;
  */
 
 import org.ff4j.feature.repository.FeatureRepository;
-import org.ff4j.feature.repository.FeatureRepositoryInMemory;
+import org.ff4j.property.repository.PropertyRepository;
+import org.ff4j.property.repository.PropertyRepositoryInMemory;
+import org.ff4j.test.store.RepositoryPropertiesTestSupport;
+import org.junit.jupiter.api.DisplayName;
 
 /**
  * Testing implementation of {@link FeatureRepository} for DB : MEMORY
  *
  * @author Cedrick LUNVEN (@clunven)
  */
-public class RepositoryFeatureStoreInMemoryTest extends RepositoryFeaturesTestSupport {
+@DisplayName("Testing INMEMORY | PROPERTIES Repository")
+public class YamlRepositoryPropertiesStoreInMemoryTest extends RepositoryPropertiesTestSupport {
 
     /** {@inheritDoc} */
     @Override
-    public FeatureRepository initStore() {
-        return new FeatureRepositoryInMemory("ff4j-testDataset.xml");
+    public PropertyRepository initStore() {
+        InputStream in = getClass().getClassLoader().getResourceAsStream("ff4j-testDataset.yml");
+        return new PropertyRepositoryInMemory(new YamlParser().parse(in));
     }
     
 }

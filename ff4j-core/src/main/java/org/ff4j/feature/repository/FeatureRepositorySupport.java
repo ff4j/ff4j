@@ -43,13 +43,13 @@ import org.ff4j.feature.exception.GroupNotFoundException;
 /**
  * Specialization of the {@link FF4jRepository} to work with {@link Feature}. 
  * 
- * Implementation of dedicated operation related to feature through {@link FeaturesRepository}.
+ * Implementation of dedicated operation related to feature through {@link FeatureRepository}.
  *
  * @author Cedrick Lunven (@clunven)
  */
-public abstract class FeaturesRepositorySupport 
-                extends FF4jRepositorySupport<Feature, FeaturesRepositoryListener > 
-                implements FeaturesRepository {
+public abstract class FeatureRepositorySupport 
+                extends FF4jRepositorySupport<Feature, FeatureRepositoryListener > 
+                implements FeatureRepository {
 
     /** serialVersionUID. */
     private static final long serialVersionUID = -7450698535116107530L;
@@ -222,13 +222,13 @@ public abstract class FeaturesRepositorySupport
     @Override
     public void registerListener(String name, FF4jRepositoryListener<Feature> listener) {
         // Enforce subclass to reach AbstractObservable.registerListener(..)
-        registerListener(name, (FeaturesRepositoryListener) listener);
+        registerListener(name, (FeatureRepositoryListener) listener);
     }
     
     /** {@inheritDoc} */
     @Override
     public void registerAuditListener(AuditTrail auditTrail) {
-        this.registerListener(LISTENERNAME_AUDIT, new FeaturesRepositoryListenerAudit(auditTrail));
+        this.registerListener(LISTENERNAME_AUDIT, new FeatureRepositoryListenerAudit(auditTrail));
     }
     
     /** {@inheritDoc} */

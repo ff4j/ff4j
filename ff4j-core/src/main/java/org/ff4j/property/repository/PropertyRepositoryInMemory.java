@@ -37,11 +37,11 @@ import org.ff4j.parser.xml.XmlParserV2;
 import org.ff4j.property.Property;
 import org.ff4j.test.AssertUtils;
 /**
- * Implementation of {@link PropertiesRepository} to keep properties in memory.
+ * Implementation of {@link PropertyRepository} to keep properties in memory.
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class PropertiesRepositoryInMemory extends PropertiesRepositorySupport {
+public class PropertyRepositoryInMemory extends PropertyRepositorySupport {
 
     /** serialVersionUID. */
     private static final long serialVersionUID = 5829690784801420235L;
@@ -50,7 +50,7 @@ public class PropertiesRepositoryInMemory extends PropertiesRepositorySupport {
     private Map<String, Property<?>> mapOfProperties = new LinkedHashMap<>();
     
     /** Default constructor. */
-    public PropertiesRepositoryInMemory() {}
+    public PropertyRepositoryInMemory() {}
     
     /**
      * Provide an xml file to initialize.
@@ -58,7 +58,7 @@ public class PropertiesRepositoryInMemory extends PropertiesRepositorySupport {
      * @param fileName
      *          target fileName
      */
-    public PropertiesRepositoryInMemory(String fileName) {
+    public PropertyRepositoryInMemory(String fileName) {
         this(new XmlParserV2(), fileName);
     }
     
@@ -68,7 +68,7 @@ public class PropertiesRepositoryInMemory extends PropertiesRepositorySupport {
      * @param fileName
      *          target fileName
      */
-    public PropertiesRepositoryInMemory(InputStream inputStream) {
+    public PropertyRepositoryInMemory(InputStream inputStream) {
         this(new XmlParserV2(), inputStream);
     }
     
@@ -80,7 +80,7 @@ public class PropertiesRepositoryInMemory extends PropertiesRepositorySupport {
      * @param fileName
      *      target file name
      */
-    public PropertiesRepositoryInMemory(ConfigurationFileParser parser, String fileName) {
+    public PropertyRepositoryInMemory(ConfigurationFileParser parser, String fileName) {
         AssertUtils.assertHasLength(fileName, "fileName");
         AssertUtils.assertNotNull(parser,     "parser");
         initWithConfig(parser.parse(fileName));
@@ -94,7 +94,7 @@ public class PropertiesRepositoryInMemory extends PropertiesRepositorySupport {
      * @param fileName
      *      target file name
      */
-    public PropertiesRepositoryInMemory(ConfigurationFileParser parser, InputStream in) {
+    public PropertyRepositoryInMemory(ConfigurationFileParser parser, InputStream in) {
         AssertUtils.assertNotNull(parser,  "parser");
         AssertUtils.assertNotNull(in, "inputStream");
         initWithConfig(parser.parse(in));
@@ -106,7 +106,7 @@ public class PropertiesRepositoryInMemory extends PropertiesRepositorySupport {
      * @param fileName
      *            fileName present in classPath or on fileSystem.
      */
-    public PropertiesRepositoryInMemory(FF4jConfigFile ff4jConfig) {
+    public PropertyRepositoryInMemory(FF4jConfigFile ff4jConfig) {
         initWithConfig(ff4jConfig);
     }
 
@@ -116,7 +116,7 @@ public class PropertiesRepositoryInMemory extends PropertiesRepositorySupport {
      * @param features
      *      collection of features to be created
      */
-    public PropertiesRepositoryInMemory(Collection<Property<?>> properties) {
+    public PropertyRepositoryInMemory(Collection<Property<?>> properties) {
         initWithProperties(properties);
     }
     

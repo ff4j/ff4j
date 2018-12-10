@@ -249,13 +249,13 @@ public interface FF4jTestDataSet {
             r.put(PByte,            new PropertyByte(PByte, (byte) 'p'));
             
             // Date1
-            Date          myDate          = Property.SDF.parse("2018-12-24 23:00:00");
+            Date          myDate          = Property.SIMPLE_DATE_FORMAT.parse("2018-12-24 23:00:00");
             LocalDateTime myLocalDateTime = LocalDateTime.parse("2018-12-24 23:00:00", Property.FORMATTER);
             Instant       myInstant       = myLocalDateTime.toInstant(Property.ZONE);
             Calendar      myCal           = new GregorianCalendar();
             myCal.setTime(myDate);
             // Date2
-            Date          myDate2          = Property.SDF.parse("2019-01-01 23:00:00");
+            Date          myDate2          = Property.SIMPLE_DATE_FORMAT.parse("2019-01-01 23:00:00");
             LocalDateTime myLocalDateTime2 = LocalDateTime.parse("2019-01-01 23:00:00", Property.FORMATTER);
             Instant       myInstant2       = myLocalDateTime.toInstant(Property.ZONE);
             Calendar      myCal2           = new GregorianCalendar();

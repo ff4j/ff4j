@@ -67,7 +67,10 @@ ff4j:
           value: hello   
         - name: myLogLevel
           type: logLevel
-          value: DEBUG                                        
+          value: DEBUG   
+        - name: ppListInt
+          type: listInt
+          value: 12,13,14                      
         - name: digitValue
           type: org.ff4j.property.PropertyInt
           value: 1
@@ -76,8 +79,8 @@ ff4j:
           type: string
           value: NA
           fixedValues: [NA, EMEA, APAC]
-      toggle-strategies:
-        - class: org.ff4j.feature.strategy.PonderationToggleStrategy
+      toggleStrategies:
+        - class: org.ff4j.feature.togglestrategy.PonderationToggleStrategy
           properties:
            - name: weight
              type: double
@@ -93,7 +96,7 @@ ff4j:
       enable: true
       description: description
       groupName: GRP1
-      toggle-strategies:
+      toggleStrategies:
         - class: org.ff4j.feature.togglestrategy.expression.ExpressionToggleStrategy
           properties:
            - name: expression
@@ -108,7 +111,7 @@ ff4j:
       type: bigDecimal
       value: 1.5
     - name: pBigInteger
-      type: pBigInteger
+      type: bigInteger
       value: 123456
     - name: pBoolean
       type: boolean

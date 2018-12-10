@@ -72,7 +72,7 @@ public class PropertyDate extends Property< Date > {
     @Override
     public Date fromString(String v) {
         try {
-            return SDF.parse(v);
+            return SIMPLE_DATE_FORMAT.parse(v);
         } catch (ParseException e) {
            throw new IllegalArgumentException("Illegal expression for date, expecting yyyy-MM-dd HH:mm:ss", e);
         }
@@ -88,7 +88,7 @@ public class PropertyDate extends Property< Date > {
         if (value == null) {
             return null;
         }
-        return SDF.format(value);
+        return SIMPLE_DATE_FORMAT.format(value);
     }
 
 }

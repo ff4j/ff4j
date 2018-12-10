@@ -30,9 +30,9 @@ import org.ff4j.property.Property;
  * 
  * @author Cedrick LUNVEN  (@clunven)
  */
-public class PropertiesRepositoryListenerAudit extends AbstractAuditTrailListener<Property<?>> implements PropertiesRepositoryListener {
+public class PropertyRepositoryListenerAudit extends AbstractAuditTrailListener<Property<?>> implements PropertyRepositoryListener {
 
-    public PropertiesRepositoryListenerAudit(AuditTrail auditTrail) {
+    public PropertyRepositoryListenerAudit(AuditTrail auditTrail) {
         super(auditTrail, Scope.PROPERTY, Scope.PROPERTYSTORE);
     }
     

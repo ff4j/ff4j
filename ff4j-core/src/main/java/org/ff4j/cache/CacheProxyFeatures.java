@@ -23,10 +23,10 @@ package org.ff4j.cache;
 import java.util.stream.Stream;
 
 import org.ff4j.feature.Feature;
-import org.ff4j.feature.repository.FeaturesRepository;
+import org.ff4j.feature.repository.FeatureRepository;
 
 /**
- * Access to {@link FeaturesRepository} could generate some overhead and decrease performances. This is the reason why cache is provided
+ * Access to {@link FeatureRepository} could generate some overhead and decrease performances. This is the reason why cache is provided
  * though proxies.
  * 
  * As applications are distributed, the cache itself could be distributed. The default implement is
@@ -34,7 +34,7 @@ import org.ff4j.feature.repository.FeaturesRepository;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class CacheProxyFeatures extends CacheProxy< String, Feature> implements FeaturesRepository {
+public class CacheProxyFeatures extends CacheProxy< String, Feature> implements FeatureRepository {
 
     /**
      * Initialization through constructor.
@@ -44,7 +44,7 @@ public class CacheProxyFeatures extends CacheProxy< String, Feature> implements 
      * @param cache
      *            cache manager to limit overhead of store
      */
-    public CacheProxyFeatures(FeaturesRepository fStore, CacheManager< String, Feature > cache) {
+    public CacheProxyFeatures(FeatureRepository fStore, CacheManager< String, Feature > cache) {
         this.cacheManager = cache;
         this.targetStore  = fStore;
         this.scheduler    = new CachePollingSchedulerFeatures(fStore, cache);
@@ -145,11 +145,11 @@ public class CacheProxyFeatures extends CacheProxy< String, Feature> implements 
      * 
      * @return current value of 'target'
      */
-    public FeaturesRepository getTargetFeatureStore() {
+    public FeatureRepository getTargetFeatureStore() {
         if (targetStore == null) {
             throw new IllegalArgumentException("ff4j-core: Target for cache proxy has not been provided");
         }
-        return (FeaturesRepository) targetStore;
+        return (FeatureRepository) targetStore;
     }    
 
 }

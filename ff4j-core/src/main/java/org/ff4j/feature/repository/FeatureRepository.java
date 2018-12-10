@@ -33,7 +33,7 @@ import org.ff4j.feature.exception.GroupNotFoundException;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public interface FeaturesRepository extends FF4jRepository < String, Feature > {
+public interface FeatureRepository extends FF4jRepository < String, Feature > {
     
     /**
      * Toggle ON a feature by its identifier.

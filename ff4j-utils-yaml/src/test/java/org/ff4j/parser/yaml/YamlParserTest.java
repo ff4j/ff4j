@@ -20,12 +20,18 @@ package org.ff4j.parser.yaml;
  * #L%
  */
 
-import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.Map;
 
+import org.ff4j.feature.Feature;
+import org.ff4j.feature.togglestrategy.PonderationToggleStrategy;
+import org.ff4j.feature.togglestrategy.TogglePredicate;
 import org.ff4j.parser.FF4jConfigFile;
-import org.ff4j.parser.yaml.YamlParser;
+import org.ff4j.security.FF4jPermission;
 import org.ff4j.test.FF4jTestDataSet;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -33,32 +39,76 @@ import org.junit.jupiter.api.Test;
  *
  * @author Cedrick LUNVEN (@clunven)
  */
+@DisplayName("Testing YamlParser configuration files")
 public class YamlParserTest implements FF4jTestDataSet {
     
+    /** DataSet. **/
+    protected FF4jConfigFile testDataSet;
+    
+    /** {@inheritDoc} */
+    @BeforeEach
+    public void setUp() throws Exception {
+        testDataSet = expectConfig();
+    }
+    
     @Test
-    public void testParsing() throws FileNotFoundException {
-        FF4jConfigFile configFile = new YamlParser().parse("test-ff4j-parser.yml");
+    @DisplayName("Parsing Yaml files and evaluate parts")
+    public void testLoaderYAMLFile() {
+        // Given
+        InputStream in = getClass().getClassLoader().getResourceAsStream("ff4j-testDataset.yml");
+        
+        // Parsing
+        FF4jConfigFile configFile = new YamlParser().parse(in);
+        
+        // Evaluating Features
+        Map<String, Feature> features = configFile.getFeatures();
+        
+        // Then
+        Assertions.assertTrue(features.containsKey(F1));
+        Assertions.assertTrue(features.containsKey(F2));
+        Assertions.assertTrue(features.containsKey(F3));
+        Assertions.assertTrue(features.containsKey(F4));
+        Assertions.assertEquals(testDataSet.getFeatures().size(), features.size());
+        Feature f4 = features.get(F4);
+        Assertions.assertEquals(F4, f4.getUid());
+        Assertions.assertTrue(f4.getDescription().isPresent() && !"".equals(f4.getDescription().get()));
+        
+        Feature f2 = features.get(F2);
+        Assertions.assertNotNull(f2);
+        Assertions.assertNotNull(f2.getUid());
+        // Features -- Properties
+        Assertions.assertNotNull(f2.getProperties());
+        Assertions.assertNotNull(f2.getProperties().get("ppint"));
+        Assertions.assertEquals(12, f2.getProperties().get("ppint").asInt());
+        Assertions.assertEquals(12.5, f2.getProperties().get("ppdouble").asDouble());
+        Assertions.assertEquals(true, f2.getProperties().get("ppboolean").asBoolean());
+        Assertions.assertEquals("hello", f2.getProperties().get("ppstring").asString(), "hello");
+        Assertions.assertEquals("NA",    f2.getProperties().get("regionIdentifier").asString());
+        Assertions.assertTrue(f2.getProperties().get("regionIdentifier").getFixedValues().isPresent());
+        // Features -- ToggleStrategies
+        Assertions.assertFalse(f2.getToggleStrategies().isEmpty());
+        TogglePredicate tp = f2.getToggleStrategies().get(0);
+        Assertions.assertEquals(PonderationToggleStrategy.class.getName(), tp.getClass().getName());
+        PonderationToggleStrategy pts = (PonderationToggleStrategy) tp;
+        Assertions.assertEquals(new Double(1), 
+                pts.getPropertiesAsMap().get(PonderationToggleStrategy.PARAM_WEIGHT).getValue());
+        // Features -- Permissions
+        Assertions.assertFalse(f2.getAccessControlList().getPermissions().isEmpty());
+        Assertions.assertTrue(f2.getAccessControlList().getPermissions().containsKey(FF4jPermission.FEATURE_TOGGLE));
         
         // roles
-        Assert.assertNotNull(configFile.getRoles());
-        Assert.assertEquals(3, configFile.getRoles().size());
-        Assert.assertNotNull(configFile.getRoles().get("USER"));
+        Assertions.assertNotNull(configFile.getRoles());
+        Assertions.assertEquals(4, configFile.getRoles().size());
+        Assertions.assertNotNull(configFile.getRoles().get("USER"));
         
         // users
-        Assert.assertNotNull(configFile.getUsers());
-        Assert.assertEquals(2, configFile.getUsers().size());
-        Assert.assertEquals(1, configFile.getUsers().get("pierre").getRoles().size());
+        Assertions.assertNotNull(configFile.getUsers());
+        Assertions.assertEquals(2, configFile.getUsers().size());
+        Assertions.assertEquals(1, configFile.getUsers().get("john").getRoles().size());
 
         // Properties
-        Assert.assertNotNull(configFile.getProperties());
-        Assert.assertEquals(7, configFile.getProperties().size());
-        Assert.assertNotNull(configFile.getProperties().get("a"));
-        
-        // Features
-        Assert.assertNotNull(configFile.getFeatures());
-        Assert.assertEquals(4, configFile.getFeatures().size());
-        
-        System.out.println(configFile);
+        Assertions.assertNotNull(configFile.getProperties());
+        Assertions.assertEquals(32, configFile.getProperties().size());
     }
-
 }
+    

@@ -1,3 +1,22 @@
+---
+-- #%L
+-- ff4j-core
+-- %%
+-- Copyright (C) 2013 - 2018 FF4J
+-- %%
+-- Licensed under the Apache License, Version 2.0 (the "License");
+-- you may not use this file except in compliance with the License.
+-- You may obtain a copy of the License at
+-- 
+--      http://www.apache.org/licenses/LICENSE-2.0
+-- 
+-- Unless required by applicable law or agreed to in writing, software
+-- distributed under the License is distributed on an "AS IS" BASIS,
+-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-- See the License for the specific language governing permissions and
+-- limitations under the License.
+-- #L%
+---
 -- f1 --
 INSERT INTO FF4J_FEATURE
        (UID, CREATED, LASTMODIFIED, OWNER, DESCRIPTION, ENABLE, GROUPNAME) 
@@ -15,7 +34,7 @@ INSERT INTO FF4J_FEATURE_PROP
        (UID, CLASSNAME, VAL, FIXEDVALUES, FEAT_UID) 
 VALUES ('ppint', 'int', '12', NULL, 'f2'), 
 	   ('ppdouble', 'double', '12.5', NULL, 'f2'),
-	   ('ppbolean', 'boolean', 'true', NULL, 'f2'), 
+	   ('ppboolean', 'boolean', 'true', NULL, 'f2'), 
 	   ('ppstring', 'string', 'hello', NULL, 'f2'),
 	   ('ppListInt', 'listInt', '12,13,14', NULL, 'f2'), 
 	   ('myLogLevel', 'logLevel', 'DEBUG', NULL, 'f2'),

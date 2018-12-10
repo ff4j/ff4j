@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 
 import org.ff4j.feature.Feature;
 import org.ff4j.feature.togglestrategy.TogglePredicate;
+import org.ff4j.property.Property;
 import org.ff4j.security.FF4jAcl;
 import org.ff4j.security.FF4jGrantees;
 import org.ff4j.security.FF4jPermission;
@@ -62,7 +64,6 @@ public class FeatureJsonParser {
     public static String ACCESSCONTROL              = "accessControlList";
     public static String TOGGLE_STRATEGIES          = "toggleStrategies";
     public static String TOGGLE_PREDICATE_CLASSNAME = "className";
-    public static String TOGGLE_PREDICATE_PARAMS    = "params";
     public static String EMPTY                      = "empty";
     public static String PERMISSIONS                = "permissions";
     public static String PERM_USERS                 = "users";
@@ -267,9 +268,14 @@ public class FeatureJsonParser {
         if (null == flipMap || flipMap.isEmpty()) {
             return null;
         }
-        String classType = (String) flipMap.get(TOGGLE_PREDICATE_CLASSNAME);
-        HashMap<String, String> initparams = (HashMap<String, String>) flipMap.get(TOGGLE_PREDICATE_PARAMS);
-        return TogglePredicate.of(uid, classType, initparams);
+        String toggleClassType  = (String) flipMap.get(TOGGLE_PREDICATE_CLASSNAME);
+        List<HashMap<String, Object>> toggleProperties = (List<HashMap<String, Object>>) flipMap.get(PROPERTIES);
+        Set <Property<?>> setOfProperties = new HashSet<>();
+        if (toggleProperties != null) {
+            toggleProperties.stream()
+                            .map(PropertyJsonParser::parsePropertyTag)
+                            .forEach(setOfProperties::add);
+        }
+        return TogglePredicate.of(uid, toggleClassType, setOfProperties);
     }
-
 }

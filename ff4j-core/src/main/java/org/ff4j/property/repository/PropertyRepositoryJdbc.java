@@ -47,7 +47,7 @@ import org.ff4j.property.exception.PropertyAccessException;
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class PropertiesRepositoryJdbc extends PropertiesRepositorySupport {
+public class PropertyRepositoryJdbc extends PropertyRepositorySupport {
 
     /** serialVersionUID. */
     private static final long serialVersionUID = -1746222910983624609L;
@@ -64,7 +64,7 @@ public class PropertiesRepositoryJdbc extends PropertiesRepositorySupport {
 	}
     
     /** Default Constructor. */
-    public PropertiesRepositoryJdbc() {}
+    public PropertyRepositoryJdbc() {}
     
     /**
      * Constructor from DataSource.
@@ -72,10 +72,9 @@ public class PropertiesRepositoryJdbc extends PropertiesRepositorySupport {
      * @param jdbcDS
      *            native jdbc datasource
      */
-    public PropertiesRepositoryJdbc(DataSource jdbcDS) {
+    public PropertyRepositoryJdbc(DataSource jdbcDS) {
         this.dataSource = jdbcDS;
     }
-    
 
     /** {@inheritDoc} */
     @Override
@@ -108,6 +107,9 @@ public class PropertiesRepositoryJdbc extends PropertiesRepositorySupport {
     @Override
     public void saveProperty(Property<?> ap) {
         assertNotNull(ap);
+        if (exists(ap.getUid())) {
+            deleteProperty(ap.getUid());
+        }
         try (Connection sqlConn = getDataSource().getConnection()) {
             JdbcPropertyMapper pmapper = new JdbcPropertyMapper(sqlConn, getQueryBuilder());
             try(PreparedStatement ps1 = pmapper.mapToRepository(ap)) {

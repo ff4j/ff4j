@@ -1,19 +1,28 @@
 package org.ff4j.feature.repository;
 
+/*-
+ * #%L
+ * ff4j-core
+ * %%
+ * Copyright (C) 2013 - 2018 FF4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import static org.ff4j.test.AssertUtils.assertHasLength;
 import static org.ff4j.test.AssertUtils.assertNotNull;
 import static org.ff4j.utils.Util.setOf;
-
-/*
- * #%L ff4j-core $Id:$ $HeadURL:$ %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy of the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
- * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License. #L%
- */
 
 import java.io.InputStream;
 import java.util.Collection;
@@ -38,7 +47,7 @@ import org.ff4j.test.AssertUtils;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class FeaturesRepositoryInMemory extends FeaturesRepositorySupport {
+public class FeatureRepositoryInMemory extends FeatureRepositorySupport {
 
     /** serialVersionUID. */
     private static final long serialVersionUID = -3768339754263659120L;
@@ -53,7 +62,7 @@ public class FeaturesRepositoryInMemory extends FeaturesRepositorySupport {
     private Map<String, Set<String>> mapOfGroups = new HashMap<String, Set<String>>();
 
     /** Default constructor. */
-    public FeaturesRepositoryInMemory() {}
+    public FeatureRepositoryInMemory() {}
     
     /**
      * Provide an xml file to initialize.
@@ -61,7 +70,7 @@ public class FeaturesRepositoryInMemory extends FeaturesRepositorySupport {
      * @param fileName
      *          target fileName
      */
-    public FeaturesRepositoryInMemory(String fileName) {
+    public FeatureRepositoryInMemory(String fileName) {
         this(new XmlParserV2(), fileName);
     }
     
@@ -71,7 +80,7 @@ public class FeaturesRepositoryInMemory extends FeaturesRepositorySupport {
      * @param fileName
      *          target fileName
      */
-    public FeaturesRepositoryInMemory(InputStream inputStream) {
+    public FeatureRepositoryInMemory(InputStream inputStream) {
         this(new XmlParserV2(), inputStream);
     }
     
@@ -83,7 +92,7 @@ public class FeaturesRepositoryInMemory extends FeaturesRepositorySupport {
      * @param fileName
      *      target file name
      */
-    public FeaturesRepositoryInMemory(ConfigurationFileParser parser, String fileName) {
+    public FeatureRepositoryInMemory(ConfigurationFileParser parser, String fileName) {
         AssertUtils.assertHasLength(fileName, "fileName");
         AssertUtils.assertNotNull(parser,     "parser");
         initWithConfig(parser.parse(fileName));
@@ -97,7 +106,7 @@ public class FeaturesRepositoryInMemory extends FeaturesRepositorySupport {
      * @param fileName
      *      target file name
      */
-    public FeaturesRepositoryInMemory(ConfigurationFileParser parser, InputStream in) {
+    public FeatureRepositoryInMemory(ConfigurationFileParser parser, InputStream in) {
         AssertUtils.assertNotNull(parser,  "parser");
         AssertUtils.assertNotNull(in, "inputStream");
         initWithConfig(parser.parse(in));
@@ -109,7 +118,7 @@ public class FeaturesRepositoryInMemory extends FeaturesRepositorySupport {
      * @param fileName
      *            fileName present in classPath or on fileSystem.
      */
-    public FeaturesRepositoryInMemory(FF4jConfigFile ff4jConfig) {
+    public FeatureRepositoryInMemory(FF4jConfigFile ff4jConfig) {
         initWithConfig(ff4jConfig);
     }
 
@@ -119,7 +128,7 @@ public class FeaturesRepositoryInMemory extends FeaturesRepositorySupport {
      * @param features
      *      collection of features to be created
      */
-    public FeaturesRepositoryInMemory(Collection<Feature> features) {
+    public FeatureRepositoryInMemory(Collection<Feature> features) {
         initWithFeatures(features);
     }
     

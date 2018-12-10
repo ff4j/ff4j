@@ -20,12 +20,12 @@ package org.ff4j.features;
  * #L%
  */
 
-import org.ff4j.feature.repository.FeaturesRepository;
-import org.ff4j.feature.repository.FeaturesRepositoryInMemory;
+import org.ff4j.feature.repository.FeatureRepository;
+import org.ff4j.feature.repository.FeatureRepositoryInMemory;
 import org.junit.jupiter.api.DisplayName;
 
 /**
- * Testing implementation of {@link FeaturesRepository} for DB : MEMORY
+ * Testing implementation of {@link FeatureRepository} for DB : MEMORY
  *
  * @author Cedrick LUNVEN (@clunven)
  */
@@ -34,8 +34,8 @@ public class RepositoryFeatureInMemoryTest extends RepositoryFeaturesTestSupport
 
     /** {@inheritDoc} */
     @Override
-    public FeaturesRepository initStore() {
-        return new FeaturesRepositoryInMemory("ff4j-testDataset.xml");
+    public FeatureRepository initStore() {
+        return new FeatureRepositoryInMemory("ff4j-testDataset.xml");
     }
     
 }

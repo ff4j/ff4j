@@ -1,4 +1,4 @@
-package org.ff4j.property.repository;
+package org.ff4j.feature.repository;
 
 /*-
  * #%L
@@ -22,7 +22,7 @@ package org.ff4j.property.repository;
 
 import org.ff4j.FF4jEntity;
 import org.ff4j.FF4jRepositoryListener;
-import org.ff4j.property.Property;
+import org.ff4j.feature.Feature;
 
 /**
  * Public Interface of a Listener on CRUD repository.
@@ -33,7 +33,18 @@ import org.ff4j.property.Property;
  * @param <ENTITY>
  *    {@link FF4jEntity} to be specialized by type of store 
  */
-public interface PropertiesRepositoryListener extends FF4jRepositoryListener< Property<?> > {
+public interface FeatureRepositoryListener extends FF4jRepositoryListener< Feature > {
     
+    void onToggleOnFeature(String uid);
+    
+    void onToggleOffFeature(String uid);
+    
+    void onToggleOnGroup(String groupName);
+    
+    void onToggleOffGroup(String groupname);
+    
+    void onAddFeatureToGroup(String uid, String groupName);
+    
+    void onRemoveFeatureFromGroup(String uid, String groupName);
     
 }

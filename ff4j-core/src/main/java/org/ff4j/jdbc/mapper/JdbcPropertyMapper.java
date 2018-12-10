@@ -56,35 +56,33 @@ public class JdbcPropertyMapper extends AbstractJdbcMapper  implements PropertyM
         super(sqlConn, qbd);
     }
     
-    /**
-     * Propvision user to generate query.
-     * @param property
-     * @param ps
-     * @throws SQLException
-     */
-    private void populatePrepareStatement(Property<?> property, PreparedStatement ps)
-    throws SQLException {
-        populateEntity(ps, property);
-        // Clazz
-        ps.setString(7, property.getType());
-        // Value
-        ps.setString(8, property.asString());
-        if (property.getFixedValues().isPresent()) {
-            String fixedValues = property.getFixedValues().get().toString();
-            ps.setString(11, fixedValues.substring(1, fixedValues.length() - 1));
-        } else {
-            ps.setString(11, null);
-        }
-    }
+    
     /** {@inheritDoc} */
     @Override
     public PreparedStatement mapToRepository(Property<?> property) {
         PreparedStatement ps;
         try {
+            /** INSERT INTO FF4J_PROPERTY(UID,CREATED,
+             *      LASTMODIFIED,OWNER,DESCRIPTION,CLASSNAME,
+             *      READONLY,VAL,FIXEDVALUES)
+             */
             ps = sqlConn.prepareStatement(queryBuilder.sqlInsertProperty());
-            populatePrepareStatement(property, ps);
+            // 1...5
+            populateEntity(ps, property);
+            // ClassName
+            ps.setString(6, property.getType());
+            // ReadOnly
+            ps.setInt(7, property.isReadOnly() ? 1 : 0);
+            // Value
+            ps.setString(8, property.asString());
+            if (property.getFixedValues().isPresent()) {
+                String fixedValues = property.getFixedValues().get().toString();
+                ps.setString(9, fixedValues.substring(1, fixedValues.length() - 1));
+            } else {
+                ps.setString(9, null);
+            }
         } catch (SQLException sqlEx) {
-            throw new FeatureAccessException("Cannot create statement to create feature", sqlEx);
+            throw new FeatureAccessException("Cannot create statement to create property", sqlEx);
         }
         return ps;
     }

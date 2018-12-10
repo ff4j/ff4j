@@ -15,7 +15,7 @@ import org.ff4j.property.PropertyLogLevel;
 import org.ff4j.property.PropertyLogLevel.LogLevel;
 import org.ff4j.property.PropertyString;
 import org.ff4j.property.exception.PropertyNotFoundException;
-import org.ff4j.property.repository.PropertiesRepository;
+import org.ff4j.property.repository.PropertyRepository;
 import org.ff4j.test.AssertFF4j;
 import org.ff4j.test.FF4jTestDataSet;
 import org.ff4j.utils.Util;
@@ -55,7 +55,7 @@ public abstract class RepositoryPropertiesTestSupport implements FF4jTestDataSet
     protected FF4j ff4j = null;
 
     /** Tested Store. */
-    protected PropertiesRepository testedStore;
+    protected PropertyRepository testedStore;
 
     /** Test Values */
     protected AssertFF4j assertFF4j;
@@ -80,7 +80,7 @@ public abstract class RepositoryPropertiesTestSupport implements FF4jTestDataSet
      * @throws Exception
      *          Hi guys, just let you know I did the update in the presentation : changing instructors names to put the 2 of you    error during building feature store
      */
-    protected abstract PropertiesRepository initStore();
+    protected abstract PropertyRepository initStore();
 
     // -- exists --
     

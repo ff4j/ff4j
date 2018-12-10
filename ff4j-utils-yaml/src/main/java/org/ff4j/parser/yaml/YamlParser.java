@@ -21,11 +21,14 @@ package org.ff4j.parser.yaml;
  */
 
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.ff4j.feature.Feature;
@@ -33,9 +36,6 @@ import org.ff4j.feature.togglestrategy.TogglePredicate;
 import org.ff4j.parser.ConfigurationFileParser;
 import org.ff4j.parser.FF4jConfigFile;
 import org.ff4j.property.Property;
-import org.ff4j.property.PropertyBoolean;
-import org.ff4j.property.PropertyDouble;
-import org.ff4j.property.PropertyInt;
 import org.ff4j.property.PropertyString;
 import org.ff4j.security.FF4jAcl;
 import org.ff4j.security.FF4jGrantees;
@@ -66,23 +66,27 @@ public class YamlParser extends ConfigurationFileParser {
         Map<?,?> yamlConfigFile = yaml.load(inputStream);
         Map<?,?> ff4jYamlMap = (Map<?, ?>) yamlConfigFile.get(FF4J_TAG);
         FF4jConfigFile ff4jConfig = new FF4jConfigFile();
-        // Audit
-        if (ff4jYamlMap.containsKey(GLOBAL_AUDIT_TAG)) {
-            ff4jConfig.setAudit(Boolean.valueOf(ff4jYamlMap.containsKey(GLOBAL_AUDIT_TAG)));
-        }
-        // AutoCreate
-        if (ff4jYamlMap.containsKey(GLOBAL_AUTOCREATE)) {
-            ff4jConfig.setAutoCreate(Boolean.valueOf(ff4jYamlMap.containsKey(GLOBAL_AUTOCREATE)));
-        }
         if (ff4jYamlMap != null) {
+            // Audit
+            if (ff4jYamlMap.containsKey(GLOBAL_AUDIT_TAG)) {
+                ff4jConfig.setAudit(Boolean.valueOf(ff4jYamlMap.containsKey(GLOBAL_AUDIT_TAG)));
+            }
+            // AutoCreate
+            if (ff4jYamlMap.containsKey(GLOBAL_AUTOCREATE)) {
+                ff4jConfig.setAutoCreate(Boolean.valueOf(ff4jYamlMap.containsKey(GLOBAL_AUTOCREATE)));
+            }
+        
             // Roles
             parseRoles(ff4jConfig, (List<Map<String, Object>>) ff4jYamlMap.get(ROLES_TAG));
+            
             // Users
             parseUsers(ff4jConfig, (List<Map<String, Object>>) ff4jYamlMap.get(USERS_TAG));
+            
             // Properties
-            ff4jConfig.getProperties().putAll(
-                       parseProperties((List<Map<String, Object>>) ff4jYamlMap.get(PROPERTIES_TAG))
+            ff4jConfig.getProperties()
+                      .putAll(parseProperties((List<Map<String, Object>>) ff4jYamlMap.get(PROPERTIES_TAG))
             );
+            
             // Features
             parseFeatures(ff4jConfig, (List<Map<String, Object>>) ff4jYamlMap.get(FEATURES_TAG));
         }
@@ -161,52 +165,63 @@ public class YamlParser extends ConfigurationFileParser {
         if (null != properties) {
             properties.forEach(property -> {
                 // Initiate with name and value
-                String name = (String) property.get(PROPERTY_PARAMNAME);
-                if (null == name) throw new IllegalArgumentException("Invalid YAML File: 'name' is expected for properties"); 
-                Object value = property.get(PROPERTY_PARAMVALUE);
-                if (null == value) throw new IllegalArgumentException("Invalid YAML File: 'value' is expected for properties");
-               
-                // Enforcing type
-                Property<?> ap = null;
-                String type = (String) property.get(PROPERTY_PARAMTYPE);
-                if (null != type) {
-                    type = Property.mapPropertyType(type);
-                    try {
-                        ap = (Property<?>) Class.forName(type)
-                                .getConstructor(String.class, String.class)
-                                .newInstance(name, String.valueOf(value));
-                    } catch (Exception e) {
-                        throw new IllegalArgumentException("Cannot instantiate '" + type + "' check default constructor", e);
-                    }
-                } else if (value instanceof Integer) {
-                    ap = new PropertyInt(name, (Integer) value);
-                } else if (value instanceof Double)  {
-                    ap = new PropertyDouble(name, (Double) value);
-                } else if (value instanceof Boolean) {
-                    ap = new PropertyBoolean(name, (Boolean) value);
-                } else {
-                    ap = new PropertyString(name, value.toString());
+                String name     = (String) property.get(PROPERTY_PARAMNAME);
+                if (null == name) { 
+                    throw new IllegalArgumentException("Invalid YAML File: 'name' is expected for properties");
                 }
                 
+                Object objValue = property.get(PROPERTY_PARAMVALUE);
+                if (null == objValue) {
+                    throw new IllegalArgumentException("Invalid YAML File: 'value' is expected for properties");
+                }
+                // Convert as a String
+                String strValue = String.valueOf(objValue);
+                if (objValue instanceof Date) {
+                    strValue = Property.SIMPLE_DATE_FORMAT.format((Date) objValue);
+                }
+                
+                Property<?> ap = new PropertyString(name, strValue);
+                String optionalType = (String) property.get(PROPERTY_PARAMTYPE);
+                // If specific type defined ?
+                if (null != optionalType) {
+                    // Substitution if relevant (e.g. 'int' -> 'org.ff4j.property.PropertyInt')
+                    optionalType = Property.mapPropertyType(optionalType);
+                    
+                    try {
+                        // Constructor (String, String) is mandatory in Property interface
+                        Constructor<?> constr = Class.forName(optionalType).getConstructor(String.class, String.class);
+                        ap = (Property<?>) constr.newInstance(name, strValue);
+                    } catch (Exception e) {
+                        throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' check default constructor", e);
+                    }
+                }
                 // Description
                 String description = (String) property.get(PROPERTY_PARAMDESCRIPTION);
-                if (null == description) ap.setDescription(description);
-                
+                if (null != description) {
+                    ap.setDescription(description);
+                }
                 // ReadOnly
                 Boolean readOnly = (Boolean) property.get(PROPERTY_PARAM_READONLY);
-                if (null != readOnly) ap.setReadOnly(readOnly);
+                if (null != readOnly) {
+                    ap.setReadOnly(readOnly);
+                }
                 
                 // Fixed Values
                 List<Object> fixedValues = (List<Object>) property.get(PROPERTY_PARAMFIXED_VALUES);
                 if (null != fixedValues && fixedValues.size() > 0) {
                     fixedValues.stream().map(Object::toString).forEach(ap::add2FixedValueFromString);
                 }
+                // Check fixed value
+                if (ap.getFixedValues().isPresent() &&  !ap.getFixedValues().get().contains(ap.getValue())) {
+                    throw new IllegalArgumentException("Cannot create property <" + ap.getUid() + 
+                            "> invalid value <" + ap.getValue() + 
+                            "> expected one of " + ap.getFixedValues());
+                }
                 result.put(ap.getUid(), ap);
             });
         }
         return result;
     }
-    
     
     /**
      * Parsing YAML TAGS.
@@ -246,14 +261,14 @@ public class YamlParser extends ConfigurationFileParser {
                         (List<Map<String, Object>>) feature.get(SECURITY_PERMISSIONS_TAG);
                 if (customPermissons != null) {
                     FF4jAcl customAcl = new FF4jAcl();
-                    customPermissons.stream().map(this::parsePermission)
+                    customPermissons.stream()
+                                    .map(this::parsePermission)
                                     .forEach(map -> customAcl.getPermissions().putAll(map));
                     f.setAccessControlList(customAcl);
                 }
-                
                 // Custom Properties
                 List<Map<String, Object>> customProperties = 
-                        (List<Map<String, Object>>) feature.get(PROPERTIES_CUSTOM_TAG);
+                        (List<Map<String, Object>>) feature.get(PROPERTIES_TAG);
                 if (customProperties != null) {
                     f.setProperties(parseProperties(customProperties));
                 }
@@ -265,17 +280,17 @@ public class YamlParser extends ConfigurationFileParser {
     
     @SuppressWarnings("unchecked")
     private TogglePredicate parseToggleStrategy(Feature feature, Map<String, Object> toggleStrategy) {
-        Map <String, String > initParams = new HashMap<>();
-        Map<String, Object> p = (Map<String, Object>) toggleStrategy.get(TOGGLE_STRATEGY_PARAMTAG);
-        if (p != null) {
-            p.entrySet().forEach(entry -> initParams.put(
-                     entry.getKey(), 
-                     String.valueOf(entry.getValue())));
+        List<Map<String, Object>> strategyProperties = 
+                (List<Map<String, Object>>) toggleStrategy.get(PROPERTIES_TAG);
+        
+        Set <Property<?>> expectedProperties = new HashSet<>();
+        if (strategyProperties != null) {
+            parseProperties(strategyProperties).values().stream().forEach(expectedProperties::add);
         }
         return TogglePredicate.of(
                 feature.getUid(), 
                 (String) toggleStrategy.get(TOGGLE_STRATEGY_ATTCLASS), 
-                initParams);
+                expectedProperties);
     }
     
     /** {@inheritDoc} */

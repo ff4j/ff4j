@@ -60,11 +60,11 @@ import org.ff4j.security.FF4jPermission;
 import org.ff4j.utils.Util;
 
 /**
- * Implementation of {@link FeaturesRepository} to work with RDBMS through JDBC.
+ * Implementation of {@link FeatureRepository} to work with RDBMS through JDBC.
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class FeaturesRepositoryJdbc extends FeaturesRepositorySupport {
+public class FeatureRepositoryJdbc extends FeatureRepositorySupport {
 
 	/** serialVersionUID. */
     private static final long serialVersionUID = 7144391802850457781L;
@@ -84,7 +84,7 @@ public class FeaturesRepositoryJdbc extends FeaturesRepositorySupport {
     private JdbcQueryBuilder queryBuilder;
 
     /** Default Constructor. */
-    public FeaturesRepositoryJdbc() {}
+    public FeatureRepositoryJdbc() {}
 
     /** {@inheritDoc} */
     public Stream<String> findAllIds() {
@@ -97,7 +97,7 @@ public class FeaturesRepositoryJdbc extends FeaturesRepositorySupport {
      * @param jdbcDS
      *            native jdbc datasource
      */
-    public FeaturesRepositoryJdbc(DataSource jdbcDS) {
+    public FeatureRepositoryJdbc(DataSource jdbcDS) {
         this.dataSource = jdbcDS;
     }
     

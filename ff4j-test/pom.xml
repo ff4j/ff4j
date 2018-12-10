@@ -19,8 +19,11 @@
 		<version>2.0.RC1</version>
 	</parent>
 
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~          PROPERTIES      ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<properties>
-		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
+	 	<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
 	</properties>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->

@@ -24,8 +24,11 @@ import java.io.ByteArrayOutputStream;
 
 import org.ff4j.feature.Feature;
 import org.ff4j.feature.togglestrategy.PonderationToggleStrategy;
+import org.ff4j.feature.togglestrategy.TogglePredicate;
+import org.ff4j.property.PropertyDouble;
 import org.ff4j.property.PropertyString;
 import org.ff4j.test.FF4jTestDataSet;
+import org.ff4j.utils.Util;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -76,8 +79,8 @@ public class FeatureJsonParserTest implements FF4jTestDataSet {
                    expectedF2.getToggleStrategies().get(0).getClass(), 
                    f2.getToggleStrategies().get(0).getClass());
        Assertions.assertEquals(
-          expectedF2.getToggleStrategies().get(0).getParams().get(PonderationToggleStrategy.PARAM_WEIGHT), 
-                  f2.getToggleStrategies().get(0).getParams().get(PonderationToggleStrategy.PARAM_WEIGHT));
+          expectedF2.getToggleStrategies().get(0).getPropertiesAsMap().get(PonderationToggleStrategy.PARAM_WEIGHT), 
+                  f2.getToggleStrategies().get(0).getPropertiesAsMap().get(PonderationToggleStrategy.PARAM_WEIGHT));
        // properties
        Assertions.assertFalse(f2.getProperties().isEmpty());
        Assertions.assertEquals(expectedF2.getProperties().size(), f2.getProperties().size());
@@ -87,11 +90,13 @@ public class FeatureJsonParserTest implements FF4jTestDataSet {
     
     @Test
     public void testMarshall() throws Exception {
+        PonderationToggleStrategy ptd = (PonderationToggleStrategy) TogglePredicate.of("f1", PonderationToggleStrategy.class.getName(), 
+                Util.setOf(new PropertyDouble(PonderationToggleStrategy.PARAM_WEIGHT, 0.1)));
         // Given a feature
         Feature feat = new Feature("f1")
                 .enable(true)
                 .group("g1")
-                .addToggleStrategy(new PonderationToggleStrategy(.1))
+                .addToggleStrategy(ptd)
                 .addProperties(new PropertyString("p1", "v1"));
         System.out.println(feat.toJson());
         System.out.println(marshallWithJackson(feat));

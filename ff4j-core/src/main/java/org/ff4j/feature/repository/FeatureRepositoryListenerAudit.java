@@ -31,10 +31,10 @@ import org.ff4j.feature.Feature;
  * 
  * @author Cedrick LUNVEN  (@clunven)
  */
-public class FeaturesRepositoryListenerAudit extends AbstractAuditTrailListener < Feature > 
-                                             implements FeaturesRepositoryListener {
+public class FeatureRepositoryListenerAudit extends AbstractAuditTrailListener < Feature > 
+                                             implements FeatureRepositoryListener {
     
-    public FeaturesRepositoryListenerAudit(AuditTrail auditTrail) {
+    public FeatureRepositoryListenerAudit(AuditTrail auditTrail) {
         super(auditTrail, Scope.FEATURE, Scope.FEATURESTORE);
     }
     

@@ -81,13 +81,13 @@ public class PropertyFactory {
         if (value instanceof Date) {
             return PropertyFactory.createProperty(pName, 
                     PropertyDate.class.getName(),
-                    PropertyDate.SDF.format(value));
+                    PropertyDate.SIMPLE_DATE_FORMAT.format(value));
         }
         if (value instanceof Calendar) {
             Date valueDate = ((Calendar) value).getTime();
             return PropertyFactory.createProperty(pName, 
                     PropertyCalendar.class.getName(),
-                    PropertyCalendar.SDF.format(valueDate));
+                    PropertyCalendar.SIMPLE_DATE_FORMAT.format(valueDate));
         }
         if (value instanceof Property<?>) {
             return (Property<?>) value;

@@ -33,7 +33,7 @@ import org.ff4j.property.exception.PropertyNotFoundException;
  *
  * @author Cedrick Lunven (@clunven)
  */
-public interface PropertiesRepository extends FF4jRepository < String, Property<?> > {
+public interface PropertyRepository extends FF4jRepository < String, Property<?> > {
     
     /**
      * Syntax sugar.

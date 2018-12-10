@@ -1,6 +1,6 @@
 package org.ff4j.feature.togglestrategy;
 
-import static org.ff4j.utils.JsonUtils.mapAsJson;
+import static org.ff4j.utils.JsonUtils.collectionAsJson;
 import static org.ff4j.utils.JsonUtils.valueAsJson;
 
 import java.util.Arrays;
@@ -109,7 +109,12 @@ public interface TogglePredicate extends Predicate< ToggleContext > {
      default String toJson() {
         StringBuilder json = new StringBuilder("{");
         json.append(valueAsJson("properties") + ":");
-        json.append(mapAsJson(getPropertiesAsMap()));
+        Stream<Property<?>> properties = getProperties();
+        if (properties == null) {
+            json.append("null");
+        } else {
+            json.append(collectionAsJson(properties.collect(Collectors.toList())));
+        }
         json.append("," + valueAsJson("className")  + ":");
         json.append(valueAsJson(getClass().getCanonicalName()));
         json.append("}");
