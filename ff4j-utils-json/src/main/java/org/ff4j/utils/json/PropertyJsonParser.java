@@ -124,8 +124,6 @@ public final class PropertyJsonParser {
         String propertyVal  = String.valueOf(propertyJson.get(PROPERTY_VALUE));
         String propertyType = (String) propertyJson.get(PROPERTY_TYPE);
         Property<?> ap = PropertyFactory.createProperty(propertyName, propertyType, propertyVal);
-        // ReadOnly
-        ap.setReadOnly((Boolean) propertyJson.get(PROPERTY_READONLY));
         // Description
         ap.setDescription((String)propertyJson.get(DESCRIPTION));
         // FixedValued

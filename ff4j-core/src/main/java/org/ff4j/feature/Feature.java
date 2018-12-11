@@ -69,11 +69,31 @@ public class Feature extends FF4jEntity < Feature > {
      * Initialize {@link Feature} with id;
      * 
      * @param uid
+     *       unique identifier
      */
     public Feature(final String uid) {
         super(uid);
     }
+    
+    /**
+     * Create a feature with its status.
+     * 
+     * @param uid
+     *      unique identifier
+     * @param enable
+     *      status of the feature
+     */
+    public Feature(final String uid, boolean enable) {
+        super(uid);
+        setEnable(enable);
+    }
 
+    /**
+     * Copy constructor.
+     *
+     * @param f
+     *      feature to copy
+     */
     public Feature(final Feature f) {
         this(f.getUid(), f);
     }
@@ -89,15 +109,13 @@ public class Feature extends FF4jEntity < Feature > {
         super(uid, f);
         this.enable = f.isEnabled();
         f.getGroup().ifPresent(g -> this.group = Optional.of(g));
-        
-        // COPY Strategies (not just reference => clone)
+        // Cloning Strategies
         if (!f.getToggleStrategies().isEmpty()) {
             for (TogglePredicate strat : f.getToggleStrategies()) {
                 addToggleStrategy(TogglePredicate.of(uid, strat.getClass().getName(), strat.getProperties()));
             }
         }
-        
-        // COPY Properties
+        // Cloning Properties
         for (Property<?> p : f.getProperties().values()) {
             Property<?> pTmp = PropertyFactory.createProperty(p.getUid(), p.getClass().getName(), p.asString());
             p.getDescription().ifPresent(pTmp::setDescription);
@@ -108,8 +126,7 @@ public class Feature extends FF4jEntity < Feature > {
             }
             addProperty(pTmp);
         }
-        
-        // COPY Permissions
+        // Cloning Permissions
         if (!f.getAccessControlList().isEmpty()) {
             Map <FF4jPermission, FF4jGrantees> currentPermissions = getAccessControlList().getPermissions();
             for (Map.Entry<FF4jPermission, FF4jGrantees> acl : f.getAccessControlList().getPermissions().entrySet()) {
@@ -227,8 +244,8 @@ public class Feature extends FF4jEntity < Feature > {
     public String toJson() {
         StringBuilder json = new StringBuilder("{");
         json.append(super.baseJson());
-        json.append(attributeAsJson("enable", enable));
-        group.ifPresent(g -> attributeAsJson("group", g));
+        json.append(attributeAsJson("enabled", enable));
+        group.ifPresent(g -> json.append(attributeAsJson("group", g)));
         if (!this.toggleStrategies.isEmpty()) {
             json.append(",\"toggleStrategies\": [");
             boolean first = true;

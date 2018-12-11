@@ -112,7 +112,7 @@ public abstract class FF4jEntity<T extends FF4jEntity<?>> implements Comparable<
      */
     public String baseJson() {
         StringBuilder json = new StringBuilder("\"uid\":" + valueAsJson(uid));
-        json.append(attributeAsJson("clazz", getClass().getName()));
+        json.append(attributeAsJson("className", getClass().getName()));
         description.ifPresent(
                 d -> json.append(attributeAsJson("description", d)));
         owner.ifPresent(

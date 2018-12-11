@@ -25,7 +25,6 @@ import static org.ff4j.utils.JsonUtils.attributeAsJson;
 import static org.ff4j.utils.JsonUtils.objectAsJson;
 
 import java.io.InputStream;
-import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -43,12 +42,12 @@ import org.ff4j.feature.Feature;
 import org.ff4j.feature.exception.FeatureNotFoundException;
 import org.ff4j.feature.repository.FeatureRepository;
 import org.ff4j.feature.repository.FeatureRepositoryInMemory;
-import org.ff4j.feature.togglestrategy.ToggleContext;
-import org.ff4j.feature.togglestrategy.TogglePredicate;
 import org.ff4j.parser.ConfigurationFileParser;
 import org.ff4j.parser.FF4jConfigFile;
+import org.ff4j.parser.xml.XmlParserV1;
 import org.ff4j.parser.xml.XmlParserV2;
 import org.ff4j.property.Property;
+import org.ff4j.property.exception.PropertyNotFoundException;
 import org.ff4j.property.repository.PropertyRepository;
 import org.ff4j.property.repository.PropertyRepositoryInMemory;
 import org.ff4j.user.repository.RolesAndUsersRepository;
@@ -71,6 +70,9 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
     // -------------------------------------------------------------------------
     // ------------------- META-DATA         -----------------------------------
     // -------------------------------------------------------------------------
+    
+    public static final ConfigurationFileParser PARSER_XML_V1 = new XmlParserV1();
+    public static final ConfigurationFileParser PARSER_XML_V2 = new XmlParserV2();
     
     /** Top for startup in  order to compute uptime. */
     private final long startTime = System.currentTimeMillis();
@@ -115,28 +117,10 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
     // -------------------------------------
     
     /**
-     * Base constructor. It allows instantiation through IoC by default will initialized
-     * all stores empty and working into memory.
+     * Base constructor: Allows instantiation through Inversion of Control Ioc.
+     * Default settings use InMemory stores and let them empty.
      */
     public FF4j() {}
-    
-    /**
-     * Constructor using configuration file to initialized the stores. All operations
-     * are performed in memory and lost on restart, useful for testing purposes mainly. 
-     * 
-     * You should condider to override Repositories to use external storage technology.
-     *
-     * @param parser
-     *          multiple configuration format seems useful (Xml, Yaml...)
-     * @param confFile
-     *          target file
-     */
-    public FF4j(ConfigurationFileParser parser, String confFile) {
-        this(parser.parse(confFile));
-    }
-    public FF4j(ConfigurationFileParser parser, InputStream confFile) {
-        this(parser.parse(confFile));
-    }
     
     /**
      * Default parser and embedded in FF4jCore is still XML and V2, but you can still use v1 and v1 configuration files
@@ -145,10 +129,16 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      *          Xml configuration file
      */
     public FF4j(String fileName) {
-        this(new XmlParserV2(), fileName);
+        this(PARSER_XML_V2, fileName);
     }
     public FF4j(InputStream xmlConfFileStream) {
-        this(new XmlParserV2(), xmlConfFileStream);
+        this(PARSER_XML_V2, xmlConfFileStream);
+    }
+    public FF4j(ConfigurationFileParser parser, String confFile) {
+        this(parser.parse(confFile));
+    }
+    public FF4j(ConfigurationFileParser parser, InputStream confFile) {
+        this(parser.parse(confFile));
     }
     
     /**
@@ -157,7 +147,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @param config
      *      configuration bean for ff4j.
      */
-    protected FF4j(FF4jConfigFile config) {
+    public FF4j(FF4jConfigFile config) {
         this.repositoryFeatures           = new FeatureRepositoryInMemory(config);
         this.repositoryProperties         = new PropertyRepositoryInMemory(config);
         this.repositoryUsersRoles         = new RolesAndUsersRepositoryInMemory(config);
@@ -174,6 +164,11 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
     public boolean test(String featureUid) {
         return check(featureUid);
     }
+    
+    public boolean test(String featureUid, FF4jContext executionContext) {
+        return check(featureUid, executionContext);
+    }
+    
     /**
      * Evaluate if a feature is toggled based on the information in store and
      * current execution context (key/value as threadLocal).
@@ -184,7 +179,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      *          current feature status.
      */
     public boolean check(String featureUid) {
-        return check(featureUid, null, null);
+        return check(featureUid, getContext());
     }
 
     /**
@@ -198,44 +193,11 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @return current feature status
      */
     public boolean check(String uid, FF4jContext executionContext) {
-        return check(uid, null, executionContext);
-    }
-
-    /**
-     * Overriding strategy on feature.
-     * 
-     * @param featureID
-     *            feature unique identifier.
-     * @param executionContext
-     *            current execution context
-     * @return
-     */
-    public boolean check(String uid, TogglePredicate strats) {
-        return check(uid, strats, getContext());
-    }
-
-    /**
-     * Overriding strategy on feature.
-     * 
-     * @param featureID
-     *            feature unique identifier.
-     * @param executionContext
-     *            current execution context
-     * @return
-     */
-    public boolean check(String uid, TogglePredicate strats, FF4jContext executionContext) {
-        // Read feature from store, must exist
-        Feature feature = getFeature(uid);
+        Feature feature = readFeature(uid);
         boolean featureToggled = false;
+        FF4jContext context = (executionContext == null) ? getContext() : executionContext;
         if (feature.isEnabled()) {
-            // Pick default context or override
-            FF4jContext context = (executionContext == null) ? getContext() : executionContext;
-            if (strats == null) {
-                featureToggled = feature.isToggled(context);
-            } else {
-                // Overriding the toggleStreategy of the feature
-                featureToggled = strats.test(new ToggleContext(feature, context));
-            }
+            featureToggled = feature.isToggled(context);
         }
         // Send information that feature will be used
         if (featureToggled) {
@@ -291,17 +253,10 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
     // ------ CRUD Features (fluent) -------
     // -------------------------------------
     
-    /**
-     * Create new Feature.
-     * 
-     * @param featureID
-     *            unique feature identifier.
-     */
-    public FF4j createFeature(Feature fp) {
-        getRepositoryFeatures().save(fp);
-        return this;
+    public Optional<Feature> findFeature(String uid) {
+        return getRepositoryFeatures().find(uid);
     }
-
+    
     /**
      * The feature will be create automatically if the boolea, autocreate is enabled.
      * 
@@ -309,8 +264,8 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      *            target feature ID
      * @return target feature.
      */
-    public Feature getFeature(String uid) {
-        Optional <Feature > oFeature = getRepositoryFeatures().find(uid);
+    public Feature readFeature(String uid) throws FeatureNotFoundException {
+        Optional <Feature > oFeature = findFeature(uid);
         if (!oFeature.isPresent()) {
             if (autoCreateFeatures) {
                 Feature autoFeature = new Feature(uid).toggleOff();
@@ -323,21 +278,42 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
     }
     
     /**
-     * Help to import features.
+     * Create new Feature.
      * 
-     * @param features
-     *      set of features.
-     * @return
-     *      a reference to this object (builder pattern).
+     * @param featureID
+     *            unique feature identifier.
      */
-    public FF4j importFeatures(Collection < Feature> features) {
-        getRepositoryFeatures().save(features);
+    public FF4j saveFeature(Feature fp) {
+        getRepositoryFeatures().save(fp);
         return this;
-    }
+    }    
     
     // -------------------------------------
     // ------ CRUD Properties (fluent) -----
     // -------------------------------------
+    
+    /**
+     * Find a property by its id.
+     *
+     * @param uid
+     *      property unique identifier
+     * @return
+     *      property
+     */
+    public Optional<Property<?>> findProperty(String uid) {
+        return getRepositoryProperties().find(uid);
+    }
+    
+    /**
+     * Find a REQUIRED property by its id
+     * 
+     * @param featureID
+     *            target feature ID
+     * @return target feature.
+     */ 
+    public Property<?> readProperty(String propertyName) throws PropertyNotFoundException {
+       return getRepositoryProperties().read(propertyName);
+    }
     
     /**
      * Create new Property.
@@ -345,38 +321,10 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @param featureID
      *            unique feature identifier.
      */
-    public FF4j createProperty(Property<?> prop) {
+    public FF4j saveProperty(Property<?> prop) {
         getRepositoryProperties().save(prop);
         return this;
     }
-    
-    /**
-     * Read property in Store
-     * 
-     * @param featureID
-     *            target feature ID
-     * @return target feature.
-     */
-    public Property<?> getProperty(String propertyName) {
-       return getRepositoryProperties().read(propertyName);
-    }
-    
-    /**
-     * Help to import propertiess.
-     * 
-     * @param features
-     *      set of features.
-     * @return
-     *      a reference to this object (builder pattern).
-     */
-    public FF4j importProperties(Collection < Property<?>> properties) {
-        getRepositoryProperties().save(properties);
-        return this;
-    }
-
-    // -------------------------
-    // ------ Caching ----------
-    // -------------------------
     
     /**
      * Enable a cache proxy.
@@ -563,7 +511,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @param featureStore
      *            target store.
      */
-    public FF4j repositoryFeatures(FeatureRepository featureStore) {
+    public FF4j withRepositoryFeatures(FeatureRepository featureStore) {
         setRepositoryFeatures(featureStore);
         return this;
     }
@@ -599,14 +547,14 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @return
      *      current ff4j instance
      */
-    public FF4j repositoryProperties(PropertyRepository propertyStore) {
+    public FF4j withRepositoryProperties(PropertyRepository propertyStore) {
         setRepositoryProperties(propertyStore);
         return this;
     }
     
-    // -------------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     // ------------------- USERS STORE    -----------------------------------
-    // -------------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     
     /**
      * Getter accessor for attribute 'repositoryProperties'.
@@ -635,7 +583,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @return
      *      current ff4j instance
      */
-    public FF4j repositoryUsersRoles(RolesAndUsersRepository propertyStore) {
+    public FF4j withRepositoryUsersRoles(RolesAndUsersRepository propertyStore) {
         setRepositoryUsersRoles(propertyStore);
         return this;
     }
@@ -660,7 +608,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @param auditTrail
      *      new value for 'auditTrail '
      */
-    public void setAudit(AuditTrail auditTrail) {
+    public void setRepositoryAudit(AuditTrail auditTrail) {
         this.auditTrail = auditTrail;
         withAudit();
     }
@@ -672,8 +620,8 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      *      
      * @return
      */
-    public FF4j withAudit(AuditTrail auditTrail) {
-        setAudit(auditTrail);
+    public FF4j withRepositoryAudit(AuditTrail auditTrail) {
+        setRepositoryAudit(auditTrail);
         return this;
     }
     
@@ -712,7 +660,7 @@ public class FF4j extends FF4jRepositoryObserver < FeatureUsageEventListener > i
      * @param featureUsage
      * @return
      */
-    public FF4j repositoryEventFeaturesUsage(AbstractRepositoryFeatureUsage featureUsage) {
+    public FF4j withRepositoryEventFeaturesUsage(AbstractRepositoryFeatureUsage featureUsage) {
         setRepositoryEventFeaturesUsage(featureUsage);
         return withFeatureUsageTracking();
     }

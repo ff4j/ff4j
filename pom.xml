@@ -123,7 +123,7 @@
         <!-- MAVEN -->
         <version.maven.plugin.failsafe>2.18.1</version.maven.plugin.failsafe>
         <version.maven.plugin.redis>1.4.6</version.maven.plugin.redis>
-        <version.maven.plugin.surefire>2.20.1</version.maven.plugin.surefire>
+        <version.maven.plugin.surefire>2.22.0</version.maven.plugin.surefire>
         <version.maven.plugin.gpg>1.5</version.maven.plugin.gpg>
         <version.maven.plugin.graph>1.4</version.maven.plugin.graph>
         <version.maven.plugin.resources>3.0.2</version.maven.plugin.resources>

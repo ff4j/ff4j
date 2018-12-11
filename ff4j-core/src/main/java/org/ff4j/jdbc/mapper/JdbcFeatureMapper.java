@@ -66,7 +66,7 @@ public class JdbcFeatureMapper extends AbstractJdbcMapper implements FeatureMapp
             // Feature uid
             ps.setString(1, prop.getUid());
             // Classname
-            ps.setString(2, prop.getType());
+            ps.setString(2, prop.getClassName());
             // Creation Date
             ps.setTimestamp(3, TimeUtils.asSqlTimeStamp(prop.getCreationDate().get()));
             // Last Modified Date
@@ -139,7 +139,7 @@ public class JdbcFeatureMapper extends AbstractJdbcMapper implements FeatureMapp
             // Feature uid
             ps.setString(1, prop.getUid());
             // Classname
-            ps.setString(2, prop.getType());
+            ps.setString(2, prop.getClassName());
             // Value
             ps.setString(3, prop.asString());
             if (prop.getFixedValues().isPresent()) {

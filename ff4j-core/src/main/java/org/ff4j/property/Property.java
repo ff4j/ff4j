@@ -63,13 +63,10 @@ public abstract class Property<T> extends FF4jEntity<Property<T>> implements Sup
     protected static Map < String, String > PROPERTY_TYPES;
     
     /** Type of property. */
-    protected String type;
+    protected String className;
 
     /** Current Value. */
     protected T value;
-
-    /** Some store do not allow property edition. */
-    protected boolean readOnly = false;
 
     /** If value have a limited set of values. */
     protected Set<T> fixedValues = null;
@@ -82,7 +79,7 @@ public abstract class Property<T> extends FF4jEntity<Property<T>> implements Sup
      */
     protected Property(String uid) {
         super(uid);
-        this.type = getClass().getName();
+        this.className = getClass().getName();
     }
 
     /**
@@ -117,8 +114,7 @@ public abstract class Property<T> extends FF4jEntity<Property<T>> implements Sup
         
     public Property(String uid, Property<T> e) {
         super(uid, e);
-        this.readOnly = e.isReadOnly();
-        this.type     = e.getType();
+        this.className     = e.getClassName();
         this.value    = e.getValue();
         if (e.getFixedValues().isPresent()) {
             for(T fixedValue : e.getFixedValues().get()) {
@@ -322,8 +318,7 @@ public abstract class Property<T> extends FF4jEntity<Property<T>> implements Sup
     public String toJson() {
         StringBuilder jsonExpression = new StringBuilder("{ ");
         jsonExpression.append(super.baseJson());
-        jsonExpression.append(",\"type\":\"" + type + "\"");
-        jsonExpression.append(",\"readOnly\":\"" + readOnly + "\"");
+        jsonExpression.append(",\"type\":\"" + className + "\"");
         jsonExpression.append(",\"value\":");
         jsonExpression.append((null == value) ? "null" : "\"" + asString() + "\"");
         if (fixedValues != null) {
@@ -372,26 +367,6 @@ public abstract class Property<T> extends FF4jEntity<Property<T>> implements Sup
         }
         return this;
     }
-
-    /**
-     * Getter accessor for attribute 'readOnly'.
-     *
-     * @return current value of 'readOnly'
-     */
-    public boolean isReadOnly() {
-        return readOnly;
-    }
-
-    /**
-     * Setter accessor for attribute 'readOnly'.
-     * 
-     * @param readOnly
-     *            new value for 'readOnly '
-     */
-    public Property<T> setReadOnly(boolean readOnly) {
-        this.readOnly = readOnly;
-        return this;
-    }
     
     /**
      * Getter accessor for attribute 'type'.
@@ -399,8 +374,8 @@ public abstract class Property<T> extends FF4jEntity<Property<T>> implements Sup
      * @return
      *       current value of 'type'
      */
-    public String getType() {
-        return type;
+    public String getClassName() {
+        return className;
     }
 
     /**
@@ -408,8 +383,8 @@ public abstract class Property<T> extends FF4jEntity<Property<T>> implements Sup
      * @param type
      * 		new value for 'type '
      */
-    public void setType(String type) {
-        this.type = type;
+    public void setClassName(String type) {
+        this.className = type;
     }
 
 }

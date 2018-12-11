@@ -54,12 +54,11 @@ public class FeatureJsonParserTest implements FF4jTestDataSet {
         return new StringBuilder().append(baos).toString();
     }
     
-    @Test
+    
     public void testJson() throws Exception {
        Feature expectedF2 = expectConfig().getFeatures().get(F2);
         
        String jsonF2 = marshallWithJackson(expectedFeatures().get(F2));
-       System.out.println(jsonF2);
        Feature f2 = FeatureJsonParser.parseJsonFeature(jsonF2);
        // uid
        Assertions.assertNotNull(f2);
@@ -79,8 +78,8 @@ public class FeatureJsonParserTest implements FF4jTestDataSet {
                    expectedF2.getToggleStrategies().get(0).getClass(), 
                    f2.getToggleStrategies().get(0).getClass());
        Assertions.assertEquals(
-          expectedF2.getToggleStrategies().get(0).getPropertiesAsMap().get(PonderationToggleStrategy.PARAM_WEIGHT), 
-                  f2.getToggleStrategies().get(0).getPropertiesAsMap().get(PonderationToggleStrategy.PARAM_WEIGHT));
+          expectedF2.getToggleStrategies().get(0).getPropertiesAsMap().get(PonderationToggleStrategy.PARAM_WEIGHT).getValue(), 
+                  f2.getToggleStrategies().get(0).getPropertiesAsMap().get(PonderationToggleStrategy.PARAM_WEIGHT).getValue());
        // properties
        Assertions.assertFalse(f2.getProperties().isEmpty());
        Assertions.assertEquals(expectedF2.getProperties().size(), f2.getProperties().size());

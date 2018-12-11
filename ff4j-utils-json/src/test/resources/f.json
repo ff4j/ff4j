@@ -1,44 +1,45 @@
-/*-
- * #%L
- * ff4j-utils-json
- * %%
- * Copyright (C) 2013 - 2018 FF4J
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
- */
 {
-	
-	"accessControlList": {
-		"FEATURE_TOGGLE": {
-			"users": [
-				"john"
-			],
-			"roles": []
-		},
-		"FEATURE_VIEW": {
-			"users": [],
-			"roles": [
-				"EVERYONE"
-			]
+	"uid": "f1",
+	"className": "org.ff4j.feature.Feature",
+	"creationDate": "2018-12-11 11:24:52.049",
+	"lastModifiedDate": "2018-12-11 11:24:52.049",
+	"properties": [
+		{
+			"uid": "p1",
+			"className": "org.ff4j.property.PropertyString",
+			"creationDate": "2018-12-11 11:24:52.049",
+			"lastModifiedDate": "2018-12-11 11:24:52.049",
+			"properties": [],
+			"accessControlList": {
+				
+			},
+			"type": "org.ff4j.property.PropertyString",
+			"readOnly": "false",
+			"value": "v1"
 		}
+	],
+	"accessControlList": {
+		
 	},
-	
+	"enabled": true,
+	"group": "g1",
 	"toggleStrategies": [
 		{
-			"params": {
-				"weight": "1.0"
-			},
+			"properties": [
+				{
+					"uid": "weight",
+					"className": "org.ff4j.property.PropertyDouble",
+					"creationDate": "2018-12-11 11:24:52.048",
+					"lastModifiedDate": "2018-12-11 11:24:52.048",
+					"properties": [],
+					"accessControlList": {
+						
+					},
+					"type": "org.ff4j.property.PropertyDouble",
+					"readOnly": "false",
+					"value": "0.1"
+				}
+			],
 			"className": "org.ff4j.feature.togglestrategy.PonderationToggleStrategy"
 		}
 	]

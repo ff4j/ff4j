@@ -199,13 +199,7 @@ public class YamlParser extends ConfigurationFileParser {
                 String description = (String) property.get(PROPERTY_PARAMDESCRIPTION);
                 if (null != description) {
                     ap.setDescription(description);
-                }
-                // ReadOnly
-                Boolean readOnly = (Boolean) property.get(PROPERTY_PARAM_READONLY);
-                if (null != readOnly) {
-                    ap.setReadOnly(readOnly);
-                }
-                
+                } 
                 // Fixed Values
                 List<Object> fixedValues = (List<Object>) property.get(PROPERTY_PARAMFIXED_VALUES);
                 if (null != fixedValues && fixedValues.size() > 0) {

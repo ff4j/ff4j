@@ -171,7 +171,6 @@ public class JdbcConstants {
 
         /// Specific property value
         CLASSNAME("CLASSNAME", SQLTypes.VARCHAR, 255, true),
-        READONLY("READONLY", SQLTypes.INTEGER, 0, true),
         VALUE("VAL", SQLTypes.VARCHAR, 255, true),
         FIXEDVALUES("FIXEDVALUES", SQLTypes.VARCHAR, 1000, false);
         

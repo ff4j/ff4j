@@ -1,5 +1,5 @@
 package org.ff4j.feature.togglestrategy;
-
+        
 /*-
  * #%L
  * ff4j-core

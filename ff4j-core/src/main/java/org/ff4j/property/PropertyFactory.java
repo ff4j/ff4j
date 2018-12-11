@@ -114,7 +114,7 @@ public class PropertyFactory {
      */
     public static Property<?> createProperty(Property<?> from) {
         Property<?> to = PropertyFactory.createProperty(from.getUid(), 
-                from.getType(), from.asString(), 
+                from.getClassName(), from.asString(), 
                 from.getDescription().orElse(""), null);
         if (from.getFixedValues().isPresent()) {
             for (Object fixedValue : from.getFixedValues().get()) {

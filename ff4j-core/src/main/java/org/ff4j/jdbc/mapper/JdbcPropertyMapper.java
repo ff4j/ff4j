@@ -70,16 +70,14 @@ public class JdbcPropertyMapper extends AbstractJdbcMapper  implements PropertyM
             // 1...5
             populateEntity(ps, property);
             // ClassName
-            ps.setString(6, property.getType());
-            // ReadOnly
-            ps.setInt(7, property.isReadOnly() ? 1 : 0);
+            ps.setString(6, property.getClassName());
             // Value
-            ps.setString(8, property.asString());
+            ps.setString(7, property.asString());
             if (property.getFixedValues().isPresent()) {
                 String fixedValues = property.getFixedValues().get().toString();
-                ps.setString(9, fixedValues.substring(1, fixedValues.length() - 1));
+                ps.setString(8, fixedValues.substring(1, fixedValues.length() - 1));
             } else {
-                ps.setString(9, null);
+                ps.setString(8, null);
             }
         } catch (SQLException sqlEx) {
             throw new FeatureAccessException("Cannot create statement to create property", sqlEx);
@@ -112,16 +110,9 @@ public class JdbcPropertyMapper extends AbstractJdbcMapper  implements PropertyM
     /** {@inheritDoc} */
     @Override
     public Property<?> mapFromRepository(ResultSet rs) {
-        try {
-            Property<?> p = mapFeaturePropertyRepository(rs);
-            // Special elements
-            p.setReadOnly(rs.getInt(PropertyColumns.READONLY.colname()) == 1);
-            // Common properties for entities (description, owner...)
-            mapEntity(rs, p);
-            return p;
-        } catch (SQLException sqlEx) {
-            throw new PropertyAccessException("Cannot map Resultset into property", sqlEx);
-        }
+        Property<?> p = mapFeaturePropertyRepository(rs);
+        mapEntity(rs, p);
+        return p;
     }
     
 }

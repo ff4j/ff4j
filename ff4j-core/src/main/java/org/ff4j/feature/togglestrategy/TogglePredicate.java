@@ -41,6 +41,18 @@ import org.ff4j.property.Property;
  * @author Cedrick Lunven (@clunven)
  */
 public interface TogglePredicate extends Predicate< ToggleContext > {
+    
+    /**
+     * Predicate with 2 params
+     * 
+     * @param ctx
+     *          toggle context
+     * @return
+     *      if the feature would be toggled or not
+     */
+    default boolean test() {
+        return test(null);
+    }
             
     /**
      * Predicate with 2 params

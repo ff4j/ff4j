@@ -67,7 +67,7 @@ public abstract class RepositoryPropertiesTestSupport implements FF4jTestDataSet
     @BeforeEach
     public void setUp() throws Exception {
         ConfigurationFileParser.clearCache();
-        ff4j        = new FF4j().repositoryProperties(initStore());
+        ff4j        = new FF4j().withRepositoryProperties(initStore());
         assertFF4j  = new AssertFF4j(ff4j);
         testedStore = ff4j.getRepositoryProperties();
         testDataSet = expectConfig();
@@ -161,7 +161,7 @@ public abstract class RepositoryPropertiesTestSupport implements FF4jTestDataSet
     @DisplayName("When updating property with unknowm param, creating the property")
     public void updatedUnknownPropertyShouldThrowPropertyNotFound() throws Exception {
         assertFF4j.assertThatPropertyDoesNotExist(PROPERTY_FOR_TEST);
-        testedStore.save(new PropertyString(PROPERTY_FOR_TEST));
+        testedStore.save(new PropertyString(PROPERTY_FOR_TEST, "OK"));
         assertFF4j.assertThatPropertyExist(PROPERTY_FOR_TEST);
     }
     

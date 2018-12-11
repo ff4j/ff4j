@@ -105,18 +105,19 @@
 			 		<value>3</value>
 			 	</fixedValues>
 			  </property>
-			  <property name="regionIdentifier" value="AMER" >
+			  <property name="regionIdentifier" value="NA" >
 			 	<fixedValues>
-			 		<value>AMER</value>
-			 		<value>SSSS</value>
-			 		<value>EAST</value>
-			 		<value>EAST</value>
+			 		<value>NA</value>
+			 		<value>EMEA</value>
+			 		<value>APAC</value>
 			 	</fixedValues>
 			 </property>
 			</properties>
 			<toggleStrategies>
 			  <toggleStrategy class="org.ff4j.feature.togglestrategy.PonderationToggleStrategy">
-			     <param name="weight" value="1" />
+			     <properties>
+			  		<property name="weight" type="double" value="1" />
+			     </properties>
 			  </toggleStrategy>
 			</toggleStrategies>
 		</feature>
@@ -137,7 +138,9 @@
 			<feature uid="f4" enable="true" description="description" >
 				 <toggleStrategies>
 					<toggleStrategy class="org.ff4j.feature.togglestrategy.expression.ExpressionToggleStrategy">
-						<param name="expression" value="f3 | f2" />
+						 <properties>
+			  				<property name="expression" type="string" value="f3 | f2" />
+			     		 </properties>
 					</toggleStrategy>
 				</toggleStrategies>
 			</feature>
@@ -163,15 +166,15 @@
 		<property name="pLocal"      	 type="localDateTime"  value="2018-12-24 23:00:00" 	/>
 		<property name="pInt"        	 type="int" 	       value="10" 	  				/>
 		<property name="pLogLevel"   	 type="logLevel" 	   value="INFO" 	  			/>
-		<property name="pLong"       	 type="long" 	  	   value="123" 	  			    />
-		<property name="pShort"      	 type="short" 	       value="5" 	  			    />
-		<property name="pString"     	 type="string" 	       value="pString" 	  		    />
-		<property name="pListBigDecimal" type="listBigDecimal" value="1.5,2.5" 	  		    />
-		<property name="pListBigInteger" type="listBigInteger" value="123456,789012" 	  	/>
-		<property name="pListBoolean"    type="listBoolean"    value="true,false" 	  		/>
-		<property name="pListByte"       type="listByte" 	   value="p,l" 	  		        />
-		<property name="pListCalendar"   type="listCalendar"   value="2018-12-24 23:00:00,2019-01-01 23:00:00" />
-		<property name="pListDate"   	 type="listDate"          value="2018-12-24 23:00:00" 	/>
+		<property name="pLong"       	 type="long" 	  	      value="123" 	  			    />
+		<property name="pShort"      	 type="short" 	          value="5" 	  			    />
+		<property name="pString"     	 type="string" 	          value="pString" 	  		    />
+		<property name="pListBigDecimal" type="listBigDecimal" 	  value="1.5,2.5" 	  		    />
+		<property name="pListBigInteger" type="listBigInteger"    value="123456,789012" 	  	/>
+		<property name="pListBoolean"    type="listBoolean"       value="true,false" 	  		/>
+		<property name="pListByte"       type="listByte" 	   	  value="p,l" 	  		        />
+		<property name="pListCalendar"   type="listCalendar"   	  value="2018-12-24 23:00:00,2019-01-01 23:00:00" />
+		<property name="pListDate"   	 type="listDate"          value="2018-12-24 23:00:00,2019-01-01 23:00:00" 	/>
 		<property name="pListClass"      type="listClass" 	      value="java.lang.String,java.lang.Integer" 	   />
 		<property name="pListDouble"     type="listDouble" 	      value="20.0,30.0" 	  		    			   />
 		<property name="pListFloat"      type="listFloat"         value="20.0,30.0" 	  		    			   />

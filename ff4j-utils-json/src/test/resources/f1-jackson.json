@@ -1,0 +1,87 @@
+{
+	"uid": "f1",
+	"accessControlList": {
+		"permissions": {
+			
+		},
+		"empty": true
+	},
+	"description": null,
+	"owner": null,
+	"creationDate": "2018-12-11T11:17:46.343",
+	"lastModifiedDate": "2018-12-11T11:17:46.345",
+	"properties": {
+		"p1": {
+			"uid": "p1",
+			"accessControlList": {
+				"permissions": {
+					
+				},
+				"empty": true
+			},
+			"description": null,
+			"owner": null,
+			"creationDate": "2018-12-11T11:17:46.343",
+			"lastModifiedDate": "2018-12-11T11:17:46.343",
+			"properties": {
+				
+			},
+			"type": "org.ff4j.property.PropertyString",
+			"value": "v1",
+			"readOnly": false,
+			"fixedValues": null
+		}
+	},
+	"group": "g1",
+	"toggleStrategies": [
+		{
+			"properties": [
+				{
+					"uid": "weight",
+					"accessControlList": {
+						"permissions": {
+							
+						},
+						"empty": true
+					},
+					"description": null,
+					"owner": null,
+					"creationDate": "2018-12-11T11:17:46.339",
+					"lastModifiedDate": "2018-12-11T11:17:46.339",
+					"properties": {
+						
+					},
+					"type": "org.ff4j.property.PropertyDouble",
+					"value": 0.1,
+					"readOnly": false,
+					"fixedValues": null
+				}
+			],
+			"featureUid": "f1",
+			"className": "org.ff4j.feature.togglestrategy.PonderationToggleStrategy",
+			"propertiesAsMap": {
+				"weight": {
+					"uid": "weight",
+					"accessControlList": {
+						"permissions": {
+							
+						},
+						"empty": true
+					},
+					"description": null,
+					"owner": null,
+					"creationDate": "2018-12-11T11:17:46.339",
+					"lastModifiedDate": "2018-12-11T11:17:46.339",
+					"properties": {
+						
+					},
+					"type": "org.ff4j.property.PropertyDouble",
+					"value": 0.1,
+					"readOnly": false,
+					"fixedValues": null
+				}
+			}
+		}
+	],
+	"enabled": true
+}
