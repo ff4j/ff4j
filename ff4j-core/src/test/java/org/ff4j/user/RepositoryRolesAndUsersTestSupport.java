@@ -22,14 +22,20 @@ package org.ff4j.user;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.Map;
+import java.util.stream.Stream;
+
 import org.ff4j.FF4j;
 import org.ff4j.exception.AssertionViolationException;
 import org.ff4j.parser.ConfigurationFileParser;
 import org.ff4j.parser.FF4jConfigFile;
-import org.ff4j.property.PropertyString;
 import org.ff4j.test.AssertFF4j;
 import org.ff4j.test.FF4jTestDataSet;
+import org.ff4j.user.exception.RoleNotFoundException;
+import org.ff4j.user.exception.UserNotFoundException;
 import org.ff4j.user.repository.RolesAndUsersRepository;
+import org.ff4j.utils.Util;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -87,14 +93,160 @@ public abstract class RepositoryRolesAndUsersTestSupport implements FF4jTestData
     
     @Test
     @DisplayName("When creating new user, it becomes available")
-    public void createShouldMakeNewPropertyAvailable() throws Exception {
+    public void createShouldMakeNewUseryAvailable() throws Exception {
+        // Given
         assertFF4j.assertThatUserStoreHasSize(testDataSet.getUsers().size());
         assertFF4j.assertThatUserDoesNotExist(USER_FOR_TEST);
-        FF4jUser myNewUser = new FF4jUser(USER_FOR_TEST);
-        myNewUser.addProperties(new PropertyString("p1", "v1"));
-        testedStore.save(myNewUser);
+        // When
+        testedStore.save(new FF4jUser(USER_FOR_TEST));
+        // Then
         assertFF4j.assertThatUserStoreHasSize(testDataSet.getUsers().size() + 1);
         assertFF4j.assertThatUserExist(USER_FOR_TEST);
     }
+    
+    @Test
+    @DisplayName("When configuration file is null, expecting violation exception")
+    public void readWithNullShouldThrowViolationException() {
+        assertThrows(AssertionViolationException.class, () -> { testedStore.read(null); });
+    }
+    
+    @Test
+    @DisplayName("When configuration file is empty, expecting violation exception")
+    public void readWithEmptyShouldThrowViolationException() {
+        assertThrows(AssertionViolationException.class, () -> { testedStore.read(""); });
+    }
+    
+    @Test
+    @DisplayName("When parsing configuration file, should have expected test DataSet")
+    public void readAllConfFileShouldMatchExpectedDataSet() {
+        // Given
+        assertFF4j.assertThatUserStoreHasSize(testDataSet.getUsers().size());
+        // When
+        Map < String, FF4jUser > users = Util.toMap(testedStore.findAll());
+        // Then
+        Assertions.assertEquals(testDataSet.getUsers().size(), users.size());
+        Assertions.assertTrue(users.containsKey(USER_JOHN));
+        Assertions.assertTrue(users.get(USER_JOHN).getRoles().contains(ROLE_ADMIN));
+        Assertions.assertTrue(users.containsKey(USER_SARAH));
+    }
+    
+    // --- update ---
+    
+    @Test
+    @DisplayName("When updating user with null param, expecting AssertionViolationException")
+    public void updateUserWithNullShouldThrowViolationException() throws Exception {
+        assertThrows(AssertionViolationException.class, () -> { 
+            testedStore.save((FF4jUser) null); 
+        });
+    }
+    
+    @Test
+    @DisplayName("When updating user, all attributes should be updated")
+    public void testUpdateUserProperties() {
+        // Givens
+        String newDescription = "new-description";
+        assertFF4j.assertThatUserExist(USER_JOHN);
+        Assertions.assertTrue(testedStore.read(USER_JOHN).getDescription().isPresent());
+        Assertions.assertNotEquals(newDescription, testedStore.read(USER_JOHN).getDescription().get());
+        Assertions.assertFalse(testedStore.read(USER_JOHN).getRoles().contains(ROLE_NEW));
+        // When
+        FF4jUser currentUser = testedStore.read(USER_JOHN);
+        currentUser.setDescription(newDescription);
+        currentUser.addRole(ROLE_NEW);
+        testedStore.save(currentUser);
+        // Then
+        FF4jUser updatedUser = testedStore.read(USER_JOHN);
+        Assertions.assertEquals(newDescription, testedStore.read(USER_JOHN).getDescription().get());
+        Assertions.assertTrue(updatedUser.getRoles().contains(ROLE_NEW));
+    }
+    
+    // --- delete ---
+    
+    @Test
+    @DisplayName("When deleting new user, it is not available anymore")
+    public void deleteShouldRemoveExistence() throws Exception {
+        assertFF4j.assertThatUserStoreHasSize(testDataSet.getUsers().size());
+        assertFF4j.assertThatUserExist(USER_JOHN);
+        testedStore.delete(USER_JOHN);
+        assertFF4j.assertThatUserStoreHasSize(testDataSet.getUsers().size() - 1 );
+        assertFF4j.assertThatUserDoesNotExist(USER_JOHN);
+    }
+    
+    @Test
+    @DisplayName("When deleting new role, it is not available anymore")
+    public void deleteRoleShouldRemoveExistence() throws Exception {
+        assertFF4j.assertThatRoleStoreHasSize(testDataSet.getRoles().size());
+        assertFF4j.assertThatRoleExist(ROLE_ADMIN);
+        testedStore.deleteRole(ROLE_ADMIN);
+        assertFF4j.assertThatRoleStoreHasSize(testDataSet.getRoles().size() - 1 );
+        assertFF4j.assertThatRoleDoesNotExist(ROLE_ADMIN);
+    }
 
+    @Test
+    @DisplayName("When deleting user with null param, expecting AssertionViolationException")
+    public void deleteUserWithNullShouldThrowViolationException() throws Exception {
+        assertThrows(AssertionViolationException.class, () -> { testedStore.delete((String) null); });
+    }
+    
+    @Test
+    @DisplayName("When deleting role with null param, expecting AssertionViolationException")
+    public void deleteRoleWithNullShouldThrowViolationException() throws Exception {
+        assertThrows(AssertionViolationException.class, () -> { testedStore.deleteRole((String) null); });
+    }
+
+    @Test
+    @DisplayName("When deleting user with null param, expecting UserNotFoundException")
+    public void deleteUnknownuserShouldThrowUserNotFound() throws Exception {
+        assertFF4j.assertThatUserDoesNotExist(USER_FOR_TEST);
+        assertThrows(UserNotFoundException.class, () -> { 
+            testedStore.delete(USER_FOR_TEST); 
+        });
+    }
+    
+    @Test
+    @DisplayName("When deleting role with null param, expecting UserNotFoundException")
+    public void deleteUnknownRoleShouldThrowUserNotFound() throws Exception {
+        assertFF4j.assertThatRoleDoesNotExist(ROLE_NEW);
+        assertThrows(RoleNotFoundException.class, () -> { 
+            testedStore.deleteRole(ROLE_NEW); 
+        });
+    }
+    
+    @Test
+    @DisplayName("When invoking clear all users are deleted")
+    public void clearUsersShouldEmptyRepository() {
+        assertFF4j.assertThatUserExist(USER_JOHN);
+        assertFF4j.assertThatUserExist(USER_SARAH);
+        testedStore.deleteAll();
+        // Then
+        Assertions.assertEquals(0, testedStore.findAll().count());
+    }
+    
+    @Test
+    @DisplayName("When invoking clear all users are deleted")
+    public void clearRolesShouldEmptyRepository() {
+        assertFF4j.assertThatRoleExist(ROLE_ADMIN);
+        assertFF4j.assertThatRoleExist(ROLE_USER);
+        testedStore.deleteAllRoles();
+        // Then
+        Assertions.assertEquals(0, testedStore.countRoles());
+    }
+    
+    
+    @Test
+    @DisplayName("When listing all user names, the are all retrieve")
+    public void listingUserNamesShouldRetrieveAllNames() {
+        Stream< String> userNames = testedStore.listUsersNames();
+        Stream< String> roleNames = testedStore.listRoleNames();
+        Assertions.assertNotNull(userNames);
+        Assertions.assertNotNull(roleNames);
+        
+        Assertions.assertEquals(testDataSet.getUsers().size(), userNames.count());
+        Assertions.assertEquals(testDataSet.getUsers().size(),  testedStore.count());
+        
+        Assertions.assertEquals(testDataSet.getRoles().size(), roleNames.count());
+        Assertions.assertEquals(testDataSet.getRoles().size(),  testedStore.countRoles());
+    }
+    
+    
 }

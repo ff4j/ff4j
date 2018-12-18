@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.ff4j.event.EventQueryDefinition;
 import org.ff4j.event.monitoring.HitCount;
-import org.ff4j.event.repository.RepositoryEventFeatureUsage;
+import org.ff4j.event.repository.EventFeatureUsageRepository;
 
 /**
  * Create graphs and charts base on data into UsageService.
@@ -72,12 +72,12 @@ public class ChartRenderHelper {
     private static final String COLOR_RAINBOW_END = "442299";
     
     /** Current usage service to leverage on. */
-    private RepositoryEventFeatureUsage usageService;
+    private EventFeatureUsageRepository usageService;
     
     public ChartRenderHelper() {
     }
     
-    public ChartRenderHelper(RepositoryEventFeatureUsage usageService) {
+    public ChartRenderHelper(EventFeatureUsageRepository usageService) {
         this.usageService = usageService;
     }
     
@@ -389,7 +389,7 @@ public class ChartRenderHelper {
      * @return
      *       current value of 'usageService'
      */
-    public RepositoryEventFeatureUsage getUsageService() {
+    public EventFeatureUsageRepository getUsageService() {
         if (usageService == null) {
             throw new IllegalStateException("UsageService has not been iniatlized");
         }
@@ -401,7 +401,7 @@ public class ChartRenderHelper {
      * @param usageService
      * 		new value for 'usageService '
      */
-    public void setUsageService(RepositoryEventFeatureUsage usageService) {
+    public void setUsageService(EventFeatureUsageRepository usageService) {
         this.usageService = usageService;
     }
     

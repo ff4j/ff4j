@@ -34,10 +34,10 @@ import org.ff4j.event.Event.Source;
  *
  * @author Cedrick LUNVEN  (@clunven)
  */
-public abstract class AbstractAuditTrailListener<E extends FF4jEntity<?>> implements FF4jRepositoryListener<E> {
+public abstract class EventAuditTrailListenerSupport<E extends FF4jEntity<?>> implements FF4jRepositoryListener<E> {
 
     /** Audit trali reference. */
-    protected AuditTrail auditTrail;
+    protected EventAuditTrailRepository auditTrail;
     
     /** Current source from ff4j. */
     protected Source source = Source.JAVA_API;
@@ -48,7 +48,7 @@ public abstract class AbstractAuditTrailListener<E extends FF4jEntity<?>> implem
     /** Scope for store. */
     protected Scope scopeStore = Scope.UNKNOWN;
     
-    public AbstractAuditTrailListener(AuditTrail auditTrail, Scope sEntity, Scope sStore) {
+    public EventAuditTrailListenerSupport(EventAuditTrailRepository auditTrail, Scope sEntity, Scope sStore) {
         this.scopeEntity = sEntity;
         this.scopeStore = sStore;
         this.auditTrail = auditTrail;

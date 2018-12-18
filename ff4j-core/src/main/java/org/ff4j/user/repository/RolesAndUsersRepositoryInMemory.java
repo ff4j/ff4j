@@ -42,6 +42,7 @@ import org.ff4j.parser.xml.XmlParserV2;
 import org.ff4j.test.AssertUtils;
 import org.ff4j.user.FF4jRole;
 import org.ff4j.user.FF4jUser;
+import org.ff4j.user.exception.RoleNotFoundException;
 
 /**
  * Implementation to handle Users in memory.
@@ -195,7 +196,7 @@ public class RolesAndUsersRepositoryInMemory extends RolesAndUsersRepositorySupp
     public void deleteRole(String roleName) {
         assertNotNull(roleName);
         if (!existsRole(roleName)) {
-            throw new ItemNotFoundException(roleName);
+            throw new RoleNotFoundException(roleName);
         }
         mapOfRoles.remove(roleName);
     }
@@ -216,7 +217,7 @@ public class RolesAndUsersRepositoryInMemory extends RolesAndUsersRepositorySupp
     /** {@inheritDoc} */
     @Override
     public void deleteAllRoles() {
-        findAllRoles().forEach(this::deleteRole);
+        mapOfRoles.clear();
     }
     
     /** {@inheritDoc} */
@@ -322,7 +323,7 @@ public class RolesAndUsersRepositoryInMemory extends RolesAndUsersRepositorySupp
 
     /** {@inheritDoc} */
     @Override
-    protected void deleteUser(String userId) {
+    protected  void deleteUser(String userId) {
         assertNotNull(userId);
         assertItemExist(userId);
         mapOfUsers.remove(userId);
@@ -331,7 +332,7 @@ public class RolesAndUsersRepositoryInMemory extends RolesAndUsersRepositorySupp
     /** {@inheritDoc} */
     @Override
     protected void deleteAllUsers() {
-        findAllIds().forEach(this::deleteUser);
+        mapOfUsers.clear();
     }
 
     /** {@inheritDoc} */

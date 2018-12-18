@@ -31,7 +31,7 @@ import org.junit.jupiter.api.DisplayName;
  * @author Cedrick LUNVEN (@clunven)
  */
 @DisplayName("Testing FEATURES & INMEMORY Repository")
-public class RepositoryPropertiesStoreInMemoryTest extends RepositoryPropertiesTestSupport {
+public class RepositoryPropertiesStoreInMemoryTest extends PropertyRepositoryTestSupport {
 
     /** {@inheritDoc} */
     @Override

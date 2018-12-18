@@ -30,7 +30,7 @@ import org.ff4j.event.monitoring.AuditTrailQuery;
  *
  * @author Cedrick LUNVEN  (@clunven)
  */
-public interface AuditTrail {
+public interface EventAuditTrailRepository {
     
     /**
      * Create tables related to Audit Trail.

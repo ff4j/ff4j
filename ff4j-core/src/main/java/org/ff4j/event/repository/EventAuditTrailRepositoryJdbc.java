@@ -45,11 +45,11 @@ import org.ff4j.jdbc.JdbcConstants.AuditTrailColumns;
 import org.ff4j.jdbc.JdbcQueryBuilder;
 
 /**
- * Implementation of in memory {@link RepositoryEventFeatureUsage} with limited events.
+ * Implementation of in memory {@link EventFeatureUsageRepository} with limited events.
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class AuditTrailJdbc implements AuditTrail {
+public class EventAuditTrailRepositoryJdbc implements EventAuditTrailRepository {
     
     /** Error message 1. */
     public static final String CANNOT_READ_AUDITTABLE =  "Cannot read audit table from DB";
@@ -69,7 +69,7 @@ public class AuditTrailJdbc implements AuditTrail {
      * @param jdbcDS
      *            native jdbc datasource
      */
-    public AuditTrailJdbc(DataSource jdbcDS) {
+    public EventAuditTrailRepositoryJdbc(DataSource jdbcDS) {
         this.dataSource = jdbcDS;
     }
     

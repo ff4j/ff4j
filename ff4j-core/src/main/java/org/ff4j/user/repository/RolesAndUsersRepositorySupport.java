@@ -1,5 +1,10 @@
 package org.ff4j.user.repository;
 
+import static org.ff4j.test.AssertUtils.assertNotEmpty;
+import static org.ff4j.test.AssertUtils.assertNotNull;
+
+import java.util.Arrays;
+
 /*-
  * #%L
  * ff4j-core
@@ -22,12 +27,10 @@ package org.ff4j.user.repository;
 
 import org.ff4j.FF4jRepositoryListener;
 import org.ff4j.FF4jRepositorySupport;
-import org.ff4j.event.repository.AuditTrail;
+import org.ff4j.event.repository.EventAuditTrailRepository;
+import org.ff4j.exception.ItemNotFoundException;
 import org.ff4j.user.FF4jUser;
-
-import static org.ff4j.test.AssertUtils.*;
-
-import java.util.Arrays;
+import org.ff4j.user.exception.UserNotFoundException;
 
 /**
  * Superclass as helper to implements user repository.
@@ -61,10 +64,22 @@ public abstract class RolesAndUsersRepositorySupport
     public void delete(String... uids) {
         assertNotEmpty(uids);
         Arrays.stream(uids).forEach(uid -> {
-            assertItemExist(uid);
+            assertUserExist(uid);
             deleteUser(uid);
             this.notify(l -> l.onDelete(uid));
         });
+    }
+    
+    protected void assertUserExist(String uid) {
+        try {
+            assertItemExist(uid);
+        } catch(ItemNotFoundException infEx) {
+            throw new UserNotFoundException(uid, infEx);
+        }
+    }
+    
+    protected void assertUserNotNull(FF4jUser user) {
+        assertNotNull(user);
     }
     
     /** {@inheritDoc} */
@@ -80,7 +95,6 @@ public abstract class RolesAndUsersRepositorySupport
         assertNotNull(entities);
         Arrays.stream(entities).forEach(entity -> {
             preUpdate(entity);
-            assertItemNotExist(entity.getUid());
             saveUser(entity);
             this.notify(l -> l.onUpdate(entity));
         });
@@ -94,7 +108,7 @@ public abstract class RolesAndUsersRepositorySupport
     
     /** {@inheritDoc} */
     @Override
-    public void registerAuditListener(AuditTrail auditTrail) {
+    public void registerAuditListener(EventAuditTrailRepository auditTrail) {
         this.registerListener(LISTENERNAME_AUDIT, new RepositoryUserListener(auditTrail));
     }
     

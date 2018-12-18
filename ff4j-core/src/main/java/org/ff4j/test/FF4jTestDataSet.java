@@ -149,6 +149,7 @@ public interface FF4jTestDataSet {
     String ROLE_SUPERADMIN  = "SUPERUSER";
     String ROLE_USER        = "USER";
     String ROLE_EVERYONE    = "EVERYONE";
+    String ROLE_NEW         = "NEW_ROLE";
     
     /**
      * DataSet for configuration.

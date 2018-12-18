@@ -43,10 +43,12 @@ public class AssertFF4j {
 	public static final String IS_MANDATORY = "' is mandatory";
 
 	/** error message. */
-	public static final String FEATURE = "Feature '";
-	
-	/** error message. */
+	public static final String FEATURE  = "Feature '";
     public static final String PROPERTY = "Property '";
+    public static final String USER     = "User '";
+    public static final String ROLE     = "Roles '";
+
+
 
 	/** reference to ff4j context. */
 	private final FF4j ff4j;
@@ -78,28 +80,19 @@ public class AssertFF4j {
         this.timeout           = timeout;
         this.pollingInterval   = pollingInteval;
     }
-	
-	/**
-     * Check existence of the traget feature
-     * 
-     * @param featureName
-     *            targte featurename
-     * @return current object
-     */
+    
+    
+    /** ------------------------------------------------------- *
+     *  ----------------- Check existences. ------------------- *
+     *  ------------------------------------------------------- */
+    
     public final AssertFF4j assertThatFeatureExist(String featureName) { 
         assertTrueAsync(uid -> ff4j.getRepositoryFeatures().exists(featureName), 
                 featureName, FEATURE + featureName + IS_MANDATORY,
                 timeout, pollingInterval);
         return this;
     }
-    
-	/**
-	 * Check existence of the traget property
-	 * 
-	 * @param featureName
-	 *            targte featurename
-	 * @return current object
-	 */
+	
 	public final AssertFF4j assertThatPropertyExist(String propertyName) {
 	    AssertUtils.assertTrueAsync(uid -> ff4j.getRepositoryProperties().exists(propertyName), 
                 propertyName, PROPERTY + propertyName + IS_MANDATORY,
@@ -107,56 +100,44 @@ public class AssertFF4j {
         return this;
 	}
 	
-	/**
-     * Check existence of the traget property
-     * 
-     * @param featureName
-     *            targte featurename
-     * @return current object
-     */
-    public final AssertFF4j assertThatUserExist(String userName) {
-        assertTrue(ff4j.getRepositoryUsersRoles().exists(userName),
-                "User '" + userName + IS_MANDATORY);
+	public final AssertFF4j assertThatUserExist(String userName) {
+        assertTrue(ff4j.getRepositoryUsersRoles().exists(userName), USER + userName + IS_MANDATORY);
         return this;
     }
+    
+    public final AssertFF4j assertThatRoleExist(String roleName) {
+        assertTrue(ff4j.getRepositoryUsersRoles().existsRole(roleName), ROLE + roleName + IS_MANDATORY);
+        return this;
+    }
+    
 
-	/**
-	 * Check inexistence of the traget feature
-	 * 
-	 * @param featureName
-	 *            targte featurename
-	 * @return current object
-	 */
+    /** ------------------------------------------------------- *
+     *  ----------------- Check not exist --------------------- *
+     *  ------------------------------------------------------- */
+    
 	public final AssertFF4j assertThatFeatureDoesNotExist(String featureName) {
 	    assertFalseAsync(uid -> ff4j.getRepositoryFeatures().exists(featureName), 
                 featureName, String.format("Target feature : '%s' should not exist", featureName),
                 timeout, pollingInterval);
         return this;
 	}
-
-	/**
-	 * Check existence of the traget property
-	 * 
-	 * @param featureName
-	 *            targte featurename
-	 * @return current object
-	 */
+	
+	public final AssertFF4j assertThatRoleDoesNotExist(String roleName) {
+        assertFalseAsync(uid -> ff4j.getRepositoryUsersRoles().existsRole(roleName), 
+               String.format("Target role : '%s' should not exist", roleName),
+                timeout, pollingInterval);
+        return this;
+    }
+	
 	public final AssertFF4j assertThatPropertyDoesNotExist(String propertyName) {
 		assertFalse(ff4j.getRepositoryProperties().exists(propertyName),
-		        "Property '" + propertyName + IS_MANDATORY);
+		        String.format("Target property : '%s' should not exist", propertyName));
 		return this;
 	}
 	
-	/**
-     * Check existence of the traget property
-     * 
-     * @param featureName
-     *            targte featurename
-     * @return current object
-     */
     public final AssertFF4j assertThatUserDoesNotExist(String userName) {
         assertFalse(ff4j.getRepositoryUsersRoles().exists(userName),
-                "User '" + userName + IS_MANDATORY);
+                String.format("Target user : '%s' should not exist", userName));
         return this;
     }
 
@@ -220,6 +201,18 @@ public class AssertFF4j {
      */
     public final AssertFF4j assertThatUserStoreHasSize(int expectedNumber) {
         assertEquals(expectedNumber, new Long(ff4j.getRepositoryUsersRoles().findAll().count()).intValue());
+        return this;
+    }
+    
+    /**
+     * Check Number of features
+     * 
+     * @param featureName
+     *            target featureName
+     * @return current object
+     */
+    public final AssertFF4j assertThatRoleStoreHasSize(int expectedNumber) {
+        assertEquals(expectedNumber, new Long(ff4j.getRepositoryUsersRoles().countRoles()).intValue());
         return this;
     }
 
@@ -311,7 +304,6 @@ public class AssertFF4j {
 	public final AssertFF4j assertThatGroupExist(String groupName) {
 		assertTrue(ff4j.getRepositoryFeatures().existGroup(groupName), 
 		        "Group '" + groupName + " ' does no exist");
-		
 		return this;
 	}
 

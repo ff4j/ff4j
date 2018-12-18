@@ -49,7 +49,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public abstract class RepositoryPropertiesTestSupport implements FF4jTestDataSet {
+public abstract class PropertyRepositoryTestSupport implements FF4jTestDataSet {
     
     /** Initialize */
     protected FF4j ff4j = null;

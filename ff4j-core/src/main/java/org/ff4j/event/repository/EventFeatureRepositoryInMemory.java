@@ -47,11 +47,11 @@ import org.ff4j.event.chart.TimeSeriesChart;
 import org.ff4j.event.monitoring.HitCount;
 
 /**
- * Implementation of in memory {@link RepositoryEventFeatureUsage} with limited events.
+ * Implementation of in memory {@link EventFeatureUsageRepository} with limited events.
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public class RepositoryFeatureUsageInMemory extends AbstractRepositoryFeatureUsage {
+public class EventFeatureRepositoryInMemory extends EventFeatureUsageRepositorySupport {
    
     /** serialVersionUID. */
     private static final long serialVersionUID = 2667121403242303018L;
@@ -69,7 +69,7 @@ public class RepositoryFeatureUsageInMemory extends AbstractRepositoryFeatureUsa
     /**
      * Default constructor with default capacity to 100.000
      */
-    public RepositoryFeatureUsageInMemory() {
+    public EventFeatureRepositoryInMemory() {
         this(DEFAULT_QUEUE_CAPACITY);
     }
     
@@ -79,7 +79,7 @@ public class RepositoryFeatureUsageInMemory extends AbstractRepositoryFeatureUsa
      * @param queueCapacity
      *            default queue capacity
      */
-    public RepositoryFeatureUsageInMemory(int queueCapacity) {
+    public EventFeatureRepositoryInMemory(int queueCapacity) {
         this.queueCapacity = queueCapacity;
     }
     
@@ -168,8 +168,6 @@ public class RepositoryFeatureUsageInMemory extends AbstractRepositoryFeatureUsa
             result.get().removeIf(e -> entityId.equals(e.getUid()));
         }
     }
-
-   
     
     private boolean match(Event e) {
         return (e!= null) && e.getScope().equals(Event.Scope.FEATURE.name())

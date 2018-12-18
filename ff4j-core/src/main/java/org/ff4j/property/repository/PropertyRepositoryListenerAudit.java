@@ -21,8 +21,8 @@ package org.ff4j.property.repository;
  */
 
 import org.ff4j.event.Event.Scope;
-import org.ff4j.event.repository.AbstractAuditTrailListener;
-import org.ff4j.event.repository.AuditTrail;
+import org.ff4j.event.repository.EventAuditTrailListenerSupport;
+import org.ff4j.event.repository.EventAuditTrailRepository;
 import org.ff4j.property.Property;
 
 /**
@@ -30,9 +30,9 @@ import org.ff4j.property.Property;
  * 
  * @author Cedrick LUNVEN  (@clunven)
  */
-public class PropertyRepositoryListenerAudit extends AbstractAuditTrailListener<Property<?>> implements PropertyRepositoryListener {
+public class PropertyRepositoryListenerAudit extends EventAuditTrailListenerSupport<Property<?>> implements PropertyRepositoryListener {
 
-    public PropertyRepositoryListenerAudit(AuditTrail auditTrail) {
+    public PropertyRepositoryListenerAudit(EventAuditTrailRepository auditTrail) {
         super(auditTrail, Scope.PROPERTY, Scope.PROPERTYSTORE);
     }
     

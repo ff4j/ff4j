@@ -29,7 +29,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 
 @DisplayName("Testing JDBC | FEATURES  Repository")
-public class RepositoryFeatureJdbcTest extends RepositoryFeaturesTestSupport {
+public class RepositoryFeatureTestJdbc extends FeatureRepositoryTest {
     
     /** SQL DataSource. */
     private DataSource sqlDataSource;

@@ -25,7 +25,7 @@ import java.io.InputStream;
 import org.ff4j.feature.repository.FeatureRepository;
 import org.ff4j.property.repository.PropertyRepository;
 import org.ff4j.property.repository.PropertyRepositoryInMemory;
-import org.ff4j.test.store.RepositoryPropertiesTestSupport;
+import org.ff4j.test.store.PropertyRepositoryTestSupport;
 import org.junit.jupiter.api.DisplayName;
 
 /**
@@ -34,7 +34,7 @@ import org.junit.jupiter.api.DisplayName;
  * @author Cedrick LUNVEN (@clunven)
  */
 @DisplayName("Testing INMEMORY | PROPERTIES Repository")
-public class YamlRepositoryPropertiesStoreInMemoryTest extends RepositoryPropertiesTestSupport {
+public class YamlRepositoryPropertiesStoreInMemoryTest extends PropertyRepositoryTestSupport {
 
     /** {@inheritDoc} */
     @Override

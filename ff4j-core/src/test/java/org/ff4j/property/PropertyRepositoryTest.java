@@ -45,7 +45,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public abstract class RepositoryPropertiesTestSupport implements FF4jTestDataSet {
+public abstract class PropertyRepositoryTest implements FF4jTestDataSet {
     
     /** Initialize */
     protected FF4j ff4j = null;
@@ -155,7 +155,7 @@ public abstract class RepositoryPropertiesTestSupport implements FF4jTestDataSet
     
     @Test
     @DisplayName("When updating property with unknowm param, creating the property")
-    public void updatedUnknownPropertyShouldThrowPropertyNotFound() throws Exception {
+    public void updatedUnknownPropertyShouldCreateProperty() throws Exception {
         assertFF4j.assertThatPropertyDoesNotExist(PROPERTY_FOR_TEST);
         testedStore.save(new PropertyString(PROPERTY_FOR_TEST, "OK"));
         assertFF4j.assertThatPropertyExist(PROPERTY_FOR_TEST);
@@ -167,7 +167,7 @@ public abstract class RepositoryPropertiesTestSupport implements FF4jTestDataSet
         // Givens
         String newDescription = "new-description";
         assertFF4j.assertThatPropertyExist(PDouble);
-        Assertions.assertFalse(newDescription.equals(testedStore.read(PDouble).getDescription().isPresent()));
+        Assertions.assertFalse(testedStore.read(PDouble).getDescription().isPresent());
         Assertions.assertFalse(testedStore.read(PDouble).getFixedValues().isPresent());
         // When
         PropertyDouble propDouble = (PropertyDouble) testedStore.read(PDouble);

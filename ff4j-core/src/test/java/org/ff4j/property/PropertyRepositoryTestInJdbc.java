@@ -1,4 +1,6 @@
-package org.ff4j.features;
+package org.ff4j.property;
+
+import javax.sql.DataSource;
 
 /*-
  * #%L
@@ -21,7 +23,10 @@ package org.ff4j.features;
  */
 
 import org.ff4j.feature.repository.FeatureRepository;
-import org.ff4j.feature.repository.FeatureRepositoryInMemory;
+import org.ff4j.property.repository.PropertyRepository;
+import org.ff4j.property.repository.PropertyRepositoryJdbc;
+import org.ff4j.test.jdbc.JdbcTestHelper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 
 /**
@@ -29,13 +34,25 @@ import org.junit.jupiter.api.DisplayName;
  *
  * @author Cedrick LUNVEN (@clunven)
  */
-@DisplayName("Testing INMEMORY | FEATURES  Repository")
-public class RepositoryFeatureInMemoryTest extends RepositoryFeaturesTestSupport {
+@DisplayName("Testing JDBC | PROPERTIES Repository")
+public class PropertyRepositoryTestInJdbc extends PropertyRepositoryTest {
 
+    /** SQL DataSource. */
+    private DataSource sqlDataSource;
+    
     /** {@inheritDoc} */
     @Override
-    public FeatureRepository initStore() {
-        return new FeatureRepositoryInMemory("ff4j-testDataset.xml");
+    public PropertyRepository initStore() {
+        sqlDataSource = JdbcTestHelper.createInMemoryHQLDataSource();
+        return new PropertyRepositoryJdbc(sqlDataSource);
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    @BeforeEach
+    public void setUp() throws Exception {
+        super.setUp();
+        JdbcTestHelper.initDBSchema(sqlDataSource);
     }
     
 }

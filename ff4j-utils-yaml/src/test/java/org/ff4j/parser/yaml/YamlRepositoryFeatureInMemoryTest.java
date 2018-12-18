@@ -24,7 +24,7 @@ import java.io.InputStream;
 
 import org.ff4j.feature.repository.FeatureRepository;
 import org.ff4j.feature.repository.FeatureRepositoryInMemory;
-import org.ff4j.test.store.RepositoryFeaturesTestSupport;
+import org.ff4j.test.store.FeatureRepositoryTestSupport;
 import org.junit.jupiter.api.DisplayName;
 
 /**
@@ -33,7 +33,7 @@ import org.junit.jupiter.api.DisplayName;
  * @author Cedrick LUNVEN (@clunven)
  */
 @DisplayName("Testing INMEMORY | FEATURES Repository reading Yaml File")
-public class YamlRepositoryFeatureInMemoryTest extends RepositoryFeaturesTestSupport {
+public class YamlRepositoryFeatureInMemoryTest extends FeatureRepositoryTestSupport {
    
     /** {@inheritDoc} */
     @Override

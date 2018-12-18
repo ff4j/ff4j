@@ -43,7 +43,7 @@ import org.ff4j.feature.Feature;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public interface RepositoryEventFeatureUsage extends FF4jRepository < String, Event > {
+public interface EventFeatureUsageRepository extends FF4jRepository < String, Event > {
     
     /** Create key. */
     SimpleDateFormat KDF = new SimpleDateFormat("yyyyMMdd");

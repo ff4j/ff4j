@@ -32,9 +32,9 @@ import org.ff4j.feature.Feature;
  *
  * @author Cedrick LUNVEN  (@clunven)
  */
-public abstract class AbstractRepositoryFeatureUsage 
+public abstract class EventFeatureUsageRepositorySupport 
                 extends FF4jRepositorySupport < Event , FF4jRepositoryEventListener> 
-                implements FeatureUsageEventListener, RepositoryEventFeatureUsage {
+                implements EventFeatureUsageListener, EventFeatureUsageRepository {
 
     /** serialVersionUID. */
     private static final long serialVersionUID = -8194421012227669426L;
@@ -54,7 +54,7 @@ public abstract class AbstractRepositoryFeatureUsage
     
     /** {@inheritDoc} */
     @Override
-    public void registerAuditListener(AuditTrail auditTrail) {
+    public void registerAuditListener(EventAuditTrailRepository auditTrail) {
         // Don't register audit on audit
     }
     

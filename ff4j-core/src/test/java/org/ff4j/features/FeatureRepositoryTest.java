@@ -1,4 +1,4 @@
-package org.ff4j.test.store;
+package org.ff4j.features;
 
 /*-
  * #%L
@@ -57,7 +57,7 @@ import org.junit.jupiter.api.Test;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public abstract class RepositoryFeaturesTestSupport implements FF4jTestDataSet {
+public abstract class FeatureRepositoryTest implements FF4jTestDataSet {
 
     /** Initialize */
 	protected FF4j ff4j = null;
@@ -317,7 +317,6 @@ public abstract class RepositoryFeaturesTestSupport implements FF4jTestDataSet {
         assertThrows(AssertionViolationException.class, () -> { testedStore.existGroup(""); });
     }
 	
-
 	@Test
 	@DisplayName("When group exist should return true and false if not exists")
 	public void existGroupShouldReturnGroupExistenceStatus() {

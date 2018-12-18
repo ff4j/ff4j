@@ -39,7 +39,7 @@ import org.ff4j.utils.Util;
  *
  * @author Cedrick LUNVEN  (@clunven)
  */
-public class RepositoryAuditTrailInMemory implements AuditTrail {
+public class EventAuditTrailRepositoryInMemory implements EventAuditTrailRepository {
 
     /** default retention. */
     private final int DEFAULT_QUEUE_CAPACITY = 100000;
@@ -51,7 +51,7 @@ public class RepositoryAuditTrailInMemory implements AuditTrail {
     private static Map< String , Map < String, EventSeries>> auditTrail = new ConcurrentHashMap<>();
     
     /** Default constructor. */
-    public RepositoryAuditTrailInMemory() {}
+    public EventAuditTrailRepositoryInMemory() {}
     
     /** {@inheritDoc} */
     @Override
