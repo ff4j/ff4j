@@ -8,12 +8,25 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public interface Foldable {
+    /**
+     * Returns true if Feature is enabled.
+     */
     boolean isRight();
 
+    /**
+     * Returns false in case of non existing feature o disabled.
+     */
     boolean isLeft();
 
     Feature get();
 
+    /**
+     * Folds either the NonExisting or the Existing side of this disjunction.
+     * @param nonExistingMapper Supplier for nonExisting case
+     * @param existingMapper maps the existingMapper value if this is a Existing Feature
+     * @param <U> type of the folded value
+     * @return  A value of type U
+     */
     default <U> U fold(Supplier<? extends U> nonExistingMapper, Function<Feature, ? extends U> existingMapper) {
         if (isRight()) {
             return existingMapper.apply(get());

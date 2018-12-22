@@ -849,6 +849,11 @@ public class FF4j extends FF4jRepositoryObserver < EventFeatureUsageListener > i
         return System.currentTimeMillis() - getStartTime();
     }
 
+    /**
+     * Operate with feature
+     * @param featureUid
+     * @return Foldable type.
+     */
     public Foldable operateWith(String featureUid) {
         return findFeature(featureUid)
                 .filter(Feature::isEnabled)
