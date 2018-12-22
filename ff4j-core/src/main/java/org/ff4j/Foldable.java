@@ -14,15 +14,19 @@ public interface Foldable {
 
     Feature get();
 
-    default <U> U fold(Supplier<? extends U> leftMapper, Function<Feature, ? extends U> rightMapper) {
+    default <U> U fold(Supplier<? extends U> nonExistingMapper, Function<Feature, ? extends U> existingMapper) {
         if (isRight()) {
-            return rightMapper.apply(get());
+            return existingMapper.apply(get());
         } else {
-            return leftMapper.get();
+            return nonExistingMapper.get();
         }
     }
 
     final class DisabledFeature implements Foldable {
+
+        DisabledFeature(){
+
+        }
 
         @Override
         public boolean isRight() {
@@ -44,7 +48,7 @@ public interface Foldable {
 
         private final Feature feature;
 
-        public EnabledFeature(Feature feature) {
+        EnabledFeature(Feature feature) {
             this.feature = feature;
         }
 

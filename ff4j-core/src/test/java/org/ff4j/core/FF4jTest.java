@@ -110,39 +110,8 @@ public class FF4jTest implements FF4jTestDataSet {
     }
 
     @Test
-    @DisplayName("Fold over a feature")
-    public void shouldOperateOverFeature() {
-        FF4j ff4j = new FF4j();
-        ff4j.saveFeature(new Feature(FEATURE_FOR_TEST).toggleOn());
-        Assertions.assertNotNull(ff4j.operateWith(FEATURE_FOR_TEST));
-    }
-
-    @Test
-    @DisplayName("Operate with enabled feature will return an EnabledFeature Type")
-    void getEnabledWithOperateWithEnable() {
-        FF4j ff4j = new FF4j();
-        ff4j.saveFeature(new Feature(FEATURE_FOR_TEST).toggleOn());
-        Assertions.assertEquals(ff4j.operateWith(FEATURE_FOR_TEST).getClass(), Foldable.EnabledFeature.class);
-    }
-
-    @Test
-    @DisplayName("Operate with disabled feature will return an DisabledFeature Type")
-    void getDisabledWithOperateWithDisable() {
-        FF4j ff4j = new FF4j();
-        ff4j.saveFeature(new Feature(FEATURE_FOR_TEST).toggleOff());
-        Assertions.assertEquals(ff4j.operateWith(FEATURE_FOR_TEST).getClass(), Foldable.DisabledFeature.class);
-    }
-
-    @Test
-    @DisplayName("Operate with a non existing feature will return an DisabledFeature Type")
-    void getDisabledWithOperateWithNonExisting() {
-        FF4j ff4j = new FF4j();
-        ff4j.saveFeature(new Feature(F1).toggleOn());
-        Assertions.assertEquals(ff4j.operateWith(FEATURE_FOR_TEST).getClass(), Foldable.DisabledFeature.class);
-    }
-
-    @Test
-    void foldOverEnabledFeature() {
+    @DisplayName("Fold over enabled feature will execute existingFunction")
+    void foldOverEnabled() {
         FF4j ff4j = new FF4j();
         ff4j.saveFeature(new Feature(FEATURE_FOR_TEST).toggleOn());
         boolean enabled = ff4j.operateWith(FEATURE_FOR_TEST).fold(
@@ -152,7 +121,8 @@ public class FF4jTest implements FF4jTestDataSet {
     }
 
     @Test
-    void foldOverDisabledFeature() {
+    @DisplayName("Fold over disabled feature will execute non existing Function")
+    void foldOverDisabled() {
         FF4j ff4j = new FF4j();
         ff4j.saveFeature(new Feature(FEATURE_FOR_TEST).toggleOff());
         boolean enabled = ff4j.operateWith(FEATURE_FOR_TEST).fold(
@@ -162,7 +132,8 @@ public class FF4jTest implements FF4jTestDataSet {
     }
 
     @Test
-    void foldOverNoExistingFeature() {
+    @DisplayName("Fold over a non existing feature will execute non existing Function")
+    void foldOverNonExisting() {
         FF4j ff4j = new FF4j();
         ff4j.saveFeature(new Feature(FEATURE_FOR_TEST).toggleOff());
         boolean enabled = ff4j.operateWith(F1).fold(
