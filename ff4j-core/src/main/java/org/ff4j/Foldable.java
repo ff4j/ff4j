@@ -1,23 +1,24 @@
 package org.ff4j;
 
+
 import org.ff4j.feature.Feature;
 
+import java.util.NoSuchElementException;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
-public interface Foldable<L, R> {
+public interface Foldable {
     boolean isRight();
 
     boolean isLeft();
 
-    L getLeft();
+    Feature get();
 
-    R get();
-
-    default <U> U fold(Function<? super L, ? extends U> leftMapper, Function<? super R, ? extends U> rightMapper) {
+    default <U> U fold(Supplier<? extends U> leftMapper, Function<Feature, ? extends U> rightMapper) {
         if (isRight()) {
             return rightMapper.apply(get());
         } else {
-            return leftMapper.apply(getLeft());
+            return leftMapper.get();
         }
     }
 
@@ -34,13 +35,8 @@ public interface Foldable<L, R> {
         }
 
         @Override
-        public Object getLeft() {
-            return null;
-        }
-
-        @Override
-        public Object get() {
-            return null;
+        public Feature get() {
+            throw new NoSuchElementException("Feature not enabled");
         }
     }
 
@@ -62,14 +58,10 @@ public interface Foldable<L, R> {
             return false;
         }
 
-        @Override
-        public Object getLeft() {
-            return null;
-        }
 
         @Override
-        public Object get() {
-            return null;
+        public Feature get() {
+            return feature;
         }
     }
 }

@@ -23,6 +23,7 @@ package org.ff4j.core;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.ff4j.FF4j;
+import org.ff4j.Foldable;
 import org.ff4j.feature.Feature;
 import org.ff4j.feature.exception.FeatureNotFoundException;
 import org.ff4j.parser.xml.XmlParserV2;
@@ -115,5 +116,58 @@ public class FF4jTest implements FF4jTestDataSet {
         ff4j.saveFeature(new Feature(FEATURE_FOR_TEST).toggleOn());
         Assertions.assertNotNull(ff4j.operateWith(FEATURE_FOR_TEST));
     }
- 
+
+    @Test
+    @DisplayName("Operate with enabled feature will return an EnabledFeature Type")
+    void getEnabledWithOperateWithEnable() {
+        FF4j ff4j = new FF4j();
+        ff4j.saveFeature(new Feature(FEATURE_FOR_TEST).toggleOn());
+        Assertions.assertEquals(ff4j.operateWith(FEATURE_FOR_TEST).getClass(), Foldable.EnabledFeature.class);
+    }
+
+    @Test
+    @DisplayName("Operate with disabled feature will return an DisabledFeature Type")
+    void getDisabledWithOperateWithDisable() {
+        FF4j ff4j = new FF4j();
+        ff4j.saveFeature(new Feature(FEATURE_FOR_TEST).toggleOff());
+        Assertions.assertEquals(ff4j.operateWith(FEATURE_FOR_TEST).getClass(), Foldable.DisabledFeature.class);
+    }
+
+    @Test
+    @DisplayName("Operate with a non existing feature will return an DisabledFeature Type")
+    void getDisabledWithOperateWithNonExisting() {
+        FF4j ff4j = new FF4j();
+        ff4j.saveFeature(new Feature(F1).toggleOn());
+        Assertions.assertEquals(ff4j.operateWith(FEATURE_FOR_TEST).getClass(), Foldable.DisabledFeature.class);
+    }
+
+    @Test
+    void foldOverEnabledFeature() {
+        FF4j ff4j = new FF4j();
+        ff4j.saveFeature(new Feature(FEATURE_FOR_TEST).toggleOn());
+        boolean enabled = ff4j.operateWith(FEATURE_FOR_TEST).fold(
+                () -> false,
+                feature -> true);
+        Assertions.assertTrue(enabled);
+    }
+
+    @Test
+    void foldOverDisabledFeature() {
+        FF4j ff4j = new FF4j();
+        ff4j.saveFeature(new Feature(FEATURE_FOR_TEST).toggleOff());
+        boolean enabled = ff4j.operateWith(FEATURE_FOR_TEST).fold(
+                () -> false,
+                feature -> true);
+        Assertions.assertFalse(enabled);
+    }
+
+    @Test
+    void foldOverNoExistingFeature() {
+        FF4j ff4j = new FF4j();
+        ff4j.saveFeature(new Feature(FEATURE_FOR_TEST).toggleOff());
+        boolean enabled = ff4j.operateWith(F1).fold(
+                () -> false,
+                feature -> true);
+        Assertions.assertFalse(enabled);
+    }
 }
