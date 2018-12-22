@@ -28,6 +28,8 @@ import java.io.InputStream;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import org.ff4j.Foldable.DisabledFeature;
+import org.ff4j.Foldable.EnabledFeature;
 import org.ff4j.cache.CacheManager;
 import org.ff4j.cache.CacheProxyFeatures;
 import org.ff4j.cache.CacheProxyProperties;
@@ -845,6 +847,13 @@ public class FF4j extends FF4jRepositoryObserver < EventFeatureUsageListener > i
      */
     public long getUptime() {
         return System.currentTimeMillis() - getStartTime();
-    }    
-    
+    }
+
+    public Foldable operateWith(String featureName) {
+        final Optional<Feature> feature1 = findFeature(featureName);
+        if(feature1.isPresent() && feature1.get().isEnabled()) {
+            return new EnabledFeature(feature1.get());
+        }
+        return new DisabledFeature();
+    }
 }

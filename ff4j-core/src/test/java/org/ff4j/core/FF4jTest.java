@@ -107,5 +107,13 @@ public class FF4jTest implements FF4jTestDataSet {
         ff4j.toggleOff(FEATURE_FOR_TEST);
         Assertions.assertFalse(ff4j.check(FEATURE_FOR_TEST));
     }
+
+    @Test
+    @DisplayName("Fold over a feature")
+    public void shouldOperateOverFeature() {
+        FF4j ff4j = new FF4j();
+        ff4j.saveFeature(new Feature(FEATURE_FOR_TEST).toggleOn());
+        Assertions.assertNotNull(ff4j.operateWith(FEATURE_FOR_TEST));
+    }
  
 }
