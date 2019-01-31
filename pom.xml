@@ -73,7 +73,7 @@
         <license.licenseResolver>${project.baseUri}src/license</license.licenseResolver>
 
         <!-- Versions -->
-        <version.slf4j>1.7.7</version.slf4j>
+        <version.slf4j>1.7.22</version.slf4j>
         <version.logback>1.1.11</version.logback>
 
         <version.junit>4.12</version.junit>
