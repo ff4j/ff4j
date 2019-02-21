@@ -29,6 +29,24 @@
    		<required>false</required>
    		<rtexprvalue>false</rtexprvalue>
   	 </attribute>
+		<attribute>
+			<description>
+				Name of the exported scoped variable for the
+				resulting value of the feature condition. The type
+				of the scoped variable is Boolean.
+			</description>
+			<name>var</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>
+				Scope for var.
+			</description>
+			<name>scope</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
 	</tag>
 	
 	<!-- Check Feature status -->
@@ -49,6 +67,24 @@
    		<required>false</required>
    		<rtexprvalue>false</rtexprvalue>
   	 </attribute>
+		<attribute>
+			<description>
+				Name of the exported scoped variable for the
+				resulting value of the feature condition. The type
+				of the scoped variable is Boolean.
+			</description>
+			<name>var</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>
+				Scope for var.
+			</description>
+			<name>scope</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
 	</tag>
 	
 

@@ -31,7 +31,19 @@ import org.ff4j.core.FlippingExecutionContext;
  * &lt;ff4j:enable featureid="mercure-desc"&gt;
  * here your html code
  *  &lt;/ff4j:enable@gt;
- * 
+ *
+ * <p/>
+ *
+ * It is also possible to store the result of feature evaluation to be able to use it in a more complex
+ * condition:
+ *
+ * <pre><code>
+ *     &lt;ff4j:disable featureid="mercure-desc" var="mercureDescEnabled"&gt;
+ *     &lt;c:if test=${mercureDescEnabled && otherCondition}"&gt;
+ *       Your HTML code
+ *     &lt;/c:if"&gt;
+ * </code></pre>
+
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public class FeatureTagEnable extends AbstractFeatureTag {
