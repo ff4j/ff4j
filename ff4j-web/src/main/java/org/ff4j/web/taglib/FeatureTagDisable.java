@@ -29,6 +29,18 @@ import org.ff4j.core.FlippingExecutionContext;
 
 /**
  * Content of enclosing tag will be displayed if feature not enable.
+ *
+ * <p/>
+ *
+ * It is also possible to store the result of feature evaluation to be able to use it in a more complex
+ * condition:
+ *
+ * <pre><code>
+ *     &lt;ff4j:disable featureid="mercure-desc" var="mercureDescDisabled"&gt;
+ *     &lt;c:if test=${mercureDescDisabled && otherCondition}"&gt;
+ *       Your HTML code
+ *     &lt;/c:if"&gt;
+ * </code></pre>
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
