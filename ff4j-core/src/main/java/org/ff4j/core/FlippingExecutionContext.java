@@ -100,7 +100,7 @@ public class FlippingExecutionContext {
      */
     public String getString(String key, boolean required) {
         Object o = getValue(key, required);
-        if (!(o instanceof String)) {
+        if (o != null && !(o instanceof String)) {
             throw new IllegalArgumentException("Cannot convert parameter to String");
         }
         return (String) o;
@@ -128,7 +128,7 @@ public class FlippingExecutionContext {
      */
     public Boolean getBoolean(String key, boolean required) {
         Object o = getValue(key, required);
-        if (!(o instanceof Boolean)) {
+        if (o != null && !(o instanceof Boolean)) {
             throw new IllegalArgumentException("Cannot convert parameter to Boolean");
         }
         return (Boolean) o;
@@ -157,7 +157,7 @@ public class FlippingExecutionContext {
      */
     public Integer getInt(String key, boolean required) {
         Object o = getValue(key, required);
-        if (!(o instanceof Integer)) {
+        if (o != null && !(o instanceof Integer)) {
             throw new IllegalArgumentException("Cannot convert parameter to Integer it");
         }
         return (Integer) o;
@@ -185,7 +185,7 @@ public class FlippingExecutionContext {
      */
     public Double getDouble(String key, boolean required) {
         Object o = getValue(key, required);
-        if (!(o instanceof Double)) {
+        if (o != null && !(o instanceof Double)) {
             throw new IllegalArgumentException("Cannot convert parameter to Double");
         }
         return (Double) o;
@@ -213,7 +213,7 @@ public class FlippingExecutionContext {
      */
     public Date getDate(String key, boolean required) {
         Object o = getValue(key, required);
-        if (!(o instanceof Date)) {
+        if (o != null && !(o instanceof Date)) {
             throw new IllegalArgumentException("Cannot convert parameter to Date");
         }
         return (Date) o;

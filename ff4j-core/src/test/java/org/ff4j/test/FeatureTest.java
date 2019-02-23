@@ -141,6 +141,18 @@ public class FeatureTest {
         fec.getBoolean("c");
         fec.getDate("d");
     }
+
+    @Test
+    public void testFlipExecContextMissing() {
+        Map < String, Object > parameters = new HashMap<String, Object>();
+
+        FlippingExecutionContext fec = new FlippingExecutionContext(parameters);
+        fec.getDouble("a", false);
+        fec.getInt("b", false);
+        fec.getBoolean("c", false);
+        fec.getDate("d", false);
+        fec.getString("e", false);
+    }
     
     @Test(expected = IllegalArgumentException.class)
     public void testFlipExecContext2() {
