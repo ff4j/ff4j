@@ -157,7 +157,7 @@ public class FeatureTest {
     @Test(expected = IllegalArgumentException.class)
     public void testFlipExecContext2() {
         Map < String, Object > parameters = new HashMap<String, Object>();
-        FlippingExecutionContext fec = new FlippingExecutionContext();
+        FlippingExecutionContext fec = new FlippingExecutionContext(parameters);
         parameters.put("b", new Double(1));        
         fec.getInt("b");
     }
@@ -165,7 +165,7 @@ public class FeatureTest {
     @Test(expected = IllegalArgumentException.class)
     public void testFlipExecContext3() {
         Map < String, Object > parameters = new HashMap<String, Object>();
-        FlippingExecutionContext fec = new FlippingExecutionContext();
+        FlippingExecutionContext fec = new FlippingExecutionContext(parameters);
         parameters.put("b", new Integer(1));        
         fec.getDouble("b");
     }
@@ -173,7 +173,7 @@ public class FeatureTest {
     @Test(expected = IllegalArgumentException.class)
     public void testFlipExecContext4() {
         Map < String, Object > parameters = new HashMap<String, Object>();
-        FlippingExecutionContext fec = new FlippingExecutionContext();
+        FlippingExecutionContext fec = new FlippingExecutionContext(parameters);
         parameters.put("b", new Integer(1));        
         fec.getDate("b");
     }
@@ -181,7 +181,7 @@ public class FeatureTest {
     @Test(expected = IllegalArgumentException.class)
     public void testFlipExecContext5() {
         Map < String, Object > parameters = new HashMap<String, Object>();
-        FlippingExecutionContext fec = new FlippingExecutionContext();
+        FlippingExecutionContext fec = new FlippingExecutionContext(parameters);
         parameters.put("b", new Integer(1));        
         fec.getBoolean("b");
         
@@ -197,7 +197,7 @@ public class FeatureTest {
     @Test(expected = IllegalArgumentException.class)
     public void testFlipExecContext7() {
         Map < String, Object > parameters = new HashMap<String, Object>();
-        FlippingExecutionContext fec = new FlippingExecutionContext();
+        FlippingExecutionContext fec = new FlippingExecutionContext(parameters);
         parameters.put("b", new Integer(1));        
         fec.getString("b");
     }
