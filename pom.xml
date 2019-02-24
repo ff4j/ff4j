@@ -179,7 +179,7 @@
         <module>ff4j-store-redis</module>
         <module>ff4j-store-springjdbc</module>
         <module>ff4j-store-couchbase</module>
-              
+        <module>ff4j-store-aws-ssm</module>
     </modules>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
