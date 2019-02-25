@@ -14,6 +14,7 @@ package org.ff4j.awsssm.store;
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder;
 import com.amazonaws.services.simplesystemsmanagement.model.*;
+import org.ff4j.conf.XmlParser;
 import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.Property;
@@ -22,6 +23,7 @@ import org.ff4j.property.store.AbstractPropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.utils.Util;
 
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -141,6 +143,32 @@ public class PropertyStoreAwsSSM extends AbstractPropertyStore {
         Set<String> names = listPropertyFullNames();
         if (!Util.isEmpty(names)) {
             client.deleteParameters(new DeleteParametersRequest().withNames(names));
+        }
+    }
+
+    /**
+     * Load configuration through FF4J.vml file.
+     *
+     * @param fileName
+     *            xml filename
+     */
+    public void loadFromXMLFile(String fileName) {
+        loadFromXMLFileStream(getClass().getClassLoader().getResourceAsStream(fileName));
+    }
+
+    /**
+     * Load configuration through FF4J.vml file.
+     *
+     * @param xmlIN
+     *            xml file input stream
+     */
+    public void loadFromXMLFileStream(InputStream xmlIN) {
+        if (xmlIN == null) {
+            throw new IllegalArgumentException("Cannot parse stream with properties");
+        }
+        Map<String, Property<?>> properties = new XmlParser().parseConfigurationFile(xmlIN).getProperties();
+        for (String prop : properties.keySet()) {
+            createProperty(properties.get(prop));
         }
     }
 
