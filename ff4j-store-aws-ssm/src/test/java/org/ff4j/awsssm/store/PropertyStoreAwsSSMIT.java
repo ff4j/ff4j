@@ -21,12 +21,17 @@ import org.junit.*;
 import java.util.Map;
 
 /**
- * Integration test of {@link PropertyStore} with Amazon Web Services SSM Parameter Store.
- * (<a href="https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html">SSM Parameter Store</a>)
+ * Integration test of {@link PropertyStore} with Amazon Web Services SSM Parameter Store.<br/>
+ *
+ * In order to execute this test, you need to configure the environment properly:
+ * See <a href="https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/credentials.html#credentials-default">credentials</a> and
+ * <a href="https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/java-dg-region-selection.html">region</a> configuration.
+ *
+ * <br/><b>Attention!</b> Do not store AWS credentials in the code!
  *
  * @author <a href="mailto:jeromevdl@gmail.com">Jerome VAN DER LINDEN</a>
  */
-public class PropertyStoreAwsSSMTest extends PropertyStoreTestSupport {
+public class PropertyStoreAwsSSMIT extends PropertyStoreTestSupport {
 
     @Override
     @Before

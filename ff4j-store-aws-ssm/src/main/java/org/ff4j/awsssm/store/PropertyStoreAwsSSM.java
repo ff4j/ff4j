@@ -75,17 +75,7 @@ public class PropertyStoreAwsSSM extends AbstractPropertyStore {
     /** {@inheritDoc} */
     @Override
     public <T> void createProperty(Property<T> value) {
-        Util.assertNotNull(value);
-        Util.assertHasLength(value.getName());
-        try {
-            client.putParameter(new PutParameterRequest()
-                    .withName(path + "/" + value.getName())
-                    .withType(ParameterType.String)
-                    .withValue(value.asString())
-                    .withDescription(value.getDescription()));
-        } catch (ParameterAlreadyExistsException pae) {
-            throw new PropertyAlreadyExistException(value.getName());
-        }
+        createOrUpdate(value, false);
     }
 
     /** {@inheritDoc} */
@@ -100,6 +90,12 @@ public class PropertyStoreAwsSSM extends AbstractPropertyStore {
         } catch (ParameterVersionNotFoundException e) {
             throw new PropertyNotFoundException(name);
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public <T> void updateProperty(Property<T> prop) {
+        createOrUpdate(prop, true);
     }
 
     /** {@inheritDoc} */
@@ -169,6 +165,24 @@ public class PropertyStoreAwsSSM extends AbstractPropertyStore {
         Map<String, Property<?>> properties = new XmlParser().parseConfigurationFile(xmlIN).getProperties();
         for (String prop : properties.keySet()) {
             createProperty(properties.get(prop));
+        }
+    }
+
+    private <T> void createOrUpdate(Property<T> property, boolean overwrite) {
+        Util.assertNotNull(property);
+        Util.assertHasLength(property.getName());
+        if (overwrite && !existProperty(property.getName())) {
+            throw new PropertyNotFoundException(property.getName());
+        }
+        try {
+            client.putParameter(new PutParameterRequest()
+                    .withName(path + "/" + property.getName())
+                    .withType(ParameterType.String)
+                    .withValue(property.asString())
+                    .withOverwrite(overwrite)
+                    .withDescription(property.getDescription()));
+        } catch (ParameterAlreadyExistsException pae) {
+            throw new PropertyAlreadyExistException(property.getName());
         }
     }
 
