@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.ff4j</groupId>
     <artifactId>ff4j-parent</artifactId>
-    <version>1.7.4-SNAPSHOT</version>
+    <version>1.9-SNAPSHOT</version>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <!-- ~ MAIN INFO ~ -->
@@ -124,7 +124,7 @@
         <version.maven.plugin.javadoc>2.10.3</version.maven.plugin.javadoc>
         <version.maven.plugin.source>2.2.1</version.maven.plugin.source>
         <version.maven.plugin.license>1.8</version.maven.plugin.license>
-        <version.maven.plugin.nexus>1.6.6</version.maven.plugin.nexus>
+        <version.maven.plugin.nexus>1.6.8</version.maven.plugin.nexus>
         <version.maven.plugin.compiler>3.3</version.maven.plugin.compiler>
         <version.maven.plugin.jar>2.6</version.maven.plugin.jar>
         <version.maven.plugin.dependency>2.8</version.maven.plugin.dependency>
@@ -156,7 +156,6 @@
 
         <module>ff4j-web</module>
         <module>ff4j-webapi</module>
-        <module>ff4j-webapi-jersey1x</module>
         <module>ff4j-webapi-jersey2x</module>
 
         <module>ff4j-utils-json</module>
@@ -187,7 +186,8 @@
         <module>ff4j-spring-boot-web-api</module>
         <module>ff4j-spring-boot-autoconfigure</module>
         <module>ff4j-spring-boot-starter</module>
-    </modules>
+
+  </modules>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <!-- ~ DEPENDENCIES             ~ -->

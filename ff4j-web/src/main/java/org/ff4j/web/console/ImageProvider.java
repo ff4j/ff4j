@@ -92,7 +92,7 @@ public class ImageProvider {
 			// Write into outpustream
 			ImageIO.write(resizedImage, type.toString(), bos);
 			// Convert to base64
-            return DatatypeConverter.printBase64Binary(bos.toByteArray());
+			return DatatypeConverter.printBase64Binary(bos.toByteArray());
 		} catch (IOException e) {
 			throw new IllegalArgumentException("Cannot convert image to base64", e);
 		} finally {

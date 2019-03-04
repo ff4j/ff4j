@@ -52,8 +52,18 @@ public abstract class AbstractFeatureTag extends TagSupport {
     /** Share httpSession with Flipping execution context, as consuming keep at minimum. */
     private boolean shareHttpSession = false;
 
+    /** The variable name where the result will be stored. */
+    private String var;
+
+    /** The current scope. */
+    private int scope;
+
     /** FF4j bean name. */
     private final String ff4jAttributeName = FF4J_SESSIONATTRIBUTE_NAME;
+
+    public AbstractFeatureTag() {
+        init();
+    }
 
     /**
      * Display an error message in tag.
@@ -70,34 +80,43 @@ public abstract class AbstractFeatureTag extends TagSupport {
     /** {@inheritDoc} */
     @Override
     public int doStartTag() throws JspException {
-        try {
+        boolean result = false;
 
+        try {
             FF4j ff4j = (FF4j) pageContext.findAttribute(getFf4jAttributeName());
 
             // Handle where no ff4j available
             if (ff4j == null) {
                 displayError("Cannot find FF4J bean as attribute (" + getFf4jAttributeName() + ") in any scope.");
-                return SKIP_BODY;
             }
 
             // Handle where feature doe not exist
-            if (!ff4j.exist(getFeatureid()) && !ff4j.isAutocreate()) {
+            else if (!ff4j.exist(getFeatureid()) && !ff4j.isAutocreate()) {
                 displayError("Cannot find feature (" + getFeatureid() + ") anywhere.");
-                return SKIP_BODY;
             }
 
             // Everything is OK
-            if (eval(ff4j, pageContext)) {
-                return EVAL_BODY_INCLUDE;
+            else if (eval(ff4j, pageContext)) {
+                result = true;
             }
 
         } catch (IOException ioe) {
             throw new JspException("Error occur when processing TAG FF4J", ioe);
         }
-        return SKIP_BODY;
+
+        // Expose result to published variable.
+        exposeVariables(result);
+
+        return result ? EVAL_BODY_INCLUDE : SKIP_BODY;
     }
     
     protected abstract boolean eval(FF4j ff4j, PageContext pageContext);
+
+    private void exposeVariables(boolean result) {
+        if (var != null) {
+            pageContext.setAttribute(var, result, scope);
+        }
+    }
 
     /**
      * Getter accessor for attribute 'featureid'.
@@ -146,4 +165,54 @@ public abstract class AbstractFeatureTag extends TagSupport {
         this.shareHttpSession = shareHttpSession;
     }
 
+    /**
+     * Getter accessor for attribute {@link #var}.
+     *
+     * @return
+     *       current value of {@link #var}
+     */
+    public String getVar() {
+        return var;
+    }
+
+    /**
+     * Setter accessor for {@link #var}.
+     * @param var
+     * 		new value for {@link #var}
+     */
+    public void setVar(String var) {
+        this.var = var;
+    }
+
+    /**
+     * Getter accessor for attribute {@link #scope}.
+     *
+     * @return
+     *       current value of {@link #scope}
+     */
+    public int getScope() {
+        return scope;
+    }
+
+    /**
+     * Setter accessor for {@link #scope}.
+     * @param scope
+     * 		new value for {@link #scope}
+     */
+    public void setScope(int scope) {
+        this.scope = scope;
+    }
+
+    @Override
+    public void release() {
+        super.release();
+        init();
+    }
+
+    private void init() {
+        featureid = null;
+        shareHttpSession = false;
+        var = null;
+        scope = PageContext.PAGE_SCOPE;
+    }
 }
