@@ -141,11 +141,23 @@ public class FeatureTest {
         fec.getBoolean("c");
         fec.getDate("d");
     }
+
+    @Test
+    public void testFlipExecContextMissing() {
+        Map < String, Object > parameters = new HashMap<String, Object>();
+
+        FlippingExecutionContext fec = new FlippingExecutionContext(parameters);
+        fec.getDouble("a", false);
+        fec.getInt("b", false);
+        fec.getBoolean("c", false);
+        fec.getDate("d", false);
+        fec.getString("e", false);
+    }
     
     @Test(expected = IllegalArgumentException.class)
     public void testFlipExecContext2() {
         Map < String, Object > parameters = new HashMap<String, Object>();
-        FlippingExecutionContext fec = new FlippingExecutionContext();
+        FlippingExecutionContext fec = new FlippingExecutionContext(parameters);
         parameters.put("b", new Double(1));        
         fec.getInt("b");
     }
@@ -153,7 +165,7 @@ public class FeatureTest {
     @Test(expected = IllegalArgumentException.class)
     public void testFlipExecContext3() {
         Map < String, Object > parameters = new HashMap<String, Object>();
-        FlippingExecutionContext fec = new FlippingExecutionContext();
+        FlippingExecutionContext fec = new FlippingExecutionContext(parameters);
         parameters.put("b", new Integer(1));        
         fec.getDouble("b");
     }
@@ -161,7 +173,7 @@ public class FeatureTest {
     @Test(expected = IllegalArgumentException.class)
     public void testFlipExecContext4() {
         Map < String, Object > parameters = new HashMap<String, Object>();
-        FlippingExecutionContext fec = new FlippingExecutionContext();
+        FlippingExecutionContext fec = new FlippingExecutionContext(parameters);
         parameters.put("b", new Integer(1));        
         fec.getDate("b");
     }
@@ -169,7 +181,7 @@ public class FeatureTest {
     @Test(expected = IllegalArgumentException.class)
     public void testFlipExecContext5() {
         Map < String, Object > parameters = new HashMap<String, Object>();
-        FlippingExecutionContext fec = new FlippingExecutionContext();
+        FlippingExecutionContext fec = new FlippingExecutionContext(parameters);
         parameters.put("b", new Integer(1));        
         fec.getBoolean("b");
         
@@ -185,7 +197,7 @@ public class FeatureTest {
     @Test(expected = IllegalArgumentException.class)
     public void testFlipExecContext7() {
         Map < String, Object > parameters = new HashMap<String, Object>();
-        FlippingExecutionContext fec = new FlippingExecutionContext();
+        FlippingExecutionContext fec = new FlippingExecutionContext(parameters);
         parameters.put("b", new Integer(1));        
         fec.getString("b");
     }
