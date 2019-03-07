@@ -58,7 +58,7 @@ To list available host and keys go to `~/.ssh` folder execute:
     <server>
       <id>sonatype-nexus-staging</id>
       <username>username</username>
-      <password>Sara2011!</password>
+      <password>password</password>
     </server>
     <server>
        <id>ossrh</id>
