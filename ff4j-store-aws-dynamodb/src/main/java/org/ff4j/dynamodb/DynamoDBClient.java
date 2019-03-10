@@ -23,16 +23,21 @@ package org.ff4j.dynamodb;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.document.*;
 import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
+import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import com.amazonaws.services.dynamodbv2.document.spec.ScanSpec;
+import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
+import com.amazonaws.services.dynamodbv2.document.utils.NameMap;
+import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.*;
+import com.amazonaws.util.CollectionUtils;
+import org.ff4j.core.Feature;
+import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.Property;
 import org.ff4j.utils.Util;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.ff4j.dynamodb.DynamoDBConstants.*;
 
@@ -41,11 +46,13 @@ import static org.ff4j.dynamodb.DynamoDBConstants.*;
  */
 class DynamoDBClient {
 
-    private final DynamoDBPropertyMapper MAPPER = new DynamoDBPropertyMapper();
+    private final DynamoDBPropertyMapper PROPERTY_MAPPER = new DynamoDBPropertyMapper();
+    private final DynamoDBFeatureMapper FEATURE_MAPPER = new DynamoDBFeatureMapper();
 
     private final AmazonDynamoDB amazonDynamoDB;
     private final DynamoDB dynamoDB;
-    private String tableName;
+    private final String tableName;
+    private final String key;
     private Table table;
 
     DynamoDBClient(AmazonDynamoDB amazonDynamoDB, String tableName) {
@@ -53,10 +60,22 @@ class DynamoDBClient {
         this.dynamoDB = new DynamoDB(amazonDynamoDB);
         this.tableName = tableName;
         this.table = dynamoDB.getTable(tableName);
+
+        if (PROPERTY_TABLE_NAME.equals(tableName)) {
+            key = PROPERTY_NAME;
+        } else if (FEATURE_TABLE_NAME.equals(tableName)) {
+            key = FEATURE_UID;
+        } else {
+            throw new UnsupportedOperationException(tableName + " unknown");
+        }
+    }
+
+    void putFeature(Feature feature) {
+        table.putItem(FEATURE_MAPPER.toStore(feature));
     }
 
     void putProperty(Property property) {
-        table.putItem(MAPPER.toStore(property));
+        table.putItem(PROPERTY_MAPPER.toStore(property));
     }
 
     void updateProperty(String propName, String newValue) {
@@ -65,11 +84,27 @@ class DynamoDBClient {
 
     Property getProperty(String name) {
         Item item = getItem(name);
-        return MAPPER.fromStore(item);
+        return PROPERTY_MAPPER.fromStore(item);
     }
 
-    void deleteProperty(String name) {
-        table.deleteItem(new KeyAttribute(PROPERTY_NAME, name));
+    Feature getFeature(String featureUid) {
+        Item item = getItem(featureUid);
+        return FEATURE_MAPPER.fromStore(item);
+    }
+
+    void delete(String id) {
+        table.deleteItem(new KeyAttribute(key, id));
+    }
+
+    Map<String, Feature> getAllFeatures() {
+        ItemCollection<ScanOutcome> items = table.scan(new ScanSpec().withSelect(Select.ALL_ATTRIBUTES));
+        Map<String, Feature> map = new HashMap<String, Feature>();
+
+        for (Item item : items) {
+            map.put(item.getString(FEATURE_UID), FEATURE_MAPPER.fromStore(item));
+        }
+
+        return map;
     }
 
     Map<String, Property<?>> getAllProperties() {
@@ -77,39 +112,146 @@ class DynamoDBClient {
         Map<String, Property<?>> map = new HashMap<String, Property<?>>();
 
         for (Item item : items) {
-            map.put(item.getString(PROPERTY_NAME), MAPPER.fromStore(item));
+            map.put(item.getString(PROPERTY_NAME), PROPERTY_MAPPER.fromStore(item));
         }
 
         return map;
     }
 
-    Set<String> getAllPropertyNames() {
-        ItemCollection<ScanOutcome> items = table.scan(new ScanSpec().withAttributesToGet(PROPERTY_NAME));
+    Set<String> getAllGroups() {
+        ItemCollection<ScanOutcome> items = table.scan(new ScanSpec().withSelect(Select.SPECIFIC_ATTRIBUTES).withAttributesToGet(FEATURE_GROUP));
+        Set<String> groupNames = new HashSet<String>();
+
+        for (Item item : items) {
+            if (item.getString(FEATURE_GROUP) != null) {
+                groupNames.add(item.getString(FEATURE_GROUP));
+            }
+        }
+
+        return groupNames;
+    }
+
+    Set<String> getAllNames() {
+        ItemCollection<ScanOutcome> items = table.scan(new ScanSpec().withAttributesToGet(key));
 
         Set<String> names = new HashSet<String>();
         for (Item item : items) {
-            names.add(item.getString(PROPERTY_NAME));
+            names.add(item.getString(key));
         }
         return names;
     }
 
-    Item getItem(String name) {
-        Util.assertHasLength(name);
+    Item getItem(String id) {
+        Util.assertHasLength(id);
 
-        Item item = table.getItem(new GetItemSpec().withPrimaryKey(new PrimaryKey(PROPERTY_NAME, name)));
+        Item item = table.getItem(new GetItemSpec().withPrimaryKey(new PrimaryKey(key, id)));
         if (item == null) {
-            throw new PropertyNotFoundException(name);
+            throw key.equals(FEATURE_UID) ? new FeatureNotFoundException(id) : new PropertyNotFoundException(id);
         }
         return item;
     }
 
-    void createTable() {
+    Map<String, Feature> getFeaturesByGroup(String group) {
+        ItemCollection<QueryOutcome> items = getItemsByGroup(group);
+        Map<String, Feature> map = new HashMap<String, Feature>();
+
+        for (Item item : items) {
+            map.put(item.getString(FEATURE_UID), FEATURE_MAPPER.fromStore(item));
+        }
+        return map;
+    }
+
+    ItemCollection<QueryOutcome> getItemsByGroup(String group) {
+        Index index = table.getIndex(FEATURE_GROUP_INDEX);
+        QuerySpec spec = new QuerySpec()
+                .withKeyConditionExpression(FEATURE_GROUP + " = :v_group")
+                .withValueMap(new ValueMap()
+                        .withString(":v_group", group));
+
+        ItemCollection<QueryOutcome> items = index.query(spec);
+        if (items == null || !items.iterator().hasNext()) {
+            throw new GroupNotFoundException(group);
+        }
+        return items;
+    }
+
+    void updateFeatureAvailability(String featUid, boolean enable) {
+        UpdateItemSpec updateItemSpec = new UpdateItemSpec()
+                .withPrimaryKey(key, featUid)
+                .withUpdateExpression("set #en = :val1")
+                .withNameMap(new NameMap().with("#en", FEATURE_ENABLE))
+                .withValueMap(new ValueMap().withBoolean(":val1", enable))
+                .withReturnValues(ReturnValue.NONE);
+        table.updateItem(updateItemSpec);
+    }
+
+    void updateFeatureAvailabilityInGroup(String group, boolean enable) {
+        ItemCollection<QueryOutcome> items = getItemsByGroup(group);
+        if (items == null || !items.iterator().hasNext()) {
+            throw new GroupNotFoundException(group);
+        }
+        for (Item item : items) {
+            updateFeatureAvailability(item.getString(FEATURE_UID), enable);
+        }
+    }
+
+    void addToGroup(String featUid, String group) {
+        UpdateItemSpec updateItemSpec = new UpdateItemSpec()
+                .withPrimaryKey(key, featUid)
+                .withAttributeUpdate(new AttributeUpdate(FEATURE_GROUP).put(group))
+                .withReturnValues(ReturnValue.NONE);
+        table.updateItem(updateItemSpec);
+    }
+
+    void removeFromGroup(String featUid) {
+        UpdateItemSpec updateItemSpec = new UpdateItemSpec()
+                .withPrimaryKey(key, featUid)
+                .withAttributeUpdate(new AttributeUpdate(FEATURE_GROUP).delete())
+                .withReturnValues(ReturnValue.NONE);
+        table.updateItem(updateItemSpec);
+    }
+
+
+
+    /**
+     * TODO : customize table (throughput...)
+     */
+    void createPropertyTable() {
         CreateTableRequest request = new CreateTableRequest()
                 .withAttributeDefinitions(
                         new AttributeDefinition(PROPERTY_NAME, ScalarAttributeType.S)
                 )
                 .withKeySchema(new KeySchemaElement(PROPERTY_NAME, KeyType.HASH))
                 .withProvisionedThroughput(new ProvisionedThroughput(10L, 10L))
+                .withTableName(tableName);
+
+        try {
+            table = dynamoDB.createTable(request);
+            table.waitForActive();
+        } catch (Exception e) {
+            throw new IllegalStateException("Cannot initialize Property Table in DynamoDB", e);
+        }
+    }
+
+    /**
+     * TODO : customize table (throughput...)
+     */
+    void createFeatureTable() {
+        CreateTableRequest request = new CreateTableRequest()
+                .withAttributeDefinitions(
+                        new AttributeDefinition(FEATURE_UID, ScalarAttributeType.S),
+                        new AttributeDefinition(FEATURE_GROUP, ScalarAttributeType.S)
+                )
+                .withKeySchema(new KeySchemaElement(FEATURE_UID, KeyType.HASH))
+                .withProvisionedThroughput(new ProvisionedThroughput(10L, 10L))
+                .withGlobalSecondaryIndexes(
+                        new GlobalSecondaryIndex()
+                                .withIndexName(FEATURE_GROUP_INDEX)
+                                .withKeySchema(new KeySchemaElement(FEATURE_GROUP, KeyType.HASH))
+                                .withProjection(new Projection().withProjectionType(ProjectionType.ALL))
+                                .withProvisionedThroughput(new ProvisionedThroughput(10L, 10L))
+
+                )
                 .withTableName(tableName);
 
         try {
@@ -139,4 +281,5 @@ class DynamoDBClient {
             e.printStackTrace();
         }
     }
+
 }

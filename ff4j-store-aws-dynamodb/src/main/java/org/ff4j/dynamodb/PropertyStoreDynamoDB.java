@@ -139,7 +139,7 @@ public class PropertyStoreDynamoDB extends AbstractPropertyStore {
         if (!existProperty(name)) {
             throw new PropertyNotFoundException(name);
         }
-        getClient().deleteProperty(name);
+        getClient().delete(name);
     }
 
     /** {@inheritDoc} */
@@ -151,7 +151,7 @@ public class PropertyStoreDynamoDB extends AbstractPropertyStore {
     /** {@inheritDoc} */
     @Override
     public Set<String> listPropertyNames() {
-        return getClient().getAllPropertyNames();
+        return getClient().getAllNames();
     }
 
     /** {@inheritDoc} */
@@ -164,7 +164,7 @@ public class PropertyStoreDynamoDB extends AbstractPropertyStore {
     /** {@inheritDoc} */
     @Override
     public void createSchema() {
-        getClient().createTable();
+        getClient().createPropertyTable();
     }
 
     /************************************************************************************************************/

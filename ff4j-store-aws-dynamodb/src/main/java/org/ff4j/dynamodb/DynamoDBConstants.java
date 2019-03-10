@@ -31,4 +31,14 @@ public interface DynamoDBConstants {
     String PROPERTY_DESCRIPTION = "description";
     String PROPERTY_TYPE = "type";
 
+
+    String FEATURE_TABLE_NAME = "ff4j-features";
+    String FEATURE_GROUP_INDEX = "ff4j-feature-groups";
+    String FEATURE_UID = "featureUid";
+    String FEATURE_GROUP = "groupName";
+    String FEATURE_ENABLE = "enable";
+    String FEATURE_DESCRIPTION = "description";
+    String FEATURE_STRATEGY = "strategy";
+    String FEATURE_ROLE = "role";
+    String FEATURE_PROPERTIES = "properties";
 }

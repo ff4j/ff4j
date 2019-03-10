@@ -10,7 +10,7 @@
     <parent>
         <artifactId>ff4j-parent</artifactId>
         <groupId>org.ff4j</groupId>
-        <version>1.7.4-SNAPSHOT</version>
+        <version>1.9-SNAPSHOT</version>
     </parent>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -36,6 +36,11 @@
         <dependency>
             <artifactId>ff4j-core</artifactId>
             <groupId>org.ff4j</groupId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ff4j</groupId>
+            <artifactId>ff4j-utils-json</artifactId>
             <version>${project.version}</version>
         </dependency>
 

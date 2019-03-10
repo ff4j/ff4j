@@ -44,24 +44,6 @@ public class DynamoDBPropertyMapper implements PropertyMapper<Item> {
      */
     @Override
     public Item toStore(Property<?> property) {
-//        Map<String, AttributeValue> propertyValues = new HashMap<String, AttributeValue>();
-//
-//        propertyValues.put(PROPERTY_NAME, new AttributeValue().withS(property.getName()));
-//        propertyValues.put(PROPERTY_VALUE, new AttributeValue().withS(property.asString()));
-//        propertyValues.put(PROPERTY_TYPE, new AttributeValue().withS(property.getType()));
-//
-//        if (!StringUtils.isNullOrEmpty(property.getDescription())) {
-//            propertyValues.put(PROPERTY_DESCRIPTION, new AttributeValue().withS(property.getDescription()));
-//        }
-//
-//        Set< String > fixedValues = new HashSet<String>();
-//        if (!CollectionUtils.isNullOrEmpty(property.getFixedValues())) {
-//            for (Object fixedValue : property.getFixedValues()) {
-//                fixedValues.add(fixedValue.toString());
-//            }
-//            propertyValues.put(PROPERTY_VALUES, new AttributeValue().withSS(fixedValues));
-//        }
-//        return propertyValues;
         Item item = new Item();
         item.withString(PROPERTY_NAME, property.getName());
         item.withString(PROPERTY_VALUE, property.asString());

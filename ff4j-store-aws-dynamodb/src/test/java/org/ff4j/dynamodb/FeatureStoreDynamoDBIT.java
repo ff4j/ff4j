@@ -25,7 +25,9 @@ import cloud.localstack.docker.annotation.LocalstackDockerProperties;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import org.ff4j.core.FeatureStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
+import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -38,18 +40,18 @@ import org.junit.runner.RunWith;
  */
 @RunWith(LocalstackDockerTestRunner.class)
 @LocalstackDockerProperties(services = {"dynamodb"})
-public class PropertyStoreDynamoDBIT extends PropertyStoreTestSupport {
+public class FeatureStoreDynamoDBIT extends FeatureStoreTestSupport {
 
     private static AmazonDynamoDB dynamoDB;
-    private static PropertyStoreDynamoDB store;
+    private static FeatureStoreDynamoDB store;
 
     @BeforeClass
     public static void init() {
         dynamoDB = AmazonDynamoDBClientBuilder.standard()
                 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:4569", "eu-central-1"))
                 .build();
-        store = new PropertyStoreDynamoDB(dynamoDB);
-        store.importPropertiesFromXmlFile("test-ff4j-features.xml");
+        store = new FeatureStoreDynamoDB(dynamoDB);
+        store.importFeaturesFromXmlFile("test-ff4j-features.xml");
     }
 
     @AfterClass
@@ -57,10 +59,9 @@ public class PropertyStoreDynamoDBIT extends PropertyStoreTestSupport {
         dynamoDB.shutdown();
     }
 
+
     @Override
-    protected PropertyStoreDynamoDB initPropertyStore() {
+    protected FeatureStore initStore() {
         return store;
     }
-
-
 }
