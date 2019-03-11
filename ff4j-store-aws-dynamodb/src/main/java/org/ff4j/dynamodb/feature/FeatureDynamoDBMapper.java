@@ -1,4 +1,4 @@
-package org.ff4j.dynamodb;
+package org.ff4j.dynamodb.feature;
 
 
 /*
@@ -46,7 +46,7 @@ import static org.ff4j.dynamodb.DynamoDBConstants.*;
 /**
  * @author <a href="mailto:jeromevdl@gmail.com">Jerome VAN DER LINDEN</a>
  */
-public class DynamoDBFeatureMapper implements FeatureMapper<Item> {
+public class FeatureDynamoDBMapper implements FeatureMapper<Item> {
 
     @Override
     public Item toStore(Feature feature) {

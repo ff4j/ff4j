@@ -1,4 +1,24 @@
-package org.ff4j.dynamodb;
+package org.ff4j.dynamodb.feature;
+
+/*
+ * #%L
+ * ff4j-store-aws-dynamodb
+ * %%
+ * Copyright (C) 2013 - 2016 FF4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
@@ -23,7 +43,7 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
     /**
      * Internal DynamoDB client
      */
-    private DynamoDBClient dynamoDBClient;
+    private FeatureDynamoDBClient dynamoDBClient;
 
     /************************************************************************************************************/
     /**                                           CONSTRUCTORS                                                  */
@@ -125,7 +145,7 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
     public void delete(String featureId) {
         assertFeatureExist(featureId);
 
-        getClient().delete(featureId);
+        getClient().deleteItem(featureId);
     }
 
     /** {@inheritDoc} */
@@ -242,7 +262,7 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
      * @param tableName name of the table in DynamoDB
      */
     private void initStore(AmazonDynamoDB amazonDynamoDB, String tableName) {
-        dynamoDBClient = new DynamoDBClient(amazonDynamoDB, tableName);
+        dynamoDBClient = new FeatureDynamoDBClient(amazonDynamoDB, tableName);
 
         if (!getClient().tableExists()) {
             createSchema();
@@ -255,7 +275,7 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
      * @return
      *       current value of 'dynamoDBClient'
      */
-    private DynamoDBClient getClient() {
+    private FeatureDynamoDBClient getClient() {
         return dynamoDBClient;
     }
 }

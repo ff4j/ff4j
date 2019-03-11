@@ -25,6 +25,7 @@ import cloud.localstack.docker.annotation.LocalstackDockerProperties;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import org.ff4j.dynamodb.property.PropertyStoreDynamoDB;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

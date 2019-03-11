@@ -1,4 +1,4 @@
-package org.ff4j.dynamodb;
+package org.ff4j.dynamodb.property;
 
 /*
  * #%L
@@ -44,7 +44,7 @@ public class PropertyStoreDynamoDB extends AbstractPropertyStore {
     /**
      * Internal DynamoDB client
      */
-    private DynamoDBClient dynamoDBClient;
+    private PropertyDynamoDBClient dynamoDBClient;
 
     /************************************************************************************************************/
     /**                                           CONSTRUCTORS                                                  */
@@ -139,7 +139,7 @@ public class PropertyStoreDynamoDB extends AbstractPropertyStore {
         if (!existProperty(name)) {
             throw new PropertyNotFoundException(name);
         }
-        getClient().delete(name);
+        getClient().deleteItem(name);
     }
 
     /** {@inheritDoc} */
@@ -178,7 +178,7 @@ public class PropertyStoreDynamoDB extends AbstractPropertyStore {
      * @param tableName name of the table in DynamoDB
      */
     private void initStore(AmazonDynamoDB amazonDynamoDB, String tableName) {
-        dynamoDBClient = new DynamoDBClient(amazonDynamoDB, tableName);
+        dynamoDBClient = new PropertyDynamoDBClient(amazonDynamoDB, tableName);
 
         if (!getClient().tableExists()) {
             createSchema();
@@ -191,7 +191,7 @@ public class PropertyStoreDynamoDB extends AbstractPropertyStore {
      * @return
      *       current value of 'dynamoDBClient'
      */
-    private DynamoDBClient getClient() {
+    private PropertyDynamoDBClient getClient() {
         return dynamoDBClient;
     }
 }

@@ -1,4 +1,4 @@
-package org.ff4j.dynamodb;
+package org.ff4j.dynamodb.property;
 
 
 /*
@@ -37,7 +37,7 @@ import static org.ff4j.dynamodb.DynamoDBConstants.*;
 /**
  * @author <a href="mailto:jeromevdl@gmail.com">Jerome VAN DER LINDEN</a>
  */
-public class DynamoDBPropertyMapper implements PropertyMapper<Item> {
+public class PropertyDynamoDBMapper implements PropertyMapper<Item> {
 
     /**
      * {@inheritDoc}
