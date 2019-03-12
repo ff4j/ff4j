@@ -44,7 +44,7 @@ import static org.ff4j.dynamodb.DynamoDBConstants.*;
 /**
  * @author <a href="mailto:jeromevdl@gmail.com">Jerome VAN DER LINDEN</a>
  */
-public abstract class DynamoDBClient {
+public abstract class DynamoDBClient<T> {
 
     private final AmazonDynamoDB amazonDynamoDB;
     protected final DynamoDB dynamoDB;
@@ -59,7 +59,11 @@ public abstract class DynamoDBClient {
         this.table = dynamoDB.getTable(tableName);
     }
 
+    protected abstract void createTable();
     protected abstract RuntimeException notFoundException(String id);
+    protected abstract T get(String id);
+    protected abstract void put(T t);
+    protected abstract Map<String, T> getAll();
 
     public void deleteItem(String id) {
         table.deleteItem(new KeyAttribute(key, id));

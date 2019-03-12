@@ -111,7 +111,7 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
         Util.assertNotNull(feature);
         assertFeatureNotExist(feature.getUid());
 
-        getClient().putFeature(feature);
+        getClient().put(feature);
     }
 
     /** {@inheritDoc} */
@@ -131,13 +131,13 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public Feature read(String featureUid) {
-        return getClient().getFeature(featureUid);
+        return getClient().get(featureUid);
     }
 
     /** {@inheritDoc} */
     @Override
     public Map<String, Feature> readAll() {
-        return getClient().getAllFeatures();
+        return getClient().getAll();
     }
 
     /** {@inheritDoc} */
@@ -168,7 +168,7 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public void createSchema() {
-        getClient().createFeatureTable();
+        getClient().createTable();
     }
 
     /***********/

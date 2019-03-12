@@ -41,4 +41,7 @@ public interface DynamoDBConstants {
     String FEATURE_STRATEGY = "strategy";
     String FEATURE_ROLE = "role";
     String FEATURE_PROPERTIES = "properties";
+
+    String EVENT_TABLE_NAME = "ff4j-events";
+    String EVENT_UID = "eventUid";
 }

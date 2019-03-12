@@ -111,7 +111,7 @@ public class PropertyStoreDynamoDB extends AbstractPropertyStore {
             throw new PropertyAlreadyExistException(property.getName());
         }
 
-        getClient().putProperty(property);
+        getClient().put(property);
     }
 
     /** {@inheritDoc} */
@@ -129,7 +129,7 @@ public class PropertyStoreDynamoDB extends AbstractPropertyStore {
     /** {@inheritDoc} */
     @Override
     public Property<?> readProperty(String name) {
-        return getClient().getProperty(name);
+        return getClient().get(name);
     }
 
     /** {@inheritDoc} */
@@ -145,7 +145,7 @@ public class PropertyStoreDynamoDB extends AbstractPropertyStore {
     /** {@inheritDoc} */
     @Override
     public Map<String, Property<?>> readAllProperties() {
-        return getClient().getAllProperties();
+        return getClient().getAll();
     }
 
     /** {@inheritDoc} */
@@ -164,7 +164,7 @@ public class PropertyStoreDynamoDB extends AbstractPropertyStore {
     /** {@inheritDoc} */
     @Override
     public void createSchema() {
-        getClient().createPropertyTable();
+        getClient().createTable();
     }
 
     /************************************************************************************************************/

@@ -20,7 +20,7 @@ import java.util.Set;
 
 import static org.ff4j.dynamodb.DynamoDBConstants.*;
 
-public class FeatureDynamoDBClient extends DynamoDBClient {
+public class FeatureDynamoDBClient extends DynamoDBClient<Feature> {
 
     private final FeatureDynamoDBMapper FEATURE_MAPPER = new FeatureDynamoDBMapper();
 
@@ -34,16 +34,19 @@ public class FeatureDynamoDBClient extends DynamoDBClient {
         return new FeatureNotFoundException(id);
     }
 
-    void putFeature(Feature feature) {
+    @Override
+    protected void put(Feature feature) {
         table.putItem(FEATURE_MAPPER.toStore(feature));
     }
 
-    Feature getFeature(String featureUid) {
+    @Override
+    protected Feature get(String featureUid) {
         Item item = getItem(featureUid);
         return FEATURE_MAPPER.fromStore(item);
     }
 
-    Map<String, Feature> getAllFeatures() {
+    @Override
+    protected Map<String, Feature> getAll() {
         ItemCollection<ScanOutcome> items = table.scan(new ScanSpec().withSelect(Select.ALL_ATTRIBUTES));
         Map<String, Feature> map = new HashMap<String, Feature>();
 
@@ -130,7 +133,8 @@ public class FeatureDynamoDBClient extends DynamoDBClient {
     /**
      * TODO : customize table (throughput...)
      */
-    void createFeatureTable() {
+    @Override
+    protected void createTable() {
         CreateTableRequest request = new CreateTableRequest()
                 .withAttributeDefinitions(
                         new AttributeDefinition(FEATURE_UID, ScalarAttributeType.S),

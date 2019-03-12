@@ -16,7 +16,7 @@ import java.util.Set;
 import static org.ff4j.dynamodb.DynamoDBConstants.PROPERTY_NAME;
 import static org.ff4j.dynamodb.DynamoDBConstants.PROPERTY_VALUE;
 
-class PropertyDynamoDBClient extends DynamoDBClient {
+class PropertyDynamoDBClient extends DynamoDBClient<Property<?>> {
 
     private final PropertyDynamoDBMapper PROPERTY_MAPPER = new PropertyDynamoDBMapper();
 
@@ -30,20 +30,19 @@ class PropertyDynamoDBClient extends DynamoDBClient {
         return new PropertyNotFoundException(id);
     }
 
-    void putProperty(Property property) {
+    @Override
+    protected void put(Property property) {
         table.putItem(PROPERTY_MAPPER.toStore(property));
     }
 
-    void updateProperty(String propName, String newValue) {
-        table.updateItem(new PrimaryKey(PROPERTY_NAME, propName), new AttributeUpdate(PROPERTY_VALUE).put(newValue));
-    }
-
-    Property getProperty(String name) {
+    @Override
+    protected Property get(String name) {
         Item item = getItem(name);
         return PROPERTY_MAPPER.fromStore(item);
     }
 
-    Map<String, Property<?>> getAllProperties() {
+    @Override
+    protected Map<String, Property<?>> getAll() {
         ItemCollection<ScanOutcome> items = table.scan(new ScanSpec().withSelect(Select.ALL_ATTRIBUTES));
         Map<String, Property<?>> map = new HashMap<String, Property<?>>();
 
@@ -52,6 +51,11 @@ class PropertyDynamoDBClient extends DynamoDBClient {
         }
 
         return map;
+    }
+
+
+    void updateProperty(String propName, String newValue) {
+        table.updateItem(new PrimaryKey(PROPERTY_NAME, propName), new AttributeUpdate(PROPERTY_VALUE).put(newValue));
     }
 
     Set<String> getAllNames() {
@@ -67,7 +71,8 @@ class PropertyDynamoDBClient extends DynamoDBClient {
     /**
      * TODO : customize table (throughput...)
      */
-    void createPropertyTable() {
+    @Override
+    protected void createTable() {
         CreateTableRequest request = new CreateTableRequest()
                 .withAttributeDefinitions(
                         new AttributeDefinition(PROPERTY_NAME, ScalarAttributeType.S)
