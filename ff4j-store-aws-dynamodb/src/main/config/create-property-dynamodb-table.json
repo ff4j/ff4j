@@ -1,0 +1,20 @@
+{
+    "TableName": "ff4jproperties",
+    "AttributeDefinitions": [
+        {
+            "AttributeName": "name",
+            "AttributeType": "S"
+        }
+    ],
+    "KeySchema": [
+        {
+            "AttributeName": "name",
+            "KeyType": "HASH"
+        }
+    ],
+    "BillingMode": "PROVISIONED",
+    "ProvisionedThroughput": {
+        "ReadCapacityUnits": 4,
+        "WriteCapacityUnits": 4
+    }
+}

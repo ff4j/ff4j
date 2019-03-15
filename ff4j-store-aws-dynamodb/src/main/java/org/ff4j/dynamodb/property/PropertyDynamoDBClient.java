@@ -1,5 +1,25 @@
 package org.ff4j.dynamodb.property;
 
+/*
+ * #%L
+ * ff4j-store-aws-dynamodb
+ * %%
+ * Copyright (C) 2013 - 2016 FF4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.document.*;
 import com.amazonaws.services.dynamodbv2.document.spec.ScanSpec;
@@ -16,6 +36,9 @@ import java.util.Set;
 import static org.ff4j.dynamodb.DynamoDBConstants.PROPERTY_NAME;
 import static org.ff4j.dynamodb.DynamoDBConstants.PROPERTY_VALUE;
 
+/**
+ * @author <a href="mailto:jeromevdl@gmail.com">Jerome VAN DER LINDEN</a>
+ */
 class PropertyDynamoDBClient extends DynamoDBClient<Property<?>> {
 
     private final PropertyDynamoDBMapper PROPERTY_MAPPER = new PropertyDynamoDBMapper();
@@ -68,9 +91,6 @@ class PropertyDynamoDBClient extends DynamoDBClient<Property<?>> {
         return names;
     }
 
-    /**
-     * TODO : customize table (throughput...)
-     */
     @Override
     protected void createTable() {
         CreateTableRequest request = new CreateTableRequest()
@@ -78,7 +98,7 @@ class PropertyDynamoDBClient extends DynamoDBClient<Property<?>> {
                         new AttributeDefinition(PROPERTY_NAME, ScalarAttributeType.S)
                 )
                 .withKeySchema(new KeySchemaElement(PROPERTY_NAME, KeyType.HASH))
-                .withProvisionedThroughput(new ProvisionedThroughput(10L, 10L))
+                .withProvisionedThroughput(new ProvisionedThroughput(5L, 5L))
                 .withTableName(tableName);
 
         try {

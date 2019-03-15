@@ -1,5 +1,25 @@
 package org.ff4j.dynamodb.feature;
 
+/*
+ * #%L
+ * ff4j-store-aws-dynamodb
+ * %%
+ * Copyright (C) 2013 - 2016 FF4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.document.*;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
@@ -8,6 +28,7 @@ import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
 import com.amazonaws.services.dynamodbv2.document.utils.NameMap;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.*;
+import com.amazonaws.util.CollectionUtils;
 import org.ff4j.core.Feature;
 import org.ff4j.dynamodb.DynamoDBClient;
 import org.ff4j.exception.FeatureNotFoundException;
@@ -20,6 +41,11 @@ import java.util.Set;
 
 import static org.ff4j.dynamodb.DynamoDBConstants.*;
 
+/**
+ *
+ *
+ * @author <a href="mailto:jeromevdl@gmail.com">Jerome VAN DER LINDEN</a>
+ */
 public class FeatureDynamoDBClient extends DynamoDBClient<Feature> {
 
     private final FeatureDynamoDBMapper FEATURE_MAPPER = new FeatureDynamoDBMapper();
@@ -82,10 +108,7 @@ public class FeatureDynamoDBClient extends DynamoDBClient<Feature> {
 
     ItemCollection<QueryOutcome> getItemsByGroup(String group) {
         Index index = table.getIndex(FEATURE_GROUP_INDEX);
-        QuerySpec spec = new QuerySpec()
-                .withKeyConditionExpression(FEATURE_GROUP + " = :v_group")
-                .withValueMap(new ValueMap()
-                        .withString(":v_group", group));
+        QuerySpec spec = new QuerySpec().withHashKey(FEATURE_GROUP, group);
 
         ItemCollection<QueryOutcome> items = index.query(spec);
         if (items == null || !items.iterator().hasNext()) {
@@ -114,6 +137,46 @@ public class FeatureDynamoDBClient extends DynamoDBClient<Feature> {
         }
     }
 
+    void addFeaturePermission(String featUid, String roleName) {
+        Item item = getItem(featUid);
+        Set<String> permissions = item.getStringSet(FEATURE_ROLE);
+        if (permissions == null) {
+            permissions = new HashSet<String>();
+        }
+        permissions.add(roleName);
+
+        updateFeaturePermission(featUid, permissions);
+    }
+
+    void removeFeaturePermission(String featUid, String roleName) {
+        Item item = getItem(featUid);
+        Set<String> permissions = item.getStringSet(FEATURE_ROLE);
+        if (!CollectionUtils.isNullOrEmpty(permissions)) {
+            permissions.remove(roleName);
+        }
+        updateFeaturePermission(featUid, permissions);
+    }
+
+    private void updateFeaturePermission(String featUid, Set<String> permissions) {
+        UpdateItemSpec updateItemSpec;
+
+        if (CollectionUtils.isNullOrEmpty(permissions)) {
+            updateItemSpec = new UpdateItemSpec()
+                    .withPrimaryKey(key, featUid)
+                    .withAttributeUpdate(new AttributeUpdate(FEATURE_ROLE).delete())
+                    .withReturnValues(ReturnValue.NONE);
+        } else {
+            updateItemSpec = new UpdateItemSpec()
+                    .withPrimaryKey(key, featUid)
+                    .withUpdateExpression("set #perm = :val1")
+                    .withNameMap(new NameMap().with("#perm", FEATURE_ROLE))
+                    .withValueMap(new ValueMap().withStringSet(":val1", permissions))
+                    .withReturnValues(ReturnValue.NONE);
+        }
+
+        table.updateItem(updateItemSpec);
+    }
+
     void addToGroup(String featUid, String group) {
         UpdateItemSpec updateItemSpec = new UpdateItemSpec()
                 .withPrimaryKey(key, featUid)
@@ -130,9 +193,6 @@ public class FeatureDynamoDBClient extends DynamoDBClient<Feature> {
         table.updateItem(updateItemSpec);
     }
 
-    /**
-     * TODO : customize table (throughput...)
-     */
     @Override
     protected void createTable() {
         CreateTableRequest request = new CreateTableRequest()
@@ -141,13 +201,13 @@ public class FeatureDynamoDBClient extends DynamoDBClient<Feature> {
                         new AttributeDefinition(FEATURE_GROUP, ScalarAttributeType.S)
                 )
                 .withKeySchema(new KeySchemaElement(FEATURE_UID, KeyType.HASH))
-                .withProvisionedThroughput(new ProvisionedThroughput(10L, 10L))
+                .withProvisionedThroughput(new ProvisionedThroughput(5L, 5L))
                 .withGlobalSecondaryIndexes(
                         new GlobalSecondaryIndex()
                                 .withIndexName(FEATURE_GROUP_INDEX)
                                 .withKeySchema(new KeySchemaElement(FEATURE_GROUP, KeyType.HASH))
                                 .withProjection(new Projection().withProjectionType(ProjectionType.ALL))
-                                .withProvisionedThroughput(new ProvisionedThroughput(10L, 10L))
+                                .withProvisionedThroughput(new ProvisionedThroughput(5L, 5L))
 
                 )
                 .withTableName(tableName);
@@ -158,5 +218,22 @@ public class FeatureDynamoDBClient extends DynamoDBClient<Feature> {
         } catch (Exception e) {
             throw new IllegalStateException("Cannot initialize Property Table in DynamoDB", e);
         }
+    }
+
+    /**
+     * For test purpose, delete + recreate table instead (much more efficient, but slower for tests)
+     */
+    void clearTable() {
+        ItemCollection<ScanOutcome> items = table.scan(new ScanSpec().withSelect(Select.ALL_ATTRIBUTES));
+
+        TableWriteItems itemsToDelete = new TableWriteItems(tableName);
+        for (Item item: items) {
+            itemsToDelete.addPrimaryKeyToDelete(new PrimaryKey(FEATURE_UID, item.getString(FEATURE_UID)));
+        }
+
+        if (!CollectionUtils.isNullOrEmpty(itemsToDelete.getPrimaryKeysToDelete())) {
+            dynamoDB.batchWriteItem(itemsToDelete);
+        }
+
     }
 }

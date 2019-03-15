@@ -9,9 +9,9 @@ package org.ff4j.dynamodb.property;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,7 +26,6 @@ import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.AbstractPropertyStore;
-import org.ff4j.property.store.PropertyStore;
 import org.ff4j.utils.Util;
 
 import java.util.Map;
@@ -35,9 +34,49 @@ import java.util.Set;
 import static org.ff4j.dynamodb.DynamoDBConstants.*;
 
 /**
- *  Implementation of {@link PropertyStore} using Amazon DynamoDB.
+ * Implementation of {@link org.ff4j.property.store.PropertyStore} using Amazon DynamoDB.<br />
  *
- *  @author <a href="mailto:jeromevdl@gmail.com">Jerome VAN DER LINDEN</a>
+ * To get it running, a DynamoDB table is required.
+ * Either you let FF4J create it for you with default configuration (ProvisionedThroughput: 5RCU & 5WCU) or
+ * you create it on your own. You must keep the same attribute names, but you can change the table name, index name,
+ * billing mode and throughput. Example:<br/>
+ * <code>
+ *     aws dynamodb create-table --cli-input-json file://create-property-dynamodb-table.json
+ * </code>
+ * <p>
+ *     With the following content in create-property-dynamodb-table.json file:
+ *     <code>
+ *         {
+ *     "TableName": "ff4jproperties",
+ *     "AttributeDefinitions": [
+ *         {
+ *             "AttributeName": "name",
+ *             "AttributeType": "S"
+ *         }
+ *     ],
+ *     "KeySchema": [
+ *         {
+ *             "AttributeName": "name",
+ *             "KeyType": "HASH"
+ *         }
+ *     ],
+ *     "BillingMode": "PROVISIONED",
+ *     "ProvisionedThroughput": {
+ *         "ReadCapacityUnits": 4,
+ *         "WriteCapacityUnits": 4
+ *     }
+ * }
+ *     </code>
+ * </p>
+ * <p>If you change the table name, use the appropriate constructor, passing the table name as parameter: <ul>
+ *     <li>{@link #PropertyStoreDynamoDB(String)}</li>
+ *     <li>{@link #PropertyStoreDynamoDB(AmazonDynamoDB, String)}</li>
+ * </ul></p>
+ * <p>If you want to get more control on the connection to Amazon DynamoDB, use the appropriate constructor:<ul>
+ *     <li>{@link #PropertyStoreDynamoDB(AmazonDynamoDB)}</li>
+ *     <li>{@link #PropertyStoreDynamoDB(AmazonDynamoDB, String)}</li>
+ * </ul></p>
+ * @author <a href="mailto:jeromevdl@gmail.com">Jerome VAN DER LINDEN</a>
  */
 public class PropertyStoreDynamoDB extends AbstractPropertyStore {
 
@@ -81,7 +120,7 @@ public class PropertyStoreDynamoDB extends AbstractPropertyStore {
      * Constructor using custom DynamoDB client and table name.
      *
      * @param amazonDynamoDB Amazon DynamoDB client
-     * @param tableName name of the table to use in DynamoDB
+     * @param tableName      name of the table to use in DynamoDB
      */
     public PropertyStoreDynamoDB(AmazonDynamoDB amazonDynamoDB, String tableName) {
         initStore(amazonDynamoDB, tableName);
@@ -91,7 +130,9 @@ public class PropertyStoreDynamoDB extends AbstractPropertyStore {
     /**                                              PUBLIC                                                     */
     /************************************************************************************************************/
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean existProperty(String name) {
         try {
@@ -102,7 +143,9 @@ public class PropertyStoreDynamoDB extends AbstractPropertyStore {
         return true;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T> void createProperty(Property<T> property) {
         Util.assertNotNull(property);
@@ -114,7 +157,9 @@ public class PropertyStoreDynamoDB extends AbstractPropertyStore {
         getClient().put(property);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateProperty(String name, String newValue) {
         Util.assertHasLength(name);
@@ -126,13 +171,17 @@ public class PropertyStoreDynamoDB extends AbstractPropertyStore {
         getClient().updateProperty(name, newValue);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Property<?> readProperty(String name) {
         return getClient().get(name);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteProperty(String name) {
         Util.assertHasLength(name);
@@ -142,29 +191,39 @@ public class PropertyStoreDynamoDB extends AbstractPropertyStore {
         getClient().deleteItem(name);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Map<String, Property<?>> readAllProperties() {
         return getClient().getAll();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Set<String> listPropertyNames() {
         return getClient().getAllNames();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void clear() {
         getClient().deleteTable();
         createSchema();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void createSchema() {
-        getClient().createTable();
+        if (!getClient().tableExists()) {
+            getClient().createTable();
+        }
     }
 
     /************************************************************************************************************/
@@ -175,21 +234,18 @@ public class PropertyStoreDynamoDB extends AbstractPropertyStore {
      * Initialize internal dynamoDB client and create DynamoDB table if necessary
      *
      * @param amazonDynamoDB dynamoDB client
-     * @param tableName name of the table in DynamoDB
+     * @param tableName      name of the table in DynamoDB
      */
     private void initStore(AmazonDynamoDB amazonDynamoDB, String tableName) {
         dynamoDBClient = new PropertyDynamoDBClient(amazonDynamoDB, tableName);
 
-        if (!getClient().tableExists()) {
-            createSchema();
-        }
+        createSchema();
     }
 
     /**
      * Getter accessor for attribute 'dynamoDBClient'.
      *
-     * @return
-     *       current value of 'dynamoDBClient'
+     * @return current value of 'dynamoDBClient'
      */
     private PropertyDynamoDBClient getClient() {
         return dynamoDBClient;

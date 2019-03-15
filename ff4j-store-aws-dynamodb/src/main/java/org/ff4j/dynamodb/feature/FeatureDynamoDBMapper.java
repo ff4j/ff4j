@@ -27,23 +27,20 @@ import com.amazonaws.util.CollectionUtils;
 import com.amazonaws.util.StringUtils;
 import org.ff4j.core.Feature;
 import org.ff4j.mapper.FeatureMapper;
-import org.ff4j.mapper.PropertyMapper;
 import org.ff4j.property.Property;
-import org.ff4j.property.util.PropertyFactory;
 import org.ff4j.utils.JsonUtils;
 import org.ff4j.utils.Util;
 import org.ff4j.utils.json.FeatureJsonParser;
 import org.ff4j.utils.json.PropertyJsonParser;
 
-import java.awt.*;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import static org.ff4j.dynamodb.DynamoDBConstants.*;
 
 /**
+ * Implementation of {@link FeatureMapper} for DynamoDB store
+ *
  * @author <a href="mailto:jeromevdl@gmail.com">Jerome VAN DER LINDEN</a>
  */
 public class FeatureDynamoDBMapper implements FeatureMapper<Item> {
@@ -98,7 +95,7 @@ public class FeatureDynamoDBMapper implements FeatureMapper<Item> {
 
         Map<String, String> props = item.getMap(FEATURE_PROPERTIES);
         if (props != null) {
-            Map < String, Property<?>> customProperties = new HashMap<String, Property<?>>();
+            Map<String, Property<?>> customProperties = new HashMap<String, Property<?>>();
             for (Map.Entry<String, String> propString : props.entrySet()) {
                 customProperties.put(propString.getKey(), PropertyJsonParser.parseProperty(propString.getValue()));
             }
