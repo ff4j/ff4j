@@ -163,8 +163,9 @@
         <module>ff4j-strategy-drools</module>
 
         <!-- Stores -->
-        <module>ff4j-store-aws-dynamodb</module>
         <module>ff4j-store-archaius</module>
+        <module>ff4j-store-aws-dynamodb</module>
+        <module>ff4j-store-aws-ssm</module>
         <module>ff4j-store-cassandra</module>
         <module>ff4j-store-commonsconfig</module>
         <module>ff4j-store-consul</module>
