@@ -10,9 +10,9 @@ package org.ff4j.dynamodb.feature;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,7 +34,9 @@ import org.ff4j.utils.json.FeatureJsonParser;
 import org.ff4j.utils.json.PropertyJsonParser;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static org.ff4j.dynamodb.DynamoDBConstants.*;
 
@@ -64,7 +66,11 @@ public class FeatureDynamoDBMapper implements FeatureMapper<Item> {
         }
 
         if (!CollectionUtils.isNullOrEmpty(feature.getPermissions())) {
-            item.withStringSet(FEATURE_ROLE, feature.getPermissions());
+            // DynamoDB does not support empty strings in a Set
+            feature.getPermissions().remove("");
+            if (!CollectionUtils.isNullOrEmpty(feature.getPermissions())) {
+                item.withStringSet(FEATURE_ROLE, feature.getPermissions());
+            }
         }
 
         if (feature.getCustomProperties() != null && !CollectionUtils.isNullOrEmpty(feature.getCustomProperties().entrySet())) {
@@ -91,7 +97,8 @@ public class FeatureDynamoDBMapper implements FeatureMapper<Item> {
             feature.setFlippingStrategy(FeatureJsonParser.parseFlipStrategyAsJson(feature.getUid(), jsonFlippingStrategy));
         }
 
-        feature.setPermissions(item.getStringSet(FEATURE_ROLE));
+        Set<String> perms = item.getStringSet(FEATURE_ROLE);
+        feature.setPermissions(perms == null ? new HashSet<String>() : perms);
 
         Map<String, String> props = item.getMap(FEATURE_PROPERTIES);
         if (props != null) {

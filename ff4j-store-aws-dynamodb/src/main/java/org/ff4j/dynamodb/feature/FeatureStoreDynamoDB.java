@@ -27,6 +27,8 @@ import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.store.AbstractFeatureStore;
 import org.ff4j.utils.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Set;
@@ -35,72 +37,75 @@ import static org.ff4j.dynamodb.DynamoDBConstants.FEATURE_TABLE_NAME;
 
 /**
  * Implementation of {@link org.ff4j.core.FeatureStore} using Amazon DynamoDB.<br />
- *
+ * <p>
  * To get it running, a DynamoDB table is required.
  * Either you let FF4J create it for you with default configuration (ProvisionedThroughput: 5RCU & 5WCU) or
  * you create it on your own. You must keep the same attribute names, but you can change the table name, index name,
  * billing mode and throughput. Example:<br/>
  * <code>
- *     aws dynamodb create-table --cli-input-json file://create-feature-dynamodb-table.json
+ * aws dynamodb create-table --cli-input-json file://create-feature-dynamodb-table.json
  * </code>
  * <p>
- *     With the following content in create-feature-dynamodb-table.json file:
- *     <code>
- *         {
- *     "TableName": "ff4jfeatures",
- *     "AttributeDefinitions": [
- *         {
- *             "AttributeName": "featureUid",
- *             "AttributeType": "S"
- *         },
- *         {
- *             "AttributeName": "groupName",
- *             "AttributeType": "S"
- *         }
- *     ],
- *     "KeySchema": [
- *         {
- *             "AttributeName": "featureUid",
- *             "KeyType": "HASH"
- *         }
- *     ],
- *     "GlobalSecondaryIndexes": [
- *         {
- *             "IndexName": "ff4jfeaturesgroup",
- *             "KeySchema": [
- *                 {
- *                     "AttributeName": "groupName",
- *                     "KeyType": "HASH"
- *                 }
- *             ],
- *             "Projection": {
- *                 "ProjectionType": "ALL"
- *             },
- *             "ProvisionedThroughput": {
- *                 "ReadCapacityUnits": 4,
- *                 "WriteCapacityUnits": 4
- *             }
- *         }
- *     ],
- *     "BillingMode": "PROVISIONED",
- *     "ProvisionedThroughput": {
- *         "ReadCapacityUnits": 4,
- *         "WriteCapacityUnits": 4
- *     }
+ * With the following content in create-feature-dynamodb-table.json file:
+ * <code>
+ * {
+ * "TableName": "ff4jfeatures",
+ * "AttributeDefinitions": [
+ * {
+ * "AttributeName": "featureUid",
+ * "AttributeType": "S"
+ * },
+ * {
+ * "AttributeName": "groupName",
+ * "AttributeType": "S"
  * }
- *     </code>
+ * ],
+ * "KeySchema": [
+ * {
+ * "AttributeName": "featureUid",
+ * "KeyType": "HASH"
+ * }
+ * ],
+ * "GlobalSecondaryIndexes": [
+ * {
+ * "IndexName": "ff4jfeaturesgroup",
+ * "KeySchema": [
+ * {
+ * "AttributeName": "groupName",
+ * "KeyType": "HASH"
+ * }
+ * ],
+ * "Projection": {
+ * "ProjectionType": "ALL"
+ * },
+ * "ProvisionedThroughput": {
+ * "ReadCapacityUnits": 4,
+ * "WriteCapacityUnits": 4
+ * }
+ * }
+ * ],
+ * "BillingMode": "PROVISIONED",
+ * "ProvisionedThroughput": {
+ * "ReadCapacityUnits": 4,
+ * "WriteCapacityUnits": 4
+ * }
+ * }
+ * </code>
  * </p>
  * <p>If you change the table name, use the appropriate constructor, passing the table name as parameter: <ul>
- *     <li>{@link #FeatureStoreDynamoDB(String)}</li>
- *     <li>{@link #FeatureStoreDynamoDB(AmazonDynamoDB, String)}</li>
+ * <li>{@link #FeatureStoreDynamoDB(String)}</li>
+ * <li>{@link #FeatureStoreDynamoDB(AmazonDynamoDB, String)}</li>
  * </ul></p>
  * <p>If you want to get more control on the connection to Amazon DynamoDB, use the appropriate constructor:<ul>
- *     <li>{@link #FeatureStoreDynamoDB(AmazonDynamoDB)}</li>
- *     <li>{@link #FeatureStoreDynamoDB(AmazonDynamoDB, String)}</li>
+ * <li>{@link #FeatureStoreDynamoDB(AmazonDynamoDB)}</li>
+ * <li>{@link #FeatureStoreDynamoDB(AmazonDynamoDB, String)}</li>
  * </ul></p>
+ *
  * @author <a href="mailto:jeromevdl@gmail.com">Jerome VAN DER LINDEN</a>
  */
 public class FeatureStoreDynamoDB extends AbstractFeatureStore {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FeatureStoreDynamoDB.class);
 
     /**
      * Internal DynamoDB client
@@ -178,6 +183,7 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
         assertFeatureNotExist(feature.getUid());
 
         getClient().put(feature);
+        LOGGER.info("Feature " + feature.getUid() + " created");
     }
 
     /**
@@ -187,6 +193,7 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
     public void enable(String uid) {
         assertFeatureExist(uid);
         getClient().updateFeatureAvailability(uid, true);
+        LOGGER.info("Feature " + uid + " enabled");
     }
 
     /**
@@ -196,6 +203,7 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
     public void disable(String uid) {
         assertFeatureExist(uid);
         getClient().updateFeatureAvailability(uid, false);
+        LOGGER.info("Feature " + uid + " disabled");
     }
 
     /**
@@ -222,6 +230,7 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
         assertFeatureExist(featureId);
 
         getClient().deleteItem(featureId);
+        LOGGER.info("Feature " + featureId + " deleted");
     }
 
     /**
@@ -231,6 +240,7 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
     public void update(Feature feature) {
         Util.assertNotNull(feature);
 
+//        getClient().update(feature);
         delete(feature.getUid());
         create(feature);
     }
@@ -251,6 +261,7 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
     public void createSchema() {
         if (!getClient().tableExists()) {
             getClient().createTable();
+            LOGGER.info("Feature table created");
         }
     }
 
@@ -300,6 +311,7 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
         Util.assertHasLength(groupName);
 
         getClient().addToGroup(featureId, groupName);
+        LOGGER.info("Group " + groupName + " added to feature " + featureId);
     }
 
     /**
@@ -311,6 +323,7 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
         assertGroupExist(groupName);
 
         getClient().removeFromGroup(featureId);
+        LOGGER.info("Group " + groupName + " removed from feature " + featureId);
     }
 
     /**
@@ -320,6 +333,7 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
     public void enableGroup(String groupName) {
         Util.assertHasLength(groupName);
         getClient().updateFeatureAvailabilityInGroup(groupName, true);
+        LOGGER.info("Group " + groupName + " enabled");
     }
 
     /**
@@ -329,6 +343,7 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
     public void disableGroup(String groupName) {
         Util.assertHasLength(groupName);
         getClient().updateFeatureAvailabilityInGroup(groupName, false);
+        LOGGER.info("Group " + groupName + " disabled");
     }
 
     /****************/
@@ -342,6 +357,7 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
     public void grantRoleOnFeature(String flipId, String roleName) {
         Util.assertHasLength(roleName);
         getClient().addFeaturePermission(flipId, roleName);
+        LOGGER.info("Role " + roleName + " granted on feature "+ flipId);
     }
 
     /**
@@ -351,6 +367,7 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
     public void removeRoleFromFeature(String flipId, String roleName) {
         Util.assertHasLength(roleName);
         getClient().removeFeaturePermission(flipId, roleName);
+        LOGGER.info("Role " + roleName + " revoked on feature "+ flipId);
     }
 
     /************************************************************************************************************/
@@ -380,6 +397,7 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
 
     private void deleteTable() {
         getClient().deleteTable();
+        LOGGER.info("Feature table deleted");
     }
 
     /**

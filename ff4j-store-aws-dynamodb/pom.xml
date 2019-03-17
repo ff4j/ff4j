@@ -56,6 +56,11 @@
             <version>4.5.5</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
         <!-- tests -->
         <dependency>
             <artifactId>ff4j-test</artifactId>

@@ -25,9 +25,11 @@ import cloud.localstack.docker.annotation.LocalstackDockerProperties;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -81,6 +83,20 @@ public class FeatureStoreDynamoDBIT extends FeatureStoreTestSupport {
 
         // Then
         assertFf4j.assertThatFeatureHasRole(AWESOME, ROLE_TEST);
+    }
+
+    @Test
+    public void addEmptyStringAsRole() {
+        // given
+        Feature feature = testedStore.read(AWESOME);
+        Assert.assertTrue(feature.getPermissions().isEmpty());
+
+        // when
+        feature.getPermissions().add("");
+        testedStore.update(feature);
+
+        // then
+        Assert.assertTrue(feature.getPermissions().isEmpty());
     }
 
 }
