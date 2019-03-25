@@ -398,8 +398,6 @@ public class FeatureStoreCouchDb extends AbstractFeatureStore {
             feat.setGroup(groupName);
             couchDbFeature.setFeature(feat.toJson());
             updateFeature(couchDbFeature);
-            CouchDbFeature couchDbFeature1 = getFeature(uid);
-            System.out.println("testing");
         }
     }
 
