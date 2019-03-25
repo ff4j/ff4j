@@ -38,7 +38,7 @@ import static org.testcontainers.containers.output.OutputFrame.OutputType.STDOUT
  *
  * @author Curtis White (@drizztguen77)
  */
-public class FeatureStoreCouchDbTest1 extends FeatureStoreTestSupport {
+public class FeatureStoreCouchDbTest extends FeatureStoreTestSupport {
 
     /**
      * Reuse connection for tests.
