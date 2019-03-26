@@ -164,6 +164,8 @@
 
         <!-- Stores -->
         <module>ff4j-store-archaius</module>
+        <module>ff4j-store-aws-dynamodb</module>
+        <module>ff4j-store-aws-ssm</module>
         <module>ff4j-store-cassandra</module>
         <module>ff4j-store-commonsconfig</module>
         <module>ff4j-store-consul</module>
@@ -179,18 +181,17 @@
         <module>ff4j-store-redis</module>
         <module>ff4j-store-springjdbc</module>
         <module>ff4j-store-couchbase</module>
-        <module>ff4j-store-aws-ssm</module>
         <module>ff4j-store-couchdb</module>
 
         <!-- spring-boot-starter -->
-<!--
+        <!--
         <module>ff4j-spring-services</module>
         <module>ff4j-spring-boot-web-api</module>
         <module>ff4j-spring-boot-autoconfigure</module>
         <module>ff4j-spring-boot-starter</module>
--->
+         -->
+   </modules>
 
-  </modules>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <!-- ~ DEPENDENCIES             ~ -->

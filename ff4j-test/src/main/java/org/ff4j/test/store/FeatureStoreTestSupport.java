@@ -1,35 +1,26 @@
 package org.ff4j.test.store;
 
-import static org.ff4j.test.TestsFf4jConstants.EXPECTED_FEATURES_NUMBERS;
-import static org.ff4j.test.TestsFf4jConstants.F1;
-import static org.ff4j.test.TestsFf4jConstants.F2;
-import static org.ff4j.test.TestsFf4jConstants.F3;
-import static org.ff4j.test.TestsFf4jConstants.F4;
-import static org.ff4j.test.TestsFf4jConstants.FEATURE_NEW;
-import static org.ff4j.test.TestsFf4jConstants.F_DOESNOTEXIST;
-import static org.ff4j.test.TestsFf4jConstants.G0;
-import static org.ff4j.test.TestsFf4jConstants.G1;
-import static org.ff4j.test.TestsFf4jConstants.G_DOESNOTEXIST;
-import static org.ff4j.test.TestsFf4jConstants.ROLE_ADMIN;
-import static org.ff4j.test.TestsFf4jConstants.ROLE_NEW;
-import static org.ff4j.test.TestsFf4jConstants.ROLE_USER;
-import static org.ff4j.test.TestsFf4jConstants.TEST_FEATURES_FILE;
-
 /*
- * #%L ff4j-core %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not use
- * this file except in compliance with the License. You may obtain a copy of the License at
+ * #%L
+ * ff4j-core
+ * %%
+ * Copyright (C) 2013 Ff4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  * 
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
- * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License. #L%
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
  */
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
@@ -48,9 +39,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.ff4j.test.TestsFf4jConstants.*;
+
 /**
  * For different store.
- * 
+ *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public abstract class FeatureStoreTestSupport {
@@ -85,7 +78,7 @@ public abstract class FeatureStoreTestSupport {
 
 	/**
 	 * Any store test will declare its store through this callback.
-	 * 
+	 *
 	 * @return working feature store
 	 * @throws Exception
 	 *             error during building feature store
@@ -290,7 +283,7 @@ public abstract class FeatureStoreTestSupport {
 		// Given
 		assertFf4j.assertThatFeatureDoesNotExist(FEATURE_NEW);
 		// When
-		Set<String> rights = new HashSet<String>(Arrays.asList(new String[] { ROLE_USER }));
+		Set<String> rights = new HashSet<String>(Collections.singletonList(ROLE_USER));
 		Feature fp = new Feature(FEATURE_NEW, true, "description", G1, rights);
 		testedStore.create(fp);
 		// Then
@@ -315,7 +308,7 @@ public abstract class FeatureStoreTestSupport {
 		// Then (first creation)
 		assertFf4j.assertThatFeatureExist(GOLOGOLO);
 		// When (second creation)
-		Set<String> rights = new HashSet<String>(Arrays.asList(new String[] { ROLE_USER }));
+		Set<String> rights = new HashSet<String>(Collections.singletonList(ROLE_USER));
 		Feature fp2 = new Feature(GOLOGOLO, true, G1, "description3", rights);
 		testedStore.create(fp2);
 		// Then, expected exception
@@ -555,7 +548,7 @@ public abstract class FeatureStoreTestSupport {
 	@Test
 	public void testUpdateFeatureMoreAutorisation() {
 		// Parameters
-		Set<String> rights2 = new HashSet<String>(Arrays.asList(new String[] { ROLE_USER, ROLE_ADMIN }));
+		Set<String> rights2 = new HashSet<String>(Arrays.asList(ROLE_USER, ROLE_ADMIN));
 		// Given
 		assertFf4j.assertThatFeatureExist(F1);
 		assertFf4j.assertThatFeatureHasNotRole(F1, ROLE_ADMIN);
@@ -589,7 +582,7 @@ public abstract class FeatureStoreTestSupport {
 	public void testUpdateFlipMoreAutorisationNotExist() {
 		// Given
 		assertFf4j.assertThatFeatureHasNotRole(F1, ROLE_NEW);
-		Set<String> rights2 = new HashSet<String>(Arrays.asList(new String[] { ROLE_USER, ROLE_NEW }));
+		Set<String> rights2 = new HashSet<String>(Arrays.asList(ROLE_USER, ROLE_NEW));
 		Feature fpBis = new Feature(F1, false, G1, "desci2", rights2);
 		// When
 		testedStore.update(fpBis);
@@ -944,7 +937,7 @@ public abstract class FeatureStoreTestSupport {
 		// When
 		testedStore.removeFromGroup(F2, G0);
 		// Then
-		
+
 		assertFf4j.assertThatGroupDoesNotExist(G0);
 		// Expected error
 		testedStore.readGroup(G0);
