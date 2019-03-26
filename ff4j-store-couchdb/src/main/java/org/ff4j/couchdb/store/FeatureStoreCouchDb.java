@@ -1,5 +1,14 @@
 package org.ff4j.couchdb.store;
 
+import static org.ff4j.couchdb.CouchDbConstants.DEFAULT_FEATURE_TYPE;
+
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 /*
  * #%L
  * ff4j-web
@@ -19,8 +28,9 @@ package org.ff4j.couchdb.store;
  * limitations under the License.
  * #L%
  */
-
-import org.ektorp.*;
+import org.ektorp.CouchDbConnector;
+import org.ektorp.DocumentNotFoundException;
+import org.ektorp.UpdateConflictException;
 import org.ff4j.core.Feature;
 import org.ff4j.couchdb.CouchDbConnection;
 import org.ff4j.couchdb.CouchDbFeatureView;
@@ -32,11 +42,6 @@ import org.ff4j.store.AbstractFeatureStore;
 import org.ff4j.utils.Util;
 import org.ff4j.utils.json.FeatureJsonParser;
 import org.lightcouch.CouchDbException;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.ff4j.couchdb.CouchDbConstants.DEFAULT_FEATURE_TYPE;
 
 /**
  * Implementation of store using {@link CouchDbConnection} connection.
@@ -69,12 +74,7 @@ public class FeatureStoreCouchDb extends AbstractFeatureStore {
      * Repository class to query couchDB
      */
     private CouchDbFeatureView couchDbFeatureView;
-
-    /**
-     * Feature class
-     */
-    private Feature feature;
-
+   
     /**
      * Default constructor
      */
@@ -568,5 +568,15 @@ public class FeatureStoreCouchDb extends AbstractFeatureStore {
      */
     public void setCouchDbFeatureView(CouchDbFeatureView couchDbFeatureView) {
         this.couchDbFeatureView = couchDbFeatureView;
+    }
+
+    /**
+     * Getter accessor for attribute 'couchDbConnection'.
+     *
+     * @return
+     *       current value of 'couchDbConnection'
+     */
+    public CouchDbConnection getCouchDbConnection() {
+        return couchDbConnection;
     }
 }

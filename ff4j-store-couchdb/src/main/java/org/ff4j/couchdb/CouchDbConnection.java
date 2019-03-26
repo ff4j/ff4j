@@ -1,5 +1,13 @@
 package org.ff4j.couchdb;
 
+import static org.ff4j.couchdb.CouchDbConstants.DEFAULT_DATABASE_PORT;
+import static org.ff4j.couchdb.CouchDbConstants.DEFAULT_DBNAME;
+import static org.ff4j.couchdb.CouchDbConstants.DEFAULT_EVENT_TYPE;
+import static org.ff4j.couchdb.CouchDbConstants.DEFAULT_FEATURE_TYPE;
+import static org.ff4j.couchdb.CouchDbConstants.DEFAULT_PROPERTY_TYPE;
+
+import java.net.MalformedURLException;
+
 /*
  * #%L
  * ff4j-store-couchbase
@@ -28,10 +36,6 @@ import org.ektorp.impl.StdCouchDbConnector;
 import org.ektorp.impl.StdCouchDbInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.net.MalformedURLException;
-
-import static org.ff4j.couchdb.CouchDbConstants.*;
 
 /**
  * Wrapper to handle connectivity to CouchDb.
@@ -332,5 +336,81 @@ public class CouchDbConnection {
         }
 
         LOGGER.info("Connection Established " + this.couchDbConnector);
+    }
+
+    /**
+     * Getter accessor for attribute 'createDatabaseIfNotExists'.
+     *
+     * @return
+     *       current value of 'createDatabaseIfNotExists'
+     */
+    public boolean isCreateDatabaseIfNotExists() {
+        return createDatabaseIfNotExists;
+    }
+
+    /**
+     * Setter accessor for attribute 'createDatabaseIfNotExists'.
+     * @param createDatabaseIfNotExists
+     * 		new value for 'createDatabaseIfNotExists '
+     */
+    public void setCreateDatabaseIfNotExists(boolean createDatabaseIfNotExists) {
+        this.createDatabaseIfNotExists = createDatabaseIfNotExists;
+    }
+
+    /**
+     * Getter accessor for attribute 'ff4jFeatureType'.
+     *
+     * @return
+     *       current value of 'ff4jFeatureType'
+     */
+    public String getFf4jFeatureType() {
+        return ff4jFeatureType;
+    }
+
+    /**
+     * Setter accessor for attribute 'ff4jFeatureType'.
+     * @param ff4jFeatureType
+     * 		new value for 'ff4jFeatureType '
+     */
+    public void setFf4jFeatureType(String ff4jFeatureType) {
+        this.ff4jFeatureType = ff4jFeatureType;
+    }
+
+    /**
+     * Getter accessor for attribute 'ff4jPropertyType'.
+     *
+     * @return
+     *       current value of 'ff4jPropertyType'
+     */
+    public String getFf4jPropertyType() {
+        return ff4jPropertyType;
+    }
+
+    /**
+     * Setter accessor for attribute 'ff4jPropertyType'.
+     * @param ff4jPropertyType
+     * 		new value for 'ff4jPropertyType '
+     */
+    public void setFf4jPropertyType(String ff4jPropertyType) {
+        this.ff4jPropertyType = ff4jPropertyType;
+    }
+
+    /**
+     * Getter accessor for attribute 'ff4jEventType'.
+     *
+     * @return
+     *       current value of 'ff4jEventType'
+     */
+    public String getFf4jEventType() {
+        return ff4jEventType;
+    }
+
+    /**
+     * Setter accessor for attribute 'ff4jEventType'.
+     * @param ff4jEventType
+     * 		new value for 'ff4jEventType '
+     */
+    public void setFf4jEventType(String ff4jEventType) {
+        this.ff4jEventType = ff4jEventType;
     }
 }

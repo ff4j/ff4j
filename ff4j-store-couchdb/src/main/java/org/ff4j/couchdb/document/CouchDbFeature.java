@@ -1,5 +1,8 @@
 package org.ff4j.couchdb.document;
 
+import org.ektorp.support.CouchDbDocument;
+import org.ektorp.support.TypeDiscriminator;
+
 /*
  * #%L
  * ff4j-store-couchdb
@@ -19,11 +22,12 @@ package org.ff4j.couchdb.document;
  * limitations under the License.
  * #L%
  */
-
-
-import lombok.*;
-import org.ektorp.support.CouchDbDocument;
-import org.ektorp.support.TypeDiscriminator;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @Data
 @AllArgsConstructor
@@ -32,8 +36,11 @@ import org.ektorp.support.TypeDiscriminator;
 @EqualsAndHashCode(callSuper = true)
 public class CouchDbFeature extends CouchDbDocument {
 
+    private static final long serialVersionUID = -395071089004600797L;
+    
     @NonNull
     @TypeDiscriminator
     private String type;
+    
     private String feature;
 }

@@ -60,6 +60,36 @@ public class EventStoreCouchDb extends AbstractEventRepository {
     private CouchDbConnector couchDbConnector;
 
     /**
+     * Getter accessor for attribute 'couchDbConnection'.
+     *
+     * @return
+     *       current value of 'couchDbConnection'
+     */
+    public CouchDbConnection getCouchDbConnection() {
+        return couchDbConnection;
+    }
+
+    /**
+     * Getter accessor for attribute 'couchDbConnector'.
+     *
+     * @return
+     *       current value of 'couchDbConnector'
+     */
+    public CouchDbConnector getCouchDbConnector() {
+        return couchDbConnector;
+    }
+
+    /**
+     * Getter accessor for attribute 'couchDbEventView'.
+     *
+     * @return
+     *       current value of 'couchDbEventView'
+     */
+    public CouchDbEventView getCouchDbEventView() {
+        return couchDbEventView;
+    }
+
+    /**
      * Repository class to query couchDB
      */
     private CouchDbEventView couchDbEventView;

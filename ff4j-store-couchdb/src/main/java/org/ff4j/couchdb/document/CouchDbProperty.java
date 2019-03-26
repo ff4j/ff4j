@@ -1,5 +1,7 @@
 package org.ff4j.couchdb.document;
 
+import org.ektorp.support.CouchDbDocument;
+
 /*
  * #%L
  * ff4j-store-couchdb
@@ -19,10 +21,12 @@ package org.ff4j.couchdb.document;
  * limitations under the License.
  * #L%
  */
-
-
-import lombok.*;
-import org.ektorp.support.CouchDbDocument;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @Data
 @AllArgsConstructor
@@ -31,6 +35,8 @@ import org.ektorp.support.CouchDbDocument;
 @EqualsAndHashCode(callSuper = true)
 public class CouchDbProperty extends CouchDbDocument {
 
+    private static final long serialVersionUID = 6103055129012966805L;
+    
     @NonNull
     private String type;
     private String property;

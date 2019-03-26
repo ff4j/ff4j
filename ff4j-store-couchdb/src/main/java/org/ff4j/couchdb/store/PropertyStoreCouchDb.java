@@ -248,4 +248,34 @@ public class PropertyStoreCouchDb extends AbstractPropertyStore {
     public void setCouchDbFeatureRepository(CouchDbPropertyView couchDbPropertyView) {
         this.couchDbPropertyView = couchDbPropertyView;
     }
+
+    /**
+     * Getter accessor for attribute 'couchDbConnection'.
+     *
+     * @return
+     *       current value of 'couchDbConnection'
+     */
+    public CouchDbConnection getCouchDbConnection() {
+        return couchDbConnection;
+    }
+
+    /**
+     * Getter accessor for attribute 'couchDbConnector'.
+     *
+     * @return
+     *       current value of 'couchDbConnector'
+     */
+    public CouchDbConnector getCouchDbConnector() {
+        return couchDbConnector;
+    }
+
+    /**
+     * Getter accessor for attribute 'couchDbPropertyView'.
+     *
+     * @return
+     *       current value of 'couchDbPropertyView'
+     */
+    public CouchDbPropertyView getCouchDbPropertyView() {
+        return couchDbPropertyView;
+    }
 }
