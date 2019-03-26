@@ -1,5 +1,22 @@
 package org.ff4j.dynamodb.feature;
 
+import static org.ff4j.test.TestsFf4jConstants.AWESOME;
+import static org.ff4j.test.TestsFf4jConstants.ROLE_TEST;
+
+import org.ff4j.core.Feature;
+import org.ff4j.core.FeatureStore;
+import org.ff4j.test.store.FeatureStoreTestSupport;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+
 /*
  * #%L
  * ff4j-store-aws-dynamodb
@@ -22,19 +39,6 @@ package org.ff4j.dynamodb.feature;
 
 import cloud.localstack.docker.LocalstackDockerTestRunner;
 import cloud.localstack.docker.annotation.LocalstackDockerProperties;
-import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
-import org.ff4j.core.Feature;
-import org.ff4j.core.FeatureStore;
-import org.ff4j.test.store.FeatureStoreTestSupport;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import static org.ff4j.test.TestsFf4jConstants.*;
 
 /**
  * Test using the localstack framework to get AWS stack locally. See https://github.com/localstack/localstack
@@ -45,6 +49,8 @@ import static org.ff4j.test.TestsFf4jConstants.*;
  */
 @RunWith(LocalstackDockerTestRunner.class)
 @LocalstackDockerProperties(services = {"dynamodb"})
+// Needs Docker to be installed which is not there is Travis, as such commenting
+@Ignore
 public class FeatureStoreDynamoDBIT extends FeatureStoreTestSupport {
 
     private static AmazonDynamoDB dynamoDB;
