@@ -40,8 +40,6 @@ import static org.testcontainers.containers.output.OutputFrame.OutputType.STDOUT
  *
  * @author Curtis White (@drizztguen77)
  */
-// waiting for update to jackson
-@Ignore
 public class EventStoreCouchDbTest extends EventRepositoryTestSupport {
 
     /**

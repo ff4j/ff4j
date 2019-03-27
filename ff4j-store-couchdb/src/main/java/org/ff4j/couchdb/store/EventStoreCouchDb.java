@@ -138,7 +138,9 @@ public class EventStoreCouchDb extends AbstractEventRepository {
 
         } catch (DocumentNotFoundException dnf) {
             // If no event was found then create a new one
-            CouchDbEvent couchDbEvent = new CouchDbEvent(DEFAULT_EVENT_TYPE, e.toJson());
+            CouchDbEvent couchDbEvent = new CouchDbEvent();
+            couchDbEvent.setType(DEFAULT_EVENT_TYPE);
+            couchDbEvent.setEvent(e.toJson());
             couchDbEvent.setId(e.getUuid());
             createEvent(couchDbEvent);
         }

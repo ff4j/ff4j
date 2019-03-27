@@ -170,7 +170,9 @@ public class FeatureStoreCouchDb extends AbstractFeatureStore {
             throw new FeatureAlreadyExistException(fp.getUid());
         }
 
-        CouchDbFeature couchDbFeature = new CouchDbFeature(DEFAULT_FEATURE_TYPE, fp.toJson());
+        CouchDbFeature couchDbFeature = new CouchDbFeature();
+        couchDbFeature.setType(DEFAULT_FEATURE_TYPE);
+        couchDbFeature.setFeature(fp.toJson());
         couchDbFeature.setId(fp.getUid());
         createFeature(couchDbFeature);
     }
