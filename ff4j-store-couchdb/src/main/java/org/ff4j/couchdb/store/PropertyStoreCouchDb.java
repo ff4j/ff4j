@@ -111,7 +111,9 @@ public class PropertyStoreCouchDb extends AbstractPropertyStore {
             throw new PropertyAlreadyExistException(prop.getName());
         }
 
-        CouchDbProperty couchDbProperty = new CouchDbProperty(DEFAULT_PROPERTY_TYPE, prop.toJson());
+        CouchDbProperty couchDbProperty = new CouchDbProperty();
+        couchDbProperty.setType(DEFAULT_PROPERTY_TYPE);
+        couchDbProperty.setProperty(prop.toJson());
         createProperty(couchDbProperty);
     }
 
