@@ -65,8 +65,8 @@
         <encoding>UTF-8</encoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.target>1.6</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
 
         <!-- License -->
         <license.licenseName>apache_v2</license.licenseName>
@@ -97,7 +97,7 @@
         <version.taglib>1.1.2</version.taglib>
         <version.jsr311>1.1.1</version.jsr311>
         <version.jacoco>0.7.5.201505241946</version.jacoco>
-        <version.jackon2x>2.6.4</version.jackon2x>
+        <version.jackon2x>2.9.8</version.jackon2x>
         <version.jersey1x>1.19</version.jersey1x>
         <version.jersey2x>2.22.1</version.jersey2x>
         <version.httpclient>4.3.4</version.httpclient>
@@ -164,6 +164,8 @@
 
         <!-- Stores -->
         <module>ff4j-store-archaius</module>
+        <module>ff4j-store-aws-dynamodb</module>
+        <module>ff4j-store-aws-ssm</module>
         <module>ff4j-store-cassandra</module>
         <module>ff4j-store-commonsconfig</module>
         <module>ff4j-store-consul</module>
@@ -179,17 +181,17 @@
         <module>ff4j-store-redis</module>
         <module>ff4j-store-springjdbc</module>
         <module>ff4j-store-couchbase</module>
-        <module>ff4j-store-aws-ssm</module>
+        <module>ff4j-store-couchdb</module>
 
         <!-- spring-boot-starter -->
-<!--
+        <!--
         <module>ff4j-spring-services</module>
         <module>ff4j-spring-boot-web-api</module>
         <module>ff4j-spring-boot-autoconfigure</module>
         <module>ff4j-spring-boot-starter</module>
--->
+         -->
+   </modules>
 
-  </modules>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <!-- ~ DEPENDENCIES             ~ -->

@@ -72,7 +72,6 @@ public abstract class AbstractPropertyMultiValued < T, C extends Collection< T >
      * @param lvl
      *      current double value
      */
-    @SuppressWarnings("unchecked")
     public AbstractPropertyMultiValued(String uid, C value) {
        super(uid, value);
     }

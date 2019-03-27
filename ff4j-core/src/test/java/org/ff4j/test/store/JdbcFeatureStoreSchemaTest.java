@@ -122,7 +122,6 @@ public class JdbcFeatureStoreSchemaTest {
         Assert.assertTrue(testedStore.exist("fx"));
     }
     
-    @SuppressWarnings("unchecked")
     @Test
     public void testCreateCustomProperties() {
         testedStore.createSchema();

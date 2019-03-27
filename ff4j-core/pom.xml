@@ -21,46 +21,36 @@
 	<!-- ~      DEPENDENCIES        ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<dependencies>
-	
-	
-		
-		<!-- Support for tests -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
 		<dependency>
 			<groupId>commons-dbcp</groupId>
 			<artifactId>commons-dbcp</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 
 	<properties>

@@ -1,5 +1,12 @@
 package org.ff4j.test.cache;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 /*
  * #%L
  * ff4j-core
@@ -31,13 +38,6 @@ import org.ff4j.property.store.PropertyStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class CacheProxyWithPollingTest {
     
@@ -102,9 +102,9 @@ public class CacheProxyWithPollingTest {
         // 20 threads trying to fetch property from cacheManager
         ExecutorService fetchPropertyService  = Executors.newFixedThreadPool(20);
 
-        Callable<Property> callable = new Callable<Property>() {
+        Callable<Property<?>> callable = new Callable<Property<?>>() {
             @Override
-            public Property call() throws Exception {
+            public Property<?> call() throws Exception {
                 try {
                     return proxy.getCacheManager().getProperty("a");
                 } catch (Exception e) {
@@ -114,7 +114,7 @@ public class CacheProxyWithPollingTest {
             }
         };
 
-        List<Callable<Property>> multiplePropertyFetchCalls = new ArrayList<Callable<Property>>(1000);
+        List<Callable<Property<?>>> multiplePropertyFetchCalls = new ArrayList<Callable<Property<?>>>(1000);
         //generating 100000 requests
         for (int i = 0; i < 100; i++) {
             for (int j = 0; j < 10; j++) {
@@ -125,9 +125,9 @@ public class CacheProxyWithPollingTest {
                 multiplePropertyFetchCalls.add(callable);
             }
             //execute 100 property fetch calls on 20 threads
-            List<Future<Property>> fetchPropertyCalls = fetchPropertyService.invokeAll(multiplePropertyFetchCalls);
+            List<Future<Property<?>>> fetchPropertyCalls = fetchPropertyService.invokeAll(multiplePropertyFetchCalls);
             //property should never be null
-            for (Future<Property> property : fetchPropertyCalls) {
+            for (Future<Property<?>> property : fetchPropertyCalls) {
                 Assert.assertNotNull(property);
             }
 

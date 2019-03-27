@@ -65,7 +65,6 @@ public abstract class AbstractPropertyMap < T, M extends Map<String, ? extends T
      * @param lvl
      *      current double value
      */
-    @SuppressWarnings("unchecked")
     public AbstractPropertyMap(String uid, M value) {
         super(uid, value);
     }

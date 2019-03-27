@@ -1,12 +1,10 @@
 package org.ff4j.awsssm.store;
 
-import java.util.Map;
-
 /*
  * #%L
  * ff4j-store-aws-ssm
  * %%
- * Copyright (C) 2013 Ff4J
+ * Copyright (C) 2013 - 2019 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,25 +25,13 @@ import org.ff4j.property.PropertyLogLevel;
 import org.ff4j.property.PropertyString;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 
-/**
- * Integration test of {@link PropertyStore} with Amazon Web Services SSM Parameter Store.<br/>
- *
- * In order to execute this test, you need to configure the environment properly:
- * See <a href="https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/credentials.html#credentials-default">credentials</a> and
- * <a href="https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/java-dg-region-selection.html">region</a> configuration.
- *
- * <br/><b>Attention!</b> Do not store AWS credentials in the code!
- *
- * @author <a href="mailto:jeromevdl@gmail.com">Jerome VAN DER LINDEN</a>
- */
+import java.util.Map;
+
+
 @Ignore
-public class PropertyStoreAwsSSMIT extends PropertyStoreTestSupport {
+public class PropertyStoreAwsSSMTest extends PropertyStoreTestSupport {
 
     @Override
     @Before
@@ -78,25 +64,6 @@ public class PropertyStoreAwsSSMIT extends PropertyStoreTestSupport {
         // Given
         new PropertyStoreAwsSSM("/Toto/");
         // When, Then
-        // Expect error
-    }
-
-    @Test
-    public void loadXML() {
-        // Given
-        ((PropertyStoreAwsSSM) testedStore).loadFromXMLFile("ff4j-properties.xml");
-
-        // Then
-        Assert.assertTrue(testedStore.existProperty("c"));
-        Assert.assertTrue(testedStore.existProperty("d"));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void loadXMLNotExist() {
-        // Given
-        ((PropertyStoreAwsSSM) testedStore).loadFromXMLFile("sponge-bob.xml");
-
-        // Then
         // Expect error
     }
 

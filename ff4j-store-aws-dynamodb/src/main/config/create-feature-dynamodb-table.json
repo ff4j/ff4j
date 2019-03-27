@@ -1,0 +1,42 @@
+{
+    "TableName": "ff4jfeatures",
+    "AttributeDefinitions": [
+        {
+            "AttributeName": "featureUid",
+            "AttributeType": "S"
+        },
+        {
+            "AttributeName": "groupName",
+            "AttributeType": "S"
+        }
+    ],
+    "KeySchema": [
+        {
+            "AttributeName": "featureUid",
+            "KeyType": "HASH"
+        }
+    ],
+    "GlobalSecondaryIndexes": [
+        {
+            "IndexName": "ff4jfeaturesgroup",
+            "KeySchema": [
+                {
+                    "AttributeName": "groupName",
+                    "KeyType": "HASH"
+                }
+            ],
+            "Projection": {
+                "ProjectionType": "ALL"
+            },
+            "ProvisionedThroughput": {
+                "ReadCapacityUnits": 4,
+                "WriteCapacityUnits": 4
+            }
+        }
+    ],
+    "BillingMode": "PROVISIONED",
+    "ProvisionedThroughput": {
+        "ReadCapacityUnits": 4,
+        "WriteCapacityUnits": 4
+    }
+}

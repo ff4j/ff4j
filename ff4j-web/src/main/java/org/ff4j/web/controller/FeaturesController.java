@@ -106,17 +106,13 @@ public class FeaturesController extends AbstractController {
                 
                 if (OP_ADD_PERMISSION.equalsIgnoreCase(operation)) {
                     String permName = req.getParameter(WebConstants.PERMISSION);
-                    Feature feature = getFf4j().getFeatureStore().read(featureId);
-                    feature.getPermissions().add(permName);
-                    getFf4j().getFeatureStore().update(feature);
+                    getFf4j().getFeatureStore().grantRoleOnFeature(featureId, permName);
                     LOGGER.info("Add new " + permName + " to " + featureId );
                 }
                 
                 if (OP_RMV_PERMISSION.equalsIgnoreCase(operation)) {
                     String permName = req.getParameter(WebConstants.PERMISSION);
-                    Feature feature = getFf4j().getFeatureStore().read(featureId);
-                    feature.getPermissions().remove(permName);
-                    getFf4j().getFeatureStore().update(feature);
+                    getFf4j().getFeatureStore().removeRoleFromFeature(featureId, permName);
                     LOGGER.info("Remove " + permName + " to " + featureId );
                 }
                 
