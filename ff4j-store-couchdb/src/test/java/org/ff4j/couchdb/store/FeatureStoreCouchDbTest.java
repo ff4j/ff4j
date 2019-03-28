@@ -26,7 +26,6 @@ import org.ff4j.couchdb.CouchDbConnection;
 import org.ff4j.couchdb.CouchDbFeatureView;
 import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.WaitingConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
@@ -39,8 +38,6 @@ import static org.testcontainers.containers.output.OutputFrame.OutputType.STDOUT
  *
  * @author Curtis White (@drizztguen77)
  */
-//waiting for update to jackson
-@Ignore
 public class FeatureStoreCouchDbTest extends FeatureStoreTestSupport {
 
     /**

@@ -1,5 +1,9 @@
 package org.ff4j.couchdb.document;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.ektorp.support.CouchDbDocument;
 
 /*
@@ -21,23 +25,17 @@ import org.ektorp.support.CouchDbDocument;
  * limitations under the License.
  * #L%
  */
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@RequiredArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class CouchDbEvent extends CouchDbDocument {
 
     private static final long serialVersionUID = -5807287720388921887L;
-    
+
     @NonNull
     private String type;
     private String event;
+
+
 }
