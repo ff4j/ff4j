@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
 import org.ff4j.exception.FeatureAccessException;
@@ -44,7 +43,7 @@ import org.ff4j.property.store.AbstractPropertyStore;
 import org.ff4j.utils.Util;
 import org.ff4j.utils.json.PropertyJsonParser;
 import org.ff4j.web.api.resources.domain.PropertyApiBean;
-import org.ff4j.web.api.security.ClientHttpJersey1Utils;
+import org.ff4j.web.api.utils.ClientHttpUtils;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -95,7 +94,7 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
      */
     public PropertyStoreHttp(String rootApiUrl, String apiKey) {
         this(rootApiUrl);
-        this.authorization = ClientHttpJersey1Utils.buildAuthorization4ApiKey(apiKey);
+        this.authorization = ClientHttpUtils.buildAuthorization4ApiKey(apiKey);
     }
     
     /**
@@ -110,7 +109,7 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
      */
     public PropertyStoreHttp(String rootApiUrl, String username, String password) {
         this(rootApiUrl);
-        this.authorization = ClientHttpJersey1Utils.buildAuthorization4UserName(username, password);
+        this.authorization = ClientHttpUtils.buildAuthorization4UserName(username, password);
     }
 
     /**
@@ -121,7 +120,7 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
      */
     public Client getJerseyClient() {
         if (this.jersey1xClient == null) {
-            this.jersey1xClient = ClientHttpJersey1Utils.buildJersey1Client();
+            this.jersey1xClient = ClientHttpUtils.buildJersey1Client();
         }
         return jersey1xClient;
     }
@@ -135,9 +134,6 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
         if (storeWebRsc == null) {
             Util.assertHasLength(url);
             storeWebRsc = getJerseyClient().resource(url).path(RESOURCE_PROPERTYSTORE).path(RESOURCE_PROPERTIES);
-            if (null != authorization) {
-                storeWebRsc.header(HEADER_AUTHORIZATION, authorization);
-            }
         }
         return storeWebRsc;
     }
@@ -145,7 +141,7 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
     /** {@inheritDoc} */
     public boolean existProperty(String name) {
         Util.assertHasLength(name);
-        ClientResponse cRes = getStore().path(name).get(ClientResponse.class);
+        ClientResponse cRes = ClientHttpUtils.invokeGetMethod(getStore().path(name), authorization);
         if (Status.OK.getStatusCode() == cRes.getStatus()) {
             return true;
         }
@@ -177,10 +173,8 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
         if (existProperty(value.getName())) {
             throw new PropertyAlreadyExistException("Property already exist");
         }
-        ClientResponse cRes = getStore().path(value.getName())//
-                .type(MediaType.APPLICATION_JSON) //
-                .put(ClientResponse.class, new PropertyApiBean(value));
-        
+        ClientResponse cRes = ClientHttpUtils.invokePutMethod(getStore().path(value.getName()), authorization, new PropertyApiBean(value));
+
         // Check response code CREATED or raised error
         if (Status.CREATED.getStatusCode() != cRes.getStatus()) {
             throw new FeatureAccessException("Cannot create properties, an HTTP error " + cRes.getStatus() + OCCURED);
@@ -192,7 +186,7 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Property name cannot be null nor empty");
         }
-        ClientResponse cRes = getStore().path(name).get(ClientResponse.class);
+        ClientResponse cRes = ClientHttpUtils.invokeGetMethod(getStore().path(name), authorization);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new PropertyNotFoundException(name);
         }
@@ -202,7 +196,7 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
     /** {@inheritDoc} */
     public void deleteProperty(String name) {
         Util.assertHasLength(name);
-        ClientResponse cRes = getStore().path(name).delete(ClientResponse.class);
+        ClientResponse cRes = ClientHttpUtils.invokeDeleteMethod(getStore().path(name), authorization);
         if (Status.NOT_FOUND.getStatusCode() == cRes.getStatus()) {
             throw new PropertyNotFoundException(name);
         }
@@ -213,7 +207,7 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
 
     /** {@inheritDoc} */
     public Map<String, Property<?>> readAllProperties() {
-        ClientResponse cRes = getStore().get(ClientResponse.class);
+        ClientResponse cRes = ClientHttpUtils.invokeGetMethod(getStore(), authorization);
         if (Status.OK.getStatusCode() != cRes.getStatus()) {
             throw new PropertyAccessException("Cannot read properties, an HTTP error " + cRes.getStatus() + OCCURED);
         }
