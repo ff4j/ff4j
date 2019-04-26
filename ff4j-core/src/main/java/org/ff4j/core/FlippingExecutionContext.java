@@ -23,6 +23,7 @@ package org.ff4j.core;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Pojo holding an execution context to perform {@link FlippingStrategy} evaluations.
@@ -47,6 +48,16 @@ public class FlippingExecutionContext {
      */
     public FlippingExecutionContext(Map<String, Object> init) {
         this.parameters = init;
+    }
+
+    /**
+     * Initializing context.
+     *
+     * @param executionContext
+     *            An existing execution context to copy.
+     */
+    public FlippingExecutionContext(FlippingExecutionContext executionContext) {
+        this.parameters.putAll(executionContext.parameters);
     }
 
     /**
@@ -289,5 +300,31 @@ public class FlippingExecutionContext {
         this.addValue(key, value);
     }
 
+    /**
+     * Check if the current flipping execution is empty or not.
+     *
+     * @return {@code true} if execution context is empty, false otherwise.
+     */
+    public boolean isEmpty() {
+        return parameters.isEmpty();
+    }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+
+        if (obj instanceof FlippingExecutionContext) {
+            FlippingExecutionContext ctx = (FlippingExecutionContext) obj;
+            return Objects.equals(parameters, ctx.parameters);
+        }
+
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(parameters);
+    }
 }

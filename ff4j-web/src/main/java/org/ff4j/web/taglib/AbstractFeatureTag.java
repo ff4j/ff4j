@@ -21,12 +21,14 @@ package org.ff4j.web.taglib;
  */
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import org.ff4j.FF4j;
+import org.ff4j.core.FlippingExecutionContext;
 
 import static org.ff4j.web.embedded.ConsoleConstants.*;
 
@@ -109,8 +111,52 @@ public abstract class AbstractFeatureTag extends TagSupport {
 
         return result ? EVAL_BODY_INCLUDE : SKIP_BODY;
     }
-    
-    protected abstract boolean eval(FF4j ff4j, PageContext pageContext);
+
+    protected boolean eval(FF4j ff4j, PageContext pageContext) {
+        FlippingExecutionContext currentContext = ff4j.getCurrentContext();
+        FlippingExecutionContext executionContext = isShareHttpSession() ? createExecutionContextFromSharedHttpSession(pageContext, currentContext) : currentContext;
+
+        try {
+            return evalWithExecutionContext(ff4j, pageContext, executionContext);
+        } finally {
+            // Restore original current context, otherwise some parameters from previous JSP context remains.
+            if (isShareHttpSession()) {
+                ff4j.setCurrentContext(currentContext);
+            }
+        }
+    }
+
+    private FlippingExecutionContext createExecutionContextFromSharedHttpSession(PageContext pageContext, FlippingExecutionContext currentContext) {
+        FlippingExecutionContext localExecutionContext = new FlippingExecutionContext(currentContext);
+        mergeRequestPageContext(pageContext, localExecutionContext);
+        return localExecutionContext;
+    }
+
+    private void mergeRequestPageContext(PageContext pageContext, FlippingExecutionContext localExecutionContext) {
+        localExecutionContext.putString("LOCALE", pageContext.getRequest().getLocalName());
+        mergeRequestParameters(pageContext, localExecutionContext);
+    }
+
+    private void mergeRequestParameters(PageContext pageContext, FlippingExecutionContext localExecutionContext) {
+        @SuppressWarnings("unchecked")
+        Map< String, String[]> parameters = pageContext.getRequest().getParameterMap();
+
+        for (Map.Entry<String,String[]> param : parameters.entrySet()) {
+            String[] innerParams = param.getValue();
+            if (innerParams != null) {
+                StringBuilder sb = new StringBuilder();
+                for (String innerParam : innerParams) {
+                    sb.append(innerParam);
+                    sb.append(",");
+                }
+
+                String expression = sb.toString();
+                localExecutionContext.putString(param.getKey(), expression.substring(0, expression.length() - 1));
+            }
+        }
+    }
+
+    protected abstract boolean evalWithExecutionContext(FF4j ff4j, PageContext pageContext, FlippingExecutionContext executionContext);
 
     private void exposeVariables(boolean result) {
         if (var != null) {

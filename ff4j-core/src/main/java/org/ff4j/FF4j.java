@@ -823,6 +823,16 @@ public class FF4j {
     }
 
     /**
+     * Override flipping execution context.
+     *
+     * @param executionContext
+     *      The new current context
+     */
+    public void setCurrentContext(FlippingExecutionContext executionContext) {
+        this.currentExecutionContext.set(executionContext);
+    }
+
+    /**
      * Getter accessor for attribute 'autocreate'.
      *
      * @return current value of 'autocreate'
