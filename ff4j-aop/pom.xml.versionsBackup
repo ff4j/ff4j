@@ -4,73 +4,65 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~     COORDINATES          ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<artifactId>ff4j-jmx</artifactId>
+	<artifactId>ff4j-aop</artifactId>
 	<packaging>jar</packaging>
-	<name>ff4j-jmx</name>
-	
-	<description>
-		This project provides MBEANs to work upon features through JMX.
-	</description>
+	<name>ff4j-aop</name>
 	
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~   PARENT                 ~ -->
+	<!-- ~         PARENT           ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<parent>
 		<groupId>org.ff4j</groupId>
 		<artifactId>ff4j-parent</artifactId>
-		<version>1.8.1-SNAPSHOT</version>
+		<version>1.9-SNAPSHOT</version>
 	</parent>
-	
+
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~        PROPERTIES        ~ -->
+	<!-- ~ OVERRIDING PROPERTIES    ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<properties>
 	 	<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
 	</properties>
 	
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~      DEPENDENCIES        ~ -->
+	<!-- ~   DEPENDENCIES           ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<dependencies>
 	
-		<!--  core -->
+		<!-- core -->
 		<dependency>
 			<artifactId>ff4j-core</artifactId>
 			<groupId>org.ff4j</groupId>
 			<version>${project.version}</version>
 		</dependency>
 		
-		<!-- JMX -->
+		<!--  logger -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		
+		<!-- spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 		</dependency>
-		
-		<!-- test -->
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
 		<dependency>
 			<artifactId>ff4j-test</artifactId>
 			<groupId>org.ff4j</groupId>
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<scope>test</scope>
-		</dependency>
+
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
+			<artifactId>spring-aspects</artifactId>
 			<scope>test</scope>
 		</dependency>
 		

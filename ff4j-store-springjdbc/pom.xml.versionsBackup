@@ -2,70 +2,62 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~         COORDINATES      ~ -->
+	<!-- ~     COORDINATES          ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<artifactId>ff4j-store-archaius</artifactId>
+	<artifactId>ff4j-store-springjdbc</artifactId>
 	<packaging>jar</packaging>
-	<name>ff4j-store-archaius</name>
-
+	<name>ff4j-store-springjdbc</name>
+	
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~         PARENT           ~ -->
+	<!-- ~   PARENT                 ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<parent>
 		<groupId>org.ff4j</groupId>
 		<artifactId>ff4j-parent</artifactId>
-		<version>1.8.1-SNAPSHOT</version>
+		<version>1.9-SNAPSHOT</version>
 	</parent>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~      PROPERTIES          ~ -->
+	<!-- ~        PROPERTIES        ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<properties>
 		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-		<archaius.version>0.7.3</archaius.version>
 	</properties>
-
+	
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~       DEPENDENCIES       ~ -->
+	<!-- ~      DEPENDENCIES        ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<dependencies>
-
-		<!-- logger -->
+	
+		<!--  core -->
 		<dependency>
+			<artifactId>ff4j-core</artifactId>
 			<groupId>org.ff4j</groupId>
-			<artifactId>ff4j-store-commonsconfig</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		
-        <!-- Archaius -->
-        <dependency>
-            <groupId>com.netflix.archaius</groupId>
-            <artifactId>archaius-core</artifactId>
-            <version>${archaius.version}</version>
-        </dependency>
-        
-        <!-- Spring -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
-
-		<!-- Tests -->
+		<!-- spring-jdbc -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+		
+		<!-- tests -->
+		<dependency>
+			<artifactId>ff4j-test</artifactId>
+			<groupId>org.ff4j</groupId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-            <groupId>org.ff4j</groupId>
-            <artifactId>ff4j-test</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
@@ -77,12 +69,15 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
 	</dependencies>
-
-
 </project>

@@ -4,9 +4,9 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~         COORDINATES      ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<artifactId>ff4j-store-archaius</artifactId>
+	<artifactId>ff4j-store-ignite</artifactId>
 	<packaging>jar</packaging>
-	<name>ff4j-store-archaius</name>
+	<name>ff4j-store-ignite</name>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~         PARENT           ~ -->
@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.ff4j</groupId>
 		<artifactId>ff4j-parent</artifactId>
-		<version>1.8.1-SNAPSHOT</version>
+		<version>1.9-SNAPSHOT</version>
 	</parent>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -22,50 +22,40 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<properties>
 		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-		<archaius.version>0.7.3</archaius.version>
+		<jsr107.version>1.0.0</jsr107.version>
+		<ignite.version>1.9.0</ignite.version>
 	</properties>
-
+	
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~       DEPENDENCIES       ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<dependencies>
 
-		<!-- logger -->
+		<!-- Leverage on JCACHE -->
 		<dependency>
 			<groupId>org.ff4j</groupId>
-			<artifactId>ff4j-store-commonsconfig</artifactId>
+			<artifactId>ff4j-store-jcache</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		
-        <!-- Archaius -->
-        <dependency>
-            <groupId>com.netflix.archaius</groupId>
-            <artifactId>archaius-core</artifactId>
-            <version>${archaius.version}</version>
-        </dependency>
-        
-        <!-- Spring -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
-
+		<!-- Apache Ignite -->
+		<dependency>
+			<groupId>org.apache.ignite</groupId>
+			<artifactId>ignite-core</artifactId>
+		</dependency>
+		
 		<!-- Tests -->
+		<dependency>
+			<artifactId>ff4j-test</artifactId>
+			<groupId>org.ff4j</groupId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-            <groupId>org.ff4j</groupId>
-            <artifactId>ff4j-test</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
@@ -77,12 +67,29 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <scope>test</scope>
-        </dependency>
+			<groupId>org.fusesource.jansi</groupId>
+			<artifactId>jansi</artifactId>
+			<version>1.11</version>
+		</dependency>
 
 	</dependencies>
 
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~       BUILD              ~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<build>
+		<plugins>
+			
+			<plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            
+		</plugins>
+	</build>
 
 </project>

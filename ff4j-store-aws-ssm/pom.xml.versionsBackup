@@ -2,70 +2,64 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~         COORDINATES      ~ -->
+	<!-- ~     COORDINATES          ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<artifactId>ff4j-store-archaius</artifactId>
+	<artifactId>ff4j-store-aws-ssm</artifactId>
 	<packaging>jar</packaging>
-	<name>ff4j-store-archaius</name>
-
+	<name>ff4j-store-aws-ssm</name>
+	
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~         PARENT           ~ -->
+	<!-- ~   PARENT                 ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<parent>
 		<groupId>org.ff4j</groupId>
 		<artifactId>ff4j-parent</artifactId>
-		<version>1.8.1-SNAPSHOT</version>
+		<version>1.9-SNAPSHOT</version>
 	</parent>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~      PROPERTIES          ~ -->
+	<!-- ~        PROPERTIES        ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<properties>
 		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-		<archaius.version>0.7.3</archaius.version>
+        <aws.sdk.ssm.version>1.11.505</aws.sdk.ssm.version>
 	</properties>
-
+	
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~       DEPENDENCIES       ~ -->
+	<!-- ~      DEPENDENCIES        ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<dependencies>
-
-		<!-- logger -->
+	
+		<!--  core -->
 		<dependency>
+			<artifactId>ff4j-core</artifactId>
 			<groupId>org.ff4j</groupId>
-			<artifactId>ff4j-store-commonsconfig</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
 		
-        <!-- Archaius -->
-        <dependency>
-            <groupId>com.netflix.archaius</groupId>
-            <artifactId>archaius-core</artifactId>
-            <version>${archaius.version}</version>
-        </dependency>
-        
-        <!-- Spring -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
+		<!-- aws sdk -->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-ssm</artifactId>
+            <version>${aws.sdk.ssm.version}</version>
+		</dependency>
 
-		<!-- Tests -->
+		<!-- tests -->
+		<dependency>
+			<artifactId>ff4j-test</artifactId>
+			<groupId>org.ff4j</groupId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-            <groupId>org.ff4j</groupId>
-            <artifactId>ff4j-test</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
@@ -76,13 +70,16 @@
 			<artifactId>logback-classic</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
-
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
 	</dependencies>
-
-
 </project>
