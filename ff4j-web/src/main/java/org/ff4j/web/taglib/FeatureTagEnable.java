@@ -52,26 +52,7 @@ public class FeatureTagEnable extends AbstractFeatureTag {
     private static final long serialVersionUID = -4924423673988080781L;
 
     /** {@inheritDoc} */
-    protected boolean eval(FF4j ff4j, PageContext jspContext) {
-        FlippingExecutionContext executionContext = new FlippingExecutionContext();
-        if (isShareHttpSession()) {
-            
-            executionContext.putString("LOCALE", pageContext.getRequest().getLocalName());
-            @SuppressWarnings("unchecked")
-            Map < String, String[]> parameters = pageContext.getRequest().getParameterMap();
-            for (Map.Entry<String,String[]> param : parameters.entrySet()) {
-                String[] innerParams = param.getValue();
-                if (innerParams != null) {
-                    StringBuilder sb = new StringBuilder();
-                    for (String innerParam : innerParams) {
-                        sb.append(innerParam);
-                        sb.append(",");
-                    }
-                    String expression = sb.toString();
-                    executionContext.putString(param.getKey(), expression.substring(0, expression.length() - 1));
-                }
-            }
-        }
+    protected boolean evalWithExecutionContext(FF4j ff4j, PageContext pageContext, FlippingExecutionContext executionContext) {
         return ff4j.check(getFeatureid(), executionContext);
     }
 
