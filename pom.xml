@@ -777,7 +777,7 @@
 
             <plugins>
 
-                <!-- Compiler versiion -->
+                <!-- Compiler version -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -824,8 +824,9 @@
                     </configuration>
                 </plugin>
 
+                <!-- ~~~~~~~~~~~~ -->
                 <!-- Unit Testing -->
-                <!-- Unit Testing -->
+                <!-- ~~~~~~~~~~~~ -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
