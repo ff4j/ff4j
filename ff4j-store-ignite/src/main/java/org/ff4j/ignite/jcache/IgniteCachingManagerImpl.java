@@ -81,6 +81,7 @@ public class IgniteCachingManagerImpl implements CacheManager {
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("unchecked")
     @Override
     public <K, V, C extends Configuration<K, V>> Cache<K, V> createCache(String cacheName, C conf)
     throws IllegalArgumentException {

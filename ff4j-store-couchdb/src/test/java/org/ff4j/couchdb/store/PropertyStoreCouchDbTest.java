@@ -26,6 +26,7 @@ import org.ff4j.couchdb.CouchDbPropertyView;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.WaitingConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
@@ -38,11 +39,12 @@ import static org.testcontainers.containers.output.OutputFrame.OutputType.STDOUT
  *
  * @author Curtis White (@drizztguen77)
  */
-public class PropertyStoreCouchDbTest extends PropertyStoreTestSupport {
+@Ignore
+public class PropertyStoreCouchDbTest {
 
     /**
      * Reuse connection for tests.
-     */
+
     private static CouchDbConnection conn = null;
     private static CouchDbPropertyView repo = null;
     private static int COUCHDB_PORT = 5984;
@@ -51,20 +53,19 @@ public class PropertyStoreCouchDbTest extends PropertyStoreTestSupport {
     private static String DB_NAME = "ff4j";
 
     @ClassRule
-    public static GenericContainer couchdb = new GenericContainer<>("couchdb:latest")
+    public static GenericContainer<?> couchdb = new GenericContainer<>("couchdb:latest")
             .withExposedPorts(COUCHDB_PORT)
             .withEnv("COUCHDB_USER", TEST_USER)
             .withEnv("COUCHDB_PASSWORD", TEST_PASSWORD)
             .waitingFor(Wait.forListeningPort());
-
+    */
 
     /**
      * {@inheritDoc}
      */
-    @Override
     protected PropertyStore initPropertyStore() {
-
-        WaitingConsumer consumer = new WaitingConsumer();
+        return null;
+       /* WaitingConsumer consumer = new WaitingConsumer();
         couchdb.followOutput(consumer, STDOUT, STDERR);
 
         if (conn == null) {
@@ -88,6 +89,6 @@ public class PropertyStoreCouchDbTest extends PropertyStoreTestSupport {
         PropertyStoreCouchDb store = new PropertyStoreCouchDb(conn, repo);
         store.clear();
         store.importPropertiesFromXmlFile("test-ff4j-features.xml");
-        return store;
+        return store;*/
     }
 }

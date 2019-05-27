@@ -54,12 +54,12 @@ class PropertyDynamoDBClient extends DynamoDBClient<Property<?>> {
     }
 
     @Override
-    protected void put(Property property) {
+    protected void put(Property<?> property) {
         table.putItem(PROPERTY_MAPPER.toStore(property));
     }
 
     @Override
-    protected Property get(String name) {
+    protected Property<?> get(String name) {
         Item item = getItem(name);
         return PROPERTY_MAPPER.fromStore(item);
     }

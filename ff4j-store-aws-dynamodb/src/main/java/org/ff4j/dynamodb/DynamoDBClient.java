@@ -1,5 +1,9 @@
 package org.ff4j.dynamodb;
 
+import java.util.Map;
+
+import org.ff4j.utils.Util;
+
 /*
  * #%L
  * ff4j-store-aws-dynamodb
@@ -21,25 +25,13 @@ package org.ff4j.dynamodb;
  */
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.document.*;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.KeyAttribute;
+import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
+import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
-import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
-import com.amazonaws.services.dynamodbv2.document.spec.ScanSpec;
-import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
-import com.amazonaws.services.dynamodbv2.document.utils.NameMap;
-import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
-import com.amazonaws.services.dynamodbv2.model.*;
-import com.amazonaws.util.CollectionUtils;
-import org.ff4j.core.Feature;
-import org.ff4j.exception.FeatureNotFoundException;
-import org.ff4j.exception.GroupNotFoundException;
-import org.ff4j.exception.PropertyNotFoundException;
-import org.ff4j.property.Property;
-import org.ff4j.utils.Util;
-
-import java.util.*;
-
-import static org.ff4j.dynamodb.DynamoDBConstants.*;
+import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 
 /**
  * @author <a href="mailto:jeromevdl@gmail.com">Jerome VAN DER LINDEN</a>
