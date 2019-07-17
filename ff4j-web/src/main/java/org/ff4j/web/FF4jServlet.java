@@ -49,6 +49,7 @@ import org.ff4j.web.thymeleaf.CustomMessageResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 /**
@@ -169,7 +170,7 @@ public class FF4jServlet extends HttpServlet {
      */
     private void initializeTemplateEngine() {
     	ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-	    templateResolver.setTemplateMode("XHTML");
+	    templateResolver.setTemplateMode(TemplateMode.HTML);
 	    templateResolver.setPrefix("views/view-");
 	    templateResolver.setSuffix(".html");
 	    templateResolver.setCacheTTLMs(3600000L);
