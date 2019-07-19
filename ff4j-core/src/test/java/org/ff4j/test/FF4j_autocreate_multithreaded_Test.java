@@ -39,7 +39,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Test operations over {@link FF4j}
+ * Test parallel operations with autocreate=true over {@link FF4j}
  * 
  * @author Mariusz Zawadzki ( mariusz.r.zawadzki@gmail.com )
  */
