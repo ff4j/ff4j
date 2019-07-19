@@ -299,7 +299,11 @@ public class FF4j {
             getFeatureStore().enable(featureID);
         } catch (FeatureNotFoundException fnfe) {
             if (this.autocreate) {
-                getFeatureStore().create(new Feature(featureID, true));
+                synchronized (this) {
+                    if(!getFeatureStore().exist(featureID)){
+                        getFeatureStore().create(new Feature(featureID, true));
+                    }
+                }
             } else {
             	throw fnfe;
             }
@@ -395,7 +399,11 @@ public class FF4j {
             getFeatureStore().disable(featureID);
         } catch (FeatureNotFoundException fnfe) {
         	 if (this.autocreate) {
-                 getFeatureStore().create(new Feature(featureID, false));
+                 synchronized (this) {
+                     if(!getFeatureStore().exist(featureID)){
+                         getFeatureStore().create(new Feature(featureID, false));
+                     }
+                 }
              } else {
              	throw fnfe;
              }
@@ -427,8 +435,15 @@ public class FF4j {
             fp = getFeatureStore().read(featureID);
         } catch (FeatureNotFoundException fnfe) {
             if (this.autocreate) {
-                fp = new Feature(featureID, false);
-                getFeatureStore().create(fp);
+                synchronized (this) {
+                    if(!getFeatureStore().exist(featureID)){
+                        fp = new Feature(featureID, false);
+                        getFeatureStore().create(fp);
+                    }
+                    else{
+                        fp = getFeatureStore().read(featureID);
+                    }
+                }
             } else {
                 throw fnfe;
             }
