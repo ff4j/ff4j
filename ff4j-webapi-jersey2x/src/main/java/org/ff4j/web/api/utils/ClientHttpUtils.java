@@ -71,7 +71,7 @@ public class ClientHttpUtils {
     public static Invocation.Builder createRequest(WebTarget webTarget, String auth, MediaType mediaType) {
         Util.assertNotNull(webTarget);
         Invocation.Builder invocationBuilder = null;
-        if (mediaType != null) {
+        if (mediaType == null) {
             invocationBuilder = webTarget.request();
         } else {
             invocationBuilder = webTarget.request(mediaType);
