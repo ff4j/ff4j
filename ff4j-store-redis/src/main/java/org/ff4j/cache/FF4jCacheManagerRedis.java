@@ -77,7 +77,7 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            return jedis.keys(KEY_FEATURE + "*");
+            return getKeys(jedis, KEY_FEATURE + "*");
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -100,16 +100,7 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
             // --> This Pattern is not always supported
             // jedis.del(KEY_FEATURE + "*");
             // <--
-            Set<String> matchingKeys = new HashSet<>();
-            ScanParams params = new ScanParams();
-            params.match(KEY_FEATURE + "*");
-            String cursor = "0";
-            do {
-                ScanResult<String> scanResult = jedis.scan(cursor, params);
-                List<String> keys = scanResult.getResult();
-                cursor = scanResult.getStringCursor();
-                matchingKeys.addAll(keys);
-            } while (!cursor.equals("0"));
+            Set<String> matchingKeys = getKeys(jedis, KEY_FEATURE + "*");
 
             if (!matchingKeys.isEmpty()) {
                 jedis.del(matchingKeys.toArray(new String[matchingKeys.size()]));
@@ -120,6 +111,21 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
                 jedis.close();
             }
         }
+    }
+
+    private Set<String> getKeys(Jedis jedis, String pattern) {
+        Set<String> matchingKeys = new HashSet<>();
+        ScanParams params = new ScanParams();
+        params.match(pattern);
+        String cursor = "0";
+        do {
+            ScanResult<String> scanResult = jedis.scan(cursor, params);
+            List<String> keys = scanResult.getResult();
+            cursor = scanResult.getStringCursor();
+            matchingKeys.addAll(keys);
+        } while (!cursor.equals("0"));
+
+        return matchingKeys;
     }
 
     /** {@inheritDoc} */

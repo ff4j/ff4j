@@ -2,6 +2,8 @@ package org.ff4j.cache;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.property.PropertyString;
+import org.ff4j.redis.RedisContants;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -31,23 +33,37 @@ import static org.ff4j.test.TestsFf4jConstants.*;
 @Ignore
 public class RedisCacheManagerTestIT {
 
+    private FF4JCacheManager cache = new FF4jCacheManagerRedis();
+
     @Test
     public void testPutGet() {
-       
-        // Initializing cache manager
-        FF4JCacheManager cache = new FF4jCacheManagerRedis();
-
         // Initializing Features for test
         FeatureStore store = new InMemoryFeatureStore(TEST_FEATURES_FILE);
         Feature fold = store.read(F4);
-        
+
         // Put in Cache
         cache.putFeature(fold);
-        
+
         // Retrieve object
         Feature fcached = cache.getFeature(F4);
         Assert.assertEquals(fcached.getUid(), fold.getUid());
         Assert.assertEquals(fcached.getPermissions(), fold.getPermissions());
 
+    }
+
+    @Test
+    public void testCacheManagerProperties() {
+        cache.putProperty(new PropertyString("p1", "v1"));
+
+        Assert.assertNotNull(cache.getProperty("p1"));
+        Assert.assertTrue(cache.listCachedPropertyNames().contains(RedisContants.KEY_PROPERTY + "p1"));
+    }
+
+    @Test
+    public void testCacheManagerFeatures() {
+        cache.putFeature(new Feature("f1"));
+
+        Assert.assertNotNull(cache.getFeature("f1"));
+        Assert.assertTrue(cache.listCachedFeatureNames().contains(RedisContants.KEY_FEATURE + "f1"));
     }
 }
