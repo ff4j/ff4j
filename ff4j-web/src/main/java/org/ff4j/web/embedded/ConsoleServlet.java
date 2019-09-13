@@ -109,7 +109,9 @@ public class ConsoleServlet extends HttpServlet {
         LOGGER.info("|_| |_|    |_|_/ |");
         LOGGER.info("             |__/   Embedded Console - v" + getClass().getPackage().getImplementationVersion());
         LOGGER.info(" ");
-        
+
+        super.init(servletConfig);
+
         if (ff4j == null) {
             String className = servletConfig.getInitParameter(PROVIDER_PARAM_NAME);
             try {
