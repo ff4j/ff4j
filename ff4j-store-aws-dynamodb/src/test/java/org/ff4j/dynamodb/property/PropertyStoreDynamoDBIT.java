@@ -41,7 +41,7 @@ import org.junit.runner.RunWith;
 @RunWith(LocalstackDockerTestRunner.class)
 @LocalstackDockerProperties(services = {"dynamodb"})
 //Needs Docker to be installed which is not there is Travis, as such commenting
-//@Ignore
+@Ignore
 public class PropertyStoreDynamoDBIT extends PropertyStoreTestSupport {
 
     private static AmazonDynamoDB dynamoDB;
@@ -50,8 +50,7 @@ public class PropertyStoreDynamoDBIT extends PropertyStoreTestSupport {
     @BeforeClass
     public static void init() {
         dynamoDB = AmazonDynamoDBClientBuilder.standard()
-                .withRegion("eu-central-1")
-//                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:4569", "eu-central-1"))
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:4569", "eu-central-1"))
                 .build();
         store = new PropertyStoreDynamoDB(dynamoDB);
         store.importPropertiesFromXmlFile("test-ff4j-features.xml");

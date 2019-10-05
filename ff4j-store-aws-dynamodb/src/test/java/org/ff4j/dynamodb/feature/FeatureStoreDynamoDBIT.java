@@ -50,7 +50,7 @@ import cloud.localstack.docker.annotation.LocalstackDockerProperties;
 @RunWith(LocalstackDockerTestRunner.class)
 @LocalstackDockerProperties(services = {"dynamodb"})
 // Needs Docker to be installed which is not there is Travis, as such commenting
-//@Ignore
+@Ignore
 public class FeatureStoreDynamoDBIT extends FeatureStoreTestSupport {
 
     private static AmazonDynamoDB dynamoDB;
@@ -59,8 +59,7 @@ public class FeatureStoreDynamoDBIT extends FeatureStoreTestSupport {
     @BeforeClass
     public static void init() {
         dynamoDB = AmazonDynamoDBClientBuilder.standard()
-                .withRegion("eu-central-1")
-                //.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:4569", "eu-central-1"))
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:4569", "eu-central-1"))
                 .build();
         store = new FeatureStoreDynamoDB(dynamoDB);
     }
