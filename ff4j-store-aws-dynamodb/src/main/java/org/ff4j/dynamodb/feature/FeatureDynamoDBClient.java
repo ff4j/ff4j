@@ -9,9 +9,9 @@ package org.ff4j.dynamodb.feature;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,10 +34,7 @@ import org.ff4j.dynamodb.DynamoDBClient;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.ff4j.dynamodb.DynamoDBConstants.*;
 
@@ -48,6 +45,10 @@ public class FeatureDynamoDBClient extends DynamoDBClient<Feature> {
 
     private final FeatureDynamoDBMapper FEATURE_MAPPER = new FeatureDynamoDBMapper();
 
+    /**
+     * @deprecated table name will soon be removed from the constructor, use the ff4j-dynamodb.properties file instead
+     */
+    @Deprecated
     FeatureDynamoDBClient(AmazonDynamoDB amazonDynamoDB, String tableName) {
         super(amazonDynamoDB, tableName);
         key = FEATURE_UID;
@@ -192,23 +193,43 @@ public class FeatureDynamoDBClient extends DynamoDBClient<Feature> {
     }
 
     @Override
+    protected void loadProperties(Properties prop) {
+        tableName = prop.getProperty(CONFIG_FEATURE_TABLE_NAME, FEATURE_TABLE_NAME);
+
+        String billing = prop.getProperty(CONFIG_FEATURE_BILLING, BillingMode.PROVISIONED.toString());
+        this.billingMode = BillingMode.valueOf(billing);
+
+        String rcu = prop.getProperty(CONFIG_FEATURE_RCU, String.valueOf(DEFAULT_RCU));
+        this.billingRCU = Long.valueOf(rcu);
+
+        String wcu = prop.getProperty(CONFIG_FEATURE_WCU, String.valueOf(DEFAULT_WCU));
+        this.billingWCU = Long.valueOf(wcu);
+    }
+
+    @Override
     protected void createTable() {
+        GlobalSecondaryIndex globalSecondaryIndex = new GlobalSecondaryIndex()
+                .withIndexName(FEATURE_GROUP_INDEX)
+                .withKeySchema(new KeySchemaElement(FEATURE_GROUP, KeyType.HASH))
+                .withProjection(new Projection().withProjectionType(ProjectionType.ALL));
+
+        if (billingMode.equals(BillingMode.PROVISIONED)) {
+            globalSecondaryIndex.setProvisionedThroughput(new ProvisionedThroughput(billingRCU, billingWCU));
+        }
+
         CreateTableRequest request = new CreateTableRequest()
                 .withAttributeDefinitions(
                         new AttributeDefinition(FEATURE_UID, ScalarAttributeType.S),
                         new AttributeDefinition(FEATURE_GROUP, ScalarAttributeType.S)
                 )
                 .withKeySchema(new KeySchemaElement(FEATURE_UID, KeyType.HASH))
-                .withProvisionedThroughput(new ProvisionedThroughput(5L, 5L))
-                .withGlobalSecondaryIndexes(
-                        new GlobalSecondaryIndex()
-                                .withIndexName(FEATURE_GROUP_INDEX)
-                                .withKeySchema(new KeySchemaElement(FEATURE_GROUP, KeyType.HASH))
-                                .withProjection(new Projection().withProjectionType(ProjectionType.ALL))
-                                .withProvisionedThroughput(new ProvisionedThroughput(5L, 5L))
-
-                )
+                .withGlobalSecondaryIndexes(globalSecondaryIndex)
                 .withTableName(tableName);
+
+        request.setBillingMode(billingMode.toString());
+        if (billingMode.equals(BillingMode.PROVISIONED)) {
+            request.setProvisionedThroughput(new ProvisionedThroughput(billingRCU, billingWCU));
+        }
 
         try {
             table = dynamoDB.createTable(request);
