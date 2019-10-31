@@ -20,6 +20,9 @@ package org.ff4j.cache;
  * #L%
  */
 
+
+import static org.ff4j.cache.InMemoryCacheEntry.DEFAULT_TTL;
+
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -47,6 +50,16 @@ public class InMemoryCacheManager implements FF4JCacheManager {
     /** Cached Property Map */
     private final Map<String, InMemoryCacheEntry<Property<?>>> propertyCache = 
             new WeakHashMap<String, InMemoryCacheEntry<Property<?>>>();
+
+    private final long timeToLive;
+
+    public InMemoryCacheManager() {
+        this(DEFAULT_TTL);
+    }
+
+    public InMemoryCacheManager(long timeToLive) {
+        this.timeToLive = timeToLive;
+    }
        
     /** {@inheritDoc} */
     @Override
@@ -91,13 +104,7 @@ public class InMemoryCacheManager implements FF4JCacheManager {
     /** {@inheritDoc} */
     @Override
     public void putFeature(Feature feat) {
-        if (feat == null) {
-            throw new IllegalArgumentException("ff4j-core: Cannot insert null feature into cache");
-        }
-        if (feat.getUid() == null || feat.getUid().isEmpty()) {
-            throw new IllegalArgumentException("ff4j-core: Cannot insert feature with null identifier into cache");
-        }
-        getFeaturesCache().put(feat.getUid(), new InMemoryCacheEntry<Feature>(feat));
+        putFeature(feat, timeToLive);
     }
     
     /** {@inheritDoc} */
@@ -114,13 +121,7 @@ public class InMemoryCacheManager implements FF4JCacheManager {
     /** {@inheritDoc} */
     @Override
     public void putProperty(Property<?> prop) {
-        if (prop == null) {
-            throw new IllegalArgumentException("ff4j-core: Cannot insert null property into cache");
-        }
-        if (prop.getName() == null || prop.getName().isEmpty()) {
-            throw new IllegalArgumentException("ff4j-core: Cannot insert property with null identifier into cache");
-        }
-        getPropertyCache().put(prop.getName(), new InMemoryCacheEntry<Property<?>>(prop));
+        putProperty(prop, timeToLive);
     }
     
     /** {@inheritDoc} */
