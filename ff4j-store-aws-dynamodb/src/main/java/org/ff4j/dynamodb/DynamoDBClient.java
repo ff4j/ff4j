@@ -1,7 +1,11 @@
 package org.ff4j.dynamodb;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
+import java.util.Properties;
 
+import com.amazonaws.services.dynamodbv2.model.BillingMode;
 import org.ff4j.utils.Util;
 
 /*
@@ -40,15 +44,23 @@ public abstract class DynamoDBClient<T> {
 
     private final AmazonDynamoDB amazonDynamoDB;
     protected final DynamoDB dynamoDB;
-    protected final String tableName;
+    protected String tableName;
     protected String key;
     protected Table table;
+    protected BillingMode billingMode;
+    protected Long billingRCU;
+    protected Long billingWCU;
 
+    /**
+     * @deprecated table name will soon be removed from the constructor, use the ff4j-dynamodb.properties file instead
+     */
+    @Deprecated
     public DynamoDBClient(AmazonDynamoDB amazonDynamoDB, String tableName) {
         this.amazonDynamoDB = amazonDynamoDB;
         this.dynamoDB = new DynamoDB(amazonDynamoDB);
         this.tableName = tableName;
-        this.table = dynamoDB.getTable(tableName);
+        loadPropertiesIfExist();
+        this.table = dynamoDB.getTable(this.tableName);
     }
 
     protected abstract void createTable();
@@ -56,6 +68,7 @@ public abstract class DynamoDBClient<T> {
     protected abstract T get(String id);
     protected abstract void put(T t);
     protected abstract Map<String, T> getAll();
+    protected abstract void loadProperties(Properties prop);
 
     public void deleteItem(String id) {
         table.deleteItem(new KeyAttribute(key, id));
@@ -69,6 +82,19 @@ public abstract class DynamoDBClient<T> {
             throw notFoundException(id);
         }
         return item;
+    }
+
+    private void loadPropertiesIfExist() {
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream(DynamoDBConstants.CONFIG_FILE);
+        if (in != null) {
+            Properties prop = new Properties();
+            try {
+                prop.load(in);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            loadProperties(prop);
+        }
     }
 
     public boolean tableExists() {

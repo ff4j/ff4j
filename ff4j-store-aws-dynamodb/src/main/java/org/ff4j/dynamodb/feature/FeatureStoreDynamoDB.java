@@ -39,9 +39,15 @@ import static org.ff4j.dynamodb.DynamoDBConstants.FEATURE_TABLE_NAME;
  * Implementation of {@link org.ff4j.core.FeatureStore} using Amazon DynamoDB.<br />
  * <p>
  * To get it running, a DynamoDB table is required.
- * Either you let FF4J create it for you with default configuration (ProvisionedThroughput: 5RCU & 5WCU) or
- * you create it on your own. You must keep the same attribute names, but you can change the table name, index name,
- * billing mode and throughput. Example:<br/>
+ * Either you let FF4J create it for you (use the ff4j-dynamodb.properties file to setup table name and billing options) or
+ * you create it on your own.</p>
+ * <p>If you choose to let FF4J create the table, you can use the following properties in the ff4j-dynamodb.properties file:<br/>
+ * ff4j.store.dynamodb.feature.table.name={string}<br/>
+ * ff4j.store.dynamodb.feature.table.billing=[PROVISIONED|PAY_PER_REQUEST]<br/>
+ * ff4j.store.dynamodb.feature.table.billing.rcu={int}<br/>
+ * ff4j.store.dynamodb.feature.table.billing.wcu={int}</p>
+ * <p>If you create it on your own, you must keep the same attribute names, but you can change the table name, index name,
+ * billing mode and throughput. Example:</p>
  * <code>
  * aws dynamodb create-table --cli-input-json file://create-feature-dynamodb-table.json
  * </code>
@@ -92,15 +98,9 @@ import static org.ff4j.dynamodb.DynamoDBConstants.FEATURE_TABLE_NAME;
  * }
  * </code>
  * </p>
- * <p>If you change the table name, use the appropriate constructor, passing the table name as parameter: <ul>
- * <li>{@link #FeatureStoreDynamoDB(String)}</li>
- * <li>{@link #FeatureStoreDynamoDB(AmazonDynamoDB, String)}</li>
- * </ul></p>
  * <p>If you want to get more control on the connection to Amazon DynamoDB, use the appropriate constructor:<ul>
  * <li>{@link #FeatureStoreDynamoDB(AmazonDynamoDB)}</li>
- * <li>{@link #FeatureStoreDynamoDB(AmazonDynamoDB, String)}</li>
  * </ul></p>
- *
  * @author <a href="mailto:jeromevdl@gmail.com">Jerome VAN DER LINDEN</a>
  */
 public class FeatureStoreDynamoDB extends AbstractFeatureStore {
@@ -129,7 +129,9 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
      * If you need more control on AWS connection (credentials, proxy, ...), use {@link #FeatureStoreDynamoDB(AmazonDynamoDB, String)}
      *
      * @param tableName name of the table to use in DynamoDB
+     * @deprecated use ff4j-dynamodb.properties to specify the table name
      */
+    @Deprecated
     public FeatureStoreDynamoDB(String tableName) {
         this(AmazonDynamoDBClientBuilder.defaultClient(), tableName);
     }
@@ -148,7 +150,9 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
      *
      * @param amazonDynamoDB Amazon DynamoDB client
      * @param tableName      name of the table to use in DynamoDB
+     * @deprecated use ff4j-dynamodb.properties to specify the table name
      */
+    @Deprecated
     public FeatureStoreDynamoDB(AmazonDynamoDB amazonDynamoDB, String tableName) {
         initStore(amazonDynamoDB, tableName);
     }

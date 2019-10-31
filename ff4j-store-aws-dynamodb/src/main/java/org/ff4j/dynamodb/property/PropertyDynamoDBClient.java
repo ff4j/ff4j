@@ -25,16 +25,13 @@ import com.amazonaws.services.dynamodbv2.document.*;
 import com.amazonaws.services.dynamodbv2.document.spec.ScanSpec;
 import com.amazonaws.services.dynamodbv2.model.*;
 import org.ff4j.dynamodb.DynamoDBClient;
+import org.ff4j.dynamodb.DynamoDBConstants;
 import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.Property;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import static org.ff4j.dynamodb.DynamoDBConstants.PROPERTY_NAME;
-import static org.ff4j.dynamodb.DynamoDBConstants.PROPERTY_VALUE;
+import static org.ff4j.dynamodb.DynamoDBConstants.*;
 
 /**
  * @author <a href="mailto:jeromevdl@gmail.com">Jerome VAN DER LINDEN</a>
@@ -43,6 +40,10 @@ class PropertyDynamoDBClient extends DynamoDBClient<Property<?>> {
 
     private final PropertyDynamoDBMapper PROPERTY_MAPPER = new PropertyDynamoDBMapper();
 
+    /**
+     * @deprecated table name will soon be removed from the constructor, use the ff4j-dynamodb.properties file instead
+     */
+    @Deprecated
     PropertyDynamoDBClient(AmazonDynamoDB amazonDynamoDB, String tableName) {
         super(amazonDynamoDB, tableName);
         key = PROPERTY_NAME;
@@ -92,14 +93,32 @@ class PropertyDynamoDBClient extends DynamoDBClient<Property<?>> {
     }
 
     @Override
+    protected void loadProperties(Properties prop) {
+        tableName = prop.getProperty(CONFIG_PROPERTY_TABLE_NAME, PROPERTY_TABLE_NAME);
+
+        String billing = prop.getProperty(CONFIG_PROPERTY_BILLING, BillingMode.PROVISIONED.toString());
+        this.billingMode = BillingMode.valueOf(billing);
+
+        String rcu = prop.getProperty(CONFIG_PROPERTY_RCU, String.valueOf(DEFAULT_RCU));
+        this.billingRCU = Long.valueOf(rcu);
+
+        String wcu = prop.getProperty(CONFIG_PROPERTY_WCU, String.valueOf(DEFAULT_WCU));
+        this.billingWCU = Long.valueOf(wcu);
+    }
+
+    @Override
     protected void createTable() {
         CreateTableRequest request = new CreateTableRequest()
                 .withAttributeDefinitions(
                         new AttributeDefinition(PROPERTY_NAME, ScalarAttributeType.S)
                 )
                 .withKeySchema(new KeySchemaElement(PROPERTY_NAME, KeyType.HASH))
-                .withProvisionedThroughput(new ProvisionedThroughput(5L, 5L))
                 .withTableName(tableName);
+
+        request.setBillingMode(billingMode.toString());
+        if (billingMode.equals(BillingMode.PROVISIONED)) {
+            request.setProvisionedThroughput(new ProvisionedThroughput(billingRCU, billingWCU));
+        }
 
         try {
             table = dynamoDB.createTable(request);
