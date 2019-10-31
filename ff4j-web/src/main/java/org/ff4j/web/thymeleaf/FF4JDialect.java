@@ -20,37 +20,13 @@ package org.ff4j.web.thymeleaf;
  * #L%
  */
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.thymeleaf.dialect.AbstractDialect;
-import org.thymeleaf.processor.IProcessor;
-
 /**
  * Created by benoitmeriaux on 08/01/15.
  */
 public class FF4JDialect extends AbstractDialect {
 
-    public FF4JDialect() {
-        super();
-    }
-
-    //
-    // All of this dialect's attributes and/or tags
-    // will start with 'ff4j:'
-    //
-    public String getPrefix() {
-        return "ff4j";
-    }
-
-    //
-    // The processors.
-    //
-    @Override
-    public Set<IProcessor> getProcessors() {
-        final Set<IProcessor> processors = new HashSet<IProcessor>();
-        processors.add(new FF4jEnableAttrProcessor());
-        processors.add(new FF4jDisableAttrProcessor());
-        return processors;
+    public FF4JDialect(String name) {
+        super(name);
     }
 }

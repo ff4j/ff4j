@@ -33,9 +33,9 @@ import java.util.Properties;
 import org.ff4j.web.bean.WebConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.thymeleaf.Arguments;
+import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.messageresolver.IMessageResolver;
-import org.thymeleaf.messageresolver.MessageResolution;
+
 
 /**
  * All message in the same properties file embedded.
@@ -115,18 +115,26 @@ public class CustomMessageResolver implements IMessageResolver {
 		Properties target = messages.get(locale.getLanguage());
 		return target != null ? target : defaultMessages;
 	}
-	
-	/** {@inheritDoc} */
-	public MessageResolution resolveMessage(Arguments args, String key, Object[] msgParams) {
-		final Locale locale = args.getContext().getLocale();
-        String targetMsg = resolveProperties(locale).getProperty(key);
+
+
+	@Override
+	public String resolveMessage(ITemplateContext iTemplateContext, Class<?> aClass, String s, Object[] objects) {
+		final Locale locale = iTemplateContext.getLocale();
+		String targetMsg = resolveProperties(locale).getProperty(s);
 		if (targetMsg == null) {
-			targetMsg = key;
-		} else if (msgParams != null && msgParams.length > 0) {
-			targetMsg = new MessageFormat(targetMsg, args.getContext().getLocale()).format(msgParams);
+			targetMsg = "<span style=\"color:red\">" + s + " not found</span>";
+		} else if (objects != null && objects.length > 0) {
+			targetMsg = new MessageFormat(targetMsg, iTemplateContext.getLocale()).format(objects);
 		}
-		return new MessageResolution(targetMsg);
-	}	
+		return targetMsg;
+	}
+
+	@Override
+	public String createAbsentMessageRepresentation(ITemplateContext iTemplateContext, Class<?> aClass, String s, Object[] objects) {
+		return String.format("<{}: NOT STRING FOUND>",s);
+	}
+
+	/** {@inheritDoc} */
 
 	/** {@inheritDoc} */
 	public Integer getOrder() {
