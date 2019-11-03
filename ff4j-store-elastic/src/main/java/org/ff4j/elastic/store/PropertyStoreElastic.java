@@ -94,7 +94,7 @@ public class PropertyStoreElastic extends AbstractPropertyStore {
 		SearchResult search = getConnection().search(getBuilder().queryReadAllProperties(), true);
 		Map<String, Property<?>> mapOfProperties = new HashMap<String, Property<?>>();
 		if (null != search && search.isSucceeded()) {
-			Integer total = search.getTotal();
+			Integer total = Long.valueOf(search.getTotal()).intValue();
 			SearchResult searchAllResult = getConnection().search(getBuilder().queryReadAllProperties(total), true);
 			if (null != searchAllResult && searchAllResult.isSucceeded()) {
 				for (Hit<Property, Void> property : searchAllResult.getHits(Property.class)) {

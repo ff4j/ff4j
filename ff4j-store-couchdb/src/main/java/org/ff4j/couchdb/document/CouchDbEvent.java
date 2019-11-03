@@ -35,7 +35,46 @@ public class CouchDbEvent extends CouchDbDocument {
 
     @NonNull
     private String type;
+    
     private String event;
+
+    /**
+     * Getter accessor for attribute 'type'.
+     *
+     * @return
+     *       current value of 'type'
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * Setter accessor for attribute 'type'.
+     * @param type
+     * 		new value for 'type '
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    /**
+     * Getter accessor for attribute 'event'.
+     *
+     * @return
+     *       current value of 'event'
+     */
+    public String getEvent() {
+        return event;
+    }
+
+    /**
+     * Setter accessor for attribute 'event'.
+     * @param event
+     * 		new value for 'event '
+     */
+    public void setEvent(String event) {
+        this.event = event;
+    }
 
 
 }

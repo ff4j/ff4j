@@ -39,4 +39,42 @@ public class CouchDbFeature extends CouchDbDocument {
     private String type;
     
     private String feature;
+
+    /**
+     * Getter accessor for attribute 'type'.
+     *
+     * @return
+     *       current value of 'type'
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * Setter accessor for attribute 'type'.
+     * @param type
+     * 		new value for 'type '
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    /**
+     * Getter accessor for attribute 'feature'.
+     *
+     * @return
+     *       current value of 'feature'
+     */
+    public String getFeature() {
+        return feature;
+    }
+
+    /**
+     * Setter accessor for attribute 'feature'.
+     * @param feature
+     * 		new value for 'feature '
+     */
+    public void setFeature(String feature) {
+        this.feature = feature;
+    }
 }

@@ -1,5 +1,25 @@
 package org.ff4j.dynamodb.property;
 
+import static org.ff4j.dynamodb.DynamoDBConstants.CONFIG_PROPERTY_BILLING;
+import static org.ff4j.dynamodb.DynamoDBConstants.CONFIG_PROPERTY_RCU;
+import static org.ff4j.dynamodb.DynamoDBConstants.CONFIG_PROPERTY_TABLE_NAME;
+import static org.ff4j.dynamodb.DynamoDBConstants.CONFIG_PROPERTY_WCU;
+import static org.ff4j.dynamodb.DynamoDBConstants.DEFAULT_RCU;
+import static org.ff4j.dynamodb.DynamoDBConstants.DEFAULT_WCU;
+import static org.ff4j.dynamodb.DynamoDBConstants.PROPERTY_NAME;
+import static org.ff4j.dynamodb.DynamoDBConstants.PROPERTY_TABLE_NAME;
+import static org.ff4j.dynamodb.DynamoDBConstants.PROPERTY_VALUE;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
+import org.ff4j.dynamodb.DynamoDBClient;
+import org.ff4j.exception.PropertyNotFoundException;
+import org.ff4j.property.Property;
+
 /*
  * #%L
  * ff4j-store-aws-dynamodb
@@ -21,17 +41,20 @@ package org.ff4j.dynamodb.property;
  */
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.document.*;
+import com.amazonaws.services.dynamodbv2.document.AttributeUpdate;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.ItemCollection;
+import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
+import com.amazonaws.services.dynamodbv2.document.ScanOutcome;
 import com.amazonaws.services.dynamodbv2.document.spec.ScanSpec;
-import com.amazonaws.services.dynamodbv2.model.*;
-import org.ff4j.dynamodb.DynamoDBClient;
-import org.ff4j.dynamodb.DynamoDBConstants;
-import org.ff4j.exception.PropertyNotFoundException;
-import org.ff4j.property.Property;
-
-import java.util.*;
-
-import static org.ff4j.dynamodb.DynamoDBConstants.*;
+import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
+import com.amazonaws.services.dynamodbv2.model.BillingMode;
+import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
+import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
+import com.amazonaws.services.dynamodbv2.model.KeyType;
+import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
+import com.amazonaws.services.dynamodbv2.model.ScalarAttributeType;
+import com.amazonaws.services.dynamodbv2.model.Select;
 
 /**
  * @author <a href="mailto:jeromevdl@gmail.com">Jerome VAN DER LINDEN</a>

@@ -2,9 +2,9 @@ package org.ff4j.couchdb.store;
 
 /*
  * #%L
- * ff4j-store-couchbase
+ * ff4j-store-couchdb
  * %%
- * Copyright (C) 2013 - 2017 FF4J
+ * Copyright (C) 2013 - 2019 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,21 +19,6 @@ package org.ff4j.couchdb.store;
  * limitations under the License.
  * #L%
  */
-
-import org.ektorp.CouchDbConnector;
-import org.ff4j.audit.repository.EventRepository;
-import org.ff4j.couchdb.CouchDbConnection;
-import org.ff4j.couchdb.CouchDbEventView;
-import org.ff4j.test.audit.EventRepositoryTestSupport;
-import org.junit.ClassRule;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.output.WaitingConsumer;
-import org.testcontainers.containers.wait.strategy.Wait;
-
-import static org.testcontainers.containers.output.OutputFrame.OutputType.STDERR;
-import static org.testcontainers.containers.output.OutputFrame.OutputType.STDOUT;
 
 /**
  * CouchDb Event Store Tests.

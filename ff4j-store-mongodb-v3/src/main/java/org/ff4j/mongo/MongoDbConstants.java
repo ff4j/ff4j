@@ -19,7 +19,6 @@ package org.ff4j.mongo;
  * limitations under the License.
  * #L%
  */
-
 public class MongoDbConstants {
 
     /** Default event name. */

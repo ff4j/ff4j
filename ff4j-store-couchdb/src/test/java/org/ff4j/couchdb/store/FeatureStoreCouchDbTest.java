@@ -1,13 +1,10 @@
 package org.ff4j.couchdb.store;
 
-import static org.testcontainers.containers.output.OutputFrame.OutputType.STDERR;
-import static org.testcontainers.containers.output.OutputFrame.OutputType.STDOUT;
-
 /*
  * #%L
- * ff4j-store-couchbase
+ * ff4j-store-couchdb
  * %%
- * Copyright (C) 2013 - 2017 FF4J
+ * Copyright (C) 2013 - 2019 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,16 +19,6 @@ import static org.testcontainers.containers.output.OutputFrame.OutputType.STDOUT
  * limitations under the License.
  * #L%
  */
-
-import org.ektorp.CouchDbConnector;
-import org.ff4j.core.FeatureStore;
-import org.ff4j.couchdb.CouchDbConnection;
-import org.ff4j.couchdb.CouchDbFeatureView;
-import org.ff4j.test.store.FeatureStoreTestSupport;
-import org.junit.ClassRule;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.output.WaitingConsumer;
-import org.testcontainers.containers.wait.strategy.Wait;
 
 /**
  * CouchDb Feature Store Tests.

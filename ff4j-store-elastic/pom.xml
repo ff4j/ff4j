@@ -50,7 +50,7 @@
 		<dependency>
 			<groupId>io.searchbox</groupId>
 			<artifactId>jest</artifactId>
-			<version>${jest.version}</version>
+			<version>6.3.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
@@ -90,6 +90,7 @@
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-elasticsearch</artifactId>
+			<version>2.1.11.RELEASE</version>
 			<scope>test</scope>
 		</dependency>
 

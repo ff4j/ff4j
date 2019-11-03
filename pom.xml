@@ -130,7 +130,6 @@
         <version.maven.plugin.jar>2.6</version.maven.plugin.jar>
         <version.maven.plugin.dependency>2.8</version.maven.plugin.dependency>
 
-        <spring-boot.version>2.1.6.RELEASE</spring-boot.version>
         <jetty.version>9.4.18.v20190429</jetty.version>
         <commons.lang>3.0</commons.lang>
         <commons.lang3>3.2.1</commons.lang3>
@@ -177,21 +176,12 @@
         <module>ff4j-store-hbase</module>
         <module>ff4j-store-ignite</module>
         <module>ff4j-store-jcache</module>
-        <module>ff4j-store-mongodb</module>
         <module>ff4j-store-mongodb-v3</module>
         <module>ff4j-store-neo4j</module>
         <module>ff4j-store-redis</module>
         <module>ff4j-store-springjdbc</module>
         <module>ff4j-store-couchbase</module>
         <module>ff4j-store-couchdb</module>
-
-        <!-- spring-boot-starter -->
-        <!--
-        <module>ff4j-spring-services</module>
-        <module>ff4j-spring-boot-web-api</module>
-        <module>ff4j-spring-boot-autoconfigure</module>
-        <module>ff4j-spring-boot-starter</module>
-         -->
     </modules>
 
 
@@ -200,20 +190,6 @@
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <dependencyManagement>
         <dependencies>
-            <!-- Spring boot -->
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot</artifactId>
-                <version>${spring-boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-tomcat</artifactId>
-                <version>${spring-boot.version}</version>
-                <scope>provided</scope>
-            </dependency>
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-bom</artifactId>
@@ -259,8 +235,6 @@
                 <artifactId>gson-extras</artifactId>
                 <version>0.1.0</version>
             </dependency>
-
-
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
@@ -456,6 +430,11 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-all</artifactId>
+                <version>${version.mockito}</version>
+            </dependency>
+             <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
                 <version>${version.mockito}</version>
             </dependency>
             <dependency>
@@ -794,14 +773,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>${version.maven.plugin.dependency}</version>
-                    <!--
-                    <executions>
-                    <execution>
-                        <goals>
-                            <goal>sources</goal>
-                        </goals>
-                    </execution>
-                    </executions>-->
                 </plugin>
 
                 <!-- Javadoc -->
@@ -920,16 +891,6 @@
                     </configuration>
                 </plugin>
 
-                <!-- Site -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <version>${version.maven.plugin.site}</version>
-                    <configuration>
-                        <templateFile>${basedir}/src/site/ff4j-site.vm</templateFile>
-                    </configuration>
-                </plugin>
-
             </plugins>
         </pluginManagement>
 
@@ -956,112 +917,6 @@
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
                             <additionalparam>-Xdoclint:none</additionalparam>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-site-plugin</artifactId>
-                        <configuration>
-                            <templateFile>${basedir}/src/site/ff4j-site.vm</templateFile>
-                            <reportPlugins>
-
-                                <plugin>
-                                    <groupId>org.apache.maven.plugins</groupId>
-                                    <artifactId>maven-javadoc-plugin</artifactId>
-                                    <configuration>
-                                        <additionalparam>-Xdoclint:none</additionalparam>
-                                    </configuration>
-                                </plugin>
-
-                                <plugin>
-                                    <artifactId>maven-dependency-plugin</artifactId>
-                                    <reportSets>
-                                        <reportSet>
-                                            <reports>
-                                                <report>analyze-report</report>
-                                            </reports>
-                                        </reportSet>
-                                    </reportSets>
-                                </plugin>
-
-                                <!-- changelog -->
-                                <plugin>
-                                    <artifactId>maven-changes-plugin</artifactId>
-                                    <version>2.8</version>
-                                </plugin>
-
-                                <!-- testings -->
-                                <plugin>
-                                    <artifactId>maven-surefire-report-plugin</artifactId>
-                                    <version>2.12.4</version>
-                                </plugin>
-
-                                <!-- readable source code with links -->
-                                <plugin>
-                                    <artifactId>maven-jxr-plugin</artifactId>
-                                    <version>2.3</version>
-                                </plugin>
-
-                                <!-- global quality -->
-                                <plugin>
-                                    <artifactId>maven-pmd-plugin</artifactId>
-                                    <configuration>
-                                        <linkXRef>true</linkXRef>
-                                        <targetJdk>1.6</targetJdk>
-                                    </configuration>
-                                    <version>2.7.1</version>
-                                </plugin>
-
-                                <!-- bugs -->
-                                <plugin>
-                                    <groupId>org.codehaus.mojo</groupId>
-                                    <artifactId>findbugs-maven-plugin</artifactId>
-                                    <version>3.0.3</version>
-                                </plugin>
-
-                                <!-- taglist -->
-                                <plugin>
-                                    <groupId>org.codehaus.mojo</groupId>
-                                    <artifactId>taglist-maven-plugin</artifactId>
-                                    <configuration>
-                                        <tags>
-                                            <tag>TODO</tag>
-                                            <tag>FIXME</tag>
-                                            <tag>@todo</tag>
-                                            <tag>@deprecated</tag>
-                                        </tags>
-                                    </configuration>
-                                    <version>2.4</version>
-                                </plugin>
-
-                                <!-- Changelog -->
-                                <plugin>
-                                    <groupId>org.apache.maven.plugins</groupId>
-                                    <artifactId>maven-changelog-plugin</artifactId>
-                                    <version>2.2</version>
-                                    <reportSets>
-                                        <reportSet>
-                                            <id>dual-report</id>
-                                            <configuration>
-                                                <type>range</type>
-                                                <range>30</range>
-                                            </configuration>
-                                            <reports>
-                                                <report>changelog</report>
-                                                <report>file-activity</report>
-                                            </reports>
-                                        </reportSet>
-                                    </reportSets>
-                                </plugin>
-
-                                <plugin>
-                                    <groupId>org.codehaus.mojo</groupId>
-                                    <artifactId>javancss-maven-plugin</artifactId>
-                                    <version>2.1</version>
-                                </plugin>
-
-
-                            </reportPlugins>
                         </configuration>
                     </plugin>
                 </plugins>

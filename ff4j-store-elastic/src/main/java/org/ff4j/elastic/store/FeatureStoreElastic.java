@@ -115,7 +115,7 @@ public class FeatureStoreElastic extends AbstractFeatureStore {
         SearchResult search = getConnection().search(getBuilder().queryReadAllFeatures(), true);
         Map<String, Feature> mapOfFeatures = new HashMap<String, Feature>();
         if (null != search && search.isSucceeded()) {
-            Integer total = search.getTotal();
+            Integer total = Long.valueOf(search.getTotal()).intValue();
             SearchResult searchAllResult = getConnection().search(getBuilder().queryReadAllFeatures(total), true);
             if (null != searchAllResult && searchAllResult.isSucceeded()) {
                 for (Hit<Feature, Void> feature : searchAllResult.getHits(Feature.class)) {

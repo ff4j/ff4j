@@ -35,5 +35,44 @@ public class CouchDbProperty extends CouchDbDocument {
     
     @NonNull
     private String type;
+    
     private String property;
+
+    /**
+     * Getter accessor for attribute 'type'.
+     *
+     * @return
+     *       current value of 'type'
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * Setter accessor for attribute 'type'.
+     * @param type
+     * 		new value for 'type '
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    /**
+     * Getter accessor for attribute 'property'.
+     *
+     * @return
+     *       current value of 'property'
+     */
+    public String getProperty() {
+        return property;
+    }
+
+    /**
+     * Setter accessor for attribute 'property'.
+     * @param property
+     * 		new value for 'property '
+     */
+    public void setProperty(String property) {
+        this.property = property;
+    }
 }

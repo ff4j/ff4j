@@ -1,5 +1,16 @@
 package org.ff4j.dynamodb.property;
 
+import static org.ff4j.dynamodb.DynamoDBConstants.PROPERTY_TABLE_NAME;
+
+import java.util.Map;
+import java.util.Set;
+
+import org.ff4j.exception.PropertyAlreadyExistException;
+import org.ff4j.exception.PropertyNotFoundException;
+import org.ff4j.property.Property;
+import org.ff4j.property.store.AbstractPropertyStore;
+import org.ff4j.utils.Util;
+
 /*
  * #%L
  * ff4j-store-aws-dynamodb
@@ -22,16 +33,6 @@ package org.ff4j.dynamodb.property;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
-import org.ff4j.exception.PropertyAlreadyExistException;
-import org.ff4j.exception.PropertyNotFoundException;
-import org.ff4j.property.Property;
-import org.ff4j.property.store.AbstractPropertyStore;
-import org.ff4j.utils.Util;
-
-import java.util.Map;
-import java.util.Set;
-
-import static org.ff4j.dynamodb.DynamoDBConstants.*;
 
 /**
  * Implementation of {@link org.ff4j.property.store.PropertyStore} using Amazon DynamoDB.<br />
@@ -241,9 +242,9 @@ public class PropertyStoreDynamoDB extends AbstractPropertyStore {
      * @param amazonDynamoDB dynamoDB client
      * @param tableName      name of the table in DynamoDB
      */
+    @SuppressWarnings("deprecation")
     private void initStore(AmazonDynamoDB amazonDynamoDB, String tableName) {
         dynamoDBClient = new PropertyDynamoDBClient(amazonDynamoDB, tableName);
-
         createSchema();
     }
 

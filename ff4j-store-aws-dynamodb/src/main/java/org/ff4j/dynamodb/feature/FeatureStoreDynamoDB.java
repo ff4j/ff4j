@@ -384,9 +384,9 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
      * @param amazonDynamoDB dynamoDB client
      * @param tableName      name of the table in DynamoDB
      */
+    @SuppressWarnings("deprecation")
     private void initStore(AmazonDynamoDB amazonDynamoDB, String tableName) {
         dynamoDBClient = new FeatureDynamoDBClient(amazonDynamoDB, tableName);
-
         createSchema();
     }
 
