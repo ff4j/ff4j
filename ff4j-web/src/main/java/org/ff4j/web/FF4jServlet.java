@@ -5,6 +5,8 @@ import static org.ff4j.web.bean.WebConstants.FF4J_SESSIONATTRIBUTE_NAME;
 import static org.ff4j.web.bean.WebConstants.SERVLETPARAM_CSS;
 import static org.ff4j.web.bean.WebConstants.SERVLETPARAM_FF4JPROVIDER;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -142,14 +144,17 @@ public class FF4jServlet extends HttpServlet {
     	String className = servletConfig.getInitParameter(SERVLETPARAM_FF4JPROVIDER);
 	    try {
 	    	Class<?> c = Class.forName(className);
-	        Object o = c.newInstance();
+            Method method = c.getMethod("getInstance");
+            Object o = method.invoke(null);
 	        ff4jProvider = (FF4jProvider) o;
 	        LOGGER.info("ff4j context has been successfully initialized - {} feature(s)", ff4jProvider.getFF4j().getFeatures().size());
 	    } catch (ClassNotFoundException e) {
 	    	throw new IllegalArgumentException("Cannot load ff4jProvider as " + ff4jProvider, e);
-	    } catch (InstantiationException e) {
-	    	throw new IllegalArgumentException("Cannot instantiate  " + ff4jProvider + " as ff4jProvider", e);
-	    } catch (IllegalAccessException e) {
+	    } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException("No static method getInstance in " + ff4jProvider, e);
+        } catch (InvocationTargetException e) {
+            throw new IllegalArgumentException("Failed to invoke getInstance in " + ff4jProvider, e);
+        } catch (IllegalAccessException e) {
 	    	throw new IllegalArgumentException("No public constructor for  " + ff4jProvider + " as ff4jProvider", e);
 	    } catch (ClassCastException ce) {
 	    	throw new IllegalArgumentException("ff4jProvider expected instance of " + FF4jProvider.class, ce);
