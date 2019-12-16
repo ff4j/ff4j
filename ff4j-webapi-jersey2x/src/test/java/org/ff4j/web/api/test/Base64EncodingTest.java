@@ -1,6 +1,7 @@
 package org.ff4j.web.api.test;
 
-import org.glassfish.jersey.internal.util.Base64;
+import java.util.Base64;
+
 import org.junit.Assert;
 
 /*
@@ -36,10 +37,9 @@ public class Base64EncodingTest {
     @Test
     public void testProduceHTTBasicHeader() {
         // Given
-        String username = "login";
-        String password = "pwd";
+        String basicAuthCreds = "login:pwd";
         // When
-        String base64 = new String(Base64.encodeAsString(username + ":" + password));
+        String base64 = new String(Base64.getEncoder().encodeToString(basicAuthCreds.getBytes()));
         // Then
         Assert.assertEquals("bG9naW46cHdk", base64);  
     }
