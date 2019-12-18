@@ -99,8 +99,7 @@
         <version.jacoco>0.7.5.201505241946</version.jacoco>
         <version.jackon2x>2.10.0</version.jackon2x>
         <version.jersey1x>1.19</version.jersey1x>
-        <version.jersey2x>2.29.1</version.jersey2x>
-        <version.hk2Api>2.1.58</version.hk2Api>
+        <version.jersey2x>2.22.1</version.jersey2x>
         <version.httpclient>4.5.5</version.httpclient>
 
         <version.swagger>1.5.4</version.swagger>
@@ -586,11 +585,6 @@
                 <groupId>org.glassfish.jersey.test-framework.providers</groupId>
                 <artifactId>jersey-test-framework-provider-grizzly2</artifactId>
                 <version>${version.jersey2x}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.hk2</groupId>
-                <artifactId>hk2-api</artifactId>
-                <version>${version.hk2Api}</version>
             </dependency>
 
             <dependency>
