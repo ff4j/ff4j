@@ -1,11 +1,22 @@
 package org.ff4j.cache;
 
-import static org.ff4j.redis.RedisContants.DEFAULT_TTL;
-import static org.ff4j.redis.RedisContants.KEY_FEATURE;
-import static org.ff4j.redis.RedisContants.KEY_PROPERTY;
+import org.ff4j.core.Feature;
+import org.ff4j.property.Property;
+import org.ff4j.redis.RedisConnection;
+import org.ff4j.utils.Util;
+import org.ff4j.utils.json.FeatureJsonParser;
+import org.ff4j.utils.json.PropertyJsonParser;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.ScanParams;
+import redis.clients.jedis.ScanResult;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import static org.ff4j.redis.RedisContants.DEFAULT_TTL;
+import static org.ff4j.redis.RedisContants.KEY_FEATURE;
+import static org.ff4j.redis.RedisContants.KEY_PROPERTY;
 
 /*
  * #%L
@@ -27,39 +38,26 @@ import java.util.List;
  * #L%
  */
 
-import java.util.Set;
-
-import org.ff4j.core.Feature;
-import org.ff4j.property.Property;
-import org.ff4j.redis.RedisConnection;
-import org.ff4j.utils.Util;
-import org.ff4j.utils.json.FeatureJsonParser;
-import org.ff4j.utils.json.PropertyJsonParser;
-
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.ScanParams;
-import redis.clients.jedis.ScanResult;
-
 /**
  * Implementation of ditributed cache to limit overhead, with REDIS (JEDIS).
- * 
+ *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 public class FF4jCacheManagerRedis implements FF4JCacheManager {
-    
+
     /** Wrapping of redis connection (isolation). */
     private RedisConnection redisConnection;
-    
+
     /** time to live for cache on top of store. */
     protected int timeToLive = DEFAULT_TTL;
-    
+
     /**
      * Default constructor
      */
     public FF4jCacheManagerRedis(RedisConnection redisConn) {
         redisConnection = redisConn;
     }
-    
+
     /**
      * Default constructor
      */
@@ -70,7 +68,7 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
     public FF4jCacheManagerRedis(String host, int port) {
         redisConnection = new RedisConnection(host, port);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public Set<String> listCachedFeatureNames() {
@@ -90,7 +88,7 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
     public String getCacheProviderName() {
         return "REDIS";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void clearFeatures() {
@@ -105,7 +103,7 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
             if (!matchingKeys.isEmpty()) {
                 jedis.del(matchingKeys.toArray(new String[matchingKeys.size()]));
             }
-            
+
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -121,7 +119,7 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
         do {
             ScanResult<String> scanResult = jedis.scan(cursor, params);
             List<String> keys = scanResult.getResult();
-            cursor = scanResult.getStringCursor();
+            cursor = scanResult.getCursor();
             matchingKeys.addAll(keys);
         } while (!cursor.equals("0"));
 
@@ -172,7 +170,7 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
             if (jedis != null) {
                 jedis.close();
             }
-        } 
+        }
     }
 
     /** {@inheritDoc} */
@@ -188,7 +186,7 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
             if (jedis != null) {
                 jedis.close();
             }
-        } 
+        }
     }
 
     /** {@inheritDoc} */
@@ -204,7 +202,7 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
             if (jedis != null) {
                 jedis.close();
             }
-        } 
+        }
     }
 
     /** {@inheritDoc} */
@@ -222,7 +220,7 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
             if (jedis != null) {
                 jedis.close();
             }
-        } 
+        }
         return null;
     }
 
@@ -241,7 +239,7 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
             if (jedis != null) {
                 jedis.close();
             }
-        }   
+        }
         return null;
     }
 
@@ -266,8 +264,8 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
     /** {@inheritDoc} */
     public Object getPropertyNativeCache() {
         return getJedis();
-    } 
-    
+    }
+
     /**
      * Safe acces to Jedis, avoid JNPE.
      *
