@@ -23,6 +23,8 @@ package org.ff4j.web.api.utils;
 import static org.ff4j.web.FF4jWebConstants.HEADER_AUTHORIZATION;
 import static org.ff4j.web.FF4jWebConstants.PARAM_AUTHKEY;
 
+import java.util.Base64;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -34,7 +36,6 @@ import javax.ws.rs.core.Response;
 import org.ff4j.utils.Util;
 import org.ff4j.web.api.FF4jJacksonMapper;
 import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.internal.util.Base64;
 
 import io.swagger.jaxrs.json.JacksonJsonProvider;
 
@@ -129,7 +130,8 @@ public class ClientHttpUtils {
      * @return target header
      */
     public static String buildAuthorization4UserName(String username, String password) {
-        return " Basic " + new String(Base64.encodeAsString(username + ":" + password));
+        String basicAuthCreds = username + ":" + password;
+        return " Basic " + Base64.getEncoder().encodeToString(basicAuthCreds.getBytes());
     }
     
 }

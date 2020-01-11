@@ -27,7 +27,7 @@ import static org.ff4j.web.FF4jWebConstants.STORE_CREATESCHEMA;
  * #L%
  */
 
-
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -50,7 +50,6 @@ import org.ff4j.utils.Util;
 import org.ff4j.utils.json.PropertyJsonParser;
 import org.ff4j.web.api.resources.domain.PropertyApiBean;
 import org.ff4j.web.api.utils.ClientHttpUtils;
-import org.glassfish.jersey.internal.util.Base64;
 
 /**
  * Implementation of the store with REST.
@@ -264,7 +263,8 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
      *      target header
      */
     public static String buildAuthorization4UserName(String username, String password) {
-        return " Basic " + new String(Base64.encodeAsString(username + ":" + password));
+        String basicAuthCreds = username + ":" + password;
+        return " Basic " + Base64.getEncoder().encodeToString(basicAuthCreds.getBytes());
     }
     
     /**

@@ -23,6 +23,7 @@ import java.io.IOException;
  */
 
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Set;
 
 import javax.ws.rs.WebApplicationException;
@@ -34,7 +35,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.SecurityContext;
 
 import org.ff4j.web.ApiConfig;
-import org.glassfish.jersey.internal.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,7 +95,7 @@ public class FF4jAuthenticationFilter implements ContainerRequestFilter {
 
         // Identification of a final user in HTTP-BASIC MODE
         if (auth.toUpperCase().contains("BASIC")) {
-            byte[] decodedBytes = Base64.decode(auth.replaceFirst("[B|b]asic ", "").getBytes());
+            byte[] decodedBytes = Base64.getDecoder().decode(auth.replaceFirst("[B|b]asic ", "").getBytes());
             String[] lap = new String(decodedBytes).split(":", 2);
             if (lap == null || lap.length != 2) {
                 handleUnAuthorized("Invalid BASIC Token, cannot parse");
