@@ -104,9 +104,10 @@ public class JdbcEventRepository extends AbstractEventRepository {
             sqlConn.setAutoCommit(false);
             int idx = 9;
             Map < Integer, String > statementParams = new HashMap<Integer, String>();
-            
-            StringBuilder sb = new StringBuilder("INSERT INTO " + getQueryBuilder().getTableNameAudit() + 
-            		"(EVT_UUID,EVT_TIME,EVT_TYPE,EVT_NAME,EVT_ACTION,EVT_HOSTNAME,EVT_SOURCE,EVT_DURATION");
+
+            StringBuilder sb = new StringBuilder("INSERT INTO "
+                    + getQueryBuilder().getSchemaPattern() + getQueryBuilder().getTableNameAudit()
+            		+ "(EVT_UUID,EVT_TIME,EVT_TYPE,EVT_NAME,EVT_ACTION,EVT_HOSTNAME,EVT_SOURCE,EVT_DURATION");
             if (Util.hasLength(evt.getUser())) {
                 sb.append(", EVT_USER");
                 statementParams.put(idx, evt.getUser());

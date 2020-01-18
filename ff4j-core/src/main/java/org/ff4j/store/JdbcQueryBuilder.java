@@ -758,7 +758,7 @@ public class JdbcQueryBuilder {
 	 *
 	 * @return the schema pattern
 	 */
-	private String getSchemaPattern() {
+	public String getSchemaPattern() {
 		String dbSchemaStr = getDbSchema();
 		if (dbSchemaStr == null || dbSchemaStr.isEmpty()) {
 			return "";
