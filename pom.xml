@@ -928,7 +928,7 @@
             <pluginRepositories>
                 <pluginRepository>
                     <id>mvnplugins.fusesource.org</id>
-                    <url>http://mvnplugins.fusesource.org/repo/release</url>
+                    <url>https://mvnplugins.fusesource.org/repo/release</url>
                     <releases>
                         <enabled>true</enabled>
                     </releases>

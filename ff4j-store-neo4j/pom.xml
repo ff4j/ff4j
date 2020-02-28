@@ -149,12 +149,12 @@
 	<repositories>
 		<repository>
 			<id>mvn-neo4j</id>
-			<url>http://m2.neo4j.org/content/groups/everything</url>
+			<url>https://m2.neo4j.org/content/groups/everything</url>
 		</repository>
 		<repository>
 			<id>neo4j-release-repository</id>
 			<name>Neo4j Maven 2 release repository</name>
-			<url>http://m2.neo4j.org/releases</url>
+			<url>https://m2.neo4j.org/releases</url>
 		</repository>
 	</repositories>
 	
