@@ -1,12 +1,17 @@
 package org.ff4j.arangodb;
 
+import org.ff4j.arangodb.document.ArangoDBFeature;
 import org.ff4j.arangodb.document.ArangoDBProperty;
+import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
 import org.ff4j.property.util.PropertyFactory;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
+import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
 /*
@@ -58,5 +63,38 @@ public class StoreMapper {
                 property.getDescription(),
                 property.getFixedValues()
         );
+    }
+
+    public static ArangoDBFeature toFeatureStore(Feature f) {
+        Map<String, ArangoDBProperty> customProperties = convertMap(f.getCustomProperties(), StoreMapper::toPropertyStore);
+
+        return ArangoDBFeature.builder()
+                .id(f.getUid())
+                .uid(f.getUid())
+                .enable(f.isEnable())
+                .description(f.getDescription())
+                .group(f.getGroup())
+                .permissions(f.getPermissions())
+                .flippingStrategy(f.getFlippingStrategy())
+                .customProperties(customProperties)
+                .build();
+    }
+
+    public static Feature fromFeatureStore(ArangoDBFeature f) {
+        Map<String, Property<?>> customProperties = convertMap(f.getCustomProperties(), StoreMapper::fromPropertyStore);
+
+        Feature feature = new Feature(f.getId());
+        feature.setEnable(f.isEnable());
+        feature.setDescription(f.getDescription());
+        feature.setGroup(f.getGroup());
+        feature.setPermissions(f.getPermissions());
+        feature.setFlippingStrategy(f.getFlippingStrategy());
+        feature.setCustomProperties(customProperties);
+
+        return feature;
+    }
+
+    private static <K, V, M> Map<K, M> convertMap(Map<K, V> map, Function<V, M> mapper) {
+        return map.entrySet().stream().collect(toMap(Map.Entry::getKey, e -> mapper.apply(e.getValue())));
     }
 }
