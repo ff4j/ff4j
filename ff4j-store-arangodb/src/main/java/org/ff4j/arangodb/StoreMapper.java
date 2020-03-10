@@ -1,10 +1,13 @@
 package org.ff4j.arangodb;
 
+import org.ff4j.arangodb.document.ArangoDBEvent;
 import org.ff4j.arangodb.document.ArangoDBFeature;
 import org.ff4j.arangodb.document.ArangoDBProperty;
+import org.ff4j.audit.Event;
 import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
 import org.ff4j.property.util.PropertyFactory;
+import org.ff4j.utils.json.EventJsonParser;
 
 import java.util.Map;
 import java.util.Optional;
@@ -96,5 +99,13 @@ public class StoreMapper {
 
     private static <K, V, M> Map<K, M> convertMap(Map<K, V> map, Function<V, M> mapper) {
         return map.entrySet().stream().collect(toMap(Map.Entry::getKey, e -> mapper.apply(e.getValue())));
+    }
+
+    public static ArangoDBEvent toEventStore(Event e) {
+        return new ArangoDBEvent(e.getUuid(), e.toJson());
+    }
+
+    public static Event fromEventStore(ArangoDBEvent e) {
+        return EventJsonParser.parseEvent(e.getAsJson());
     }
 }
