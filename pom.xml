@@ -164,6 +164,7 @@
 
         <!-- Stores -->
         <module>ff4j-store-archaius</module>
+        <module>ff4j-store-arangodb</module>
         <module>ff4j-store-aws-dynamodb</module>
         <module>ff4j-store-aws-ssm</module>
         <module>ff4j-store-cassandra</module>
