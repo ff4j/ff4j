@@ -1,0 +1,88 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- ~ COORDINATES ~ -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <artifactId>ff4j-store-arangodb</artifactId>
+    <packaging>jar</packaging>
+    <name>ff4j-store-arangodb</name>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- ~ PARENT ~ -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <parent>
+        <groupId>org.ff4j</groupId>
+        <artifactId>ff4j-parent</artifactId>
+        <version>1.8.4-SNAPSHOT</version>
+    </parent>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- ~ PROPERTIES ~ -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <properties>
+        <license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
+        <arangodb.version>6.6.0</arangodb.version>
+    </properties>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- ~ DEPENDENCIES ~ -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <dependencies>
+
+        <!-- core -->
+        <dependency>
+            <artifactId>ff4j-core</artifactId>
+            <groupId>org.ff4j</groupId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ff4j</groupId>
+            <artifactId>ff4j-utils-json</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.arangodb</groupId>
+            <artifactId>arangodb-java-driver</artifactId>
+            <version>${arangodb.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.10</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <!-- tests -->
+        <dependency>
+            <artifactId>ff4j-test</artifactId>
+            <groupId>org.ff4j</groupId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>1.13.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>
