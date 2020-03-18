@@ -2,6 +2,7 @@ package org.ff4j.arangodb.store;
 
 import com.arangodb.ArangoCollection;
 import com.arangodb.ArangoDBException;
+import lombok.extern.slf4j.Slf4j;
 import org.ff4j.arangodb.StoreMapper;
 import org.ff4j.arangodb.document.ArangoDBEvent;
 import org.ff4j.audit.Event;
@@ -42,7 +43,12 @@ import java.util.concurrent.TimeUnit;
  *
  * @author nro-dw
  */
+@Slf4j
 public class EventStoreArangoDB extends AbstractEventRepository {
+
+    private static final String INSERT_EVENT_ERROR = "Error while inserting event";
+    private static final String FIND_EVENT_ERROR = "Error while finding event";
+
     private final GenericArangoDBClient<ArangoDBEvent> eventClient;
 
     /**
@@ -75,6 +81,7 @@ public class EventStoreArangoDB extends AbstractEventRepository {
             eventClient.insertDocument(event);
             return true;
         } catch (ArangoDBException e) {
+            log.error(INSERT_EVENT_ERROR, e);
             return false;
         }
     }
@@ -92,6 +99,7 @@ public class EventStoreArangoDB extends AbstractEventRepository {
             Optional<ArangoDBEvent> arangoDBEvent = Optional.ofNullable(eventClient.getDocument(uuid));
             return arangoDBEvent.map(StoreMapper::fromEventStore);
         } catch (ArangoDBException e) {
+            log.error(FIND_EVENT_ERROR, e);
             return Optional.empty();
         }
     }

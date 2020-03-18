@@ -2,6 +2,7 @@ package org.ff4j.arangodb.store;
 
 import com.arangodb.ArangoCollection;
 import com.arangodb.ArangoDBException;
+import lombok.extern.slf4j.Slf4j;
 import org.ff4j.arangodb.StoreMapper;
 import org.ff4j.arangodb.document.ArangoDBFeature;
 import org.ff4j.core.Feature;
@@ -42,9 +43,12 @@ import static java.util.stream.Collectors.*;
  *
  * @author nro-dw
  */
+@Slf4j
 public class FeatureStoreArangoDB extends AbstractFeatureStore {
+
     private static final String GET_ALL_FEATURES_ERROR = "Error while trying to get all features";
     private static final String CLEAR_FEATURES_ERROR = "Error while trying to clear all features";
+    private static final String FIND_FEATURE_ERROR = "Error while finding feature";
 
     private final GenericArangoDBClient<ArangoDBFeature> featureClient;
 
@@ -142,6 +146,7 @@ public class FeatureStoreArangoDB extends AbstractFeatureStore {
             Optional<ArangoDBFeature> arangoDBFeature = Optional.ofNullable(featureClient.getDocument(uid));
             return arangoDBFeature.map(StoreMapper::fromFeatureStore);
         } catch (ArangoDBException e) {
+            log.error(FIND_FEATURE_ERROR, e);
             return Optional.empty();
         }
     }

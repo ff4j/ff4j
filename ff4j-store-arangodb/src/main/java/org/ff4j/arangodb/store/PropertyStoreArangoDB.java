@@ -2,6 +2,7 @@ package org.ff4j.arangodb.store;
 
 import com.arangodb.ArangoCollection;
 import com.arangodb.ArangoDBException;
+import lombok.extern.slf4j.Slf4j;
 import org.ff4j.arangodb.StoreMapper;
 import org.ff4j.arangodb.document.ArangoDBProperty;
 import org.ff4j.exception.PropertyAccessException;
@@ -40,10 +41,12 @@ import static java.util.stream.Collectors.*;
  *
  * @author nro-dw
  */
+@Slf4j
 public class PropertyStoreArangoDB extends AbstractPropertyStore {
 
     private static final String GET_ALL_PROPERTIES_ERROR = "Error while trying to get all properties";
     private static final String CLEAR_PROPERTIES_ERROR = "Error while trying to delete all properties";
+    private static final String FIND_PROPERTY_ERROR = "Error while finding property";
 
     private final GenericArangoDBClient<ArangoDBProperty> propertyClient;
 
@@ -105,6 +108,7 @@ public class PropertyStoreArangoDB extends AbstractPropertyStore {
             Optional<ArangoDBProperty> arangoDBProperty = Optional.ofNullable(propertyClient.getDocument(name));
             return arangoDBProperty.map(StoreMapper::fromPropertyStore).filter(Objects::nonNull);
         } catch (ArangoDBException e) {
+            log.error(FIND_PROPERTY_ERROR, e);
             return Optional.empty();
         }
     }
