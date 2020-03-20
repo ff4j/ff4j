@@ -291,3 +291,18 @@ Enjoy the process and looks at the log the process will look like under the hood
 - Waiting to close the `stating` (about 2min)*
 
 Once the build is successfull it takes around an hour to have the `Maven Central` updated with your release.
+
+## Troubleshooting 
+
+Delete tag locally
+```
+git tag -d 1.8.3
+```
+
+Delete tag remotely
+```
+git push origin :refs/tags/1.8.3
+```
+
+
+
