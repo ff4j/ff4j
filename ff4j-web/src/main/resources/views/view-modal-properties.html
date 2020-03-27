@@ -421,7 +421,7 @@
             </button>
             <ul class="dropdown-menu" role="menu" style="width:350px;font-style:normal;color:#696969">
               <li th:each="myProperty : ${listOfProperties}">
-                <a href="#" th:onclick="'$(\'#modalRenameProperty #name\').val(\'' + ${myProperty.name} + '\');'">
+                <a href="#" th:data-rename="${'#modalRenameProperty #name'}" th:onclick="this.getProperty('data-rename').val(${myProperty.name})">
                     <span th:text="${myProperty.name}">Property</span>
                 </a>
                </li>
@@ -490,7 +490,7 @@
             </button>
             <ul class="dropdown-menu" role="menu" style="width:350px;font-style:normal;color:#696969">
               <li th:each="myProperty : ${listOfProperties}">
-                <a href="#" th:onclick="'$(\'#modalCopyProperty #name\').val(\'' + ${myProperty.name} + '\');'">
+                <a href="#" th:data-copy="${'#modalCopyProperty #name'}" th:onclick="this.getAttribute('data-copy').val(${myProperty.name})">
                     <span th:text="${myProperty.name}">Property</span>
                 </a>
                </li>
