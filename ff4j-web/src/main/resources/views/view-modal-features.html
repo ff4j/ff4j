@@ -85,7 +85,7 @@
             </button>
             <ul class="dropdown-menu" role="menu" style="width:350px;font-style:normal;color:#696969">
               <li th:each="group : ${groupList}">
-                <a href="#" th:onclick="'$(\'#modalEdit #groupName\').val(\'' + ${group} + '\');'">
+                <a href="#" th:data-edit="${'#modalEdit #groupName'}" th:onclick="this.getAttribute('data-edit').val(${group})">
                     <span th:text="${group}">group</span>
                 </a>
                </li>
@@ -388,7 +388,7 @@
             </button>
             <ul class="dropdown-menu" role="menu" style="width:350px;font-style:normal;color:#696969">
               <li th:each="group : ${groupList}">
-                <a href="#" th:onclick="'$(\'#modalToggle #groupName\').val(\'' + ${group} + '\');'">
+                <a href="#" th:data-toggle="${'#modalToggle #groupName'}" th:onclick="this.getAttribute('data-toggle').val(${group})">
                     <span th:text="${group}">group</span>
                 </a>
                </li>
@@ -470,7 +470,7 @@
             </button>
             <ul class="dropdown-menu" role="menu" style="width:350px;font-style:normal;color:#696969">
               <li th:each="feature : ${listOfFeatures}">
-                <a href="#" th:onclick="'$(\'#modalRenameFeature #uid\').val(\'' + ${feature.uid} + '\');'">
+                <a href="#" th:data-rename="${'#modalRenameFeature #uid'}" th:onclick="this.getAttribute('data-rename').val(${feature.uid})">
                     <span th:text="${feature.uid}">Feature</span>
                 </a>
                </li>
@@ -539,7 +539,7 @@
             </button>
             <ul class="dropdown-menu" role="menu" style="width:350px;font-style:normal;color:#696969">
               <li th:each="feature : ${listOfFeatures}">
-                <a href="#" th:onclick="'$(\'#modalCopyFeature #uid\').val(\'' + ${feature.uid} + '\');'">
+                <a href="#" th:data-copy="${'#modalCopyFeature #uid'}" th:onclick="this.getAttribute('data-copy').val(${feature.uid})">
                     <span th:text="${feature.uid}">Feature</span>
                 </a>
                </li>
