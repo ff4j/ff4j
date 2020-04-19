@@ -67,7 +67,12 @@ public class JdbcEventRepository extends AbstractEventRepository {
     
     /** Mapper to read from SQL result. */
     private static final JdbcEventMapper EVENT_MAPPER = new JdbcEventMapper();
-
+    
+    /**
+     * Default Constructor
+     */
+    public JdbcEventRepository() {}
+    
     /**
      * Constructor from DataSource.
      * 

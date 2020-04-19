@@ -8,30 +8,20 @@
 	<packaging>jar</packaging>
 	<name>ff4j-store-elastic</name>
 
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~ PARENT ~ -->
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<parent>
 		<groupId>org.ff4j</groupId>
 		<artifactId>ff4j-parent</artifactId>
 		<version>1.8.5-SNAPSHOT</version>
 	</parent>
 
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~ PROPERTIES ~ -->
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<properties>
 		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-		<elasticsearch.version>1.7.5</elasticsearch.version>
-		<!-- Note : Jest version >= 2.0 is required for ElasticSearch >= 2.0 too. -->
-		<jest.version>2.0.3</jest.version>
+		<elasticsearch.version>7.6.2</elasticsearch.version>
+		<jest.version>6.3.1</jest.version>
 		<httpclient.version>4.5.2</httpclient.version>
-		<gson.version>2.3.1</gson.version>
+		<gson.version>2.8.6</gson.version>
 	</properties>
 
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~ DEPENDENCIES ~ -->
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<dependencies>
 
 		<!-- ff4j -->
@@ -41,28 +31,28 @@
 			<version>${project.version}</version>
 		</dependency>
 
-		<!-- Connectivity to DB -->
+		<!-- ElasticSearch and Client -->
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch</artifactId>
-			<version>${elasticsearch.version}</version><!--$NO-MVN-MAN-VER$-->
+			<version>${elasticsearch.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.searchbox</groupId>
 			<artifactId>jest</artifactId>
-			<version>6.3.1</version>
+			<version>${jest.version}</version>
+		</dependency>
+		
+		<!-- Log -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>${httpclient.version}</version><!--$NO-MVN-MAN-VER$-->
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>${gson.version}</version><!--$NO-MVN-MAN-VER$-->
-		</dependency>
-
+		
 		<!-- Tests -->
 		<dependency>
 			<artifactId>ff4j-test</artifactId>
@@ -70,30 +60,7 @@
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- Spring Data for Elasticsearch -->
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-elasticsearch</artifactId>
-			<version>2.1.11.RELEASE</version>
-			<scope>test</scope>
-		</dependency>
-
+		
 	</dependencies>
 
 

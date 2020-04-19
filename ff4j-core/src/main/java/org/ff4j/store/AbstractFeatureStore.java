@@ -132,8 +132,10 @@ public abstract class AbstractFeatureStore implements FeatureStore {
     /** {@inheritDoc} */
     @Override
     public boolean existGroup(String groupName) {
+        System.out.println(groupName);
         Util.assertParamHasLength(groupName, "groupName");
         Map < String, Feature > features = readAll();
+        System.out.println(features);
         Map < String, Feature > group = new HashMap< String, Feature >();
         for (Map.Entry<String,Feature> uid : features.entrySet()) {
             if (groupName.equals(uid.getValue().getGroup())) {

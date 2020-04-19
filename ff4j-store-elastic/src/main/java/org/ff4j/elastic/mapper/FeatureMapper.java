@@ -1,4 +1,4 @@
-package org.ff4j.elastic;
+package org.ff4j.elastic.mapper;
 
 /*
  * #%L
@@ -43,55 +43,60 @@ import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 
 /**
+ * Custom GSon mapper to marshall JSON.
+ * 
  * @author <a href="mailto:andre.blaszczyk@gmail.com">Andre Blaszczyk</a>
- *
- *         Custom GSon converter is required to avoid exceptions.
+ * @author Cedrick LUNVEN (@clunven)
  */
-public class FeatureConverter implements JsonSerializer<Feature>, JsonDeserializer<Feature> {
-
+public class FeatureMapper implements JsonSerializer<Feature>, JsonDeserializer<Feature> {
+    
+    /* Elastic Type. */
+    public static final String TYPE_FEATURE  = "feature";
+    
+    /* Attributes in the JSON. */
+    public static final String FEATURE_UID          = "uid";
+    public static final String FEATURE_ENABLE       = "enable";
+    public static final String FEATURE_DESCRIPTION  = "description";
+    public static final String FEATURE_GROUP        = "group";
+    public static final String FEATURE_PERMISSIONS  = "permissions";
+    public static final String FEATURE_STRATEGY     = "flippingStrategy";
+    
+	/** Default Gson. */
 	private Gson gson = new Gson();
 
-	@Override
+	/** {@inheritDoc} */
+    @Override
 	public JsonElement serialize(Feature feature, Type srcType, JsonSerializationContext context) {
 		return gson.fromJson(feature.toJson(), JsonElement.class);
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+    /** {@inheritDoc} */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Feature deserialize(JsonElement json, Type type, JsonDeserializationContext context) {
-
-		String uid = json.getAsJsonObject().get("uid").getAsString();
-
+		String uid = json.getAsJsonObject().get(FEATURE_UID).getAsString();
+		
+		// Core
 		Feature feature = new Feature(uid);
-
-		// Property "enable"
-		JsonElement enable = json.getAsJsonObject().get("enable");
+		JsonElement enable = json.getAsJsonObject().get(FEATURE_ENABLE);
 		if (enable != null) {
 			feature.setEnable(enable.getAsBoolean());
 		}
-
-		// Description
-		JsonElement description = json.getAsJsonObject().get("description");
+		JsonElement description = json.getAsJsonObject().get(FEATURE_DESCRIPTION);
 		if (description != null) {
 			feature.setDescription(description.getAsString());
 		}
-
-		// Group
-		JsonElement group = json.getAsJsonObject().get("group");
+		JsonElement group = json.getAsJsonObject().get(FEATURE_GROUP);
 		if (group != null) {
 			feature.setGroup(group.getAsString());
 		}
-
-		// Permissions
-		JsonElement permissions = json.getAsJsonObject().get("permissions");
+		JsonElement permissions = json.getAsJsonObject().get(FEATURE_PERMISSIONS);
 		if (permissions != null) {
-			Set<String> auths = gson.fromJson(permissions, new TypeToken<HashSet<String>>() {
-			}.getType());
+			Set<String> auths = gson.fromJson(permissions, new TypeToken<HashSet<String>>() {}.getType());
 			feature.setPermissions(auths);
 		}
-
 		// Flipping strategy
-		JsonElement flippingStrategy = json.getAsJsonObject().get("flippingStrategy");
+		JsonElement flippingStrategy = json.getAsJsonObject().get(FEATURE_STRATEGY);
 		if (flippingStrategy != null && !flippingStrategy.isJsonNull()) {
 			Map<String, ?> flippingStrategyParameters = gson.fromJson(flippingStrategy,
 					new TypeToken<HashMap<String, ?>>() {
@@ -101,7 +106,6 @@ public class FeatureConverter implements JsonSerializer<Feature>, JsonDeserializ
 			// Adding flipping strategy
 			feature.setFlippingStrategy(MappingUtil.instanceFlippingStrategy(uid, flippingStrategyType, initParams));
 		}
-
 		// Custom properties
 		JsonElement customProperties = json.getAsJsonObject().get("customProperties");
 		if (customProperties != null && !customProperties.isJsonNull()) {
@@ -110,7 +114,6 @@ public class FeatureConverter implements JsonSerializer<Feature>, JsonDeserializ
 					}.getType());
 			for (Entry<String, LinkedTreeMap<String, Object>> element : map.entrySet()) {
 				LinkedTreeMap<String, Object> propertyValues = element.getValue();
-				// Getting values
 				String pName = (String) propertyValues.get("name");
 				String pType = (String) propertyValues.get("type");
 				String pValue = (String) propertyValues.get("value");
@@ -122,7 +125,6 @@ public class FeatureConverter implements JsonSerializer<Feature>, JsonDeserializ
 				feature.addProperty(property);
 			}
 		}
-
 		return feature;
 	}
 }

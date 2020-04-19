@@ -386,25 +386,38 @@ public abstract class EventRepositoryTestSupport {
 	/** TDD. */
 	@Test
 	public void testPurgeEvents() throws InterruptedException {
-		// Given, 2 events in the repo
 		long topStart = System.currentTimeMillis();
+		
+		// When create audit event
 		Event evtAudit = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CREATE);
 		evtAudit.setUuid("1234-5678-9012-3456");
-		Event evtFeatureUsage = new Event(SOURCE_JAVA, TARGET_FEATURE, "f2", ACTION_CHECK_OK);
-		evtFeatureUsage.setUuid("1234-5678-9012-3457");
 		repo.saveEvent(evtAudit);
-		repo.saveEvent(evtFeatureUsage);
 		Thread.sleep(100);
+		// Then event is present
 		Assert.assertNotNull(repo.getEventByUUID(evtAudit.getUuid(), System.currentTimeMillis()));
-		Assert.assertNotNull(repo.getEventByUUID(evtFeatureUsage.getUuid(), System.currentTimeMillis()));
-		// When
+		
+        // When purging audit trail
 		EventQueryDefinition testQuery = new EventQueryDefinition(topStart - 100, System.currentTimeMillis());
 		repo.purgeAuditTrail(testQuery);
-
-		// Then
+		Thread.sleep(300);
+		// Then audi trail is purged
 		Assert.assertNull(repo.getEventByUUID(evtAudit.getUuid(), System.currentTimeMillis()));
-		repo.purgeFeatureUsage(testQuery);
-		Thread.sleep(100);
+
+		// ----------------------
+		
+		// When create feature usage
+        Event evtFeatureUsage = new Event(SOURCE_JAVA, TARGET_FEATURE, "f2", ACTION_CHECK_OK);
+        evtFeatureUsage.setUuid("1234-5678-9012-3457");
+        repo.saveEvent(evtFeatureUsage);
+        Thread.sleep(100);
+        // Then event if present
+        Assert.assertNotNull(repo.getEventByUUID(evtFeatureUsage.getUuid(), System.currentTimeMillis()));
+        
+		// When
+		EventQueryDefinition testQuery2 = new EventQueryDefinition(topStart - 100, System.currentTimeMillis());
+        repo.purgeFeatureUsage(testQuery2);
+		Thread.sleep(300);
+		// Then event 2 is deleted
 		Assert.assertNull(repo.getEventByUUID(evtFeatureUsage.getUuid(), System.currentTimeMillis()));
 	}
 

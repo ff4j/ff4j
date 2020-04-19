@@ -20,15 +20,23 @@ package org.ff4j.elastic.store;
  * #L%
  */
 
-
 import static org.ff4j.audit.EventConstants.ACTION_CLEAR;
 import static org.ff4j.audit.EventConstants.ACTION_CREATE;
 import static org.ff4j.audit.EventConstants.ACTION_DELETE;
 import static org.ff4j.audit.EventConstants.ACTION_DISCONNECT;
 import static org.ff4j.audit.EventConstants.ACTION_TOGGLE_OFF;
 import static org.ff4j.audit.EventConstants.ACTION_TOGGLE_ON;
+import static org.ff4j.audit.EventConstants.ACTION_CHECK_OK;
+import static org.ff4j.audit.EventConstants.ACTION_CHECK_OFF;
 import static org.ff4j.audit.EventConstants.ACTION_UPDATE;
+import static org.ff4j.elastic.ElasticQueryBuilder.createEvent;
+import static org.ff4j.elastic.ElasticQueryBuilder.deleteEvent;
+import static org.ff4j.elastic.ElasticQueryBuilder.findEventById;
+import static org.ff4j.elastic.ElasticQueryBuilder.findEventsFromQueryDefinition;
+import static org.ff4j.elastic.ElasticQueryHelper.createIndexIfNotExist;
+import static org.ff4j.elastic.ElasticQueryHelper.findEventTechIdFromUid;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -43,54 +51,116 @@ import org.ff4j.audit.EventSeries;
 import org.ff4j.audit.MutableHitCount;
 import org.ff4j.audit.chart.TimeSeriesChart;
 import org.ff4j.audit.repository.AbstractEventRepository;
-import org.ff4j.elastic.ElasticConnection;
-import org.ff4j.elastic.ElasticQueryBuilder;
+import org.ff4j.audit.repository.EventRepository;
+import org.ff4j.exception.AuditAccessException;
 import org.ff4j.utils.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import io.searchbox.client.JestResult;
-import io.searchbox.core.SearchResult;
-import io.searchbox.core.SearchResult.Hit;
+import io.searchbox.client.JestClient;
+import io.searchbox.core.Index;
+import io.searchbox.core.Search;
 
+/**
+ * Implementation of {@link EventRepository} in Elastic 6+.
+ *
+ * @author Cedrick LUNVEN (@clunven)
+ */
 public class EventRepositoryElastic extends AbstractEventRepository {
 
-	private ElasticConnection connection;
+    /** Logger for the class. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(EventRepositoryElastic.class);
+   
+    /** if no value provide for index use this one. */
+    public static String DEFAULT_INDEX_EVENT = "ff4j_events";
+    
+    /** Injection of connection to elastic. */
+    private JestClient jestClient;
+    
+    /** Default name of the index in elastic. */
+    private String indexEvents = DEFAULT_INDEX_EVENT;
 
-	/** Connection to ElasticSearch query builder */
-	private ElasticQueryBuilder builder;
+    /**
+     * Default constructor.
+     */
+    public EventRepositoryElastic() {}
 
-	public EventRepositoryElastic(ElasticConnection connection) {
-		this.connection = connection;
-	}
+    /**
+     * Initialization through {@link ElasticConnection}.
+     *
+     * @param connection
+     *            current client to Elasticsearch database
+     */
+    public EventRepositoryElastic(JestClient jestClient) {
+        this(jestClient, DEFAULT_INDEX_EVENT);
+    }
 
+    /**
+     * Initialization with Connection and initialisation file.
+     *
+     * @param connection
+     * @param xmlFile
+     */
+    public EventRepositoryElastic(JestClient jestClient, String indexName) {
+        this.jestClient    = jestClient;
+        this.indexEvents = indexName;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void createSchema() {
+        LOGGER.info("Creating index {} (if needed)", indexEvents);
+        createIndexIfNotExist(jestClient, indexEvents);
+    }
+
+	/** {@inheritDoc} */
 	@Override
 	public boolean saveEvent(Event event) {
 		Util.assertEvent(event);
-		JestResult result = getConnection().execute(getBuilder().queryCreateEvent(event));
-		return (result != null && result.isSucceeded());
+		try {
+            Index creationQuery = createEvent(indexEvents, event);
+            return jestClient.execute(creationQuery).isSucceeded();
+        } catch (IOException e) {
+            throw new AuditAccessException("Cannot create event '" + event.getUuid() + "'", e);
+        }
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public Event getEventByUUID(String uuid, Long timestamp) {
-		return getConnection().execute(getBuilder().queryGetEventById(uuid)).getSourceAsObject(Event.class);
+	@SuppressWarnings("deprecation")
+    public Event getEventByUUID(String uuid, Long timestamp) {
+	    try {
+            Search search = findEventById(indexEvents, uuid);
+            return jestClient.execute(search).getSourceAsObject(Event.class);
+        } catch (IOException e) {
+            throw new AuditAccessException("Cannot read event '" + uuid + "'", e);
+        }
 	}
 
-	@Override
+	/** {@inheritDoc} */
+	@SuppressWarnings("deprecation")
+    @Override
 	public Map<String, MutableHitCount> getFeatureUsageHitCount(EventQueryDefinition query) {
-		JestResult result = getConnection()
-				.execute(getBuilder().queryGetEventQueryDefinition(query, EventConstants.ACTION_CHECK_OK));
-		List<Event> events = result.getSourceAsObjectList(Event.class);
-		Map<String, MutableHitCount> hitCount = new HashMap<String, MutableHitCount>();
-		for (Event event : events) {
-			String name = event.getName();
-			if (hitCount.containsKey(name)) {
-				hitCount.get(name).inc();
-			} else {
-				hitCount.put(name, new MutableHitCount(1));
-			}
-		}
-		return hitCount;
+	    try {
+	        Search queryEvents = findEventsFromQueryDefinition(indexEvents, query,  EventConstants.ACTION_CHECK_OK);
+	        List<Event> events = jestClient.execute(queryEvents).getSourceAsObjectList(Event.class);
+	        Map<String, MutableHitCount> hitCount = new HashMap<String, MutableHitCount>();
+	        for (Event event : events) {
+	            String name = event.getName();
+	            if (hitCount.containsKey(name)) {
+	                hitCount.get(name).inc();
+	            } else {
+	                hitCount.put(name, new MutableHitCount(1));
+	            }
+	        }
+	        return hitCount;
+	    } catch (IOException e) {
+            throw new AuditAccessException("Cannot read events '" + query.toString() + "'", e);
+        }
+	    
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public TimeSeriesChart getFeatureUsageHistory(EventQueryDefinition query, TimeUnit units) {
 		// Create the interval depending on units
@@ -104,132 +174,174 @@ public class EventRepositoryElastic extends AbstractEventRepository {
 		return tsc;
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public EventSeries searchFeatureUsageEvents(EventQueryDefinition query) {
-		JestResult result = getConnection()
-				.execute(getBuilder().queryGetEventQueryDefinition(query, EventConstants.ACTION_CHECK_OK));
-		List<Event> events = result.getSourceAsObjectList(Event.class);
-		EventSeries es = new EventSeries();
-		for (Event event : events) {
-			es.add(event);
-		}
-		return es;
+	@SuppressWarnings("deprecation")
+    public EventSeries searchFeatureUsageEvents(EventQueryDefinition query) {
+	    try {
+            Search queryEvents = findEventsFromQueryDefinition(indexEvents, query,  EventConstants.ACTION_CHECK_OK);
+            List<Event> events = jestClient.execute(queryEvents).getSourceAsObjectList(Event.class);
+            EventSeries es = new EventSeries();
+    		for (Event event : events) {
+    			es.add(event);
+    		}
+    		return es;
+	    } catch (IOException e) {
+            throw new AuditAccessException("Cannot read events '" + query.toString() + "'", e);
+        }
 	}
 
-	@Override
+	/** {@inheritDoc} */
+	@SuppressWarnings("deprecation")
+    @Override
 	public void purgeFeatureUsage(EventQueryDefinition query) {
-		this.purgeAuditTrail(query);
+	    try {
+            Search queryEvents = findEventsFromQueryDefinition(indexEvents, query,  null);
+            List<Event> events = jestClient.execute(queryEvents).getSourceAsObjectList(Event.class);
+            if (null != events) {
+                // Audit Actions
+                Set<String> candidates = Util.set(ACTION_CHECK_OK, ACTION_CHECK_OFF);
+                for (Event event : events) {
+                   if (candidates.contains(event.getAction())) {
+                        String uuid = event.getUuid();
+                        String techIs = findEventTechIdFromUid(jestClient, indexEvents, uuid);
+                        jestClient.execute(deleteEvent(indexEvents, techIs, uuid));
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new AuditAccessException("Cannot purge events '" + query.toString() + "'", e);
+        }
 	}
 
-	@Override
+	/** {@inheritDoc} */
+	@SuppressWarnings("deprecation")
+    @Override
 	public Map<String, MutableHitCount> getHostHitCount(EventQueryDefinition query) {
-		JestResult result = getConnection()
-				.execute(getBuilder().queryGetEventQueryDefinition(query, EventConstants.ACTION_CHECK_OK));
-		List<Event> events = result.getSourceAsObjectList(Event.class);
-		Map<String, MutableHitCount> hitCount = new HashMap<String, MutableHitCount>();
-		for (Event event : events) {
-			String hostName = event.getHostName();
-			if (hitCount.containsKey(hostName)) {
-				hitCount.get(hostName).inc();
-			} else {
-				hitCount.put(hostName, new MutableHitCount(1));
-			}
-		}
-		return hitCount;
+	    try {
+            Search queryEvents = findEventsFromQueryDefinition(indexEvents, query,  EventConstants.ACTION_CHECK_OK);
+            List<Event> events = jestClient.execute(queryEvents).getSourceAsObjectList(Event.class);
+            Map<String, MutableHitCount> hitCount = new HashMap<String, MutableHitCount>();
+    		for (Event event : events) {
+    			String hostName = event.getHostName();
+    			if (hitCount.containsKey(hostName)) {
+    				hitCount.get(hostName).inc();
+    			} else {
+    				hitCount.put(hostName, new MutableHitCount(1));
+    			}
+    		}
+    		return hitCount;
+	    } catch (IOException e) {
+            throw new AuditAccessException("Cannot read events '" + query.toString() + "'", e);
+        }
 	}
 
-	@Override
+    /** {@inheritDoc} */
+    @Override
+    @SuppressWarnings("deprecation")
 	public Map<String, MutableHitCount> getUserHitCount(EventQueryDefinition query) {
-		JestResult result = getConnection()
-				.execute(getBuilder().queryGetEventQueryDefinition(query, EventConstants.ACTION_CHECK_OK));
-		List<Event> events = result.getSourceAsObjectList(Event.class);
-		Map<String, MutableHitCount> hitCount = new HashMap<String, MutableHitCount>();
-		for (Event event : events) {
-			String user = event.getUser();
-			if (hitCount.containsKey(user)) {
-				hitCount.get(user).inc();
-			} else {
-				hitCount.put(user, new MutableHitCount(1));
-			}
-		}
-		return hitCount;
+	    try {
+            Search queryEvents = findEventsFromQueryDefinition(indexEvents, query,  EventConstants.ACTION_CHECK_OK);
+            List<Event> events = jestClient.execute(queryEvents).getSourceAsObjectList(Event.class);
+       		Map<String, MutableHitCount> hitCount = new HashMap<String, MutableHitCount>();
+    		for (Event event : events) {
+    			String user = event.getUser();
+    			if (hitCount.containsKey(user)) {
+    				hitCount.get(user).inc();
+    			} else {
+    				hitCount.put(user, new MutableHitCount(1));
+    			}
+    		}
+    		return hitCount;
+	    } catch (IOException e) {
+            throw new AuditAccessException("Cannot read events '" + query.toString() + "'", e);
+        }
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public Map<String, MutableHitCount> getSourceHitCount(EventQueryDefinition query) {
-		JestResult result = getConnection()
-				.execute(getBuilder().queryGetEventQueryDefinition(query, EventConstants.ACTION_CHECK_OK));
-		List<Event> events = result.getSourceAsObjectList(Event.class);
-		Map<String, MutableHitCount> hitCount = new HashMap<String, MutableHitCount>();
-		for (Event event : events) {
-			String source = event.getSource();
-			if (hitCount.containsKey(source)) {
-				hitCount.get(source).inc();
-			} else {
-				hitCount.put(source, new MutableHitCount(1));
-			}
-		}
-		return hitCount;
+	@SuppressWarnings("deprecation")
+    public Map<String, MutableHitCount> getSourceHitCount(EventQueryDefinition query) {
+	    try {
+            Search queryEvents = findEventsFromQueryDefinition(indexEvents, query,  EventConstants.ACTION_CHECK_OK);
+            List<Event> events = jestClient.execute(queryEvents).getSourceAsObjectList(Event.class);
+            Map<String, MutableHitCount> hitCount = new HashMap<String, MutableHitCount>();
+    		for (Event event : events) {
+    			String source = event.getSource();
+    			if (hitCount.containsKey(source)) {
+    				hitCount.get(source).inc();
+    			} else {
+    				hitCount.put(source, new MutableHitCount(1));
+    			}
+    		}
+    		return hitCount;
+	    } catch (IOException e) {
+            throw new AuditAccessException("Cannot read events '" + query.toString() + "'", e);
+        }
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public EventSeries getAuditTrail(EventQueryDefinition query) {
-		JestResult result = getConnection().execute(getBuilder().queryGetEventQueryDefinition(query));
-		List<Event> events = result.getSourceAsObjectList(Event.class);
-		EventSeries es = new EventSeries();
-		Set<String> candidates = Util.set(ACTION_DISCONNECT, //
-				ACTION_TOGGLE_ON, ACTION_TOGGLE_OFF, ACTION_CREATE, //
-				ACTION_DELETE, ACTION_UPDATE, ACTION_CLEAR);
-		for (Event event : events) {
-			if (candidates.contains(event.getAction()))
-				es.add(event);
-		}
-		return es;
+	@SuppressWarnings("deprecation")
+    public EventSeries getAuditTrail(EventQueryDefinition query) {
+	    try {
+            Search queryEvents = findEventsFromQueryDefinition(indexEvents, query,  null);
+            List<Event> events = jestClient.execute(queryEvents).getSourceAsObjectList(Event.class);
+            EventSeries es = new EventSeries();
+    		Set<String> candidates = Util.set(ACTION_DISCONNECT, //
+    				ACTION_TOGGLE_ON, ACTION_TOGGLE_OFF, ACTION_CREATE, //
+    				ACTION_DELETE, ACTION_UPDATE, ACTION_CLEAR);
+    		for (Event event : events) {
+    			if (candidates.contains(event.getAction()))
+    				es.add(event);
+    		}
+    		return es;
+	    } catch (IOException e) {
+            throw new AuditAccessException("Cannot read events '" + query.toString() + "'", e);
+        }
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public void purgeAuditTrail(EventQueryDefinition query) {
-		SearchResult result = getConnection().search(getBuilder().queryReadAllEvents(), true);
-		if (result != null && result.isSucceeded()) {
-			for (Hit<Event, Void> event : result.getHits(Event.class)) {
-				getConnection().execute(getBuilder().queryDeleteEvent(event.source.getUuid()));
-			}
-		}
+	@SuppressWarnings("deprecation")
+    public void purgeAuditTrail(EventQueryDefinition query) {
+	    try {
+	        Search queryEvents = findEventsFromQueryDefinition(indexEvents, query,  null);
+            List<Event> events = jestClient.execute(queryEvents).getSourceAsObjectList(Event.class);
+            if (null != events) {
+                // Audit Actions
+                Set<String> candidates = Util.set(ACTION_DISCONNECT, //
+                        ACTION_TOGGLE_ON, ACTION_TOGGLE_OFF, ACTION_CREATE, //
+                        ACTION_DELETE, ACTION_UPDATE, ACTION_CLEAR);
+                for (Event event : events) {
+                   if (candidates.contains(event.getAction())) {
+                        String uuid = event.getUuid();
+                        String techIs = findEventTechIdFromUid(jestClient, indexEvents, uuid);
+                        jestClient.execute(deleteEvent(indexEvents, techIs, uuid));
+                    }
+                }
+            }
+	    } catch (IOException e) {
+            throw new AuditAccessException("Cannot purge events '" + query.toString() + "'", e);
+        }
 	}
 
-	@Override
-	public void createSchema() {
-		getConnection().execute(getBuilder().queryFlushIndex());
-	}
+    /**
+     * Getter accessor for attribute 'indexEvents'.
+     *
+     * @return
+     *       current value of 'indexEvents'
+     */
+    public String getIndexEvents() {
+        return indexEvents;
+    }
 
-	/**
-	 * Getter accessor for attribute 'connection'.
-	 *
-	 * @return current value of 'connection'
-	 */
-	public ElasticConnection getConnection() {
-		return connection;
-	}
-
-	/**
-	 * Setter accessor for attribute 'connection'.
-	 * 
-	 * @param connection
-	 *            new value for 'connection '
-	 */
-	public void setConnection(ElasticConnection connection) {
-		this.connection = connection;
-	}
-
-	/**
-	 * Getter accessor for attribute 'builder'.
-	 *
-	 * @return current value of 'builder'
-	 */
-	public ElasticQueryBuilder getBuilder() {
-		if (builder == null) {
-			builder = new ElasticQueryBuilder(connection);
-		}
-		return builder;
-	}
+    /**
+     * Setter accessor for attribute 'indexEvents'.
+     * @param indexEvents
+     * 		new value for 'indexEvents '
+     */
+    public void setIndexEvents(String indexEvents) {
+        this.indexEvents = indexEvents;
+    }	
 }

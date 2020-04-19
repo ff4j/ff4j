@@ -4,7 +4,7 @@ package org.ff4j.elastic;
  * #%L
  * ff4j-store-elastic
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2020 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,6 @@ package org.ff4j.elastic;
  * #L%
  */
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -34,17 +31,17 @@ import org.ff4j.audit.Event;
 import org.ff4j.audit.EventConstants;
 import org.ff4j.audit.EventQueryDefinition;
 import org.ff4j.core.Feature;
+import org.ff4j.elastic.mapper.FeatureMapper;
+import org.ff4j.elastic.mapper.PropertyMapper;
 import org.ff4j.property.Property;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import io.searchbox.client.JestResult;
 import io.searchbox.core.Delete;
+import io.searchbox.core.DeleteByQuery;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
-import io.searchbox.core.SearchResult;
-import io.searchbox.core.SearchResult.Hit;
 import io.searchbox.core.Update;
-import io.searchbox.indices.DeleteIndex;
-import io.searchbox.indices.Flush;
 
 /**
  * Helper to create Jest queries.
@@ -53,249 +50,219 @@ import io.searchbox.indices.Flush;
  * @author Andre BLASZCZYK (andre.blaszczyk@gmail.com)
  */
 public class ElasticQueryBuilder {
-
-	/** Connection. */
-	private final ElasticConnection connection;
-
-	/**
-	 * Initialization of the builder with a dedicated connection.
-	 *
-	 * @param conn
-	 *            current elastic collection.
-	 */
-	public ElasticQueryBuilder(ElasticConnection conn) {
-		this.connection = conn;
-	}
-
-	public Flush queryFlushIndex() {
-		return new Flush.Builder().addIndex(connection.getIndexName()).build();
-	}
-
-	/**
-	 * Syntaxic sugar to have query on feature.
-	 *
-	 * @param uid
-	 *            target feature uid
-	 * @return query for JEST
-	 */
-	public Search queryGetFeatureById(String uid) {
+	
+    public static final String TYPE_EVENT = "event";
+    
+    /** Logger for the class. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(ElasticQueryBuilder.class);
+    
+    /**
+     * Hide Default constructor.
+     */
+    private ElasticQueryBuilder() {}
+    
+    // ----- Features -----
+    
+    /** Update property 'enable' in doc feature */
+    public static Update toggle(String indexFeatures, String techid, boolean enable) {
+        String partialDoc = "{ \"doc\" : { \"enable\" : " + enable + " } }";
+        return new Update.Builder(partialDoc)
+                .index(indexFeatures)
+                .type(FeatureMapper.TYPE_FEATURE)
+                .id(techid)
+                .refresh(true)
+                .build();
+    }
+    
+	/** Read a feature. */
+	public static Search findFeatureByUid(String indexFeatures, String uid) {
 		SearchSourceBuilder source = new SearchSourceBuilder();
-		source.query(QueryBuilders.matchQuery("uid", uid));
-		return new Search.Builder(source.toString()).addIndex(connection.getIndexName())
-				.addType(ElasticConstants.TYPE_FEATURE).build();
+		source.query(QueryBuilders.matchQuery(FeatureMapper.FEATURE_UID, uid));
+		return new Search.Builder(source.toString()) 
+		        .addIndex(indexFeatures)
+                .build();
 	}
 
-	public Search getGroupByGroupName(String groupName) {
+	/** Read a group. */
+	public static Search findGroupByGroupName(String indexFeatures, String groupName) {
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		searchSourceBuilder.query(QueryBuilders.matchQuery("group", groupName));
-		return new Search.Builder(searchSourceBuilder.toString()) //
-				.addIndex(connection.getIndexName()) //
-				.addType(ElasticConstants.TYPE_FEATURE).build();
+		searchSourceBuilder.query(QueryBuilders.matchQuery(FeatureMapper.FEATURE_GROUP, groupName));
+		LOGGER.debug("[findGroupByGroupName] with '{}' query:{}", searchSourceBuilder.toString());
+        Search search = new Search.Builder(searchSourceBuilder.toString())
+		        .addIndex(indexFeatures)
+                .addType(FeatureMapper.TYPE_FEATURE)
+                .build();
+		return search;
 	}
 
-	public Index queryCreateFeature(Feature fp) {
-		return new Index.Builder(fp).index(connection.getIndexName()).type(ElasticConstants.TYPE_FEATURE).refresh(true)
+	/** Insert a feature. */
+	public static Index createFeature(String indexFeatures, Feature fp) {
+		return new Index.Builder(fp)
+		        .index(indexFeatures)
+		        .type(FeatureMapper.TYPE_FEATURE)
+		        .refresh(true)
 				.build();
 	}
 
-	public Search queryReadAllFeatures() {
-		return new Search.Builder(new SearchSourceBuilder().toString()).addIndex(connection.getIndexName())
-				.addType(ElasticConstants.TYPE_FEATURE).build();
-	}
-
-    public Search queryReadAllFeatures(Integer totalCount) {
-        return new Search.Builder(new SearchSourceBuilder().size(totalCount).toString()).addIndex(connection.getIndexName())
-                .addType(ElasticConstants.TYPE_FEATURE).build();
+	/** Delete a feature. */
+	public static Delete deleteFeature(String indexFeatures, String techid, String uid) {
+        return new Delete
+                .Builder(uid)
+                .index(indexFeatures)
+                .type(FeatureMapper.TYPE_FEATURE)
+                .id(techid)
+                .refresh(true)
+                .build();
     }
 
-	public Delete queryDeleteFeature(String uid) {
-		return new Delete.Builder(uid).index(connection.getIndexName()).type(ElasticConstants.TYPE_FEATURE)
-				.id(getFeatureTechId(uid)).refresh(true).build();
+	public static DeleteByQuery deleteAllFeatures(String indexFeatures) {
+	    String queryDeleteAll = "{ \"query\": { \"match_all\" : { }  } }";
+	     return new DeleteByQuery.Builder(queryDeleteAll)
+                .addIndex(indexFeatures)
+                .addType(FeatureMapper.TYPE_FEATURE)
+                .refresh(true)
+                .build();
+	}
+	
+	/** Update a feature. */
+    public static Update updateFeature(String indexFeatures, String techid, Feature fp) {
+        return new Update.Builder(fp)
+                .type(FeatureMapper.TYPE_FEATURE)
+                .id(techid)
+                .refresh(true)
+                .build();
+    }
+	
+	/** Find all features. */
+	public static Search findAllFeatures(String indexFeatures) {
+		return new Search
+		        .Builder(new SearchSourceBuilder().toString())
+		        .addIndex(indexFeatures)
+                .addType(FeatureMapper.TYPE_FEATURE)
+                .build();
+	}
+	
+	/** Find all features with a limit. */
+    public static Search findAllFeaturesLimit(String indexFeatures, int limit) {
+        return new Search
+                .Builder(new SearchSourceBuilder().size(limit).toString())
+                .addIndex(indexFeatures)
+                .addType(FeatureMapper.TYPE_FEATURE)
+                .build();
+    }
+    
+    /** Find technical ids of features in a group. */
+    public static Search findFeaturesByGroupName(String indexFeatures, String groupName) {
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.query(QueryBuilders.matchQuery(FeatureMapper.FEATURE_GROUP, groupName));
+        return new Search.Builder(searchSourceBuilder.toString())
+                .addIndex(indexFeatures)
+                .addType(FeatureMapper.TYPE_FEATURE)
+                .build();
+    }
+    
+    /** Add a feature to a group. */
+    public static Update updateFeatureAddToGroup(String indexFeatures, String techid, String groupName) {
+        return new Update.Builder("{ \"doc\" : { \"group\" : \"" + groupName + "\" } }")
+                .index(indexFeatures)
+                .type(FeatureMapper.TYPE_FEATURE)
+                .id(techid)
+                .build();
+    }
+    
+    /** Remove a feature from a group. */
+    public static Update updateFeatureRemoveFromGroup(String indexFeatures, String techid) {
+        return new Update.Builder("{ \"doc\" : { \"group\" : \"\" } }")
+                .index(indexFeatures)
+                .type(FeatureMapper.TYPE_FEATURE)
+                .id(techid)
+                .build();
+    }
+    
+    // ----- Properties -----
+
+    public static DeleteByQuery deleteAllProperties(String indexProperties) {
+        String queryDeleteAll = "{ \"query\": { \"match_all\" : { }  } }";
+         return new DeleteByQuery.Builder(queryDeleteAll)
+                .addIndex(indexProperties)
+                .addType(PropertyMapper.TYPE_PROPERTY)
+                .refresh(true)
+                .build();
+    }
+    
+	public static Search findAllProperties(String indexProperties) {
+	    return new Search.Builder(new SearchSourceBuilder().toString())
+                .addIndex(indexProperties)
+                .addType(PropertyMapper.TYPE_PROPERTY)
+                .build();	
 	}
 
-	public Index queryUpdateFeature(Feature fp) {
-		return new Index.Builder(fp).index(connection.getIndexName()).type(ElasticConstants.TYPE_FEATURE)
-				.id(getFeatureTechId(fp.getUid())).refresh(true).build();
-	}
+	/** Find all features with a limit. */
+    public static Search findAllPropertiesLimit(String indexProperties, int limit) {
+        return new Search.Builder(new SearchSourceBuilder().size(limit).toString())
+                .addIndex(indexProperties)
+                .addType(PropertyMapper.TYPE_PROPERTY)
+                .build();   
+    }
 
-	public String getFeatureTechId(String uid) {
-		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		searchSourceBuilder.query(QueryBuilders.matchQuery("uid", uid));
-		Search search = new Search.Builder(searchSourceBuilder.toString()) //
-				.addIndex(connection.getIndexName()) //
-				.addType(ElasticConstants.TYPE_FEATURE) //
-				.build();
-		// feature existence must have been checked before (technical function)
-		@SuppressWarnings("rawtypes")
-		List<Hit<Map, Void>> items = connection.search(search).getHits(Map.class);
-		if (null != items && !items.isEmpty()) {
-			return connection.search(search).getHits(Map.class).get(0).source.get(JestResult.ES_METADATA_ID).toString();
-		}
-		return null;
-	}
-
-	@SuppressWarnings({ "rawtypes" })
-	public Set<String> getFeatureTechIdByGroup(String groupName) {
-		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		searchSourceBuilder.query(QueryBuilders.matchQuery("group", groupName));
-		Search search = new Search.Builder(searchSourceBuilder.toString()) //
-				.addIndex(connection.getIndexName()) //
-				.addType(ElasticConstants.TYPE_FEATURE) //
-				.build();
-
-		SearchResult result = connection.search(search, true);
-		Set<String> metadatas = new HashSet<String>();
-		if (null != result && result.isSucceeded()) {
-			List<Hit<Map, Void>> features = result.getHits(Map.class);
-			for (Hit<Map, Void> hit : features) {
-				metadatas.add(hit.source.get(JestResult.ES_METADATA_ID).toString());
-			}
-		}
-		return metadatas;
-	}
-
-	/**
-	 * Update status of feature.
-	 * 
-	 * @param uid
-	 *            feature id
-	 * @param enable
-	 *            enabler
-	 */
-	public Update updateStatus(String uid, boolean enable) {
-		String partialDoc = "{ \"doc\" : { \"enable\" : " + enable + " } }";
-		return new Update.Builder(partialDoc) //
-				.index(connection.getIndexName()) //
-				.type(ElasticConstants.TYPE_FEATURE) //
-				.id(getFeatureTechId(uid)) //
-				.refresh(true) //
-				.build();
-	}
-
-	public Update queryUpdateStatusWithTechId(String _id, boolean enable) {
-		String partialDoc = "{ \"doc\" : { \"enable\" : " + enable + " } }";
-		return new Update.Builder(partialDoc) //
-				.index(connection.getIndexName()) //
-				.type(ElasticConstants.TYPE_FEATURE) //
-				.id(_id) //
-				.build();
-	}
-
-	public Update queryEnableWithTechId(String _id) {
-		return queryUpdateStatusWithTechId(_id, true);
-	}
-
-	public Update queryDisableWithTechId(String _id) {
-		return queryUpdateStatusWithTechId(_id, false);
-	}
-
-	public Update queryEnable(String uid) {
-		return updateStatus(uid, true);
-	}
-
-	public Update queryDisable(String uid) {
-		return updateStatus(uid, false);
-	}
-
-	public DeleteIndex queryClear() {
-		return new DeleteIndex.Builder(connection.getIndexName()).build();
-	}
-
-	// "Property" methods
-
-	public Search queryReadAllProperties() {
-		return new Search.Builder(new SearchSourceBuilder().toString()).addIndex(connection.getIndexName())
-				.addType(ElasticConstants.TYPE_PROPERTY).build();
-	}
-
-	public Search queryReadAllProperties(Integer totalCount) {
-		return new Search.Builder(new SearchSourceBuilder().size(totalCount).toString()).addIndex(connection.getIndexName())
-				.addType(ElasticConstants.TYPE_FEATURE).build();
-	}
-
-	public Search queryPropertyByName(String name) {
+    /** Find property by its name. */
+	public static Search findPropertyByName(String indexProperties, String name) {
 		SearchSourceBuilder source = new SearchSourceBuilder();
-		source.query(QueryBuilders.matchQuery("name", name));
-		return new Search.Builder(source.toString()).addIndex(connection.getIndexName())
-				.addType(ElasticConstants.TYPE_PROPERTY).build();
+		source.query(QueryBuilders.matchQuery(PropertyMapper.PROPERTY_NAME, name));
+		return new Search.Builder(source.toString())
+		        .addIndex(indexProperties)
+                .addType(PropertyMapper.TYPE_PROPERTY)
+                .build();
 	}
 
-	public Index queryCreateProperty(Property<?> property) {
-		return new Index.Builder(property).index(connection.getIndexName()).type(ElasticConstants.TYPE_PROPERTY)
-				.refresh(true).build();
-	}
+	/** Insert a feature. */
+    public static Index createProperty(String indexProperties, Property<?> property) {
+        return new Index.Builder(property)
+                .index(indexProperties)
+                .type(PropertyMapper.TYPE_PROPERTY)
+                .refresh(true)
+                .build();
+    }
+    
+    /** Delete a feature. */
+    public static Delete deleteProperty(String indexProperties, String techid, String name) {
+        return new Delete
+                .Builder(name)
+                .index(indexProperties)
+                .type(PropertyMapper.TYPE_PROPERTY)
+                .id(techid)
+                .refresh(true)
+                .build();
+    }
 
-	public Delete queryDeletePropertyByName(String name) {
-		return new Delete.Builder(name).index(connection.getIndexName()).type(ElasticConstants.TYPE_PROPERTY)
-				.id(getPropertyTechIdByName(name)).refresh(true).build();
-	}
+    // ----- Events -----
+    
+    /** Insert a feature. */
+    public static Index createEvent(String indexEvents, Event event) {
+        return new Index.Builder(event)
+                .index(indexEvents)
+                .type(TYPE_EVENT)
+                .refresh(true)
+                .build();
+    }
+    
+    /** Read an event. */
+    public static Search findEventById(String indexEvents, String uuid) {
+        SearchSourceBuilder source = new SearchSourceBuilder();
+        source.query(QueryBuilders.matchQuery("uuid", uuid));
+        return new Search.Builder(source.toString()) 
+                .addIndex(indexEvents)
+                .addType(TYPE_EVENT)
+                .build();
+    }
 
-	@SuppressWarnings("rawtypes")
-    public String getPropertyTechIdByName(String name) {
-		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		searchSourceBuilder.query(QueryBuilders.matchQuery("name", name));
-		Search search = new Search.Builder(searchSourceBuilder.toString()) //
-				.addIndex(connection.getIndexName()) //
-				.addType(ElasticConstants.TYPE_PROPERTY) //
-				.build();
-		List<Hit<Map, Void>> items = connection.search(search).getHits(Map.class);
-		if (null != items && !items.isEmpty()) {
-			return connection.search(search).getHits(Map.class).get(0).source.get(JestResult.ES_METADATA_ID).toString();
-		}
-		return null;
-	}
-
-	public Search queryReadGroup(String groupName) {
-		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		searchSourceBuilder.query(QueryBuilders.matchQuery("group", groupName));
-		return new Search.Builder(searchSourceBuilder.toString()) //
-				.addIndex(connection.getIndexName()) //
-				.addType("feature") //
-				.build();
-	}
-
-	public Update queryAddFeatureToGroup(String uid, String groupName) {
-		String partialDoc = "{ \"doc\" : { \"group\" : \"" + groupName + "\" } }";
-		return new Update.Builder(partialDoc) //
-				.index(connection.getIndexName()) //
-				.type(ElasticConstants.TYPE_FEATURE) //
-				.id(getFeatureTechId(uid)) //
-				.build();
-	}
-
-	public Update queryRemoveFeatureFromGroup(String uid, String groupName) {
-		String partialDoc = "{ \"doc\" : { \"group\" : \"\" } }";
-		return new Update.Builder(partialDoc) //
-				.index(connection.getIndexName()) //
-				.type(ElasticConstants.TYPE_FEATURE) //
-				.id(getFeatureTechId(uid)) //
-				.build();
-	}
-
-	// "Event" methods
-
-	public Index queryCreateEvent(Event event) {
-		return new Index.Builder(event).index(connection.getIndexName()).type(ElasticConstants.TYPE_EVENT).refresh(true)
-				.build();
-	}
-
-	public Search queryGetEventById(String uuid) {
-		SearchSourceBuilder source = new SearchSourceBuilder();
-		source.query(QueryBuilders.matchQuery("uuid", uuid));
-		return new Search.Builder(source.toString()).addIndex(connection.getIndexName())
-				.addType(ElasticConstants.TYPE_EVENT).build();
-	}
-
-	public Search queryGetEventQueryDefinition(EventQueryDefinition query, String action) {
+	public static Search findEventsFromQueryDefinition(String indexEvents, EventQueryDefinition query, String action) {
 		BoolQueryBuilder booleanQuery = new BoolQueryBuilder();
-
 		// Optional constant for action filter
 		if (action != null) {
 			query.getActionFilters().add(action);
 		}
 		QueryBuilder typeQuery = QueryBuilders.termQuery("type", EventConstants.TARGET_FEATURE);
-
-		// Timestamp filter
 		RangeQueryBuilder timestampFilter = QueryBuilders.rangeQuery("timestamp") //
 				.gt(query.getFrom().longValue()) //
 				.lt(query.getTo().longValue()) //
@@ -307,26 +274,40 @@ public class ElasticQueryBuilder {
 
 		// Optional filters
 		addOptionalFilters(booleanQuery, query.getActionFilters(), "action");
-		addOptionalFilters(booleanQuery, query.getHostFilters(), "hostName");
-		addOptionalFilters(booleanQuery, query.getNamesFilter(), "name");
+		addOptionalFilters(booleanQuery, query.getHostFilters(),   "hostName");
+		addOptionalFilters(booleanQuery, query.getNamesFilter(),   "name");
 		addOptionalFilters(booleanQuery, query.getSourceFilters(), "source");
 
 		// Warning : default size is set to 10 results, that's why it's
 		// overridden
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder().size(100);
-		Search searchQuery = new Search.Builder(searchSourceBuilder.query(booleanQuery.toString()).toString()) //
-				.addIndex(connection.getIndexName()) //
-				.addType(ElasticConstants.TYPE_EVENT) //
-				.build();
-
-		return searchQuery;
+		return new Search.Builder(searchSourceBuilder.query(booleanQuery).toString())
+		        .addIndex(indexEvents)
+                .addType(TYPE_EVENT)
+                .build();
 	}
+	
+	/** Delete a feature. */
+    public static Delete deleteEvent(String indexEvent, String techid, String uid) {
+        return new Delete
+                .Builder(uid)
+                .index(indexEvent)
+                .type(TYPE_EVENT)
+                .id(techid)
+                .refresh(true)
+                .build();
+    }
+    
+    public static DeleteByQuery deleteAllEvents(String indexEvent) {
+        String queryDeleteAll = "{ \"query\": { \"match_all\" : { }  } }";
+         return new DeleteByQuery.Builder(queryDeleteAll)
+                .addIndex(indexEvent)
+                .addType(TYPE_EVENT)
+                .refresh(true)
+                .build();
+    }
 
-	public Search queryGetEventQueryDefinition(EventQueryDefinition query) {
-		return queryGetEventQueryDefinition(query, null);
-	}
-
-	public void addOptionalFilters(BoolQueryBuilder booleanQuery, Set<String> filters, String field) {
+	private static void addOptionalFilters(BoolQueryBuilder booleanQuery, Set<String> filters, String field) {
 		if (!filters.isEmpty()) {
 			BoolQueryBuilder subQuery = new BoolQueryBuilder();
 			for (String filter : filters) {
@@ -336,29 +317,13 @@ public class ElasticQueryBuilder {
 		}
 	}
 
-	public Search queryReadAllEvents() {
-		return new Search.Builder(new SearchSourceBuilder().toString()).addIndex(connection.getIndexName())
-				.addType(ElasticConstants.TYPE_EVENT).build();
-	}
-
-	public Delete queryDeleteEvent(String uid) {
-		return new Delete.Builder(uid).index(connection.getIndexName()).type(ElasticConstants.TYPE_EVENT)
-				.id(getEventTechId(uid)).refresh(true).build();
-	}
-
-	@SuppressWarnings("rawtypes")
-	public String getEventTechId(String uuid) {
-		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		searchSourceBuilder.query(QueryBuilders.matchQuery("uuid", uuid));
-		Search search = new Search.Builder(searchSourceBuilder.toString()) //
-				.addIndex(connection.getIndexName()) //
-				.addType(ElasticConstants.TYPE_EVENT) //
-				.build();
-		// event existence must have been checked before (technical function)
-        List<Hit<Map, Void>> items = connection.search(search).getHits(Map.class);
-		if (null != items && !items.isEmpty()) {
-			return connection.search(search).getHits(Map.class).get(0).source.get(JestResult.ES_METADATA_ID).toString();
-		}
-		return null;
-	}
+	/** Find all features. */
+    public static Search findAllEvents(String indexEvents) {
+        return new Search
+                .Builder(new SearchSourceBuilder().toString())
+                .addIndex(indexEvents)
+                .addType(TYPE_EVENT)
+                .build();
+    }
+    
 }

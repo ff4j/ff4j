@@ -1,4 +1,4 @@
-package org.ff4j.elastic;
+package org.ff4j.elastic.mapper;
 
 /*
  * #%L
@@ -41,34 +41,42 @@ import com.google.gson.JsonSerializer;
  *
  *         Custom GSon converter is required to avoid exceptions.
  */
-public class PropertyConverter implements JsonSerializer<Property<?>>, JsonDeserializer<Property<?>> {
+public class PropertyMapper implements JsonSerializer<Property<?>>, JsonDeserializer<Property<?>> {
 
-	private Gson gson = new Gson();
+    public static final String TYPE_PROPERTY = "property";
+    
+    /* Attributes in the JSON. */
+    public static final String PROPERTY_NAME          = "name";
+    public static final String PROPERTY_DESCRIPTION   = "description";
+    public static final String PROPERTY_TYPE          = "type";
+    public static final String PROPERTY_VALUE         = "value";
+    public static final String PROPERTY_FIXED_VALUES  = "fixedValues";
+    
+    /** Default Gson. */
+    private Gson gson = new Gson();
 
+    /** {@inheritDoc} */
 	@Override
 	public JsonElement serialize(Property<?> property, Type srcType, JsonSerializationContext context) {
 		return gson.fromJson(property.toJson(), JsonElement.class);
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings({ "rawtypes" })
 	@Override
 	public Property deserialize(JsonElement json, Type type, JsonDeserializationContext context) {
-
 		JsonObject obj = json.getAsJsonObject();
-
-		// Getting attributes
-		String pName = obj.get("name") != null ? obj.get("name").getAsString() : null;
-		String pDesc = obj.get("description") != null ? obj.get("description").getAsString() : null;
-		String pType = obj.get("type") != null ? obj.get("type").getAsString() : null;
-		String pValue = obj.get("value") != null ? obj.get("value").getAsString() : null;
-		JsonArray values = obj.get("fixedValues") != null ? obj.get("fixedValues").getAsJsonArray() : null;
+		String pName = obj.get(PROPERTY_NAME) != null ? obj.get(PROPERTY_NAME).getAsString() : null;
+		String pDesc = obj.get(PROPERTY_DESCRIPTION) != null ? obj.get(PROPERTY_DESCRIPTION).getAsString() : null;
+		String pType = obj.get(PROPERTY_TYPE) != null ? obj.get(PROPERTY_TYPE).getAsString() : null;
+		String pValue = obj.get(PROPERTY_VALUE) != null ? obj.get(PROPERTY_VALUE).getAsString() : null;
+		JsonArray values = obj.get(PROPERTY_FIXED_VALUES) != null ? obj.get("fixedValues").getAsJsonArray() : null;
 		Set<String> pFixedValues = new HashSet<String>();
 		if (values != null) {
 			for (JsonElement jsonElement : values) {
 				pFixedValues.add(jsonElement.getAsString());
 			}
 		}
-
 		return PropertyFactory.createProperty(pName, pType, pValue, pDesc, pFixedValues);
 	}
 }
