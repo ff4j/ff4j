@@ -31,6 +31,7 @@ import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -126,16 +127,16 @@ public class FeatureAdvisor implements MethodInterceptor {
      *      the associated annotation
      */
     protected Flip getFF4jAnnotation(MethodInvocation mi) {
-        if (mi.getMethod().isAnnotationPresent(Flip.class)) {
-            return mi.getMethod().getAnnotation(Flip.class);
+        if (AnnotatedElementUtils.hasAnnotation(mi.getMethod(), Flip.class)) {
+            return AnnotatedElementUtils.findMergedAnnotation(mi.getMethod(), Flip.class);
         }
-        Class <?> currentInterface = mi.getMethod().getDeclaringClass();
-        if (currentInterface.isAnnotationPresent(Flip.class)) {
-            return currentInterface.getAnnotation(Flip.class);
+        Class<?> currentInterface = mi.getMethod().getDeclaringClass();
+        if (AnnotatedElementUtils.hasAnnotation(currentInterface, Flip.class)) {
+            return AnnotatedElementUtils.findMergedAnnotation(currentInterface, Flip.class);
         }
-        Class <?> currentImplementation = getExecutedClass(mi);
-        if (currentImplementation.isAnnotationPresent(Flip.class)) {
-            return currentImplementation.getAnnotation(Flip.class);
+        Class<?> currentImplementation = getExecutedClass(mi);
+        if (AnnotatedElementUtils.hasAnnotation(currentImplementation, Flip.class)) {
+            return AnnotatedElementUtils.findMergedAnnotation(currentImplementation, Flip.class);
         }
         return null;
     }
