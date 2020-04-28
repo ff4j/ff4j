@@ -222,9 +222,17 @@ public class Feature implements Serializable {
         json.append("}");
         return json.toString();
     }
-    
+
+    /**
+     * Converts from JSON String to Feature.
+     * @param jsonString
+     *            the JSON String representation of the Feature.
+     * @return null
+     * @deprecated See FeatureJsonParser from the ff4j-utils-json package.
+     */
+    @Deprecated
     public static Feature fromJson(String jsonString) {
-        return null;
+      throw new UnsupportedOperationException();
     }
     
     /**
