@@ -36,7 +36,6 @@ import org.slf4j.LoggerFactory;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.messageresolver.IMessageResolver;
 
-
 /**
  * All message in the same properties file embedded.
  *
@@ -53,7 +52,7 @@ public class CustomMessageResolver implements IMessageResolver {
 	/** Logger for this class. */
     public static final Logger LOGGER = LoggerFactory.getLogger(CustomMessageResolver.class);
    
-	/** Properties per Locale. */
+	/** LOCALE => Properties. */
     protected Map < String , Properties > messages = new HashMap< String, Properties >();
     
     /** Default properties "messages.properties". */
@@ -72,9 +71,11 @@ public class CustomMessageResolver implements IMessageResolver {
         InputStream is = null;
         InputStreamReader r = null;
         try {
-            is = CustomMessageResolver.class.getClassLoader().getResourceAsStream(MSG_FILE + MSG_FILE_EXTENSION);
+            String defaultMessageFilename = MSG_FILE + MSG_FILE_EXTENSION;
+            is = CustomMessageResolver.class.getClassLoader().getResourceAsStream(defaultMessageFilename);
             r = new InputStreamReader(is, WebConstants.UTF8_ENCODING);
             defaultMessages.load(r);
+            LOGGER.info("Default properties have been loaded from {}", defaultMessageFilename);
         } catch (IOException e) {
             LOGGER.error("Cannot load properties", e);
         } finally {
@@ -94,7 +95,6 @@ public class CustomMessageResolver implements IMessageResolver {
 	private Properties resolveProperties(Locale locale) {
 		if (!messages.containsKey(locale.getLanguage())) {
 			messages.put(locale.getLanguage(), null);
-
             String expectedFileName = MSG_FILE + "_" + locale.getLanguage() + MSG_FILE_EXTENSION;
             InputStream is = CustomMessageResolver.class.getClassLoader().getResourceAsStream(expectedFileName);
             InputStreamReader r = null;
@@ -110,31 +110,40 @@ public class CustomMessageResolver implements IMessageResolver {
                     if (r != null) try { r.close(); } catch (IOException e) {}
                     if (is != null) try { is.close(); } catch (IOException e) {}
                 }
+				LOGGER.info("Properties loaded from {}", expectedFileName);
+            } else {
+                LOGGER.info("No file found for Locale {} using default ", locale);
             }
         }
+		// Load from default
 		Properties target = messages.get(locale.getLanguage());
 		return target != null ? target : defaultMessages;
 	}
 
-
+	/** {@inheritDoc} */
 	@Override
 	public String resolveMessage(ITemplateContext iTemplateContext, Class<?> aClass, String s, Object[] objects) {
 		final Locale locale = iTemplateContext.getLocale();
 		String targetMsg = resolveProperties(locale).getProperty(s);
+		// If not found in current file, look for default file
 		if (targetMsg == null) {
-			targetMsg = "<span style=\"color:red\">" + s + " not found</span>";
-		} else if (objects != null && objects.length > 0) {
+		    targetMsg = defaultMessages.getProperty(s);
+		}
+		// If not found anywhere use key:
+		if (targetMsg == null) {
+			targetMsg = "key:"+ s;
+		}
+		if (objects != null && objects.length > 0) {
 			targetMsg = new MessageFormat(targetMsg, iTemplateContext.getLocale()).format(objects);
 		}
 		return targetMsg;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String createAbsentMessageRepresentation(ITemplateContext iTemplateContext, Class<?> aClass, String s, Object[] objects) {
 		return String.format("<{}: NOT STRING FOUND>",s);
 	}
-
-	/** {@inheritDoc} */
 
 	/** {@inheritDoc} */
 	public Integer getOrder() {
