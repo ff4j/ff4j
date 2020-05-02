@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.springframework.aop.TargetSource;
 import org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
 
@@ -108,20 +109,20 @@ public class FeatureAutoProxy extends AbstractAutoProxyCreator {
     }
     
     private Object[] scanInterfaceForAnnotation(Class<?> currentInterface, String currentInterfaceName) {
-        // Interface never scan 
-        if (currentInterface.isAnnotationPresent(Flip.class)) {
+        // Interface never scan
+        if (AnnotatedElementUtils.hasAnnotation(currentInterface, Flip.class)) {
             processedInterface.put(currentInterfaceName, true);
             return PROXY_WITHOUT_ADDITIONAL_INTERCEPTORS;
-            
-         } else {
-             // not found on bean, check methods
-             for (Method method : currentInterface.getDeclaredMethods()) {
-                 if (method.isAnnotationPresent(Flip.class)) {
-                     processedInterface.put(currentInterfaceName, true);
-                     return PROXY_WITHOUT_ADDITIONAL_INTERCEPTORS;
-                 }
-             }
-         }
+
+        } else {
+            // not found on bean, check methods
+            for (Method method : currentInterface.getDeclaredMethods()) {
+                if (AnnotatedElementUtils.hasAnnotation(method, Flip.class)) {
+                    processedInterface.put(currentInterfaceName, true);
+                    return PROXY_WITHOUT_ADDITIONAL_INTERCEPTORS;
+                }
+            }
+        }
         // annotation has not been found
         processedInterface.put(currentInterfaceName, false);
         return null;

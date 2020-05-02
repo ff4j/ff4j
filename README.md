@@ -8,6 +8,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/grade/c900676eb9674bc48c246dc112e60e16)](https://www.codacy.com/app/cedrick-lunven/ff4j)
 [![Join the chat at https://gitter.im/ff4j/ff4j](https://badges.gitter.im/ff4j/ff4j.svg)](https://gitter.im/ff4j/ff4j?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![License Apache2](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0)
+[![SourceSpy Dashboard](https://sourcespy.com/shield.svg)](https://sourcespy.com/github/ff4jff4j/)
 
 FF4j is an implementation of [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html) pattern : Enable and disable features for your applications at runtime thanks to a dedicated **web console, REST API, JMX or even CLI**.
 
