@@ -81,7 +81,7 @@ public class FF4j {
     private final long startTime = System.currentTimeMillis();
 
     /** Version of ff4j. */
-    private final String version = getClass().getPackage().getImplementationVersion();
+    private String version = getClass().getPackage().getImplementationVersion();
     
     /** Source of initialization (JAVA_API, WEBAPI, SSH, CONSOLE...). */
     private String source =  SOURCE_JAVA;
@@ -132,12 +132,17 @@ public class FF4j {
      * Default constructor to allows instantiation through IoC. The created store is an empty {@link InMemoryFeatureStore}.
      */
     public FF4j() {
+        this.version = getClass().getPackage().getImplementationVersion();
+        if (null == version) {
+            this.version = "1.8.x";
+        }
     }
 
     /**
      * Constructor initializing ff4j with an InMemoryStore
      */
     public FF4j(String xmlFile) {
+        this();
         this.fstore = new InMemoryFeatureStore(xmlFile);
         this.pStore = new InMemoryPropertyStore(xmlFile);
     }
@@ -147,6 +152,7 @@ public class FF4j {
      * <code>Asset</code>
      */
     public FF4j(InputStream xmlFileResourceAsStream) {
+        this();
         this.fstore = new InMemoryFeatureStore(xmlFileResourceAsStream);
     }
 

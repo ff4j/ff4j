@@ -21,21 +21,90 @@
           <div class="widget widget-nopad">
             <div class="widget-header">
               <i class="icon-wrench"></i>
-              <h3><span th:text="#{infos.techs.title}">Integrated Technologies</span></h3>
+              <h3><span th:text="#{infos.techs.title}">A-Z DataStore</span></h3>
             </div>
            
-            <div class="widget-content">
+  <div class="widget-content">
           		
-          		 <div class="ff4jstores">
-	   
+    <div class="ff4jstores">
 	   <div class="ff4jstore" >
-        <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;NoSQL</span>
+        <span style="font-weight:bold;font-size:14px;color:#8b8b8b">&nbsp;NoSQL</span>
         <br/><p class="circle">
-	  	<br/><img src="" th:src="@{static/img/db/db-mongo.png}" style="width:50px" />
-      	<br/><a href="https://www.mongodb.com/">MongoDB</a>
+	  	<br/><img src="" th:src="@{static/img/db/db-arangodb.png}" style="width:50px" />
+      	<br/><a href="https://www.arangodb.com">ArangoDB</a>
    		</p>
        </div>
-       
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#8b8b8b">&nbsp;CMDB</span>
+        <br/><p class="circle">
+        <br/><img src="" th:src="@{static/img/db/db-archaius.png}" style="width:50px" />
+        <br/><a href="https://github.com/Netflix/archaius#archaius">Archaius</a>
+        </p>
+       </div>
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#8b8b8b">&nbsp;CMDB</span>
+        <br/><p class="circle">
+        <br/><img src="" th:src="@{static/img/db/db-aws-ssm.png}" style="width:50px" />
+        <br/><a href="https://docs.aws.amazon.com/systems-manager/latest/APIReference/Welcome.html">AWS-SSM</a>
+        </p>
+       </div>
+	   <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#8b8b8b">&nbsp;NoSQL</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-cassandra.png}" style="width:50px" />
+      	<br/><a href="http://cassandra.apache.org/">Cassandra</a>
+   		</p>
+       </div>
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#8b8b8b">&nbsp;Properties</span>
+        <br/><p class="circle">
+        <br/><img src="" th:src="@{static/img/db/db-commonsconfig.png}" style="width:50px" />
+        <br/><a href="https://commons.apache.org/proper/commons-configuration/userguide/overview.html#Configuration_Sources">
+        Commons-conf</a>
+        </p>
+       </div>
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#8b8b8b">&nbsp;Service Discovery</span>
+        <br/><p class="circle">
+        <br/><img src="" th:src="@{static/img/db/db-consul.png}" style="width:50px" />
+        <br/><a href="https://www.consul.io/">Consul</a>
+        </p>
+       </div>
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;NoSQL</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-couchbase.png}" style="width:50px" />
+      	<br/><a href="https://www.couchbase.com/">CouchBase</a>
+   		</p>
+       </div>
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;NoSQL</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-couchdb.png}" style="width:50px" />
+      	<br/><a href="https://couchdb.apache.org/">CouchDB</a>
+   		</p>
+       </div>
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;Plugin</span>
+        <br/><p class="circle">
+        <br/><img src="" th:src="@{static/img/strategy/s-drools.png}" style="width:50px" />
+        <br/><a href="http://www.drools.org/">Drools</a>
+        </p>
+       </div>
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;NoSQL</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-dynamodb.png}" style="width:50px" />
+      	<br/><a href="https://aws.amazon.com/dynamodb/">DynamoDB</a>
+   		</p>
+       </div>
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#ab008b">&nbsp;Cache</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-ehcache.png}" style="width:50px" />
+      	<br/><a href="http://www.ehcache.org/">EhCache</a>
+   		</p>
+       </div>
        <div class="ff4jstore" >
         <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;NoSQL</span>
         <br/><p class="circle">
@@ -43,23 +112,20 @@
       	<br/><a href="https://www.elastic.co/">ElasticSearch</a>
    		</p>
        </div>
-       
        <div class="ff4jstore" >
-        <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;NoSQL</span>
+        <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;Service Discovery</span>
         <br/><p class="circle">
-	  	<br/><img src="" th:src="@{static/img/db/db-cassandra.png}" style="width:50px" />
-      	<br/><a href="http://cassandra.apache.org/">Cassandra</a>
+	  	<br/><img src="" th:src="@{static/img/db/db-eureka.png}" style="width:50px" />
+      	<br/><a href="https://github.com/Netflix/eureka">Eureka</a>
    		</p>
        </div>
-
        <div class="ff4jstore" >
-         <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;NoSQL</span>
-         <br/><p class="circle">
-         <br/><img src="" th:src="@{static/img/db/db-dynamodb.png}" style="width:50px" />
-         <br/><a href="https://aws.amazon.com/dynamodb/">DynamoDB</a>
-         </p>
+        <span style="font-weight: bold;font-size:14px;color:#ab008b">&nbsp;Cache</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-hazelcast.png}" style="width:50px" />
+      	<br/><a href="https://hazelcast.com/">Hazelcast</a>
+   		</p>
        </div>
-
        <div class="ff4jstore" >
         <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;NoSQL</span>
         <br/><p class="circle">
@@ -67,63 +133,90 @@
         <br/><a href="https://hbase.apache.org">HBase</a>
         </p>
        </div>
-       
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#ab008b">&nbsp;Cache</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-ignite.png}" style="width:50px" />
+      	<br/><a href="https://ignite.apache.org/">Ignite</a>
+   		</p>
+       </div>
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#8b8b8b">&nbsp;JDK</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-inmemory.png}" style="width:50px" />
+      	<br/>In-Memory
+   		</p>
+       </div>
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#8b8b8b">&nbsp;Plugin</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-jhipster.png}" style="width:50px" />
+      	<br/>JHipster
+   		</p>
+       </div>
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#008bab">&nbsp;RDBMS</span>
+        <br/><p class="circle">
+        <br/><img src="" th:src="@{static/img/db/db-oracle.png}" style="width:50px" />
+        <br/><a href="https://www.oracle.com/database/index.html">Jdbc-Oracle</a>
+        </p>
+       </div>
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#008bab">&nbsp;RDBMS</span>
+        <br/><p class="circle">
+        <br/><img src="" th:src="@{static/img/db/db-sqlserver.png}" style="width:50px" />
+        <br/><a href="http://www.microsoft.com/sql">Jdbc-SQLServer</a>
+        </p>
+       </div>
         <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#008bab">&nbsp;RDBMS</span>
+        <br/><p class="circle">
+        <br/><img src="" th:src="@{static/img/db/db-maria.png}" style="width:50px" />
+        <br/><a href="https://mariadb.com/">Jdbc-MariaDB</a>
+        </p>
+       </div>
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#008bab">&nbsp;RDBMS</span>
+        <br/><p class="circle">
+        <br/><img src="" th:src="@{static/img/db/db-postgres.png}" style="width:50px" />
+        <br/><a href="https://www.postgresql.org/">Jdbc-PostGreSQL</a>
+        </p>
+       </div>
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#008bab">&nbsp;NoSQL</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-mongo.png}" style="width:50px" />
+      	<br/><a href="https://www.mongodb.com/">MongoDB</a>
+   		</p>
+       </div>
+       <div class="ff4jstore" >
         <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;NoSQL</span>
         <br/><p class="circle">
         <br/><img src="" th:src="@{static/img/db/db-neo4j.png}" style="width:50px" />
         <br/><a href="https://neo4j.com/">Neo4j</a>
         </p>
        </div>
-       
-      <div class="ff4jstore" >
-        <span style="font-weight: bold;font-size:14px;color:#8b8b8b">&nbsp;Properties</span>
-        <br/><p class="circle">
-        <br/><img src="" th:src="@{static/img/db/db-archaius.png}" style="width:50px" />
-        <br/><a href="https://github.com/Netflix/archaius#archaius">Archaius</a>
-        </p>
-       </div>
-       
-        <div class="ff4jstore" >
-        <span style="font-weight: bold;font-size:14px;color:#8b8b8b">&nbsp;Properties</span>
-        <br/><p class="circle">
-        <br/><img src="" th:src="@{static/img/db/db-consul.png}" style="width:50px" />
-        <br/><a href="https://www.consul.io/">Consul</a>
-        </p>
-       </div>
-       
        <div class="ff4jstore" >
-        <span style="font-weight: bold;font-size:14px;color:#8b8b8b">&nbsp;Properties</span>
-        <br/><p class="circle">
-        <br/><img src="" th:src="@{static/img/db/db-commonsconfig.png}" style="width:50px" />
-        <br/><a href="https://commons.apache.org/proper/commons-configuration/userguide/overview.html#Configuration_Sources">commons-conf</a>
-        </p>
-       </div>
-       
-        <div class="ff4jstore" >
         <span style="font-weight: bold;font-size:14px;color:#ab008b">&nbsp;Cache</span>
         <br/><p class="circle">
 	  	<br/><img src="" th:src="@{static/img/db/db-redis.png}" style="width:50px" />
       	<br/><a href="http://redis.io/">Redis</a>
    		</p>
        </div>
-       
-        <div class="ff4jstore" >
-        <span style="font-weight: bold;font-size:14px;color:#ab008b">&nbsp;Cache</span>
-        <br/><p class="circle">
-	  	<br/><img src="" th:src="@{static/img/db/db-hazelcast.png}" style="width:50px" />
-      	<br/><a href="https://hazelcast.com/">Hazelcast</a>
-   		</p>
-       </div>
-       
        <div class="ff4jstore" >
-        <span style="font-weight: bold;font-size:14px;color:#ab008b">&nbsp;Cache</span>
+        <span style="font-weight: bold;font-size:14px;color:#8b8b8b">&nbsp;Integration</span>
         <br/><p class="circle">
-	  	<br/><img src="" th:src="@{static/img/db/db-ehcache.png}" style="width:50px" />
-      	<br/><a href="http://www.ehcache.org/">EHCache</a>
+	  	<br/><img src="" th:src="@{static/img/secu/SpringSecurity.png}" style="width:50px" />
+      	<br/><a href="http://projects.spring.io/spring-security/">SpringSecurity</a>
    		</p>
        </div>
-       
+       <div class="ff4jstore" >
+        <span style="font-weight: bold;font-size:14px;color:#8b8b8b">&nbsp;Starter</span>
+        <br/><p class="circle">
+	  	<br/><img src="" th:src="@{static/img/db/db-springboot.png}" style="width:50px" />
+      	<br/><a href="https://spring.io/projects/spring-boot">Spring-Boot</a>
+   		</p>
+       </div>
        <div class="ff4jstore" >
         <span style="font-weight: bold;font-size:14px;color:#ab008b">&nbsp;Cache</span>
         <br/><p class="circle">
@@ -131,77 +224,43 @@
       	<br/><a href="https://www.terracotta.org/">Terracotta</a>
    		</p>
        </div>
-       
-       <div class="ff4jstore" >
-        <span style="font-weight: bold;font-size:14px;color:#8b8b8b">&nbsp;Security</span>
-        <br/><p class="circle">
-	  	<br/><img src="" th:src="@{static/img/secu/SpringSecurity.png}" style="width:50px" />
-      	<br/><a href="http://projects.spring.io/spring-security/">SpringSecurity</a>
-   		</p>
-       </div>
-       
-         <div class="ff4jstore" >
-        <span style="font-weight: bold;font-size:14px;color:#008bab">&nbsp;RDBMS</span>
-        <br/><p class="circle">
-        <br/><img src="" th:src="@{static/img/db/db-oracle.png}" style="width:50px" />
-        <br/><a href="https://www.oracle.com/database/index.html">Oracle</a>
-        </p>
-       </div>
-       
-       <div class="ff4jstore" >
-        <span style="font-weight: bold;font-size:14px;color:#008bab">&nbsp;RDBMS</span>
-        <br/><p class="circle">
-        <br/><img src="" th:src="@{static/img/db/db-sqlserver.png}" style="width:50px" />
-        <br/><a href="http://www.microsoft.com/sql">SQLServer</a>
-        </p>
-       </div>
-
-        <div class="ff4jstore" >
-        <span style="font-weight: bold;font-size:14px;color:#008bab">&nbsp;RDBMS</span>
-        <br/><p class="circle">
-        <br/><img src="" th:src="@{static/img/db/db-maria.png}" style="width:50px" />
-        <br/><a href="https://mariadb.com/">MariaDB</a>
-        </p>
-       </div> 
-       
-       <div class="ff4jstore" >
-        <span style="font-weight: bold;font-size:14px;color:#008bab">&nbsp;RDBMS</span>
-        <br/><p class="circle">
-        <br/><img src="" th:src="@{static/img/db/db-postgres.png}" style="width:50px" />
-        <br/><a href="https://www.postgresql.org/">PostGreSQL</a>
-        </p>
-       </div> 
-       
-      
-       
-         <div class="ff4jstore" >
-        <span style="font-weight: bold;font-size:14px;color:#00ab8b">&nbsp;Strategy</span>
-        <br/><p class="circle">
-        <br/><img src="" th:src="@{static/img/strategy/s-drools.png}" style="width:50px" />
-        <br/><a href="http://www.drools.org/">Drools</a>
-        </p>
-       </div>
-       
-         <div class="ff4jstore" >
-        <span style="font-weight: bold;font-size:14px;color:#8b8b8b">&nbsp;JDK</span>
-        <br/><p class="circle">
-	  	<br/><img src="" th:src="@{static/img/db/db-inmemory.png}" style="width:50px" />
-      	<br/>In-Memory
-   		</p>
-       </div>
-       
+     </div>
     </div>
-    
-    
-          	</div>
-          	
-          	
-          </div>
-          </div>
-          
-          <div class="span6">
-          
-          <div class="widget">
+   </div>
+  </div>
+
+  <div class="span6">
+   
+   <div class="widget">
+    <div class="widget-header">
+     <i class="icon-envelope-alt"></i>
+      <h3><span th:text="#{infos.contact.title}">Contact us</span></h3>
+    </div>
+    <div class="widget-content">
+      <p style="font-size:16px;color:#00008b">
+        <i class="icon-globe"></i>&nbsp;&nbsp;
+        <a href="ff4j.org">ff4j.org</a> 
+        is the official website where you'll find any documentation and informations.
+      </p>
+      <p style="font-size:16px;color:#8b8b8b">
+       <i class="icon-github"></i>&nbsp;&nbsp;The framework is hosted and maintained on 
+       <a href="https://github.com/clun/ff4j">github</a>, you can browse and fork the source code. 
+       Please consider adding a STAR <i class="icon-star"></i> if you like, it helps making the framework well known.
+	 </p>
+	<p style="font-size:16px;color:#00008b">			   
+	  <i class="icon-question-sign"></i>&nbsp;&nbsp;If you have any question you can either 
+	  <a href="https://github.com/ff4j/ff4j/issues">open  a ticket in github</a> 
+	  or join us to chat <a href="https://discord.gg/svu3akK"> on discord </a>.
+	</p>
+	<p style="font-size:16px;color:#8b8b8b">
+        <i class="icon-twitter"></i>&nbsp;&nbsp;
+        If you like FF4J, please follow me <a href="https://twitter.com/clunven">@clunven</a> 
+        and use <a href="https://twitter.com/hashtag/ff4j?src=hash">#ff4j</a> hashtag to share your feedbacks
+     </p>
+   </div>
+  </div>
+            
+  <div class="widget">
             <div class="widget-header">
               <i class="icon-heart-empty"></i>
               <h3><span th:text="#{infos.donation.title}">Donation</span></h3>
@@ -209,7 +268,7 @@
             <!-- /widget-header -->
             <div class="widget-content">
              <p style="text-align:justify">
-             The FF4J team has been working very hard to provide a powerful  <span style="color:#00ab8b">Feature Toggle solution</span> which is stable, highly tested, as well as easy to configure and use.
+             The FF4J team has been working very hard to provide a powerful <span style="color:#00ab8b">Feature Toggle solution</span> which is stable, highly tested, as well as easy to configure and use.
 			 We always make every effort to respond to all support and request queries in a timely manner and work with users to help resolve their problems quickly.
 			 All of this requires a surprising amount of time.</p>
 			 
@@ -235,37 +294,7 @@
             
             </div>
             
-            <div class="widget">
-            <div class="widget-header">
-              <i class="icon-envelope-alt"></i>
-              <h3><span th:text="#{infos.contact.title}">Donation</span></h3>
-            </div>
-            <!-- /widget-header -->
-            <div class="widget-content">
-            
-            <p>
-              <i class="icon-globe"></i>&nbsp;&nbsp;<a href="ff4j.org">ff4j.org</a> is the official website where you'll find any documentation and informations.
-            </p>
-            
-             <p>
-              <i class="icon-twitter"></i>&nbsp;&nbsp;If you like FF4J, please speak about it on Twitter with 
-              <a href="https://twitter.com/hashtag/ff4j?src=hash"><b>#FF4J</b></a> hashtag or contact the founder with 
-              <a href="https://twitter.com/clunven">@clunven</a>.
-             </p>
-             
-             <p>
-               <i class="icon-github"></i>&nbsp;&nbsp;The framework is hosted and maintained on 
-               <a href="https://github.com/clun/ff4j">github</a>, you can browse and fork the source code.
-			 </p>
-
-			 <p>
-			   <i class=" icon-question-sign"></i>&nbsp;&nbsp;If you have any question regarding FF4J please contact us by 
-			   <a HREF="mailto:admin@ff4j.org?subject=Question FF4J">email</a> and post your question on the 
-			   <a href="https://groups.google.com/forum/?hl=en#!forum/ff4j">forum. </a>
-			 </p>
-            </div>
-            
-            </div>
+           
             
             </div>
           

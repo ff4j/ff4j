@@ -63,7 +63,7 @@ public class CustomMessageResolver implements IMessageResolver {
      */
     public CustomMessageResolver() {
     	super();
-        this.defaultMessages = new Properties();
+        this.defaultMessages = resolveProperties(Locale.ENGLISH);
     }
     
 	/** {@inheritDoc} */
@@ -75,9 +75,10 @@ public class CustomMessageResolver implements IMessageResolver {
             is = CustomMessageResolver.class.getClassLoader().getResourceAsStream(defaultMessageFilename);
             r = new InputStreamReader(is, WebConstants.UTF8_ENCODING);
             defaultMessages.load(r);
-            LOGGER.info("Default properties have been loaded from {}", defaultMessageFilename);
+            LOGGER.debug("Default {} properties have been loaded from {}", defaultMessages.size(), 
+                    defaultMessageFilename);
         } catch (IOException e) {
-            LOGGER.error("Cannot load properties", e);
+            LOGGER.error("Cannot load default properties", e);
         } finally {
             if (r != null) try { r.close(); } catch (IOException e) {}
             if (is != null) try { is.close(); } catch (IOException e) {}
@@ -93,9 +94,12 @@ public class CustomMessageResolver implements IMessageResolver {
 	 * 		target properties
 	 */
 	private Properties resolveProperties(Locale locale) {
-		if (!messages.containsKey(locale.getLanguage())) {
-			messages.put(locale.getLanguage(), null);
-            String expectedFileName = MSG_FILE + "_" + locale.getLanguage() + MSG_FILE_EXTENSION;
+	    String lang = locale.getLanguage().toLowerCase();
+	    if (!messages.containsKey(lang)) {
+	        LOGGER.debug("resolveProperties: {}", lang);
+	        // Won't try to load it again
+	        messages.put(lang, null);
+			String expectedFileName = MSG_FILE + "_" + locale.getLanguage() + MSG_FILE_EXTENSION;
             InputStream is = CustomMessageResolver.class.getClassLoader().getResourceAsStream(expectedFileName);
             InputStreamReader r = null;
 			if (is != null) {
@@ -103,14 +107,14 @@ public class CustomMessageResolver implements IMessageResolver {
 				    r = new InputStreamReader(is, WebConstants.UTF8_ENCODING);
 					Properties propsLocale = new Properties();
 					propsLocale.load(r);
+					LOGGER.debug("{} properties loaded from {}", propsLocale.size(), expectedFileName);
 					messages.put(locale.getLanguage(), propsLocale);
 				} catch (IOException e) {
-					LOGGER.error("Cannot load properties", e);
+					LOGGER.error("Cannot load properties from " + expectedFileName, e);
 				} finally {
                     if (r != null) try { r.close(); } catch (IOException e) {}
                     if (is != null) try { is.close(); } catch (IOException e) {}
                 }
-				LOGGER.info("Properties loaded from {}", expectedFileName);
             } else {
                 LOGGER.info("No file found for Locale {} using default ", locale);
             }
@@ -142,7 +146,7 @@ public class CustomMessageResolver implements IMessageResolver {
 	/** {@inheritDoc} */
 	@Override
 	public String createAbsentMessageRepresentation(ITemplateContext iTemplateContext, Class<?> aClass, String s, Object[] objects) {
-		return String.format("<{}: NOT STRING FOUND>",s);
+		return String.format("key:{}",s);
 	}
 
 	/** {@inheritDoc} */

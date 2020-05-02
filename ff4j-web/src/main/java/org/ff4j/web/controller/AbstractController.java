@@ -158,7 +158,8 @@ public abstract class AbstractController {
         
         WebContext ctx = new WebContext(req, res,  req.getSession().getServletContext(), res.getLocale());
     	ctx.setVariable("uptime",  getUptime());
-    	ctx.setVariable("version", ff4j.getVersion());
+    	if (null == ff4j.getVersion())
+    	ctx.setVariable("version", null == ff4j.getVersion() ? "1.8.x" : ff4j.getVersion());
     	
     	// Security
     	ctx.setVariable("secure", false);

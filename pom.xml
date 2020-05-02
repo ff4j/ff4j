@@ -126,7 +126,7 @@
         <version.maven.plugin.license>1.8</version.maven.plugin.license>
         <version.maven.plugin.nexus>1.6.8</version.maven.plugin.nexus>
         <version.maven.plugin.compiler>3.3</version.maven.plugin.compiler>
-        <version.maven.plugin.jar>2.6</version.maven.plugin.jar>
+        <version.maven.plugin.jar>3.2.0</version.maven.plugin.jar>
         <version.maven.plugin.dependency>2.8</version.maven.plugin.dependency>
 
         <jetty.version>9.4.18.v20190429</jetty.version>
@@ -826,6 +826,19 @@
                         </archive>
                     </configuration>
                 </plugin>
+                <plugin>
+                	<groupId>org.apache.maven.plugins</groupId>
+				    <artifactId>maven-war-plugin</artifactId>
+				    <version>2.1</version>
+				    <configuration>
+				        <archive>                   
+				            <manifest>
+				                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+				                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+				            </manifest>
+				        </archive>
+				    </configuration>
+				</plugin>
 
                 <!-- Force UTF-8 -->
                 <plugin>
