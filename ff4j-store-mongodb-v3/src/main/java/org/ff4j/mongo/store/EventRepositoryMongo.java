@@ -1,8 +1,12 @@
 package org.ff4j.mongo.store;
 
+import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Filters;
 import org.bson.Document;
 import org.ff4j.audit.Event;
 import org.ff4j.audit.EventQueryDefinition;
@@ -15,10 +19,12 @@ import org.ff4j.mongo.MongoDbConstants;
 import org.ff4j.mongo.mapper.EventDocumentBuilder;
 import org.ff4j.mongo.mapper.MongoEventMapper;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import static org.ff4j.audit.EventConstants.*;
 
@@ -226,9 +232,22 @@ public class EventRepositoryMongo extends AbstractEventRepository {
     /**
      * {@inheritDoc}
      */
-    private Map<String, MutableHitCount> computeHitCount(EventQueryDefinition query, String colName) {
+    private Map<String, MutableHitCount> computeHitCount(EventQueryDefinition query, String attr) {
 
         Map<String, MutableHitCount> mapofHitCount = new HashMap<>();
+        getEventCollection().aggregate(Arrays.asList(
+                Aggregates.match(Filters.eq(ATTRIBUTE_TYPE, TARGET_FEATURE)),
+                Aggregates.match(Filters.eq(ATTRIBUTE_ACTION, ACTION_CHECK_OK)),
+                Aggregates.match(Filters.gte(ATTRIBUTE_TIME, query.getFrom())),
+                Aggregates.match(Filters.lte(ATTRIBUTE_ACTION, query.getTo())),
+                Aggregates.group("$" + attr, Accumulators.sum("NB", 1))
+        )).forEach((Consumer<Document>) document -> {
+            if (null != document.get("_id")) {
+                mapofHitCount.put(document.get("_id").toString(), new MutableHitCount((Integer) document.get("NB")));
+            } else {
+                mapofHitCount.put(attr, new MutableHitCount(0));
+            }
+        });
 
         /*
             Need to do the following query but in mongo from JdbcQueryBuilder and JdbcStoreConstants
