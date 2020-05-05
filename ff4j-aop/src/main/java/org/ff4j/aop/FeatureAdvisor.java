@@ -78,9 +78,9 @@ public class FeatureAdvisor implements MethodInterceptor {
 	            // Do we use the alter bean defined in the annotation ?
 	            if (Util.hasLength(alterBean)
 	                    // Bean name exist
-	                    & appCtx.containsBean(alterBean)   
+	                    && appCtx.containsBean(alterBean)   
 	                    // Bean name is not the same as current
-	                    & !alterBean.equals(getExecutedBeanName(mi))) {
+	                    && !alterBean.equals(getExecutedBeanName(mi))) {
 	                return invokeAlterBean(mi, alterBean);
 	            }
 	            

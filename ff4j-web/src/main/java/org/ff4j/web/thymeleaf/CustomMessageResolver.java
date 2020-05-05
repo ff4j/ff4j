@@ -96,7 +96,7 @@ public class CustomMessageResolver implements IMessageResolver {
 	private Properties resolveProperties(Locale locale) {
 	    String lang = locale.getLanguage().toLowerCase();
 	    if (!messages.containsKey(lang)) {
-	        LOGGER.debug("resolveProperties: {}", lang);
+	        LOGGER.info("resolveProperties: {}", lang);
 	        // Won't try to load it again
 	        messages.put(lang, null);
 			String expectedFileName = MSG_FILE + "_" + locale.getLanguage() + MSG_FILE_EXTENSION;
@@ -104,10 +104,14 @@ public class CustomMessageResolver implements IMessageResolver {
             InputStreamReader r = null;
 			if (is != null) {
 				try {
-				    r = new InputStreamReader(is, WebConstants.UTF8_ENCODING);
+				    if ("ar".equalsIgnoreCase(lang)) {
+				        r = new InputStreamReader(is, "UTF-16");
+				    } else {
+				        r = new InputStreamReader(is, WebConstants.UTF8_ENCODING);
+				    }
 					Properties propsLocale = new Properties();
 					propsLocale.load(r);
-					LOGGER.debug("{} properties loaded from {}", propsLocale.size(), expectedFileName);
+					LOGGER.info("{} properties loaded from {}", propsLocale.size(), expectedFileName);
 					messages.put(locale.getLanguage(), propsLocale);
 				} catch (IOException e) {
 					LOGGER.error("Cannot load properties from " + expectedFileName, e);
