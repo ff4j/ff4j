@@ -27,7 +27,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ff4j.audit.Event;
-import org.ff4j.audit.EventConstants;
 import org.ff4j.audit.EventQueryDefinition;
 import org.ff4j.audit.EventSeries;
 import org.ff4j.audit.MutableHitCount;
@@ -139,7 +138,7 @@ public class EventRepositoryRedis extends AbstractEventRepository {
         try {
             jedis = getJedis();
             long timeStamp = evt.getTimestamp();
-            String hashId = this.getHashKey(evt.getTimestamp(), evt.getAction());
+            String hashId = this.getHashKey(evt.getTimestamp());
             evt.setUuid(String.valueOf(timeStamp));
             jedis.zadd(hashId, timeStamp, objectMapper.writeValueAsString(evt));
             return true;
@@ -153,13 +152,9 @@ public class EventRepositoryRedis extends AbstractEventRepository {
         }
     }
 
-    private String getHashKey(long timestamp, String action) {
-        String hashId = KEY_EVENT;
-        if (action != null) {
-            hashId += RedisContants.KEY_EVENT_AUDIT + "_";
-        }
-        long timeStamp = timestamp;
-        hashId += SDF_KEY.format(new Date(timeStamp));
+    private String getHashKey(long timestamp) {
+        String hashId = KEY_EVENT + RedisContants.KEY_EVENT_AUDIT + "_";
+        hashId += SDF_KEY.format(new Date(timestamp));
         return hashId;
     }
 
@@ -171,7 +166,7 @@ public class EventRepositoryRedis extends AbstractEventRepository {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            String hashKey = getHashKey(timestamp, null);
+            String hashKey = getHashKey(timestamp);
             
             // Check for the event within 100ms time range passed, hoping there won't be more than 10 for this.
             Set<String> events = jedis.zrangeByScore(hashKey, timestamp - 100L, timestamp + 100L, 0, 10);
@@ -271,7 +266,7 @@ public class EventRepositoryRedis extends AbstractEventRepository {
         EventSeries eventSeries = new EventSeries();
         try {
             jedis = getJedis();
-            String hashKey = getHashKey(query.getFrom(), EventConstants.ACTION_CHECK_OK);
+            String hashKey = getHashKey(query.getFrom());
             Set<String> events = jedis.zrangeByScore(hashKey, query.getFrom(), query.getTo(), 0, 100);
             
             // FIXME: Server side pagination model isn't present? This could be a lot of data.
@@ -325,7 +320,7 @@ public class EventRepositoryRedis extends AbstractEventRepository {
         Set<String> events = null;
         try {
             jedis = getJedis();
-            String hashKey = getHashKey(query.getFrom(), null);
+            String hashKey = getHashKey(query.getFrom());
             events = jedis.zrangeByScore(hashKey, query.getFrom(), query.getTo(), 0, UPPER_LIMIT);
         } finally {
             if (jedis != null) {
