@@ -3,6 +3,7 @@ package org.ff4j.mongo.store;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.ff4j.audit.Event;
@@ -15,8 +16,12 @@ import org.ff4j.exception.AuditAccessException;
 import org.ff4j.mongo.MongoDbConstants;
 import org.ff4j.mongo.mapper.EventDocumentBuilder;
 import org.ff4j.mongo.mapper.MongoEventMapper;
+import org.ff4j.utils.Util;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -69,7 +74,7 @@ public class EventRepositoryMongo extends AbstractEventRepository {
     /**
      * Feature collection Name.
      */
-    private String collectionName = MongoDbConstants.DEFAULT_EVENT_COLLECTION;
+    private static final String collectionName = MongoDbConstants.DEFAULT_EVENT_COLLECTION;
 
     /**
      * error message.
@@ -250,10 +255,9 @@ public class EventRepositoryMongo extends AbstractEventRepository {
         // Create the interval depending on units
         TimeSeriesChart tsc = new TimeSeriesChart(query.getFrom(), query.getTo(), tu);
         // Search All events
-        Iterator<Event> iterEvent = searchFeatureUsageEvents(query).iterator();
         // Dispatch events into time slots
-        while (iterEvent.hasNext()) {
-            tsc.addEvent(iterEvent.next());
+        for (Event event : searchFeatureUsageEvents(query)) {
+            tsc.addEvent(event);
         }
         return tsc;
     }
@@ -263,41 +267,46 @@ public class EventRepositoryMongo extends AbstractEventRepository {
      */
     @Override
     public EventSeries searchFeatureUsageEvents(EventQueryDefinition qDef) {
-        return searchEvents(eventDocumentBuilder.getSelectFeatureUsageQuery(qDef));
+        return searchEvents(eventDocumentBuilder.getSelectFeatureUsageFilters(qDef));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public EventSeries getAuditTrail(EventQueryDefinition query) {
-        return new EventSeries();
+    public EventSeries getAuditTrail(EventQueryDefinition qDef) {
+        return searchEvents(eventDocumentBuilder.getSelectAuditTrailFilters(qDef));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void purgeAuditTrail(EventQueryDefinition query) {
+    public void purgeAuditTrail(EventQueryDefinition qDef) {
+        Util.assertNotNull(qDef);
+        getEventCollection().deleteMany(Filters.and(eventDocumentBuilder.getPurgeAuditTrailFilters(qDef)));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void purgeFeatureUsage(EventQueryDefinition query) {
+    public void purgeFeatureUsage(EventQueryDefinition qDef) {
+        Util.assertNotNull(qDef);
+        // Enforce removing events for feature usage
+        getEventCollection().deleteMany(Filters.and(eventDocumentBuilder.getPurgeFeatureUsageFilters(qDef)));
     }
 
     /**
-     * Search for events basedon filters
+     * Search for events based on filters
      *
-     * @param filters
-     * @return
+     * @param filters filters
+     * @return event series
      */
     private EventSeries searchEvents(List<Bson> filters) {
         EventSeries es = new EventSeries();
 
-        getEventCollection().aggregate(filters)
+        getEventCollection().find(Filters.and(filters))
                 .forEach((Consumer<Document>) document -> es.add(eventMapper.fromStore(document)));
 
         return es;
