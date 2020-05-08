@@ -53,7 +53,7 @@ public final class EventDocumentBuilder {
      * @return internal mongo object
      */
     public Document getEventUuid(String value) {
-        return new Document(EVENT_UUID, value);
+        return new Document(ATTRIBUTE_ID, value);
     }
 
     /**
@@ -63,7 +63,7 @@ public final class EventDocumentBuilder {
      * @return
      */
     public EventDocumentBuilder addEventUuid(String value) {
-        builder.append(EVENT_UUID, value);
+        builder.append(ATTRIBUTE_ID, value);
         return this;
     }
 
