@@ -75,7 +75,11 @@ public class MongoDbConstants {
     /** Custom Properties. */
     public static final String MONGO_SET = "$set";
 
-    
+    // ------- AUDIT -------------
+
+    /** Identifier */
+    public static final String EVENT_UUID = "_id";
+
     /** Constructor. */
     private MongoDbConstants() {}
     

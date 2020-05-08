@@ -1,7 +1,32 @@
 package org.ff4j.mongo.store;
 
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.ff4j.audit.Event;
+import org.ff4j.audit.EventQueryDefinition;
+import org.ff4j.audit.EventSeries;
+import org.ff4j.audit.MutableHitCount;
+import org.ff4j.audit.chart.TimeSeriesChart;
+import org.ff4j.audit.repository.AbstractEventRepository;
+import org.ff4j.exception.AuditAccessException;
+import org.ff4j.mongo.MongoDbConstants;
+import org.ff4j.mongo.mapper.EventDocumentBuilder;
+import org.ff4j.mongo.mapper.MongoEventMapper;
+import org.ff4j.utils.Util;
+
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
+
+import static org.ff4j.audit.EventConstants.*;
+import static org.ff4j.mongo.MongoDbConstants.EVENT_UUID;
 
 /*
  * #%L
@@ -23,102 +48,102 @@ import java.util.HashSet;
  * #L%
  */
 
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import org.bson.Document;
-import org.ff4j.audit.Event;
-import org.ff4j.audit.EventQueryDefinition;
-import org.ff4j.audit.EventSeries;
-import org.ff4j.audit.MutableHitCount;
-import org.ff4j.audit.chart.TimeSeriesChart;
-import org.ff4j.audit.repository.AbstractEventRepository;
-import org.ff4j.mongo.MongoDbConstants;
-import org.ff4j.mongo.mapper.MongoEventMapper;
-
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-
 /**
  * Implementation of EventRepository for Mongo.
  *
  * @author Cedrick LUNVEN (@clunven)
+ * @author Curtis White (@drizztguen77)
  */
 public class EventRepositoryMongo extends AbstractEventRepository {
-    
-    /** Event Mapping. */
-    private static final MongoEventMapper EMAPPER = new MongoEventMapper();
-    
-    /** MongoDB collection. */
+
+    /**
+     * Event Mapping.
+     */
+    private static final MongoEventMapper eventMapper = new MongoEventMapper();
+
+    /**
+     * Build fields.
+     */
+    private static final EventDocumentBuilder eventDocumentBuilder = new EventDocumentBuilder();
+
+    /**
+     * MongoDB collection.
+     */
     private MongoCollection<Document> eventsCollection;
-    
-    /** Feature collection Name. */
-    private String collectionName = MongoDbConstants.DEFAULT_EVENT_COLLECTION;
-    
-    /** Database name. */
+
+    /**
+     * Feature collection Name.
+     */
+    private static final String collectionName = MongoDbConstants.DEFAULT_EVENT_COLLECTION;
+
+    /**
+     * error message.
+     */
+    public static final String EVENT_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY = "Event identifier cannot be null nor empty";
+
+    /**
+     * Database name.
+     */
     private String dbName = MongoDbConstants.DEFAULT_DBNAME;
-    
-    /** Current mongo client. */
+
+    /**
+     * Current mongo client.
+     */
     private MongoClient mongoClient;
-    
+
     /**
      * Parameterized constructor with collection.
-     * 
-     * @param collection
-     *            the collection to set
+     *
+     * @param client the mongo client
      */
     public EventRepositoryMongo(MongoClient client) {
         this(client, MongoDbConstants.DEFAULT_DBNAME);
     }
-    
+
     /**
      * Parameterized constructor with collection.
-     * 
-     * @param collection
-     *            the collection to set
+     *
+     * @param client the mongo client
+     * @param dbName the database name
      */
     public EventRepositoryMongo(MongoClient client, String dbName) {
-        this.dbName      = dbName;
+        this.dbName = dbName;
         this.mongoClient = client;
         this.eventsCollection = getEventCollection();
     }
-    
+
     /**
      * Parameterized constructor with collection.
-     * 
-     * @param collection
-     *            the collection to set
+     *
+     * @param events a list of events
      */
     public EventRepositoryMongo(MongoCollection<Document> events) {
         this.eventsCollection = events;
-    }       
-    
+    }
+
     /**
      * Parameterized constructor with collection.
-     * 
-     * @param collection
-     *            the collection to set
+     *
+     * @param db the mongo database
      */
     public EventRepositoryMongo(MongoDatabase db) {
         this(db, MongoDbConstants.DEFAULT_EVENT_COLLECTION);
     }
-    
+
     /**
      * Parameterized constructor with collection.
-     * 
-     * @param collection
-     *            the collection to set
+     *
+     * @param db             the mongo database
+     * @param collectionName collection name
      */
     public EventRepositoryMongo(MongoDatabase db, String collectionName) {
         this.eventsCollection = db.getCollection(collectionName);
     }
-    
+
     /**
      * Getter accessor for attribute 'featuresCollection'.
      *
-     * @return
-     *       current value of 'featuresCollection'
+     * @return current value of 'featuresCollection'
      */
     public MongoCollection<Document> getEventCollection() {
         if (eventsCollection == null) {
@@ -130,86 +155,160 @@ public class EventRepositoryMongo extends AbstractEventRepository {
         }
         return eventsCollection;
     }
-    
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void createSchema() {
         if (!mongoClient.getDatabase(dbName)
                 .listCollectionNames()
-                .into(new HashSet<String>())
+                .into(new HashSet<>())
                 .contains(collectionName)) {
             mongoClient.getDatabase(dbName).createCollection(collectionName);
         }
         eventsCollection = mongoClient.getDatabase(dbName).getCollection(collectionName);
     }
-    
-    
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean saveEvent(Event e) {
         if (e == null) {
             throw new IllegalArgumentException("Event cannot be null nor empty");
         }
-        eventsCollection.insertOne(EMAPPER.toStore(e));
+        eventsCollection.insertOne(eventMapper.toStore(e));
         return true;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public Map<String, MutableHitCount> getFeatureUsageHitCount(EventQueryDefinition query) {
-        return new HashMap<String, MutableHitCount>();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public TimeSeriesChart getFeatureUsageHistory(EventQueryDefinition query, TimeUnit tu) {
-        return new TimeSeriesChart();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public EventSeries searchFeatureUsageEvents(EventQueryDefinition query) {        
-        return new EventSeries();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void purgeFeatureUsage(EventQueryDefinition query) {
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Map<String, MutableHitCount> getHostHitCount(EventQueryDefinition query) {
-        return new HashMap<String, MutableHitCount>();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Map<String, MutableHitCount> getUserHitCount(EventQueryDefinition query) {
-        return new HashMap<String, MutableHitCount>();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Map<String, MutableHitCount> getSourceHitCount(EventQueryDefinition query) {
-        return new HashMap<String, MutableHitCount>();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public EventSeries getAuditTrail(EventQueryDefinition query) {
-        return new EventSeries();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void purgeAuditTrail(EventQueryDefinition query) {
-    }
-
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Event getEventByUUID(String uuid, Long timestamp) {
-        return null;
+        if (uuid == null || uuid.isEmpty()) {
+            throw new IllegalArgumentException(EVENT_IDENTIFIER_CANNOT_BE_NULL_NOR_EMPTY);
+        }
+        Document object = getEventCollection().find(eventDocumentBuilder.getEventUuid(uuid)).first();
+        if (object == null) {
+            throw new AuditAccessException(uuid);
+        }
+        return eventMapper.fromStore(object);
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, MutableHitCount> getFeatureUsageHitCount(EventQueryDefinition query) {
+        return computeHitCount(query, ATTRIBUTE_NAME);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, MutableHitCount> getHostHitCount(EventQueryDefinition query) {
+        return computeHitCount(query, ATTRIBUTE_HOST);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, MutableHitCount> getUserHitCount(EventQueryDefinition query) {
+        return computeHitCount(query, ATTRIBUTE_USER);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, MutableHitCount> getSourceHitCount(EventQueryDefinition query) {
+        return computeHitCount(query, ATTRIBUTE_SOURCE);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    private Map<String, MutableHitCount> computeHitCount(EventQueryDefinition query, String attr) {
+
+        Map<String, MutableHitCount> mapofHitCount = new HashMap<>();
+        getEventCollection().aggregate(eventDocumentBuilder.buildHitCountFilters(query, attr)
+        ).forEach((Consumer<Document>) document -> {
+            if (null != document.get(EVENT_UUID)) {
+                mapofHitCount.put(document.get(EVENT_UUID).toString(), new MutableHitCount((Integer) document.get("NB")));
+            } else {
+                mapofHitCount.put(attr, new MutableHitCount(0));
+            }
+        });
+
+        return mapofHitCount;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public TimeSeriesChart getFeatureUsageHistory(EventQueryDefinition query, TimeUnit tu) {
+        // Create the interval depending on units
+        TimeSeriesChart tsc = new TimeSeriesChart(query.getFrom(), query.getTo(), tu);
+        // Search All events
+        // Dispatch events into time slots
+        for (Event event : searchFeatureUsageEvents(query)) {
+            tsc.addEvent(event);
+        }
+        return tsc;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public EventSeries searchFeatureUsageEvents(EventQueryDefinition qDef) {
+        return searchEvents(eventDocumentBuilder.getSelectFeatureUsageFilters(qDef));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public EventSeries getAuditTrail(EventQueryDefinition qDef) {
+        return searchEvents(eventDocumentBuilder.getSelectAuditTrailFilters(qDef));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void purgeAuditTrail(EventQueryDefinition qDef) {
+        Util.assertNotNull(qDef);
+        getEventCollection().deleteMany(Filters.and(eventDocumentBuilder.getPurgeAuditTrailFilters(qDef)));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void purgeFeatureUsage(EventQueryDefinition qDef) {
+        Util.assertNotNull(qDef);
+        // Enforce removing events for feature usage
+        getEventCollection().deleteMany(Filters.and(eventDocumentBuilder.getPurgeFeatureUsageFilters(qDef)));
+    }
+
+    /**
+     * Search for events based on filters
+     *
+     * @param filters filters
+     * @return event series
+     */
+    private EventSeries searchEvents(List<Bson> filters) {
+        EventSeries es = new EventSeries();
+
+        getEventCollection().find(Filters.and(filters))
+                .forEach((Consumer<Document>) document -> es.add(eventMapper.fromStore(document)));
+
+        return es;
+    }
 }
