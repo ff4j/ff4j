@@ -10,14 +10,6 @@ package org.ff4j.aop;
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License. #L%
  */
-import static org.ff4j.utils.MappingUtil.instanceFlippingStrategy;
-import static org.ff4j.utils.MappingUtil.toMap;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import javax.lang.model.type.NullType;
-
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.ff4j.FF4j;
@@ -35,6 +27,13 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+
+import javax.lang.model.type.NullType;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import static org.ff4j.utils.MappingUtil.instanceFlippingStrategy;
+import static org.ff4j.utils.MappingUtil.toMap;
 
 /**
  * At runtime check presence of annotation @{Flip}, then evaluate if the related feature id is enabled.
@@ -66,31 +65,38 @@ public class FeatureAdvisor implements MethodInterceptor {
         	
         	String alterBean    = ff4jAnnotation.alterBean();
         	Class<?> alterClazz = ff4jAnnotation.alterClazz();
-        	boolean isFeatureToggled = check(ff4jAnnotation, mi);
-        	
-        	// Would like to skip if feature is Disable
-        	if (!Util.hasLength(alterBean) && !Util.isValidClass(alterClazz) && !isFeatureToggled) {
-        		return null;
-        	}
-        	
-        	// Feature is 'ON'
-        	if (isFeatureToggled) {
-	            // Do we use the alter bean defined in the annotation ?
-	            if (Util.hasLength(alterBean)
-	                    // Bean name exist
-	                    && appCtx.containsBean(alterBean)   
-	                    // Bean name is not the same as current
-	                    && !alterBean.equals(getExecutedBeanName(mi))) {
-	                return invokeAlterBean(mi, alterBean);
-	            }
-	            
-	            // Or else do we use the alter class defined in the annotation ?
-	            if (Util.isValidClass(alterClazz) 
-	                    // Alter class is not the same as current
-	                    & (alterClazz != getExecutedClass(mi))) {
-	                return invokeAlterClazz(mi, ff4jAnnotation);
-	            }
-        	}
+
+        	if(Util.hasLength(alterBean) || Util.isValidClass(alterClazz)) {
+
+        	    boolean usingAlterBean = Util.hasLength(alterBean) && appCtx.containsBean(alterBean);
+        	    boolean usingAlterClazz = Util.isValidClass(alterClazz);
+
+        	    // if the alterBean or alterClazz is invoked, then checking the FeatureToggle is useless
+        	    if((usingAlterBean && alterBean.equals(getExecutedBeanName(mi))) || (usingAlterClazz && alterClazz == getExecutedClass(mi))) {
+                    // no need to check FeatureToggle
+                    return mi.proceed();
+                }
+
+                boolean isFeatureToggled = check(ff4jAnnotation, mi);
+
+                // Feature is 'ON'
+                if (isFeatureToggled) {
+                    // Do we use the alter bean defined in the annotation ?
+                    if (usingAlterBean) {
+                        return invokeAlterBean(mi, alterBean);
+                    }
+
+                    // Or else do we use the alter class defined in the annotation ?
+                    if (usingAlterClazz) {
+                        return invokeAlterClazz(mi, ff4jAnnotation);
+                    }
+                }
+            } else {
+                // Would like to skip if feature is Disable
+        	    if(!check(ff4jAnnotation, mi)) {
+        	        return null;
+                }
+            }
         }
         // No feature toggle (no annotation nor feature OFF)
         return mi.proceed();
