@@ -35,6 +35,7 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.security.AuthorizationsManager;
+import org.ff4j.utils.Util;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -62,8 +63,9 @@ public abstract class AbstractFf4jTest implements TestConstantsFF4j {
     public void setUp() throws Exception {
         // Create MOCK
         mockAuthManager = mock(AuthorizationsManager.class);
-        when(mockAuthManager.getCurrentUserPermissions()).thenReturn(new HashSet<String>(Arrays.asList(new String[] {"ROLEA"})));
-        when(mockAuthManager.listAllPermissions()).thenReturn(new HashSet<String>(Arrays.asList(new String[] {"ROLEA","ROLEB"})));
+        when(mockAuthManager.isAllowed(Util.set("ROLEA"))).thenReturn(true);
+        when(mockAuthManager.getCurrentUserPermissions()).thenReturn(Util.set("ROLEA"));
+        when(mockAuthManager.listAllPermissions()).thenReturn(Util.set("ROLEA","ROLEB"));
         when(mockAuthManager.toJson()).thenReturn("{ value : 1 }");
         
         // Create MOCK

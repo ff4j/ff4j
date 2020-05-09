@@ -26,9 +26,9 @@ import static org.ff4j.audit.EventConstants.SOURCE_JAVA;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 import org.ff4j.audit.EventBuilder;
 import org.ff4j.audit.EventPublisher;
@@ -253,26 +253,17 @@ public class FF4j {
     /**
      * Load SecurityProvider roles (e.g : SpringSecurity GrantedAuthorities)
      * 
-     * @param featureName
+     * @param feature
      *            target name of the feature
      * @return if the feature is allowed
      */
-    public boolean isAllowed(Feature featureName) {
+    public boolean isAllowed(Feature feature) {
         // No authorization manager, returning always true
-        if (getAuthorizationsManager() == null) {
-            return true;
-        }
+        return (getAuthorizationsManager() == null) || 
         // if no permissions, the feature is public
-        if (featureName.getPermissions().isEmpty()) {
-            return true;
-        }
-        Set<String> userRoles = getAuthorizationsManager().getCurrentUserPermissions();
-        for (String expectedRole : featureName.getPermissions()) {
-            if (userRoles.contains(expectedRole)) {
-                return true;
-            }
-        }
-        return false;
+        (feature.getPermissions().isEmpty()) ||
+        // delegating evaluation to authorization manager
+        getAuthorizationsManager().isAllowed(feature.getPermissions());
     }
 
     /**

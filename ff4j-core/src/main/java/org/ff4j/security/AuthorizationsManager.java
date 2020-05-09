@@ -21,6 +21,19 @@ import java.util.Set;
 public interface AuthorizationsManager {
 
     /**
+     * Connected user should have on the feature permissions.
+     * 
+     * @param permissions
+     *      feature permissions
+     * @return
+     *      if current login user has one the permission 
+     */
+    default boolean isAllowed(Set<String> permissions) {
+        permissions.retainAll(getCurrentUserPermissions());
+        return !permissions.isEmpty();
+    }
+    
+    /**
      * Retrieve logged user name (audit purposes).
      *
      * @return
