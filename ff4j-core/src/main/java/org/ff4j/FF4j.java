@@ -120,7 +120,7 @@ public class FF4j {
     private boolean initialized = false;
 
     /** Hold flipping execution context as Thread-safe data. */
-    private ThreadLocal<FlippingExecutionContext> currentExecutionContext = new ThreadLocal<FlippingExecutionContext>();
+    private ThreadLocal<FlippingExecutionContext> flippingExecutionContext = new ThreadLocal<FlippingExecutionContext>();
     
     /**
      * This attribute indicates when call the alter bean throw de {@link InvocationTargetException}
@@ -166,7 +166,7 @@ public class FF4j {
      * @return current feature status
      */
     public boolean check(String featureID) {
-        return check(featureID, currentExecutionContext.get());
+        return check(featureID, flippingExecutionContext.get());
     }
 
     /**
@@ -193,7 +193,7 @@ public class FF4j {
         }
         
         // Update current context
-        currentExecutionContext.set(executionContext);
+        flippingExecutionContext.set(executionContext);
         
         // Any access is logged into audit system
         publishCheck(featureID, flipped);
@@ -228,7 +228,7 @@ public class FF4j {
      * @return
      */
     public boolean checkOveridingStrategy(String featureID, FlippingStrategy strats) {
-        return checkOveridingStrategy(featureID, strats, currentExecutionContext.get());
+        return checkOveridingStrategy(featureID, strats, flippingExecutionContext.get());
     }
 
     /**
@@ -733,7 +733,7 @@ public class FF4j {
         
         // Execution Context
         FlippingExecutionContext context = new FlippingExecutionContext();
-        this.currentExecutionContext.set(context);
+        this.flippingExecutionContext.set(context);
         
         // Event Publisher
         if (eventPublisher == null) {
@@ -828,10 +828,10 @@ public class FF4j {
             init();
         }
         
-        if (null == this.currentExecutionContext.get()) {
-            this.currentExecutionContext.set(new FlippingExecutionContext());
+        if (null == this.flippingExecutionContext.get()) {
+            this.flippingExecutionContext.set(new FlippingExecutionContext());
         }
-        return this.currentExecutionContext.get();
+        return this.flippingExecutionContext.get();
     }
 
     /**
@@ -841,7 +841,7 @@ public class FF4j {
      *      The new current context
      */
     public void setCurrentContext(FlippingExecutionContext executionContext) {
-        this.currentExecutionContext.set(executionContext);
+        this.flippingExecutionContext.set(executionContext);
     }
 
     /**
@@ -886,7 +886,7 @@ public class FF4j {
      * Clear context.
      */
     public void removeCurrentContext() {
-        this.currentExecutionContext.remove();
+        this.flippingExecutionContext.remove();
     }
 
     /**
@@ -1035,6 +1035,15 @@ public class FF4j {
     public boolean isAlterBeanThrowInvocationTargetException() {
         return alterBeanThrowInvocationTargetException;
     }
-    
+
+    /**
+     * Setter accessor for attribute 'flippingExecutionContext'.
+     *
+     * @param flippingExecutionContext
+     * 		new value for 'flippingExecutionContext '
+     */
+    public void setFlippingExecutionContext(ThreadLocal<FlippingExecutionContext> flippingExecutionContext) {
+        this.flippingExecutionContext = flippingExecutionContext;
+    }
     
 }
