@@ -28,7 +28,7 @@ import java.util.Set;
  * @author Cedrick Lunven (@clunven)
  */
 public abstract class AbstractAuthorizationManager implements AuthorizationsManager {
-
+    
     /** {@inheritDoc} */
     @Override
     public String toString() {

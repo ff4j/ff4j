@@ -139,7 +139,7 @@
         <easymock.version>3.1</easymock.version>
         <swagger.version>2.2.2</swagger.version>
         <meanbean.version>2.0.3</meanbean.version>
-
+        <apache.shiro.version>1.5.3</apache.shiro.version>
         <apache.ignite.version>2.7.5</apache.ignite.version>
     </properties>
 
@@ -157,11 +157,12 @@
         <module>ff4j-web</module>
         <module>ff4j-webapi</module>
         <module>ff4j-webapi-jersey2x</module>
-
         <module>ff4j-utils-json</module>
-        <module>ff4j-security-spring</module>
-        <module>ff4j-strategy-drools</module>
 
+        <!-- Authorization Manager -->
+        <module>ff4j-security-spring</module>
+        <module>ff4j-security-shiro</module>
+        
         <!-- Stores -->
         <module>ff4j-store-archaius</module>
         <module>ff4j-store-arangodb</module>
@@ -182,6 +183,10 @@
         <module>ff4j-store-springjdbc</module>
         <module>ff4j-store-couchbase</module>
         <module>ff4j-store-couchdb</module>
+
+        <!--Custom Flipping Strategy -->
+        <module>ff4j-strategy-drools</module>
+
     </modules>
 
 

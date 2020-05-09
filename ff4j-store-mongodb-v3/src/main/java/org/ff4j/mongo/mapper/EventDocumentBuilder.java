@@ -1,18 +1,35 @@
 package org.ff4j.mongo.mapper;
 
-import com.mongodb.client.model.Accumulators;
-import com.mongodb.client.model.Aggregates;
-import com.mongodb.client.model.Filters;
-import org.bson.Document;
-import org.bson.conversions.Bson;
-import org.ff4j.audit.EventQueryDefinition;
+import static org.ff4j.audit.EventConstants.ACTION_CHECK_OK;
+import static org.ff4j.audit.EventConstants.ACTION_CLEAR;
+import static org.ff4j.audit.EventConstants.ACTION_CONNECT;
+import static org.ff4j.audit.EventConstants.ACTION_CREATE;
+import static org.ff4j.audit.EventConstants.ACTION_DELETE;
+import static org.ff4j.audit.EventConstants.ACTION_DISCONNECT;
+import static org.ff4j.audit.EventConstants.ACTION_TOGGLE_OFF;
+import static org.ff4j.audit.EventConstants.ACTION_TOGGLE_ON;
+import static org.ff4j.audit.EventConstants.ACTION_UPDATE;
+import static org.ff4j.audit.EventConstants.ATTRIBUTE_ACTION;
+import static org.ff4j.audit.EventConstants.ATTRIBUTE_HOST;
+import static org.ff4j.audit.EventConstants.ATTRIBUTE_ID;
+import static org.ff4j.audit.EventConstants.ATTRIBUTE_NAME;
+import static org.ff4j.audit.EventConstants.ATTRIBUTE_SOURCE;
+import static org.ff4j.audit.EventConstants.ATTRIBUTE_TIME;
+import static org.ff4j.audit.EventConstants.ATTRIBUTE_TYPE;
+import static org.ff4j.audit.EventConstants.ATTRIBUTE_USER;
+import static org.ff4j.audit.EventConstants.TARGET_FEATURE;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.ff4j.audit.EventConstants.*;
-import static org.ff4j.mongo.MongoDbConstants.EVENT_UUID;
+import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.ff4j.audit.EventQueryDefinition;
+
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Filters;
 
 /*
  * #%L
