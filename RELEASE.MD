@@ -1,10 +1,70 @@
- 
  # Release Workflow
 
- The following document should be used to help people from the team 
- to release a new version of `ff4j`
+The following document should be used to help people from the team to release a new version of `ff4j`
 
-## 1. Environment Setup
+## Release Check LIST
+
+### ff4j
+- Start the `ssh-agent` 
+```
+eval "$(ssh-agent -s)"
+```
+- Add the ssh Jey to tge agen
+```
+cd ~/.ssh
+ssh-add githubff4j
+```
+- Update sources
+```
+find . -type f -name *.DS_Store -ls -delete
+git pull
+git add -A
+git commit -m "delivery"
+git push
+```
+- Release
+```
+mvn release:prepare release:perform
+```
+- Go to github to [taglist](https://github.com/ff4j/ff4j/tags) the create release
+- Create a release note document
+```
+`Fixes:`
+ + XXX (#000)
+`Evolutions`
+ + YYY (#000)
+```
+
+### ff4j-spring-boot-starter
+- go to the spring-boot-starter
+```
+find . -type f -name *.DS_Store -ls -delete
+git pull
+```
+- Change ff4j version in the `pom.xml` ex:1.8.x
+- Check build `mvn clean install`
+- Push modifications
+```
+git add -A
+git commit -m "bump ff4j version to 1.8.x"
+git push
+```
+- Release
+```
+mvn release:prepare release:perform
+```
+- Update samples to use the latest version and build
+- Build the `ff4j-demo` docker image and push
+```
+mvn clean package dockerfile:build
+docker login
+docker push clunven/ff4j-sample:1.8.x
+```
+- Update ff4g.org getting started guide
+- Twitter with release node
+- Open Collective
+
+## Environment Setup
 
 To release artefacts in the Maven Central you should have installed on your machine.
  - Apache Maven
@@ -12,6 +72,7 @@ To release artefacts in the Maven Central you should have installed on your mach
  - Git
  - SSH
  - Gnu GPG *(any tool to create gpg keys)*
+
 
 ### 1.1. Connect to github via SSH
 
@@ -78,7 +139,7 @@ At the prompt, type a secure passphrase. For more information, see "Working with
 eval "$(ssh-agent -s)"
 ```
 
-If you're using macOS Sierra 10.12.2 or later, you will need to modify your ~/.ssh/config file to automatically load keys into the ssh-agent and store passphrases in your keychain.
+If you're using macOS Sierra 10.12.2 or later, you will need to modify your ~/.ssh/config file to automatically load keys into the ssh-agent and store passphrases in your keychain
 
 ```
 Host *
