@@ -1,6 +1,4 @@
-<img src="http://ff4j.github.io/images/ff4j.png" height="120px" />
-
-## ✨✨✨ FF4J - Feature Flipping for Java ✨✨✨
+# ✨✨✨ FF4J - Feature Flipping for Java ✨✨✨
 
 [![Build Status](https://travis-ci.org/ff4j/ff4j.svg?branch=master)](https://travis-ci.org/ff4j/ff4j)
 [![Backers on Open Collective](https://opencollective.com/ff4j/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/ff4j/sponsors/badge.svg)](#sponsors) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.ff4j/ff4j-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.ff4j/ff4j-core/) 
@@ -11,7 +9,10 @@
 [![License Apache2](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![SourceSpy Dashboard](https://sourcespy.com/shield.svg)](https://sourcespy.com/github/ff4jff4j/)
 
-FF4j is an implementation of [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html) pattern.
+
+<img src="http://ff4j.github.io/images/ff4j.png" height="100px" />
+
+FF4j, is an implementation of the [Feature Toggle](http://martinfowler.com/bliki/FeatureToggle.html) pattern.
 
 ## 🤘Features
 
@@ -44,13 +45,17 @@ Administrate FF4j (including features and properties) with the web UI. Packaged 
 
 - **JMX and MBeans** Limited set of operations can be performed through JMX. ff4j exposes some Mbeans to read metrics or toggle features from external tools (Nagios...). Not all applications are web based.(batches, shell, standalone...)
 
-<img src="http://ff4j.org/images/feature_08_technos.png" /> 
-
 More information can be found at [ff4j.org](http://ff4j.org) or 
 [Reference Documentation](https://github.com/ff4j/ff4j/wiki) in the wiki.
 
 
-### 👀 Screenshot
+<img src="http://ff4j.org/images/feature_08_technos.png" /> 
+
+## 🔨 Getting Started
+
+[Check the Getting started here](http://ff4j.org/#10min)
+
+## 👀 Screenshot
 
 Home Page
 <img src="http://ff4j.github.io/wiki/console-1.6-home.png" /> 
@@ -61,7 +66,7 @@ Features
 Monitoring
 <img src="http://ff4j.github.io/wiki/console-1.6-monitoring.png" /> 
 
-## Contributors
+## 👤Contributors
 
 This project exists thanks to all the people who contribute. [[Contribute]](CONTRIBUTING.md).
 <a href="https://github.com/ff4j/ff4j/graphs/contributors"><img src="https://opencollective.com/ff4j/contributors.svg?width=890" /></a>
