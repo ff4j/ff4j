@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.ff4j</groupId>
     <artifactId>ff4j-parent</artifactId>
-    <version>1.8.6</version>
+    <version>1.8.7-SNAPSHOT</version>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <!-- ~ MAIN INFO ~ -->
@@ -33,7 +33,7 @@
         <connection>scm:git:git@github.com:ff4j/ff4j.git</connection>
         <developerConnection>scm:git:git@github.com:ff4j/ff4j.git</developerConnection>
         <url>git@github.com:ff4j/ff4j.git</url>
-        <tag>1.8.6</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
