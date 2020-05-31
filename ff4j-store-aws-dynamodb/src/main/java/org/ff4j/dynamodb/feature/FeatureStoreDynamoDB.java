@@ -134,6 +134,7 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
     @Deprecated
     public FeatureStoreDynamoDB(String tableName) {
         this(AmazonDynamoDBClientBuilder.defaultClient(), tableName);
+        LOGGER.warn("Constructor deprecated, you should use ff4j-dynamodb.properties instead");
     }
 
     /**
@@ -155,6 +156,7 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
     @Deprecated
     public FeatureStoreDynamoDB(AmazonDynamoDB amazonDynamoDB, String tableName) {
         initStore(amazonDynamoDB, tableName);
+        LOGGER.warn("Constructor deprecated, you should use ff4j-dynamodb.properties instead");
     }
 
     /************************************************************************************************************/
