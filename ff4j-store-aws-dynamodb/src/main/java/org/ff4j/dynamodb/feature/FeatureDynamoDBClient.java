@@ -213,7 +213,7 @@ public class FeatureDynamoDBClient extends DynamoDBClient<Feature> {
                 .withKeySchema(new KeySchemaElement(FEATURE_GROUP, KeyType.HASH))
                 .withProjection(new Projection().withProjectionType(ProjectionType.ALL));
 
-        if (billingMode.equals(BillingMode.PROVISIONED)) {
+        if (BillingMode.PROVISIONED.equals(billingMode)) {
             globalSecondaryIndex.setProvisionedThroughput(new ProvisionedThroughput(billingRCU, billingWCU));
         }
 
@@ -227,7 +227,7 @@ public class FeatureDynamoDBClient extends DynamoDBClient<Feature> {
                 .withTableName(tableName);
 
         request.setBillingMode(billingMode.toString());
-        if (billingMode.equals(BillingMode.PROVISIONED)) {
+        if (BillingMode.PROVISIONED.equals(billingMode)) {
             request.setProvisionedThroughput(new ProvisionedThroughput(billingRCU, billingWCU));
         }
 

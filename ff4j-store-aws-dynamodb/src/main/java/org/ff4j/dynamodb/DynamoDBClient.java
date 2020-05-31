@@ -37,6 +37,9 @@ import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 
+import static org.ff4j.dynamodb.DynamoDBConstants.DEFAULT_RCU;
+import static org.ff4j.dynamodb.DynamoDBConstants.DEFAULT_WCU;
+
 /**
  * @author <a href="mailto:jeromevdl@gmail.com">Jerome VAN DER LINDEN</a>
  */
@@ -47,9 +50,9 @@ public abstract class DynamoDBClient<T> {
     protected String tableName;
     protected String key;
     protected Table table;
-    protected BillingMode billingMode;
-    protected Long billingRCU;
-    protected Long billingWCU;
+    protected BillingMode billingMode = BillingMode.PROVISIONED;
+    protected Long billingRCU = DEFAULT_RCU;
+    protected Long billingWCU = DEFAULT_WCU;
 
     /**
      * @deprecated table name will soon be removed from the constructor, use the ff4j-dynamodb.properties file instead
@@ -94,6 +97,8 @@ public abstract class DynamoDBClient<T> {
                 e.printStackTrace();
             }
             loadProperties(prop);
+        } else {
+
         }
     }
 

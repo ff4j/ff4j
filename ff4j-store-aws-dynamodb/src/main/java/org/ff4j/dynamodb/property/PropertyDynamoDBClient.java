@@ -139,7 +139,7 @@ class PropertyDynamoDBClient extends DynamoDBClient<Property<?>> {
                 .withTableName(tableName);
 
         request.setBillingMode(billingMode.toString());
-        if (billingMode.equals(BillingMode.PROVISIONED)) {
+        if (BillingMode.PROVISIONED.equals(billingMode)) {
             request.setProvisionedThroughput(new ProvisionedThroughput(billingRCU, billingWCU));
         }
 
