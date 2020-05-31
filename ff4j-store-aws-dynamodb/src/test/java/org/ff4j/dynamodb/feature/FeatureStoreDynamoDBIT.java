@@ -1,21 +1,14 @@
 package org.ff4j.dynamodb.feature;
 
-import static org.ff4j.test.TestsFf4jConstants.AWESOME;
-import static org.ff4j.test.TestsFf4jConstants.ROLE_TEST;
-
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.test.store.FeatureStoreTestSupport;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.*;
 
-import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import static org.ff4j.test.TestsFf4jConstants.AWESOME;
+import static org.ff4j.test.TestsFf4jConstants.ROLE_TEST;
 
 /*
  * #%L
@@ -37,19 +30,12 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
  * #L%
  */
 
-import cloud.localstack.docker.LocalstackDockerTestRunner;
-import cloud.localstack.docker.annotation.LocalstackDockerProperties;
-
 /**
- * Test using the localstack framework to get AWS stack locally. See https://github.com/localstack/localstack
- * This test needs Docker.
- * If the test fails with timeout, it is probably due to the first download of docker image. In that case, docker pull localstack/localstack.
+ * Run against a real AWS environment.
  *
  * @author <a href="mailto:jeromevdl@gmail.com">Jerome VAN DER LINDEN</a>
  */
-@RunWith(LocalstackDockerTestRunner.class)
-@LocalstackDockerProperties(services = {"dynamodb"})
-// Needs Docker to be installed which is not there is Travis, as such commenting
+// Needs an AWS environment, not available in Travis, this is why it is ignored
 @Ignore
 public class FeatureStoreDynamoDBIT extends FeatureStoreTestSupport {
 
@@ -59,7 +45,6 @@ public class FeatureStoreDynamoDBIT extends FeatureStoreTestSupport {
     @BeforeClass
     public static void init() {
         dynamoDB = AmazonDynamoDBClientBuilder.standard()
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:4569", "eu-central-1"))
                 .build();
         store = new FeatureStoreDynamoDB(dynamoDB);
     }
@@ -69,7 +54,6 @@ public class FeatureStoreDynamoDBIT extends FeatureStoreTestSupport {
         store.clear();
         dynamoDB.shutdown();
     }
-
 
     @Override
     protected FeatureStore initStore() {

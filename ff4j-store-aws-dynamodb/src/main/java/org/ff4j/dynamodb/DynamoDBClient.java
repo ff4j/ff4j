@@ -1,12 +1,21 @@
 package org.ff4j.dynamodb;
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.document.*;
+import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
+import com.amazonaws.services.dynamodbv2.model.BillingMode;
+import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
+import org.ff4j.utils.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
 
-import com.amazonaws.services.dynamodbv2.model.BillingMode;
-import org.ff4j.utils.Util;
+import static org.ff4j.dynamodb.DynamoDBConstants.DEFAULT_RCU;
+import static org.ff4j.dynamodb.DynamoDBConstants.DEFAULT_WCU;
 
 /*
  * #%L
@@ -17,9 +26,9 @@ import org.ff4j.utils.Util;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,28 +37,22 @@ import org.ff4j.utils.Util;
  * #L%
  */
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.document.DynamoDB;
-import com.amazonaws.services.dynamodbv2.document.Item;
-import com.amazonaws.services.dynamodbv2.document.KeyAttribute;
-import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
-import com.amazonaws.services.dynamodbv2.document.Table;
-import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
-import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
-
 /**
  * @author <a href="mailto:jeromevdl@gmail.com">Jerome VAN DER LINDEN</a>
  */
 public abstract class DynamoDBClient<T> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DynamoDBClient.class);
+
 
     private final AmazonDynamoDB amazonDynamoDB;
     protected final DynamoDB dynamoDB;
     protected String tableName;
     protected String key;
     protected Table table;
-    protected BillingMode billingMode;
-    protected Long billingRCU;
-    protected Long billingWCU;
+    protected BillingMode billingMode = BillingMode.PROVISIONED;
+    protected Long billingRCU = DEFAULT_RCU;
+    protected Long billingWCU = DEFAULT_WCU;
 
     /**
      * @deprecated table name will soon be removed from the constructor, use the ff4j-dynamodb.properties file instead
@@ -94,6 +97,8 @@ public abstract class DynamoDBClient<T> {
                 e.printStackTrace();
             }
             loadProperties(prop);
+        } else {
+            LOGGER.warn("You should consider using ff4j-dynamodb.properties to setup the DynamoDB store");
         }
     }
 

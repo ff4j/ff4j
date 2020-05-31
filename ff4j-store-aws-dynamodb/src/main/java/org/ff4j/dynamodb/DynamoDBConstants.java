@@ -33,8 +33,8 @@ public interface DynamoDBConstants {
     String CONFIG_FEATURE_BILLING = "ff4j.store.dynamodb.feature.table.billing";
     String CONFIG_FEATURE_RCU = "ff4j.store.dynamodb.feature.table.billing.rcu";
     String CONFIG_FEATURE_WCU = "ff4j.store.dynamodb.feature.table.billing.wcu";
-    int DEFAULT_RCU = 5;
-    int DEFAULT_WCU = 5;
+    long DEFAULT_RCU = 5;
+    long DEFAULT_WCU = 5;
 
     String PROPERTY_TABLE_NAME = "ff4j-properties";
     String PROPERTY_NAME = "name";

@@ -1,15 +1,19 @@
 package org.ff4j.dynamodb.property;
 
-import static org.ff4j.dynamodb.DynamoDBConstants.PROPERTY_TABLE_NAME;
-
-import java.util.Map;
-import java.util.Set;
-
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.AbstractPropertyStore;
 import org.ff4j.utils.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Map;
+import java.util.Set;
+
+import static org.ff4j.dynamodb.DynamoDBConstants.PROPERTY_TABLE_NAME;
 
 /*
  * #%L
@@ -20,9 +24,9 @@ import org.ff4j.utils.Util;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,9 +34,6 @@ import org.ff4j.utils.Util;
  * limitations under the License.
  * #L%
  */
-
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 
 /**
  * Implementation of {@link org.ff4j.property.store.PropertyStore} using Amazon DynamoDB.<br />
@@ -82,6 +83,8 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
  */
 public class PropertyStoreDynamoDB extends AbstractPropertyStore {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(PropertyStoreDynamoDB.class);
+
     /**
      * Internal DynamoDB client
      */
@@ -109,6 +112,7 @@ public class PropertyStoreDynamoDB extends AbstractPropertyStore {
     @Deprecated
     public PropertyStoreDynamoDB(String tableName) {
         this(AmazonDynamoDBClientBuilder.defaultClient(), tableName);
+        LOGGER.warn("Constructor deprecated, you should use ff4j-dynamodb.properties instead");
     }
 
     /**
@@ -130,6 +134,7 @@ public class PropertyStoreDynamoDB extends AbstractPropertyStore {
     @Deprecated
     public PropertyStoreDynamoDB(AmazonDynamoDB amazonDynamoDB, String tableName) {
         initStore(amazonDynamoDB, tableName);
+        LOGGER.warn("Constructor deprecated, you should use ff4j-dynamodb.properties instead");
     }
 
     /************************************************************************************************************/
