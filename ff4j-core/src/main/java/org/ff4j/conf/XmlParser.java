@@ -175,6 +175,32 @@ public final class XmlParser {
     private static DocumentBuilder builder = null;
    
     /**
+     * " => &quot;
+     * ' => &apos;
+     * < => &lt;
+     * > => &gt;
+     * & => &amp;
+     */
+    public static String escapeXML(String input) {
+        if (null == input) return input;
+        return input
+             .replaceAll("&", "&amp;")
+             .replaceAll(">", "&gt;")
+             .replaceAll("<", "&lt;")
+             .replaceAll("\"", "&quot;")
+             .replaceAll("\'", "&apos;");
+    }
+    
+    public static String unEscapeXML(String input) {
+        if (null == input) return input;
+        return input.replaceAll("&amp;","&")
+             .replaceAll("&gt;", ">")
+             .replaceAll("&lt;", "<")
+             .replaceAll("&quot;", "\"")
+             .replaceAll("&apos;", "'");
+    }
+    
+    /**
      * Parsing of XML Configuration file.
      *
      * @param file
@@ -332,13 +358,15 @@ public final class XmlParser {
             Element propertyTag = (Element) lisOfProperties.item(k);
             NamedNodeMap attMap = propertyTag.getAttributes();
             if (attMap.getNamedItem(PROPERTY_PARAMNAME) == null) {
-                throw new IllegalArgumentException("Invalid XML Syntax, 'name' is a required attribute of 'property' TAG");
+                throw new IllegalArgumentException("Invalid XML Syntax, "
+                        + "'name' is a required attribute of 'property' TAG");
             }
             if (attMap.getNamedItem(PROPERTY_PARAMVALUE) == null) {
-                throw new IllegalArgumentException("Invalid XML Syntax, 'value' is a required attribute of 'property' TAG");
+                throw new IllegalArgumentException("Invalid XML Syntax, "
+                        + "'value' is a required attribute of 'property' TAG");
             }
             String name  = attMap.getNamedItem(PROPERTY_PARAMNAME).getNodeValue();
-            String value = attMap.getNamedItem(PROPERTY_PARAMVALUE).getNodeValue();
+            String value = unEscapeXML(attMap.getNamedItem(PROPERTY_PARAMVALUE).getNodeValue());
             Property<?> ap = new PropertyString(name, value);
             
             // If specific type defined ?
@@ -358,7 +386,9 @@ public final class XmlParser {
             }
             
             if (null != attMap.getNamedItem(PROPERTY_PARAMDESCRIPTION)) {
-                ap.setDescription(attMap.getNamedItem(PROPERTY_PARAMDESCRIPTION).getNodeValue());
+                ap.setDescription(unEscapeXML(
+                        attMap.getNamedItem(PROPERTY_PARAMDESCRIPTION)
+                              .getNodeValue()));
             }
             
             // Is there any fixed Value ?
@@ -368,7 +398,7 @@ public final class XmlParser {
                 NodeList listOfValues =  fixedValueTag.getElementsByTagName(PROPERTY_PARAMVALUE);
                 for (int l = 0; l < listOfValues.getLength(); l++) {
                     Element valueTag = (Element) listOfValues.item(l);
-                    ap.add2FixedValueFromString(valueTag.getTextContent());
+                    ap.add2FixedValueFromString(unEscapeXML(valueTag.getTextContent()));
                 }
             }
             
@@ -421,9 +451,12 @@ public final class XmlParser {
                 currentParamName = nnmap.getNamedItem(FLIPSTRATEGY_PARAMNAME).getNodeValue();
                 // Check for value attribute
                 if (nnmap.getNamedItem(FLIPSTRATEGY_PARAMVALUE) != null) {
-                    parameters.put(currentParamName, nnmap.getNamedItem(FLIPSTRATEGY_PARAMVALUE).getNodeValue());
+                    parameters.put(currentParamName, unEscapeXML(
+                            nnmap.getNamedItem(FLIPSTRATEGY_PARAMVALUE)
+                                 .getNodeValue()));
                 } else if (param.getFirstChild() != null) {
-                    parameters.put(currentParamName, param.getFirstChild().getNodeValue());
+                    parameters.put(currentParamName, unEscapeXML(
+                            param.getFirstChild().getNodeValue()));
                 } else {
                     throw new IllegalArgumentException("Parameter '" + currentParamName + "' in feature '" + uid
                             + "' has no value, please check XML");
@@ -447,7 +480,7 @@ public final class XmlParser {
     private static String parseDescription(NamedNodeMap nnm) {
         String desc = null;
         if (nnm.getNamedItem(FEATURE_ATT_DESC) != null) {
-            desc = nnm.getNamedItem(FEATURE_ATT_DESC).getNodeValue();
+            desc = unEscapeXML(nnm.getNamedItem(FEATURE_ATT_DESC).getNodeValue());
         }
         return desc;
     }
@@ -464,7 +497,10 @@ public final class XmlParser {
         NodeList lisOfAuth = securityTag.getElementsByTagName(SECURITY_ROLE_TAG);
         for (int k = 0; k < lisOfAuth.getLength(); k++) {
             Element role = (Element) lisOfAuth.item(k);
-            authorizations.add(role.getAttributes().getNamedItem(SECURITY_ROLE_ATTNAME).getNodeValue());
+            authorizations.add(unEscapeXML(
+                    role.getAttributes()
+                        .getNamedItem(SECURITY_ROLE_ATTNAME)
+                        .getNodeValue()));
         }
         return authorizations;
     }
@@ -559,8 +595,6 @@ public final class XmlParser {
         return exportAll(conf.getFeatures(), conf.getProperties());
     }
     
-    
-    
     /**
      * Create dedicated output for Properties.
      *
@@ -611,12 +645,12 @@ public final class XmlParser {
             }
             // Loop on feature
             for (Feature feat : groupName.getValue()) {
-                sb.append(MessageFormat.format(XML_FEATURE, feat.getUid(), feat.getDescription(), feat.isEnable()));
+                sb.append(MessageFormat.format(XML_FEATURE, feat.getUid(), escapeXML(feat.getDescription()), feat.isEnable()));
                 // <security>
                 if (null != feat.getPermissions() && !feat.getPermissions().isEmpty()) {
                     sb.append("   <" + SECURITY_TAG + ">\n");
                     for (String auth : feat.getPermissions()) {
-                        sb.append(MessageFormat.format(XML_AUTH, auth));
+                        sb.append(MessageFormat.format(XML_AUTH, escapeXML(auth)));
                     }
                     sb.append("   </" + SECURITY_TAG + ">\n");
                 }
@@ -667,7 +701,7 @@ public final class XmlParser {
             // Loop over property
             for (Property<?> property : props.values()) {
                 sb.append("    <" + PROPERTY_TAG + " " + PROPERTY_PARAMNAME + "=\"" + property.getName() + "\" ");
-                sb.append(PROPERTY_PARAMVALUE + "=\"" + property.asString() + "\" ");
+                sb.append(PROPERTY_PARAMVALUE + "=\"" + escapeXML(property.asString()) + "\" ");
                 if (!(property instanceof PropertyString)) {
                     sb.append(PROPERTY_PARAMTYPE  + "=\"" + property.getClass().getName()  + "\"");
                 }
@@ -676,7 +710,7 @@ public final class XmlParser {
                     sb.append(">\n");
                     sb.append("     <fixedValues>\n");
                     for (Object o : property.getFixedValues()) {
-                        sb.append("      <value>" + o.toString() + "</value>\n");
+                        sb.append("      <value>" + CDATA_START + o.toString() + CDATA_END + "</value>\n");
                     }
                     sb.append("     </fixedValues>\n");
                     sb.append("    </property>\n");
@@ -686,23 +720,6 @@ public final class XmlParser {
             }
         }
         return sb.toString();
-    }
-   
-    /**
-     * Substitution to create XML.
-     *
-     * @param value
-     *      target XML
-     * @return
-     */
-    public String escapeXML(String value) {
-        if (value == null) {
-            return null;
-        }
-        return value.replaceAll("&", "&amp;")
-                    .replaceAll(">", "&gt;")
-                    .replaceAll("<", "&lt;");
-    }
-    
+    } 
 
 }

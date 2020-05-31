@@ -84,7 +84,7 @@ public class EventStoreArangoDB extends AbstractEventRepository {
             log.error(INSERT_EVENT_ERROR, e);
             return false;
         }
-    }
+    } 
 
     /**
      * {@inheritDoc}
