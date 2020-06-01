@@ -138,7 +138,6 @@ public class XmlParserTest {
     
     @Test
     public void testNullValues() throws IOException {
-        XmlParser.escapeXML(null);
         new XmlParser().exportProperties(new HashMap<String, Property<?>>());
     }
 

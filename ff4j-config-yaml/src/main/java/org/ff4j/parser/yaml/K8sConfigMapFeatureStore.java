@@ -1,4 +1,4 @@
-package org.ff4j.store;
+package org.ff4j.parser.yaml;
 
 /*
  * #%L
@@ -23,14 +23,14 @@ package org.ff4j.store;
 import java.util.Map;
 
 import org.ff4j.core.Feature;
+import org.ff4j.store.AbstractFeatureStore;
 
 /**
- * Class to TODO
+ * Read Feature from Environment values.
  *
  * @author Cedrick LUNVEN (@clunven)
- *
  */
-public class EnvironmentVariablesFeatureStore extends AbstractFeatureStore {
+public class K8sConfigMapFeatureStore extends AbstractFeatureStore {
     
     /** Feature prefix. */
     private String prefixKeyFeature = "ff4j.feature";
@@ -39,7 +39,7 @@ public class EnvironmentVariablesFeatureStore extends AbstractFeatureStore {
     private String prefixKeyProperty = "ff4j.property";
     
     /** Default constructor. */
-    public EnvironmentVariablesFeatureStore() {}
+    public K8sConfigMapFeatureStore() {}
     
     /**
      * Constructor with configuration fileName.
@@ -47,7 +47,7 @@ public class EnvironmentVariablesFeatureStore extends AbstractFeatureStore {
      * @param fileName
      *            fileName present in classPath or on fileSystem.
      */
-    public EnvironmentVariablesFeatureStore(String pFeat, String pProp, String fileName) {
+    public K8sConfigMapFeatureStore(String pFeat, String pProp, String fileName) {
         if (fileName == null || fileName.isEmpty()) {
             throw new IllegalArgumentException(
                     "fileName is required, cannot be null nor empty : the file must exist in classpath");

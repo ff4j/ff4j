@@ -1,0 +1,204 @@
+{
+  "ff4j": {
+    "autocreate": false,
+    "audit": false,
+    "features": [
+      {
+        "uid": "AwesomeFeature",
+        "enable": true,
+        "description": "some desc"
+      },
+      {
+        "uid": "first",
+        "enable": true,
+        "description": "description",
+        "permissions": [
+          "USER"
+        ],
+        "custom-properties": [
+          {
+            "name": "myLogLevel",
+            "type": "org.ff4j.property.PropertyLogLevel",
+            "value": "DEBUG",
+            "fixedValues": [
+              "ERROR",
+              "INFO",
+              "FATAL",
+              "TRACE",
+              "DEBUG",
+              "WARN"
+            ]
+          },
+          {
+            "name": "digitValue",
+            "type": "org.ff4j.property.PropertyInt",
+            "value": 1,
+            "fixedValues": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "name": "ppint",
+            "type": "org.ff4j.property.PropertyInt",
+            "value": 12
+          },
+          {
+            "name": "ppstring",
+            "value": "hello"
+          },
+          {
+            "name": "ppdouble",
+            "value": 12.5
+          },
+          {
+            "name": "ppListInt",
+            "value": "12,13,14"
+          },
+          {
+            "name": "ppboolean",
+            "value": true,
+            "fixedValues": [
+              false,
+              true
+            ]
+          },
+          {
+            "name": "regionIdentifier",
+            "type": "org.ff4j.property.PropertyString",
+            "value": "AMER",
+            "fixedValues": [
+              "SSSS",
+              "AMER",
+              "EAST"
+            ]
+          }
+        ]
+      },
+      {
+        "uid": "second",
+        "enable": false,
+        "description": "description",
+        "groupName": "GRP0",
+        "permissions": [
+          "USER"
+        ]
+      },
+      {
+        "uid": "third",
+        "enable": false,
+        "groupName": "GRP1",
+        "permissions": [
+          "ADMINISTRATOR",
+          "BETA-TESTER"
+        ],
+        "flipstrategy": {
+          "class": "org.ff4j.strategy.el.ExpressionFlipStrategy",
+          "param": [
+            {
+              "name": "expression",
+              "value": "third | second"
+            }
+          ]
+        }
+      },
+      {
+        "uid": "forth",
+        "enable": true,
+        "description": "description",
+        "groupName": "GRP1",
+        "permissions": [
+          "ADMINISTRATOR",
+          "BETA-TESTER"
+        ],
+        "flipstrategy": {
+          "class": "org.ff4j.strategy.el.ExpressionFlipStrategy",
+          "param": [
+            {
+              "name": "expression",
+              "value": "third | second"
+            }
+          ]
+        }
+      }
+    ],
+    "properties": [
+      {
+        "name": "a",
+        "value": "AMER",
+        "fixedValues": [
+          "AMER",
+          "EAST"
+        ]
+      },
+      {
+        "name": "b",
+        "type": "short",
+        "value": 12
+      },
+      {
+        "name": "c",
+        "type": "double",
+        "value": 12.5
+      },
+      {
+        "name": "d",
+        "type": "boolean",
+        "value": true,
+        "fixedValues": [
+          false,
+          true
+        ]
+      },
+      {
+        "name": "e",
+        "type": "string",
+        "value": "hello"
+      },
+      {
+        "name": "f",
+        "value": "12,13,14"
+      },
+      {
+        "name": "g",
+        "type": "org.ff4j.property.PropertyLogLevel",
+        "value": "DEBUG",
+        "fixedValues": [
+          "ERROR",
+          "INFO",
+          "FATAL",
+          "TRACE",
+          "DEBUG",
+          "WARN"
+        ]
+      },
+      {
+        "name": "h",
+        "type": "float",
+        "value": 3.4
+      },
+      {
+        "name": "i",
+        "type": "byte",
+        "value": 97
+      },
+      {
+        "name": "j",
+        "type": "biginteger",
+        "value": 100000000
+      },
+      {
+        "name": "k",
+        "type": "bigdecimal",
+        "value": 200000000.1234567
+      },
+      {
+        "name": "l",
+        "type": "long",
+        "value": 1234567890
+      }
+    ]
+  }
+}

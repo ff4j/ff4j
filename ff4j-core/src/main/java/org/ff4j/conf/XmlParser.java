@@ -52,7 +52,7 @@ import org.w3c.dom.NodeList;
  * 
  * @author Cedrick Lunven (@clunven)
  */
-public final class XmlParser {
+public final class XmlParser implements FF4jConfigurationParser<XmlConfig>{
 
     /** TAG XML. */
     public static final String FEATURES_TAG = "features";
@@ -174,40 +174,18 @@ public final class XmlParser {
     /** Document Builder use to parse XML. */
     private static DocumentBuilder builder = null;
    
-    /**
-     * " => &quot;
-     * ' => &apos;
-     * < => &lt;
-     * > => &gt;
-     * & => &amp;
-     */
-    public static String escapeXML(String input) {
-        if (null == input) return input;
-        return input
-             .replaceAll("&", "&amp;")
-             .replaceAll(">", "&gt;")
-             .replaceAll("<", "&lt;")
-             .replaceAll("\"", "&quot;")
-             .replaceAll("\'", "&apos;");
+    /** {@inheritDoc} */
+    @Override
+    public InputStream export(XmlConfig config) {
+        try {
+            return exportAll(config);
+        } catch (IOException e) {
+            throw new IllegalStateException("Cannot export Configuration File");
+        }
     }
     
-    public static String unEscapeXML(String input) {
-        if (null == input) return input;
-        return input.replaceAll("&amp;","&")
-             .replaceAll("&gt;", ">")
-             .replaceAll("&lt;", "<")
-             .replaceAll("&quot;", "\"")
-             .replaceAll("&apos;", "'");
-    }
-    
-    /**
-     * Parsing of XML Configuration file.
-     *
-     * @param file
-     *      target file
-     * @return
-     *      features and properties find within file
-     */
+    /** {@inheritDoc} */
+    @Override
     public XmlConfig parseConfigurationFile(InputStream in) {
         try {
             
@@ -239,6 +217,34 @@ public final class XmlParser {
             throw new IllegalArgumentException("Cannot parse XML data, please check file access ", e);
         }
     }
+    
+    /**
+     * " => &quot;
+     * ' => &apos;
+     * < => &lt;
+     * > => &gt;
+     * & => &amp;
+     */
+    protected static String escapeXML(String input) {
+        if (null == input) return input;
+        return input
+             .replaceAll("&", "&amp;")
+             .replaceAll(">", "&gt;")
+             .replaceAll("<", "&lt;")
+             .replaceAll("\"", "&quot;")
+             .replaceAll("\'", "&apos;");
+    }
+    
+    protected static String unEscapeXML(String input) {
+        if (null == input) return input;
+        return input.replaceAll("&amp;","&")
+             .replaceAll("&gt;", ">")
+             .replaceAll("&lt;", "<")
+             .replaceAll("&quot;", "\"")
+             .replaceAll("&apos;", "'");
+    }
+    
+    
     
     /**
      * Load map of {@link Feature} from an inpustream (containing xml text).
@@ -720,6 +726,8 @@ public final class XmlParser {
             }
         }
         return sb.toString();
-    } 
+    }
+
+     
 
 }

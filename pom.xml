@@ -101,6 +101,7 @@
         <version.jersey1x>1.19</version.jersey1x>
         <version.jersey2x>2.22.1</version.jersey2x>
         <version.httpclient>4.5.5</version.httpclient>
+        <version.snakeyaml>1.24</version.snakeyaml>
 
         <version.swagger>1.5.4</version.swagger>
 
@@ -163,6 +164,9 @@
         <module>ff4j-security-spring</module>
         <module>ff4j-security-shiro</module>
         
+        <!-- Read values from YAML -->
+        <module>ff4j-config-yaml</module>
+        
         <!-- Stores -->
         <module>ff4j-store-archaius</module>
         <module>ff4j-store-arangodb</module>
@@ -171,6 +175,8 @@
         <module>ff4j-store-cassandra</module>
         <module>ff4j-store-commonsconfig</module>
         <module>ff4j-store-consul</module>
+        <module>ff4j-store-couchbase</module>
+        <module>ff4j-store-couchdb</module>
         <module>ff4j-store-ehcache</module>
         <module>ff4j-store-elastic</module>
         <module>ff4j-store-hazelcast</module>
@@ -181,9 +187,7 @@
         <module>ff4j-store-neo4j</module>
         <module>ff4j-store-redis</module>
         <module>ff4j-store-springjdbc</module>
-        <module>ff4j-store-couchbase</module>
-        <module>ff4j-store-couchdb</module>
-
+        
         <!--Custom Flipping Strategy -->
         <module>ff4j-strategy-drools</module>
 
@@ -387,13 +391,18 @@
                 <version>${version.commons-cli}</version>
             </dependency>
 
-
             <dependency>
                 <groupId>io.dropwizard.metrics</groupId>
                 <artifactId>metrics-core</artifactId>
                 <version>${version.metrics}</version>
             </dependency>
 
+			<dependency>
+				<groupId>org.yaml</groupId>
+				<artifactId>snakeyaml</artifactId>
+				<version>${version.snakeyaml}</version>
+			</dependency>
+		
             <!-- Swagger -->
             <dependency>
                 <groupId>io.swagger</groupId>

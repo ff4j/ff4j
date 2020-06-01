@@ -1,0 +1,132 @@
+# -----------------------------
+# Core FF4J
+# -----------------------------
+ff4j: 
+  autocreate: false
+  audit: false
+  
+  # -----------------------------
+  # Bloc features
+  # -----------------------------
+  
+  features:
+  
+    - uid: AwesomeFeature
+      enable: true
+      description: some desc
+      
+    - uid: first
+      enable: true
+      description: description
+      permissions: [USER]
+      custom-properties: 
+        - name: myLogLevel
+          type: org.ff4j.property.PropertyLogLevel
+          value: DEBUG
+          fixedValues: [ERROR, INFO, FATAL, TRACE, DEBUG, WARN]
+        - name: digitValue
+          type: org.ff4j.property.PropertyInt
+          value: 1
+          fixedValues: [0, 1, 2, 3]
+        - name: ppint
+          type: org.ff4j.property.PropertyInt
+          value: 12
+        - name: ppstring
+          #type: org.ff4j.property.PropertyString
+          value: hello
+        - name: ppdouble
+          #type: org.ff4j.property.PropertyDouble
+          value: 12.5
+        - name: ppListInt
+          #type: org.ff4j.property.PropertyString
+          value: 12,13,14
+        - name: ppboolean
+          #type: org.ff4j.property.PropertyBoolean
+          value: true
+          fixedValues: [false, true]
+        - name: regionIdentifier
+          type: org.ff4j.property.PropertyString
+          value: AMER
+          fixedValues: [SSSS, AMER, EAST]
+          
+    - uid: second
+      enable: false
+      description: description
+      groupName: GRP0
+      permissions: [USER]
+      
+    - uid: third
+      enable: false
+      groupName: GRP1
+      permissions: [ADMINISTRATOR, BETA-TESTER]
+      flipstrategy: 
+        class: org.ff4j.strategy.el.ExpressionFlipStrategy
+        param: 
+          - name: expression
+            value: third | second
+            
+    - uid: forth
+      enable: true
+      description: description
+      groupName: GRP1
+      permissions: [ADMINISTRATOR, BETA-TESTER]
+      flipstrategy: 
+        class: org.ff4j.strategy.el.ExpressionFlipStrategy
+        param: 
+          - name: expression
+            value: third | second
+
+  # -----------------------------
+  # Bloc Properties
+  # -----------------------------
+              
+  properties: 
+    - name: a
+      #type: org.ff4j.property.PropertyString
+      value: AMER
+      fixedValues: [AMER, EAST]
+    - name: b
+      #type: org.ff4j.property.PropertyShort
+      type: short
+      value: 12
+    - name: c
+      #type: org.ff4j.property.PropertyDouble
+      type: double
+      value: 12.5
+    - name: d
+      #type: org.ff4j.property.PropertyBoolean
+      type: boolean
+      value: true
+      fixedValues: [false, true]
+    - name: e
+      #type: org.ff4j.property.PropertyString
+      type: string
+      value: hello
+    - name: f
+      #type: org.ff4j.property.PropertyString
+      value: 12,13,14
+    - name: g
+      type: org.ff4j.property.PropertyLogLevel
+      value: DEBUG
+      fixedValues: [ERROR, INFO, FATAL, TRACE, DEBUG, WARN]
+    - name: h
+      #type: org.ff4j.property.PropertyFloat
+      type: float
+      value: 3.4
+    - name: i
+      #type: org.ff4j.property.PropertyByte
+      type: byte
+      value: 97
+    - name: j
+      #type: org.ff4j.property.PropertyBigInteger
+      type: biginteger
+      value: 100000000
+    - name: k
+      #type: org.ff4j.property.PropertyBigDecimal
+      type: bigdecimal
+      value: 200000000.1234567
+    - name: l
+      #type: org.ff4j.property.PropertyLong
+      type: long
+      value: 1234567890
+
