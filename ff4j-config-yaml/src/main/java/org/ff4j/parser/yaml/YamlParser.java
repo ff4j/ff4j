@@ -121,11 +121,11 @@ public class YamlParser implements FF4jConfigurationParser<FF4jConfiguration> {
         if (ff4jYamlMap != null) {
             // Audit
             if (ff4jYamlMap.containsKey(GLOBAL_AUDIT_TAG)) {
-                ff4jConfig.setAudit(Boolean.valueOf(ff4jYamlMap.containsKey(GLOBAL_AUDIT_TAG)));
+                ff4jConfig.setAudit(Boolean.valueOf(ff4jYamlMap.get(GLOBAL_AUDIT_TAG).toString()));
             }
             // AutoCreate
             if (ff4jYamlMap.containsKey(GLOBAL_AUTOCREATE)) {
-                ff4jConfig.setAutoCreate(Boolean.valueOf(ff4jYamlMap.containsKey(GLOBAL_AUTOCREATE)));
+                ff4jConfig.setAutoCreate(Boolean.valueOf(ff4jYamlMap.get(GLOBAL_AUTOCREATE).toString()));
             }
             // Properties
             ff4jConfig.getProperties()
@@ -274,11 +274,11 @@ public class YamlParser implements FF4jConfigurationParser<FF4jConfiguration> {
      */
     private static final <T> String yamlProperty(Property<T> p, int offset) {
         StringBuilder yamlProp = new StringBuilder();
-        yamlProp.append(yamlValue("name", p.getName(), offset, true));
-        yamlProp.append(yamlValue("type", p.getClass().getCanonicalName(), offset+2, false));
-        yamlProp.append(yamlValue("value", p.asString(), offset+2, false));
+        yamlProp.append(yamlValue(PROPERTY_PARAMNAME, p.getName(), offset, true));
+        yamlProp.append(yamlValue(PROPERTY_PARAMTYPE, p.getClass().getCanonicalName(), offset+2, false));
+        yamlProp.append(yamlValue(PROPERTY_PARAMVALUE, p.asString(), offset+2, false));
         if (null != p.getFixedValues() && !p.getFixedValues().isEmpty()) {
-            yamlProp.append(yamlValue("fixedValues", p.getFixedValues(), offset+2, false));
+            yamlProp.append(yamlValue(PROPERTY_PARAMFIXED_VALUES, p.getFixedValues(), offset+2, false));
         }
         return yamlProp.toString();
     }

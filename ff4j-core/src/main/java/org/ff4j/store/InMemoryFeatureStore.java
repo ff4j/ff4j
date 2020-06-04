@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.ff4j.conf.FF4jConfiguration;
 import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 
@@ -69,6 +70,15 @@ public class InMemoryFeatureStore extends AbstractFeatureStore {
         loadConf(xmlIN);
     }
 
+    /**
+     * Constructor with full set of feature.
+     * 
+     * @param maps
+     */
+    public InMemoryFeatureStore(FF4jConfiguration ff4jConfig) {
+        this(ff4jConfig.getFeatures());
+    }
+    
     /**
      * Constructor with full set of feature.
      * 

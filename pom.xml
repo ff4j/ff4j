@@ -164,8 +164,9 @@
         <module>ff4j-security-spring</module>
         <module>ff4j-security-shiro</module>
         
-        <!-- Read values from YAML -->
+        <!-- Read values files -->
         <module>ff4j-config-yaml</module>
+        <module>ff4j-config-properties</module>
         
         <!-- Stores -->
         <module>ff4j-store-archaius</module>

@@ -25,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.ff4j.conf.FF4jConfiguration;
 import org.ff4j.conf.XmlParser;
 import org.ff4j.property.Property;
 import org.ff4j.utils.Util;
@@ -70,6 +71,15 @@ public class InMemoryPropertyStore extends AbstractPropertyStore {
      */
     public InMemoryPropertyStore(InputStream xmlIN) {
         loadConf(xmlIN);
+    }
+    
+    /**
+     * Constructor with full set of feature.
+     * 
+     * @param maps
+     */
+    public InMemoryPropertyStore(FF4jConfiguration ff4jConfig) {
+        this(ff4jConfig.getProperties());
     }
     
     /**
