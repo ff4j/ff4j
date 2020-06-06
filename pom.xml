@@ -141,7 +141,7 @@
         <swagger.version>2.2.2</swagger.version>
         <meanbean.version>2.0.3</meanbean.version>
         <apache.shiro.version>1.5.3</apache.shiro.version>
-        <apache.ignite.version>2.7.5</apache.ignite.version>
+        <apache.ignite.version>2.8.1</apache.ignite.version>
     </properties>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
