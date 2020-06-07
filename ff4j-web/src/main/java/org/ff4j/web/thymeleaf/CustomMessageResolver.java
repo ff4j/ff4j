@@ -105,7 +105,8 @@ public class CustomMessageResolver implements IMessageResolver {
 			if (is != null) {
 				try {
 				    if ("ar".equalsIgnoreCase(lang)) {
-				        r = new InputStreamReader(is, "UTF-16");
+				        //r = new InputStreamReader(is, "UTF-16");
+				        r = new InputStreamReader(is, WebConstants.UTF8_ENCODING);
 				    } else {
 				        r = new InputStreamReader(is, WebConstants.UTF8_ENCODING);
 				    }

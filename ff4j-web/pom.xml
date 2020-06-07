@@ -35,6 +35,16 @@
 			<groupId>org.ff4j</groupId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.ff4j</groupId>
+			<artifactId>ff4j-config-properties</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ff4j</groupId>
+			<artifactId>ff4j-config-yaml</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		
 		<!-- web -->
 		<dependency>

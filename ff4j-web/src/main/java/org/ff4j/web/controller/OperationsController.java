@@ -32,7 +32,6 @@ import static org.ff4j.web.bean.WebConstants.OP_FEATURES;
 import static org.ff4j.web.bean.WebConstants.OP_FEATUREUSAGE;
 import static org.ff4j.web.bean.WebConstants.OP_PROPERTIES;
 import static org.ff4j.web.bean.WebConstants.OP_TIMESERIES;
-import static org.ff4j.web.embedded.ConsoleOperations.exportFile;
 
 import java.io.IOException;
 import java.util.Map;
@@ -50,6 +49,7 @@ import org.ff4j.audit.chart.TimeSeriesChart;
 import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
 import org.ff4j.web.bean.WebConstants;
+import org.ff4j.web.embedded.ConsoleOperations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
@@ -82,7 +82,7 @@ public class OperationsController extends AbstractController {
         String operation   = pathParts[2];
 
         if (OP_EXPORT.equalsIgnoreCase(operation)) {
-            exportFile(ff4j, res);
+            ConsoleOperations.exportConfiguration(ff4j, res, pathParts[3]);
             return;
 
         } else if (OP_FEATURES.equalsIgnoreCase(operation)) {

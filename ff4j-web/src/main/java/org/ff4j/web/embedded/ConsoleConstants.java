@@ -1,5 +1,7 @@
 package org.ff4j.web.embedded;
 
+import java.text.SimpleDateFormat;
+
 /*
  * #%L
  * ff4j-web
@@ -34,13 +36,33 @@ public class ConsoleConstants {
 
     /** Content type for response. */
     public static final String CONTENT_TYPE_CSS = "text/css";
+    
+    /** Content type for response. */
+    public static final String CONTENT_TYPE_XML = "text/xml";
 
     /** Content type for response. */
     public static final String CONTENT_TYPE_JS = "application/javascript";
     
     /** Content type for response. */
     public static final String CONTENT_TYPE_JSON = "application/json";
-
+    
+    /** Content type for response. */
+    public static final String CONTENT_TYPE_YAML = "application/x-yaml";
+    
+    /** Content type for response. */
+    public static final String CONTENT_TYPE_PROPERTIES = "text/x-java-properties";
+    
+    /** format filename. */
+    public static final String FORMAT_FILE = "yyyyMMdd-HH-mm-ss";
+    public static final SimpleDateFormat SDF = new SimpleDateFormat(FORMAT_FILE); 
+    
+    /** Format. */
+    public static final String FORMAT_XML        = "xml";
+    public static final String FORMAT_YML        = "yml";
+    public static final String FORMAT_YAML       = "yaml";
+    public static final String FORMAT_PROPERTIES = "properties";
+    
+    
 
     // -------- RESOURCES ------------------------------
 

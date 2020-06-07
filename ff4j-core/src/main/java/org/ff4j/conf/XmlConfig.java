@@ -1,5 +1,7 @@
 package org.ff4j.conf;
 
+import org.ff4j.FF4j;
+
 /*
  * #%L
  * ff4j-core
@@ -25,4 +27,12 @@ package org.ff4j.conf;
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class XmlConfig extends FF4jConfiguration {}
+public class XmlConfig extends FF4jConfiguration {
+    
+    public XmlConfig() {}
+    
+    public XmlConfig(FF4j ff4j) {
+        super(ff4j);
+    }
+    
+}

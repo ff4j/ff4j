@@ -37,8 +37,13 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 import org.ff4j.FF4j;
 import org.ff4j.cache.FF4jCacheProxy;
+import org.ff4j.conf.FF4jConfiguration;
+import org.ff4j.conf.XmlParser;
+import org.ff4j.parser.properties.PropertiesParser;
+import org.ff4j.parser.yaml.YamlParser;
 import org.ff4j.web.bean.HomeBean;
 import org.ff4j.web.bean.WebConstants;
+import org.ff4j.web.embedded.ConsoleConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
@@ -69,7 +74,7 @@ public class HomeController extends AbstractController {
         String msgType   = "success";
         String operation = req.getParameter(WebConstants.OPERATION);
 
-        // Upload XML File
+        // Upload Configuration File
         if (ServletFileUpload.isMultipartContent(req)) {
             List<FileItem> items = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(req);
             for (FileItem item : items) {
@@ -79,18 +84,27 @@ public class HomeController extends AbstractController {
                     }
                 } else if (FLIPFILE.equalsIgnoreCase(item.getFieldName())) {
                     String filename = FilenameUtils.getName(item.getName());
-                    if (filename.toLowerCase().endsWith("xml")) {
-                        try {
-                            importFile(getFf4j(), item.getInputStream());
-                            msg = "The file <b>" + filename + "</b> has been successfully imported";
-                        } catch(RuntimeException re) {
-                            msgType = ERROR;
-                            msg = "Cannot Import XML:" + re.getMessage();
-                            break;
+                    try {
+                        FF4jConfiguration ff4jConfig = null;
+                        if (filename.toLowerCase().endsWith(ConsoleConstants.FORMAT_XML)) {
+                            ff4jConfig = new XmlParser().parseConfigurationFile(item.getInputStream());
+                        } else if (filename.toLowerCase().endsWith(ConsoleConstants.FORMAT_YML) || 
+                                   filename.toLowerCase().endsWith(ConsoleConstants.FORMAT_YAML)) {
+                            ff4jConfig = new YamlParser().parseConfigurationFile(item.getInputStream());
+                        } else if (filename.toLowerCase().endsWith(ConsoleConstants.FORMAT_PROPERTIES)) { 
+                            ff4jConfig = new PropertiesParser().parseConfigurationFile(item.getInputStream());
                         }
-                    } else {
+                        if (ff4jConfig != null ) {
+                            importFile(getFf4j(), ff4jConfig);
+                            msg = "The file <b>" + filename + "</b> has been successfully imported";
+                        } else {
+                            msgType = ERROR;
+                            msg = "Invalid FILE, must be XML, YAML or PROPERTIES files";
+                        }
+                    } catch(RuntimeException re) {
                         msgType = ERROR;
-                        msg = "Invalid FILE, must be CSV, XML or PROPERTIES files";
+                        msg = "Cannot Import Config:" + re.getMessage();
+                        break;
                     }
                 }
             }

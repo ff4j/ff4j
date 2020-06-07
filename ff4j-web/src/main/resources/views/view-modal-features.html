@@ -9,10 +9,10 @@
     <div class="modal-header">   
       <button class="close" data-dismiss="modal">x</button>   
       <h4 id="myModalLabel"><i class="icon-upload-alt"></i>&nbsp;
-      <span th:text="#{modal.importxml.title}" >Import XML</span></h4>
+      <span th:text="#{modal.import.title}" >Import </span></h4>
     </div>
     <div class="modal-body">
-      <p><span th:text="#{modal.importxml.desc}" >Choose XML file</span></p>
+      <p><span th:text="#{modal.import.desc}" >Choose file</span></p>
       <input type="hidden" name="op"        value="import" />
       <input type="file"   name="flipFile"  />
     </div>
@@ -28,6 +28,39 @@
     </div>
   </div>
 </form>
+</div>
+
+<div th:fragment="modal-export">
+  <div class="modal hide fade" id="modalExport" tabindex="-1" role="dialog" 
+  	   aria-labelledby="myModalLabele" aria-hidden="true">
+    <div class="modal-header">   
+      <button class="close" data-dismiss="modal">x</button>   
+      <h4 id="myModalLabel"><i class="icon-download-alt"></i>&nbsp;
+      <span th:text="#{modal.export.title}" >Export </span></h4>
+    </div>
+    <div class="modal-body">
+     <div class="shortcuts">
+	   <a href="" th:href="@{api/export/xml}" class="shortcut"> 
+	    <i class="shortcut-icon icon-download-alt" style="color:#880000"></i>
+	    <span class="shortcut-label" >XML</span>
+	   </a>
+	   <a href="" th:href="@{api/export/yml}" class="shortcut" > 
+	    <i class="shortcut-icon icon-download-alt" style="color:#008800"></i>
+	    <span class="shortcut-label">YAML</span>
+	   </a>
+	   <a href="" th:href="@{api/export/properties}" class="shortcut" > 
+	    <i class="shortcut-icon icon-download-alt" style="color:#000088"></i>
+	    <span class="shortcut-label">PROPERTIES</span>
+	   </a>
+	 </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn" data-dismiss="modal">
+        <i class="icon-remove" ></i>
+        &nbsp;<span th:text="#{modal.button.cancel}">Cancel</span>
+       </button>
+    </div>
+  </div>
 </div>
 
 <div th:fragment="modal-edit">

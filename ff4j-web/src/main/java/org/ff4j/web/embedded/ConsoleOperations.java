@@ -1,5 +1,22 @@
 package org.ff4j.web.embedded;
 
+import static org.ff4j.web.embedded.ConsoleConstants.CONTENT_TYPE_PROPERTIES;
+import static org.ff4j.web.embedded.ConsoleConstants.CONTENT_TYPE_XML;
+import static org.ff4j.web.embedded.ConsoleConstants.CONTENT_TYPE_YAML;
+import static org.ff4j.web.embedded.ConsoleConstants.DESCRIPTION;
+import static org.ff4j.web.embedded.ConsoleConstants.FEATID;
+import static org.ff4j.web.embedded.ConsoleConstants.FORMAT_PROPERTIES;
+import static org.ff4j.web.embedded.ConsoleConstants.FORMAT_XML;
+import static org.ff4j.web.embedded.ConsoleConstants.FORMAT_YAML;
+import static org.ff4j.web.embedded.ConsoleConstants.FORMAT_YML;
+import static org.ff4j.web.embedded.ConsoleConstants.GROUPNAME;
+import static org.ff4j.web.embedded.ConsoleConstants.PERMISSION;
+import static org.ff4j.web.embedded.ConsoleConstants.PERMISSION_RESTRICTED;
+import static org.ff4j.web.embedded.ConsoleConstants.PREFIX_CHECKBOX;
+import static org.ff4j.web.embedded.ConsoleConstants.SDF;
+import static org.ff4j.web.embedded.ConsoleConstants.STRATEGY;
+import static org.ff4j.web.embedded.ConsoleConstants.STRATEGY_INIT;
+
 /*
  * #%L
  * ff4j-web
@@ -23,6 +40,7 @@ package org.ff4j.web.embedded;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -34,11 +52,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.ff4j.FF4j;
+import org.ff4j.conf.FF4jConfiguration;
+import org.ff4j.conf.FF4jConfigurationParser;
 import org.ff4j.conf.XmlConfig;
 import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FlippingStrategy;
+import org.ff4j.parser.properties.PropertiesParser;
+import org.ff4j.parser.yaml.YamlParser;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.property.util.PropertyFactory;
@@ -46,8 +68,6 @@ import org.ff4j.utils.Util;
 import org.ff4j.web.bean.WebConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.ff4j.web.embedded.ConsoleConstants.*;
 
 public final class ConsoleOperations {
     
@@ -301,6 +321,18 @@ public final class ConsoleOperations {
             LOGGER.info(featureId + " has been updated");
         }
     }
+    
+    /**
+     * Please use importFile(FF4j ff4j, FF4jConfiguration config) and get a {@link FF4jConfiguration} with a {@link FF4jConfigurationParser}:
+     * - {@link XmlParser} : new XmlParser().parseConfigurationFile(InputStream)
+     * - {@link YamlParser}
+     * - {@link PropertiesParser}
+     */
+    @Deprecated
+    public static void importFile(FF4j ff4j, InputStream in) 
+    throws IOException {
+        importFile(ff4j, new XmlParser().parseConfigurationFile(in));
+    }
 
     /**
      * User action to import Features from a properties files.
@@ -310,12 +342,18 @@ public final class ConsoleOperations {
      * @throws IOException
      *             Error raised if the configuration cannot be read
      */
-    public static void importFile(FF4j ff4j, InputStream in) 
+    public static void importFile(FF4j ff4j, FF4jConfiguration config) 
     throws IOException {
-        
+        if (config.isAutoCreate()) {
+            ff4j.setAutocreate(true);
+            LOGGER.info("Autocreate is now enabled.");
+        }
+        if (config.isAudit()) {
+            ff4j.setEnableAudit(true);
+            LOGGER.info("Audit is now enabled.");
+        }
         FeatureStore store = ff4j.getFeatureStore();
-        XmlConfig xmlConfig = new XmlParser().parseConfigurationFile(in);
-        Map<String, Feature> mapsOfFeat = xmlConfig.getFeatures();
+        Map<String, Feature> mapsOfFeat = config.getFeatures();
         for (Entry<String, Feature> feature : mapsOfFeat.entrySet()) {
             if (store.exist(feature.getKey())) {
                 store.update(feature.getValue());
@@ -326,7 +364,7 @@ public final class ConsoleOperations {
         LOGGER.info(mapsOfFeat.size() + " features have been imported.");
         
         PropertyStore pstore = ff4j.getPropertiesStore();
-        Map<String, Property<?>> mapsOfProperties = xmlConfig.getProperties();
+        Map<String, Property<?>> mapsOfProperties = config.getProperties();
         for (Entry<String, Property<?>> p : mapsOfProperties.entrySet()) {
             if (pstore.existProperty(p.getKey())) {
                 pstore.updateProperty(p.getValue());
@@ -335,6 +373,58 @@ public final class ConsoleOperations {
             }
         }
         LOGGER.info(mapsOfProperties.size() + " features have been imported.");
+    }
+    
+    /**
+     * Export configuration.
+     *
+     * @param ff4j
+     *      feature flags for java
+     * @param res
+     *      http response
+     * @param format
+     *      format
+     * @throws IOException
+     *      error occured when exporting
+     */
+    public static void exportConfiguration(FF4j ff4j, HttpServletResponse res, String format) 
+    throws IOException {
+        if (format != null) {
+            InputStream in = null;
+            ServletOutputStream sos = null;
+            String fileName = "ff4j-" + SDF.format(new Date()) + ".";
+            try {
+                sos = res.getOutputStream();
+                if (FORMAT_XML.equals(format.toLowerCase())) {
+                    res.setContentType(CONTENT_TYPE_XML);
+                    res.setHeader("Content-Disposition", 
+                            "attachment; filename=\"" + fileName + FORMAT_XML + "\"");
+                    in = new XmlParser().exportAll(new XmlConfig(ff4j));
+                } else if (FORMAT_YML.equals(format.toLowerCase()) || 
+                           FORMAT_YAML.equals(format.toLowerCase())) {
+                    res.setContentType(CONTENT_TYPE_YAML);
+                    res.setHeader("Content-Disposition", 
+                            "attachment; filename=\"" + fileName + FORMAT_YML + "\"");
+                    in = new YamlParser().export(new FF4jConfiguration(ff4j));
+                } else if (FORMAT_PROPERTIES.equals(format.toLowerCase())) {
+                    res.setContentType(CONTENT_TYPE_PROPERTIES);
+                    res.setHeader("Content-Disposition", 
+                            "attachment; filename=\"" + fileName + FORMAT_PROPERTIES + "\"");
+                    in = new YamlParser().export(new FF4jConfiguration(ff4j));
+                }
+                if (in != null) {
+                    org.apache.commons.io.IOUtils.copy(in, sos);
+                }
+            } finally {
+                if (in != null) {
+                    in.close();
+                }
+                if (sos != null) {
+                    sos.flush();
+                    sos.close();
+                }
+            }    
+        }
     }
     
     /**

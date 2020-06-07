@@ -65,17 +65,19 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 import org.ff4j.FF4j;
+import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
+import org.ff4j.web.FF4jDispatcherServlet;
 import org.ff4j.web.FF4jProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Unique Servlet to manage FlipPoints and security
- * 
- * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
+ * First generation of Web Servlet.
+ * Please consider using {@link FF4jDispatcherServlet} for all new features  
  */
+@Deprecated
 public class ConsoleServlet extends HttpServlet {
 
     /** serial number. */
@@ -305,7 +307,7 @@ public class ConsoleServlet extends HttpServlet {
                     } else if (FLIPFILE.equalsIgnoreCase(item.getFieldName())) {
                         String filename = FilenameUtils.getName(item.getName());
                         if (filename.toLowerCase().endsWith("xml")) {
-                            importFile(getFf4j(), item.getInputStream());
+                            importFile(getFf4j(), new XmlParser().parseConfigurationFile(item.getInputStream()));
                             message = "The file <b>" + filename + "</b> has been successfully imported";
                         } else {
                             messagetype = ERROR;
