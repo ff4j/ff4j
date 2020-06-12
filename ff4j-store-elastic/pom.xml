@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>org.ff4j</groupId>
 		<artifactId>ff4j-parent</artifactId>
-		<version>1.8.7-SNAPSHOT</version>
+		<version>1.8.7</version>
 	</parent>
 
 	<properties>
