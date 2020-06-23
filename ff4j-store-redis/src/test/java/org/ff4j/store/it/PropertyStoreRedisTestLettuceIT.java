@@ -1,9 +1,5 @@
 package org.ff4j.store.it;
 
-import java.util.Map;
-
-import org.ff4j.property.Property;
-
 /*
  * #%L
  * ff4j-store-redis
@@ -26,7 +22,7 @@ import org.ff4j.property.Property;
 
 
 import org.ff4j.property.store.PropertyStore;
-import org.ff4j.store.PropertyStoreRedis;
+import org.ff4j.store.PropertyStoreRedisLettuce;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
 import org.junit.After;
 
@@ -34,11 +30,13 @@ import org.junit.After;
  * Implementatino of tests with REDIS
  * @author Cedrick Lunven (@clunven)</a>
  */
-public class PropertyStoreRedisTestIT extends PropertyStoreTestSupport {
+public class PropertyStoreRedisTestLettuceIT extends PropertyStoreTestSupport {
 
     /** {@inheritDoc} */
     protected PropertyStore initPropertyStore() {
-       return new PropertyStoreRedis("test-ff4j-features.xml");
+        PropertyStoreRedisLettuce prl =  new PropertyStoreRedisLettuce();
+        prl.importPropertiesFromXmlFile("test-ff4j-features.xml");
+        return prl;
     }
     
     /**
@@ -46,12 +44,7 @@ public class PropertyStoreRedisTestIT extends PropertyStoreTestSupport {
      */
     @After
     public void cleanStore() {
-        Map < String, Property<?> > f = testedStore.readAllProperties();
-        for (String key : f.keySet()) {
-            testedStore.deleteProperty(key);
-        }
-        // Close Pool
-        ((PropertyStoreRedis) ff4j.getConcretePropertyStore()).getRedisConnection().destroyPool();
+        testedStore.clear();
     }
 
 }

@@ -23,6 +23,8 @@
 	<properties>
 		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
 		<redis-forked>true</redis-forked>
+		<jedis.version>3.2.0</jedis.version>
+		<lettuce.version>5.3.1.RELEASE</lettuce.version>
 	</properties>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -44,12 +46,20 @@
 			<version>${project.version}</version>
 		</dependency>
 		
-		<!-- cache provider -->
+		<!-- Connectivity to Redis with Jedis -->
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
-			<version>3.2.0</version>
+			<version>${jedis.version}</version>
 		</dependency>
+	
+		<!-- Connectivity to Redis with Lettuce -->
+		<dependency>
+			<groupId>io.lettuce</groupId>
+			<artifactId>lettuce-core</artifactId>
+			<version>${lettuce.version}</version>
+		</dependency>
+			
 		
 		<dependency>
 			<groupId>org.fusesource.jansi</groupId>

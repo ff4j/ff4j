@@ -1,14 +1,10 @@
 package org.ff4j.store.it;
 
-import java.util.Map;
-
-import org.ff4j.property.Property;
-
 /*
  * #%L
  * ff4j-store-redis
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2020 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,21 +20,22 @@ import org.ff4j.property.Property;
  * #L%
  */
 
-
-import org.ff4j.property.store.PropertyStore;
-import org.ff4j.store.PropertyStoreRedis;
-import org.ff4j.test.propertystore.PropertyStoreTestSupport;
+import org.ff4j.core.FeatureStore;
+import org.ff4j.store.FeatureStoreRedisLettuce;
+import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.After;
 
 /**
- * Implementatino of tests with REDIS
- * @author Cedrick Lunven (@clunven)</a>
+ * Test to work with Redis as a store.
  */
-public class PropertyStoreRedisTestIT extends PropertyStoreTestSupport {
-
+public class FeatureStoreRedisLettuceTestIT extends FeatureStoreTestSupport {
+   
     /** {@inheritDoc} */
-    protected PropertyStore initPropertyStore() {
-       return new PropertyStoreRedis("test-ff4j-features.xml");
+    @Override
+    protected FeatureStore initStore() {
+        FeatureStoreRedisLettuce redisStore = new FeatureStoreRedisLettuce();
+        redisStore.importFeaturesFromXmlFile("ff4j.xml");
+        return redisStore;
     }
     
     /**
@@ -46,12 +43,7 @@ public class PropertyStoreRedisTestIT extends PropertyStoreTestSupport {
      */
     @After
     public void cleanStore() {
-        Map < String, Property<?> > f = testedStore.readAllProperties();
-        for (String key : f.keySet()) {
-            testedStore.deleteProperty(key);
-        }
-        // Close Pool
-        ((PropertyStoreRedis) ff4j.getConcretePropertyStore()).getRedisConnection().destroyPool();
+        testedStore.clear();
     }
 
 }
