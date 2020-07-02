@@ -1,0 +1,75 @@
+plugins {
+    id 'org.springframework.boot' version '2.3.1.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'java'
+    id 'maven-publish'
+    id 'idea'
+    id 'net.researchgate.release' version '2.7.0'
+}
+
+group = 'de.nufin'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '8'
+
+ext {
+    buildGroup = 'de.nufin'
+    buildName = 'ff4j-web'
+    buildVersion = '1.0.0'
+}
+
+repositories {
+    maven {
+        credentials {
+            username nufinArtifactoryUser
+            password nufinArtifactoryPassword
+        }
+        url 'https://dev.runvanta.run/artifactory/master'
+    }
+    mavenCentral()
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "de.nufin:lib-bom:1.1.27"
+    }
+}
+
+def ff4jVersion = "1.8.7"
+dependencies {
+    implementation "org.ff4j:ff4j-core:${ff4jVersion}"
+    implementation "org.ff4j:ff4j-config-properties:${ff4jVersion}"
+    implementation "org.ff4j:ff4j-config-yaml:${ff4jVersion}"
+    implementation "commons-io:commons-io:2.4"
+    implementation "commons-fileupload:commons-fileupload:1.4"
+    implementation "javax.servlet:servlet-api:2.5"
+    implementation "javax.servlet.jsp:jsp-api:2.2"
+    implementation "javax.servlet:jstl:1.2"
+    implementation "javax.activation:activation:1.1.1"
+    implementation "javax.xml.bind:jaxb-api:2.3.1"
+    implementation "org.apache.taglibs:taglibs-standard-impl:1.2.5"
+    implementation "org.thymeleaf:thymeleaf:3.0.11.RELEASE"
+    testImplementation "junit:junit:4.12"
+    testImplementation "org.mockito:mockito-core:1.9.5"
+    testImplementation "org.springframework:spring-test:4.3.25.RELEASE"
+    testImplementation "javax.servlet:javax.servlet-api:3.1.0"
+    implementation "org.slf4j:jcl-over-slf4j:1.7.22"
+}
+
+bootJar {
+    archiveBaseName = project.buildName
+    mainClassName = 'de.nufin.activity.Application'
+    manifest {
+        attributes('Implementation-Version': project.buildVersion)
+        attributes('Start-Class': 'de.nufin.featuretoggler.Application')
+    }
+}
+
+compileJava {
+    options.annotationProcessorPath = configurations.annotationProcessor
+}
+
+test {
+    testLogging {
+        events 'FAILED', 'SKIPPED'
+    }
+}

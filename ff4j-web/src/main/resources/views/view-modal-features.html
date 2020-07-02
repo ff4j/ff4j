@@ -157,6 +157,10 @@
                     $('#modalEdit #strategy').val('org.ff4j.strategy.ServerFilterStrategy');
                     $('#modalEdit #stratlist').show();
                     $('#modalEdit #initParams').val('grantedServers=s1,s2,s3')">ServerFilter</a></li>
+                <li><a href="#" onclick="javascript:
+                    $('#modalEdit #strategy').val('de.nufin.featuretoggler.strategy.OrganisationBasedFlipStrategy');
+                    $('#modalEdit #stratlist').show();
+                    $('#modalEdit #initParams').val('organisationIds=<comma-separated-list>')">OrganisationBasedFlipStrategy</a></li>
               <li class="divider"></li>
                 <b><span>Strategies used</span></b>
                 <li th:each="stragy : ${listOfStrategyUsed}" >

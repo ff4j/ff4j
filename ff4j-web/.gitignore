@@ -1,0 +1,23 @@
+# eclipse conf file
+.settings
+.classpath
+.project
+.cache
+
+# idea conf files
+.idea
+*.ipr
+*.iws
+*.iml
+
+# building
+target
+build
+tmp
+dist
+.gradle
+
+# misc
+.DS_Store
+
+.factorypath
