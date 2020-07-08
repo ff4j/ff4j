@@ -503,7 +503,7 @@
                 <version>${version.jsr311}</version>
             </dependency>
             <dependency>
-                <groupId>javax.servlet</groupId>
+                <groupId>javax.servlet.jsp.jstl</groupId>
                 <artifactId>jstl</artifactId>
                 <version>${version.jstl}</version>
             </dependency>
