@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.ff4j.audit.EventBuilder;
@@ -263,7 +264,10 @@ public class FF4j {
         // if no permissions, the feature is public
         (feature.getPermissions().isEmpty()) ||
         // delegating evaluation to authorization manager
-        getAuthorizationsManager().isAllowed(feature.getPermissions());
+        // --> Fixing issues with retains modify incoming list
+        // getAuthorizationsManager().isAllowed(feature.getPermissions());
+        // <--
+        getAuthorizationsManager().isAllowed(new HashSet<String>(feature.getPermissions()));
     }
 
     /**

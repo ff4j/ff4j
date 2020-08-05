@@ -1,8 +1,5 @@
 package org.ff4j.cassandra.store;
 
-import static org.ff4j.cassandra.CassandraConstants.COLUMN_FAMILY_PROPERTIES;
-import static org.ff4j.cassandra.CassandraConstants.COL_PROPERTY_ID;
-
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -26,67 +23,65 @@ import java.util.HashSet;
  * #L%
  */
 
-
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.ff4j.cassandra.CassandraConnection;
-import org.ff4j.cassandra.CassandraMapper;
-import org.ff4j.cassandra.CassandraQueryBuilder;
+import org.ff4j.cassandra.FF4jCassandraSchema;
+import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.AbstractPropertyStore;
 import org.ff4j.property.store.PropertyStore;
+import org.ff4j.property.util.PropertyFactory;
 import org.ff4j.utils.Util;
 
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Row;
+import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.BoundStatement;
+import com.datastax.oss.driver.api.core.cql.PreparedStatement;
+import com.datastax.oss.driver.api.core.cql.ResultSet;
+import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.api.querybuilder.QueryBuilder;
 
 /**
  * Implements of {@link PropertyStore} for sotre Cassandra.
  *
  * @author Cedrick Lunven (@clunven)
  */
-public class PropertyStoreCassandra extends AbstractPropertyStore {
+public class PropertyStoreCassandra extends AbstractPropertyStore implements FF4jCassandraSchema {
     
-    /** Connection to store Cassandra. */
-    private CassandraQueryBuilder builder;
-            
-    /** Connection to store Cassandra. */
-    private CassandraConnection conn;
+    /** Driver Session. */
+    private CqlSession cqlSession;
+    
+    /** Statements. */
+    private PreparedStatement psExistProperty;
+    private PreparedStatement psInsertProperty;
+    private PreparedStatement psReadProperty; 
+    private PreparedStatement psDeleteProperty;
     
     /**
      * Default constructor.
      */
-    public PropertyStoreCassandra() {
-    }
+    public PropertyStoreCassandra() {}
     
     /**
-     * Initialization through {@link CassandraConnection}.
-     *
-     * @param conn
-     *      current client to cassandra db
+     * Connector with running session
      */
-    public PropertyStoreCassandra(CassandraConnection conn) {
-        this.conn = conn;
+    public PropertyStoreCassandra(CqlSession cqlSession) {
+        this.cqlSession = cqlSession;
     }
 
     /** {@inheritDoc} */
     @Override
     public void createSchema() {
-       // Roles & custom properties will be in the same column family  
-       if (!conn.isColumnFamilyExist(COLUMN_FAMILY_PROPERTIES)) {
-           // Create table
-           conn.getSession().execute(getBuilder().cqlCreateColumnFamilyProperties());
-       }
+        cqlSession.execute(STMT_CREATE_TABLE_PROPERTY);
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean existProperty(String name) {
         Util.assertHasLength(name);
-        return 1 == conn.getSession()
-                .execute(getBuilder().cqlExistProperty(), name)
-                .iterator().next().getLong(0);
+        return getCqlSession().execute(psExistProperty.bind(name))
+                .getAvailableWithoutFetching() > 0;
     }
 
     /** {@inheritDoc} */
@@ -100,36 +95,42 @@ public class PropertyStoreCassandra extends AbstractPropertyStore {
                 fixedValues.add(fixedValue.toString());
             }
         }
-        conn.getSession().execute(getBuilder().cqlCreateProperty(), 
-                prop.getName(),
-                prop.getType(),
-                prop.asString(),
-                prop.getDescription(),
-                fixedValues);
+        BoundStatement bsInsertProperty = psInsertProperty.bind();
+        bsInsertProperty = bsInsertProperty.setString(PROPERTIES_ATT_UID, prop.getName());
+        bsInsertProperty = bsInsertProperty.setString(PROPERTIES_ATT_CLASS, prop.getClass().getName());
+        bsInsertProperty = bsInsertProperty.setString(PROPERTIES_ATT_VALUE, prop.asString());
+        bsInsertProperty = bsInsertProperty.setString(PROPERTIES_ATT_DESCRIPTION, prop.getDescription());
+        bsInsertProperty = bsInsertProperty.setSet(PROPERTIES_ATT_FIXEDVALUES, fixedValues, String.class);
+        cqlSession.execute(bsInsertProperty);
     }
+    
 
     /** {@inheritDoc} */
     @Override
     public Property<?> readProperty(String name) {
         assertPropertyExist(name);
-        ResultSet rs = conn.getSession().execute(getBuilder().cqlReadProperty(), name);
-        return CassandraMapper.mapProperty(rs.one());
+        ResultSet rs = cqlSession.execute(psReadProperty.bind(name));
+        Row row = rs.one();
+        if (null == row) {
+            throw new PropertyNotFoundException(name);
+        }
+        return mapPropertyRow(row);
     }
 
     /** {@inheritDoc} */
     @Override
     public void deleteProperty(String name) {
         assertPropertyExist(name);
-        conn.getSession().execute(getBuilder().cqlDeleteProperty(), name);
+        cqlSession.execute(psDeleteProperty.bind(name));
     }
 
     /** {@inheritDoc} */
     @Override
     public Map<String, Property<?>> readAllProperties() {
         Map < String, Property<?>> properties = new HashMap<String, Property<?>>();
-        ResultSet resultSet = conn.getSession().execute(getBuilder().selectAllProperties());
-        for (Row row : resultSet.all()) {
-            Property<?> p  = CassandraMapper.mapProperty(row);
+        ResultSet rs = cqlSession.execute(STMT_PROPERTY_READ_ALL);
+        for (Row row : rs.all()) {
+            Property<?> p  = mapPropertyRow(row);
             properties.put(p.getName(), p);
         }
         return properties;
@@ -138,50 +139,48 @@ public class PropertyStoreCassandra extends AbstractPropertyStore {
     /** {@inheritDoc} */
     @Override
     public Set<String> listPropertyNames() {
-        Set < String > listProperty = new HashSet<String>();
-        ResultSet resultSet = conn.getSession().execute(getBuilder().cqlPropertyNames());
-        for (Row row : resultSet.all()) {
-            listProperty.add(row.getString(COL_PROPERTY_ID));
-        }
-        return listProperty;
+        return cqlSession.execute(STMT_PROPERTY_LISTNAMES)
+                .all().stream()
+                .map(r -> r.getString(PROPERTIES_ATT_UID))
+                .collect(Collectors.toSet());
     }
 
     /** {@inheritDoc} */
     @Override
     public void clear() {
-        conn.getSession().execute(getBuilder().cqlTruncateProperties());
+        cqlSession.execute(QueryBuilder.truncate(PROPERTIES_TABLE).build());
     }
-
+    
     /**
-     * Getter accessor for attribute 'conn'.
-     *
-     * @return
-     *       current value of 'conn'
+     * Prepared once, run many.
      */
-    public CassandraConnection getConn() {
-        return conn;
+    protected void prepareStatements() {
+        psExistProperty  = cqlSession.prepare(STMT_PROPERTY_EXIST);
+        psInsertProperty = cqlSession.prepare(STMT_PROPERTY_INSERT);
+        psReadProperty   = cqlSession.prepare(STMT_PROPERTY_READ);
+        psDeleteProperty = cqlSession.prepare(STMT_PROPERTY_DELETE);
     }
-
+    
     /**
-     * Setter accessor for attribute 'conn'.
-     * @param conn
-     *      new value for 'conn '
+     * Map from a row to property.
      */
-    public void setConn(CassandraConnection conn) {
-        this.conn = conn;
+    protected Property<?> mapPropertyRow(Row row) {
+        String propName  = row.getString(PROPERTIES_ATT_UID);
+        String propClass = row.getString(PROPERTIES_ATT_CLASS);
+        String propDesc  = row.getString(PROPERTIES_ATT_DESCRIPTION);
+        String propVal   = row.getString(PROPERTIES_ATT_VALUE);
+        Set<String> fixV = row.getSet(PROPERTIES_ATT_FIXEDVALUES, String.class);
+        return PropertyFactory.createProperty(propName, propClass, propVal, propDesc, fixV);
     }
-
+    
     /**
-     * Getter accessor for attribute 'builder'.
-     *
-     * @return
-     *       current value of 'builder'
+     * Prepared statements on first call.
      */
-    public CassandraQueryBuilder getBuilder() {
-        if (builder == null) {
-            builder = new CassandraQueryBuilder(conn);
+    private synchronized CqlSession getCqlSession() {
+        if (null == psExistProperty) {
+            prepareStatements();
         }
-        return builder;
+        return cqlSession;
     }
     
 }

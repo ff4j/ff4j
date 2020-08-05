@@ -248,6 +248,9 @@ public class FeaturesController extends AbstractController {
     private FlippingStrategy buildFlippingStrategy(HttpServletRequest req, String uid) {
         String strategy = req.getParameter(STRATEGY);
         String strategyParams = req.getParameter(STRATEGY_INIT);
+        // --> Escaping Special Character to be able to SPLIT
+        
+        // <--
         FlippingStrategy fstrategy = null;
         Map<String, String> initParams = new HashMap<String, String>();
         if (Util.hasLength(strategy)) {

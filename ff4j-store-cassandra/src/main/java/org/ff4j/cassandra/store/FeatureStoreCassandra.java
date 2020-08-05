@@ -4,7 +4,7 @@ package org.ff4j.cassandra.store;
  * #%L
  * ff4j-store-cassandra
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2020 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,27 +19,39 @@ package org.ff4j.cassandra.store;
  * limitations under the License.
  * #L%
  */
-import static org.ff4j.cassandra.CassandraConstants.COLUMN_FAMILY_FEATURES;
-import static org.ff4j.cassandra.CassandraConstants.COL_FEAT_GROUPNAME;
-import static org.ff4j.cassandra.CassandraConstants.COL_FEAT_UID;
+
+import static com.datastax.oss.driver.api.querybuilder.QueryBuilder.literal;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.ff4j.cassandra.CassandraConnection;
-import org.ff4j.cassandra.CassandraMapper;
-import org.ff4j.cassandra.CassandraQueryBuilder;
+import org.ff4j.cassandra.FF4jCassandraSchema;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.core.FlippingStrategy;
+import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.property.Property;
+import org.ff4j.property.util.PropertyFactory;
 import org.ff4j.store.AbstractFeatureStore;
-import org.ff4j.utils.JsonUtils;
+import org.ff4j.utils.MappingUtil;
 import org.ff4j.utils.Util;
 
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Row;
+import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.BatchStatement;
+import com.datastax.oss.driver.api.core.cql.BatchStatementBuilder;
+import com.datastax.oss.driver.api.core.cql.BatchType;
+import com.datastax.oss.driver.api.core.cql.BoundStatement;
+import com.datastax.oss.driver.api.core.cql.PreparedStatement;
+import com.datastax.oss.driver.api.core.cql.ResultSet;
+import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.api.core.data.UdtValue;
+import com.datastax.oss.driver.api.core.type.UserDefinedType;
+import com.datastax.oss.driver.api.querybuilder.QueryBuilder;
+import com.datastax.oss.driver.shaded.guava.common.base.Functions;
 
 /**
  * Implementation of {@link FeatureStore} to work with Cassandra Storage.
@@ -55,73 +67,69 @@ import com.datastax.driver.core.Row;
  * is generally the cheapest resource (compared to CPU, memory, disk IOPs, or network), and Cassandra is 
  * architected around that fact. In order to get the most efficient reads, you often need to duplicate data.
  * 
- * Rule 1: Spread Data Evenly Around the Cluster
- * Rule 2: Minimize the Number of Partitions Read
- * 
- * Ces familles de colonnes contiennent des colonnes ainsi qu'un ensemble de colonnes connexes qui sont identifiées par une clé de ligne
- * 
- *
  * @author Cedrick Lunven (@clunven)
  */
-public class FeatureStoreCassandra extends AbstractFeatureStore {
+public class FeatureStoreCassandra extends AbstractFeatureStore implements FF4jCassandraSchema {
     
-    /** Connection to store Cassandra. */
-    private CassandraQueryBuilder builder;
-            
-    /** Connection to store Cassandra. */
-    private CassandraConnection conn;
+    /** Driver Session. */
+    private CqlSession cqlSession;
+    
+    /** udt. */
+    private UserDefinedType udtStrategy;
+    private UserDefinedType udtProperty;
+    
+    /** Statements. */
+    private PreparedStatement psExistFeature;
+    private PreparedStatement psToggleFeature;
+    private PreparedStatement psInsertFeature;
+    private PreparedStatement psDeleteFeature;
+    private PreparedStatement psReadFeature;
+    private PreparedStatement psReadGroup;
+    private PreparedStatement psAddToGroup;
+    private PreparedStatement psRmvFromGroup;
+    private PreparedStatement psListGroups;
     
     /**
      * Default constructor.
      */
-    public FeatureStoreCassandra() {
-    }
+    public FeatureStoreCassandra() {}
     
     /**
-     * Initialization through {@link CassandraConnection}.
-     *
-     * @param conn
-     *      current client to cassandra db
+     * Connector with running session
      */
-    public FeatureStoreCassandra(CassandraConnection conn) {
-        this.conn = conn;
+    public FeatureStoreCassandra(CqlSession cqlSession) {
+        this.cqlSession = cqlSession;
     }
-
+    
     /** {@inheritDoc} */
     @Override
     public void createSchema() {
-       // Roles & custom properties will be in the same column family  
-       if (!conn.isColumnFamilyExist(COLUMN_FAMILY_FEATURES)) {
-           
-           // Create table
-           conn.getSession().execute(getBuilder().cqlCreateColumnFamilyFeature());
-           
-           // Add a secondary index to query
-           conn.getSession().execute(getBuilder().cqlCreateIndexGroupName());
-       }
+        cqlSession.execute(STMT_CREATE_UDT_STRATEGY);
+        cqlSession.execute(STMT_CREATE_UDT_PROPERTY);
+        cqlSession.execute(STMT_CREATE_TABLE_FEATURE);
+        cqlSession.execute(STMT_CREATE_INDEX_FEATUREGROUP);
     }
     
     /** {@inheritDoc} */
     @Override
     public boolean exist(String uid) {
         Util.assertHasLength(uid);
-        return 1 == conn.getSession()
-                .execute(getBuilder().cqlExistFeature(), uid)
-                .iterator().next().getLong(0);
+        return getCqlSession().execute(psExistFeature.bind(uid))
+                              .getAvailableWithoutFetching() > 0;
     }
     
     /** {@inheritDoc} */
     @Override
     public void enable(String uid) {
         assertFeatureExist(uid);
-        conn.getSession().execute(getBuilder().cqlEnableFeature(), uid);
+        getCqlSession().execute(psToggleFeature.bind(true, uid));
     }
 
     /** {@inheritDoc} */
     @Override
     public void disable(String uid) {
         assertFeatureExist(uid);
-        conn.getSession().execute(getBuilder().cqlDisableFeature(), uid);
+        getCqlSession().execute(psToggleFeature.bind(false, uid));
     }    
 
     /** {@inheritDoc} */
@@ -129,46 +137,72 @@ public class FeatureStoreCassandra extends AbstractFeatureStore {
     public void create(Feature fp) {
         assertFeatureNotNull(fp);
         assertFeatureNotExist(fp.getUid());
-        // Convert map<String, Property> to map<String, String>, structure in DB
-        Map < String, String > mapOfProperties = new HashMap<String, String>();  
-        if (fp.getCustomProperties() != null && !fp.getCustomProperties().isEmpty()) {
-            for (Map.Entry<String, Property<?>> customP : fp.getCustomProperties().entrySet()) {
-                if (customP.getValue() != null) {
-                    mapOfProperties.put(customP.getKey(), customP.getValue().toJson());
-                }
-            }
+        
+        BoundStatement bsInsertFeature = psInsertFeature.bind();
+        bsInsertFeature = bsInsertFeature.setString(FEATURES_ATT_UID, fp.getUid());
+        bsInsertFeature = bsInsertFeature.setBoolean(FEATURES_ATT_ENABLED, fp.isEnable());
+        bsInsertFeature = bsInsertFeature.setString(FEATURES_ATT_DESCRIPTION, fp.getDescription());
+        if (Util.hasLength(fp.getGroup())) {
+            bsInsertFeature = bsInsertFeature.setString(FEATURES_ATT_GROUPNAME, fp.getGroup());
         }
-        conn.getSession().execute(getBuilder().cqlCreateFeature(), 
-                fp.getUid(),
-                fp.isEnable() ? 1 : 0, 
-                fp.getDescription(), 
-                JsonUtils.flippingStrategyAsJson(fp.getFlippingStrategy()),
-                fp.getGroup(), fp.getPermissions(), mapOfProperties);
+        if (null != fp.getPermissions()) {
+            bsInsertFeature = bsInsertFeature.setSet(FEATURES_ATT_ROLES, fp.getPermissions(), String.class);
+        }
+        if (null != fp.getFlippingStrategy()) {
+            UdtValue newUdtStrategy = udtStrategy.newValue();
+            FlippingStrategy fStrategy = fp.getFlippingStrategy();
+            newUdtStrategy.setString(UDT_STRATEGY_CLASS, fStrategy.getClass().getName());
+            newUdtStrategy.setMap(UDT_STRATEGY_PARAMS, fStrategy.getInitParams(), String.class, String.class);
+            bsInsertFeature = bsInsertFeature.setUdtValue(FEATURES_ATT_STRATEGY, newUdtStrategy);
+        }
+        if (null != fp.getCustomProperties()) {
+            Map<String, UdtValue> properties = new HashMap<>();
+            for (Property<?> prop : fp.getCustomProperties().values()) {
+                UdtValue currentUdtProp = udtProperty.newValue();
+                currentUdtProp.setString(UDT_PROPERTY_UID, prop.getName());
+                currentUdtProp.setString(UDT_PROPERTY_CLASS, prop.getClass().getName());
+                currentUdtProp.setString(UDT_PROPERTY_DESCRIPTION, prop.getDescription());
+                currentUdtProp.setString(UDT_PROPERTY_VALUE, prop.asString());
+                Set <String> fixedValues = new HashSet<>();
+                if (!Util.isEmpty(prop.getFixedValues())) {
+                    for (Object fv : prop.getFixedValues()) {
+                        fixedValues.add(fv.toString());
+                    }
+                }
+                currentUdtProp.setSet(UDT_PROPERTY_FIXEDVALUES, fixedValues, String.class);
+                properties.put(prop.getName(), currentUdtProp);
+            }
+            bsInsertFeature = bsInsertFeature.setMap(FEATURES_ATT_PROPERTIES, properties, String.class, UdtValue.class);
+        }
+        getCqlSession().execute(bsInsertFeature);
     }
     
     /** {@inheritDoc} */
     @Override
     public void delete(String uid) {
         assertFeatureExist(uid);
-        conn.getSession().execute(getBuilder().cqlDeleteFeature(), uid);
+        getCqlSession().execute(psDeleteFeature.bind(uid));
     }
 
     /** {@inheritDoc} */
     @Override
     public Feature read(String uid) {
-        assertFeatureExist(uid);
-        ResultSet rs = conn.getSession().execute(getBuilder().cqlReadFeature(), uid);
-        return CassandraMapper.mapFeature(rs.one());
+        Util.assertHasLength(uid);
+        ResultSet rs = cqlSession.execute(psReadFeature.bind(uid));
+        Row row = rs.one();
+        if (null == row) {
+            throw new FeatureNotFoundException(uid);
+        }
+        return mapFeatureRow(row);
     }
 
     /** {@inheritDoc} */
     @Override
     public Map<String, Feature> readAll() {
         Map < String, Feature> features = new HashMap<String, Feature>();
-        ResultSet resultSet = conn.getSession().execute(getBuilder().selectAllFeatures());
-        for (Row row : resultSet.all()) {
-            Feature f = CassandraMapper.mapFeature(row);
-            features.put(f.getUid(), f);
+        ResultSet rs = cqlSession.execute(STMT_FEATURE_READ_ALL);
+        for (Row row : rs.all()) {
+            features.put(row.getString(FEATURES_ATT_UID), mapFeatureRow(row));
         }
         return features;
     }
@@ -178,7 +212,6 @@ public class FeatureStoreCassandra extends AbstractFeatureStore {
     public void update(Feature fp) {
         assertFeatureNotNull(fp);
         assertFeatureExist(fp.getUid());
-        // easiest way to perform delta update (lot of attributes)
         delete(fp.getUid());
         create(fp);
     }
@@ -188,7 +221,10 @@ public class FeatureStoreCassandra extends AbstractFeatureStore {
     public void grantRoleOnFeature(String uid, String roleName) {
         assertFeatureExist(uid);
         Util.assertHasLength(roleName);
-        conn.getSession().execute(getBuilder().cqlGrantRoleOnFeature(roleName), uid);
+        getCqlSession().execute(QueryBuilder.update(FEATURES_TABLE)
+                .appendSetElement(FEATURES_ATT_ROLES, literal(roleName))
+                .whereColumn(FEATURES_ATT_UID).isEqualTo(literal(uid))
+                .build());
     }
 
     /** {@inheritDoc} */
@@ -196,61 +232,52 @@ public class FeatureStoreCassandra extends AbstractFeatureStore {
     public void removeRoleFromFeature(String uid, String roleName) {
         assertFeatureExist(uid);
         Util.assertHasLength(roleName);
-        // Read role from target feature
-        ResultSet rs = conn.getSession().execute(getBuilder().cqlReadFeatureRoles(), uid);
-        Set <String> permissions = CassandraMapper.mapFeaturePermissions(rs.one());
-        // Remove expected
-        permissions.remove(roleName);
-        // Update new roleSet
-        conn.getSession().execute(getBuilder().cqlUpdateFeatureRoles(), permissions, uid);
+        getCqlSession().execute(QueryBuilder.update(FEATURES_TABLE)
+                .removeSetElement(FEATURES_ATT_ROLES, literal(roleName))
+                .whereColumn(FEATURES_ATT_UID).isEqualTo(literal(uid))
+                .build());
     }
     
-    /** {@inheritDoc} */
+    /*
+     * Unfortunately no way to apply update on multiple features in 1 call.
+     * We go N+1 select, we can still group in a batch statement.
+     */
     @Override
     public void enableGroup(String groupName) {
         assertGroupExist(groupName);
-        /* Even with secondary index the 'update SET enable =1 WHERE GROUPNAME=?' does not work
-         * We will update each feature one by one
-         */
-        ResultSet rs = conn.getSession().execute(
-                getBuilder().cqlGetFeaturesNamesOfAGroup(), groupName);
-        for (Row row : rs.all()) {
-            enable(row.getString(COL_FEAT_UID));
-        }
+        BatchStatementBuilder stmtBatch = BatchStatement.builder(BatchType.LOGGED);
+        readGroup(groupName).values()
+                            .stream().map(Feature::getUid)
+                            .forEach(uid -> stmtBatch.addStatement(psToggleFeature.bind(true, uid)));
+        getCqlSession().execute(stmtBatch.build());
     }
 
     /** {@inheritDoc} */
     @Override
     public void disableGroup(String groupName) {
         assertGroupExist(groupName);
-        ResultSet rs = conn.getSession().execute(
-                getBuilder().cqlGetFeaturesNamesOfAGroup(), groupName);
-        for (Row row : rs.all()) {
-            disable(row.getString(COL_FEAT_UID));
-        }
+        BatchStatementBuilder stmtBatch = BatchStatement.builder(BatchType.LOGGED);
+        readGroup(groupName).values().stream()
+                            .map(Feature::getUid)
+                            .forEach(uid -> stmtBatch.addStatement(psToggleFeature.bind(false, uid)));
+        getCqlSession().execute(stmtBatch.build());
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean existGroup(String groupName) {
         Util.assertHasLength(groupName);
-        return 0 != conn.getSession()
-                .execute(getBuilder().cqlExistGroup(), groupName)
-                .iterator().next().getLong(0);
+        return getCqlSession().execute(psReadGroup.bind(groupName))
+                         .getAvailableWithoutFetching() > 0;
     }
 
     /** {@inheritDoc} */
     @Override
     public Map<String, Feature> readGroup(String groupName) {
         assertGroupExist(groupName);
-        Map<String, Feature> result = new HashMap<String, Feature>();
-        ResultSet rs = conn.getSession()
-                .execute(getBuilder().cqlGetFeaturesOfAGroup(), groupName);
-        for (Row row : rs.all()) {
-            Feature f = CassandraMapper.mapFeature(row);
-            result.put(f.getUid(), f);
-        }
-        return result;
+        return getCqlSession().execute(psReadGroup.bind(groupName))
+                         .all().stream().map(this::mapFeatureRow)
+                         .collect(Collectors.toMap(Feature::getUid, Functions.identity()));
     }
 
     /** {@inheritDoc} */
@@ -258,7 +285,7 @@ public class FeatureStoreCassandra extends AbstractFeatureStore {
     public void addToGroup(String uid, String groupName) {
         assertFeatureExist(uid);
         Util.assertHasLength(groupName);
-        conn.getSession().execute(getBuilder().cqlAddFeatureToGroup(), groupName, uid);
+        getCqlSession().execute(psAddToGroup.bind(groupName, uid));
     }
 
     /** {@inheritDoc} */
@@ -266,57 +293,99 @@ public class FeatureStoreCassandra extends AbstractFeatureStore {
     public void removeFromGroup(String uid, String groupName) {
         assertFeatureExist(uid);
         assertGroupExist(groupName);
-        conn.getSession().execute(getBuilder().cqlRemoveFeatureFromGroup(), uid);
+        Feature feat = read(uid);
+        if (feat.getGroup() != null && !feat.getGroup().equals(groupName)) {
+            throw new IllegalArgumentException("'" + uid + "' is not in group '" + groupName + "'");
+        }
+        getCqlSession().execute(psRmvFromGroup.bind(uid));
     }
 
     /** {@inheritDoc} */
     @Override
     public Set<String> readAllGroups() {
-        ResultSet rs = conn.getSession().execute(getBuilder().cqlGetGroups());
-        Set< String > groups = new HashSet<String>();
-        for (Row row : rs.all()) {
-            groups.add(row.getString(COL_FEAT_GROUPNAME));
+        List < Row> rows = cqlSession.execute(psListGroups.bind()).all();
+        Set<String> groupNames = new HashSet<>();
+        if (null != rows) {
+            rows.stream()
+                .map(r -> r.getString(FEATURES_ATT_GROUPNAME))
+                .forEach(groupNames::add);
         }
-        groups.remove(null);
-        groups.remove("");
-        return groups;
+        groupNames.remove(null);
+        groupNames.remove("");
+        return groupNames;
     }
 
     /** {@inheritDoc} */
     @Override
     public void clear() {
-        conn.getSession().execute(getBuilder().cqlTruncateFeatures());
+        getCqlSession().execute(QueryBuilder.truncate(FEATURES_TABLE).build());
     }
-
+    
     /**
-     * Getter accessor for attribute 'conn'.
-     *
-     * @return
-     *       current value of 'conn'
+     * Prepared once, run many.
      */
-    public CassandraConnection getConn() {
-        return conn;
+    protected void prepareStatements() {
+        
+        // udt
+        udtStrategy = cqlSession.getMetadata()
+                .getKeyspace(cqlSession.getKeyspace().get())
+                .flatMap(ks -> ks.getUserDefinedType(UDT_STRATEGY))
+                .orElseThrow(() -> new IllegalArgumentException("Missing UDT '" + UDT_STRATEGY + "'"));
+        udtProperty = cqlSession.getMetadata()
+                .getKeyspace(cqlSession.getKeyspace().get())
+                .flatMap(ks -> ks.getUserDefinedType(UDT_PROPERTY))
+                .orElseThrow(() -> new IllegalArgumentException("Missing UDT '" + UDT_PROPERTY + "'"));
+        
+        // Prepared Statements
+        psReadFeature   = cqlSession.prepare(STMT_FEATURE_READ);
+        psExistFeature  = cqlSession.prepare(STMT_FEATURE_EXIST);
+        psToggleFeature = cqlSession.prepare(STMT_FEATURE_TOGGLE);
+        psInsertFeature = cqlSession.prepare(STMT_FEATURE_INSERT);
+        psDeleteFeature = cqlSession.prepare(STMT_FEATURE_DELETE);
+        psReadGroup     = cqlSession.prepare(STMT_FEATUREGROUP_READ);
+        psAddToGroup    = cqlSession.prepare(STMT_FEATURE_ADDTOGROUP);
+        psRmvFromGroup  = cqlSession.prepare(STMT_FEATURE_REMOVEGROUP);
+        psListGroups    = cqlSession.prepare(STMT_FEATUREGROUP_LIST);
     }
-
-    /**
-     * Setter accessor for attribute 'conn'.
-     * @param conn
-     * 		new value for 'conn '
-     */
-    public void setConn(CassandraConnection conn) {
-        this.conn = conn;
-    }
-
-    /**
-     * Getter accessor for attribute 'builder'.
-     *
-     * @return
-     *       current value of 'builder'
-     */
-    public CassandraQueryBuilder getBuilder() {
-        if (builder == null) {
-            builder = new CassandraQueryBuilder(conn);
+    
+    protected Feature mapFeatureRow(Row row) {
+        Feature f = new Feature(row.getString(FEATURES_ATT_UID));
+        f.setDescription(row.getString(FEATURES_ATT_DESCRIPTION));
+        f.setEnable(row.getBoolean(FEATURES_ATT_ENABLED));
+        f.setGroup(row.getString(FEATURES_ATT_GROUPNAME));
+        f.setPermissions(row.getSet(FEATURES_ATT_ROLES, String.class));
+        // Flipping Strategy
+        UdtValue udtStrat = row.getUdtValue(FEATURES_ATT_STRATEGY);
+        if (null != udtStrat) {
+            String className = udtStrat.getString(UDT_STRATEGY_CLASS);
+            Map <String, String > initparams = udtStrat.getMap(UDT_STRATEGY_PARAMS,String.class, String.class);
+            f.setFlippingStrategy(MappingUtil.instanceFlippingStrategy(f.getUid(), className, initparams));
         }
-        return builder;
+        // Custom Properties
+        Map <String, UdtValue> mapOfProperties = row.getMap(FEATURES_ATT_PROPERTIES, String.class, UdtValue.class);
+        if (mapOfProperties != null) {
+            Map < String, Property<?>> customProperties = new HashMap<String, Property<?>>();
+            for(UdtValue udt : mapOfProperties.values()) {
+                String propName  = udt.getString(UDT_PROPERTY_UID);
+                String propClass = udt.getString(UDT_PROPERTY_CLASS);
+                String propDesc  = udt.getString(UDT_PROPERTY_DESCRIPTION);
+                String propVal   = udt.getString(UDT_PROPERTY_VALUE);
+                Set<String> fixV = udt.getSet(UDT_PROPERTY_FIXEDVALUES, String.class);
+                Property<?> p = PropertyFactory.createProperty(propName, propClass, propVal, propDesc, fixV);
+                customProperties.put(p.getName(), p);
+            }
+            f.setCustomProperties(customProperties);
+        }
+        return f;
+    }
+    
+    /**
+     * Prepared statements on first call.
+     */
+    private synchronized CqlSession getCqlSession() {
+        if (null == psExistFeature) {
+            prepareStatements();
+        }
+        return cqlSession;
     }
 }

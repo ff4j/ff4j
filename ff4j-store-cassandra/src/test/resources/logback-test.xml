@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   #%L
-  ff4j-aop
+  ff4j-store-cassandra
   %%
-  Copyright (C) 2013 Ff4J
+  Copyright (C) 2013 - 2020 FF4J
   %%
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -18,22 +17,15 @@
   limitations under the License.
   #L%
   -->
-
-<!DOCTYPE configuration>
-<configuration >
-
-  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <encoder>
-      <pattern>%d{HH:mm:ss.SSS} %-5level %class{0} - %msg%n</pattern>
-    </encoder>
-  </appender>
-
-  <logger name="org.springframework" level="WARN" />
-  <!--  Raise the error level to succeed travis build -->
-  <logger name="org.ff4j"            level="INFO" />
- 
-  <root level="ERROR">
-    <appender-ref ref="STDOUT" />
-  </root>
-
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+       		<pattern>%d{HH:mm:ss.SSS} %magenta(%-5level) %cyan(%-45logger) : %msg%n</pattern>
+        </encoder>
+    </appender>
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+    <logger name="org.ff4j.cassandra" level="INFO"/>
+    <logger name="com.datastax.oss"   level="ERROR"/>
 </configuration>

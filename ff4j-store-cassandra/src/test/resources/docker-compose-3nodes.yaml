@@ -1,0 +1,118 @@
+##
+# This Docker Compose filte will start a ring 'dc1' with 3 nodes
+#
+# Node2 will start after 60s  (1min between 2 nodes to start)
+# Node3 will start after 120s (1min between 2 nodes to start)
+# 
+# Author                  : Cedrick Lunven (@clunven)
+# Get Cassandra support   : community.datastax.com
+#
+# Commands:
+# docker exec -it `docker ps | grep cassandra-node1 | cut -b 1-12` bash
+# docker exec -it `docker ps | grepcassandra-node1 | cut -b 1-12` cqlsh
+##
+version: '2'
+services:
+
+  # Node will be our SEED node
+  cassandra-node1: 
+    image: cassandra:3.11.6
+    # Expose to other nodes
+    expose:
+      - 7000
+      - 7001
+      - 7199
+      - 9042
+      - 9160
+    # Our client would like to work a bit with that
+    ports:
+      - 9042:9042
+    command: bash -c 'if [ -z "$$(ls -A /var/lib/cassandra/)" ] ; then sleep 0; fi && /docker-entrypoint.sh cassandra -f'
+    environment:
+      CASSANDRA_DC: dc1
+      CASSANDRA_RACK: rack1
+      CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
+      CASSANDRA_CLUSTER_NAME: spring_demo_cluster
+      CASSANDRA_NUM_TOKENS: 1  
+      CASSANDRA_SEEDS: cassandra-node1
+    volumes:
+      - ~/docker-volumes/cassandra3-dc1-node1/:/var/lib/cassandra/data
+    networks:
+      - dc1ring
+    ulimits:
+      memlock: -1
+      nproc: 32768
+      nofile: 100000
+      
+  cassandra-node2:
+    image: cassandra:3.11.6
+    expose:
+      - 7000
+      - 7001
+      - 7199
+      - 9042
+      - 9160
+    # In case this is the first time starting up cassandra we need to ensure
+    # that all nodes do not start up at the same time. Cassandra has a
+    # 2 minute rule i.e. 2 minutes between each node boot up. Booting up
+    # nodes simultaneously is a mistake. This only needs to happen the firt
+    # time we bootup. Configuration below assumes if the Cassandra data
+    # directory is empty it means that we are starting up for the first
+    # time.
+    command: bash -c 'if [ -z "$$(ls -A /var/lib/cassandra/)" ] ; then sleep 60; fi && /docker-entrypoint.sh cassandra -f'
+    depends_on: 
+      - cassandra-node1
+    environment:
+      CASSANDRA_DC: dc1
+      CASSANDRA_RACK: rack1
+      CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
+      CASSANDRA_CLUSTER_NAME: spring_demo_cluster
+      CASSANDRA_NUM_TOKENS: 1  
+      CASSANDRA_SEEDS: cassandra-node1
+    volumes:
+      - ~/docker-volumes/cassandra3-dc1-node2/:/var/lib/cassandra/data
+    networks:
+      - dc1ring
+    ulimits:
+      memlock: -1
+      nproc: 32768
+      nofile: 100000 
+      
+  cassandra-node3: 
+    image: cassandra:3.11.6
+    expose:
+      - 7000
+      - 7001
+      - 7199
+      - 9042
+      - 9160
+    # In case this is the first time starting up cassandra we need to ensure
+    # that all nodes do not start up at the same time. Cassandra has a
+    # 2 minute rule i.e. 2 minutes between each node boot up. Booting up
+    # nodes simultaneously is a mistake. This only needs to happen the firt
+    # time we bootup. Configuration below assumes if the Cassandra data
+    # directory is empty it means that we are starting up for the first
+    # time.
+    command: bash -c 'if [ -z "$$(ls -A /var/lib/cassandra/)" ] ; then sleep 120; fi && /docker-entrypoint.sh cassandra -f'
+    depends_on: 
+      - cassandra-node1
+    environment:
+      CASSANDRA_DC: dc1
+      CASSANDRA_RACK: rack1
+      CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
+      CASSANDRA_CLUSTER_NAME: spring_demo_cluster
+      CASSANDRA_NUM_TOKENS: 1  
+      CASSANDRA_SEEDS: cassandra-node1
+    volumes:
+      - ~/docker-volumes/cassandra3-dc1-node3/:/var/lib/cassandra/data
+    networks:
+      - dc1ring
+    ulimits:
+      memlock: -1
+      nproc: 32768
+      nofile: 100000          
+ 
+# I want to access ny cluster from host      
+networks:
+  dc1ring:
+    driver: bridge

@@ -40,6 +40,7 @@ import org.ff4j.property.PropertyString;
 import org.ff4j.utils.MappingUtil;
 import org.ff4j.utils.Util;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.SafeConstructor;
 
 /**
  * Parser to read {@link FF4jConfiguration} from a YAML file.
@@ -47,6 +48,11 @@ import org.yaml.snakeyaml.Yaml;
  * @author Cedrick LUNVEN (@clunven)
  */
 public class YamlParser implements FF4jConfigurationParser<FF4jConfiguration> {
+    
+    /**
+     * Initialization of the Yaml parser
+     */
+    private Yaml safeYaml = new Yaml(new SafeConstructor());
     
     /**
      * Default constructor.
@@ -114,8 +120,8 @@ public class YamlParser implements FF4jConfigurationParser<FF4jConfiguration> {
     @SuppressWarnings("unchecked")
     public FF4jConfiguration parseConfigurationFile(InputStream inputStream) {
         Util.assertNotNull(inputStream, "Cannot read file stream is empty, check readability and path.");
-        Yaml yaml = new Yaml();
-        Map<?,?> yamlConfigFile = yaml.load(inputStream);
+        // Strengthen serialization
+        Map<?,?> yamlConfigFile = safeYaml.load(inputStream);
         Map<?,?> ff4jYamlMap = (Map<?, ?>) yamlConfigFile.get(FF4J_TAG);
         FF4jConfiguration ff4jConfig = new FF4jConfiguration();
         if (ff4jYamlMap != null) {

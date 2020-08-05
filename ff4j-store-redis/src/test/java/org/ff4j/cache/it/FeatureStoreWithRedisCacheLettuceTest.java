@@ -34,7 +34,6 @@ import java.util.Set;
  */
 
 import org.ff4j.cache.FF4JCacheManager;
-import org.ff4j.cache.FF4jCacheManagerRedis;
 import org.ff4j.cache.FF4jCacheManagerRedisLettuce;
 import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.core.Feature;

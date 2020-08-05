@@ -52,7 +52,7 @@ public class ServerFilterStrategyTest extends AbstractFf4jTest {
         // When (add correct client name)
         FlippingExecutionContext fex = new FlippingExecutionContext();
         fex.addValue(ServerFilterStrategy.SERVER_HOSTNAME, "dev01");
-
+        
         // Then
         Assert.assertTrue(ff4j.check(F1, fex));
     }

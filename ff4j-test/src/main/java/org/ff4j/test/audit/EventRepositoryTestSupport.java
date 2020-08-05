@@ -371,7 +371,7 @@ public abstract class EventRepositoryTestSupport {
 	@Test
 	public void testGetEventByUID() throws InterruptedException {
 		// Given
-		String dummyId = "1234-5678-9012-3456";
+		String dummyId = "00000000-1111-2222-3333-444444444444";
 		Event evt1 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CHECK_OFF);
 		evt1.setUuid(dummyId);
 		// When
@@ -390,7 +390,7 @@ public abstract class EventRepositoryTestSupport {
 		
 		// When create audit event
 		Event evtAudit = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CREATE);
-		evtAudit.setUuid("1234-5678-9012-3456");
+		evtAudit.setUuid("00000000-5555-2222-3333-444444444444");
 		repo.saveEvent(evtAudit);
 		Thread.sleep(100);
 		// Then event is present
@@ -407,7 +407,7 @@ public abstract class EventRepositoryTestSupport {
 		
 		// When create feature usage
         Event evtFeatureUsage = new Event(SOURCE_JAVA, TARGET_FEATURE, "f2", ACTION_CHECK_OK);
-        evtFeatureUsage.setUuid("1234-5678-9012-3457");
+        evtFeatureUsage.setUuid("00000000-6666-2222-3333-444444444444");
         repo.saveEvent(evtFeatureUsage);
         Thread.sleep(100);
         // Then event if present

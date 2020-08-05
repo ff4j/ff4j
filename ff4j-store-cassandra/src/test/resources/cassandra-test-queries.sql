@@ -1,76 +1,160 @@
----
--- #%L
--- ff4j-store-cassandra
--- %%
--- Copyright (C) 2013 - 2016 FF4J
--- %%
--- Licensed under the Apache License, Version 2.0 (the "License");
--- you may not use this file except in compliance with the License.
--- You may obtain a copy of the License at
--- 
---      http://www.apache.org/licenses/LICENSE-2.0
--- 
--- Unless required by applicable law or agreed to in writing, software
--- distributed under the License is distributed on an "AS IS" BASIS,
--- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
--- See the License for the specific language governing permissions and
--- limitations under the License.
--- #L%
----
--- List tables
-describe tables;
+CREATE KEYSPACE IF NOT EXISTS ff4j 
+WITH REPLICATION = 
+ { 'class' : 'SimpleStrategy', 
+   'replication_factor': '1' } 
+AND DURABLE_WRITES = true;
 
+CREATE TYPE ff4j.ff4j_udt_property (
+    uid text,
+    class text,
+    value text,
+    decription text,
+    fixedvalues set<text>
+);
 
- -- Afficher une table
- SELECT * FROM ff4j.features;
+CREATE TYPE ff4j.ff4j_udt_strategy (
+    class text,
+    params map<text, text>
+);
 
--- Populate FEATURE
-INSERT INTO ff4j.features (FEAT_UID, ENABLE, DESCRIPTION, GROUPNAME, ROLES)
-VALUES('f1', 1, 'sample desc', 'groupe1', {'ADMIN', 'USER'});
-INSERT INTO ff4j.features (UID, ENABLE, DESCRIPTION, GROUPNAME, ROLES, STRATEGY, PROPERTIES)
-VALUES('f2', 1, 'sample desc', 'groupe1', {'ADMIN', 'USER'}, '{"flippingStrategy":"value", "initParam":"ok"}', 
-        {'p1':'{"type":"int", "value":3}', 'p2':'v2'});
-INSERT INTO ff4j.features (FEAT_UID, ENABLE, CUSTOM_PROPERTIES) VALUES('f3', 1, {'p1':'v1', 'p2':'v2'});
-INSERT INTO ff4j.features (FEAT_UID, ENABLE, CUSTOM_PROPERTIES) VALUES('f4', 1, {'p1':'{"type":"int", "value":3}', 'p2':'v2'});
+CREATE TABLE ff4j.ff4j_audit (
+    uid uuid,
+    action text,
+    custom map<text, text>,
+    duration int,
+    hostname text,
+    name text,
+    source text,
+    time timestamp,
+    type text,
+    user text,
+    value text,
+    PRIMARY KEY (uid)
+) WITH read_repair_chance = 0.0
+    AND dclocal_read_repair_chance = 0.0
+    AND gc_grace_seconds = 864000
+    AND bloom_filter_fp_chance = 0.01
+    AND caching = { 'keys' : 'ALL', 'rows_per_partition' : 'NONE' }
+    AND comment = ''
+    AND compaction = { 'class' : 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold' : 32, 'min_threshold' : 4 }
+    AND compression = { 'enabled' : 'false' }
+    AND default_time_to_live = 0
+    AND speculative_retry = 'NONE'
+    AND min_index_interval = 128
+    AND max_index_interval = 2048
+    AND crc_check_chance = 1.0
+    AND cdc = false
+    AND memtable_flush_period_in_ms = 0
+    AND nodesync = { 'enabled' : 'true', 'incremental' : 'true' };
 
--- Disable
-UPDATE ff4j.features SET enable='0' WHERE feat_uid = 'f1';
+CREATE TABLE ff4j.ff4j_audit_by_type (
+    type text,
+    time timestamp,
+    uid uuid,
+    action text,
+    custom map<text, text>,
+    duration int,
+    hostname text,
+    name text,
+    source text,
+    user text,
+    value text,
+    PRIMARY KEY (type, time, uid)
+) WITH CLUSTERING ORDER BY (time ASC, uid ASC)
+    AND read_repair_chance = 0.0
+    AND dclocal_read_repair_chance = 0.0
+    AND gc_grace_seconds = 864000
+    AND bloom_filter_fp_chance = 0.01
+    AND caching = { 'keys' : 'ALL', 'rows_per_partition' : 'NONE' }
+    AND comment = ''
+    AND compaction = { 'class' : 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold' : 32, 'min_threshold' : 4 }
+    AND compression = { 'enabled' : 'false' }
+    AND default_time_to_live = 0
+    AND speculative_retry = 'NONE'
+    AND min_index_interval = 128
+    AND max_index_interval = 2048
+    AND crc_check_chance = 1.0
+    AND cdc = false
+    AND memtable_flush_period_in_ms = 0
+    AND nodesync = { 'enabled' : 'true', 'incremental' : 'true' };
 
--- Truncate
-CONSISTENCY ALL;TRUNCATE TABLE ff4j.features;
+CREATE TABLE ff4j.ff4j_audit_hitcount (
+    name text,
+    time timestamp,
+    custom map<text, text>,
+    duration int,
+    hostname text,
+    source text,
+    uid uuid,
+    user text,
+    value text,
+    PRIMARY KEY (name, time)
+) WITH CLUSTERING ORDER BY (time ASC)
+    AND read_repair_chance = 0.0
+    AND dclocal_read_repair_chance = 0.0
+    AND gc_grace_seconds = 864000
+    AND bloom_filter_fp_chance = 0.01
+    AND caching = { 'keys' : 'ALL', 'rows_per_partition' : 'NONE' }
+    AND comment = ''
+    AND compaction = { 'class' : 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold' : 32, 'min_threshold' : 4 }
+    AND compression = { 'enabled' : 'false' }
+    AND default_time_to_live = 0
+    AND speculative_retry = 'NONE'
+    AND min_index_interval = 128
+    AND max_index_interval = 2048
+    AND crc_check_chance = 1.0
+    AND cdc = false
+    AND memtable_flush_period_in_ms = 0
+    AND nodesync = { 'enabled' : 'true', 'incremental' : 'true' };
 
--- Grant
-UPDATE users SET emails = emails + {'fb@friendsofmordor.org'} WHERE user_id = 'frodo';
-UPDATE features SET roles = roles + {'ooo'} WHERE uid = 'fx1';
+CREATE TABLE ff4j.ff4j_features (
+    uid text,
+    description text,
+    enabled boolean,
+    groupname text,
+    properties map<text, frozen<ff4j.ff4j_udt_property>>,
+    roles set<text>,
+    strategy frozen<ff4j.ff4j_udt_strategy>,
+    PRIMARY KEY (uid)
+) WITH read_repair_chance = 0.0
+    AND dclocal_read_repair_chance = 0.0
+    AND gc_grace_seconds = 864000
+    AND bloom_filter_fp_chance = 0.01
+    AND caching = { 'keys' : 'ALL', 'rows_per_partition' : 'NONE' }
+    AND comment = ''
+    AND compaction = { 'class' : 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold' : 32, 'min_threshold' : 4 }
+    AND compression = { 'enabled' : 'false' }
+    AND default_time_to_live = 0
+    AND speculative_retry = 'NONE'
+    AND min_index_interval = 128
+    AND max_index_interval = 2048
+    AND crc_check_chance = 1.0
+    AND cdc = false
+    AND memtable_flush_period_in_ms = 0
+    AND nodesync = { 'enabled' : 'true', 'incremental' : 'true' };
 
--- Empty set
-UPDATE users SET emails = {} WHERE user_id = 'frodo';
+CREATE INDEX ff4j_features_index_groupname ON ff4j.ff4j_features (groupname);
 
-DELETE emails FROM users WHERE user_id = 'frodo';
-
-CREATE INDEX ON ff4j.features (GROUPNAME);
-
-SELECT * from ff4j.features where GROUPNAME = 'group3';
-
-UPDATE features SET enable = 1 WHERE GROUPNAME = 'group3';
-
--- requete TIME/FEATURE(name+type)
-
-CREATE TABLE latest_temperatures (
-weatherstation_id text,
-event_time timestamp,
-temperature text,
-PRIMARY KEY (weatherstation_id,event_time),
-) WITH CLUSTERING ORDER BY (event_time DESC);
-
-INSERT INTO latest_temperatures(weatherstation_id,event_time,temperature)
-VALUES (’1234ABCD’,’2013-04-03 07:03:00′,’72F’) USING TTL 20;
-
-ALTER TABLE users ALTER bio TYPE text;
-ALTER TABLE cycling.cyclist_races ADD firstname text;
-ALTER TABLE cycling.basic_info DROP birth_year;
-
-
-select * from audit
-where time > '2013-04-03 07:01:00'
-AND time < '2013-04-03 07:04:00'
+CREATE TABLE ff4j.ff4j_properties (
+    uid text,
+    class text,
+    description text,
+    fixedvalues set<text>,
+    value text,
+    PRIMARY KEY (uid)
+) WITH read_repair_chance = 0.0
+    AND dclocal_read_repair_chance = 0.0
+    AND gc_grace_seconds = 864000
+    AND bloom_filter_fp_chance = 0.01
+    AND caching = { 'keys' : 'ALL', 'rows_per_partition' : 'NONE' }
+    AND comment = ''
+    AND compaction = { 'class' : 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold' : 32, 'min_threshold' : 4 }
+    AND compression = { 'enabled' : 'false' }
+    AND default_time_to_live = 0
+    AND speculative_retry = 'NONE'
+    AND min_index_interval = 128
+    AND max_index_interval = 2048
+    AND crc_check_chance = 1.0
+    AND cdc = false
+    AND memtable_flush_period_in_ms = 0
+    AND nodesync = { 'enabled' : 'true', 'incremental' : 'true' };

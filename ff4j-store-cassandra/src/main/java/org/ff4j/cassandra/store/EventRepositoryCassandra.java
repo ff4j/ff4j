@@ -1,23 +1,13 @@
 package org.ff4j.cassandra.store;
 
-import static org.ff4j.audit.EventConstants.ACTION_CLEAR;
-import static org.ff4j.audit.EventConstants.ACTION_CREATE;
-import static org.ff4j.audit.EventConstants.ACTION_DELETE;
-import static org.ff4j.audit.EventConstants.ACTION_DISCONNECT;
-import static org.ff4j.audit.EventConstants.ACTION_TOGGLE_OFF;
-import static org.ff4j.audit.EventConstants.ACTION_TOGGLE_ON;
-import static org.ff4j.audit.EventConstants.ACTION_UPDATE;
-import static org.ff4j.cassandra.CassandraConstants.COLUMN_FAMILY_AUDIT;
-import static org.ff4j.cassandra.CassandraConstants.COL_EVENT_HOSTNAME;
-import static org.ff4j.cassandra.CassandraConstants.COL_EVENT_NAME;
-import static org.ff4j.cassandra.CassandraConstants.COL_EVENT_SOURCE;
-import static org.ff4j.cassandra.CassandraConstants.COL_EVENT_USER;
-import static org.ff4j.cassandra.CassandraConstants.COL_EVENT_ACTION;
-
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /*
@@ -41,20 +31,27 @@ import java.util.concurrent.TimeUnit;
  */
 
 import org.ff4j.audit.Event;
+import org.ff4j.audit.EventConstants;
 import org.ff4j.audit.EventQueryDefinition;
 import org.ff4j.audit.EventSeries;
 import org.ff4j.audit.MutableHitCount;
 import org.ff4j.audit.chart.TimeSeriesChart;
 import org.ff4j.audit.repository.AbstractEventRepository;
-import org.ff4j.cassandra.CassandraConnection;
-import org.ff4j.cassandra.CassandraMapper;
-import org.ff4j.cassandra.CassandraQueryBuilder;
+import org.ff4j.cassandra.FF4jCassandraSchema;
 import org.ff4j.utils.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Row;
+import com.datastax.oss.driver.api.core.ConsistencyLevel;
+import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.BatchStatementBuilder;
+import com.datastax.oss.driver.api.core.cql.BatchType;
+import com.datastax.oss.driver.api.core.cql.BoundStatement;
+import com.datastax.oss.driver.api.core.cql.PreparedStatement;
+import com.datastax.oss.driver.api.core.cql.ResultSet;
+import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.api.core.cql.SimpleStatement;
+import com.datastax.oss.driver.api.core.cql.SimpleStatementBuilder;
 
 /**
  * Implementation of audit into Cassandra DB
@@ -63,74 +60,196 @@ import com.datastax.driver.core.Row;
  * 
  * @author Cedrick LUNVEN (@clunven)
  */
-public class EventRepositoryCassandra extends AbstractEventRepository {
+public class EventRepositoryCassandra extends AbstractEventRepository implements FF4jCassandraSchema {
     
     /** logger for this store. */
     private static Logger LOGGER = LoggerFactory.getLogger(EventRepositoryCassandra.class);
     
-    /** TTL to working with ' expiring columns' if positive number in SECONDS. */
-    private int ttl = -1;
+    /** Driver Session. */
+    private CqlSession cqlSession;
     
-    /** Connection to store Cassandra. */
-    private CassandraQueryBuilder builder;
-            
-    /** Connection to store Cassandra. */
-    private CassandraConnection conn;
+    /** Default read timeout. */
+    private Duration duration = Duration.ofMinutes(10);
+    
+    /** Static statements on events. */ 
+    private PreparedStatement psInsertEvent;
+    private PreparedStatement psInsertEventByType;
+    private PreparedStatement psReadEventById;
     
     /**
      * Default constructor.
      */
-    public EventRepositoryCassandra() {
-    }
+    public EventRepositoryCassandra() {}
     
     /**
-     * Initialization through {@link CassandraConnection}.
-     *
-     * @param conn
-     *      current client to cassandra db
+     * Connector with running session
      */
-    public EventRepositoryCassandra(CassandraConnection conn) {
-        this.conn = conn;
+    public EventRepositoryCassandra(CqlSession cqlSession) {
+        this.cqlSession = cqlSession;
     }
-
+    
     /** {@inheritDoc} */
     @Override
     public void createSchema() {
-       if (!conn.isColumnFamilyExist(COLUMN_FAMILY_AUDIT)) {
-           conn.getSession().execute(getBuilder().cqlCreateColumnFamilyAudit());
-           LOGGER.debug("Column Family '{}' created", COLUMN_FAMILY_AUDIT);
-       }
+        cqlSession.execute(STMT_CREATE_TABLE_AUDIT);
+        cqlSession.execute(STMT_CREATE_TABLE_AUDITHITCOUNT);
     }
     
     /** {@inheritDoc} */
     @Override
     public boolean saveEvent(Event e) {
         Util.assertEvent(e);
-        LOGGER.debug("Event Logged {}", e.toJson());
-        conn.getSession().execute(getBuilder().cqlCreateEvent(ttl),
-                e.getUuid(), KDF.format(e.getDate()), e.getTimestamp(),
-                e.getType(), e.getName(), e.getAction(),
-                e.getHostName(), e.getSource(), e.getDuration(),
-                e.getUser(), e.getValue(), e.getCustomKeys());
+        CqlSession cqlSession = getCqlSession();
+        BatchStatementBuilder batchBuilder = new BatchStatementBuilder(BatchType.LOGGED);
+        
+        BoundStatement bsInsertEvent = psInsertEvent.bind();
+        bsInsertEvent = bsInsertEvent.setUuid(AUDIT_ATT_UID, UUID.fromString(e.getUuid()));
+        bsInsertEvent = bsInsertEvent.setString(AUDIT_ATT_TYPE, e.getType());
+        bsInsertEvent = bsInsertEvent.setInstant(AUDIT_ATT_TIME, Instant.ofEpochMilli(e.getTimestamp()));
+        bsInsertEvent = bsInsertEvent.setString(AUDIT_ATT_NAME, e.getName());
+        bsInsertEvent = bsInsertEvent.setString(AUDIT_ATT_ACTION, e.getAction());
+        bsInsertEvent = bsInsertEvent.setString(AUDIT_ATT_SOURCE, e.getSource());
+        bsInsertEvent = bsInsertEvent.setString(AUDIT_ATT_HOSTNAME, e.getHostName());
+        bsInsertEvent = bsInsertEvent.setInt(AUDIT_ATT_DURATION, new Long(e.getDuration()).intValue());
+        bsInsertEvent = bsInsertEvent.setString(AUDIT_ATT_USER, e.getUser());
+        bsInsertEvent = bsInsertEvent.setString(AUDIT_ATT_VALUE, e.getValue());
+        bsInsertEvent = bsInsertEvent.setMap(AUDIT_ATT_CUSTOM, e.getCustomKeys(), String.class, String.class);
+        batchBuilder.addStatement(bsInsertEvent);
+        
+        if (EventConstants.ACTION_CHECK_OK.equalsIgnoreCase(e.getAction())) {
+            BoundStatement bsInsertEventByType = psInsertEventByType.bind();
+            bsInsertEventByType = bsInsertEventByType.setUuid(AUDIT_ATT_UID, UUID.fromString(e.getUuid()));
+            bsInsertEventByType = bsInsertEventByType.setInstant(AUDIT_ATT_TIME, Instant.ofEpochMilli(e.getTimestamp()));
+            bsInsertEventByType = bsInsertEventByType.setString(AUDIT_ATT_NAME, e.getName());
+            bsInsertEventByType = bsInsertEventByType.setString(AUDIT_ATT_SOURCE, e.getSource());
+            bsInsertEventByType = bsInsertEventByType.setString(AUDIT_ATT_HOSTNAME, e.getHostName());
+            bsInsertEventByType = bsInsertEventByType.setInt(AUDIT_ATT_DURATION, new Long(e.getDuration()).intValue());
+            bsInsertEventByType = bsInsertEventByType.setString(AUDIT_ATT_USER, e.getUser());
+            bsInsertEventByType = bsInsertEventByType.setString(AUDIT_ATT_VALUE, e.getValue());
+            bsInsertEventByType = bsInsertEventByType.setMap(AUDIT_ATT_CUSTOM, e.getCustomKeys(), String.class, String.class);
+            batchBuilder.addStatement(bsInsertEventByType);
+        }
+        
+        cqlSession.execute(batchBuilder.build());
         return true;
     }   
 
     /** {@inheritDoc} */
     @Override
     public Event getEventByUUID(String uuid, Long timestamp) {
-        ResultSet rs = conn.getSession().execute(getBuilder().cqlGetEventById(), uuid);
-        return CassandraMapper.mapEvent(rs.one());
+        Util.assertHasLength(uuid);
+        BoundStatement stmtFindEventById = psReadEventById.bind(UUID.fromString(uuid));
+        ResultSet rs = getCqlSession().execute(stmtFindEventById);
+        Row row = rs.one();
+        if (null == row) {
+            /* 
+             * Was not in table audit, so maybe hitcount but need allow filtering
+             * It will be slow no need to prepare :p (full scan)
+             */
+            SimpleStatement ss = new SimpleStatementBuilder(
+                    "SELECT * FROM " + AUDIT_HITCOUNT_TABLE 
+                 + " WHERE " + AUDIT_ATT_UID + "= ?"
+                 + " ALLOW FILTERING")
+                    .addPositionalValue(UUID.fromString(uuid))
+                    .build();
+            ResultSet rs2 = getCqlSession().execute(ss);
+            Row row2 = rs2.one();
+            if (null == row2) {
+                return null;
+            }
+            return mapEventHit(row2);
+        }
+        return mapEventRow(row);
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public Map<String, MutableHitCount> getFeatureUsageHitCount(EventQueryDefinition query) {
-        String cqlQuery = getBuilder().cqlFeatureUsageHitCount(query);
-        LOGGER.debug("Query " + cqlQuery);
-        ResultSet rs = conn.getSession().execute(cqlQuery);
+    
+    private SimpleStatement buildDynamicStatementHitCount(EventQueryDefinition query) {
+        // Default settings
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT * FROM " + AUDIT_HITCOUNT_TABLE);
+        sb.append(" WHERE (" + AUDIT_ATT_TIME + "> ?) ");
+        sb.append(" AND   (" + AUDIT_ATT_TIME + "< ?) ");
+        
+        List<Object> parameters = new ArrayList<>();
+        parameters.add(Instant.ofEpochMilli(query.getFrom()));
+        parameters.add(Instant.ofEpochMilli(query.getTo()));
+        
+        // Name is the PARTITION KEY
+        if (!query.getNamesFilter().isEmpty()) {
+            sb.append(" AND (" + AUDIT_ATT_NAME + " IN ?)");
+            parameters.add(query.getNamesFilter());
+        }
+        if (!query.getActionFilters().isEmpty()) {
+            sb.append(" AND (" + AUDIT_ATT_ACTION + " IN ?)");
+            parameters.add(query.getActionFilters());
+        }
+        if (!query.getHostFilters().isEmpty()) {
+            sb.append(" AND (" + AUDIT_ATT_HOSTNAME + " IN ?)");
+            parameters.add(query.getHostFilters());
+        }
+        if (!query.getSourceFilters().isEmpty()) {
+            sb.append(" AND (" + AUDIT_ATT_SOURCE + " IN ? )");
+            parameters.add(query.getSourceFilters());
+        }
+        sb.append(" ALLOW FILTERING");
+        
+        SimpleStatementBuilder builder = SimpleStatement.builder(sb.toString());
+        for(Object o : parameters) {
+            builder = builder.addPositionalValue(o);
+        }
+        // Accelerate the query
+        SimpleStatement ss = builder.build();
+        ss.setConsistencyLevel(ConsistencyLevel.ONE);
+        ss.setTimeout(Duration.ofMinutes(10));
+        ss.setTracing(false);
+        return ss;
+    }
+    
+    private SimpleStatement buildDynamicStatementAudit(EventQueryDefinition query) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT * FROM " + AUDIT_TABLE);
+        sb.append(" WHERE (" + AUDIT_ATT_TIME + "> ?) ");
+        sb.append(" AND   (" + AUDIT_ATT_TIME + "< ?) ");
+        
+        List<Object> parameters = new ArrayList<>();
+        parameters.add(Instant.ofEpochMilli(query.getFrom()));
+        parameters.add(Instant.ofEpochMilli(query.getTo()));
+        
+        // Name is the PARTITION KEY
+        if (!query.getNamesFilter().isEmpty()) {
+            sb.append(" AND (" + AUDIT_ATT_NAME + " IN ?)");
+            parameters.add(query.getNamesFilter());
+        }
+        if (!query.getActionFilters().isEmpty()) {
+            sb.append(" AND (" + AUDIT_ATT_ACTION + " IN ?)");
+            parameters.add(query.getActionFilters());
+        }
+        if (!query.getHostFilters().isEmpty()) {
+            sb.append(" AND (" + AUDIT_ATT_HOSTNAME + " IN ?)");
+            parameters.add(query.getHostFilters());
+        }
+        if (!query.getSourceFilters().isEmpty()) {
+            sb.append(" AND (" + AUDIT_ATT_SOURCE + " IN ? )");
+            parameters.add(query.getSourceFilters());
+        }
+        sb.append(" ALLOW FILTERING");
+        
+        SimpleStatementBuilder builder = SimpleStatement.builder(sb.toString());
+        for(Object o : parameters) {
+            builder = builder.addPositionalValue(o);
+        }
+        // Accelerate the query
+        SimpleStatement ss = builder.build();
+        ss.setConsistencyLevel(ConsistencyLevel.ONE);
+        ss.setTimeout(Duration.ofMinutes(10));
+        ss.setTracing(false);
+        return ss;
+    }
+    
+    private Map < String, MutableHitCount > countResultSet(ResultSet rs, String dimension) {
         Map < String, MutableHitCount > hitCount = new HashMap<String, MutableHitCount>();
-        for (Row row : rs.all()) {
-            String featureName = row.getString(COL_EVENT_NAME);
+        // Let driver do paging for us 
+        for (Row row : rs) {
+            String featureName = row.getString(dimension);
             if (hitCount.containsKey(featureName)) {
                 hitCount.get(featureName).inc();
             } else {
@@ -140,74 +259,44 @@ public class EventRepositoryCassandra extends AbstractEventRepository {
         return hitCount;
     }
     
+    public Map<String, MutableHitCount> executeHitCount(EventQueryDefinition query, String dimension) {
+        LOGGER.warn("You are executing an OLAP query. The generic nature of query definition "
+                + "does not allow custom tables. The response time could be long (full scan).");
+        SimpleStatement ss = buildDynamicStatementHitCount(query);
+        LOGGER.info("Executing OLAP: {}", ss.getQuery());
+        return countResultSet(getCqlSession().execute(ss), dimension);
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, MutableHitCount> getFeatureUsageHitCount(EventQueryDefinition query) {
+        return executeHitCount(query, AUDIT_ATT_NAME);
+    }
+    
     /** {@inheritDoc} */
     @Override
     public Map<String, MutableHitCount> getUserHitCount(EventQueryDefinition query) {
-        String cqlQuery = getBuilder().cqlUserHitCount(query);
-        LOGGER.debug("Query " + cqlQuery);
-        ResultSet rs = conn.getSession().execute(cqlQuery);
-        Map < String, MutableHitCount > hitCount = new HashMap<String, MutableHitCount>();
-        for (Row row : rs.all()) {
-            String user = row.getString(COL_EVENT_USER);
-            if (hitCount.containsKey(user)) {
-                hitCount.get(user).inc();
-            } else {
-                hitCount.put(user, new MutableHitCount(1));
-            }
-        }
-        return hitCount;
+        return executeHitCount(query, AUDIT_ATT_USER);
     }
     
     /** {@inheritDoc} */
     @Override
     public Map<String, MutableHitCount> getHostHitCount(EventQueryDefinition query) {
-        String cqlQuery = getBuilder().cqlHostHitCount(query);
-        LOGGER.debug("Query " + cqlQuery);
-        ResultSet rs = conn.getSession().execute(cqlQuery);
-        Map < String, MutableHitCount > hitCount = new HashMap<String, MutableHitCount>();
-        for (Row row : rs.all()) {
-            String hostName = row.getString(COL_EVENT_HOSTNAME);
-            if (hitCount.containsKey(hostName)) {
-                hitCount.get(hostName).inc();
-            } else {
-                hitCount.put(hostName, new MutableHitCount(1));
-            }
-        }
-        return hitCount;
-    }    
+        return executeHitCount(query, AUDIT_ATT_HOSTNAME);
+    }
 
     /** {@inheritDoc} */
     @Override
     public Map<String, MutableHitCount> getSourceHitCount(EventQueryDefinition query) {
-        String cqlQuery = getBuilder().cqlSourceHitCount(query);
-        LOGGER.debug("Query " + cqlQuery);
-        ResultSet rs = conn.getSession().execute(cqlQuery);
-        Map < String, MutableHitCount > hitCount = new HashMap<String, MutableHitCount>();
-        for (Row row : rs.all()) {
-            String source = row.getString(COL_EVENT_SOURCE);
-            if (hitCount.containsKey(source)) {
-                hitCount.get(source).inc();
-            } else {
-                hitCount.put(source, new MutableHitCount(1));
-            }
-        }
-        return hitCount;
+        return executeHitCount(query, AUDIT_ATT_SOURCE);
     }
 
     /** {@inheritDoc} */
     @Override
     public EventSeries getAuditTrail(EventQueryDefinition query) {
-        String cqlQuery = getBuilder().cqlAuditTrail(query);
-        LOGGER.debug("Query " + cqlQuery);
-        ResultSet rs = conn.getSession().execute(cqlQuery);
         EventSeries es = new EventSeries();
-        Set < String > candidates = Util.set(ACTION_DISCONNECT, 
-                ACTION_TOGGLE_ON, ACTION_TOGGLE_OFF,
-                ACTION_CREATE, ACTION_DELETE,
-                ACTION_UPDATE, ACTION_CLEAR);
-        for (Row row : rs.all()) {
-            if (candidates.contains(row.getString(COL_EVENT_ACTION)))
-            es.add(CassandraMapper.mapEvent(row));
+        for (Row row : getCqlSession().execute(buildDynamicStatementAudit(query))) {
+           es.add(mapEventRow(row));
         }
         return es;
     }
@@ -215,25 +304,22 @@ public class EventRepositoryCassandra extends AbstractEventRepository {
     /** {@inheritDoc} */
     @Override
     public void purgeFeatureUsage(EventQueryDefinition query) {
-        this.purgeAuditTrail(query);
+        purgeAuditTrail(query);
     }
     
     /** {@inheritDoc} */
     @Override
     public void purgeAuditTrail(EventQueryDefinition query) {
-        LOGGER.warn("All audit will be purged, cannot filter");
-        conn.getSession().execute(getBuilder().cqlTruncateAudit());
+        truncateTable(getCqlSession(), AUDIT_HITCOUNT_TABLE);
+        truncateTable(getCqlSession(), AUDIT_TABLE);
     }
     
     /** {@inheritDoc} */
     @Override
     public EventSeries searchFeatureUsageEvents(EventQueryDefinition query) {
-        String cqlQuery = getBuilder().cqlAuditFeatureUsage(query);
-        LOGGER.debug("Query " + cqlQuery);
-        ResultSet rs = conn.getSession().execute(cqlQuery);
         EventSeries es = new EventSeries();
-        for (Row row : rs.all()) {
-            es.add(CassandraMapper.mapEvent(row));
+        for (Row row : getCqlSession().execute(buildDynamicStatementHitCount(query))) {
+           es.add(mapEventHit(row));
         }
         return es;
     }  
@@ -250,66 +336,74 @@ public class EventRepositoryCassandra extends AbstractEventRepository {
             tsc.addEvent(iterEvent.next());
         }
         return tsc;
-    }      
-
-    /**
-     * Getter accessor for attribute 'builder'.
-     *
-     * @return
-     *       current value of 'builder'
-     */
-    public CassandraQueryBuilder getBuilder() {
-        if (builder == null) {
-            builder = new CassandraQueryBuilder(conn);
-        }
-        return builder;
+    }
+    
+    protected Event mapEventRow(Row row) {
+        Event e = new Event();
+        e.setAction(row.getString(AUDIT_ATT_ACTION));
+        e.setDuration(row.getInt(AUDIT_ATT_DURATION));
+        e.setHostName(row.getString(AUDIT_ATT_HOSTNAME));
+        e.setName(row.getString(AUDIT_ATT_NAME));
+        e.setSource(row.getString(AUDIT_ATT_SOURCE));
+        e.setTimestamp(row.getInstant(AUDIT_ATT_TIME).getEpochSecond());
+        e.setType(row.getString(AUDIT_ATT_TYPE));
+        e.setUser(row.getString(AUDIT_ATT_USER));
+        e.setValue(row.getString(AUDIT_ATT_VALUE));
+        e.setUuid(row.getUuid(AUDIT_ATT_UID).toString());
+        e.setCustomKeys(row.getMap(AUDIT_ATT_CUSTOM, String.class, String.class));
+        return e;
+    }
+    
+    protected Event mapEventHit(Row row) {
+        Event e = new Event();
+        e.setDuration(row.getInt(AUDIT_ATT_DURATION));
+        e.setHostName(row.getString(AUDIT_ATT_HOSTNAME));
+        e.setName(row.getString(AUDIT_ATT_NAME));
+        e.setSource(row.getString(AUDIT_ATT_SOURCE));
+        e.setTimestamp(row.getInstant(AUDIT_ATT_TIME).getEpochSecond());
+        e.setUser(row.getString(AUDIT_ATT_USER));
+        e.setValue(row.getString(AUDIT_ATT_VALUE));
+        e.setUuid(row.getUuid(AUDIT_ATT_UID).toString());
+        e.setCustomKeys(row.getMap(AUDIT_ATT_CUSTOM, String.class, String.class));
+        return e;
     }
 
     /**
-     * Setter accessor for attribute 'builder'.
-     * @param builder
-     *      new value for 'builder '
+     * Prepared once, run many.
      */
-    public void setBuilder(CassandraQueryBuilder builder) {
-        this.builder = builder;
-    }
-
-    /**
-     * Getter accessor for attribute 'ttl'.
-     *
-     * @return
-     *       current value of 'ttl'
-     */
-    public int getTtl() {
-        return ttl;
-    }
-
-    /**
-     * Setter accessor for attribute 'ttl'.
-     * @param ttl
-     *      new value for 'ttl '
-     */
-    public void setTtl(int ttl) {
-        this.ttl = ttl;
+    protected void prepareStatements() {
+        psInsertEvent       = cqlSession.prepare(STMT_AUDIT_INSERT);
+        psInsertEventByType = cqlSession.prepare(STMT_AUDIT_INSERT_HITCOUNT);
+        psReadEventById     = cqlSession.prepare(STMT_AUDIT_READ_BY_ID);
     }
     
     /**
-     * Getter accessor for attribute 'conn'.
-     *
-     * @return
-     *       current value of 'conn'
+     * Prepared statements on first call.
      */
-    public CassandraConnection getConn() {
-        return conn;
+    private synchronized CqlSession getCqlSession() {
+        if (null == psInsertEvent) {
+            prepareStatements();
+        }
+        return cqlSession;
     }
 
     /**
-     * Setter accessor for attribute 'conn'.
-     * @param conn
-     *      new value for 'conn '
+     * Getter accessor for attribute 'duration'.
+     *
+     * @return
+     *       current value of 'duration'
      */
-    public void setConn(CassandraConnection conn) {
-        this.conn = conn;
+    public Duration getDuration() {
+        return duration;
+    }
+
+    /**
+     * Setter accessor for attribute 'duration'.
+     * @param duration
+     * 		new value for 'duration '
+     */
+    public void setDuration(Duration duration) {
+        this.duration = duration;
     }
    
 }

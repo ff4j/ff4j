@@ -1,0 +1,24 @@
+version: '2'
+services:
+  cassandra:
+    image: cassandra:3.11.7
+    ports:
+      - 7000:7000
+      - 7001:7001
+      - 7199:7199
+      - 9042:9042
+      - 9160:9160
+    ulimits:
+      memlock: -1
+    # If you want to data
+    # volumes:
+    #   - ~/cassandra/:/var/lib/cassandra/data
+
+#docker exec -it `docker ps | grep cassandra:3.11.7 | cut -b 1-12` cqlsh
+#Create
+#docker exec -it `docker ps | grep cassandra:3.11.7 | cut -b 1-12` \
+#    cqlsh -e "CREATE KEYSPACE IF NOT EXISTS ff4j \
+#    WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor': '1' }  \
+#    AND DURABLE_WRITES = true;" && \
+#  docker exec -it `docker ps | grep cassandra:3.11.7 | cut -b 1-12` \
+#    cqlsh -e "DESCRIBE KEYSPACE  ff4j"
