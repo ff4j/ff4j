@@ -68,9 +68,10 @@
 		
 		<!-- TagLibs -->
 		<dependency>
-			<groupId>javax.servlet</groupId>
+			<groupId>javax.servlet.jsp.jstl</groupId>
 			<artifactId>jstl</artifactId>
 		</dependency>
+
 		<dependency>
 		    <groupId>javax.activation</groupId>
     		<artifactId>activation</artifactId>
