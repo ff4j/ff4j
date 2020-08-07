@@ -4,7 +4,7 @@ package org.ff4j.store.it;
  * #%L
  * ff4j-store-redis
  * %%
- * Copyright (C) 2013 - 2020 FF4J
+ * Copyright (C) 2013 - 2016 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,25 +20,27 @@ package org.ff4j.store.it;
  * #L%
  */
 
-import org.ff4j.core.FeatureStore;
-import org.ff4j.store.FeatureStoreRedisLettuce;
-import org.ff4j.test.store.FeatureStoreTestSupport;
+
+import org.ff4j.property.store.PropertyStore;
+import org.ff4j.store.PropertyStoreRedisLettuce;
+import org.ff4j.test.propertystore.PropertyStoreTestSupport;
 import org.junit.After;
 
-import io.lettuce.core.RedisClient;
+import io.lettuce.core.RedisURI;
+import io.lettuce.core.cluster.RedisClusterClient;
 
 /**
- * Test to work with Redis as a store.
+ * Implementatino of tests with REDIS
+ * @author Cedrick Lunven (@clunven)</a>
  */
-public class FeatureStoreRedisLettuceTestIT extends FeatureStoreTestSupport {
-   
+public class PropertyStoreRedisTestLettuceClusterI extends PropertyStoreTestSupport {
+
     /** {@inheritDoc} */
-    @Override
-    protected FeatureStore initStore() {
-        RedisClient rc = RedisClient.create("redis://localhost");
-        FeatureStoreRedisLettuce redisStore = new FeatureStoreRedisLettuce(rc);
-        redisStore.importFeaturesFromXmlFile("ff4j.xml");
-        return redisStore;
+    protected PropertyStore initPropertyStore() {
+        RedisClusterClient rcc = RedisClusterClient.create(RedisURI.create("redis://localhost:30001"));        
+        PropertyStoreRedisLettuce prl =  new PropertyStoreRedisLettuce(rcc);
+        prl.importPropertiesFromXmlFile("test-ff4j-features.xml");
+        return prl;
     }
     
     /**

@@ -25,18 +25,19 @@ import org.ff4j.store.FeatureStoreRedisLettuce;
 import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.After;
 
-import io.lettuce.core.RedisClient;
+import io.lettuce.core.RedisURI;
+import io.lettuce.core.cluster.RedisClusterClient;
 
 /**
  * Test to work with Redis as a store.
  */
-public class FeatureStoreRedisLettuceTestIT extends FeatureStoreTestSupport {
+public class FeatureStoreRedisLettuceClusterTestIT extends FeatureStoreTestSupport {
    
     /** {@inheritDoc} */
     @Override
     protected FeatureStore initStore() {
-        RedisClient rc = RedisClient.create("redis://localhost");
-        FeatureStoreRedisLettuce redisStore = new FeatureStoreRedisLettuce(rc);
+        RedisClusterClient rcc = RedisClusterClient.create(RedisURI.create("redis://localhost:30001"));
+        FeatureStoreRedisLettuce redisStore = new FeatureStoreRedisLettuce(rcc);
         redisStore.importFeaturesFromXmlFile("ff4j.xml");
         return redisStore;
     }

@@ -1,0 +1,6 @@
+version: '2'
+services:
+  redis:
+    image: redis:6.0.6
+    ports:
+      - 6379:6379
