@@ -46,6 +46,9 @@ public class FF4jDispatcherServlet extends FF4jServlet {
     /** {@inheritDoc} */
     public void doGet(HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException {
+        // Issue #437 : resources cannot be obtained without trailing slash
+        if (redirectUrlWithoutSlash(req, res)) return;
+
         res.setCharacterEncoding(WebConstants.UTF8_ENCODING);
         
     	String targetView  = getTargetView(req);
@@ -64,6 +67,14 @@ public class FF4jDispatcherServlet extends FF4jServlet {
             res.setContentType("text/html");
         	mapOfControllers.get(targetView).get(req, res);
     	}
+    }
+
+    private boolean redirectUrlWithoutSlash(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        if (req.getServletPath().equals(req.getRequestURI())) {
+            res.sendRedirect(req.getRequestURL() + "/");
+            return true;
+        }
+        return false;
     }
 
     /** {@inheritDoc} */
