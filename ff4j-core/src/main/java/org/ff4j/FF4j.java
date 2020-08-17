@@ -39,6 +39,8 @@ import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.audit.repository.InMemoryEventRepository;
 import org.ff4j.cache.FF4JCacheManager;
 import org.ff4j.cache.FF4jCacheProxy;
+import org.ff4j.conf.FF4jConfiguration;
+import org.ff4j.conf.FF4jConfigurationParser;
 import org.ff4j.conf.XmlConfig;
 import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
@@ -140,21 +142,59 @@ public class FF4j {
     }
 
     /**
-     * Constructor initializing ff4j with an InMemoryStore
+     * @deprecated FF4j now read not only XML but also Yaml of JSON, Please provide
+     * explictely the Configuration
      */
     public FF4j(String xmlFile) {
-        this();
-        this.fstore = new InMemoryFeatureStore(xmlFile);
-        this.pStore = new InMemoryPropertyStore(xmlFile);
+        this(new XmlParser(), xmlFile);
     }
-
+    
     /**
-     * Constructor initializing ff4j with an InMemoryStore using an InputStream. Simplify integration with Android through
-     * <code>Asset</code>
+     * @deprecated FF4j now read not only XML but also Yaml of JSON, Please provide
+     * explictely the Configuration
      */
-    public FF4j(InputStream xmlFileResourceAsStream) {
+    public FF4j(InputStream ins) {
+        this(new XmlParser(), ins);
+    }
+    
+    public FF4j(FF4jConfiguration config) {
         this();
-        this.fstore = new InMemoryFeatureStore(xmlFileResourceAsStream);
+        loadConfiguration(config);
+    }
+    
+    public FF4j(FF4jConfigurationParser<?> configParser, String classPathFile) {
+        loadConfiguration(configParser, classPathFile);
+    }
+    
+    public FF4j(FF4jConfigurationParser<?> configParser, InputStream in) {
+        loadConfiguration(configParser, in);
+    }
+    
+    protected void loadConfiguration(
+            FF4jConfigurationParser<?> parser, 
+            String classPathFile) {
+        if (null == classPathFile) {
+            throw new IllegalArgumentException("Invalid file");
+        }
+        loadConfiguration(parser, 
+                FF4j.class.getClassLoader().getResourceAsStream(classPathFile));
+    }
+    
+    protected void loadConfiguration(
+            FF4jConfigurationParser<?> parser, 
+            InputStream xmlFileResourceAsStream) {
+        if (xmlFileResourceAsStream == null) {
+            throw new IllegalArgumentException("Cannot parse feature stream");
+        }
+        if (null == parser) {
+            throw new IllegalArgumentException("Parser should not be null");
+        }
+        this.loadConfiguration(parser.parseConfigurationFile(xmlFileResourceAsStream));
+    }
+    
+    protected void loadConfiguration(FF4jConfiguration config) {
+        this.fstore = new InMemoryFeatureStore(config);
+        this.pStore = new InMemoryPropertyStore(config);
     }
 
     /**
