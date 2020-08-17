@@ -25,6 +25,7 @@ import java.lang.reflect.Constructor;
 import java.util.Map;
 
 import org.ff4j.FF4j;
+import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FlippingExecutionContext;
@@ -52,7 +53,7 @@ public class FeatureJsonMarshallTest implements TestConstantsFF4j {
     protected ObjectMapper mapper = new ObjectMapper();
     
     /** Sample in MempryStore. */
-    private final FF4j ff4j = new FF4j("ff4j.xml");
+    private final FF4j ff4j = new FF4j(new XmlParser(),"ff4j.xml");
 
     /** current feature. */
     private Feature f1 = null;
@@ -146,7 +147,7 @@ public class FeatureJsonMarshallTest implements TestConstantsFF4j {
     public void marshallOfficeHourFlippingStrategy()
     throws Exception {
         // When-Then
-        Feature f = new FF4j("test-strategy-officehour.xml").getFeature("first");
+        Feature f = new FF4j(new XmlParser(),"test-strategy-officehour.xml").getFeature("first");
         assertMarshalling(f);
     }
     

@@ -1,6 +1,7 @@
 package org.ff4j.test.strategy;
 
 import org.ff4j.FF4j;
+import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.strategy.DarkLaunchStrategy;
 import org.ff4j.strategy.PonderationStrategy;
@@ -31,7 +32,7 @@ public class PonderationStrategyTest extends AbstractFf4jTest {
     @Override
     public FF4j initFF4j() {
         // TOTO initialization through Java CODE ?
-        return new FF4j("test-ponderationStrategy-ok.xml");
+        return new FF4j(new XmlParser(),"test-ponderationStrategy-ok.xml");
     }
 
     @Test
@@ -83,7 +84,7 @@ public class PonderationStrategyTest extends AbstractFf4jTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testKOParameter() {
-        new FF4j("test-ponderationStrategy-ko.xml");
+        new FF4j(new XmlParser(),"test-ponderationStrategy-ko.xml");
     }
 
     @Test

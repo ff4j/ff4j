@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import org.ff4j.FF4j;
+import org.ff4j.conf.XmlParser;
 import org.ff4j.property.Property;
 import org.ff4j.property.PropertyString;
 import org.ff4j.property.PropertyDate;
@@ -64,7 +65,7 @@ public class InMemoryPropertiesStoreTest extends AbstractPropertyStoreJunitTest 
     
     public void testProperty() {
         
-        FF4j ff4j = new FF4j("ff4j.xml");
+        FF4j ff4j = new FF4j(new XmlParser(), "ff4j.xml");
         
         ff4j.getPropertiesStore().createProperty(new PropertyDate("property_3", new Date()));
        

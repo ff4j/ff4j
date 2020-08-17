@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 
 import org.ff4j.FF4j;
+import org.ff4j.conf.XmlParser;
 import org.ff4j.utils.GeneratorUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -48,14 +49,14 @@ public class GenerationUtilTest {
     @Test(expected = IllegalArgumentException.class)
     public void testNull2()
     throws IOException {
-        GeneratorUtils.generateInterfaceConstantFile(new FF4j("ff4j.xml"), null);
+        GeneratorUtils.generateInterfaceConstantFile(new FF4j(new XmlParser(),"ff4j.xml"), null);
     }
     
     @Test
     public void generationSource()
     throws IOException {
         // Given
-        FF4j ff4j = new FF4j("ff4j.xml");
+        FF4j ff4j = new FF4j(new XmlParser(),"ff4j.xml");
         Assert.assertNotNull(ff4j.getFeatureStore());
         Assert.assertNotNull(ff4j.getPropertiesStore());
         // When

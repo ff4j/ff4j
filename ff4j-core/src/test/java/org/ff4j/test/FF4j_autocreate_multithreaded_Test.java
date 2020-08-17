@@ -21,6 +21,7 @@ package org.ff4j.test;
  */
 
 import org.ff4j.FF4j;
+import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.junit.Assert;
@@ -49,7 +50,7 @@ public class FF4j_autocreate_multithreaded_Test extends AbstractFf4jTest {
 
     @Override
     public FF4j initFF4j() {
-        FF4j ff4j = new FF4j("ff4j.xml");
+        FF4j ff4j = new FF4j(new XmlParser(), "ff4j.xml");
         ff4j.setFeatureStore(new DelayingFeatureStore("ff4j.xml"));
         return ff4j;
     }

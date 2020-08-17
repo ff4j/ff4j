@@ -37,6 +37,7 @@ import org.ff4j.audit.EventPublisher;
 import org.ff4j.audit.proxy.PropertyStoreAuditProxy;
 import org.ff4j.audit.repository.InMemoryEventRepository;
 import org.ff4j.cache.InMemoryCacheManager;
+import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.exception.FeatureNotFoundException;
@@ -58,7 +59,7 @@ public class FF4jTest extends AbstractFf4jTest {
 
     @Override
     public FF4j initFF4j() {
-        return new FF4j("ff4j.xml");
+        return new FF4j(new XmlParser(),"ff4j.xml");
     }
     
     @Test(expected = FeatureNotFoundException.class)
@@ -74,7 +75,7 @@ public class FF4jTest extends AbstractFf4jTest {
     
     @Test
     public void testDeleteFeature() {
-        FF4j ff4j = new FF4j("ff4j.xml");
+        FF4j ff4j = new FF4j(new XmlParser(),"ff4j.xml");
         ff4j.audit();
         Assert.assertTrue(ff4j.exist(F1));
         ff4j.delete(F1);
@@ -84,7 +85,7 @@ public class FF4jTest extends AbstractFf4jTest {
     @Test
     public void testDisableWithAudit() {
         // Given
-        FF4j ff4j = new FF4j(getClass().getClassLoader().getResourceAsStream("ff4j.xml"));
+        FF4j ff4j = new FF4j(new XmlParser(), getClass().getClassLoader().getResourceAsStream("ff4j.xml"));
         ff4j.audit();
         Assert.assertTrue(ff4j.exist(F1));
         Assert.assertTrue(ff4j.getFeature(F1).isEnable());
@@ -176,7 +177,7 @@ public class FF4jTest extends AbstractFf4jTest {
     
     @Test
     public void testToString() {
-        FF4j ff4j = new FF4j("ff4j.xml");
+        FF4j ff4j = new FF4j(new XmlParser(),"ff4j.xml");
         ff4j.toString();
         Assert.assertNotNull(ff4j.getFeatureStore());
         ff4j.setFeatureStore(null);
@@ -211,7 +212,7 @@ public class FF4jTest extends AbstractFf4jTest {
     public void autoCreateFeatureEnableTest() {
 
         // Default : store = inMemory, load features from ff4j.xml file
-        FF4j ff4j = new FF4j("ff4j.xml");
+        FF4j ff4j = new FF4j(new XmlParser(),"ff4j.xml");
         ff4j.autoCreate();
         assertFalse(ff4j.exist("autoCreatedFeature"));
 
@@ -270,7 +271,7 @@ public class FF4jTest extends AbstractFf4jTest {
 
     @Test
     public void testGetFeatures() {
-        FF4j ff4j = new FF4j("ff4j.xml");
+        FF4j ff4j = new FF4j(new XmlParser(),"ff4j.xml");
         Assert.assertEquals(5, ff4j.getFeatures().size());
     }
 

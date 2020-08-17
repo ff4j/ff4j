@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.ff4j.FF4j;
+import org.ff4j.conf.XmlParser;
 import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.time.HourInterval;
@@ -44,7 +45,7 @@ public class OfficeHourStrategyTest extends AbstractFf4jTest {
     /** {@inheritDoc} */
     @Override
     public FF4j initFF4j() {
-        return new FF4j("test-strategy-officehour.xml");
+        return new FF4j(new XmlParser(),"test-strategy-officehour.xml");
     }
     
     @Before

@@ -25,6 +25,7 @@ import java.text.ParseException;
 import org.junit.Assert;
 
 import org.ff4j.FF4j;
+import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.strategy.ServerFilterStrategy;
@@ -35,7 +36,7 @@ public class ServerFilterStrategyTest extends AbstractFf4jTest {
 
     @Override
     public FF4j initFF4j() {
-        return new FF4j("test-serverFilterStrategy.xml");
+        return new FF4j(new XmlParser(),"test-serverFilterStrategy.xml");
     }
 
 

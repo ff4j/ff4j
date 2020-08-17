@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.ff4j.FF4j;
+import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.strategy.time.ReleaseDateFlipStrategy;
 import org.ff4j.test.AbstractFf4jTest;
@@ -42,7 +43,7 @@ public class ReleaseDateFlipStrategyTest extends AbstractFf4jTest {
     /** {@inheritDoc} */
     @Override
     public FF4j initFF4j() {
-        return new FF4j("test-releaseDateStrategyTest-ok.xml");
+        return new FF4j(new XmlParser(),"test-releaseDateStrategyTest-ok.xml");
     }
 
     @Test
