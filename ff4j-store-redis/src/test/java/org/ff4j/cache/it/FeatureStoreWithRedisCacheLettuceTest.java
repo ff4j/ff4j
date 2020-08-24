@@ -1,23 +1,10 @@
 package org.ff4j.cache.it;
 
-import static org.ff4j.test.TestsFf4jConstants.F1;
-import static org.ff4j.test.TestsFf4jConstants.F2;
-import static org.ff4j.test.TestsFf4jConstants.F4;
-import static org.ff4j.test.TestsFf4jConstants.G0;
-import static org.ff4j.test.TestsFf4jConstants.G1;
-import static org.ff4j.test.TestsFf4jConstants.ROLE_NEW;
-import static org.ff4j.test.TestsFf4jConstants.ROLE_USER;
-import static org.ff4j.test.TestsFf4jConstants.TEST_FEATURES_FILE;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 /*
  * #%L
- * ff4j-cache-redis
+ * ff4j-store-redis
  * %%
- * Copyright (C) 2013 - 2014 Ff4J
+ * Copyright (C) 2013 - 2020 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +20,19 @@ import java.util.Set;
  * #L%
  */
 
-import org.ff4j.cache.FF4JCacheManager;
+import static org.ff4j.test.TestsFf4jConstants.F1;
+import static org.ff4j.test.TestsFf4jConstants.F2;
+import static org.ff4j.test.TestsFf4jConstants.F4;
+import static org.ff4j.test.TestsFf4jConstants.G0;
+import static org.ff4j.test.TestsFf4jConstants.G1;
+import static org.ff4j.test.TestsFf4jConstants.ROLE_NEW;
+import static org.ff4j.test.TestsFf4jConstants.ROLE_USER;
+import static org.ff4j.test.TestsFf4jConstants.TEST_FEATURES_FILE;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.ff4j.cache.FF4jCacheManagerRedisLettuce;
 import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.core.Feature;
@@ -44,6 +43,8 @@ import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import io.lettuce.core.RedisClient;
 
 /**
  * Class to test the REDIS {@link FeatureCacheProviderEhCache}.
@@ -57,11 +58,13 @@ public class FeatureStoreWithRedisCacheLettuceTest extends FeatureStoreTestSuppo
     private static final int EXPECTED_FEATURES_NUMBERS = 5;
 
     /** Cache Manager. */
-    private static final FF4JCacheManager cache = new FF4jCacheManagerRedisLettuce();
-
+    public static FF4jCacheManagerRedisLettuce cache;
+   
     /** {@inheritDoc} */
     @Override
     protected FeatureStore initStore() {
+        RedisClient rc = RedisClient.create("redis://localhost");
+        FeatureStoreWithRedisCacheLettuceTest.cache = new FF4jCacheManagerRedisLettuce(rc);
         PropertyStore pStore = new InMemoryPropertyStore(TEST_FEATURES_FILE);
         return new FF4jCacheProxy(defaultStore, pStore, cache);
     }

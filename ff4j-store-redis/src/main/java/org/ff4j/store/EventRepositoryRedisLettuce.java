@@ -1,10 +1,6 @@
 package org.ff4j.store;
 
-import static org.ff4j.redis.RedisContants.KEY_EVENT;
-
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -18,7 +14,7 @@ import org.ff4j.audit.EventSeries;
 import org.ff4j.audit.MutableHitCount;
 import org.ff4j.audit.chart.TimeSeriesChart;
 import org.ff4j.audit.repository.AbstractEventRepository;
-import org.ff4j.redis.RedisContants;
+import org.ff4j.redis.RedisKeysBuilder;
 import org.ff4j.utils.Util;
 
 /*
@@ -74,20 +70,25 @@ public class EventRepositoryRedisLettuce extends AbstractEventRepository {
     /** Support the cluster based redis deployment. */
     private RedisAdvancedClusterCommands<String, String> redisCommandsCluster;
     
+    /** Default key builder. */
+    private RedisKeysBuilder keyBuilder = new RedisKeysBuilder();
+    
     /**
      * Public void.
      */
     public EventRepositoryRedisLettuce(RedisClient redisClient) {
-        this.redisCommands = redisClient.connect().sync();
+        this(redisClient, new RedisKeysBuilder());
     }
-    
-    /**
-     * Using cluster based redis.
-     *
-     * @param redisClient
-     */
+    public EventRepositoryRedisLettuce(RedisClient redisClient, RedisKeysBuilder keyBuilder) {
+        this.redisCommands = redisClient.connect().sync();
+        this.keyBuilder    = keyBuilder;
+    }
     public EventRepositoryRedisLettuce(RedisClusterClient redisClusterClient) {
+        this(redisClusterClient, new RedisKeysBuilder());
+    }
+    public EventRepositoryRedisLettuce(RedisClusterClient redisClusterClient, RedisKeysBuilder keyBuilder) {
         this.redisCommandsCluster = redisClusterClient.connect().sync();
+        this.keyBuilder    = keyBuilder;
     }
 
     static {
@@ -102,12 +103,7 @@ public class EventRepositoryRedisLettuce extends AbstractEventRepository {
         HOST,
         USER;
     }
-
-    /**
-     * Patternt to create KEY.
-     */
-    private static final SimpleDateFormat SDF_KEY = new SimpleDateFormat("yyyyMMdd");
-
+  
     /** {@inheritDoc} */
     @Override
     public void createSchema() {
@@ -121,7 +117,7 @@ public class EventRepositoryRedisLettuce extends AbstractEventRepository {
         }
         try {
             long timeStamp = evt.getTimestamp();
-            String hashId = this.getHashKey(evt.getTimestamp());
+            String hashId = keyBuilder.getHashKey(evt.getTimestamp());
             evt.setUuid(String.valueOf(timeStamp));
             if (null != redisCommands) {
                 redisCommands.zadd(hashId, timeStamp, objectMapper.writeValueAsString(evt));
@@ -135,18 +131,12 @@ public class EventRepositoryRedisLettuce extends AbstractEventRepository {
         }
     }
 
-    private String getHashKey(long timestamp) {
-        String hashId = KEY_EVENT + RedisContants.KEY_EVENT_AUDIT + "_";
-        hashId += SDF_KEY.format(new Date(timestamp));
-        return hashId;
-    }
-
     /** {@inheritDoc} */
     @Override
     public Event getEventByUUID(String uuid, Long timestamp) {
         Util.assertHasLength(new String[]{uuid});
         Event redisEvent = null;
-        String hashKey = getHashKey(timestamp);
+        String hashKey = keyBuilder.getHashKey(timestamp);
             
         // Check for the event within 100ms time range passed, hoping there won't be more than 10 for this.
         @SuppressWarnings("deprecation")
@@ -242,7 +232,7 @@ public class EventRepositoryRedisLettuce extends AbstractEventRepository {
     @SuppressWarnings("deprecation")
     public EventSeries getAuditTrail(EventQueryDefinition query) {
         EventSeries eventSeries = new EventSeries();
-        String hashKey = getHashKey(query.getFrom());
+        String hashKey = keyBuilder.getHashKey(query.getFrom());
         List<String> events = (null != redisCommands) ? 
                 redisCommands.zrangebyscore(hashKey, query.getFrom(), query.getTo(), 0, 100):
                 redisCommandsCluster.zrangebyscore(hashKey, query.getFrom(), query.getTo(), 0, 100);
@@ -274,9 +264,9 @@ public class EventRepositoryRedisLettuce extends AbstractEventRepository {
     private Set<String> getEventsFromRedis(EventQueryDefinition query) {
         List< String > eventList = (null != redisCommands) ? 
                 redisCommands.zrangebyscore(
-                        getHashKey(query.getFrom()), query.getFrom(), query.getTo(), 0, UPPER_LIMIT) :
+                        keyBuilder.getHashKey(query.getFrom()), query.getFrom(), query.getTo(), 0, UPPER_LIMIT) :
                 redisCommandsCluster.zrangebyscore(
-                                    getHashKey(query.getFrom()), query.getFrom(), query.getTo(), 0, UPPER_LIMIT);
+                        keyBuilder.getHashKey(query.getFrom()), query.getFrom(), query.getTo(), 0, UPPER_LIMIT);
         return new HashSet<>(eventList);                            
     }
 

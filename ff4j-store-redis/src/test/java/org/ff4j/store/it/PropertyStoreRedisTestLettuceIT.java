@@ -25,6 +25,7 @@ import org.ff4j.property.store.PropertyStore;
 import org.ff4j.store.PropertyStoreRedisLettuce;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
 import org.junit.After;
+import org.junit.AfterClass;
 
 import io.lettuce.core.RedisClient;
 
@@ -34,9 +35,10 @@ import io.lettuce.core.RedisClient;
  */
 public class PropertyStoreRedisTestLettuceIT extends PropertyStoreTestSupport {
 
+    public static RedisClient rc = RedisClient.create("redis://localhost");
+    
     /** {@inheritDoc} */
     protected PropertyStore initPropertyStore() {
-        RedisClient rc = RedisClient.create("redis://localhost");
         PropertyStoreRedisLettuce prl =  new PropertyStoreRedisLettuce(rc);
         prl.importPropertiesFromXmlFile("test-ff4j-features.xml");
         return prl;
@@ -48,6 +50,11 @@ public class PropertyStoreRedisTestLettuceIT extends PropertyStoreTestSupport {
     @After
     public void cleanStore() {
         testedStore.clear();
+    }
+    
+    @AfterClass
+    public static void flushClient() {
+        rc.shutdown();
     }
 
 }

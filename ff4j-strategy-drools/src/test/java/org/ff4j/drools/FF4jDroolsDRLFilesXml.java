@@ -22,6 +22,7 @@ package org.ff4j.drools;
 
 
 import org.ff4j.FF4j;
+import org.ff4j.conf.XmlParser;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -35,7 +36,7 @@ public class FF4jDroolsDRLFilesXml {
     @Test
     public void testDroolsStrategyDRLFiles() {
         // Given
-        FF4j ff4j = new FF4j("ff4j-drl.xml");
+        FF4j ff4j = new FF4j(new XmlParser(), "ff4j-drl.xml");
         // When
         Assert.assertTrue(ff4j.exist("f1"));
         // Then

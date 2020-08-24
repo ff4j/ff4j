@@ -1,19 +1,18 @@
 package org.ff4j.store;
 
-import org.ff4j.exception.PropertyAlreadyExistException;
-import org.ff4j.property.Property;
-import org.ff4j.property.store.AbstractPropertyStore;
-import org.ff4j.redis.RedisConnection;
-import org.ff4j.utils.Util;
-import org.ff4j.utils.json.PropertyJsonParser;
-import redis.clients.jedis.Jedis;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static org.ff4j.redis.RedisContants.KEY_PROPERTY;
-import static org.ff4j.redis.RedisContants.KEY_PROPERTY_MAP;
+import org.ff4j.exception.PropertyAlreadyExistException;
+import org.ff4j.property.Property;
+import org.ff4j.property.store.AbstractPropertyStore;
+import org.ff4j.redis.RedisConnection;
+import org.ff4j.redis.RedisKeysBuilder;
+import org.ff4j.utils.Util;
+import org.ff4j.utils.json.PropertyJsonParser;
+
+import redis.clients.jedis.Jedis;
 
 /*
  * #%L
@@ -47,61 +46,24 @@ public class PropertyStoreRedis extends AbstractPropertyStore {
      * Wrapping of redis connection (isolation).
      */
     private RedisConnection redisConnection;
+    
+    /** Default key builder. */
+    private RedisKeysBuilder keyBuilder = new RedisKeysBuilder();
 
-    /**
-     * Default Constructor.
-     */
     public PropertyStoreRedis() {
-        this(new RedisConnection());
+        this(new RedisConnection(), new RedisKeysBuilder());
     }
-
-    /**
-     * Contact remote redis server.
-     */
+    public PropertyStoreRedis(RedisKeysBuilder builder) {
+        this(new RedisConnection(), builder);
+    }
     public PropertyStoreRedis(RedisConnection pRedisConnection) {
-        redisConnection = pRedisConnection;
+        this(pRedisConnection, new RedisKeysBuilder());
     }
-
-    /**
-     * Default Constructor.
-     */
-    public PropertyStoreRedis(String xmlFeaturesfFile) {
-        this();
-        importPropertiesFromXmlFile(xmlFeaturesfFile);
+    public PropertyStoreRedis(RedisConnection pRedisConnection, RedisKeysBuilder builder) {
+        this.redisConnection = pRedisConnection;
+        this.keyBuilder      = builder;
     }
-
-    /**
-     * Contact remote redis server.
-     *
-     * @param host target redis host
-     * @param port target redis port
-     */
-    public PropertyStoreRedis(String host, int port) {
-        this(new RedisConnection(host, port));
-    }
-
-    /**
-     * Contact remote redis server.
-     *
-     * @param host target redis host
-     * @param port target redis port
-     */
-    public PropertyStoreRedis(String host, int port, String password, String xmlFeaturesfFile) {
-        this(new RedisConnection(host, port, password));
-        importPropertiesFromXmlFile(xmlFeaturesfFile);
-    }
-
-    /**
-     * Contact remote redis server.
-     *
-     * @param host target redis host
-     * @param port target redis port
-     */
-    public PropertyStoreRedis(String host, int port, String xmlFeaturesfFile) {
-        this(host, port);
-        importPropertiesFromXmlFile(xmlFeaturesfFile);
-    }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -110,7 +72,7 @@ public class PropertyStoreRedis extends AbstractPropertyStore {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            return jedis.exists(KEY_PROPERTY + name);
+            return jedis.exists(keyBuilder.getKeyProperty(name));
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -131,9 +93,9 @@ public class PropertyStoreRedis extends AbstractPropertyStore {
             jedis = getJedis();
             String name = prop.getName();
             // Store the feature in the mapping bucket.
-            jedis.sadd(KEY_PROPERTY_MAP, name);
-            jedis.set(KEY_PROPERTY + name, prop.toJson());
-            jedis.persist(KEY_PROPERTY + name);
+            jedis.sadd(keyBuilder.getKeyPropertyMap(), name);
+            jedis.set(keyBuilder.getKeyProperty(name), prop.toJson());
+            jedis.persist(keyBuilder.getKeyProperty(name));
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -149,7 +111,8 @@ public class PropertyStoreRedis extends AbstractPropertyStore {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            return PropertyJsonParser.parseProperty(jedis.get(KEY_PROPERTY + name));
+            return PropertyJsonParser.parseProperty(
+                    jedis.get(keyBuilder.getKeyProperty(name)));
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -165,8 +128,8 @@ public class PropertyStoreRedis extends AbstractPropertyStore {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            jedis.srem(KEY_PROPERTY_MAP, name);
-            jedis.del(KEY_PROPERTY + name);
+            jedis.srem(keyBuilder.getKeyPropertyMap(), name);
+            jedis.del(keyBuilder.getKeyProperty(name));
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -182,7 +145,7 @@ public class PropertyStoreRedis extends AbstractPropertyStore {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            Set<String> properties = jedis.smembers(KEY_PROPERTY_MAP);
+            Set<String> properties = jedis.smembers(keyBuilder.getKeyPropertyMap());
             if (properties != null) {
                 for (String key : properties) {
                     mapP.put(key, readProperty(key));
@@ -203,7 +166,7 @@ public class PropertyStoreRedis extends AbstractPropertyStore {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            Set<String> propertyNames = jedis.smembers(KEY_PROPERTY_MAP);
+            Set<String> propertyNames = jedis.smembers(keyBuilder.getKeyPropertyMap());
             return propertyNames;
         } finally {
             if (jedis != null) {
@@ -219,7 +182,7 @@ public class PropertyStoreRedis extends AbstractPropertyStore {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            Set<String> myKeys = jedis.smembers(KEY_PROPERTY_MAP);
+            Set<String> myKeys = jedis.smembers(keyBuilder.getKeyPropertyMap());
             for (String key : myKeys) {
                 deleteProperty(key);
             }

@@ -1,4 +1,4 @@
-package org.ff4j.web.store;
+package org.ff4j.web.test.store;
 
 import org.ff4j.web.api.test.it.AbstractWebResourceTestIT;
 

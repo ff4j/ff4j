@@ -20,6 +20,7 @@ import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.PropertyStore;
+import org.ff4j.utils.Util;
 
 /**
  * Access to {@link FeatureStore} could generate some overhead and decrease performances. This is the reason why cache is provided
@@ -89,8 +90,13 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
     public void enable(String featureId) {
         // Reach target
         getTargetFeatureStore().enable(featureId);
+        
         // Modification => flush cache
-        getCacheManager().evictFeature(featureId);
+        try {
+            getCacheManager().evictFeature(featureId);
+        } catch(RuntimeException re) {
+            getCacheManager().onException(re);
+        }
     }
 
     /** {@inheritDoc} */
@@ -98,16 +104,26 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
     public void disable(String featureId) {
         // Reach target
         getTargetFeatureStore().disable(featureId);
-        // Cache Operations : As modification, flush cache for this
-        getCacheManager().evictFeature(featureId);
+        
+        // Modification => flush cache
+        try {
+            getCacheManager().evictFeature(featureId);
+        } catch(RuntimeException re) {
+            getCacheManager().onException(re);
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean exist(String featureId) {
-        // not in cache but maybe created from last access
-        if (getCacheManager().getFeature(featureId) == null) {
-            return getTargetFeatureStore().exist(featureId);
+        Util.assertHasLength(featureId);
+        try {
+            // not in cache but maybe created from last access
+            if (getCacheManager().getFeature(featureId) == null) {
+                return getTargetFeatureStore().exist(featureId);
+            }
+        } catch(RuntimeException re) {
+            getCacheManager().onException(re);
         }
         return true;
     }
@@ -125,7 +141,11 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
     @Override
     public void create(Feature fp) {
         getTargetFeatureStore().create(fp);
-        getCacheManager().putFeature(fp);
+        try {
+            getCacheManager().putFeature(fp);
+        } catch(RuntimeException re) {
+            getCacheManager().onException(re);
+        }
     }
 
     /** {@inheritDoc} */
@@ -135,7 +155,11 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
         // not in cache but may has been created from now
         if (null == fp) {
             fp = getTargetFeatureStore().read(featureUid);
-            getCacheManager().putFeature(fp);
+            try {
+                getCacheManager().putFeature(fp);
+            } catch(RuntimeException re) {
+                getCacheManager().onException(re);
+            }
         }
         return fp;
     }
@@ -159,37 +183,61 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
     public void delete(String featureId) {
         // Access target store
         getTargetFeatureStore().delete(featureId);
+        
         // even is not present, evict won't failed
-        getCacheManager().evictFeature(featureId);
+        try {
+            getCacheManager().evictFeature(featureId);
+        } catch(RuntimeException re) {
+            getCacheManager().onException(re);
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public void update(Feature fp) {
         getTargetFeatureStore().update(fp);
-        getCacheManager().evictFeature(fp.getUid());
+        
+        // even is not present, evict won't failed
+        try {
+            getCacheManager().evictFeature(fp.getUid());
+        } catch(RuntimeException re) {
+            getCacheManager().onException(re);
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public void grantRoleOnFeature(String featureId, String roleName) {
         getTargetFeatureStore().grantRoleOnFeature(featureId, roleName);
-        getCacheManager().evictFeature(featureId);
+        try {
+            getCacheManager().evictFeature(featureId);
+        } catch(RuntimeException re) {
+            getCacheManager().onException(re);
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public void removeRoleFromFeature(String featureId, String roleName) {
         getTargetFeatureStore().removeRoleFromFeature(featureId, roleName);
-        getCacheManager().evictFeature(featureId);
+        try {
+            getCacheManager().evictFeature(featureId);
+        } catch(RuntimeException re) {
+            getCacheManager().onException(re);
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public void enableGroup(String groupName) {
         getTargetFeatureStore().enableGroup(groupName);
+
         // Cannot know wich feature to work with (exceptional event) : flush cache
-        getCacheManager().clearFeatures();
+        try {
+            getCacheManager().clearFeatures();
+        } catch(RuntimeException re) {
+            getCacheManager().onException(re);
+        }
     }
 
     /** {@inheritDoc} */
@@ -197,7 +245,11 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
     public void disableGroup(String groupName) {
         getTargetFeatureStore().disableGroup(groupName);
         // Cannot know wich feature to work with (exceptional event) : flush cache
-        getCacheManager().clearFeatures();
+        try {
+            getCacheManager().clearFeatures();
+        } catch(RuntimeException re) {
+            getCacheManager().onException(re);
+        }
     }
 
     /** {@inheritDoc} */
@@ -218,14 +270,22 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
     @Override
     public void addToGroup(String featureId, String groupName) {
         getTargetFeatureStore().addToGroup(featureId, groupName);
-        getCacheManager().evictFeature(featureId);
+        try {
+            getCacheManager().evictFeature(featureId);
+        } catch(RuntimeException re) {
+            getCacheManager().onException(re);
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public void removeFromGroup(String featureId, String groupName) {
         getTargetFeatureStore().removeFromGroup(featureId, groupName);
-        getCacheManager().evictFeature(featureId);
+        try {
+            getCacheManager().evictFeature(featureId);
+        } catch(RuntimeException re) {
+            getCacheManager().onException(re);
+        }
     }
 
     /**
@@ -304,10 +364,14 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
     /** {@inheritDoc} */
     @Override
     public boolean existProperty(String propertyName) {
-        // not in cache but maybe created from last access
-        if (getCacheManager().getProperty(propertyName) == null) {
-            return getTargetPropertyStore().existProperty(propertyName);
-        }
+        try {
+            // not in cache but maybe created from last access
+            if (getCacheManager().getProperty(propertyName) == null) {
+                return getTargetPropertyStore().existProperty(propertyName);
+            }
+        } catch(RuntimeException re) {
+            getCacheManager().onException(re);
+        }    
         return true;
     }
 
@@ -315,7 +379,11 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
     @Override
     public <T> void createProperty(Property<T> property) {
         getTargetPropertyStore().createProperty(property);
-        getCacheManager().putProperty(property);
+        try {
+            getCacheManager().putProperty(property);
+        } catch(RuntimeException re) {
+            getCacheManager().onException(re);
+        }
     }
 
     /** {@inheritDoc} */
@@ -325,7 +393,11 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
         // not in cache but may has been created from now
         if (null == fp) {
             fp = getTargetPropertyStore().readProperty(name);
-            getCacheManager().putProperty(fp);
+            try {
+                getCacheManager().putProperty(fp);
+            } catch(RuntimeException re) {
+                getCacheManager().onException(re);
+            }
         }
         return fp;
     }
@@ -338,7 +410,11 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
         // Or in cache but with different value that default
         if (null == fp) {
             fp = getTargetPropertyStore().readProperty(name, defaultValue);
-            getCacheManager().putProperty(fp);
+            try {
+                getCacheManager().putProperty(fp);
+            } catch(RuntimeException re) {
+                getCacheManager().onException(re);
+            }
         }
         return fp;
     }
@@ -351,10 +427,14 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
         fp.setValueFromString(newValue);
         // Update value in target store
         getTargetPropertyStore().updateProperty(fp);
-        // Remove from cache old value
-        getCacheManager().evictProperty(fp.getName());
-        // Add new value in the cache
-        getCacheManager().putProperty(fp);
+        try {
+            // Remove from cache old value
+            getCacheManager().evictProperty(fp.getName());
+            // Add new value in the cache
+            getCacheManager().putProperty(fp);
+        } catch(RuntimeException re) {
+            getCacheManager().onException(re);
+        }
     }
 
     /** {@inheritDoc} */
@@ -362,10 +442,14 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
     public <T> void updateProperty(Property<T> propertyValue) {
         // Update the property
         getTargetPropertyStore().updateProperty(propertyValue);
-        // Update the cache accordirly
-        getCacheManager().evictProperty(propertyValue.getName());
-        // Update the property in cache
-        getCacheManager().putProperty(propertyValue);
+        try {
+            // Update the cache accordirly
+            getCacheManager().evictProperty(propertyValue.getName());
+            // Update the property in cache
+            getCacheManager().putProperty(propertyValue);
+        } catch(RuntimeException re) {
+            getCacheManager().onException(re);
+        }
     }
 
     /** {@inheritDoc} */
@@ -373,8 +457,12 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
     public void deleteProperty(String name) {
         // Access target store
         getTargetPropertyStore().deleteProperty(name);
-        // even is not present, evict name failed
-        getCacheManager().evictProperty(name);
+        try {
+            // even is not present, evict name failed
+            getCacheManager().evictProperty(name);
+        } catch(RuntimeException re) {
+            getCacheManager().onException(re);
+        }
     }
 
     /** {@inheritDoc} */
@@ -392,24 +480,35 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
     /** {@inheritDoc} */
     @Override
     public void clear() {
+        try {
+            getCacheManager().clearFeatures();
+            getCacheManager().clearProperties();
+        } catch(RuntimeException re) {
+            getCacheManager().onException(re);
+        }
         // Cache Operations : As modification, flush cache for this
-        getCacheManager().clearProperties();
         getTargetPropertyStore().clear();
-
         // Cache Operations : As modification, flush cache for this
-        getCacheManager().clearFeatures();
         getTargetFeatureStore().clear();
     }
     
     /** {@inheritDoc} */
     public void importProperties(Collection<Property<?>> properties) {
-        getCacheManager().clearProperties();
+        try {
+            getCacheManager().clearProperties();
+        } catch(RuntimeException re) {
+            getCacheManager().onException(re);
+        }
         getTargetPropertyStore().importProperties(properties);
     }
 
     /** {@inheritDoc} */
     public void importFeatures(Collection<Feature> features) {
-        getCacheManager().clearFeatures();
+        try {
+            getCacheManager().clearFeatures();
+        } catch(RuntimeException re) {
+            getCacheManager().onException(re);
+        }
         getTargetFeatureStore().importFeatures(features);
     }
 

@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.ff4j.FF4j;
+import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
 import org.ff4j.property.util.PropertyJsonBean;
@@ -40,7 +41,7 @@ public class FeatureJsonParserTest {
     protected ObjectMapper mapper = new ObjectMapper();
     
     /** Sample in MempryStore. */
-    private final FF4j ff4j = new FF4j("test-ff4j-parser.xml");
+    private final FF4j ff4j = new FF4j(new XmlParser(),"test-ff4j-parser.xml");
     
     @Test
     public void testMarshaling() throws Exception {

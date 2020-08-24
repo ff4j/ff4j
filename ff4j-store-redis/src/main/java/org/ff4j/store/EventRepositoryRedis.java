@@ -1,5 +1,21 @@
 package org.ff4j.store;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import org.ff4j.audit.Event;
+import org.ff4j.audit.EventQueryDefinition;
+import org.ff4j.audit.EventSeries;
+import org.ff4j.audit.MutableHitCount;
+import org.ff4j.audit.chart.TimeSeriesChart;
+import org.ff4j.audit.repository.AbstractEventRepository;
+import org.ff4j.redis.RedisConnection;
+import org.ff4j.redis.RedisKeysBuilder;
+import org.ff4j.utils.Util;
+
 /*
  * #%L
  * ff4j-store-redis
@@ -26,26 +42,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.ff4j.audit.Event;
-import org.ff4j.audit.EventQueryDefinition;
-import org.ff4j.audit.EventSeries;
-import org.ff4j.audit.MutableHitCount;
-import org.ff4j.audit.chart.TimeSeriesChart;
-import org.ff4j.audit.repository.AbstractEventRepository;
-import org.ff4j.redis.RedisConnection;
-import org.ff4j.redis.RedisContants;
-import org.ff4j.utils.Util;
+
 import redis.clients.jedis.Jedis;
-
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
-import static org.ff4j.redis.RedisContants.KEY_EVENT;
 
 /**
  * Persist audit events into REDIS storage technology.
@@ -61,7 +59,10 @@ public class EventRepositoryRedis extends AbstractEventRepository {
      * Wrapping of redis connection (isolation).
      */
     private RedisConnection redisConnection;
-
+    
+    /** Default key builder. */
+    private RedisKeysBuilder keyBuilder = new RedisKeysBuilder();
+    
     /**
      * Jackson ObjectMapper for serialization and deserialization purpose.
      */
@@ -79,47 +80,26 @@ public class EventRepositoryRedis extends AbstractEventRepository {
         HOST,
         USER;
     }
-
-    /**
-     * Patternt to create KEY.
-     */
-    private static final SimpleDateFormat SDF_KEY = new SimpleDateFormat("yyyyMMdd");
-
+    
     /**
      * Default Constructor.
      */
+
+    /**
+     * Constructors
+     */
     public EventRepositoryRedis() {
-        this(new RedisConnection());
+        this(new RedisConnection(), new RedisKeysBuilder());
     }
-
-    /**
-     * Contact remote redis server.
-     *
-     * @param pRedisConnection Redis connection instance.
-     */
+    public EventRepositoryRedis(RedisKeysBuilder builder) {
+        this(new RedisConnection(), builder);
+    }
     public EventRepositoryRedis(RedisConnection pRedisConnection) {
-        redisConnection = pRedisConnection;
+        this(pRedisConnection, new RedisKeysBuilder());
     }
-
-    /**
-     * Contact remote redis server.
-     *
-     * @param host target redis host
-     * @param port target redis port
-     */
-    public EventRepositoryRedis(String host, int port) {
-        this(new RedisConnection(host, port));
-    }
-
-    /**
-     * Contact remote redis server.
-     *
-     * @param host     target redis host
-     * @param port     target redis port
-     * @param password the password for connecting to Redis if auth enabled.
-     */
-    public EventRepositoryRedis(String host, int port, String password) {
-        this(new RedisConnection(host, port, password));
+    public EventRepositoryRedis(RedisConnection pRedisConnection, RedisKeysBuilder builder) {
+        this.redisConnection = pRedisConnection;
+        this.keyBuilder      = builder;
     }
 
     /** {@inheritDoc} */
@@ -133,14 +113,15 @@ public class EventRepositoryRedis extends AbstractEventRepository {
         if (evt == null) {
             throw new IllegalArgumentException("Event cannot be null nor empty");
         }
-
         Jedis jedis = null;
         try {
             jedis = getJedis();
             long timeStamp = evt.getTimestamp();
-            String hashId = this.getHashKey(evt.getTimestamp());
             evt.setUuid(String.valueOf(timeStamp));
-            jedis.zadd(hashId, timeStamp, objectMapper.writeValueAsString(evt));
+            jedis.zadd(
+                    keyBuilder.getHashKey(evt.getTimestamp()), 
+                    timeStamp, 
+                    objectMapper.writeValueAsString(evt));
             return true;
         } catch (JsonProcessingException e) {
             // We do not returned false, it will be retried 3 times for nothing, faile immediately
@@ -152,12 +133,6 @@ public class EventRepositoryRedis extends AbstractEventRepository {
         }
     }
 
-    private String getHashKey(long timestamp) {
-        String hashId = KEY_EVENT + RedisContants.KEY_EVENT_AUDIT + "_";
-        hashId += SDF_KEY.format(new Date(timestamp));
-        return hashId;
-    }
-
     /** {@inheritDoc} */
     @Override
     public Event getEventByUUID(String uuid, Long timestamp) {
@@ -166,7 +141,7 @@ public class EventRepositoryRedis extends AbstractEventRepository {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            String hashKey = getHashKey(timestamp);
+            String hashKey = keyBuilder.getHashKey(timestamp);
             
             // Check for the event within 100ms time range passed, hoping there won't be more than 10 for this.
             Set<String> events = jedis.zrangeByScore(hashKey, timestamp - 100L, timestamp + 100L, 0, 10);
@@ -266,7 +241,7 @@ public class EventRepositoryRedis extends AbstractEventRepository {
         EventSeries eventSeries = new EventSeries();
         try {
             jedis = getJedis();
-            String hashKey = getHashKey(query.getFrom());
+            String hashKey = keyBuilder.getHashKey(query.getFrom());
             Set<String> events = jedis.zrangeByScore(hashKey, query.getFrom(), query.getTo(), 0, 100);
             
             // FIXME: Server side pagination model isn't present? This could be a lot of data.
@@ -320,7 +295,7 @@ public class EventRepositoryRedis extends AbstractEventRepository {
         Set<String> events = null;
         try {
             jedis = getJedis();
-            String hashKey = getHashKey(query.getFrom());
+            String hashKey = keyBuilder.getHashKey(query.getFrom());
             events = jedis.zrangeByScore(hashKey, query.getFrom(), query.getTo(), 0, UPPER_LIMIT);
         } finally {
             if (jedis != null) {

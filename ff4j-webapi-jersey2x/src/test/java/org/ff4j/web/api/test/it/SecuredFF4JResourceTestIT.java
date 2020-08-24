@@ -38,6 +38,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.ff4j.FF4j;
+import org.ff4j.conf.XmlParser;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.test.AssertFf4j;
 import org.ff4j.web.api.FF4jJacksonMapper;
@@ -68,7 +69,7 @@ public class SecuredFF4JResourceTestIT  extends AbstractWebResourceTestIT {
     protected static AssertFf4j assertFF4J;
 
     /** Current ff4j. */
-    protected static FF4j ff4j = new FF4j(TEST_FEATURES_FILE);
+    protected static FF4j ff4j = new FF4j(new XmlParser(), TEST_FEATURES_FILE);
     
     /** Jackson serializer. */
     protected ObjectMapper jacksonMapper;

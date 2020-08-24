@@ -133,5 +133,10 @@ public interface FF4JCacheManager {
      * @return target cache name
      */
     String getCacheProviderName();
+    
+    /**
+     * Customize behaviour when an error is thrown.
+     */
+    default void onException(Throwable error) {};
 
 }

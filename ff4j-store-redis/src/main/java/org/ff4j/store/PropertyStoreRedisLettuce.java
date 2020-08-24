@@ -1,8 +1,5 @@
 package org.ff4j.store;
 
-import static org.ff4j.redis.RedisContants.KEY_PROPERTY;
-import static org.ff4j.redis.RedisContants.KEY_PROPERTY_MAP;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -10,6 +7,7 @@ import java.util.Set;
 import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.AbstractPropertyStore;
+import org.ff4j.redis.RedisKeysBuilder;
 import org.ff4j.utils.Util;
 import org.ff4j.utils.json.PropertyJsonParser;
 
@@ -52,20 +50,25 @@ public class PropertyStoreRedisLettuce extends AbstractPropertyStore {
     /** Support the cluster based redis deployment. */
     private RedisAdvancedClusterCommands<String, String> redisCommandsCluster;
     
+    /** Default key builder. */
+    private RedisKeysBuilder keyBuilder = new RedisKeysBuilder();
+    
     /**
      * Public void.
      */
     public PropertyStoreRedisLettuce(RedisClient redisClient) {
-        this.redisCommands = redisClient.connect().sync();
+        this(redisClient, new RedisKeysBuilder());
     }
-    
-    /**
-     * Using cluster based redis.
-     *
-     * @param redisClient
-     */
+    public PropertyStoreRedisLettuce(RedisClient redisClient, RedisKeysBuilder keyBuilder) {
+        this.redisCommands = redisClient.connect().sync();
+        this.keyBuilder    = keyBuilder;
+    }
     public PropertyStoreRedisLettuce(RedisClusterClient redisClusterClient) {
+        this(redisClusterClient, new RedisKeysBuilder());
+    }
+    public PropertyStoreRedisLettuce(RedisClusterClient redisClusterClient, RedisKeysBuilder keyBuilder) {
         this.redisCommandsCluster = redisClusterClient.connect().sync();
+        this.keyBuilder    = keyBuilder;
     }
 
     /**
@@ -73,7 +76,7 @@ public class PropertyStoreRedisLettuce extends AbstractPropertyStore {
      */
     public boolean existProperty(String name) {
         Util.assertParamHasLength(name, "PropertyName identifier");
-        String key   = KEY_PROPERTY + name;
+        String key   = keyBuilder.getKeyProperty(name);
         return 1 == ((null != redisCommands) ? 
                 redisCommands.exists(key) : 
                 redisCommandsCluster.exists(key));
@@ -88,13 +91,13 @@ public class PropertyStoreRedisLettuce extends AbstractPropertyStore {
             throw new PropertyAlreadyExistException(prop.getName());
         }
         if (null != redisCommands) {
-            redisCommands.sadd(KEY_PROPERTY_MAP, prop.getName());
-            redisCommands.set(KEY_PROPERTY + prop.getName(), prop.toJson());
-            redisCommands.persist(KEY_PROPERTY + prop.getName());
+            redisCommands.sadd(keyBuilder.getKeyPropertyMap(), prop.getName());
+            redisCommands.set(keyBuilder.getKeyProperty(prop.getName()), prop.toJson());
+            redisCommands.persist(keyBuilder.getKeyProperty(prop.getName()));
         } else {
-            redisCommandsCluster.sadd(KEY_PROPERTY_MAP, prop.getName());
-            redisCommandsCluster.set(KEY_PROPERTY + prop.getName(), prop.toJson());
-            redisCommandsCluster.persist(KEY_PROPERTY + prop.getName());
+            redisCommandsCluster.sadd(keyBuilder.getKeyPropertyMap());
+            redisCommandsCluster.set(keyBuilder.getKeyProperty(prop.getName()), prop.toJson());
+            redisCommandsCluster.persist(keyBuilder.getKeyProperty(prop.getName()));
         }
     }
 
@@ -103,7 +106,7 @@ public class PropertyStoreRedisLettuce extends AbstractPropertyStore {
      */
     public Property<?> readProperty(String name) {
         assertPropertyExist(name);
-        String key = KEY_PROPERTY + name;
+        String key = keyBuilder.getKeyProperty(name);
         return PropertyJsonParser.parseProperty((null != redisCommands) ? 
                 redisCommands.get(key) : 
                 redisCommandsCluster.get(key));
@@ -115,11 +118,11 @@ public class PropertyStoreRedisLettuce extends AbstractPropertyStore {
     public void deleteProperty(String name) {
         assertPropertyExist(name);
         if (null != redisCommands) {
-            redisCommands.srem(KEY_PROPERTY_MAP, name);
-            redisCommands.del(KEY_PROPERTY + name);
+            redisCommands.srem(keyBuilder.getKeyPropertyMap(), name);
+            redisCommands.del(keyBuilder.getKeyProperty(name));
         } else {
-            redisCommandsCluster.srem(KEY_PROPERTY_MAP, name);
-            redisCommandsCluster.del(KEY_PROPERTY + name);
+            redisCommandsCluster.srem(keyBuilder.getKeyPropertyMap(), name);
+            redisCommandsCluster.del(keyBuilder.getKeyProperty(name));
         }
     }    
 
@@ -128,8 +131,8 @@ public class PropertyStoreRedisLettuce extends AbstractPropertyStore {
      */
     public Set<String> listPropertyNames() {
         return (null != redisCommands) ? 
-                redisCommands.smembers(KEY_PROPERTY_MAP) : 
-                redisCommandsCluster.smembers(KEY_PROPERTY_MAP);
+                redisCommands.smembers(keyBuilder.getKeyPropertyMap()) : 
+                redisCommandsCluster.smembers(keyBuilder.getKeyPropertyMap());
     }
 
     /**

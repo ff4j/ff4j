@@ -1,22 +1,20 @@
 package org.ff4j.cache;
 
-import org.ff4j.core.Feature;
-import org.ff4j.property.Property;
-import org.ff4j.redis.RedisConnection;
-import org.ff4j.utils.Util;
-import org.ff4j.utils.json.FeatureJsonParser;
-import org.ff4j.utils.json.PropertyJsonParser;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.ScanParams;
-import redis.clients.jedis.ScanResult;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.ff4j.redis.RedisContants.DEFAULT_TTL;
-import static org.ff4j.redis.RedisContants.KEY_FEATURE;
-import static org.ff4j.redis.RedisContants.KEY_PROPERTY;
+import org.ff4j.core.Feature;
+import org.ff4j.property.Property;
+import org.ff4j.redis.RedisConnection;
+import org.ff4j.redis.RedisKeysBuilder;
+import org.ff4j.utils.Util;
+import org.ff4j.utils.json.FeatureJsonParser;
+import org.ff4j.utils.json.PropertyJsonParser;
+
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.ScanParams;
+import redis.clients.jedis.ScanResult;
 
 /*
  * #%L
@@ -49,24 +47,26 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
     private RedisConnection redisConnection;
 
     /** time to live for cache on top of store. */
-    protected int timeToLive = DEFAULT_TTL;
+    protected int timeToLive = 900000000;
 
+    /** Default key builder. */
+    private RedisKeysBuilder keyBuilder = new RedisKeysBuilder();
+    
     /**
-     * Default constructor
-     */
-    public FF4jCacheManagerRedis(RedisConnection redisConn) {
-        redisConnection = redisConn;
-    }
-
-    /**
-     * Default constructor
+     * Constructors
      */
     public FF4jCacheManagerRedis() {
-        this(new RedisConnection());
+        this(new RedisConnection(), new RedisKeysBuilder());
     }
-
-    public FF4jCacheManagerRedis(String host, int port) {
-        redisConnection = new RedisConnection(host, port);
+    public FF4jCacheManagerRedis(RedisKeysBuilder builder) {
+        this(new RedisConnection(), builder);
+    }
+    public FF4jCacheManagerRedis(RedisConnection pRedisConnection) {
+        this(pRedisConnection, new RedisKeysBuilder());
+    }
+    public FF4jCacheManagerRedis(RedisConnection pRedisConnection, RedisKeysBuilder builder) {
+        this.redisConnection = pRedisConnection;
+        this.keyBuilder      = builder;
     }
 
     /** {@inheritDoc} */
@@ -75,7 +75,7 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            return getKeys(jedis, KEY_FEATURE + "*");
+            return getKeys(jedis, keyBuilder.getKeyFeature("*"));
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -98,7 +98,7 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
             // --> This Pattern is not always supported
             // jedis.del(KEY_FEATURE + "*");
             // <--
-            Set<String> matchingKeys = getKeys(jedis, KEY_FEATURE + "*");
+            Set<String> matchingKeys = getKeys(jedis, keyBuilder.getKeyFeature("*"));
 
             if (!matchingKeys.isEmpty()) {
                 jedis.del(matchingKeys.toArray(new String[matchingKeys.size()]));
@@ -132,7 +132,7 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            jedis.del(KEY_PROPERTY + "*");
+            jedis.del(keyBuilder.getKeyProperty("*"));
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -147,7 +147,7 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            jedis.del(KEY_FEATURE + uid);
+            jedis.del(keyBuilder.getKeyFeature(uid));
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -165,7 +165,7 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            jedis.del(KEY_PROPERTY + propertyName);
+            jedis.del(keyBuilder.getKeyProperty(propertyName));
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -180,8 +180,8 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            jedis.set(KEY_FEATURE + fp.getUid(), fp.toJson());
-            jedis.expire(KEY_FEATURE + fp.getUid(), getTimeToLive());
+            jedis.set(keyBuilder.getKeyFeature(fp.getUid()), fp.toJson());
+            jedis.expire(keyBuilder.getKeyFeature(fp.getUid()), getTimeToLive());
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -196,8 +196,8 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            jedis.set(KEY_PROPERTY + property.getName(), property.toJson());
-            jedis.expire(KEY_PROPERTY + property.getName(), getTimeToLive());
+            jedis.set(keyBuilder.getKeyProperty(property.getName()), property.toJson());
+            jedis.expire(keyBuilder.getKeyProperty(property.getName()), getTimeToLive());
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -212,7 +212,7 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            String value = jedis.get(KEY_FEATURE + uid);
+            String value = jedis.get(keyBuilder.getKeyFeature(uid));
             if (value != null) {
                 return FeatureJsonParser.parseFeature(value);
             }
@@ -231,7 +231,7 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            String value = jedis.get(KEY_PROPERTY + propertyName);
+            String value = jedis.get(keyBuilder.getKeyProperty(propertyName));
             if (value != null) {
                 return PropertyJsonParser.parseProperty(value);
             }
@@ -248,7 +248,7 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            return jedis.keys(KEY_PROPERTY + "*");
+            return jedis.keys(keyBuilder.getKeyProperty("*"));
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -317,6 +317,15 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
      */
     public void setTimeToLive(int timeToLive) {
         this.timeToLive = timeToLive;
+    }
+    /**
+     * Getter accessor for attribute 'keyBuilder'.
+     *
+     * @return
+     *       current value of 'keyBuilder'
+     */
+    public RedisKeysBuilder getKeyBuilder() {
+        return keyBuilder;
     }
 
 }

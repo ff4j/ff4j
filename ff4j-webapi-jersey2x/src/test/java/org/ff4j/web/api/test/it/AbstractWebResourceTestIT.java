@@ -30,17 +30,17 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Application;
 
 import org.ff4j.FF4j;
+import org.ff4j.conf.FF4jConfiguration;
+import org.ff4j.conf.XmlParser;
 import org.ff4j.test.AssertFf4j;
 import org.ff4j.web.api.FF4jJacksonMapper;
 import org.ff4j.web.api.resources.FF4jResource;
 import org.ff4j.web.api.test.SampleFF4jJersey2Application;
 import org.ff4j.web.api.utils.ClientHttpUtils;
 import org.ff4j.web.jersey2.store.FeatureStoreHttp;
-import org.ff4j.web.store.FeatureStoreHttpTestIT;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -55,29 +55,30 @@ public abstract class AbstractWebResourceTestIT extends JerseyTest {
     public final static String APIPATH = FF4jResource.class.getAnnotation(Path.class).value();
 
     /** Assert for this ff4j instance. */
-    protected static AssertFf4j assertFF4J;
-
-    /** Current ff4j. */
-    protected static FF4j ff4j = new FF4j(TEST_FEATURES_FILE);
+    protected static FF4jConfiguration config = new XmlParser()
+            .parseConfigurationFile(FF4j.class.getClassLoader().getResourceAsStream(TEST_FEATURES_FILE));
     
     /** Jackson serializer. */
     protected ObjectMapper jacksonMapper;
     
-    @BeforeClass
-    public static void initFF4J() {
-        FeatureStoreHttpTestIT.ff4j = new FF4j(TEST_FEATURES_FILE);
-    }
+    protected FF4j ff4j;
     
+    protected AssertFf4j assertFF4J;
+        
     /** {@inheritDoc} */
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        if (ff4j == null) {
+            ff4j = new FF4j(config);
+        }
         if (assertFF4J == null) {
             assertFF4J = new AssertFf4j(ff4j);
         }
     }
     
+    /** {@inheritDoc} */
     @Override
     protected Application configure() {
         // Enable logging.
@@ -86,6 +87,9 @@ public abstract class AbstractWebResourceTestIT extends JerseyTest {
         
         // Initialisation of clientss
         setClient(ClientHttpUtils.buildJerseyClient());
+        if (ff4j == null) {
+            ff4j = new FF4j(config);
+        }
         return new SampleFF4jJersey2Application(ff4j);
     }
     

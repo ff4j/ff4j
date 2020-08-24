@@ -1,4 +1,4 @@
-package org.ff4j.web.store;
+package org.ff4j.web.test.store;
 
 /*
  * #%L
@@ -93,7 +93,7 @@ public class FeatureStoreHttpTest extends FeatureStoreTestSupport {
         // Given
         assertFf4j.assertThatFeatureExist(F1);
         assertFf4j.assertThatFeatureHasRole(F1, ROLE_USER);
-        // When
+        // fWhen
         testedStore.update(new Feature(F1, false, null));
         // Then
         Assert.assertTrue(testedStore.read(F1).getPermissions().isEmpty());

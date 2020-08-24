@@ -38,7 +38,9 @@ public class PropertyStoreRedisTestIT extends PropertyStoreTestSupport {
 
     /** {@inheritDoc} */
     protected PropertyStore initPropertyStore() {
-       return new PropertyStoreRedis("test-ff4j-features.xml");
+        PropertyStoreRedis psr = new PropertyStoreRedis();
+        psr.importPropertiesFromXmlFile("test-ff4j-features.xml");
+       return psr;
     }
     
     /**

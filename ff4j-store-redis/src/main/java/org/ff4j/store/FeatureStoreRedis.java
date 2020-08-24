@@ -1,5 +1,10 @@
 package org.ff4j.store;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 /*
  * #%L
  * ff4j-store-redis
@@ -26,17 +31,11 @@ import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.redis.RedisConnection;
+import org.ff4j.redis.RedisKeysBuilder;
 import org.ff4j.utils.Util;
 import org.ff4j.utils.json.FeatureJsonParser;
+
 import redis.clients.jedis.Jedis;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import static org.ff4j.redis.RedisContants.KEY_FEATURE;
-import static org.ff4j.redis.RedisContants.KEY_FEATURE_MAP;
 
 /**
  * {@link FeatureStore} to persist data into
@@ -49,65 +48,24 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
     /** Wrapping of redis connection (isolation). */
     private RedisConnection redisConnection;
     
+    /** Default key builder. */
+    private RedisKeysBuilder keyBuilder = new RedisKeysBuilder();
+    
     /**
-     * Default Constructor.
+     * Constructors
      */
     public FeatureStoreRedis() {
-        this(new RedisConnection());
+        this(new RedisConnection(), new RedisKeysBuilder());
     }
-    
-    /**
-     * Contact remote redis server.
-     *
-     */
+    public FeatureStoreRedis(RedisKeysBuilder builder) {
+        this(new RedisConnection(), builder);
+    }
     public FeatureStoreRedis(RedisConnection pRedisConnection) {
-        redisConnection = pRedisConnection;
+        this(pRedisConnection, new RedisKeysBuilder());
     }
-    
-    /**
-     * Default Constructor.
-     */
-    public FeatureStoreRedis(String xmlFeaturesfFile) {
-       this();
-       importFeaturesFromXmlFile(xmlFeaturesfFile);
-    }
-
-    /**
-     * Contact remote redis server.
-     * 
-     * @param host
-     *            target redis host
-     * @param port
-     *            target redis port
-     */
-    public FeatureStoreRedis(String host, int port) {
-        this(new RedisConnection(host, port));
-    }
-    
-    /**
-     * Contact remote redis server.
-     * 
-     * @param host
-     *            target redis host
-     * @param port
-     *            target redis port
-     */
-    public FeatureStoreRedis(String host, int port, String password, String xmlFeaturesfFile) {
-        this(new RedisConnection(host, port, password));
-        importFeaturesFromXmlFile(xmlFeaturesfFile);
-    }
-
-    /**
-     * Contact remote redis server.
-     * 
-     * @param host
-     *            target redis host
-     * @param port
-     *            target redis port
-     */
-    public FeatureStoreRedis(String host, int port, String xmlFeaturesfFile) {
-        this(host, port);
-        importFeaturesFromXmlFile(xmlFeaturesfFile);
+    public FeatureStoreRedis(RedisConnection pRedisConnection, RedisKeysBuilder builder) {
+        this.redisConnection = pRedisConnection;
+        this.keyBuilder      = builder;
     }
     
     /** {@inheritDoc} */
@@ -116,7 +74,7 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            return jedis.exists(KEY_FEATURE + uid);
+            return jedis.exists(keyBuilder.getKeyFeature(uid));
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -133,7 +91,7 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            return FeatureJsonParser.parseFeature(jedis.get(KEY_FEATURE + uid));
+            return FeatureJsonParser.parseFeature(jedis.get(keyBuilder.getKeyFeature(uid)));
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -151,8 +109,8 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            jedis.set(KEY_FEATURE + fp.getUid(), fp.toJson());
-            jedis.persist(KEY_FEATURE + fp.getUid());
+            jedis.set(keyBuilder.getKeyFeature(fp.getUid()), fp.toJson());
+            jedis.persist(keyBuilder.getKeyFeature(fp.getUid()));
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -195,9 +153,9 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
             jedis = getJedis();
 
             // Store the feature in the mapping bucket.
-            jedis.sadd(KEY_FEATURE_MAP, id);
-            jedis.set(KEY_FEATURE + id, fp.toJson());
-            jedis.persist(KEY_FEATURE + id);
+            jedis.sadd(keyBuilder.getKeyFeatureMap(), id);
+            jedis.set(keyBuilder.getKeyFeature(id), fp.toJson());
+            jedis.persist(keyBuilder.getKeyFeature(id) + id);
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -212,7 +170,7 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
         try {
             jedis = getJedis();
 
-            Set<String> features = jedis.smembers(KEY_FEATURE_MAP);
+            Set<String> features = jedis.smembers(keyBuilder.getKeyFeatureMap());
 
             Map<String, Feature> featuresMap = new HashMap<>();
             if (features != null) {
@@ -237,8 +195,8 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
         try {
             jedis = getJedis();
             // Store the feature in the mapping bucket.
-            jedis.srem(KEY_FEATURE_MAP, fpId);
-            jedis.del(KEY_FEATURE + fpId);
+            jedis.srem(keyBuilder.getKeyFeatureMap(), fpId);
+            jedis.del(keyBuilder.getKeyFeature(fpId));
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -364,7 +322,7 @@ public class FeatureStoreRedis extends AbstractFeatureStore {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            Set<String> myKeys = jedis.smembers(KEY_FEATURE_MAP);
+            Set<String> myKeys = jedis.smembers(keyBuilder.getKeyFeatureMap());
             for (String key : myKeys) {
                 delete(key);
             }

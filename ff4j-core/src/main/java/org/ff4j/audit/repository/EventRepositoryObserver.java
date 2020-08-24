@@ -1,16 +1,10 @@
-/**
- * Implementation of a store using REDIS.
- * <p>
- *
- * @author Cedrick Lunven (@clunven)</a>
- */
-package org.ff4j.store;
+package org.ff4j.audit.repository;
 
 /*
  * #%L
  * ff4j-core
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2020 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,3 +19,11 @@ package org.ff4j.store;
  * limitations under the License.
  * #L%
  */
+
+import org.ff4j.audit.Event;
+
+public interface EventRepositoryObserver {
+    
+    void onEvent(Event incomingEvent);
+    
+}
