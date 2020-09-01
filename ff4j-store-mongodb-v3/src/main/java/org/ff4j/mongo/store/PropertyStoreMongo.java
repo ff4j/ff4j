@@ -228,7 +228,7 @@ public class PropertyStoreMongo extends AbstractPropertyStore {
                 .listCollectionNames()
                 .into(new HashSet<String>())
                 .contains(collectionName)) {
-            mongoClient.getDatabase(dbName).createCollection(collectionName);
+            mongoClient.getDatabase(dbName).getCollection(collectionName);
         }
         propertiesCollection = mongoClient.getDatabase(dbName).getCollection(collectionName);
     }

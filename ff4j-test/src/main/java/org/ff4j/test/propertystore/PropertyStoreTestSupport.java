@@ -79,6 +79,18 @@ public abstract class PropertyStoreTestSupport {
      */
     protected abstract PropertyStore initPropertyStore();
     
+    // --------------- schema creation -----------
+    @Test
+    public void multipleSchemaCreationOk() {
+        // Given
+        testedStore.createSchema();
+
+        // When
+        testedStore.createSchema();
+
+        // Then no exception
+    }
+
     // --------------- exist -----------
     
     /** TDD. */
@@ -106,7 +118,7 @@ public abstract class PropertyStoreTestSupport {
     }
     
     // --------------- create -----------    
-    
+
     /** TDD. */
     @Test
     public void addPropertyOKsimple() {
@@ -377,7 +389,4 @@ public abstract class PropertyStoreTestSupport {
             testedStore.createProperty(pName.getValue());
         }
     }
-    
-
-    
 }
