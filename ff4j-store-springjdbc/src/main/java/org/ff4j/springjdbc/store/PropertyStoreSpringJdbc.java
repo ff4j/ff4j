@@ -213,23 +213,8 @@ public class PropertyStoreSpringJdbc extends AbstractPropertyStore {
     @Transactional
     public void createSchema() {
         JdbcQueryBuilder qb = getQueryBuilder();
-        if (!isTableExist(qb.getTableNameProperties())) {
+        if (!JdbcUtils.isTableExist(dataSource, qb.getTableNameProperties())) {
             getJdbcTemplate().update(qb.sqlCreateTableProperties());
         }
     }
-    
-    public boolean isTableExist(String tableName) {
-        ResultSet rs = null;
-        try {
-            DatabaseMetaData dbmd = 
-                    getJdbcTemplate().getDataSource().getConnection().getMetaData();
-            rs = dbmd.getTables(null, null, tableName, new String[] {"TABLE"});
-            return rs.next();
-        } catch (SQLException sqlEX) {
-            throw new FeatureAccessException("Cannot check table existence", sqlEX);
-        } finally {
-            JdbcUtils.closeResultSet(rs);
-        }
-    }
-
 }

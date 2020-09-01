@@ -47,8 +47,10 @@ public class PropertyStoreMongoCollectionCore1Test extends PropertyStoreTestSupp
 
      /** {@inheritDoc} */
     protected PropertyStore initPropertyStore() {
-        return new PropertyStoreMongo(
-                fongoRule.getDatabase().getCollection("ff4j"), "test-ff4j-features.xml");
+        PropertyStoreMongo propertyStoreMongo = new PropertyStoreMongo(fongoRule.getMongoClient());
+        propertyStoreMongo.importPropertiesFromXmlFile("test-ff4j-features.xml");
+
+        return propertyStoreMongo;
     }
     
     @Test
@@ -58,6 +60,6 @@ public class PropertyStoreMongoCollectionCore1Test extends PropertyStoreTestSupp
         Assert.assertNotNull(pod.getType("a"));
         Assert.assertNotNull(pod.getFixedValues("a"));
     }
-    
-    
+
+
 }
