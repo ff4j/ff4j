@@ -47,6 +47,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import static org.ff4j.web.FF4jWebConstants.*;
 
 /**
@@ -162,6 +166,35 @@ public class FF4jResource extends AbstractResource {
            return Response.status(Response.Status.BAD_REQUEST).entity(errMsg).build();
        }
        
+    }
+
+
+    /**
+     * Check if some features are flipped
+     *
+     * @return
+     *      Map<String,Boolean> with featureUID and flipped
+     */
+    @POST
+    @Path("/" + OPERATION_CHECK)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value= "<b>Check</b> multiple feature toggles", response=Boolean.class)
+    @ApiResponses({
+            @ApiResponse(code = 200, message= "Map of feature / flipped"),
+            @ApiResponse(code = 400, message= "Invalid parameter")})
+    public Response check(Set<String> featureUIDs) {
+        // HoldSecurity Context
+        FF4JSecurityContextHolder.save(securityContext);
+
+        final Map<String, Boolean> featureFlippedMap = new HashMap<String, Boolean>();
+        if (featureUIDs != null) {
+            for (final String featureUID : featureUIDs) {
+                boolean flipped = ff4j.check(featureUID);
+                featureFlippedMap.put(featureUID, flipped);
+            }
+        }
+        return Response.ok(featureFlippedMap).build();
     }
     
 }
