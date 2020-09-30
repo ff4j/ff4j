@@ -183,15 +183,23 @@ public class FF4jResource extends AbstractResource {
     @ApiResponses({
             @ApiResponse(code = 200, message= "Map of feature / flipped"),
             @ApiResponse(code = 400, message= "Invalid parameter")})
-    public Response check(Set<String> featureUIDs) {
+    public Response check(Set<String> featureUIDs, MultivaluedMap<String, String> formParams) {
         // HoldSecurity Context
         FF4JSecurityContextHolder.save(securityContext);
 
+        FlippingExecutionContext flipExecCtx = new FlippingExecutionContext();
+        for (String key : formParams.keySet()) {
+            flipExecCtx.putString(key, formParams.getFirst(key));
+        }
         final Map<String, Boolean> featureFlippedMap = new HashMap<String, Boolean>();
         if (featureUIDs != null) {
             for (final String featureUID : featureUIDs) {
-                boolean flipped = ff4j.check(featureUID);
-                featureFlippedMap.put(featureUID, flipped);
+                try {
+                    boolean flipped = ff4j.check(featureUID, flipExecCtx);
+                    featureFlippedMap.put(featureUID, flipped);
+                } catch (FeatureNotFoundException e) {
+                    featureFlippedMap.put(featureUID, false);
+                }
             }
         }
         return Response.ok(featureFlippedMap).build();
