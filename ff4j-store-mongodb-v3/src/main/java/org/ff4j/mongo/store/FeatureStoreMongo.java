@@ -19,7 +19,7 @@ import org.ff4j.mongo.mapper.MongoFeatureMapper;
 import org.ff4j.store.AbstractFeatureStore;
 import org.ff4j.utils.Util;
 
-import com.mongodb.MongoClient;
+import com.mongodb.client.MongoClient;
 
 /*
  * #%L ff4j-store-jdbc %% Copyright (C) 2013 Ff4J %% Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -68,29 +68,28 @@ public class FeatureStoreMongo extends AbstractFeatureStore {
     private MongoClient mongoClient;
 
     /**
-     * Parameterized constructor with collection.
-     * 
-     * @param collection
-     *            the collection to set
+     * Empty constructor.
      */
     public FeatureStoreMongo() {
     }
     
     /**
-     * Parameterized constructor with collection.
+     * Parameterized constructor with a client.
      * 
-     * @param collection
-     *            the collection to set
+     * @param client
+     *            a mongo client
      */
     public FeatureStoreMongo(MongoClient client) {
         this(client, MongoDbConstants.DEFAULT_DBNAME);
     }
     
     /**
-     * Parameterized constructor with collection.
-     * 
-     * @param collection
-     *            the collection to set
+     * Parameterized constructor with a client and database name.
+     *
+     * @param client
+     *            a mongo client
+     * @param dbName
+     *            the database name
      */
     public FeatureStoreMongo(MongoClient client, String dbName) {
         this.dbName      = dbName;
@@ -99,10 +98,14 @@ public class FeatureStoreMongo extends AbstractFeatureStore {
     }
     
     /**
-     * Parameterized constructor with collection.
-     * 
-     * @param collection
-     *            the collection to set
+     * Parameterized constructor with client, database name and collection name.
+     *
+     * @param client
+     *            a mongo client
+     * @param dbName
+     *            the database name
+     * @param collectionName
+     *            the collection name
      */
     public FeatureStoreMongo(MongoClient client, String dbName, String collectionName) {
         this.mongoClient        = client;
@@ -112,10 +115,12 @@ public class FeatureStoreMongo extends AbstractFeatureStore {
     }
     
     /**
-     * Parameterized constructor with collection.
-     * 
-     * @param collection
-     *            the collection to set
+     * Parameterized constructor with database and client.
+     *
+     * @param db
+     *            the mongo database
+     * @param client
+     *            a mongo client
      */
     public FeatureStoreMongo(MongoDatabase db, MongoClient client) {
         this(db, MongoDbConstants.DEFAULT_FEATURE_COLLECTION);
@@ -123,10 +128,12 @@ public class FeatureStoreMongo extends AbstractFeatureStore {
     }
     
     /**
-     * Parameterized constructor with collection.
-     * 
-     * @param collection
-     *            the collection to set
+     * Parameterized constructor with database and collection name.
+     *
+     * @param db
+     *            the mongo database
+     * @param collectionName
+     *            the collection name
      */
     public FeatureStoreMongo(MongoDatabase db, String collectionName) {
         this.dbName = db.getName();
@@ -144,10 +151,12 @@ public class FeatureStoreMongo extends AbstractFeatureStore {
     }
     
     /**
-     * Parameterized constructor with collection.
+     * Parameterized constructor with collection and XML config file.
      * 
      * @param collection
      *            the collection to set
+     * @param xmlConfFile
+     *            an XML config file
      */
     public FeatureStoreMongo(MongoCollection<Document> collection, String xmlConfFile) {
         this(collection);

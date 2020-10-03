@@ -348,7 +348,7 @@ public abstract class FeatureStoreTestSupport {
 	 * TDD.
 	 */
 	@Test(expected = FeatureNotFoundException.class)
-	public void testDeteleFeatureDoesnotExist() throws Exception {
+	public void testDeleteFeatureDoesNotExist() throws Exception {
 		// Given
 		assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
 		// When
@@ -858,7 +858,7 @@ public abstract class FeatureStoreTestSupport {
 	 * TDD.
 	 */
 	@Test(expected = FeatureNotFoundException.class)
-	public void testAddToGroupFeatureDoeNotExist() {
+	public void testAddToGroupFeatureDoesNotExist() {
 		// Given
 		assertFf4j.assertThatGroupDoesNotExist(G_DOESNOTEXIST);
 		// When
