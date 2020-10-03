@@ -1,33 +1,8 @@
 package org.ff4j.mongo.store;
 
-import static org.ff4j.mongo.MongoDbConstants.MONGO_SET;
-
-import java.util.HashSet;
-
-/*
- * #%L
- * ff4j-store-mongodb-v3
- * %%
- * Copyright (C) 2013 - 2016 FF4J
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
- */
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.mongo.MongoDbConstants;
@@ -37,9 +12,12 @@ import org.ff4j.property.Property;
 import org.ff4j.property.store.AbstractPropertyStore;
 import org.ff4j.utils.Util;
 
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+
+import static org.ff4j.mongo.MongoDbConstants.MONGO_SET;
 
 /**
  * PropertyStore based on MongoDB database.
@@ -47,62 +25,64 @@ import com.mongodb.client.MongoDatabase;
  * @author Cedrick Lunven (@clunven)</a>
  */
 public class PropertyStoreMongo extends AbstractPropertyStore {
-    
+
     /** Property mapper. */
     private MongoPropertyMapper PMAPPER = new MongoPropertyMapper();
-    
+
     /** Build fields. */
     private static final PropertyDocumentBuilder BUILDER = new PropertyDocumentBuilder();
 
     /** MongoDB collection. */
     private MongoCollection<Document> propertiesCollection;
-    
+
     /** Feature collection Name. */
     private String collectionName = MongoDbConstants.DEFAULT_PROPERTY_COLLECTION;
-    
+
     /** Database name. */
     private String dbName = MongoDbConstants.DEFAULT_DBNAME;
-    
+
     /** Current mongo client. */
     private MongoClient mongoClient;
-    
+
     /**
-     * Parameterized constructor with collection.
-     * 
-     * @param collection
-     *            the collection to set
+     * Empty constructor.
      */
     public PropertyStoreMongo() {
     }
-    
 
     /**
-     * Parameterized constructor with collection.
-     * 
-     * @param collection
-     *            the collection to set
+     * Parameterized constructor with client and database name.
+     *
+     * @param client
+     *            a mongo client
+     * @param dbName
+     *            the database name
      */
     public PropertyStoreMongo(MongoClient client, String dbName) {
         this.dbName      = dbName;
         this.mongoClient = client;
         this.propertiesCollection = getPropertiesCollection();
     }
-    
+
     /**
-     * Parameterized constructor with collection.
-     * 
-     * @param collection
-     *            the collection to set
+     * Parameterized constructor a client.
+     *
+     * @param client
+     *            a mongo client
      */
     public PropertyStoreMongo(MongoClient client) {
         this(client, MongoDbConstants.DEFAULT_DBNAME);
     }
-    
+
     /**
-     * Parameterized constructor with collection.
-     * 
-     * @param collection
-     *            the collection to set
+     * Parameterized constructor with client, database name and collection name.
+     *
+     * @param client
+     *            a mongo client
+     * @param dbName
+     *            the database name
+     * @param collectionName
+     *            the collection name
      */
     public PropertyStoreMongo(MongoClient client, String dbName, String collectionName) {
         this.mongoClient        = client;
@@ -110,49 +90,53 @@ public class PropertyStoreMongo extends AbstractPropertyStore {
         this.dbName             = dbName;
         this.propertiesCollection = getPropertiesCollection();
     }
-    
+
     /**
-     * Parameterized constructor with collection.
-     * 
-     * @param collection
-     *            the collection to set
+     * Parameterized constructor with database.
+     *
+     * @param db
+     *            the mongo database
      */
     public PropertyStoreMongo(MongoDatabase db) {
         this(db, MongoDbConstants.DEFAULT_PROPERTY_COLLECTION);
     }
-    
+
     /**
-     * Parameterized constructor with collection.
-     * 
-     * @param collection
-     *            the collection to set
+     * Parameterized constructor with database and collection.
+     *
+     * @param db
+     *            the mongo database
+     * @param collectionName
+     *            the collection name
      */
     public PropertyStoreMongo(MongoDatabase db, String collectionName) {
         this.propertiesCollection = db.getCollection(collectionName);
         this.dbName = db.getName();
     }
-    
+
     /**
      * Parameterized constructor with collection.
-     * 
+     *
      * @param collection
      *            the collection to set
      */
     public PropertyStoreMongo(MongoCollection<Document> collection) {
         this.propertiesCollection = collection;
     }
-    
+
     /**
-     * Parameterized constructor with collection.
-     * 
+     * Parameterized constructor with collection and XML config file.
+     *
      * @param collection
      *            the collection to set
+     * @param xmlConfFile
+     *            an XML config file
      */
     public PropertyStoreMongo(MongoCollection<Document> collection, String xmlConfFile) {
         this(collection);
         importPropertiesFromXmlFile(xmlConfFile);
     }
-    
+
     /** {@inheritDoc} */
     public boolean existProperty(String name) {
         Util.assertHasLength(name);
@@ -176,13 +160,13 @@ public class PropertyStoreMongo extends AbstractPropertyStore {
         Document object = getPropertiesCollection().find(BUILDER.getName(name)).first();
         return PMAPPER.fromStore(object);
     }
-    
+
     /** {@inheritDoc} */
     public void deleteProperty(String name) {
         assertPropertyExist(name);
         getPropertiesCollection().deleteOne(BUILDER.getName(name));
     }
-    
+
     /** {@inheritDoc} */
     public void clear() {
         getPropertiesCollection().deleteMany(new Document());
@@ -205,7 +189,7 @@ public class PropertyStoreMongo extends AbstractPropertyStore {
         // Create
         createProperty(prop);
     }
-    
+
     /** {@inheritDoc} */
     public Map<String, Property<?>> readAllProperties() {
         LinkedHashMap<String, Property<?>> mapP = new LinkedHashMap<String, Property<?>>();
@@ -232,7 +216,7 @@ public class PropertyStoreMongo extends AbstractPropertyStore {
         }
         propertiesCollection = mongoClient.getDatabase(dbName).getCollection(collectionName);
     }
-    
+
     /**
      * Getter accessor for attribute 'featuresCollection'.
      *
@@ -249,5 +233,5 @@ public class PropertyStoreMongo extends AbstractPropertyStore {
         }
         return propertiesCollection;
     }
-    
+
 }

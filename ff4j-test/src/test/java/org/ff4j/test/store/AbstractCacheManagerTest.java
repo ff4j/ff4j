@@ -109,9 +109,9 @@ public class AbstractCacheManagerTest {
         ps.testRemoveToGroupEmpty();
         ps.testRemoveToGroupNull();
         ps.testRemoveToGroupFeatureNull();
-        ps.testAddToGroupFeatureDoeNotExist();
+        ps.testAddToGroupFeatureDoesNotExist();
         ps.testDeleteNull();
-        ps.testDeteleFeatureDoesnotExist();
+        ps.testDeleteFeatureDoesNotExist();
         ps.testGrantRoleNullFeature();
         ps.testGrantRoleEmptyFeature();
         ps.testGrantRoleNullRole();
