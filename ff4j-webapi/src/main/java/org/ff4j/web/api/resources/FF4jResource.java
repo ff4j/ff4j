@@ -1,5 +1,12 @@
 package org.ff4j.web.api.resources;
 
+import static org.ff4j.web.FF4jWebConstants.OPERATION_CHECK;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_SECURITY;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 /*
  * #%L
  * ff4j-web
@@ -46,12 +53,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import static org.ff4j.web.FF4jWebConstants.*;
 
 /**
  * This is the parent class for FF4J the REST API.
@@ -183,20 +184,13 @@ public class FF4jResource extends AbstractResource {
     @ApiResponses({
             @ApiResponse(code = 200, message= "Map of feature / flipped"),
             @ApiResponse(code = 400, message= "Invalid parameter")})
-    public Response check(Set<String> featureUIDs, MultivaluedMap<String, String> formParams) {
-        // HoldSecurity Context
+    public Response checkMulti(@Context HttpHeaders headers, Set<String> featureUIDs) {
         FF4JSecurityContextHolder.save(securityContext);
-
-        FlippingExecutionContext flipExecCtx = new FlippingExecutionContext();
-        for (String key : formParams.keySet()) {
-            flipExecCtx.putString(key, formParams.getFirst(key));
-        }
         final Map<String, Boolean> featureFlippedMap = new HashMap<String, Boolean>();
         if (featureUIDs != null) {
             for (final String featureUID : featureUIDs) {
                 try {
-                    boolean flipped = ff4j.check(featureUID, flipExecCtx);
-                    featureFlippedMap.put(featureUID, flipped);
+                    featureFlippedMap.put(featureUID,  ff4j.check(featureUID));
                 } catch (FeatureNotFoundException e) {
                     featureFlippedMap.put(featureUID, false);
                 }
