@@ -108,7 +108,7 @@ public class FF4JMBean {
      *            target feature id
      */
     @ManagedOperation(description = "Add an authentication role to feature")
-    @ManagedOperationParameters({@ManagedOperationParameter(name = "authRole", description = "role to grant on feature"),
+    @ManagedOperationParameters({@ManagedOperationParameter(name = "authentication Role", description = "role to grant on feature"),
             @ManagedOperationParameter(name = "featureId", description = "target feature id")})
     public void grantRoleOnFeature(String authRole, String featureId) {
         getFf4j().getFeatureStore().grantRoleOnFeature(featureId, authRole);
