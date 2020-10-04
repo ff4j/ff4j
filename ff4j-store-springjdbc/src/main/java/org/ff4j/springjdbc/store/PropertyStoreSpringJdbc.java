@@ -1,8 +1,5 @@
 package org.ff4j.springjdbc.store;
 
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,7 +30,6 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
-import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.Property;

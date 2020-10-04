@@ -30,6 +30,7 @@ import org.ff4j.aop.FeatureAdvisor;
 
 
 import org.ff4j.aop.Flip;
+import org.ff4j.conf.XmlParser;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -48,7 +49,7 @@ public class InvalidParameter {
         service.doIt("");
         
         FeatureAdvisor fa = new FeatureAdvisor();
-        fa.setFf4j(new FF4j("test-ff4j-features.xml"));
+        fa.setFf4j(new FF4j(new XmlParser(), "test-ff4j-features.xml"));
         
         MethodInvocation mi = new MethodInvocation() {
             public Object proceed() throws Throwable { return null; }

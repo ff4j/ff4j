@@ -1,10 +1,12 @@
 package org.ff4j.arangodb.store;
 
-import com.arangodb.ArangoDB;
-import com.arangodb.ArangoDatabase;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
 import org.junit.ClassRule;
+import org.junit.Ignore;
+
+import com.arangodb.ArangoDB;
+import com.arangodb.ArangoDatabase;
 
 /*
  * #%L
@@ -29,6 +31,7 @@ import org.junit.ClassRule;
 /**
  * ArangoDB property store tests
  */
+@Ignore
 public class PropertyStoreArangoDBIT extends PropertyStoreTestSupport {
 
     @ClassRule

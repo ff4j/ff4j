@@ -1,11 +1,13 @@
 package org.ff4j.arangodb.store;
 
 
-import com.arangodb.ArangoDB;
-import com.arangodb.ArangoDatabase;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.ClassRule;
+import org.junit.Ignore;
+
+import com.arangodb.ArangoDB;
+import com.arangodb.ArangoDatabase;
 
 /*
  * #%L
@@ -30,6 +32,7 @@ import org.junit.ClassRule;
 /**
  * ArangoDB feature store tests
  */
+@Ignore
 public class FeatureStoreArangoDBIT extends FeatureStoreTestSupport {
 
     @ClassRule

@@ -144,14 +144,19 @@ public class FF4j {
     /**
      * @deprecated FF4j now read not only XML but also Yaml of JSON, Please provide
      * explictely the Configuration
+     * 
+     * @code new FF4j(new XmlParser(),"ff4j.xml");
+     * @code new FF4j(new YamlParser(),"ff4j.xml"); (need config lib)
      */
     public FF4j(String xmlFile) {
         this(new XmlParser(), xmlFile);
     }
     
     /**
-     * @deprecated FF4j now read not only XML but also Yaml of JSON, Please provide
-     * explictely the Configuration
+     * @deprecated FF4j now read not only XML but also Yaml of JSON
+     * explictely the parser implementation
+     * @code new FF4j(new XmlParser(),"ff4j.xml");
+     * @code new FF4j(new YamlParser(),"ff4j.xml"); (need config lib)
      */
     public FF4j(InputStream ins) {
         this(new XmlParser(), ins);
