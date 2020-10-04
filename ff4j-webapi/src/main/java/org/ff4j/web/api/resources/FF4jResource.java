@@ -34,11 +34,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.Status;
 
 import org.ff4j.core.FlippingExecutionContext;
@@ -184,13 +180,18 @@ public class FF4jResource extends AbstractResource {
     @ApiResponses({
             @ApiResponse(code = 200, message= "Map of feature / flipped"),
             @ApiResponse(code = 400, message= "Invalid parameter")})
-    public Response checkMulti(@Context HttpHeaders headers, Set<String> featureUIDs) {
+    public Response checkMulti(@Context HttpHeaders headers, @Context UriInfo uriInfo, Set<String> featureUIDs) {
         FF4JSecurityContextHolder.save(securityContext);
         final Map<String, Boolean> featureFlippedMap = new HashMap<String, Boolean>();
+        final MultivaluedMap<String, String> formParams = uriInfo.getQueryParameters();
+        final FlippingExecutionContext flipExecCtx = new FlippingExecutionContext();
+        for (String key : formParams.keySet()) {
+            flipExecCtx.putString(key, formParams.getFirst(key));
+        }
         if (featureUIDs != null) {
             for (final String featureUID : featureUIDs) {
                 try {
-                    featureFlippedMap.put(featureUID,  ff4j.check(featureUID));
+                    featureFlippedMap.put(featureUID,  ff4j.check(featureUID, flipExecCtx));
                 } catch (FeatureNotFoundException e) {
                     featureFlippedMap.put(featureUID, false);
                 }
