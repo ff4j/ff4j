@@ -22,20 +22,20 @@ FF4j, is an implementation of the [Feature Toggle](http://martinfowler.com/bliki
 
 - **Strategy-based Toggling:** Determine whether features are enabled by implementing custom predicates via the Strategy Pattern. Some, like White/Black lists ,Time-based, and Expression-based, are already provided. You can also connect to an external source like a Drools rule engine.
 
-- **AOP-driven Toggling:** Keeps your code clean and readable: use annotations to avoid nested if statements. Thanks to Spring AOP target implementation is pick at runtime, and thus driven by feature statuses.
+- **AOP-driven Toggling:** Keep your code clean and readable: use annotations to avoid nested if statements. Thanks to Spring AOP target implementation is pick at runtime, and thus driven by feature statuses.
 
 - **Features Monitoring:** For each feature's execution, FF4j evaluates the predicate. Therefore it's possible to record events and metrics to compute nice dashboards, or draw curves for features usage over time.
 
 - **Audit Trail:** Each action (create, update, delete, toggles) can be traced and saved in the audit trail for troubleshooting. With permissions management (AuthorizationManager) it's possible to identify users.
 
 - **Web Console:**
-Administrate FF4j (including features and properties) with the web UI. Packaged as a servlet in the library you will expose it in your backend applications. Almost 10 languages available.
+Administrate FF4j (including features and properties) with the web UI. Packaged as a servlet in the library, you will expose it in your backend applications. Almost 10 languages available.
 
 - **Wide choice of Databases** Our pride: we support 20+ database technologies to store your features, properties and events. Same business model, multiple implementations. Thanks to extension points, it's easy to build your own.
 
-- **Spring Boot Starter** Import the ff4j-spring-boot-starter dependency in your microservices to get the web console and REST API working immediately. (To be used for the backend app. Now compliant with Spring Boot 2x: 👉 SAMPLES
+- **Spring Boot Starter** Import the ff4j-spring-boot-starter dependency into your microservices to get the web console and REST API working immediately. (To be used for the backend app. Now compliant with Spring Boot 2x: 👉 SAMPLES
 
-- **REST Api** Operate FF4j through a WEB API. This is the best way to use FF4j with others languages, especially JavaScript frontends.
+- **REST Api** Operate FF4j through a WEB API. This is the best way to use FF4j with others languages, especially when working with JavaScript front-ends.
 
 - **Properties (CMDB)** In addition to a feature's status you can store any property value to create properties you can change at runtime. It is integrated with most frameworks like Spring, Archaius, commons-config or Consul.
 
@@ -43,7 +43,7 @@ Administrate FF4j (including features and properties) with the web UI. Packaged 
 
 - **Command Line Interface** To support automating things, or because web ports may be blocked (you know, production...), you can work through SSH using our Command Line Interface (cli), our Shell #devOps. It will interact directly with storages.
 
-- **JMX and MBeans** A limited set of operations can be performed through JMX. FF4j exposes some Mbeans to read metrics or toggle features from external tools (Nagios...). Not all applications are web based -- batches, shell, standalone. etc.
+- **JMX and MBeans** A limited set of operations can be performed through JMX. FF4j exposes some MBeans to read metrics or toggle features from external tools (Nagios...). Not all applications are web based -- batches, shell, standalone. etc.
 
 More information can be found at [ff4j.org](http://ff4j.org) or 
 [Reference Documentation](https://github.com/ff4j/ff4j/wiki) in the wiki.
