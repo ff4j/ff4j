@@ -9,7 +9,7 @@ The following document should be used to help people from the team to release a 
 ```
 eval "$(ssh-agent -s)"
 ```
-- Add the ssh Jey to tge agen
+- Add the ssh key to the agent
 ```
 cd ~/.ssh
 ssh-add githubff4j
@@ -26,7 +26,7 @@ git push
 ```
 mvn release:prepare release:perform
 ```
-- Go to github to [taglist](https://github.com/ff4j/ff4j/tags) the create release
+- Go to the [taglist](https://github.com/ff4j/ff4j/tags) on github then create the release
 - Create a release note document
 ```
 `Fixes:`
@@ -36,12 +36,12 @@ mvn release:prepare release:perform
 ```
 
 ### ff4j-spring-boot-starter
-- go to the spring-boot-starter
+- Go to the spring-boot-starter
 ```
 find . -type f -name *.DS_Store -ls -delete
 git pull
 ```
-- Change ff4j version in the `pom.xml` ex:1.8.x
+- Change the FF4j version in the `pom.xml` ex:1.8.x
 - Check build `mvn clean install`
 - Push modifications
 ```
@@ -60,13 +60,13 @@ mvn clean package dockerfile:build
 docker login
 docker push clunven/ff4j-sample:1.8.x
 ```
-- Update ff4g.org getting started guide
+- Update ff4j.org [Getting Started(http://ff4j.org/#10min) guide
 - Twitter with release node
 - Open Collective
 
 ## Environment Setup
 
-To release artefacts in the Maven Central you should have installed on your machine.
+To release artifacts in Maven Central you should have the following tools installed on your machine:
  - Apache Maven
  - Java 8+
  - Git
@@ -76,12 +76,12 @@ To release artefacts in the Maven Central you should have installed on your mach
 
 ### 1.1. Connect to github via SSH
 
-During  releases  you will clone `ff4j` repository but also create *tags* and *branches*. All operations are performed using   `SSH` `git` interface (not http). As such you must generate SSH key as describe in the [following reference documentation on github](https://help.github.com/en/articles/connecting-to-github-with-ssh). Main points have been copied below.
+During releases, you will clone the `ff4j` repository, but also create *tags* and *branches*. All operations are performed using   `SSH` `git` interface (not http). As such, you must generate an SSH key as describe in the following [reference documentation on github](https://help.github.com/en/articles/connecting-to-github-with-ssh). Main points have been copied below.
 
 
 **1.1.1 - List available keys**
 
-1. Open Terminal.
+1. Open a terminal window.
 
 2. Enter `ls -al ~/.ssh` to see if existing SSH keys are present:
 
@@ -101,9 +101,9 @@ id_rsa.pub
 If you don't have an existing public and private key pair, or don't wish to use any that are available to connect to GitHub, then generate a new SSH key.
 
 
-**1.1.2 Generate a new SSH key**
+**1.1.2 How to generate a new SSH key**
 
-1. Open Terminal.
+1. Open a terminal window.
 
 2. Paste the text below, substituting in your GitHub email address.
 
@@ -123,7 +123,7 @@ When you're prompted to "Enter a file in which to save the key," press Enter. Th
 > Enter a file in which to save the key (/Users/you/.ssh/id_rsa): [Press enter]
 ```
 
-At the prompt, type a secure passphrase. For more information, see "Working with SSH key passphrases".
+At the prompt, type a secure passphrase. For more information, see "[Working with SSH key passphrases](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/working-with-ssh-key-passphrases)".
 
 ```
 > Enter passphrase (empty for no passphrase): [Type a passphrase]
@@ -154,7 +154,7 @@ Add your SSH private key to the ssh-agent and store your passphrase in the keych
 ssh-add -K ~/.ssh/id_rsa
 ```
 
-You should now be able to see your key in the agent with :
+You should now be able to see your key in the agent with:
 
 ```
  ssh-add -l
@@ -218,7 +218,7 @@ Verify that the resulting message contains your username.
 
 **1.2.1 Installing GnuPG**
 
-[Download GPG](http://www.gnupg.org/download) and follow the instructions and install it to your system. Verify your gpg installation by running gpg with the version flag:
+[Download GnuPG](http://www.gnupg.org/download) and follow the instructions and install it to your system. Verify your gpg installation was successful by running gpg with the version flag:
 
 ```
 gpg --version
@@ -236,21 +236,19 @@ You'll be asked for the type, the size, and the time of validity for the key, ju
 
 **1.2.3 List Keys**
 
-Once key pair is generated, we can list them to console ( along with any other keys imported to local machine ) List public keys:
-
+Once key pair is generated, we can display them on the console, along with any other keys imported to the local machine. To list the public keys, enter the following command:
 ```
 gpg --list-keys
 ```
 
-List private keys:
-
+To list the private keys use this command:
 ```
 gpg --list-secret-keys
 ```
 
 **1.2.4 Distribute Your Public Key**
 
-Since other people need your public key to verify your files, you have to distribute your public key to a key server:
+Since other people need your public key to verify your files, you have to upload your public key to a key server:
 
 ```
 gpg --keyserver hkp://pgp.mit.edu --send-keys <KEY_ID>
@@ -271,9 +269,9 @@ Some resources to consider:
 - [OSSRH Guide](https://central.sonatype.org/pages/ossrh-guide.html)
 - [Deploying to OSSRH with Apache Maven](https://central.sonatype.org/pages/apache-maven.html)
 
-During the release you will upload files (jar, sources, javadocs) to the nexus server (well this is what we call a release right ?). As such you need an account username/password. With such account you can later connect to the [user interface](oss.sonatype.org) and see downloads metrics.
+During the release you will upload files (jar, sources, javadocs) to the nexus server (well this is what we call a release right ?). As such you need an account username/password. With such account you can later connect to the [user interface](oss.sonatype.org) and see download metrics.
 
-Open your maven `settings.xml` file (should be located in `~/.m2`) and enter the following servers. Those map to identifiers define in the `pom.xml` of ff4j. The `username`/`password` will be provided to you by a member of the team those were defined in the process at beginning.
+Open your Maven `settings.xml` file (should be located in `~/.m2`) and enter the following servers, which map to identifiers defined in ff4j's `pom.xml` file. The `username`/`password` values will be provided to you by a member of the team.
 
 ```xml
  <servers>
@@ -295,22 +293,22 @@ Open your maven `settings.xml` file (should be located in `~/.m2`) and enter the
   </servers>
 ```
 
-You can test your credentials by going to [Nexus Repository Manager](https://oss.sonatype.org/) and select login on the top right corner. Sometimes you need to refresh the page to make it works.. old javascript maybe.
+You can test your credentials by going to the [Nexus Repository Manager](https://oss.sonatype.org/) and clicking Log In" at the top right corner of the page. Note: you may need to refresh the page to make it work... old JavaScript maybe.
 
 ---
 
 ## Proceed with the release
 
-Before starting please ensure that your environment is setup, indeed release ff4j will take you about 30min on a MacPro when everything is fine and it is quite tricky fixed some half finished release. Most of the time you have to start again from the start.
+Before starting please ensure that your environment is completely setup. The ff4j release process will take you about 30 minutes on a MacPro when everything is fine, and it is quite tricky to fix a half-finished release. Most of the time you have to start again from the very beginning.
 
-1. Clone the repository or sync the repository to have the latest version on your machine (and no commit ahread or behind)
+1. Clone or sync the repository to ensure you have the latest version on your machine, with no commitS ahead or behind.
 
 ```
 git clone <URL>
 git pull
 ```
 
-2. Ensure that the project builds property on your machine. This build takes about 5min. (remember we ran 10k+ unit tests to ensure best quality). It will eventually also download half of the internet due to transitive dependencies.
+2. Ensure that the project builds property on your machine. This build takes about 5 minUTES. (Remember we rUn 10k+ unit tests to ensure the highest quality). It will eventually also download half of the Internet due to transitive dependencies.
 
 ```
 mvn validate
@@ -323,19 +321,19 @@ mvn clean install
  mvn versions:set -DnewVersion=1.8-SNAPSHOT
  ```
 
-This will change all `pom.xml` files and create `pom.xml.backup` files with older version. To rollback simplu go for a `mvn versions:rollback`. Most of the time you simply want to remove the backup files with 
+This will change all `pom.xml` files and create `pom.xml.backup` files with older version. To rollback simply go for a `mvn versions:rollback`. Most of the time you simply want to remove the backup files with 
 
 ```
 mvn versions:commit
 ```
 
-4. Ready ? With all the preparations releasing is as simple as :
+4. Ready? With all the preparations releasing is as simple as :
 
 ```
 mvn release:prepare release:perform
 ```
 
-There are a couple of questions to answer. If you don't provide any values it will use default values (brackets)
+There are a couple of questions to answer. If you don't provide any values it will use the default values shown in parentheses.
 
 ```
 - Version of the release (1.8) : 1.8 
@@ -343,7 +341,7 @@ There are a couple of questions to answer. If you don't provide any values it wi
 - New version on the repository (1.9-SNAPSHOT) : 1.8.1-SNAPSHOT
 ```
 
-Enjoy the process and looks at the log the process will look like under the hood :
+Enjoy the process and look at the log to see what the process looks like under the hood:
 *- `mvn clean install`
 - Git branching and taging + push to github
 - Version update + push to github
@@ -351,7 +349,7 @@ Enjoy the process and looks at the log the process will look like under the hood
 - Uploading jars to OSSRH
 - Waiting to close the `stating` (about 2min)*
 
-Once the build is successfull it takes around an hour to have the `Maven Central` updated with your release.
+Once the build is successfull, it takes around an hour to have `Maven Central` updated with your release.
 
 ## Troubleshooting 
 
