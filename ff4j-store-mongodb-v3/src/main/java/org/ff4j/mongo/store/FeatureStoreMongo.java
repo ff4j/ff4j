@@ -199,7 +199,7 @@ public class FeatureStoreMongo extends AbstractFeatureStore {
     @Override
     public boolean exist(String featId) {
         Util.assertHasLength(featId);
-        return 1 == getFeaturesCollection().count(BUILDER.getFeatUid(featId));
+        return 1 == getFeaturesCollection().countDocuments(BUILDER.getFeatUid(featId));
     }
 
     /** {@inheritDoc} */
@@ -296,7 +296,7 @@ public class FeatureStoreMongo extends AbstractFeatureStore {
         if (groupName == null || groupName.isEmpty()) {
             throw new IllegalArgumentException(GROUPNAME_CANNOT_BE_NULL_NOR_EMPTY);
         }
-        return getFeaturesCollection().count(BUILDER.getGroupName(groupName)) > 0;
+        return getFeaturesCollection().countDocuments(BUILDER.getGroupName(groupName)) > 0;
     }
 
     /** {@inheritDoc} */
