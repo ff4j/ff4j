@@ -160,7 +160,7 @@ public class PropertyStoreMongo extends AbstractPropertyStore {
     /** {@inheritDoc} */
     public boolean existProperty(String name) {
         Util.assertHasLength(name);
-        return 1 == getPropertiesCollection().count(BUILDER.getName(name));
+        return 1 == getPropertiesCollection().countDocuments(BUILDER.getName(name));
     }
 
     /** {@inheritDoc} */
