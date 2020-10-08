@@ -244,19 +244,16 @@
 	  }
 
 	  function getParent($this) {
-	    var selector = $this.attr('data-target')
-	      , $parent
+      var selector = $this.attr('data-target')
 
-	    if (!selector) {
-	      selector = $this.attr('href')
-	      selector = selector && /#/.test(selector) && selector.replace(/.*(?=#[^\s]*$)/, '') //strip for ie7
-	    }
+      if (!selector) {
+        selector = $this.attr('href')
+        selector = selector && /#[A-Za-z]/.test(selector) && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
+      }
 
-	    $parent = selector && $(selector)
+      var $parent = selector !== '#' ? $(document).find(selector) : null
 
-	    if (!$parent || !$parent.length) $parent = $this.parent()
-
-	    return $parent
+      return $parent && $parent.length ? $parent : $this.parent()
 	  }
 
 

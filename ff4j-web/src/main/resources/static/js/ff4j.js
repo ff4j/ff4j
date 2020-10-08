@@ -104,9 +104,6 @@ function hideFeaturePermissions(uid) {
 // ---------------------
 
 function ff4j_updateModalDeleteFeature(uid) {
-	console.log("ff4j_updateModalDeleteFeature");
-	console.log(uid)
-	
 	$("#modalDeleteFeature #uid").val(uid);
 }
 
