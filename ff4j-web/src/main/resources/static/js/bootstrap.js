@@ -19,7 +19,8 @@
       selector = selector && selector.replace(/.*(?=#[^\s]*$)/, '') //strip for ie7
     }
 
-    $parent = $(selector)
+    selector = selector === '#' ? [] : selector
+    $parent  = $(document).find(selector)
 
     e && e.preventDefault()
 
