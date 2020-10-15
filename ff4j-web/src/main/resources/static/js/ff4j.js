@@ -59,18 +59,6 @@ function toggle(flip) {
   }
 }
 
-function confirmBeforeDeleteFeature(feature) {
-	/*
-	$('button[name="remove_levels"]').on('click', function(e){
-	    var $form=$(this).closest('form');
-	    e.preventDefault();
-	    $('#confirm').modal({ backdrop: 'static', keyboard: false })
-	        .one('click', '#delete', function (e) {
-	            $form.trigger('submit');
-	        });
-	});*/
-}
-
 // Display Custom Properties for current feature in the table
 function showCustomProperties(uid) {
   show('detailCustomP-' + uid);
@@ -104,9 +92,6 @@ function hideFeaturePermissions(uid) {
 // ---------------------
 
 function ff4j_updateModalDeleteFeature(uid) {
-	console.log("ff4j_updateModalDeleteFeature");
-	console.log(uid)
-	
 	$("#modalDeleteFeature #uid").val(uid);
 }
 
