@@ -31,13 +31,11 @@ import static org.ff4j.audit.EventConstants.ATTRIBUTE_TIME;
 import static org.ff4j.audit.EventConstants.ATTRIBUTE_TYPE;
 import static org.ff4j.audit.EventConstants.ATTRIBUTE_USER;
 
+import com.mongodb.BasicDBObject;
 import java.util.Map;
-
 import org.bson.Document;
 import org.ff4j.audit.Event;
 import org.ff4j.mapper.EventMapper;
-
-import com.mongodb.util.JSON;
 
 /**
  * Implementation of mapper for events.
@@ -67,8 +65,8 @@ public class MongoEventMapper implements EventMapper< Document > {
         evt.setUuid(bean.getString(ATTRIBUTE_ID));
         evt.setUser(bean.getString(ATTRIBUTE_USER));
         if (bean.containsKey(ATTRIBUTE_KEYS)) {
-            evt.setCustomKeys((Map<String, String>) 
-                    JSON.parse(bean.getString(ATTRIBUTE_KEYS)));
+            evt.setCustomKeys((Map<String, String>)
+                BasicDBObject.parse(bean.getString(ATTRIBUTE_KEYS)).entrySet());
         }
         return evt;
     }

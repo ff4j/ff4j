@@ -29,11 +29,13 @@ import static org.ff4j.mongo.MongoDbConstants.FEATURE_ROLES;
 import static org.ff4j.mongo.MongoDbConstants.FEATURE_STRATEGY;
 import static org.ff4j.mongo.MongoDbConstants.FEATURE_UUID;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
-
 import org.bson.Document;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingStrategy;
@@ -41,9 +43,6 @@ import org.ff4j.mapper.FeatureMapper;
 import org.ff4j.property.Property;
 import org.ff4j.utils.JsonUtils;
 import org.ff4j.utils.MappingUtil;
-
-import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
 
 public class MongoFeatureMapper implements FeatureMapper<Document> {
     
@@ -113,9 +112,9 @@ public class MongoFeatureMapper implements FeatureMapper<Document> {
         Map < String, Property<?> > mapOfCustomProperties = new HashMap<String, Property<?>>();
         if (dbObject.containsKey(FEATURE_CUSTOMPROPERTIES)) {
             String properties = (String) dbObject.get(FEATURE_CUSTOMPROPERTIES);
-            Map < String, DBObject > values = (Map<String, DBObject>) JSON.parse(properties);
-            for (Map.Entry<String,DBObject> entry : values.entrySet()) {
-                mapOfCustomProperties.put(entry.getKey(), PMAPPER.fromStore(entry.getValue()));
+            BasicDBObject values = BasicDBObject.parse(properties);
+            for (Entry<String, Object> entry : values.entrySet()) {
+                mapOfCustomProperties.put(entry.getKey(), PMAPPER.fromStore((DBObject) entry.getValue()));
             }
         }
         return mapOfCustomProperties;
