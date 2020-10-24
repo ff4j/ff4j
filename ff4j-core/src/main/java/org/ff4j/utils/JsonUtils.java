@@ -40,6 +40,74 @@ public class JsonUtils {
     }
     
     /**
+     * Code is built based on https://github.com/fangyidong/json-simple/blob/master/src/main/java/org/json/simple/JSONValue.java
+     * by FangYidong<fangyidong@yahoo.com.cn>. THANK YOU ! ff4j core needs to stay with no dependency.
+     * 
+     * 
+     * The following characters are reserved characters and can not be used in JSON and must be properly escaped to be used in strings.
+     * - Backspace to be replaced with \b
+     * - Form feed to be replaced with \f
+     * - Newline to be replaced with \n
+     * - Carriage return to be replaced with \r
+     * - Tab to be replaced with \t
+     * - Double quote to be replaced with \"
+     * - Backslash to be replaced with \\
+     * 
+     * @param value
+     *      string to be escaped
+     * @return
+     *      escaped JSON
+     */
+    public static final String escapeJson(String value) {
+        if (value == null ) return null;
+        StringBuilder output = new StringBuilder();
+        final int len = value.length();
+        for(int i=0;i<len;i++) {
+            char ch=value.charAt(i);
+            switch(ch){
+            case '"':
+                output.append("\\\"");
+                break;
+            case '\\':
+                output.append("\\\\");
+                break;
+            case '\b':
+                output.append("\\b");
+                break;
+            case '\f':
+                output.append("\\f");
+                break;
+            case '\n':
+                output.append("\\n");
+                break;
+            case '\r':
+                output.append("\\r");
+                break;
+            case '\t':
+                output.append("\\t");
+                break;
+            case '/':
+                output.append("\\/");
+                break;
+            default:
+                //Reference: http://www.unicode.org/versions/Unicode5.1.0/
+                if((ch>='\u0000' && ch<='\u001F') || (ch>='\u007F' && ch<='\u009F') || (ch>='\u2000' && ch<='\u20FF')){
+                    String ss=Integer.toHexString(ch);
+                    output.append("\\u");
+                    for(int k=0;k<4-ss.length();k++){
+                        output.append('0');
+                    }
+                    output.append(ss.toUpperCase());
+                }
+                else{
+                    output.append(ch);
+                }
+            }
+        }
+        return output.toString();
+    }
+    
+    /**
      * Target primitive displayed as JSON.
      *
      * @param value
@@ -49,7 +117,7 @@ public class JsonUtils {
      */
     public static final String valueAsJson(Object value) {
         if (value == null )          return "null";
-        if (value instanceof String) return "\"" + value + "\"";
+        if (value instanceof String) return "\"" + escapeJson(value.toString()) + "\"";
         return value.toString();
     }
     
