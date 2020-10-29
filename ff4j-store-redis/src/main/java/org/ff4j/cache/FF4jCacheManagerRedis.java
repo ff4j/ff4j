@@ -76,6 +76,9 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
         try {
             jedis = getJedis();
             return getKeys(jedis, keyBuilder.getKeyFeature("*"));
+        } catch(RuntimeException re) {
+            onException(re);
+            return null;
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -103,7 +106,8 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
             if (!matchingKeys.isEmpty()) {
                 jedis.del(matchingKeys.toArray(new String[matchingKeys.size()]));
             }
-
+        } catch(RuntimeException re) {
+            onException(re);
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -113,16 +117,19 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
 
     private Set<String> getKeys(Jedis jedis, String pattern) {
         Set<String> matchingKeys = new HashSet<>();
-        ScanParams params = new ScanParams();
-        params.match(pattern);
-        String cursor = "0";
-        do {
-            ScanResult<String> scanResult = jedis.scan(cursor, params);
-            List<String> keys = scanResult.getResult();
-            cursor = scanResult.getCursor();
-            matchingKeys.addAll(keys);
-        } while (!cursor.equals("0"));
-
+        try {
+            ScanParams params = new ScanParams();
+            params.match(pattern);
+            String cursor = "0";
+            do {
+                ScanResult<String> scanResult = jedis.scan(cursor, params);
+                List<String> keys = scanResult.getResult();
+                cursor = scanResult.getCursor();
+                matchingKeys.addAll(keys);
+            } while (!cursor.equals("0"));
+        } catch(RuntimeException re) {
+            onException(re);
+        } 
         return matchingKeys;
     }
 
@@ -133,6 +140,8 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
         try {
             jedis = getJedis();
             jedis.del(keyBuilder.getKeyProperty("*"));
+        } catch(RuntimeException re) {
+            onException(re);
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -148,6 +157,8 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
         try {
             jedis = getJedis();
             jedis.del(keyBuilder.getKeyFeature(uid));
+        } catch(RuntimeException re) {
+            onException(re);
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -166,6 +177,8 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
         try {
             jedis = getJedis();
             jedis.del(keyBuilder.getKeyProperty(propertyName));
+        } catch(RuntimeException re) {
+            onException(re);
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -182,6 +195,8 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
             jedis = getJedis();
             jedis.set(keyBuilder.getKeyFeature(fp.getUid()), fp.toJson());
             jedis.expire(keyBuilder.getKeyFeature(fp.getUid()), getTimeToLive());
+        } catch(RuntimeException re) {
+            onException(re);
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -198,6 +213,8 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
             jedis = getJedis();
             jedis.set(keyBuilder.getKeyProperty(property.getName()), property.toJson());
             jedis.expire(keyBuilder.getKeyProperty(property.getName()), getTimeToLive());
+        } catch(RuntimeException re) {
+            onException(re);
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -216,6 +233,8 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
             if (value != null) {
                 return FeatureJsonParser.parseFeature(value);
             }
+        } catch(RuntimeException re) {
+            onException(re);
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -235,6 +254,8 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
             if (value != null) {
                 return PropertyJsonParser.parseProperty(value);
             }
+        } catch(RuntimeException re) {
+            onException(re);
         } finally {
             if (jedis != null) {
                 jedis.close();
@@ -249,6 +270,9 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
         try {
             jedis = getJedis();
             return jedis.keys(keyBuilder.getKeyProperty("*"));
+        } catch(RuntimeException re) {
+            onException(re);
+            return null;
         } finally {
             if (jedis != null) {
                 jedis.close();

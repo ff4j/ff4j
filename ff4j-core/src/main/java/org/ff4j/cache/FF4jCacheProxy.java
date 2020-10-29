@@ -151,7 +151,13 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
     /** {@inheritDoc} */
     @Override
     public Feature read(String featureUid) {
-        Feature fp = getCacheManager().getFeature(featureUid);
+        Feature fp = null;
+        try {
+            fp = getCacheManager().getFeature(featureUid);
+        } catch(RuntimeException re) {
+            // Cache errors should NOT impact main behaviour
+            getCacheManager().onException(re);
+        }
         // not in cache but may has been created from now
         if (null == fp) {
             fp = getTargetFeatureStore().read(featureUid);
@@ -389,34 +395,45 @@ public class FF4jCacheProxy implements FeatureStore, PropertyStore {
     /** {@inheritDoc} */
     @Override
     public Property<?> readProperty(String name) {
-        Property<?> fp = getCacheManager().getProperty(name);
+        Property<?> p = null;
+        try {
+            p = getCacheManager().getProperty(name);
+        } catch(RuntimeException re) {
+            getCacheManager().onException(re);
+        }
+        
         // not in cache but may has been created from now
-        if (null == fp) {
-            fp = getTargetPropertyStore().readProperty(name);
+        if (null == p) {
+            p = getTargetPropertyStore().readProperty(name);
             try {
-                getCacheManager().putProperty(fp);
+                getCacheManager().putProperty(p);
             } catch(RuntimeException re) {
                 getCacheManager().onException(re);
             }
         }
-        return fp;
+        return p;
     }
     
     /** {@inheritDoc} */
     @Override
     public Property<?> readProperty(String name, Property<?> defaultValue) {
-        Property<?> fp = getCacheManager().getProperty(name);
+        Property<?> p = null;
+        try {
+            p = getCacheManager().getProperty(name);
+        } catch(RuntimeException re) {
+            getCacheManager().onException(re);
+        }
         // Not in cache but may has been created from now
         // Or in cache but with different value that default
-        if (null == fp) {
-            fp = getTargetPropertyStore().readProperty(name, defaultValue);
+        if (null == p) {
+            p = getTargetPropertyStore().readProperty(name, defaultValue);
             try {
-                getCacheManager().putProperty(fp);
+                getCacheManager().putProperty(p);
             } catch(RuntimeException re) {
                 getCacheManager().onException(re);
             }
         }
-        return fp;
+        return p;
     }
 
     /** {@inheritDoc} */
