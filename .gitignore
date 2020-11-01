@@ -20,3 +20,5 @@ dist
 .DS_Store
 
 .factorypath
+.sts4-cache
+*.log
