@@ -72,6 +72,12 @@ public class FF4jServlet extends HttpServlet {
 
     /** initializing ff4j provider. */
     protected FF4jProvider ff4jProvider = null;
+    
+    /** Chabe behaviour in the user interface. */
+    protected boolean askConfirmationBeforeDeleting = true;
+    
+    /** Chabe behaviour in the user interface. */
+    protected boolean askConfirmationBeforeToggling = false;
 
     /** Template engine. */
     protected TemplateEngine templateEngine = null;
@@ -84,7 +90,7 @@ public class FF4jServlet extends HttpServlet {
 
     /** Mapping PATH <=> Controller */
     protected static Map < String , AbstractController > mapOfControllers = new HashMap<String , AbstractController>();
-
+    
     /**
      * Servlet initialization, init FF4J from "ff4jProvider" attribute Name.
      *
@@ -207,5 +213,22 @@ public class FF4jServlet extends HttpServlet {
         this.ff4j = ff4j;
     }
 
+    /**
+     * Setter accessor for attribute 'askConfirmationBeforeDeleting'.
+     * @param askConfirmationBeforeDeleting
+     * 		new value for 'askConfirmationBeforeDeleting '
+     */
+    public void setAskConfirmationBeforeDeleting(boolean askConfirmationBeforeDeleting) {
+        this.askConfirmationBeforeDeleting = askConfirmationBeforeDeleting;
+    }
+
+    /**
+     * Setter accessor for attribute 'askConfirmationBeforeToggling'.
+     * @param askConfirmationBeforeToggling
+     * 		new value for 'askConfirmationBeforeToggling '
+     */
+    public void setAskConfirmationBeforeToggling(boolean askConfirmationBeforeToggling) {
+        this.askConfirmationBeforeToggling = askConfirmationBeforeToggling;
+    }
 
 }

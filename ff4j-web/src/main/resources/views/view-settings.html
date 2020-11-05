@@ -24,16 +24,32 @@
                  <h6 class="bigstats">
           
     <table style="border-collapse:separate;border-spacing:0 10px;text-transform:none">
+     
      <tr>
-      <td style="width:100px;text-align:right;margin-right:18px">
+      <td style="width:300px;text-align:right;margin-right:18px">
        <h4 th:text="#{setting.audit}" >Audit</h4>
       </td>
       <td style="width:30px;text-align:center">
         <h2> <i class="icon-dashboard" style="width:40px;color:#00AB8B"></i></h2>
       </td>
-      <td class="homebean-info">
+      <td class="homebean-info"  style="width:50px">
       <label class="switch switch-green" style="margin-top:5px">
        <input id="f3" type="checkbox" class="switch-input" onclick="ff4j_toggleAudit()" th:checked="${auditEnable}" />
+        <span class="switch-label" data-on="On" data-off="Off"></span>
+        <span class="switch-handle"></span>
+      </label>
+      </td>
+     </tr>
+     <tr>
+      <td style="width:300px;text-align:right;margin-right:18px">
+       <h4 th:text="#{setting.confirmation}" >Confirmation when toggling</h4>
+      </td>
+      <td style="width:30px;text-align:center">
+        <h2> <i class="icon-check" style="width:40px;color:#00AB8B"></i></h2>
+      </td>
+      <td class="homebean-info" style="width:50px">
+      <label class="switch switch-green" style="margin-top:5px">
+       <input id="f4" type="checkbox" class="switch-input" onclick="ff4j_toggleConfirmation()" th:checked="${confirmationEnable}" />
         <span class="switch-label" data-on="On" data-off="Off"></span>
         <span class="switch-handle"></span>
       </label>
