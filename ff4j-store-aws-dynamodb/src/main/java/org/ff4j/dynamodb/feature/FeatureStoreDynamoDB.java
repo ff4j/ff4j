@@ -9,9 +9,9 @@ package org.ff4j.dynamodb.feature;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,8 +20,6 @@ package org.ff4j.dynamodb.feature;
  * #L%
  */
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import org.ff4j.core.Feature;
 import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
@@ -29,11 +27,11 @@ import org.ff4j.store.AbstractFeatureStore;
 import org.ff4j.utils.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 import java.util.Map;
 import java.util.Set;
-
-import static org.ff4j.dynamodb.DynamoDBConstants.FEATURE_TABLE_NAME;
 
 /**
  * Implementation of {@link org.ff4j.core.FeatureStore} using Amazon DynamoDB.<br />
@@ -74,7 +72,7 @@ import static org.ff4j.dynamodb.DynamoDBConstants.FEATURE_TABLE_NAME;
  * ],
  * "GlobalSecondaryIndexes": [
  * {
- * "IndexName": "ff4jfeaturesgroup",
+ * "IndexName": "ff4j-feature-groups",
  * "KeySchema": [
  * {
  * "AttributeName": "groupName",
@@ -99,8 +97,9 @@ import static org.ff4j.dynamodb.DynamoDBConstants.FEATURE_TABLE_NAME;
  * </code>
  * </p>
  * <p>If you want to get more control on the connection to Amazon DynamoDB, use the appropriate constructor:<ul>
- * <li>{@link #FeatureStoreDynamoDB(AmazonDynamoDB)}</li>
+ * <li>{@link #FeatureStoreDynamoDB(DynamoDbClient)}</li>
  * </ul></p>
+ *
  * @author <a href="mailto:jeromevdl@gmail.com">Jerome VAN DER LINDEN</a>
  */
 public class FeatureStoreDynamoDB extends AbstractFeatureStore {
@@ -117,46 +116,20 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
     /************************************************************************************************************/
 
     /**
-     * Default constructor using default DynamoDB client and default table name.
-     * If you need more control on AWS connection (credentials, proxy, ...), use {@link #FeatureStoreDynamoDB(AmazonDynamoDB)}
+     * Default constructor using default DynamoDB client.
+     * If you need more control on AWS connection (credentials, proxy, ...), use {@link #FeatureStoreDynamoDB(DynamoDbClient)}
      */
     public FeatureStoreDynamoDB() {
-        this(AmazonDynamoDBClientBuilder.defaultClient(), FEATURE_TABLE_NAME);
+        this(DynamoDbClient.builder().httpClientBuilder(UrlConnectionHttpClient.builder()).build());
     }
 
     /**
-     * Constructor using default DynamoDB client and custom table name.
-     * If you need more control on AWS connection (credentials, proxy, ...), use {@link #FeatureStoreDynamoDB(AmazonDynamoDB, String)}
+     * Constructor using custom DynamoDB client.
      *
-     * @param tableName name of the table to use in DynamoDB
-     * @deprecated use ff4j-dynamodb.properties to specify the table name
+     * @param client Amazon DynamoDB client
      */
-    @Deprecated
-    public FeatureStoreDynamoDB(String tableName) {
-        this(AmazonDynamoDBClientBuilder.defaultClient(), tableName);
-        LOGGER.warn("Constructor deprecated, you should use ff4j-dynamodb.properties instead");
-    }
-
-    /**
-     * Constructor using custom DynamoDB client and default table name.
-     *
-     * @param amazonDynamoDB Amazon DynamoDB client
-     */
-    public FeatureStoreDynamoDB(AmazonDynamoDB amazonDynamoDB) {
-        this(amazonDynamoDB, FEATURE_TABLE_NAME);
-    }
-
-    /**
-     * Constructor using custom DynamoDB client and table name.
-     *
-     * @param amazonDynamoDB Amazon DynamoDB client
-     * @param tableName      name of the table to use in DynamoDB
-     * @deprecated use ff4j-dynamodb.properties to specify the table name
-     */
-    @Deprecated
-    public FeatureStoreDynamoDB(AmazonDynamoDB amazonDynamoDB, String tableName) {
-        initStore(amazonDynamoDB, tableName);
-        LOGGER.warn("Constructor deprecated, you should use ff4j-dynamodb.properties instead");
+    public FeatureStoreDynamoDB(DynamoDbClient client) {
+        initStore(client);
     }
 
     /************************************************************************************************************/
@@ -188,6 +161,7 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
         Util.assertNotNull(feature);
         assertFeatureNotExist(feature.getUid());
 
+        feature.getPermissions().removeIf(s -> s.length() == 0);
         getClient().put(feature);
         LOGGER.info("Feature " + feature.getUid() + " created");
     }
@@ -246,7 +220,6 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
     public void update(Feature feature) {
         Util.assertNotNull(feature);
 
-//        getClient().update(feature);
         delete(feature.getUid());
         create(feature);
     }
@@ -363,7 +336,7 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
     public void grantRoleOnFeature(String flipId, String roleName) {
         Util.assertHasLength(roleName);
         getClient().addFeaturePermission(flipId, roleName);
-        LOGGER.info("Role " + roleName + " granted on feature "+ flipId);
+        LOGGER.info("Role " + roleName + " granted on feature " + flipId);
     }
 
     /**
@@ -373,7 +346,7 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
     public void removeRoleFromFeature(String flipId, String roleName) {
         Util.assertHasLength(roleName);
         getClient().removeFeaturePermission(flipId, roleName);
-        LOGGER.info("Role " + roleName + " revoked on feature "+ flipId);
+        LOGGER.info("Role " + roleName + " revoked on feature " + flipId);
     }
 
     /************************************************************************************************************/
@@ -384,11 +357,9 @@ public class FeatureStoreDynamoDB extends AbstractFeatureStore {
      * Initialize internal dynamoDB client and create DynamoDB table if necessary
      *
      * @param amazonDynamoDB dynamoDB client
-     * @param tableName      name of the table in DynamoDB
      */
-    @SuppressWarnings("deprecation")
-    private void initStore(AmazonDynamoDB amazonDynamoDB, String tableName) {
-        dynamoDBClient = new FeatureDynamoDBClient(amazonDynamoDB, tableName);
+    private void initStore(DynamoDbClient amazonDynamoDB) {
+        dynamoDBClient = new FeatureDynamoDBClient(amazonDynamoDB);
         createSchema();
     }
 

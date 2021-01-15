@@ -1,16 +1,19 @@
 package org.ff4j.dynamodb;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.document.*;
-import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
-import com.amazonaws.services.dynamodbv2.model.BillingMode;
-import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import org.ff4j.utils.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
+import software.amazon.awssdk.enhanced.dynamodb.Key;
+import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
+import software.amazon.awssdk.services.dynamodb.model.BillingMode;
+import software.amazon.awssdk.services.dynamodb.model.ResourceNotFoundException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.ParameterizedType;
 import java.util.Map;
 import java.util.Properties;
 
@@ -40,52 +43,54 @@ import static org.ff4j.dynamodb.DynamoDBConstants.DEFAULT_WCU;
 /**
  * @author <a href="mailto:jeromevdl@gmail.com">Jerome VAN DER LINDEN</a>
  */
-public abstract class DynamoDBClient<T> {
+public abstract class DynamoDBClient<FF4J, STORE> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DynamoDBClient.class);
 
+    protected final DynamoDbEnhancedClient dynamoDB;
+    protected final DynamoDbClient client;
+    private final Class<STORE> persistentClass;
 
-    private final AmazonDynamoDB amazonDynamoDB;
-    protected final DynamoDB dynamoDB;
+    protected DynamoDbTable<STORE> table;
     protected String tableName;
     protected String key;
-    protected Table table;
     protected BillingMode billingMode = BillingMode.PROVISIONED;
     protected Long billingRCU = DEFAULT_RCU;
     protected Long billingWCU = DEFAULT_WCU;
 
-    /**
-     * @deprecated table name will soon be removed from the constructor, use the ff4j-dynamodb.properties file instead
-     */
-    @Deprecated
-    public DynamoDBClient(AmazonDynamoDB amazonDynamoDB, String tableName) {
-        this.amazonDynamoDB = amazonDynamoDB;
-        this.dynamoDB = new DynamoDB(amazonDynamoDB);
-        this.tableName = tableName;
+    public DynamoDBClient(DynamoDbClient client) {
+        this.client = client;
+        dynamoDB = DynamoDbEnhancedClient.builder().dynamoDbClient(client).build();
+
         loadPropertiesIfExist();
-        this.table = dynamoDB.getTable(this.tableName);
+
+        this.persistentClass = (Class<STORE>) ((ParameterizedType) getClass()
+                .getGenericSuperclass()).getActualTypeArguments()[1];
+        table = dynamoDB.table(tableName, TableSchema.fromClass(persistentClass));
     }
 
     protected abstract void createTable();
     protected abstract RuntimeException notFoundException(String id);
-    protected abstract T get(String id);
-    protected abstract void put(T t);
-    protected abstract Map<String, T> getAll();
+    protected abstract FF4J get(String id);
+    protected abstract void put(FF4J t);
+    protected abstract Map<String, FF4J> getAll();
     protected abstract void loadProperties(Properties prop);
 
-    public void deleteItem(String id) {
-        table.deleteItem(new KeyAttribute(key, id));
-    }
-
-    public Item getItem(String id) {
+    public STORE getItem(String id) {
         Util.assertHasLength(id);
 
-        Item item = table.getItem(new GetItemSpec().withPrimaryKey(new PrimaryKey(key, id)));
+        Key key = Key.builder().partitionValue(id).build();
+        STORE item = table.getItem(r -> r.key(key));
         if (item == null) {
             throw notFoundException(id);
         }
         return item;
     }
+
+    public void deleteItem(String id) {
+        table.deleteItem(Key.builder().partitionValue(id).build());
+    }
+
 
     private void loadPropertiesIfExist() {
         InputStream in = this.getClass().getClassLoader().getResourceAsStream(DynamoDBConstants.CONFIG_FILE);
@@ -98,28 +103,23 @@ public abstract class DynamoDBClient<T> {
             }
             loadProperties(prop);
         } else {
-            LOGGER.warn("You should consider using ff4j-dynamodb.properties to setup the DynamoDB store");
+            throw new RuntimeException("ff4j-dynamodb.properties was not found in the classpath to setup the DynamoDB store");
         }
     }
 
     public boolean tableExists() {
         try {
-            amazonDynamoDB.describeTable(tableName);
-            table = dynamoDB.getTable(tableName);
+            client.describeTable(builder -> builder.tableName(tableName).build());
+            table = dynamoDB.table(tableName, TableSchema.fromClass(persistentClass));
         } catch (ResourceNotFoundException e) {
             return false;
         }
         return true;
     }
 
-
     public void deleteTable() {
-        table.delete();
-        try {
-            table.waitForDelete();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        client.deleteTable(builder -> builder.tableName(tableName).build());
+        client.waiter().waitUntilTableNotExists(builder -> builder.tableName(tableName));
     }
 
 }

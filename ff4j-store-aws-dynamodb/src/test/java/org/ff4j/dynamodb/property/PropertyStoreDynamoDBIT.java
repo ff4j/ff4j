@@ -20,12 +20,11 @@ package org.ff4j.dynamodb.property;
  * #L%
  */
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 /**
  * Run against a real AWS Environment
@@ -36,20 +35,18 @@ import org.junit.Ignore;
 @Ignore
 public class PropertyStoreDynamoDBIT extends PropertyStoreTestSupport {
 
-    private static AmazonDynamoDB dynamoDB;
     private static PropertyStoreDynamoDB store;
 
     @BeforeClass
     public static void init() {
-        dynamoDB = AmazonDynamoDBClientBuilder.standard()
-                .build();
+        DynamoDbClient dynamoDB = DynamoDbClient.create();
         store = new PropertyStoreDynamoDB(dynamoDB);
         store.importPropertiesFromXmlFile("test-ff4j-features.xml");
     }
 
     @AfterClass
     public static void clean() {
-        dynamoDB.shutdown();
+       store.clear();
     }
 
     @Override

@@ -1,11 +1,10 @@
 package org.ff4j.dynamodb.feature;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.*;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 import static org.ff4j.test.TestsFf4jConstants.AWESOME;
 import static org.ff4j.test.TestsFf4jConstants.ROLE_TEST;
@@ -39,20 +38,17 @@ import static org.ff4j.test.TestsFf4jConstants.ROLE_TEST;
 @Ignore
 public class FeatureStoreDynamoDBIT extends FeatureStoreTestSupport {
 
-    private static AmazonDynamoDB dynamoDB;
     private static FeatureStoreDynamoDB store;
 
     @BeforeClass
     public static void init() {
-        dynamoDB = AmazonDynamoDBClientBuilder.standard()
-                .build();
+        DynamoDbClient dynamoDB = DynamoDbClient.create();
         store = new FeatureStoreDynamoDB(dynamoDB);
     }
 
     @AfterClass
     public static void clean() {
-        store.clear();
-        dynamoDB.shutdown();
+       store.clear();
     }
 
     @Override

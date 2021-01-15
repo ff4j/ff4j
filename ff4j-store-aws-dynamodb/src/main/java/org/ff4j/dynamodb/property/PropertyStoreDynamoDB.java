@@ -1,7 +1,5 @@
 package org.ff4j.dynamodb.property;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.Property;
@@ -9,11 +7,11 @@ import org.ff4j.property.store.AbstractPropertyStore;
 import org.ff4j.utils.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 import java.util.Map;
 import java.util.Set;
-
-import static org.ff4j.dynamodb.DynamoDBConstants.PROPERTY_TABLE_NAME;
 
 /*
  * #%L
@@ -77,7 +75,7 @@ import static org.ff4j.dynamodb.DynamoDBConstants.PROPERTY_TABLE_NAME;
  *     </code>
  * </p>
  * <p>If you want to get more control on the connection to Amazon DynamoDB, use the appropriate constructor:<ul>
- *     <li>{@link #PropertyStoreDynamoDB(AmazonDynamoDB)}</li>
+ *     <li>{@link #PropertyStoreDynamoDB(DynamoDbClient)}</li>
  * </ul></p>
  * @author <a href="mailto:jeromevdl@gmail.com">Jerome VAN DER LINDEN</a>
  */
@@ -95,46 +93,20 @@ public class PropertyStoreDynamoDB extends AbstractPropertyStore {
     /************************************************************************************************************/
 
     /**
-     * Default constructor using default DynamoDB client and default table name.
-     * If you need more control on AWS connection (credentials, proxy, ...), use {@link #PropertyStoreDynamoDB(AmazonDynamoDB)}
+     * Default constructor using default DynamoDB client.
+     * If you need more control on AWS connection (credentials, proxy, ...), use {@link #PropertyStoreDynamoDB(DynamoDbClient)}
      */
     public PropertyStoreDynamoDB() {
-        this(AmazonDynamoDBClientBuilder.defaultClient(), PROPERTY_TABLE_NAME);
+        this(DynamoDbClient.builder().httpClientBuilder(UrlConnectionHttpClient.builder()).build());
     }
 
     /**
-     * Constructor using default DynamoDB client and custom table name.
-     * If you need more control on AWS connection (credentials, proxy, ...), use {@link #PropertyStoreDynamoDB(AmazonDynamoDB, String)}
+     * Constructor using custom DynamoDB client.
      *
-     * @param tableName name of the table to use in DynamoDB
-     * @deprecated use ff4j-dynamodb.properties to specify the table name
+     * @param client Amazon DynamoDB client
      */
-    @Deprecated
-    public PropertyStoreDynamoDB(String tableName) {
-        this(AmazonDynamoDBClientBuilder.defaultClient(), tableName);
-        LOGGER.warn("Constructor deprecated, you should use ff4j-dynamodb.properties instead");
-    }
-
-    /**
-     * Constructor using custom DynamoDB client and default table name.
-     *
-     * @param amazonDynamoDB Amazon DynamoDB client
-     */
-    public PropertyStoreDynamoDB(AmazonDynamoDB amazonDynamoDB) {
-        this(amazonDynamoDB, PROPERTY_TABLE_NAME);
-    }
-
-    /**
-     * Constructor using custom DynamoDB client and table name.
-     *
-     * @param amazonDynamoDB Amazon DynamoDB client
-     * @param tableName      name of the table to use in DynamoDB
-     * @deprecated use ff4j-dynamodb.properties to specify the table name
-     */
-    @Deprecated
-    public PropertyStoreDynamoDB(AmazonDynamoDB amazonDynamoDB, String tableName) {
-        initStore(amazonDynamoDB, tableName);
-        LOGGER.warn("Constructor deprecated, you should use ff4j-dynamodb.properties instead");
+    public PropertyStoreDynamoDB(DynamoDbClient client) {
+        initStore(client);
     }
 
     /************************************************************************************************************/
@@ -244,12 +216,10 @@ public class PropertyStoreDynamoDB extends AbstractPropertyStore {
     /**
      * Initialize internal dynamoDB client and create DynamoDB table if necessary
      *
-     * @param amazonDynamoDB dynamoDB client
-     * @param tableName      name of the table in DynamoDB
+     * @param client dynamoDB client
      */
-    @SuppressWarnings("deprecation")
-    private void initStore(AmazonDynamoDB amazonDynamoDB, String tableName) {
-        dynamoDBClient = new PropertyDynamoDBClient(amazonDynamoDB, tableName);
+    private void initStore(DynamoDbClient client) {
+        dynamoDBClient = new PropertyDynamoDBClient(client);
         createSchema();
     }
 
