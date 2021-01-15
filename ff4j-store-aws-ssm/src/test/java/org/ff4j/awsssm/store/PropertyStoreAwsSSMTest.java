@@ -30,7 +30,7 @@ import org.junit.*;
 import java.util.Map;
 
 
-@Ignore
+//@Ignore
 public class PropertyStoreAwsSSMTest extends PropertyStoreTestSupport {
 
     @Override
