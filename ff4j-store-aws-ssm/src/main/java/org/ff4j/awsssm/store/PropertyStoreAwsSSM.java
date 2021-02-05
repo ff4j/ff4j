@@ -20,9 +20,6 @@ package org.ff4j.awsssm.store;
  * #L%
  */
 
-import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
-import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder;
-import com.amazonaws.services.simplesystemsmanagement.model.*;
 import org.ff4j.conf.XmlParser;
 import org.ff4j.exception.PropertyAlreadyExistException;
 import org.ff4j.exception.PropertyNotFoundException;
@@ -31,6 +28,9 @@ import org.ff4j.property.PropertyString;
 import org.ff4j.property.store.AbstractPropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.utils.Util;
+import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
+import software.amazon.awssdk.services.ssm.SsmClient;
+import software.amazon.awssdk.services.ssm.model.*;
 
 import java.io.InputStream;
 import java.util.*;
@@ -43,16 +43,16 @@ import java.util.*;
  */
 public class PropertyStoreAwsSSM extends AbstractPropertyStore {
 
-    private AWSSimpleSystemsManagement client;
+    private SsmClient client;
     private String path;
 
     /**
      * Default constructor with default AWS configuration. <br />
-     * If you need more control on AWS connection (credentials, proxy, ...), use {@link #PropertyStoreAwsSSM(AWSSimpleSystemsManagement, String)}
+     * If you need more control on AWS connection (credentials, proxy, ...), use {@link #PropertyStoreAwsSSM(SsmClient, String)}
      * @param path Path of the properties (eg. "/Path/to/properties"). Must start with "/" and must not finish with "/"
      */
     public PropertyStoreAwsSSM(String path) {
-        this(AWSSimpleSystemsManagementClientBuilder.defaultClient(), path);
+        this(SsmClient.builder().httpClientBuilder(UrlConnectionHttpClient.builder()).build(), path);
     }
 
     /**
@@ -60,7 +60,7 @@ public class PropertyStoreAwsSSM extends AbstractPropertyStore {
      * @param client AWS SSM client
      * @param path Path of the properties (eg. "/Path/to/properties"). Must start with "/" and must not finish with "/"
      */
-    public PropertyStoreAwsSSM(AWSSimpleSystemsManagement client, String path) {
+    public PropertyStoreAwsSSM(SsmClient client, String path) {
         Util.assertNotNull(client);
         Util.assertNotNull(path);
         if (!path.startsWith("/") || path.endsWith("/")) {
@@ -92,11 +92,9 @@ public class PropertyStoreAwsSSM extends AbstractPropertyStore {
     public Property<?> readProperty(String name) {
         Util.assertHasLength(name);
         try {
-            GetParameterResult result = client.getParameter(new GetParameterRequest().withName(path + "/" + name));
-            return new PropertyString(name, result.getParameter().getValue());
+            GetParameterResponse response = client.getParameter(builder -> builder.name(path + "/" + name));
+            return new PropertyString(name, response.parameter().value());
         } catch (ParameterNotFoundException e) {
-            throw new PropertyNotFoundException(name);
-        } catch (ParameterVersionNotFoundException e) {
             throw new PropertyNotFoundException(name);
         }
     }
@@ -112,7 +110,7 @@ public class PropertyStoreAwsSSM extends AbstractPropertyStore {
     public void deleteProperty(String name) {
         Util.assertHasLength(name);
         try {
-            client.deleteParameter(new DeleteParameterRequest().withName(path + "/" + name));
+            client.deleteParameter(builder -> builder.name(path + "/" + name));
         } catch (ParameterNotFoundException e) {
             throw new PropertyNotFoundException(name);
         }
@@ -123,9 +121,9 @@ public class PropertyStoreAwsSSM extends AbstractPropertyStore {
     public Map<String, Property<?>> readAllProperties() {
         List<Parameter> parameters = getParameters();
 
-        Map<String, Property<?>> properties = new HashMap<String, Property<?>>();
+        Map<String, Property<?>> properties = new HashMap<>();
         for (Parameter parameter : parameters) {
-            properties.put(parameter.getName().replace(path + "/", ""), new PropertyString(parameter.getValue()));
+            properties.put(parameter.name().replace(path + "/", ""), new PropertyString(parameter.value()));
         }
         return properties;
     }
@@ -135,9 +133,9 @@ public class PropertyStoreAwsSSM extends AbstractPropertyStore {
     public Set<String> listPropertyNames() {
         List<Parameter> parameters = getParameters();
 
-        Set<String> propertyNames = new HashSet<String>();
+        Set<String> propertyNames = new HashSet<>();
         for (Parameter parameter : parameters) {
-            propertyNames.add(parameter.getName().replace(path + "/", ""));
+            propertyNames.add(parameter.name().replace(path + "/", ""));
         }
         return propertyNames;
     }
@@ -147,7 +145,7 @@ public class PropertyStoreAwsSSM extends AbstractPropertyStore {
     public void clear() {
         Set<String> names = listPropertyFullNames();
         if (!Util.isEmpty(names)) {
-            client.deleteParameters(new DeleteParametersRequest().withNames(names));
+            client.deleteParameters(builder -> builder.names(names));
         }
     }
 
@@ -184,12 +182,12 @@ public class PropertyStoreAwsSSM extends AbstractPropertyStore {
             throw new PropertyNotFoundException(property.getName());
         }
         try {
-            client.putParameter(new PutParameterRequest()
-                    .withName(path + "/" + property.getName())
-                    .withType(ParameterType.String)
-                    .withValue(property.asString())
-                    .withOverwrite(overwrite)
-                    .withDescription(property.getDescription()));
+            client.putParameter(builder -> builder
+                    .name(path + "/" + property.getName())
+                    .type(ParameterType.STRING)
+                    .value(property.asString())
+                    .overwrite(overwrite)
+                    .description(property.getDescription()));
         } catch (ParameterAlreadyExistsException pae) {
             throw new PropertyAlreadyExistException(property.getName());
         }
@@ -200,14 +198,14 @@ public class PropertyStoreAwsSSM extends AbstractPropertyStore {
 
         Set<String> propertyNames = new HashSet<String>();
         for (Parameter parameter : parameters) {
-            propertyNames.add(parameter.getName());
+            propertyNames.add(parameter.name());
         }
         return propertyNames;
     }
 
     private List<Parameter> getParameters() {
-        GetParametersByPathResult result = client.getParametersByPath(new GetParametersByPathRequest().withPath(path).withRecursive(false));
-        return result.getParameters();
+        GetParametersByPathResponse response = client.getParametersByPath(builder -> builder.path(path).recursive(false));
+        return response.parameters();
     }
 
 }

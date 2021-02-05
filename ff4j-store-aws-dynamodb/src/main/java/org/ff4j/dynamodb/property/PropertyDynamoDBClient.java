@@ -1,24 +1,16 @@
 package org.ff4j.dynamodb.property;
 
-import static org.ff4j.dynamodb.DynamoDBConstants.CONFIG_PROPERTY_BILLING;
-import static org.ff4j.dynamodb.DynamoDBConstants.CONFIG_PROPERTY_RCU;
-import static org.ff4j.dynamodb.DynamoDBConstants.CONFIG_PROPERTY_TABLE_NAME;
-import static org.ff4j.dynamodb.DynamoDBConstants.CONFIG_PROPERTY_WCU;
-import static org.ff4j.dynamodb.DynamoDBConstants.DEFAULT_RCU;
-import static org.ff4j.dynamodb.DynamoDBConstants.DEFAULT_WCU;
-import static org.ff4j.dynamodb.DynamoDBConstants.PROPERTY_NAME;
-import static org.ff4j.dynamodb.DynamoDBConstants.PROPERTY_TABLE_NAME;
-import static org.ff4j.dynamodb.DynamoDBConstants.PROPERTY_VALUE;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
 import org.ff4j.dynamodb.DynamoDBClient;
 import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.Property;
+import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
+import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
+import software.amazon.awssdk.services.dynamodb.model.*;
+
+import java.util.*;
+
+import static org.ff4j.dynamodb.DynamoDBConstants.*;
 
 /*
  * #%L
@@ -40,35 +32,16 @@ import org.ff4j.property.Property;
  * #L%
  */
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.document.AttributeUpdate;
-import com.amazonaws.services.dynamodbv2.document.Item;
-import com.amazonaws.services.dynamodbv2.document.ItemCollection;
-import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
-import com.amazonaws.services.dynamodbv2.document.ScanOutcome;
-import com.amazonaws.services.dynamodbv2.document.spec.ScanSpec;
-import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
-import com.amazonaws.services.dynamodbv2.model.BillingMode;
-import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
-import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
-import com.amazonaws.services.dynamodbv2.model.KeyType;
-import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
-import com.amazonaws.services.dynamodbv2.model.ScalarAttributeType;
-import com.amazonaws.services.dynamodbv2.model.Select;
 
 /**
  * @author <a href="mailto:jeromevdl@gmail.com">Jerome VAN DER LINDEN</a>
  */
-class PropertyDynamoDBClient extends DynamoDBClient<Property<?>> {
+class PropertyDynamoDBClient extends DynamoDBClient<Property<?>, DynamoDbProperty> {
 
     private final PropertyDynamoDBMapper PROPERTY_MAPPER = new PropertyDynamoDBMapper();
 
-    /**
-     * @deprecated table name will soon be removed from the constructor, use the ff4j-dynamodb.properties file instead
-     */
-    @Deprecated
-    PropertyDynamoDBClient(AmazonDynamoDB amazonDynamoDB, String tableName) {
-        super(amazonDynamoDB, tableName);
+    PropertyDynamoDBClient(DynamoDbClient client) {
+        super(client);
         key = PROPERTY_NAME;
     }
 
@@ -84,35 +57,36 @@ class PropertyDynamoDBClient extends DynamoDBClient<Property<?>> {
 
     @Override
     protected Property<?> get(String name) {
-        Item item = getItem(name);
+        DynamoDbProperty item = getItem(name);
         return PROPERTY_MAPPER.fromStore(item);
     }
 
     @Override
     protected Map<String, Property<?>> getAll() {
-        ItemCollection<ScanOutcome> items = table.scan(new ScanSpec().withSelect(Select.ALL_ATTRIBUTES));
-        Map<String, Property<?>> map = new HashMap<String, Property<?>>();
+        PageIterable<DynamoDbProperty> pages = table.scan();
 
-        for (Item item : items) {
-            map.put(item.getString(PROPERTY_NAME), PROPERTY_MAPPER.fromStore(item));
-        }
+        Map<String, Property<?>> map = new HashMap<>();
+        pages.items().forEach(dynamoDbProperty -> map.put(dynamoDbProperty.getName(), PROPERTY_MAPPER.fromStore(dynamoDbProperty)));
 
         return map;
     }
 
-
     void updateProperty(String propName, String newValue) {
-        table.updateItem(new PrimaryKey(PROPERTY_NAME, propName), new AttributeUpdate(PROPERTY_VALUE).put(newValue));
+        DynamoDbProperty item = getItem(propName);
+        if (item.getValue().equals(newValue)) {
+            return;
+        }
+        item.setValue(newValue);
+        table.updateItem(item);
     }
 
     Set<String> getAllNames() {
-        ItemCollection<ScanOutcome> items = table.scan(new ScanSpec().withAttributesToGet(key));
+        PageIterable<DynamoDbProperty> pages = table.scan(builder -> builder.attributesToProject(key));
 
-        Set<String> names = new HashSet<String>();
-        for (Item item : items) {
-            names.add(item.getString(key));
-        }
-        return names;
+        Set<String> propNames = new HashSet<>();
+        pages.items().forEach(dynamoDbFeature -> propNames.add(dynamoDbFeature.getName()));
+
+        return propNames;
     }
 
     @Override
@@ -131,24 +105,24 @@ class PropertyDynamoDBClient extends DynamoDBClient<Property<?>> {
 
     @Override
     protected void createTable() {
-        CreateTableRequest request = new CreateTableRequest()
-                .withAttributeDefinitions(
-                        new AttributeDefinition(PROPERTY_NAME, ScalarAttributeType.S)
+        CreateTableRequest.Builder requestBuilder = CreateTableRequest.builder()
+                .attributeDefinitions(
+                        AttributeDefinition.builder().attributeName(PROPERTY_NAME).attributeType(ScalarAttributeType.S).build()
                 )
-                .withKeySchema(new KeySchemaElement(PROPERTY_NAME, KeyType.HASH))
-                .withTableName(tableName);
+                .keySchema(KeySchemaElement.builder().attributeName(PROPERTY_NAME).keyType(KeyType.HASH).build())
+                .tableName(tableName);
 
-        request.setBillingMode(billingMode.toString());
+        requestBuilder.billingMode(billingMode);
         if (BillingMode.PROVISIONED.equals(billingMode)) {
-            request.setProvisionedThroughput(new ProvisionedThroughput(billingRCU, billingWCU));
+            requestBuilder.provisionedThroughput(ProvisionedThroughput.builder().readCapacityUnits(billingRCU).writeCapacityUnits(billingWCU).build());
         }
 
         try {
-            table = dynamoDB.createTable(request);
-            table.waitForActive();
+            client.createTable(requestBuilder.build());
+            client.waiter().waitUntilTableExists(builder -> builder.tableName(tableName));
+            table = dynamoDB.table(tableName, TableSchema.fromClass(DynamoDbProperty.class));
         } catch (Exception e) {
             throw new IllegalStateException("Cannot initialize Property Table in DynamoDB", e);
         }
     }
-
 }

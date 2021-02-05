@@ -1,5 +1,5 @@
 {
-    "TableName": "ff4jfeatures",
+    "TableName": "ff4j-features",
     "AttributeDefinitions": [
         {
             "AttributeName": "featureUid",
@@ -18,7 +18,7 @@
     ],
     "GlobalSecondaryIndexes": [
         {
-            "IndexName": "ff4jfeaturesgroup",
+            "IndexName": "ff4j-feature-groups",
             "KeySchema": [
                 {
                     "AttributeName": "groupName",
