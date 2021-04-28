@@ -28,7 +28,7 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FlippingExecutionContext;
 
 /**
- * This strategy will flip feature as soon as the release date is reached.
+ * This strategy will flip feature for a random % of calls.
  * 
  * @author Cedrick Lunven (@clunven)
  */
