@@ -101,7 +101,7 @@
         <version.jersey1x>1.19</version.jersey1x>
         <version.jersey2x>2.22.1</version.jersey2x>
         <version.httpclient>4.5.13</version.httpclient>
-        <version.snakeyaml>1.24</version.snakeyaml>
+        <version.snakeyaml>1.26</version.snakeyaml>
 
         <version.swagger>1.5.4</version.swagger>
 
