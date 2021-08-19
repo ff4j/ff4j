@@ -185,7 +185,7 @@ public class JdbcQueryBuilder {
         sb.append(getSchemaPattern());
         sb.append(getTableNameRoles());
         sb.append("( FEAT_UID VARCHAR(100) REFERENCES " 
-                + getTableNameFeatures() + "(FEAT_UID), "
+                + + getSchemaPattern() + getTableNameFeatures() + "(FEAT_UID), "
                 + "ROLE_NAME  VARCHAR(100), "
                 + "PRIMARY KEY(FEAT_UID, ROLE_NAME))");
         return sb.toString();
@@ -206,7 +206,7 @@ public class JdbcQueryBuilder {
                  + " CURRENTVALUE  VARCHAR(255),"
                  + " FIXEDVALUES   VARCHAR(1000),"
                  + " DESCRIPTION   VARCHAR(1000),"
-                 + " FEAT_UID      VARCHAR(100) REFERENCES " + getTableNameFeatures() + "(FEAT_UID),"
+                 + " FEAT_UID      VARCHAR(100) REFERENCES " + getSchemaPattern() + getTableNameFeatures() + "(FEAT_UID),"
                  + " PRIMARY KEY(PROPERTY_ID, FEAT_UID))");
         return sb.toString();
     }
