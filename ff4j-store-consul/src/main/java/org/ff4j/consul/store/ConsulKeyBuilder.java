@@ -1,7 +1,6 @@
 package org.ff4j.consul.store;
 
 import org.ff4j.audit.Event;
-import org.ff4j.consul.ConsulConstants;
 
 import java.time.format.DateTimeFormatter;
 
@@ -17,9 +16,8 @@ public class ConsulKeyBuilder {
   /**
    * Generates a {@link ConsulKeyBuilder} with the default key format.
    */
-  @SuppressWarnings("deprecated")
   public ConsulKeyBuilder() {
-    this(ConsulConstants.FF4J_KEY_FF4J);
+    this("FF4J");
   }
 
   /**
