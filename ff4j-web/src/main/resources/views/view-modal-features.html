@@ -157,6 +157,11 @@
                     $('#modalEdit #strategy').val('org.ff4j.strategy.ServerFilterStrategy');
                     $('#modalEdit #stratlist').show();
                     $('#modalEdit #initParams').val('grantedServers=s1,s2,s3')">ServerFilter</a></li>
+              <li><a href="#" onclick="javascript:
+                          $('#modalEdit #strategy').val('org.ff4j.strategy.RegionFlippingStrategy');
+                          $('#modalEdit #stratlist').show();
+                          $('#modalEdit #initParams').val('europeCountries=AMER,ASIA')">Region</a></li>
+                    <li class="divider"></li>
               <li class="divider"></li>
                 <b><span>Strategies used</span></b>
                 <li th:each="stragy : ${listOfStrategyUsed}" >
