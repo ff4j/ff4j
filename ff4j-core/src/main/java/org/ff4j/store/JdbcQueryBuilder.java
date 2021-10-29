@@ -185,7 +185,7 @@ public class JdbcQueryBuilder {
         sb.append(getSchemaPattern());
         sb.append(getTableNameRoles());
         sb.append("( FEAT_UID VARCHAR(100) REFERENCES " 
-                + + getSchemaPattern() + getTableNameFeatures() + "(FEAT_UID), "
+                + getSchemaPattern() + getTableNameFeatures() + "(FEAT_UID), "
                 + "ROLE_NAME  VARCHAR(100), "
                 + "PRIMARY KEY(FEAT_UID, ROLE_NAME))");
         return sb.toString();
