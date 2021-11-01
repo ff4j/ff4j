@@ -23,7 +23,7 @@ public class RegionFlippingStrategy extends AbstractFlipStrategy implements Seri
 	 * initial parameter.
 	 */
 
-	public static final String INIT_PARAMNAME_REGIONS = "europeCountries";
+	public static final String INIT_PARAMNAME_REGIONS = "environments";
 
 	/**
 	 * current user attribute
