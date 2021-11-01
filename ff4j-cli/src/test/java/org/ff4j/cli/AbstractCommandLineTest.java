@@ -26,7 +26,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 
 public abstract class AbstractCommandLineTest {
@@ -59,11 +58,5 @@ public abstract class AbstractCommandLineTest {
 		processor = new FF4jCliProcessor("ff4j-cli-config.xml");
 		System.setOut(new PrintStream(outContent));
 		System.setErr(new PrintStream(errContent));
-	}
-	
-	@AfterClass
-	public static void cleanUpStreams() {
-	    System.setOut(null);
-	    System.setErr(null);
 	}	
 }

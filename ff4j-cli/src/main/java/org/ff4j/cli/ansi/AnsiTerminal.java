@@ -101,23 +101,25 @@ public class AnsiTerminal implements AnsiConstants {
     }
     
     public static void print(String text, OSSupported os) {
-    	if (os == null) {
-             System.out.print(text);
-             System.out.flush();
-         } else {
-             switch (os) {
-                 case WINDOWS:
-                     AnsiConsole.out.print(text);
-                     AnsiConsole.out.flush();
-                 break;
-                 case UNIX:
-                 case OS_X:
-                 case SOLARIS:
-                     System.out.print(text);
-                     System.out.flush();
-                 break;
+        if (text != null && System.out != null) {
+            if (os == null) {
+                 System.out.print(text);
+                 System.out.flush();
+             } else {
+                 switch (os) {
+                     case WINDOWS:
+                         AnsiConsole.out.print(text);
+                         AnsiConsole.out.flush();
+                     break;
+                     case UNIX:
+                     case OS_X:
+                     case SOLARIS:
+                         System.out.print(text);
+                         System.out.flush();
+                     break;
+                 }
              }
-         }
+        }
     }
     
     /**

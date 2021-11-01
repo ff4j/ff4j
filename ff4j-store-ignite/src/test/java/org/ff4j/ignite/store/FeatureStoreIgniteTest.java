@@ -24,7 +24,6 @@ package org.ff4j.ignite.store;
 import org.apache.ignite.Ignite;
 import org.apache.ignite.Ignition;
 import org.ff4j.core.FeatureStore;
-import org.ff4j.ignite.store.FeatureStoreIgnite;
 import org.ff4j.store.FeatureStoreJCache;
 import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.AfterClass;

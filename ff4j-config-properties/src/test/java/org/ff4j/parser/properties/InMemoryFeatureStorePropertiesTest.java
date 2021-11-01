@@ -12,7 +12,6 @@ package org.ff4j.parser.properties;
  */
 
 import org.ff4j.core.FeatureStore;
-import org.ff4j.parser.properties.PropertiesParser;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.test.store.FeatureStoreTestSupport;
 

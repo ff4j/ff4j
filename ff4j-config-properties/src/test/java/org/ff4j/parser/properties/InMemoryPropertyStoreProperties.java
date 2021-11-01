@@ -1,6 +1,5 @@
 package org.ff4j.parser.properties;
 
-import org.ff4j.parser.properties.PropertiesParser;
 /*
  * #%L
  * ff4j-test

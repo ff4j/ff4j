@@ -28,8 +28,10 @@ import org.ff4j.security.AuthorizationsManager;
 
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class TestConnected extends AbstractCommandLineTest {
 
 	@Test

@@ -28,7 +28,6 @@ import org.ff4j.conf.FF4jConfiguration;
 import org.ff4j.conf.XmlConfig;
 import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
-import org.ff4j.parser.properties.PropertiesParser;
 import org.junit.Test;
 
 public class PropertiesParserTest {

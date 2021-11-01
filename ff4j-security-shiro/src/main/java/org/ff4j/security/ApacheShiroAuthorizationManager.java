@@ -28,7 +28,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.CollectionUtils;
-import org.ff4j.security.AbstractAuthorizationManager;
 import org.ff4j.utils.Util;
 
 /**

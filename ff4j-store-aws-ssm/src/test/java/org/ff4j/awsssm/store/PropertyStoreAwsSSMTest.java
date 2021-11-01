@@ -1,5 +1,7 @@
 package org.ff4j.awsssm.store;
 
+import java.util.Map;
+
 /*
  * #%L
  * ff4j-store-aws-ssm
@@ -25,12 +27,14 @@ import org.ff4j.property.PropertyLogLevel;
 import org.ff4j.property.PropertyString;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
-import java.util.Map;
 
-
-//@Ignore
+@Ignore
 public class PropertyStoreAwsSSMTest extends PropertyStoreTestSupport {
 
     @Override

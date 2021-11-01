@@ -1,9 +1,17 @@
 package org.ff4j.mongo.store;
 
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
+import static org.ff4j.audit.EventConstants.ATTRIBUTE_HOST;
+import static org.ff4j.audit.EventConstants.ATTRIBUTE_NAME;
+import static org.ff4j.audit.EventConstants.ATTRIBUTE_SOURCE;
+import static org.ff4j.audit.EventConstants.ATTRIBUTE_USER;
+import static org.ff4j.mongo.MongoDbConstants.EVENT_UUID;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.ff4j.audit.Event;
@@ -18,15 +26,10 @@ import org.ff4j.mongo.mapper.EventDocumentBuilder;
 import org.ff4j.mongo.mapper.MongoEventMapper;
 import org.ff4j.utils.Util;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
-
-import static org.ff4j.audit.EventConstants.*;
-import static org.ff4j.mongo.MongoDbConstants.EVENT_UUID;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 
 /*
  * #%L
