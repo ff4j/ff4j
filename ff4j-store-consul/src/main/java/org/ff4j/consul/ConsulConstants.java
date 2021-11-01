@@ -20,11 +20,15 @@ package org.ff4j.consul;
  * #L%
  */
 
+import org.ff4j.consul.store.ConsulKeyBuilder;
+
 /**
  * Set of keys to register ff4j into Consul registry.
  *
  * @author Cedrick LUNVEN (@clunven)
+ * @deprecated See {@link ConsulKeyBuilder}
  */
+@Deprecated
 public class ConsulConstants {
 
     /** Global Key. */
