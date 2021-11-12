@@ -136,16 +136,17 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
     /** {@inheritDoc} */
     @Override
     public void clearProperties() {
-        Jedis jedis = null;
-        try {
-            jedis = getJedis();
-            jedis.del(keyBuilder.getKeyProperty("*"));
+        try ( Jedis jedis = getJedis() ) {
+            // --> This Pattern is not always supported
+            // jedis.del(KEY_PROPERTY + "*");
+            // <--
+            Set<String> matchingKeys = getKeys(jedis, keyBuilder.getKeyProperty("*"));
+
+            if (!matchingKeys.isEmpty()) {
+                jedis.del(matchingKeys.toArray(new String[matchingKeys.size()]));
+            }
         } catch(RuntimeException re) {
             onException(re);
-        } finally {
-            if (jedis != null) {
-                jedis.close();
-            }
         }
     }
 

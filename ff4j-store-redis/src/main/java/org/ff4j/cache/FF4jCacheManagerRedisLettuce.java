@@ -109,10 +109,13 @@ public class FF4jCacheManagerRedisLettuce implements FF4JCacheManager {
     @Override
     public void clearProperties() {
         try {
-            if (null != redisCommands) {
-                redisCommands.del(keyBuilder.getKeyProperty("*"));
-            } else {
-                redisCommandsCluster.del(keyBuilder.getKeyProperty("*"));
+            Set<String> matchingKeys = getKeys(keyBuilder.getKeyProperty("*"));
+            if (!matchingKeys.isEmpty()) {
+                if (null != redisCommands) {
+                    redisCommands.del(matchingKeys.toArray(new String[matchingKeys.size()]));
+                } else {
+                    redisCommandsCluster.del(matchingKeys.toArray(new String[matchingKeys.size()]));
+                }
             }
         } catch(RuntimeException re) {
                 onException(re);
@@ -252,15 +255,25 @@ public class FF4jCacheManagerRedisLettuce implements FF4JCacheManager {
     }
     
     private Set<String> getKeys(String pattern) {
+        Set<String> matchingKeys = new HashSet<>();
         try {
             ScanArgs scan = new ScanArgs().match(pattern);
-            KeyScanCursor<String> ksc = null;
             if (null != redisCommands) {
-                ksc = redisCommands.scan(scan);
+                KeyScanCursor<String> ksc = redisCommands.scan(scan);
+                matchingKeys.addAll(ksc.getKeys());
+                while ( !ksc.isFinished() ) {
+                    ksc = redisCommands.scan(ksc);
+                    matchingKeys.addAll(ksc.getKeys());
+                }
             } else {
-                ksc = redisCommandsCluster.scan(scan);
+                KeyScanCursor<String> ksc = redisCommandsCluster.scan(scan);
+                matchingKeys.addAll(ksc.getKeys());
+                while ( !ksc.isFinished() ) {
+                    ksc = redisCommandsCluster.scan(ksc);
+                    matchingKeys.addAll(ksc.getKeys());
+                }
             }
-            return new HashSet<String>(ksc.getKeys());
+            return matchingKeys;
         } catch (RuntimeException re) {
             onException(re);
         }
