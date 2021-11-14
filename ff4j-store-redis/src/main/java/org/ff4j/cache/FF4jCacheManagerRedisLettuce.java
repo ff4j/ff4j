@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.lettuce.core.api.sync.RedisKeyCommands;
 import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
 import org.ff4j.redis.RedisKeysBuilder;
@@ -253,25 +254,15 @@ public class FF4jCacheManagerRedisLettuce implements FF4JCacheManager {
     public Object getPropertyNativeCache() {
         return (null != redisCommands) ? redisCommands : redisCommandsCluster;
     }
-    
+
     private Set<String> getKeys(String pattern) {
-        Set<String> matchingKeys = new HashSet<>();
         try {
-            ScanArgs scan = new ScanArgs().match(pattern);
-            if (null != redisCommands) {
-                KeyScanCursor<String> ksc = redisCommands.scan(scan);
+            RedisKeyCommands<String,String> redisKeyCommands = (null != redisCommands ) ? redisCommands : redisCommandsCluster;
+            KeyScanCursor<String> ksc = redisKeyCommands.scan(new ScanArgs().match(pattern));
+            Set<String> matchingKeys = new HashSet<>(ksc.getKeys());
+            while (!ksc.isFinished()) {
+                ksc = redisKeyCommands.scan(ksc);
                 matchingKeys.addAll(ksc.getKeys());
-                while ( !ksc.isFinished() ) {
-                    ksc = redisCommands.scan(ksc);
-                    matchingKeys.addAll(ksc.getKeys());
-                }
-            } else {
-                KeyScanCursor<String> ksc = redisCommandsCluster.scan(scan);
-                matchingKeys.addAll(ksc.getKeys());
-                while ( !ksc.isFinished() ) {
-                    ksc = redisCommandsCluster.scan(ksc);
-                    matchingKeys.addAll(ksc.getKeys());
-                }
             }
             return matchingKeys;
         } catch (RuntimeException re) {
@@ -279,7 +270,7 @@ public class FF4jCacheManagerRedisLettuce implements FF4JCacheManager {
         }
         return null;
     }
-    
+
     /**
      * Getter accessor for attribute 'timeToLive'.
      *
