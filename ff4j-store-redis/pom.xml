@@ -23,9 +23,9 @@
 	<properties>
 		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
 		<redis-forked>true</redis-forked>
-		<jedis.version>3.2.0</jedis.version>
-		<lettuce.version>5.3.1.RELEASE</lettuce.version>
-		<testcontainers.version>1.16.2</testcontainers.version>
+		<jedis.version>3.7.0</jedis.version>
+		<lettuce.version>6.1.5.RELEASE</lettuce.version>
+		<testcontainers.version>1.14.3</testcontainers.version>
 	</properties>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
