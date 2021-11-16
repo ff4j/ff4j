@@ -1,25 +1,29 @@
 package org.ff4j.cache.it;
 
-import io.lettuce.core.RedisClient;
+/*
+ * #%L
+ * ff4j-store-redis
+ * %%
+ * Copyright (C) 2013 - 2021 FF4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import org.ff4j.cache.FF4JCacheManager;
 import org.ff4j.cache.FF4jCacheManagerRedis;
-import org.ff4j.cache.FF4jCacheManagerRedisLettuce;
-import org.ff4j.cache.FF4jCacheProxy;
-import org.ff4j.core.Feature;
-import org.ff4j.core.FeatureStore;
-import org.ff4j.exception.FeatureAlreadyExistException;
-import org.ff4j.property.store.InMemoryPropertyStore;
-import org.ff4j.property.store.PropertyStore;
 import org.ff4j.redis.RedisConnection;
-import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.Ignore;
-import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.ff4j.test.TestsFf4jConstants.*;
 
 
 /**
@@ -32,9 +36,10 @@ import static org.ff4j.test.TestsFf4jConstants.*;
 @Ignore
 public class PropertyStoreWithRedisCacheTestIT extends RedisTestSupport {
 
+    /** {@inheritDoc} */
     @Override
     protected FF4JCacheManager makeCache() {
-        return new FF4jCacheManagerRedis(new RedisConnection(redis.getHost(), redis.getFirstMappedPort()));
+        return new FF4jCacheManagerRedis(new RedisConnection());
     }
 
 }

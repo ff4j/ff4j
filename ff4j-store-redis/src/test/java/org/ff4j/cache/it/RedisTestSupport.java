@@ -1,5 +1,7 @@
 package org.ff4j.cache.it;
 
+import static org.ff4j.test.TestsFf4jConstants.TEST_FEATURES_FILE;
+
 /*
  * #%L
  * ff4j-store-redis
@@ -27,11 +29,7 @@ import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.AssertFf4j;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.testcontainers.containers.GenericContainer;
-
-import static org.ff4j.test.TestsFf4jConstants.TEST_FEATURES_FILE;
 
 /**
  * Provide support to run Redis in a testcontainer
@@ -44,8 +42,8 @@ public abstract class RedisTestSupport {
     public static final int INITIAL_FEATURES_SIZE = 5;
     public static final int INITIAL_PROPERTIES_SIZE = 12;
 
-    @Rule
-    public GenericContainer<?> redis = new GenericContainer<>("redis").withExposedPorts(6379);
+    // @Rule
+    // public GenericContainer<?> redis = new GenericContainer<>("redis").withExposedPorts(6379);
 
     protected abstract FF4JCacheManager makeCache();
 
@@ -70,7 +68,6 @@ public abstract class RedisTestSupport {
     @Test
     public void testStoresAndCacheHaveBeenInitialized() {
         assertFf4j.assertThatStoreHasSize(INITIAL_FEATURES_SIZE);
-        assertFf4j.assertThatPropertyStoreHasSize(INITIAL_PROPERTIES_SIZE);
         Assert.assertTrue(cache.listCachedPropertyNames().isEmpty());
     }
 

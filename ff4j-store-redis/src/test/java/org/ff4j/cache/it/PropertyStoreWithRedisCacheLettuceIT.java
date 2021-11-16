@@ -1,5 +1,9 @@
 package org.ff4j.cache.it;
 
+import org.ff4j.cache.FF4JCacheManager;
+import org.ff4j.cache.FF4jCacheManagerRedisLettuce;
+import org.junit.Ignore;
+
 /*
  * #%L
  * ff4j-store-redis
@@ -21,9 +25,6 @@ package org.ff4j.cache.it;
  */
 
 import io.lettuce.core.RedisClient;
-import org.ff4j.cache.FF4JCacheManager;
-import org.ff4j.cache.FF4jCacheManagerRedisLettuce;
-import org.junit.Ignore;
 
 /**
  * Test FF4jCacheManagerRedisLettuce caching of properties.
@@ -37,8 +38,8 @@ public class PropertyStoreWithRedisCacheLettuceIT extends RedisTestSupport {
 
     @Override
     protected FF4JCacheManager makeCache() {
-        String redisUri = String.format("redis://%s:%d", redis.getHost(), redis.getFirstMappedPort());
-        return new FF4jCacheManagerRedisLettuce( RedisClient.create(redisUri) );
+        //String redisUri = String.format("redis://%s:%d", redis.getHost(), redis.getFirstMappedPort());
+        return new FF4jCacheManagerRedisLettuce( RedisClient.create("redis://localhost"));
     }
 
 }

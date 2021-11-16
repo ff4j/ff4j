@@ -26,6 +26,7 @@ import org.ff4j.store.PropertyStoreRedisLettuce;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Ignore;
 
 import io.lettuce.core.RedisClient;
 
@@ -33,6 +34,7 @@ import io.lettuce.core.RedisClient;
  * Implementatino of tests with REDIS
  * @author Cedrick Lunven (@clunven)</a>
  */
+@Ignore
 public class PropertyStoreRedisTestLettuceIT extends PropertyStoreTestSupport {
 
     public static RedisClient rc = RedisClient.create("redis://localhost");
