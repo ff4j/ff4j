@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.lettuce.core.api.sync.RedisKeyCommands;
 import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
 import org.ff4j.redis.RedisKeysBuilder;
@@ -109,10 +110,13 @@ public class FF4jCacheManagerRedisLettuce implements FF4JCacheManager {
     @Override
     public void clearProperties() {
         try {
-            if (null != redisCommands) {
-                redisCommands.del(keyBuilder.getKeyProperty("*"));
-            } else {
-                redisCommandsCluster.del(keyBuilder.getKeyProperty("*"));
+            Set<String> matchingKeys = getKeys(keyBuilder.getKeyProperty("*"));
+            if (!matchingKeys.isEmpty()) {
+                if (null != redisCommands) {
+                    redisCommands.del(matchingKeys.toArray(new String[matchingKeys.size()]));
+                } else {
+                    redisCommandsCluster.del(matchingKeys.toArray(new String[matchingKeys.size()]));
+                }
             }
         } catch(RuntimeException re) {
                 onException(re);
@@ -250,23 +254,23 @@ public class FF4jCacheManagerRedisLettuce implements FF4JCacheManager {
     public Object getPropertyNativeCache() {
         return (null != redisCommands) ? redisCommands : redisCommandsCluster;
     }
-    
+
     private Set<String> getKeys(String pattern) {
         try {
-            ScanArgs scan = new ScanArgs().match(pattern);
-            KeyScanCursor<String> ksc = null;
-            if (null != redisCommands) {
-                ksc = redisCommands.scan(scan);
-            } else {
-                ksc = redisCommandsCluster.scan(scan);
+            RedisKeyCommands<String,String> redisKeyCommands = (null != redisCommands ) ? redisCommands : redisCommandsCluster;
+            KeyScanCursor<String> ksc = redisKeyCommands.scan(new ScanArgs().match(pattern));
+            Set<String> matchingKeys = new HashSet<>(ksc.getKeys());
+            while (!ksc.isFinished()) {
+                ksc = redisKeyCommands.scan(ksc);
+                matchingKeys.addAll(ksc.getKeys());
             }
-            return new HashSet<String>(ksc.getKeys());
+            return matchingKeys;
         } catch (RuntimeException re) {
             onException(re);
         }
         return null;
     }
-    
+
     /**
      * Getter accessor for attribute 'timeToLive'.
      *
