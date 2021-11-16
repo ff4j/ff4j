@@ -8,7 +8,7 @@
     <parent>
         <artifactId>ff4j-parent</artifactId>
         <groupId>org.ff4j</groupId>
-        <version>1.8.12</version>
+        <version>1.8.13-SNAPSHOT</version>
     </parent>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
