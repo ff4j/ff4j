@@ -27,6 +27,8 @@ import java.util.HashSet;
 import org.ff4j.property.BasePropertyBean;
 import org.ff4j.property.Property;
 
+import static org.ff4j.utils.JsonUtils.escapeJson;
+
 /**
  * JSON Expression.
  * @author Cedrick Lunven (@clunven)</a>
@@ -96,12 +98,12 @@ public class PropertyJsonBean extends BasePropertyBean implements Serializable {
      */
     public String asJson() {
         StringBuilder jsonExpression = new StringBuilder("{");
-        jsonExpression.append("\"name\":\"" + name + "\"");
+        jsonExpression.append("\"name\":\"" + escapeJson(name) + "\"");
         jsonExpression.append(",\"description\":");
-        jsonExpression.append((null == description) ? "null" : "\"" + description + "\"");
-        jsonExpression.append(",\"type\":\"" + type + "\"");
+        jsonExpression.append((null == description) ? "null" : "\"" + escapeJson(description) + "\"");
+        jsonExpression.append(",\"type\":\"" + escapeJson(type) + "\"");
         jsonExpression.append(",\"value\":");
-        jsonExpression.append((null == value) ? "null" : "\"" + value + "\"");
+        jsonExpression.append((null == value) ? "null" : "\"" + escapeJson(value) + "\"");
         if (fixedValues ==null) {
             jsonExpression.append(",\"fixedValues\":null");
         } else {
@@ -109,7 +111,7 @@ public class PropertyJsonBean extends BasePropertyBean implements Serializable {
             boolean first = true;
             for (String auth : fixedValues) {
                 jsonExpression.append(first ? "" : ",");
-                jsonExpression.append("\"" + auth + "\"");
+                jsonExpression.append("\"" + escapeJson(auth) + "\"");
                 first = false;
             }
             jsonExpression.append("]");
