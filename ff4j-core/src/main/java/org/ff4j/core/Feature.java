@@ -26,7 +26,6 @@ import org.ff4j.utils.JsonUtils;
 import org.ff4j.utils.MappingUtil;
 import org.ff4j.utils.Util;
 
-import static org.ff4j.utils.JsonUtils.escapeJson;
 
 /**
  * Represents a feature flag identified by an unique identifier.
@@ -209,12 +208,12 @@ public class Feature implements Serializable {
      */
     public String toJson() {
         StringBuilder json = new StringBuilder("{");
-        json.append("\"uid\":\"" + escapeJson(uid) + "\"");
+        json.append("\"uid\":\"" + JsonUtils.escapeJson(uid) + "\"");
         json.append(",\"enable\":" + enable);
         json.append(",\"description\":");
-        json.append((null == description) ? "null" : "\"" + escapeJson(description) + "\"");
+        json.append((null == description) ? "null" : "\"" + JsonUtils.escapeJson(description) + "\"");
         json.append(",\"group\":");
-        json.append((null == group) ? "null" : "\"" + escapeJson(group) + "\"");
+        json.append((null == group) ? "null" : "\"" + JsonUtils.escapeJson(group) + "\"");
         // Permissions
         json.append(",\"permissions\":" + JsonUtils.permissionsAsJson(permissions));
         // Flipping strategy
