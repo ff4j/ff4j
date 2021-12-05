@@ -341,7 +341,16 @@ public class PropertyTest {
         jb.setValue("AMER");
         Assert.assertNotNull(jb.toString());
     }
-        
-    
+
+    @Test
+    public void testPropertyJsonBeanFromEmbeddedQuote() {
+        PropertyJsonBean jb = new PropertyJsonBean();
+        jb.setName("embedded\"quote");
+        jb.setType(PropertyString.class.getName());
+        jb.setValue("\"value\"");
+        jb.setDescription("A \"quoted\" description");
+        Assert.assertNotNull(jb.toString());
+    }
+
 }
 
