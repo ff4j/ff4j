@@ -26,7 +26,6 @@ import org.ff4j.utils.JsonUtils;
 import org.ff4j.utils.MappingUtil;
 import org.ff4j.utils.Util;
 
-
 /**
  * Represents a feature flag identified by an unique identifier.
  *
