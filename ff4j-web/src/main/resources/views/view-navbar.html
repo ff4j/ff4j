@@ -150,25 +150,25 @@
       <span th:text="#{navbar.main.features}" >Features</span>
      </a>
     </li>
-    <li>
+    <li th:if="${enableEdit}">
      <a class="open-AddFlipDialog" data-toggle="modal" href="#modalCreate">
       <i class="icon-plus"></i>
       <span th:text="#{navbar.feature.new}" >New</span>
      </a>
     </li>
-    <li>
+    <li th:if="${enableEdit}">
      <a class="open-copyFeatureDialog" data-toggle="modal" href="#modalCopyFeature">
       <i class="icon-copy"></i>
       <span th:text="#{navbar.feature.copy}" >Copy</span>
      </a>
     </li>
-    <li>
+    <li th:if="${enableEdit}">
      <a class="open-renameFeatureDialog" data-toggle="modal" href="#modalRenameFeature">
       <i class="icon-random"></i>
       <span th:text="#{navbar.feature.rename}" >Rename</span>
      </a>
-    </li>   
-    <li>
+    </li>
+    <li th:if="${enableEdit}">
      <a class="open-ToggleDialog" data-toggle="modal" href="#modalToggle">
       <i class="icon-adjust"></i>
       <span th:text="#{navbar.feature.togglegroup}" >Toggle Group</span>
@@ -182,7 +182,8 @@
     </li>
    </ul>
       <div style="float:right;margin-top:20px;color:#687684">
-       <span th:text="#{navbar.main.uptime}" >Uptime</span> : <span th:text="${uptime}">n/a</span>
+       <span th:text="#{navbar.main.uptime}" >Uptime</span>
+       <i class="icon-time"></i>: <span th:text="${uptime}">n/a</span>
       </div>
     </div>
   </div>
@@ -204,19 +205,19 @@
       <span th:text="#{navbar.main.properties}" >Properties</span>
      </a>
     </li>
-    <li >
+    <li th:if="${enableEdit}">
      <a class="open-createPropertyDialog" data-toggle="modal" href="#modalCreateProperty">
       <i class="icon-plus"></i>
       <span th:text="#{navbar.property.new}" >New</span>
      </a>
     </li>
-    <li>
+    <li th:if="${enableEdit}">
      <a class="open-copyFeatureDialog" data-toggle="modal" href="#modalCopyProperty">
       <i class="icon-copy"></i>
       <span th:text="#{navbar.property.copy}" >Copy</span>
      </a>
     </li>
-    <li>
+    <li th:if="${enableEdit}">
      <a class="open-renameFeatureDialog" data-toggle="modal" href="#modalRenameProperty">
       <i class="icon-random"></i>
       <span th:text="#{navbar.property.rename}" >Rename</span>
@@ -230,7 +231,8 @@
     </li>
    </ul>
       <div style="float:right;margin-top:20px;color:#687684">
-       <span th:text="#{navbar.main.uptime}" >Uptime</span> : <span th:text="${uptime}">n/a</span>
+       <span th:text="#{navbar.main.uptime}" >Uptime</span>
+       <i class="icon-time"></i>: <span th:text="${uptime}">n/a</span>
       </div>
     </div>
   </div>
@@ -273,7 +275,8 @@
     </li>
    </ul>
       <div style="float:right;margin-top:20px;color:#687684">
-       <span th:text="#{navbar.main.uptime}" >Uptime</span> : <span th:text="${uptime}">n/a</span>
+       <span th:text="#{navbar.main.uptime}" >Uptime</span>
+       <i class="icon-time"></i>: <span th:text="${uptime}">n/a</span>
       </div>
     </div>
   </div>
@@ -316,7 +319,8 @@
     </li>
    </ul>
       <div style="float:right;margin-top:20px;color:#687684">
-       <span th:text="#{navbar.main.uptime}" >Uptime</span> : <span th:text="${uptime}">n/a</span>
+       <span th:text="#{navbar.main.uptime}" >Uptime</span>
+       <i class="icon-time"></i>: <span th:text="${uptime}">n/a</span>
       </div>
     </div>
   </div>
@@ -359,7 +363,8 @@
     </li>
    </ul>
       <div style="float:right;margin-top:20px;color:#687684">
-       <span th:text="#{navbar.main.uptime}" >Uptime</span> : <span th:text="${uptime}">n/a</span>
+       <span th:text="#{navbar.main.uptime}" >Uptime</span>
+       <i class="icon-time"></i>: <span th:text="${uptime}">n/a</span>
       </div>
     </div>
   </div>

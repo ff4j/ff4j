@@ -33,8 +33,10 @@
         <h2> <i class="icon-dashboard" style="width:40px;color:#00AB8B"></i></h2>
       </td>
       <td class="homebean-info"  style="width:50px">
-      <label class="switch switch-green" style="margin-top:5px">
-       <input id="f3" type="checkbox" class="switch-input" onclick="ff4j_toggleAudit()" th:checked="${auditEnable}" />
+      <label class="switch switch-green" style="margin-top:5px" th:disabled="${!enableEdit}">
+       <input id="f3" type="checkbox" class="switch-input"
+              th:onclick="${enableEdit}? 'ff4j_toggleAudit()'"
+              th:checked="${auditEnable}" th:disabled="${!enableEdit}"/>
         <span class="switch-label" data-on="On" data-off="Off"></span>
         <span class="switch-handle"></span>
       </label>
@@ -48,8 +50,10 @@
         <h2> <i class="icon-check" style="width:40px;color:#00AB8B"></i></h2>
       </td>
       <td class="homebean-info" style="width:50px">
-      <label class="switch switch-green" style="margin-top:5px">
-       <input id="f4" type="checkbox" class="switch-input" onclick="ff4j_toggleConfirmation()" th:checked="${confirmationEnable}" />
+      <label class="switch switch-green" style="margin-top:5px" th:disabled="${!enableEdit}">
+       <input id="f4" type="checkbox" class="switch-input"
+              th:onclick="${enableEdit}? 'ff4j_toggleConfirmation()'"
+              th:checked="${confirmationEnable}" th:disabled="${!enableEdit}"/>
         <span class="switch-label" data-on="On" data-off="Off"></span>
         <span class="switch-handle"></span>
       </label>

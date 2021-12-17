@@ -29,7 +29,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -59,8 +61,11 @@ public abstract class AbstractController {
     
     /** Slot for the date. */
     public static final SimpleDateFormat SDFSLOT = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-    
-	/** KEY. */
+
+    /** List of groups to consider admins */
+    public static final Set<String> ADMIN_GROUPS = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+
+    /** KEY. */
 	protected static final String KEY_TITLE =  "TITLE";
 
 	/** FF4J instance. */
@@ -156,27 +161,7 @@ public abstract class AbstractController {
     throws IOException {
         i18n(req, res);
         
-        WebContext ctx = new WebContext(req, res,  req.getSession().getServletContext(), res.getLocale());
-    	ctx.setVariable("uptime",  getUptime());
-    	if (null == ff4j.getVersion())
-    	ctx.setVariable("version", null == ff4j.getVersion() ? "1.8.x" : ff4j.getVersion());
-    	
-    	// Security
-    	ctx.setVariable("secure", false);
-        if (getFf4j().getAuthorizationsManager() != null) {
-    	    ctx.setVariable("secure", true);
-    	    ctx.setVariable("userName", getFf4j().getAuthorizationsManager().getCurrentUserName());
-    	    Set < String > permissions = getFf4j().getAuthorizationsManager().getCurrentUserPermissions();
-    	    ctx.setVariable("userPermissions", permissions);
-    	   
-    	    // Not the responsability of ff4j but in Spring Security
-    	    /* If no role FF4J_CONSOLE_READ => 403
-    	    if (!permissions.contains(WebConstants.ROLE_USER)) {
-    	        res.setStatus(WebConstants.STATUS_FORBIDDEN);
-    	        res.getWriter().println("You cannot access FF4J console, insuffisant permissions");
-    	        return;
-    	    }*/
-        }
+        WebContext ctx = makeWebContext(req, res);
     	
     	try {
     	    get(req, res, ctx);
@@ -201,9 +186,7 @@ public abstract class AbstractController {
      */
     public void post(HttpServletRequest req, HttpServletResponse res)
     throws IOException {
-        WebContext ctx = new WebContext(req, res,  req.getSession().getServletContext(), req.getLocale());
-        ctx.setVariable("uptime",  getUptime());
-        ctx.setVariable("version", ff4j.getVersion());
+        WebContext ctx = makeWebContext(req, res);
 
         // Adding attribute to response
         try {
@@ -217,7 +200,36 @@ public abstract class AbstractController {
         templateEngine.process(getSuccessView(), ctx, res.getWriter());
     }
 
-	/**
+    /**
+     * Make the WebContext for Thymeleaf
+     *
+     * @param req
+     *      current request
+     * @param res
+     *      current response
+     */
+    private WebContext makeWebContext(HttpServletRequest req, HttpServletResponse res) {
+        WebContext ctx = new WebContext(req, res,  req.getSession().getServletContext(), res.getLocale());
+        ctx.setVariable("uptime",  getUptime());
+        ctx.setVariable("version", Optional.ofNullable(ff4j.getVersion()).orElse("1.8.x"));
+
+        // Security
+        ctx.setVariable("secure", false);
+        ctx.setVariable("enableEdit", true);
+        if (ff4j.getAuthorizationsManager() != null) {
+            ctx.setVariable("secure", true);
+            ctx.setVariable("userName", ff4j.getAuthorizationsManager().getCurrentUserName());
+            Set < String > permissions = ff4j.getAuthorizationsManager().getCurrentUserPermissions();
+            ctx.setVariable("userPermissions", permissions);
+            ctx.setVariable("enableEdit",
+                    // Allow editing when no admin groups provided or user is a member of an admin group.
+                    // Stream on permissions to leverage case-insensitive comparison in ADMIN_GROUPS
+                    ADMIN_GROUPS.isEmpty() || permissions.stream().anyMatch(ADMIN_GROUPS::contains));
+        }
+        return ctx;
+    }
+
+    /**
 	 * Create view from template.
 	 *
 	 * @param req
