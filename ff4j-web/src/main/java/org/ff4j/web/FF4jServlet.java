@@ -7,6 +7,7 @@ import static org.ff4j.web.bean.WebConstants.SERVLETPARAM_FF4JPROVIDER;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -110,6 +111,11 @@ public class FF4jServlet extends HttpServlet {
 
         if (ff4j == null) {
         	initializeFF4J(servletConfig);
+        }
+
+        String adminGroups = servletConfig.getServletContext().getInitParameter("adminGroups");
+        if ( adminGroups != null ) {
+            AbstractController.ADMIN_GROUPS.addAll(Arrays.asList(adminGroups.split(",")));
         }
 
     	initializeTemplateEngine();

@@ -45,8 +45,8 @@
        <th style="width:22%;text-align:center"><span th:text="#{feature.table.strategy}">Strategy</span></th>
        <th style="width:18%;text-align:center"><span th:text="#{feature.table.properties}">Properties</span></th>
        <th style="width:8%;text-align:center"><span th:text="#{feature.table.toggle}">Toggle</span></th>
-       <th style="width:5%;text-align:center">E</th>
-       <th style="width:5%;text-align:center">D</th>
+       <th style="width:5%;text-align:center" th:if="${enableEdit}">E</th>
+       <th style="width:5%;text-align:center" th:if="${enableEdit}">D</th>
       </tr>
     </thead>
     <tbody>
@@ -121,26 +121,30 @@
 	        </p>
         </div>
      </td>
+     <!-- Toggle -->
 	 <td style="width:8%;text-align:center">
-	  <label class="switch switch-green">
+	  <label class="switch switch-green" th:disabled="${!enableEdit}">
 	   <input th:attr="id=${feat.uid}" id="x" 
-	   		  type="checkbox" class="switch-input" onclick="javascript:toggle(this)" th:checked="${feat.enable}"/>
+	   		  type="checkbox" class="switch-input" th:onclick="${enableEdit}? 'javascript:toggle(this)'"
+              th:checked="${feat.enable}" th:disabled="${!enableEdit}"/>
 		<span class="switch-label" data-on="On" data-off="Off"></span>
 		<span class="switch-handle"></span>
 	  </label>
 	 </td>
-	 <td style="width:5%;text-align:center">
+     <!-- Edit -->
+	 <td style="width:5%;text-align:center" th:if="${enableEdit}">
 	  <a data-toggle="modal" href="#modalEdit" 
 	     th:attr="data-id=${feat.uid}"
-		 style="width:6px:margin-left:-3px;color:white;background-color:#008bab" 
+		 style="width:6px;margin-left:-3px;color:white;background-color:#008bab"
 		 class="open-EditFlipDialog btn">
         <i class="icon-pencil"></i>
 	  </a>
 	 </td>
-	 <td style="width:5%;text-align:center">
+     <!-- Delete -->
+	 <td style="width:5%;text-align:center" th:if="${enableEdit}">
 	   <a data-toggle="modal" href="#modalDeleteFeature" 
          th:attr="data-id=${feat.uid}"
-         style="width:6px:margin-left:-3px;color:white;background-color:#ab0000" 
+         style="width:6px;margin-left:-3px;color:white;background-color:#ab0000"
          class="open-DeleteFlipDialog btn">
         <i class="icon-trash"></i>
        </a>

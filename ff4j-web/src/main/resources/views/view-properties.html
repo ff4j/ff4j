@@ -41,8 +41,8 @@
        <th style="width:15%;text-align:center;"><span th:text="#{property.table.value}">Value</span></th>
        <th style="width:30%;text-align:center;"><span th:text="#{property.table.type}">Nature</span></th>
        <th style="width:25%;text-align:center;"><span th:text="#{property.table.fixedValue}">ValeursPrédéfinies</span></th>
-       <th style="width:5%;text-align:center;">E</th>
-       <th style="width:5%;text-align:center;">D</th>  
+       <th style="width:5%;text-align:center;" th:if="${enableEdit}">E</th>
+       <th style="width:5%;text-align:center;" th:if="${enableEdit}">D</th>
       </tr>
     </thead>
     <tbody>
@@ -62,19 +62,19 @@
        <td style="text-align:center">
        <span style="color:#008bab" th:text="${curProp. fixedValues}">---</span>
       </td>
-       <td style="width:5%;text-align:center">
+       <td style="width:5%;text-align:center" th:if="${enableEdit}">
       <a data-toggle="modal" href="#modalEditProperty" 
          th:attr="data-id=${curProp.name}"
-         style="width:6px:margin-left:-3px;color:white;background-color:#008bab" 
+         style="width:6px;margin-left:-3px;color:white;background-color:#008bab"
          class="open-EditPropertyDialog btn">
        <i class="icon-pencil"></i>
       </a>
      </td>
      
-     <td style="width:5%;text-align:center">
+     <td style="width:5%;text-align:center" th:if="${enableEdit}">
          <a data-toggle="modal" href="#modalDeleteProperty" 
          th:attr="data-id=${curProp.name}"
-         style="width:6px:margin-left:-3px;color:white;background-color:#ab0000" 
+         style="width:6px;margin-left:-3px;color:white;background-color:#ab0000"
          class="open-DeletePropertyDialog btn">
          <i class="icon-trash"></i>
         </a>
