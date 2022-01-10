@@ -207,12 +207,12 @@ public class Feature implements Serializable {
      */
     public String toJson() {
         StringBuilder json = new StringBuilder("{");
-        json.append("\"uid\":\"" + uid + "\"");
+        json.append("\"uid\":\"" + JsonUtils.escapeJson(uid) + "\"");
         json.append(",\"enable\":" + enable);
         json.append(",\"description\":");
-        json.append((null == description) ? "null" : "\"" + description + "\"");
+        json.append((null == description) ? "null" : "\"" + JsonUtils.escapeJson(description) + "\"");
         json.append(",\"group\":");
-        json.append((null == group) ? "null" : "\"" + group + "\"");
+        json.append((null == group) ? "null" : "\"" + JsonUtils.escapeJson(group) + "\"");
         // Permissions
         json.append(",\"permissions\":" + JsonUtils.permissionsAsJson(permissions));
         // Flipping strategy

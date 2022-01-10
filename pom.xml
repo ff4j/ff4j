@@ -96,7 +96,7 @@
         <version.jstl>1.2</version.jstl>
         <version.taglib>1.1.2</version.taglib>
         <version.jsr311>1.1.1</version.jsr311>
-        <version.jacoco>0.7.5.201505241946</version.jacoco>
+        <version.jacoco>0.8.7</version.jacoco>
         <version.jackon2x>2.10.0</version.jackon2x>
         <version.jersey1x>1.19</version.jersey1x>
         <version.jersey2x>2.22.1</version.jersey2x>
@@ -115,7 +115,7 @@
         <!-- VERSIONS PLUGINS -->
         <version.maven.plugin.failsafe>2.18.1</version.maven.plugin.failsafe>
         <version.maven.plugin.redis>1.4.6</version.maven.plugin.redis>
-        <version.maven.plugin.surefire>2.7.2</version.maven.plugin.surefire>
+        <version.maven.plugin.surefire>2.22.2</version.maven.plugin.surefire>
         <version.maven.plugin.gpg>1.5</version.maven.plugin.gpg>
         <version.maven.plugin.graph>1.4</version.maven.plugin.graph>
         <version.maven.plugin.site>3.4</version.maven.plugin.site>
@@ -820,7 +820,9 @@
                     <configuration>
                         <skip>false</skip>
                         <testFailureIgnore>false</testFailureIgnore>
-                        <forkMode>always</forkMode>
+                        <!-- forkMode=always ≡ forkCount=1,reuseForks=false -->
+                        <forkCount>1</forkCount>
+                        <reuseForks>false</reuseForks>
                     </configuration>
                 </plugin>
 

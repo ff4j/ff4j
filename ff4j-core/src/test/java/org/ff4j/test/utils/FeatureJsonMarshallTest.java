@@ -140,7 +140,13 @@ public class FeatureJsonMarshallTest implements TestConstantsFF4j {
         };
         JsonUtils.flippingStrategyAsJson(ps);
     }
-    
+
+    @Test
+    public void testEmbeddedQuoteJson() throws Exception {
+        Feature f = new FF4j(new XmlParser(),"test-feature-json1.xml").getFeature("embedded\"quote");
+        assertMarshalling(f);
+    }
+
     /** TDD. */
     @Test
     @Ignore
