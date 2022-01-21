@@ -23,7 +23,7 @@
 	<properties>
 		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
 		<jsr107.version>1.0.0</jsr107.version>
-		<hazelcast.version>3.5.3</hazelcast.version>
+		<hazelcast.version>4.0.5</hazelcast.version>
 	</properties>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
