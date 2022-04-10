@@ -189,6 +189,7 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
 
     /** {@inheritDoc} */
     @Override
+    @SuppressWarnings("deprecation")
     public void putFeature(Feature fp) {
         Util.assertNotNull(fp);
         Jedis jedis = null;
@@ -207,6 +208,7 @@ public class FF4jCacheManagerRedis implements FF4JCacheManager {
 
     /** {@inheritDoc} */
     @Override
+    @SuppressWarnings("deprecation")
     public void putProperty(Property<?> property) {
         Util.assertNotNull(property);
         Jedis jedis = null;

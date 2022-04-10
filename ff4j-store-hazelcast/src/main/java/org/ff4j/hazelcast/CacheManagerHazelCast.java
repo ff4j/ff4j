@@ -24,16 +24,15 @@ package org.ff4j.hazelcast;
 import java.util.Properties;
 
 import javax.cache.CacheManager;
+import javax.cache.Caching;
 import javax.cache.spi.CachingProvider;
 
 import org.ff4j.cache.FF4jJCacheManager;
 
-import com.hazelcast.cache.impl.HazelcastServerCachingProvider;
+import com.hazelcast.cache.HazelcastMemberCachingProvider;
 import com.hazelcast.config.ClasspathXmlConfig;
 import com.hazelcast.config.Config;
 import com.hazelcast.config.XmlConfigBuilder;
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
 
 /**
  * Implementation of {@link CacheManager} for feautres and HazelCast
@@ -79,9 +78,12 @@ public class CacheManagerHazelCast extends FF4jJCacheManager {
     /** {@inheritDoc} */
     @Override
     public CachingProvider initCachingProvider(String className) {
-        if (getHazelCastConfig() == null) throw new IllegalStateException("Cannot initialize cache, no configuration found");
-        HazelcastInstance instance = Hazelcast.newHazelcastInstance(getHazelCastConfig());
-        setCachingProvider(HazelcastServerCachingProvider.createCachingProvider(instance));
+        // Deprecated in 5.1
+        //if (getHazelCastConfig() == null) throw new IllegalStateException("Cannot initialize cache, no configuration found");
+        //HazelcastInstance instance = Hazelcast.newHazelcastInstance(getHazelCastConfig());
+        //setCachingProvider(HazelcastServerCachingProvider.createCachingProvider(instance));
+        CachingProvider provider = Caching.getCachingProvider(HazelcastMemberCachingProvider.class.getName());
+        setCachingProvider(provider);
         return getCachingProvider();
     }
     
