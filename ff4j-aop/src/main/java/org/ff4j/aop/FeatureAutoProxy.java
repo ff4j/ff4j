@@ -55,6 +55,7 @@ public class FeatureAutoProxy extends AbstractAutoProxyCreator {
 
     /** {@inheritDoc} */
     @Override
+    @SuppressWarnings("deprecation")
     protected Object[] getAdvicesAndAdvisorsForBean(Class<?> beanClass, String beanName, TargetSource targetSource) {
         // Do not used any AOP here as still working with classes and not objects
         if (!beanClass.isInterface()) {

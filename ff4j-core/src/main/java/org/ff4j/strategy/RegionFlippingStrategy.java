@@ -28,7 +28,6 @@ import java.util.Set;
 
 import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FlippingExecutionContext;
-import org.ff4j.strategy.AbstractFlipStrategy;
 
 /**
  * This strategy will flip feature as soon as the release date is reached.
