@@ -24,7 +24,7 @@
 		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
 		<consul-client.version>0.14.0</consul-client.version>
 		<consul-embedded.version>0.3.1</consul-embedded.version>
-		<jackson.version>2.10.0</jackson.version>
+		<jackson.version>2.12.6.1</jackson.version>
 	</properties>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
