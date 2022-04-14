@@ -1,9 +1,5 @@
 package org.ff4j.springjdbc.store;
 
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-
 /*
  * #%L
  * ff4j-store-springjdbc
@@ -24,7 +20,9 @@ import java.util.List;
  * #L%
  */
 
-
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,6 +38,7 @@ import org.ff4j.store.JdbcQueryBuilder;
 import org.ff4j.utils.JdbcUtils;
 import org.ff4j.utils.Util;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.stereotype.Repository;
@@ -105,11 +104,13 @@ public class PropertyStoreSpringJdbc extends AbstractPropertyStore {
     /** {@inheritDoc} */
     public Property<?> readProperty(String name) {
         Util.assertNotNull(name);
-        if (!existProperty(name)) {
+        Util.assertHasLength(name);
+        try {
+            return getJdbcTemplate().
+                    queryForObject(getQueryBuilder().getProperty(), PMAPPER, name);
+        } catch (EmptyResultDataAccessException ex) {
             throw new PropertyNotFoundException(name);
         }
-        return getJdbcTemplate().
-        		queryForObject(getQueryBuilder().getProperty(), PMAPPER, name);
     }
 
     /** {@inheritDoc} */

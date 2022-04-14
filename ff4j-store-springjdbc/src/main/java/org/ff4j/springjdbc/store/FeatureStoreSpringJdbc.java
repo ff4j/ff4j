@@ -316,11 +316,11 @@ public class FeatureStoreSpringJdbc extends AbstractFeatureStore {
         if (groupName == null || groupName.isEmpty()) {
             throw new IllegalArgumentException(GROUPNAME_CANNOT_BE_NULL_NOR_EMPTY);
         }
-        if (!existGroup(groupName)) {
+        List<Feature> lFp = getJdbcTemplate().query(getQueryBuilder().getFeatureOfGroup(), FMAPPER, groupName);
+        if (lFp.isEmpty()) {
             throw new GroupNotFoundException(groupName);
         }
         LinkedHashMap<String, Feature> mapFP = new LinkedHashMap<String, Feature>();
-        List<Feature> lFp = getJdbcTemplate().query(getQueryBuilder().getFeatureOfGroup(), FMAPPER, groupName);
         for (Feature flipPoint : lFp) {
             mapFP.put(flipPoint.getUid(), flipPoint);
         }

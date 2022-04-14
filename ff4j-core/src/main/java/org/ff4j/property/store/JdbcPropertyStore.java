@@ -156,13 +156,12 @@ public class JdbcPropertyStore extends AbstractPropertyStore {
         ResultSet         rs = null;
         try {
             sqlConn = getDataSource().getConnection();
-            if (!existProperty(name)) {
-                throw new PropertyNotFoundException(name);
-            }
-            // Returns features
+            // Returns property
             ps = buildStatement(sqlConn, getQueryBuilder().getProperty(), name);
             rs = ps.executeQuery();
-            rs.next();
+            if (!rs.next()) {
+                throw new PropertyNotFoundException(name);
+            }
             return JDBC_MAPPER.map(rs);
         } catch (SQLException sqlEX) {
             throw new PropertyAccessException("Cannot check property existence, error related to database", sqlEX);
