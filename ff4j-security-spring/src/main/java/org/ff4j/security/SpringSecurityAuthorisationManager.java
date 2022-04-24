@@ -48,10 +48,10 @@ public class SpringSecurityAuthorisationManager extends AbstractAuthorizationMan
     /** {@inheritDoc} */
     public String getCurrentUserName() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (!(auth instanceof AnonymousAuthenticationToken)) {
-            return auth.getName();
+        if (null == auth || auth instanceof AnonymousAuthenticationToken) {
+            return "anonymous";
         }
-        return "anonymous";
+        return auth.getName();
     }   
 
 }
