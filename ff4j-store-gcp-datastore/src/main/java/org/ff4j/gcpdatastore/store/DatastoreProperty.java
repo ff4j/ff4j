@@ -1,22 +1,17 @@
 package org.ff4j.gcpdatastore.store;
 
-import lombok.extern.slf4j.Slf4j;
-import org.ff4j.core.FeatureStore;
-import org.ff4j.test.store.FeatureStoreTestSupport;
-import org.junit.ClassRule;
-
 /*
  * #%L
- * ff4j-store-arangodb
+ * ff4j-store-gcp-datastore
  * %%
- * Copyright (C) 2022 FF4J
+ * Copyright (C) 2013 - 2022 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,15 +20,23 @@ import org.junit.ClassRule;
  * #L%
  */
 
-@Slf4j
-public class GcpDatastoreFeatureStoreTest extends FeatureStoreTestSupport {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-    @ClassRule
-    public static GcpDatastoreTestContainer container = new GcpDatastoreTestContainer();
+import java.util.Set;
 
-    @Override
-    protected FeatureStore initStore() {
-        log.info("Container port:" + container.getExposedPorts());
-        return null;
-    }
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class DatastoreProperty {
+    private String id;
+    private boolean readOnly;
+    private String name;
+    private String description;
+    private String type;
+    private String value;
+    private Set<String> fixedValues;
 }
