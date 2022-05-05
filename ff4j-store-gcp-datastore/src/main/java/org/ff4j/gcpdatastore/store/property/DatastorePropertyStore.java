@@ -1,4 +1,4 @@
-package org.ff4j.gcpdatastore.store;
+package org.ff4j.gcpdatastore.store.property;
 
 /*
  * #%L
@@ -26,6 +26,9 @@ import com.google.cloud.datastore.DatastoreException;
 import com.google.cloud.datastore.Entity;
 import org.ff4j.exception.PropertyAccessException;
 import org.ff4j.exception.PropertyNotFoundException;
+import org.ff4j.gcpdatastore.store.DatastoreClient;
+import org.ff4j.gcpdatastore.store.EntityMapper;
+import org.ff4j.gcpdatastore.store.StoreMapper;
 import org.ff4j.property.Property;
 import org.ff4j.property.store.AbstractPropertyStore;
 import org.ff4j.utils.Util;
@@ -45,14 +48,32 @@ public class DatastorePropertyStore extends AbstractPropertyStore {
 
     private final DatastoreClient storeClient;
 
+    /**
+     * Constructor with datastore connection
+     *
+     * @param datastore the database connection
+     */
     public DatastorePropertyStore(Datastore datastore) {
         storeClient = new DatastoreClient(datastore, DEFAULT_PROPERTY_STORE_KIND);
     }
 
+    /**
+     * Constructor with datastore connection and Namespace
+     *
+     * @param datastore the database connection
+     * @param namespace the DB namespace in which the default Kind has to be created
+     */
     public DatastorePropertyStore(Datastore datastore, String namespace) {
         storeClient = new DatastoreClient(datastore, namespace, DEFAULT_PROPERTY_STORE_KIND);
     }
 
+    /**
+     * Constructor with datastore connection, Namespace and Kind
+     *
+     * @param datastore the database connection
+     * @param namespace the DB namespace in which the Kind has to be created
+     * @param kind      the Kind to be created
+     */
     public DatastorePropertyStore(Datastore datastore, String namespace, String kind) {
         storeClient = new DatastoreClient(datastore, namespace, kind);
     }

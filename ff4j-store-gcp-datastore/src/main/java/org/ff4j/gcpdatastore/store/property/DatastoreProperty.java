@@ -1,4 +1,4 @@
-package org.ff4j.gcpdatastore.store;
+package org.ff4j.gcpdatastore.store.property;
 
 /*
  * #%L

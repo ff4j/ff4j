@@ -2,6 +2,7 @@ package org.ff4j.gcpdatastore.store;
 
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreOptions;
+import org.ff4j.gcpdatastore.store.property.DatastorePropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
 import org.junit.ClassRule;

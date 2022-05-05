@@ -1,4 +1,4 @@
-package org.ff4j.gcpdatastore.store;
+package org.ff4j.gcpdatastore.store.feature;
 
 /*
  * #%L
@@ -25,6 +25,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.ff4j.core.FlippingStrategy;
+import org.ff4j.gcpdatastore.store.property.DatastoreProperty;
 
 import java.util.Map;
 import java.util.Set;

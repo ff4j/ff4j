@@ -29,6 +29,8 @@ import com.google.cloud.datastore.Entity;
 import com.google.cloud.datastore.Key;
 import com.google.cloud.datastore.KeyFactory;
 import org.ff4j.core.FlippingStrategy;
+import org.ff4j.gcpdatastore.store.feature.DatastoreFeature;
+import org.ff4j.gcpdatastore.store.property.DatastoreProperty;
 import org.ff4j.utils.JsonUtils;
 import org.ff4j.utils.json.FeatureJsonParser;
 
@@ -37,8 +39,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.ff4j.gcpdatastore.store.DatastoreFeature.*;
-import static org.ff4j.gcpdatastore.store.DatastoreProperty.*;
+import static org.ff4j.gcpdatastore.store.feature.DatastoreFeature.*;
+import static org.ff4j.gcpdatastore.store.property.DatastoreProperty.*;
 
 public class EntityMapper {
 

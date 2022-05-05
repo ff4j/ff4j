@@ -3,6 +3,7 @@ package org.ff4j.gcpdatastore.store;
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreOptions;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.gcpdatastore.store.feature.DatastoreFeatureStore;
 import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.ClassRule;
 

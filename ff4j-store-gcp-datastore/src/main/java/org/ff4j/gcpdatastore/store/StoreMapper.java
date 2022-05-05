@@ -22,6 +22,8 @@ package org.ff4j.gcpdatastore.store;
 
 
 import org.ff4j.core.Feature;
+import org.ff4j.gcpdatastore.store.feature.DatastoreFeature;
+import org.ff4j.gcpdatastore.store.property.DatastoreProperty;
 import org.ff4j.property.Property;
 import org.ff4j.property.util.PropertyFactory;
 

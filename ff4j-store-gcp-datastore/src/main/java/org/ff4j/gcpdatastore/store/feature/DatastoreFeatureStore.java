@@ -1,4 +1,4 @@
-package org.ff4j.gcpdatastore.store;
+package org.ff4j.gcpdatastore.store.feature;
 
 /*
  * #%L
@@ -21,10 +21,12 @@ package org.ff4j.gcpdatastore.store;
  */
 
 import com.google.cloud.datastore.*;
-import lombok.extern.slf4j.Slf4j;
 import org.ff4j.core.Feature;
 import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.gcpdatastore.store.DatastoreClient;
+import org.ff4j.gcpdatastore.store.EntityMapper;
+import org.ff4j.gcpdatastore.store.StoreMapper;
 import org.ff4j.store.AbstractFeatureStore;
 import org.ff4j.utils.Util;
 
@@ -36,20 +38,37 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
 
-@Slf4j
 public class DatastoreFeatureStore extends AbstractFeatureStore {
     private static final String DEFAULT_FEATURE_STORE_KIND = "Ff4jFeature";
 
     private final DatastoreClient storeClient;
 
+    /**
+     * Constructor with datastore connection
+     *
+     * @param datastore the database connection
+     */
     public DatastoreFeatureStore(Datastore datastore) {
         storeClient = new DatastoreClient(datastore, DEFAULT_FEATURE_STORE_KIND);
     }
 
+    /**
+     * Constructor with datastore connection and Namespace
+     *
+     * @param datastore the database connection
+     * @param namespace the DB namespace in which the default Kind has to be created
+     */
     public DatastoreFeatureStore(Datastore datastore, String namespace) {
         storeClient = new DatastoreClient(datastore, namespace, DEFAULT_FEATURE_STORE_KIND);
     }
 
+    /**
+     * Constructor with datastore connection, Namespace and Kind
+     *
+     * @param datastore the database connection
+     * @param namespace the DB namespace in which the Kind has to be created
+     * @param kind the Kind to be created
+     */
     public DatastoreFeatureStore(Datastore datastore, String namespace, String kind) {
         storeClient = new DatastoreClient(datastore, namespace, kind);
     }
