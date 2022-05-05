@@ -32,6 +32,14 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DatastoreProperty {
+    public static final String PROPERTY_ID = "id";
+    public static final String PROPERTY_READONLY = "readOnly";
+    public static final String PROPERTY_NAME = "name";
+    public static final String PROPERTY_DESCRIPTION = "description";
+    public static final String PROPERTY_TYPE = "type";
+    public static final String PROPERTY_VALUE = "value";
+    public static final String PROPERTY_FIXED_VALUES = "fixedValues";
+
     private String id;
     private boolean readOnly;
     private String name;

@@ -21,7 +21,6 @@ package org.ff4j.gcpdatastore.store;
  */
 
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -39,6 +38,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.ff4j.gcpdatastore.store.DatastoreFeature.*;
+import static org.ff4j.gcpdatastore.store.DatastoreProperty.*;
 
 public class EntityMapper {
 
@@ -89,6 +89,46 @@ public class EntityMapper {
                 .build();
     }
 
+    public static Entity toEntity(DatastoreProperty p, KeyFactory kf) {
+        String id = p.getId();
+        Key key = kf.newKey(id);
+        String name = Optional.ofNullable(p.getName()).orElse("");
+        String description = Optional.ofNullable(p.getDescription()).orElse("");
+        String type = Optional.ofNullable(p.getType()).orElse("");
+        String value = Optional.ofNullable(p.getValue()).orElse("");
+        String fixedValues = JsonUtils.collectionAsJson(Optional.ofNullable(p.getFixedValues()).orElse(Collections.emptySet()));
+
+        return Entity.newBuilder(key)
+                .set(PROPERTY_ID, id)
+                .set(PROPERTY_READONLY, p.isReadOnly())
+                .set(PROPERTY_NAME, name)
+                .set(PROPERTY_DESCRIPTION, description)
+                .set(PROPERTY_TYPE, type)
+                .set(PROPERTY_VALUE, value)
+                .set(PROPERTY_FIXED_VALUES, fixedValues)
+                .build();
+    }
+
+    public static DatastoreProperty fromPropertyEntity(Entity e) {
+        String id = e.getKey().getName();
+        boolean isReadOnly = e.getBoolean(PROPERTY_READONLY);
+        String name = e.getString(PROPERTY_NAME);
+        String description = e.getString(PROPERTY_DESCRIPTION);
+        String type = e.getString(PROPERTY_TYPE);
+        String value = e.getString(PROPERTY_VALUE);
+        Set<String> fixedValues = parseSet(e.getString(PROPERTY_FIXED_VALUES));
+
+        return DatastoreProperty.builder()
+                .id(id)
+                .readOnly(isReadOnly)
+                .name(name)
+                .description(description)
+                .type(type)
+                .value(value)
+                .fixedValues(fixedValues)
+                .build();
+    }
+
     private static String customPropertiesAsJson(Map<String, DatastoreProperty> cp) {
         try {
             return objectMapper.writeValueAsString(cp);
@@ -104,6 +144,15 @@ public class EntityMapper {
             return objectMapper.readValue(cp, typeRef);
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Can't unmarshal customProperties", e);
+        }
+    }
+
+    private static Set<String> parseSet(String json) {
+        if (json == null) return null;
+        try {
+            return objectMapper.readValue(json, Set.class);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("Can't unmarshal set", e);
         }
     }
 }
