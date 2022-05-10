@@ -49,7 +49,7 @@ public class DatastoreClient {
     public boolean keyExists(String keyName) {
         Key key = keyFactory.newKey(keyName);
         Entity entity = datastore.get(key);
-        return Objects.nonNull(entity) ? true : false;
+        return Objects.nonNull(entity);
     }
 
     public void insert(Entity entity) {

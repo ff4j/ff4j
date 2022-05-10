@@ -25,22 +25,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.cloud.datastore.Entity;
-import com.google.cloud.datastore.Key;
-import com.google.cloud.datastore.KeyFactory;
+import com.google.cloud.datastore.*;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.gcpdatastore.store.feature.DatastoreFeature;
 import org.ff4j.gcpdatastore.store.property.DatastoreProperty;
-import org.ff4j.utils.JsonUtils;
-import org.ff4j.utils.json.FeatureJsonParser;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.ff4j.gcpdatastore.store.feature.DatastoreFeature.*;
 import static org.ff4j.gcpdatastore.store.property.DatastoreProperty.*;
+import static org.ff4j.utils.JsonUtils.collectionAsJson;
+import static org.ff4j.utils.JsonUtils.flippingStrategyAsJson;
+import static org.ff4j.utils.json.FeatureJsonParser.parseFlipStrategyAsJson;
+import static org.ff4j.utils.json.FeatureJsonParser.parsePermissions;
 
 public class EntityMapper {
 
@@ -53,15 +50,16 @@ public class EntityMapper {
     public static Entity toEntity(DatastoreFeature f, KeyFactory kf) {
         String uid = f.getUid();
         Key key = kf.newKey(uid);
-        String description = Optional.ofNullable(f.getDescription()).orElse("");
-        String group = Optional.ofNullable(f.getGroup()).orElse("");
-        String permissions = JsonUtils.collectionAsJson(Optional.ofNullable(f.getPermissions()).orElse(Collections.emptySet()));
-        String flippingStrategy = JsonUtils.flippingStrategyAsJson(Optional.ofNullable(f.getFlippingStrategy()).orElse(null));
+        boolean enable = f.isEnable();
+        Value<?> description = nullableValue(f.getDescription());
+        Value<?> group = nullableValue(f.getGroup());
+        String permissions = collectionAsJson(Optional.ofNullable(f.getPermissions()).orElse(Collections.emptySet()));
+        String flippingStrategy = flippingStrategyAsJson(Optional.ofNullable(f.getFlippingStrategy()).orElse(null));
         String customProperties = customPropertiesAsJson(Optional.ofNullable(f.getCustomProperties()).orElse(Collections.emptyMap()));
 
         return Entity.newBuilder(key)
                 .set(FEATURE_UUID, uid)
-                .set(FEATURE_ENABLE, f.isEnable())
+                .set(FEATURE_ENABLE, enable)
                 .set(FEATURE_DESCRIPTION, description)
                 .set(FEATURE_GROUP, group)
                 .set(FEATURE_PERMISSIONS, permissions)
@@ -71,14 +69,13 @@ public class EntityMapper {
     }
 
     public static DatastoreFeature fromEntity(Entity e) {
-        String id = e.getKey().getName();
         String uid = e.getString(FEATURE_UUID);
         boolean isEnable = e.getBoolean(FEATURE_ENABLE);
         String description = e.getString(FEATURE_DESCRIPTION);
         String group = e.getString(FEATURE_GROUP);
-        Set<String> permissions = FeatureJsonParser.parsePermissions(e.getString(FEATURE_PERMISSIONS));
-        FlippingStrategy flippingStrategy = FeatureJsonParser.parseFlipStrategyAsJson(e.getString(FEATURE_UUID), e.getString(FEATURE_FLIPPING_STRATEGY));
-        Map<String, DatastoreProperty> customProperties = parseCustomPropertiesFromJson(e.getString(FEATURE_CUSTOM_PROPERTIES));
+        Set<String> permissions = parsePermissions(e.getString(FEATURE_PERMISSIONS));
+        FlippingStrategy flippingStrategy = parseFlipStrategyAsJson(e.getString(FEATURE_UUID), e.getString(FEATURE_FLIPPING_STRATEGY));
+        Map<String, DatastoreProperty> customProperties = parseCustomProperties(e.getString(FEATURE_CUSTOM_PROPERTIES));
 
         return DatastoreFeature.builder()
                 .uid(uid)
@@ -94,15 +91,16 @@ public class EntityMapper {
     public static Entity toEntity(DatastoreProperty p, KeyFactory kf) {
         String id = p.getId();
         Key key = kf.newKey(id);
-        String name = Optional.ofNullable(p.getName()).orElse("");
-        String description = Optional.ofNullable(p.getDescription()).orElse("");
-        String type = Optional.ofNullable(p.getType()).orElse("");
-        String value = Optional.ofNullable(p.getValue()).orElse("");
-        String fixedValues = JsonUtils.collectionAsJson(Optional.ofNullable(p.getFixedValues()).orElse(Collections.emptySet()));
+        boolean readOnly = p.isReadOnly();
+        Value<?> name = nullableValue(p.getName());
+        Value<?> description = nullableValue(p.getDescription());
+        Value<?> type = nullableValue(p.getType());
+        Value<?> value = nullableValue(p.getValue());
+        String fixedValues = collectionAsJson(Optional.ofNullable(p.getFixedValues()).orElse(Collections.emptySet()));
 
         return Entity.newBuilder(key)
                 .set(PROPERTY_ID, id)
-                .set(PROPERTY_READONLY, p.isReadOnly())
+                .set(PROPERTY_READONLY, readOnly)
                 .set(PROPERTY_NAME, name)
                 .set(PROPERTY_DESCRIPTION, description)
                 .set(PROPERTY_TYPE, type)
@@ -131,6 +129,10 @@ public class EntityMapper {
                 .build();
     }
 
+    private static Value<?> nullableValue(String value) {
+        return Objects.nonNull(value) ? StringValue.of(value) : NullValue.of();
+    }
+
     private static String customPropertiesAsJson(Map<String, DatastoreProperty> cp) {
         try {
             return objectMapper.writeValueAsString(cp);
@@ -139,22 +141,22 @@ public class EntityMapper {
         }
     }
 
-    private static Map<String, DatastoreProperty> parseCustomPropertiesFromJson(String cp) {
-        TypeReference<Map<String, DatastoreProperty>> typeRef = new TypeReference<Map<String, DatastoreProperty>>() {
-        };
-        try {
-            return objectMapper.readValue(cp, typeRef);
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Can't unmarshal customProperties", e);
-        }
+    private static Map<String, DatastoreProperty> parseCustomProperties(String json) {
+        return parse(json, new TypeReference<Map<String, DatastoreProperty>>() {
+        });
     }
 
     private static Set<String> parseSet(String json) {
+        return parse(json, new TypeReference<Set<String>>() {
+        });
+    }
+
+    private static <T> T parse(String json, TypeReference<T> typeRef) {
         if (json == null) return null;
         try {
-            return objectMapper.readValue(json, Set.class);
+            return objectMapper.readValue(json, typeRef);
         } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Can't unmarshal set", e);
+            throw new IllegalArgumentException("Can't unmarshal", e);
         }
     }
 }
