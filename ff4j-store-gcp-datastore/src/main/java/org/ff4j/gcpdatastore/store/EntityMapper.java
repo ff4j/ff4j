@@ -27,11 +27,14 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.datastore.*;
 import org.ff4j.core.FlippingStrategy;
+import org.ff4j.gcpdatastore.store.event.DatastoreEvent;
 import org.ff4j.gcpdatastore.store.feature.DatastoreFeature;
 import org.ff4j.gcpdatastore.store.property.DatastoreProperty;
 
 import java.util.*;
 
+import static org.ff4j.gcpdatastore.store.event.DatastoreEvent.EVENT_ID;
+import static org.ff4j.gcpdatastore.store.event.DatastoreEvent.EVENT_JSON;
 import static org.ff4j.gcpdatastore.store.feature.DatastoreFeature.*;
 import static org.ff4j.gcpdatastore.store.property.DatastoreProperty.*;
 import static org.ff4j.utils.JsonUtils.collectionAsJson;
@@ -126,6 +129,27 @@ public class EntityMapper {
                 .type(type)
                 .value(value)
                 .fixedValues(fixedValues)
+                .build();
+    }
+
+    public static Entity toEntity(DatastoreEvent event, KeyFactory kf) {
+        String id = event.getId();
+        Key key = kf.newKey(id);
+        Value<?> eventJson = nullableValue(event.getEventJson());
+
+        return Entity.newBuilder(key)
+                .set(EVENT_ID, id)
+                .set(EVENT_JSON, eventJson)
+                .build();
+    }
+
+    public static DatastoreEvent fromEventEntity(Entity e) {
+        String id = e.getKey().getName();
+        String eventJson = e.getString(EVENT_JSON);
+
+        return DatastoreEvent.builder()
+                .id(id)
+                .eventJson(eventJson)
                 .build();
     }
 

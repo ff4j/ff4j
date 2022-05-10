@@ -21,11 +21,14 @@ package org.ff4j.gcpdatastore.store;
  */
 
 
+import org.ff4j.audit.Event;
 import org.ff4j.core.Feature;
+import org.ff4j.gcpdatastore.store.event.DatastoreEvent;
 import org.ff4j.gcpdatastore.store.feature.DatastoreFeature;
 import org.ff4j.gcpdatastore.store.property.DatastoreProperty;
 import org.ff4j.property.Property;
 import org.ff4j.property.util.PropertyFactory;
+import org.ff4j.utils.json.EventJsonParser;
 
 import java.util.Map;
 import java.util.Optional;
@@ -89,6 +92,17 @@ public class StoreMapper {
                 datastoreProperty.getDescription(),
                 datastoreProperty.getFixedValues()
         );
+    }
+
+    public static DatastoreEvent toEventStore(Event e) {
+        return DatastoreEvent.builder()
+                .id(e.getUuid())
+                .eventJson(e.toJson())
+                .build();
+    }
+
+    public static Event fromEventStore(DatastoreEvent e) {
+        return EventJsonParser.parseEvent(e.getEventJson());
     }
 
     private static <K, V, M> Map<K, M> convertMap(Map<K, V> map, Function<V, M> mapper) {
