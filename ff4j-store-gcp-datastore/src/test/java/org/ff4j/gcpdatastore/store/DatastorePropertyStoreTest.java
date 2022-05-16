@@ -37,6 +37,7 @@ public class DatastorePropertyStoreTest extends PropertyStoreTestSupport {
         Integer port = container.getFirstMappedPort();
         Datastore datastore = DatastoreOptions.newBuilder()
                 .setHost("localhost:" + port)
+                .setProjectId("test")
                 .build()
                 .getService();
 

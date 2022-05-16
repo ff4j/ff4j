@@ -37,6 +37,7 @@ public class DatastoreFeatureStoreTest extends FeatureStoreTestSupport {
         Integer port = container.getFirstMappedPort();
         Datastore datastore = DatastoreOptions.newBuilder()
                 .setHost("localhost:" + port)
+                .setProjectId("test")
                 .build()
                 .getService();
 
