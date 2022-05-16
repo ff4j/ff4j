@@ -182,6 +182,7 @@
         <module>ff4j-store-couchdb</module>
         <module>ff4j-store-ehcache</module>
         <module>ff4j-store-elastic</module>
+        <module>ff4j-store-gcp-datastore</module>
         <module>ff4j-store-hazelcast</module>
         <module>ff4j-store-hbase</module>
         <module>ff4j-store-ignite</module>
