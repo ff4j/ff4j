@@ -25,10 +25,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import org.ff4j.FF4j;
 import org.ff4j.audit.Event;
@@ -41,6 +38,8 @@ import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.exception.FeatureNotFoundException;
+import org.ff4j.exception.GroupNotFoundException;
+import org.ff4j.exception.PropertyNotFoundException;
 import org.ff4j.property.Property;
 import org.ff4j.property.PropertyString;
 import org.ff4j.store.InMemoryFeatureStore;
@@ -378,14 +377,41 @@ public class FF4jTest extends AbstractFf4jTest {
     }
     
     @Test
-    public void testgetProperty() {
+    public void testGetProperty() {
         FF4j ff4j = new FF4j();
         ff4j.createProperty(new PropertyString("p1", "v1"));
+        Assert.assertTrue(ff4j.existProperty("p1"));
         Assert.assertNotNull(ff4j.getProperty("p1"));
         Assert.assertNotNull(ff4j.getPropertyAsString("p1"));
         Assert.assertEquals("v1", ff4j.getPropertyAsString("p1"));
     }
-    
+
+    @Test(expected = PropertyNotFoundException.class)
+    public void testGetPropertyNotExists() {
+        FF4j ff4j = new FF4j();
+        Assert.assertFalse(ff4j.existProperty("p1"));
+        ff4j.getProperty("p1");
+    }
+
+    @Test
+    public void testGetFeaturesByGroup() {
+        FF4j ff4j = new FF4j();
+        ff4j.createFeature(new Feature("f1", true, "f1-desc", "g1"));
+        ff4j.createFeature(new Feature("f2", true, "f2-desc", "g2"));
+        Map<String, Feature> featuresG1 = ff4j.getFeaturesByGroup("g1");
+        Assert.assertTrue(ff4j.existGroup("g1"));
+        Assert.assertEquals(1, featuresG1.size());
+        Assert.assertTrue(featuresG1.containsKey("f1"));
+        Assert.assertEquals("g1", featuresG1.get("f1").getGroup());
+    }
+
+    @Test(expected = GroupNotFoundException.class)
+    public void testGetFeaturesByGroupNotExists() {
+        FF4j ff4j = new FF4j();
+        Assert.assertFalse(ff4j.existGroup("g1"));
+        ff4j.getFeaturesByGroup("g1");
+    }
+
     @Test
     public void testParseXmlConfigOK() {
         Assert.assertNotNull(new FF4j().parseXmlConfig("test-featureXmlParserTest-ok.xml"));        

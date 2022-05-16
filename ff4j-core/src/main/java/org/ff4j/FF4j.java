@@ -469,6 +469,28 @@ public class FF4j {
     }
 
     /**
+     * Check if target property exist.
+     *
+     * @param propertyName
+     *           unique property identifier.
+     * @return flag to check existence of
+     */
+    public boolean existProperty(String propertyName) {
+        return getPropertiesStore().existProperty(propertyName);
+    }
+
+    /**
+     * Check if any feature with the target group exist.
+     *
+     * @param groupName
+     *           group identifier.
+     * @return flag to check existence of
+     */
+    public boolean existGroup(String groupName) {
+        return getFeatureStore().existGroup(groupName);
+    }
+
+    /**
      * The feature will be create automatically if the boolea, autocreate is enabled.
      * 
      * @param featureID
@@ -507,7 +529,18 @@ public class FF4j {
     public Property<?> getProperty(String propertyName) {
        return getPropertiesStore().readProperty(propertyName);
     }
-    
+
+    /**
+     * Read features of a group in Store
+     *
+     * @param groupName
+     *            target group name
+     * @return target features
+     */
+    public Map<String, Feature> getFeaturesByGroup(String groupName) {
+        return getFeatureStore().readGroup(groupName);
+    }
+
     /**
      * Read property in Store
      * 
