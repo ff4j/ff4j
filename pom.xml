@@ -61,7 +61,7 @@
     <properties>
 
         <!-- Compiling -->
-        <github.login />
+        <github.login/>
         <encoding>UTF-8</encoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -73,7 +73,7 @@
         <license.licenseResolver>${project.baseUri}src/license</license.licenseResolver>
 
         <!-- Versions -->
-        <version.slf4j>1.7.22</version.slf4j>
+        <version.slf4j>1.7.36</version.slf4j>
         <version.logback>1.2.0</version.logback>
 
         <version.junit>4.13.1</version.junit>
@@ -896,7 +896,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -909,7 +909,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -923,7 +923,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
