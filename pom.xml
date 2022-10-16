@@ -97,7 +97,7 @@
         <version.taglib>1.1.2</version.taglib>
         <version.jsr311>1.1.1</version.jsr311>
         <version.jacoco>0.8.7</version.jacoco>
-        <version.jackson>2.13.3</version.jackson>
+        <version.jackson>2.13.4.2</version.jackson>
         <version.jackon2x>2.12.6.1</version.jackon2x>
         
         <version.jersey1x>1.19</version.jersey1x>
