@@ -35,9 +35,6 @@ import org.ff4j.utils.Util;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 
 public class PropertyFactoryTest {
 
@@ -108,7 +105,8 @@ public class PropertyFactoryTest {
         try {
             PropertyFactory.createProperty("p1", UnsafeProperty.class.getName(), "s1", "desc", Util.set("s3", "s2"));
         } catch (IllegalArgumentException e) {
-            assertThat(e.getMessage(), containsString("Cannot create property <p1> invalid type <org.ff4j.test.property.PropertyFactoryTest$UnsafeProperty>"));
+            Assert.assertEquals(0, UnsafeProperty.count);
+            Assert.assertEquals("Cannot create property <p1> invalid type <org.ff4j.test.property.UnsafeProperty>", e.getCause().getMessage());
         }
     }
 
@@ -124,9 +122,4 @@ public class PropertyFactoryTest {
         Assert.assertNotNull(PropertyFactory.createProperty(jsonBean));
     }
 
-    class UnsafeProperty {
-
-        public UnsafeProperty(String name, String value) {
-        }
-    }
 }
