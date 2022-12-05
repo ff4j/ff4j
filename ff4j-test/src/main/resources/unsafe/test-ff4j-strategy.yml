@@ -6,11 +6,12 @@ ff4j:
   audit: false
   
   # -----------------------------
-  # Bloc Properties
+  # Bloc features
   # -----------------------------
 
-  properties:
-    - name: a
-      type: org.ff4j.test.unsafe.UnsafeProperty
-      value: UNSAFE
-
+  features:
+    - uid: first
+      enable: true
+      description: description
+      flipstrategy:
+        class: org.ff4j.test.unsafe.UnsafeFlipStrategy

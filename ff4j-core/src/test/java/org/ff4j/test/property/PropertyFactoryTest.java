@@ -31,6 +31,7 @@ import org.ff4j.property.PropertyLogLevel;
 import org.ff4j.property.PropertyString;
 import org.ff4j.property.util.PropertyFactory;
 import org.ff4j.property.util.PropertyJsonBean;
+import org.ff4j.test.unsafe.UnsafeProperty;
 import org.ff4j.utils.Util;
 import org.junit.Assert;
 import org.junit.Test;
@@ -106,7 +107,7 @@ public class PropertyFactoryTest {
             PropertyFactory.createProperty("p1", UnsafeProperty.class.getName(), "s1", "desc", Util.set("s3", "s2"));
         } catch (IllegalArgumentException e) {
             Assert.assertEquals(0, UnsafeProperty.count);
-            Assert.assertEquals("Cannot create property <p1> invalid type <org.ff4j.test.property.UnsafeProperty>", e.getCause().getMessage());
+            Assert.assertEquals("Cannot create property <p1> invalid type <org.ff4j.test.unsafe.UnsafeProperty>", e.getCause().getMessage());
         }
     }
 

@@ -255,7 +255,11 @@ public class YamlParser implements FF4jConfigurationParser<FF4jConfiguration> {
         try {
             // Parse class
             String clazzName = (String) toggleStrategy.get(TOGGLE_STRATEGY_ATTCLASS);
-            FlippingStrategy flipStrategy = (FlippingStrategy) Class.forName(clazzName).newInstance();
+            Class<?> typeClass = Class.forName(clazzName);
+            if (!FlippingStrategy.class.isAssignableFrom(typeClass)) {
+                throw new IllegalArgumentException("Cannot create flipstrategy <" + clazzName + "> invalid type");
+            }
+            FlippingStrategy flipStrategy = (FlippingStrategy) typeClass.newInstance();
             // Parse Params
             List<Map<String, Object>> mapYamlParam = (List<Map<String, Object>>) toggleStrategy.get(TOGGLE_STRATEGY_PARAMTAG);
             Map<String,String> params = new HashMap<>();

@@ -23,7 +23,7 @@
 	 xsi:schemaLocation="http://www.ff4j.org/schema/ff4j ../../main/resources/ff4j-1.4.0.xsd">
 	
 	<properties>
-		 <property name="a" type="org.ff4j.test.property.UnsafeProperty" value="UNSAFE" />
+		 <property name="a" type="org.ff4j.test.unsafe.UnsafeProperty" value="UNSAFE" />
 	</properties>
 
 </ff4j>

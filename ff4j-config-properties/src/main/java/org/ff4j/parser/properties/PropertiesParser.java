@@ -312,7 +312,11 @@ public class PropertiesParser implements FF4jConfigurationParser<FF4jConfigurati
             if (null != flipStrategyClass && !"".equals(flipStrategyClass)) {
                 FlippingStrategy flipStrategy = null;
                 try {
-                    flipStrategy = (FlippingStrategy) Class.forName(flipStrategyClass).newInstance();
+                    Class<?> typeClass = Class.forName(flipStrategyClass);
+                    if (!FlippingStrategy.class.isAssignableFrom(typeClass)) {
+                        throw new IllegalArgumentException("Cannot create flipstrategy <" + flipStrategyClass + "> invalid type");
+                    }
+                    flipStrategy = (FlippingStrategy) typeClass.newInstance();
                 } catch (Exception e) {
                     throw new IllegalArgumentException("Cannot parse flipStrategy for feature '" + f.getUid() + 
                             "' -> check key [" + currentFeatureKey +  "." + TOGGLE_STRATEGY_TAG + "." + TOGGLE_STRATEGY_ATTCLASS + "]", e);

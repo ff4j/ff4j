@@ -5,7 +5,7 @@
     "properties": [
       {
         "name": "a",
-        "type": "org.ff4j.test.property.UnsafeProperty",
+        "type": "org.ff4j.test.unsafe.UnsafeProperty",
         "value": "UNSAFE"
       }
     ]

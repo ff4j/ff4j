@@ -1,4 +1,4 @@
-package org.ff4j.test.property;
+package org.ff4j.test.unsafe;
 
 /*
  * #%L
@@ -20,11 +20,8 @@ package org.ff4j.test.property;
  * #L%
  */
 
-class UnsafeProperty {
-    static int count = 0;
-    private String name;
-    private String value;
-
+public class UnsafeProperty {
+    public static int count = 0;
     public UnsafeProperty(String name, String value) {
         count++;
     }

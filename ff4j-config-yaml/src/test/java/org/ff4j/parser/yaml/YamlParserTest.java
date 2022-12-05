@@ -28,6 +28,9 @@ import org.ff4j.conf.FF4jConfiguration;
 import org.ff4j.conf.XmlConfig;
 import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
+import org.ff4j.test.unsafe.UnsafeProperty;
+import org.ff4j.test.unsafe.UnsafeFlippingStrategy;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class YamlParserTest {
@@ -47,12 +50,26 @@ public class YamlParserTest {
         new YamlParser().export(xmlConfig);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void should_fail_for_unsafe_property() {
         // Given a YAML file
         InputStream ymlFile = getClass().getClassLoader().getResourceAsStream("unsafe/test-ff4j-features.yml");
         // When loading config
-        new YamlParser().parseConfigurationFile(ymlFile);
+        Assert.assertThrows(IllegalArgumentException.class, () -> {
+            new YamlParser().parseConfigurationFile(ymlFile);
+        });
+        Assert.assertEquals(0, UnsafeProperty.count);
+    }
+
+    @Test
+    public void should_fail_for_unsafe_strategy() {
+        // Given a YAML file
+        InputStream ymlFile = getClass().getClassLoader().getResourceAsStream("unsafe/test-ff4j-strategy.yml");
+        // When loading config
+        Assert.assertThrows(IllegalArgumentException.class, () -> {
+            new YamlParser().parseConfigurationFile(ymlFile);
+        });
+        Assert.assertEquals(0, UnsafeFlippingStrategy.count);
     }
     
     @Test

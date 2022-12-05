@@ -1,0 +1,16 @@
+{
+  "ff4j": {
+    "autocreate": false,
+    "audit": false,
+    "features": [
+      {
+        "uid": "first",
+        "enable": true,
+        "description": "description",
+        "flipstrategy": {
+          "class": "org.ff4j.test.unsafe.UnsafeFlippingStrategy"
+        }
+      }
+    ]
+  }
+}

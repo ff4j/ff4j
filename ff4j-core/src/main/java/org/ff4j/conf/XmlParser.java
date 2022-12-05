@@ -444,7 +444,11 @@ public final class XmlParser implements FF4jConfigurationParser<XmlConfig>{
         try {
             // Attribute CLASS
             String clazzName = nnm.getNamedItem(FLIPSTRATEGY_ATTCLASS).getNodeValue();
-            flipStrategy = (FlippingStrategy) Class.forName(clazzName).newInstance();
+            Class<?> typeClass = Class.forName(clazzName);
+            if (!FlippingStrategy.class.isAssignableFrom(typeClass)) {
+                throw new IllegalArgumentException("Cannot create flipstrategy <" + clazzName + "> invalid type");
+            }
+            flipStrategy = (FlippingStrategy) typeClass.newInstance();
 
             // LIST OF PARAMS
             Map<String, String> parameters = new LinkedHashMap<String, String>();
