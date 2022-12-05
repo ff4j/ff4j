@@ -1,0 +1,13 @@
+{
+  "ff4j": {
+    "autocreate": false,
+    "audit": false,
+    "properties": [
+      {
+        "name": "a",
+        "type": "org.ff4j.test.property.UnsafeProperty",
+        "value": "UNSAFE"
+      }
+    ]
+  }
+}

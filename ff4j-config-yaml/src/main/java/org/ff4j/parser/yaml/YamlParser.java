@@ -172,7 +172,11 @@ public class YamlParser implements FF4jConfigurationParser<FF4jConfiguration> {
                     optionalType = MappingUtil.mapPropertyType(optionalType);
                     try {
                         // Constructor (String, String) is mandatory in Property interface
-                        Constructor<?> constr = Class.forName(optionalType).getConstructor(String.class, String.class);
+                        Class<?> typeClass = Class.forName(optionalType);
+                        if (!Property.class.isAssignableFrom(typeClass)) {
+                            throw new IllegalArgumentException("Cannot create property <" + name + "> invalid type <" + optionalType + ">");
+                        }
+                        Constructor<?> constr = typeClass.getConstructor(String.class, String.class);
                         ap = (Property<?>) constr.newInstance(name, strValue);
                     } catch (Exception e) {
                         throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' check default constructor", e);

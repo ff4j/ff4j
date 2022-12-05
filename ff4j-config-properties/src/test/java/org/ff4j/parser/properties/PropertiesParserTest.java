@@ -36,7 +36,7 @@ public class PropertiesParserTest {
     public void propertiesFile_shouldExist() {
         new PropertiesParser().parseConfigurationFile(null);
     }
-    
+
     @Test
     public void should_export_anyConfig_asProperties() {
         // Given an XML file
@@ -45,6 +45,14 @@ public class PropertiesParserTest {
         XmlConfig xmlConfig = new XmlParser().parseConfigurationFile(xmlFile);
         // Then it possible to export as YAML
         new PropertiesParser().export(xmlConfig);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void should_fail_for_unsafe_property() {
+        // Given a properties file
+        InputStream propsFile = getClass().getClassLoader().getResourceAsStream("unsafe/test-ff4j-features.properties");
+        // When loading config
+        new PropertiesParser().parseConfigurationFile(propsFile);
     }
     
     @Test

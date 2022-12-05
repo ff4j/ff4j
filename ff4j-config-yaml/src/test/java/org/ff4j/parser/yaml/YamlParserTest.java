@@ -46,6 +46,14 @@ public class YamlParserTest {
         // Then it possible to export as YAML
         new YamlParser().export(xmlConfig);
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void should_fail_for_unsafe_property() {
+        // Given a YAML file
+        InputStream ymlFile = getClass().getClassLoader().getResourceAsStream("unsafe/test-ff4j-features.yml");
+        // When loading config
+        new YamlParser().parseConfigurationFile(ymlFile);
+    }
     
     @Test
     public void importYaml_should_be_same_asXMLImport() {

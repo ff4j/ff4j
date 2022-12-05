@@ -68,7 +68,12 @@ public class XmlParserTest {
     public void testParsingPropertiesMoreTag() throws IOException {
         parseFile("test-property5.xml");
     }
-    
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testParsingPropertiesUnsafe() throws IOException {
+        parseFile("test-property6.xml");
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testParsingFeatureNoClass() throws IOException {
         parseFile("test-feature-ko1.xml");
