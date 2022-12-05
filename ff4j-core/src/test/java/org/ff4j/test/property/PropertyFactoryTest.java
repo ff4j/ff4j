@@ -103,12 +103,11 @@ public class PropertyFactoryTest {
 
     @Test
     public void testPropertyFactory10() {
-        try {
+        IllegalArgumentException exception = Assert.assertThrows(IllegalArgumentException.class, () -> {
             PropertyFactory.createProperty("p1", UnsafeProperty.class.getName(), "s1", "desc", Util.set("s3", "s2"));
-        } catch (IllegalArgumentException e) {
-            Assert.assertEquals(0, UnsafeProperty.count);
-            Assert.assertEquals("Cannot create property <p1> invalid type <org.ff4j.test.unsafe.UnsafeProperty>", e.getCause().getMessage());
-        }
+        });
+        Assert.assertEquals(0, UnsafeProperty.count);
+        Assert.assertEquals("Cannot create property <p1> invalid type <org.ff4j.test.unsafe.UnsafeProperty>", exception.getCause().getMessage());
     }
 
     @Test
