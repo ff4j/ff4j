@@ -105,7 +105,7 @@
         <version.httpclient>4.5.13</version.httpclient>
         <version.snakeyaml>1.26</version.snakeyaml>
 
-        <version.swagger>1.5.4</version.swagger>
+        <version.swagger>1.5.11</version.swagger>
 
         <version.metrics>3.1.0</version.metrics>
         <version.hdldb>2.3.2</version.hdldb>
