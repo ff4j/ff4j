@@ -108,7 +108,7 @@
         <version.swagger>1.5.4</version.swagger>
 
         <version.metrics>3.1.0</version.metrics>
-        <version.hdldb>2.3.2</version.hdldb>
+        <version.hdldb>2.7.1</version.hdldb>
 
         <version.ehcache>2.10.1</version.ehcache>
         <version.jedis>3.2.0</version.jedis>
