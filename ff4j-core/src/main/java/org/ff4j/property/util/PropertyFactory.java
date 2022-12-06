@@ -160,7 +160,11 @@ public class PropertyFactory {
         Util.assertNotNull(pType);
         Property<?> ap = null;
         try {
-            Constructor<?> constr = Class.forName(pType).getConstructor(String.class, String.class);
+            Class<?> typeClass = Class.forName(pType);
+            if (!Property.class.isAssignableFrom(typeClass)) {
+                throw new IllegalArgumentException("Cannot create property <" + pName + "> invalid type <" + pType + ">");
+            }
+            Constructor<?> constr = typeClass.getConstructor(String.class, String.class);
             ap = (Property<?>) constr.newInstance(pName, pValue);
             ap.setDescription(desc);
             // Is there any fixed Value ?
