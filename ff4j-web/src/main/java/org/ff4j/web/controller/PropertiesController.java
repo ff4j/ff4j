@@ -128,9 +128,10 @@ public class PropertiesController extends AbstractController {
             } else {
                 Property<?> p = getFf4j().getPropertiesStore().readProperty(propertyName);
                 Property<?> newProperty = PropertyFactory.createProperty(newName, p.getType(), p.asString(), p.getDescription(), null);
-                for(Object o : p.getFixedValues()) {
-                    newProperty.add2FixedValueFromString(o.toString());
-                }
+                if (p.getFixedValues() != null)
+                    for(Object o : p.getFixedValues()) {
+                        newProperty.add2FixedValueFromString(o.toString());
+                    }
                 getFf4j().getPropertiesStore().createProperty(newProperty);
                 msg = "Property " + propertyName + " has been copied to " + newName;
             }
