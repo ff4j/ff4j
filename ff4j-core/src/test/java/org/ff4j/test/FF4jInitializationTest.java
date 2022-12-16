@@ -70,4 +70,11 @@ public class FF4jInitializationTest {
         Assert.assertNotNull(f3.getAuthorizationsManager());
     }
 
+    @Test
+    public void testGetCacheProxy() {
+        FF4j f1 = new FF4j();
+        f1.setAutocreate(true);
+        Assert.assertNull(f1.getCacheProxy());
+    }
+
 }
