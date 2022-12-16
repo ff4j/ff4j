@@ -73,9 +73,8 @@
         <license.licenseResolver>${project.baseUri}src/license</license.licenseResolver>
 
         <!-- Versions -->
-        <version.slf4j>1.7.36</version.slf4j>
+        <version.logback>1.2.11</version.logback>
         <version.logback>1.2.0</version.logback>
-
         <version.junit>4.13.2</version.junit>
         <version.powermock>1.5.5</version.powermock>
         <version.mockito>1.9.5</version.mockito>
