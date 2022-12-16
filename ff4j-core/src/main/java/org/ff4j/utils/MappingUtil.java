@@ -181,6 +181,9 @@ public class MappingUtil {
 	public static FlippingStrategy instanceFlippingStrategy(String uid, String className,  Map<String, String> initparams) {
         try {
             Class<FlippingStrategy> clazz = (Class<FlippingStrategy>) (classLoader == null ? Class.forName(className) : classLoader.loadClass(className));
+            if (!FlippingStrategy.class.isAssignableFrom(clazz)) {
+                throw new IllegalArgumentException("Invalid type " + className );
+            }
             FlippingStrategy flipStrategy = clazz.newInstance();
             flipStrategy.init(uid, initparams);
             return flipStrategy;

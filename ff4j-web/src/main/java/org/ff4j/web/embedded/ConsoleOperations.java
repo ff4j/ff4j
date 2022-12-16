@@ -105,6 +105,9 @@ public final class ConsoleOperations {
             if (null != strategy && !strategy.isEmpty()) {
                 try {
                     Class<?> strategyClass = Class.forName(strategy);
+                    if (!FlippingStrategy.class.isAssignableFrom(strategyClass)) {
+                        throw new IllegalArgumentException("Cannot create flipstrategy: <" + strategy + "> invalid type");
+                    }
                     FlippingStrategy fstrategy = (FlippingStrategy) strategyClass.newInstance();
 
                     final String strategyParams = req.getParameter(STRATEGY_INIT);
@@ -246,6 +249,9 @@ public final class ConsoleOperations {
         if (null != strategy && !strategy.isEmpty()) {
             try {
                 Class<?> strategyClass = Class.forName(strategy);
+                if (!FlippingStrategy.class.isAssignableFrom(strategyClass)) {
+                    throw new IllegalArgumentException("Cannot create flipstrategy <" + strategy + "> invalid type");
+                }
                 FlippingStrategy fstrategy = (FlippingStrategy) strategyClass.newInstance();
                
                 if (null != strategyParams && !strategyParams.isEmpty()) {
