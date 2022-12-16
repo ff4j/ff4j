@@ -73,16 +73,15 @@
         <license.licenseResolver>${project.baseUri}src/license</license.licenseResolver>
 
         <!-- Versions -->
-        <version.slf4j>1.7.22</version.slf4j>
         <version.logback>1.2.11</version.logback>
-
-        <version.junit>4.13.1</version.junit>
+        <version.logback>1.2.0</version.logback>
+        <version.junit>4.13.2</version.junit>
         <version.powermock>1.5.5</version.powermock>
         <version.mockito>1.9.5</version.mockito>
 
         <version.cglib>3.1</version.cglib>
         <version.aopalliance>1.0</version.aopalliance>
-        <version.spring>5.3.19</version.spring>
+        <version.spring>5.3.20</version.spring>
         <version.spring.security>5.3.10.RELEASE</version.spring.security>
 
         <version.commons-lang>2.6</version.commons-lang>
@@ -97,18 +96,17 @@
         <version.taglib>1.1.2</version.taglib>
         <version.jsr311>1.1.1</version.jsr311>
         <version.jacoco>0.8.7</version.jacoco>
-        <version.jackson>2.13.2</version.jackson>
+        <version.jackson>2.14.0</version.jackson>
         <version.jackon2x>2.12.6.1</version.jackon2x>
         
         <version.jersey1x>1.19</version.jersey1x>
         <version.jersey2x>2.22.1</version.jersey2x>
         <version.httpclient>4.5.13</version.httpclient>
-        <version.snakeyaml>1.26</version.snakeyaml>
-
-        <version.swagger>1.5.4</version.swagger>
+        <version.snakeyaml>1.32</version.snakeyaml>
+        <version.swagger>1.5.11</version.swagger>
 
         <version.metrics>3.1.0</version.metrics>
-        <version.hdldb>2.3.2</version.hdldb>
+        <version.hdldb>2.7.1</version.hdldb>
 
         <version.ehcache>2.10.1</version.ehcache>
         <version.jedis>3.2.0</version.jedis>
@@ -136,14 +134,14 @@
         <commons.lang>3.2.2</commons.lang>
         <commons.lang3>3.2.1</commons.lang3>
         <cucumber.version>1.2.4</cucumber.version>
-        <gson.version>2.3.1</gson.version>
+        <gson.version>2.8.9</gson.version>
         <assertj.version>3.2.0</assertj.version>
         <jsonassert.version>1.2.3</jsonassert.version>
         <easymock.version>3.1</easymock.version>
         <swagger.version>2.2.2</swagger.version>
         <meanbean.version>2.0.3</meanbean.version>
         <apache.shiro.version>1.5.3</apache.shiro.version>
-        <apache.ignite.version>2.8.1</apache.ignite.version>
+        <apache.ignite.version>2.13.0</apache.ignite.version>
     </properties>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->

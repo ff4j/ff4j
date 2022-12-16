@@ -22,7 +22,7 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<properties>
 		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-		<cassandra-java-driver.version>4.6.1</cassandra-java-driver.version>
+		<cassandra-java-driver.version>4.15.0</cassandra-java-driver.version>
 		<version.cassandra.unit>4.3.1.0</version.cassandra.unit>
 		<testcontainers.version>1.14.3</testcontainers.version>
 	</properties>

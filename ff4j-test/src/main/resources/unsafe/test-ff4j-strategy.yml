@@ -1,0 +1,17 @@
+# -----------------------------
+# Core FF4J
+# -----------------------------
+ff4j: 
+  autocreate: false
+  audit: false
+  
+  # -----------------------------
+  # Bloc features
+  # -----------------------------
+
+  features:
+    - uid: first
+      enable: true
+      description: description
+      flipstrategy:
+        class: org.ff4j.test.unsafe.UnsafeFlipStrategy

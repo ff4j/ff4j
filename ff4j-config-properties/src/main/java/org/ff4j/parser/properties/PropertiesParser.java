@@ -230,7 +230,11 @@ public class PropertiesParser implements FF4jConfigurationParser<FF4jConfigurati
                 optionalType = MappingUtil.mapPropertyType(optionalType);
                 try {
                     // Constructor (String, String) is mandatory in Property interface
-                    Constructor<?> constr = Class.forName(optionalType).getConstructor(String.class, String.class);
+                    Class<?> typeClass = Class.forName(optionalType);
+                    if (!Property.class.isAssignableFrom(typeClass)) {
+                        throw new IllegalArgumentException("Cannot create property <" + name + "> invalid type <" + optionalType + ">");
+                    }
+                    Constructor<?> constr = typeClass.getConstructor(String.class, String.class);
                     ap = (Property<?>) constr.newInstance(name, strValue);
                 } catch (Exception e) {
                     throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' check default constructor", e);
@@ -308,7 +312,11 @@ public class PropertiesParser implements FF4jConfigurationParser<FF4jConfigurati
             if (null != flipStrategyClass && !"".equals(flipStrategyClass)) {
                 FlippingStrategy flipStrategy = null;
                 try {
-                    flipStrategy = (FlippingStrategy) Class.forName(flipStrategyClass).newInstance();
+                    Class<?> typeClass = Class.forName(flipStrategyClass);
+                    if (!FlippingStrategy.class.isAssignableFrom(typeClass)) {
+                        throw new IllegalArgumentException("Cannot create flipstrategy <" + flipStrategyClass + "> invalid type");
+                    }
+                    flipStrategy = (FlippingStrategy) typeClass.newInstance();
                 } catch (Exception e) {
                     throw new IllegalArgumentException("Cannot parse flipStrategy for feature '" + f.getUid() + 
                             "' -> check key [" + currentFeatureKey +  "." + TOGGLE_STRATEGY_TAG + "." + TOGGLE_STRATEGY_ATTCLASS + "]", e);

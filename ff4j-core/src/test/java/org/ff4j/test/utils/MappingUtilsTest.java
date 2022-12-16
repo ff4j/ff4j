@@ -34,6 +34,7 @@ import org.ff4j.property.Property;
 import org.ff4j.property.PropertyInt;
 import org.ff4j.property.PropertyLong;
 import org.ff4j.property.PropertyString;
+import org.ff4j.test.unsafe.UnsafeProperty;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.utils.JdbcUtils;
 import org.ff4j.utils.JsonUtils;
@@ -81,7 +82,15 @@ public class MappingUtilsTest {
     public void testIntanciateInvalidFlippingStrategy() {
        MappingUtil.instanceFlippingStrategy("f1", "com.class.invalid", new HashMap<String, String>());
     }
-    
+
+    @Test
+    public void testInstantiateUnsafeProperty() {
+        Assert.assertThrows(FeatureAccessException.class, () -> {
+            MappingUtil.instanceFlippingStrategy("f1", "org.ff4j.test.unsafe.UnsafeProperty", new HashMap<String, String>());
+        });
+        Assert.assertEquals(0, UnsafeProperty.count);
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testAssert1() {
         Util.assertTrue(false);
