@@ -384,7 +384,11 @@ public final class XmlParser implements FF4jConfigurationParser<XmlConfig>{
                 
                 try {
                     // Constructor (String, String) is mandatory in Property interface
-                    Constructor<?> constr = Class.forName(optionalType).getConstructor(String.class, String.class);
+                    Class<?> typeClass = Class.forName(optionalType);
+                    if (!Property.class.isAssignableFrom(typeClass)) {
+                        throw new IllegalArgumentException("Cannot create property <" + name + "> invalid type <" + optionalType + ">");
+                    }
+                    Constructor<?> constr = typeClass.getConstructor(String.class, String.class);
                     ap = (Property<?>) constr.newInstance(name, value);
                 } catch (Exception e) {
                     throw new IllegalArgumentException("Cannot instantiate '" + optionalType + "' check default constructor", e);
@@ -440,7 +444,11 @@ public final class XmlParser implements FF4jConfigurationParser<XmlConfig>{
         try {
             // Attribute CLASS
             String clazzName = nnm.getNamedItem(FLIPSTRATEGY_ATTCLASS).getNodeValue();
-            flipStrategy = (FlippingStrategy) Class.forName(clazzName).newInstance();
+            Class<?> typeClass = Class.forName(clazzName);
+            if (!FlippingStrategy.class.isAssignableFrom(typeClass)) {
+                throw new IllegalArgumentException("Cannot create flipstrategy <" + clazzName + "> invalid type");
+            }
+            flipStrategy = (FlippingStrategy) typeClass.newInstance();
 
             // LIST OF PARAMS
             Map<String, String> parameters = new LinkedHashMap<String, String>();

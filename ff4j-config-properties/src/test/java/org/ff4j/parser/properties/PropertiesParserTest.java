@@ -28,6 +28,9 @@ import org.ff4j.conf.FF4jConfiguration;
 import org.ff4j.conf.XmlConfig;
 import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
+import org.ff4j.test.unsafe.UnsafeFlippingStrategy;
+import org.ff4j.test.unsafe.UnsafeProperty;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class PropertiesParserTest {
@@ -36,7 +39,7 @@ public class PropertiesParserTest {
     public void propertiesFile_shouldExist() {
         new PropertiesParser().parseConfigurationFile(null);
     }
-    
+
     @Test
     public void should_export_anyConfig_asProperties() {
         // Given an XML file
@@ -45,6 +48,28 @@ public class PropertiesParserTest {
         XmlConfig xmlConfig = new XmlParser().parseConfigurationFile(xmlFile);
         // Then it possible to export as YAML
         new PropertiesParser().export(xmlConfig);
+    }
+    
+    @Test
+    public void should_fail_for_unsafe_property() {
+        // Given a properties file
+        InputStream propsFile = getClass().getClassLoader().getResourceAsStream("unsafe/test-ff4j-features.properties");
+        // When loading config
+        Assert.assertThrows(IllegalArgumentException.class, () -> {
+            new PropertiesParser().parseConfigurationFile(propsFile);
+        });
+        Assert.assertEquals(0, UnsafeProperty.count);
+    }
+    
+    @Test
+    public void should_fail_for_unsafe_strategy() {
+        // Given a properties file
+        InputStream propsFile = getClass().getClassLoader().getResourceAsStream("unsafe/test-ff4j-strategy.properties");
+        // When loading config
+        Assert.assertThrows(IllegalArgumentException.class, () -> {
+            new PropertiesParser().parseConfigurationFile(propsFile);
+        });
+        Assert.assertEquals(0, UnsafeFlippingStrategy.count);
     }
     
     @Test

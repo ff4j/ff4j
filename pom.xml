@@ -103,12 +103,12 @@
         <version.jersey1x>1.19</version.jersey1x>
         <version.jersey2x>2.22.1</version.jersey2x>
         <version.httpclient>4.5.13</version.httpclient>
-        <version.snakeyaml>1.26</version.snakeyaml>
+        <version.snakeyaml>1.32</version.snakeyaml>
 
-        <version.swagger>1.5.4</version.swagger>
+        <version.swagger>1.5.11</version.swagger>
 
         <version.metrics>3.1.0</version.metrics>
-        <version.hdldb>2.3.2</version.hdldb>
+        <version.hdldb>2.7.1</version.hdldb>
 
         <version.ehcache>2.10.1</version.ehcache>
         <version.jedis>3.2.0</version.jedis>
@@ -143,7 +143,7 @@
         <swagger.version>2.2.2</swagger.version>
         <meanbean.version>2.0.3</meanbean.version>
         <apache.shiro.version>1.5.3</apache.shiro.version>
-        <apache.ignite.version>2.8.1</apache.ignite.version>
+        <apache.ignite.version>2.13.0</apache.ignite.version>
     </properties>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->

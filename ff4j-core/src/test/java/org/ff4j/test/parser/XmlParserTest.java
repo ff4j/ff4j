@@ -31,6 +31,8 @@ import java.util.HashMap;
 import org.ff4j.conf.XmlConfig;
 import org.ff4j.conf.XmlParser;
 import org.ff4j.property.Property;
+import org.ff4j.test.unsafe.UnsafeFlippingStrategy;
+import org.ff4j.test.unsafe.UnsafeProperty;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -69,6 +71,14 @@ public class XmlParserTest {
         parseFile("test-property5.xml");
     }
     
+    @Test
+    public void testParsingPropertiesUnsafe() throws IOException {
+        Assert.assertThrows(IllegalArgumentException.class, () -> {
+            parseFile("test-property6.xml");
+        });
+        Assert.assertEquals(0, UnsafeProperty.count);
+    }
+    
     @Test(expected = IllegalArgumentException.class)
     public void testParsingFeatureNoClass() throws IOException {
         parseFile("test-feature-ko1.xml");
@@ -102,6 +112,14 @@ public class XmlParserTest {
     @Test(expected = IllegalArgumentException.class)
     public void testParsingFeatureInvalidTag5() throws IOException {
         parseFile("test-feature-ko7.xml");
+    }
+    
+    @Test
+    public void testParsingFeatureInvalidStrategy() throws IOException {
+        Assert.assertThrows(IllegalArgumentException.class, () -> {
+            parseFile("test-feature-ko8.xml");
+        });
+        Assert.assertEquals(0, UnsafeFlippingStrategy.count);
     }
     
     @Test
