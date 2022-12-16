@@ -33,14 +33,14 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import org.ff4j.utils.Util;
 import org.ff4j.web.api.FF4jJacksonMapper;
 import org.glassfish.jersey.client.ClientConfig;
 
-import io.swagger.jaxrs.json.JacksonJsonProvider;
 
 /**
- * Mutualization of HTTP METHODS.
+ * Http client utilities.
  *
  * @author Cedrick LUNVEN (@clunven)
  */
@@ -66,12 +66,15 @@ public class ClientHttpUtils {
      * Put authentication header if relevant.
      *
      * @param webTarget
+     *      web target
      * @param auth
+     *      authentication
      * @return
+     *      http response
      */
     public static Invocation.Builder createRequest(WebTarget webTarget, String auth, MediaType mediaType) {
         Util.assertNotNull(webTarget);
-        Invocation.Builder invocationBuilder = null;
+        Invocation.Builder invocationBuilder;
         if (mediaType == null) {
             invocationBuilder = webTarget.request();
         } else {
@@ -88,6 +91,7 @@ public class ClientHttpUtils {
      *
      * @param webTarget target web
      * @return
+     *      http response
      */
     public static Response invokeGetMethod(WebTarget webTarget, String auth) {
         return createRequest(webTarget, auth, MediaType.APPLICATION_JSON_TYPE).get();
@@ -98,6 +102,7 @@ public class ClientHttpUtils {
      *
      * @param webTarget target web
      * @return
+     *      http response
      */
     public static Response invokeDeleteMethod(WebTarget webTarget, String auth) {
         return createRequest(webTarget, auth, null).delete();
@@ -109,6 +114,7 @@ public class ClientHttpUtils {
      * @param webTarget
      *          target web
      * @return
+     *      http response
      */
     public static Response invokePostMethod(WebTarget webTarget, String auth) {
         return createRequest(webTarget, auth, MediaType.APPLICATION_JSON_TYPE).post(Entity.text(""));
@@ -130,8 +136,8 @@ public class ClientHttpUtils {
      * @return target header
      */
     public static String buildAuthorization4UserName(String username, String password) {
-        String basicAuthCreds = username + ":" + password;
-        return " Basic " + Base64.getEncoder().encodeToString(basicAuthCreds.getBytes());
+        String basicAuthCredentials = username + ":" + password;
+        return " Basic " + Base64.getEncoder().encodeToString(basicAuthCredentials.getBytes());
     }
     
 }

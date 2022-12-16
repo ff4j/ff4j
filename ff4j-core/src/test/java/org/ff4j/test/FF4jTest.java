@@ -284,9 +284,9 @@ public class FF4jTest extends AbstractFf4jTest {
         FlippingExecutionContext ex = new FlippingExecutionContext();
         ex.putString("OK", "OK");
         Assert.assertTrue(ff4j.check("coco", ex));
-        Assert.assertTrue(ff4j.checkOveridingStrategy("coco", mockFlipStrategy));
-        Assert.assertTrue(ff4j.checkOveridingStrategy("coco", null, null));
-        Assert.assertFalse(ff4j.checkOveridingStrategy("cocorico", mockFlipStrategy));
+        Assert.assertTrue(ff4j.checkOverridingStrategy("coco", mockFlipStrategy));
+        Assert.assertTrue(ff4j.checkOverridingStrategy("coco", null, null));
+        Assert.assertFalse(ff4j.checkOverridingStrategy("cocorico", mockFlipStrategy));
         // Update Coverage
         ff4j.setAuthManager("something");
     }
@@ -298,7 +298,7 @@ public class FF4jTest extends AbstractFf4jTest {
         ff4j.createFeature("N1", true, "description NEWS");
         ff4j.createFeature("N2", false, "description NEWS");
         Assert.assertTrue(ff4j.check("N1"));
-        Assert.assertFalse(ff4j.checkOveridingStrategy("N1", new ExpressionFlipStrategy("N1", "N1 & N2")));
+        Assert.assertFalse(ff4j.checkOverridingStrategy("N1", new ExpressionFlipStrategy("N1", "N1 & N2")));
     }
         
     @Test
@@ -372,7 +372,7 @@ public class FF4jTest extends AbstractFf4jTest {
         FF4j ff4j = new FF4j();
         ff4j.createFeature("f1", true);
         ff4j.setAuthorizationsManager(new DefinedPermissionSecurityManager("a", new HashSet<String>()));
-        Assert.assertTrue(ff4j.checkOveridingStrategy("f1", new PonderationStrategy(1d)));
+        Assert.assertTrue(ff4j.checkOverridingStrategy("f1", new PonderationStrategy(1d)));
         Assert.assertTrue(ff4j.isAllowed(ff4j.getFeature("f1")));
     }
     

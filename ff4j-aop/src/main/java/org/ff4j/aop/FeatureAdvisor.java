@@ -119,7 +119,7 @@ public class FeatureAdvisor implements MethodInterceptor {
         if (ff.flippingStrategy() != NullType.class) {
             String fsClassName  = ff.flippingStrategy().getName();
             FlippingStrategy fs = instanceFlippingStrategy(featureId, fsClassName, toMap(ff.flippingInitParams()));
-            return getFf4j().checkOveridingStrategy(featureId, fs, context);
+            return getFf4j().checkOverridingStrategy(featureId, fs, context);
         }
         return getFf4j().check(featureId, context);
     }
