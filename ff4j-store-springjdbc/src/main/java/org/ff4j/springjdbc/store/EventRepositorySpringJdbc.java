@@ -49,7 +49,6 @@ import org.ff4j.store.JdbcQueryBuilder;
 import org.ff4j.utils.JdbcUtils;
 import org.ff4j.utils.MappingUtil;
 import org.ff4j.utils.Util;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
@@ -225,7 +224,6 @@ public class EventRepositorySpringJdbc extends AbstractEventRepository {
      * @param dataSource
      *            the dataSource to set
      */
-    @Required
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }

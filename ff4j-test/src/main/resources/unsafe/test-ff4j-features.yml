@@ -1,0 +1,16 @@
+# -----------------------------
+# Core FF4J
+# -----------------------------
+ff4j: 
+  autocreate: false
+  audit: false
+  
+  # -----------------------------
+  # Bloc Properties
+  # -----------------------------
+
+  properties:
+    - name: a
+      type: org.ff4j.test.unsafe.UnsafeProperty
+      value: UNSAFE
+
