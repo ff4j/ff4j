@@ -100,7 +100,7 @@
         <version.jackon2x>2.12.6.1</version.jackon2x>
         
         <version.jersey1x>1.19</version.jersey1x>
-        <version.jersey2x>2.22.1</version.jersey2x>
+        <version.jersey2x>2.35</version.jersey2x>
         <version.httpclient>4.5.13</version.httpclient>
         <version.snakeyaml>1.32</version.snakeyaml>
         <version.swagger>1.5.11</version.swagger>
