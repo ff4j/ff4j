@@ -81,7 +81,7 @@
 
         <version.cglib>3.1</version.cglib>
         <version.aopalliance>1.0</version.aopalliance>
-        <version.spring>5.3.20</version.spring>
+        <version.spring>5.3.24</version.spring>
         <version.spring.security>5.3.10.RELEASE</version.spring.security>
 
         <version.commons-lang>2.6</version.commons-lang>
