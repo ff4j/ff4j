@@ -110,7 +110,7 @@
 
         <version.ehcache>2.10.1</version.ehcache>
         <version.jedis>3.2.0</version.jedis>
-        <version.neo4j>2.3.1</version.neo4j>
+        <version.neo4j>2.3.12</version.neo4j>
 
         <!-- VERSIONS PLUGINS -->
         <version.maven.plugin.failsafe>2.18.1</version.maven.plugin.failsafe>
