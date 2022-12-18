@@ -43,26 +43,21 @@ import com.datastax.oss.driver.api.core.cql.Row;
 import com.datastax.oss.driver.api.querybuilder.QueryBuilder;
 
 /**
- * Implements of {@link PropertyStore} for sotre Cassandra.
+ * Implements of {@link PropertyStore} for store Cassandra.
  *
  * @author Cedrick Lunven (@clunven)
  */
 public class PropertyStoreCassandra extends AbstractPropertyStore implements FF4jCassandraSchema {
     
     /** Driver Session. */
-    private CqlSession cqlSession;
+    private final CqlSession cqlSession;
     
     /** Statements. */
     private PreparedStatement psExistProperty;
     private PreparedStatement psInsertProperty;
     private PreparedStatement psReadProperty; 
     private PreparedStatement psDeleteProperty;
-    
-    /**
-     * Default constructor.
-     */
-    public PropertyStoreCassandra() {}
-    
+
     /**
      * Connector with running session
      */
@@ -89,7 +84,7 @@ public class PropertyStoreCassandra extends AbstractPropertyStore implements FF4
     public <T> void createProperty(Property<T> prop) {
         assertPropertyNotNull(prop);
         assertPropertyNotExist(prop.getName());
-        Set < String > fixedValues = new HashSet<String>();
+        Set < String > fixedValues = new HashSet<>();
         if (prop.getFixedValues() != null) {
             for (T fixedValue : prop.getFixedValues()) {
                 fixedValues.add(fixedValue.toString());
@@ -127,7 +122,7 @@ public class PropertyStoreCassandra extends AbstractPropertyStore implements FF4
     /** {@inheritDoc} */
     @Override
     public Map<String, Property<?>> readAllProperties() {
-        Map < String, Property<?>> properties = new HashMap<String, Property<?>>();
+        Map < String, Property<?>> properties = new HashMap<>();
         ResultSet rs = cqlSession.execute(STMT_PROPERTY_READ_ALL);
         for (Row row : rs.all()) {
             Property<?> p  = mapPropertyRow(row);

@@ -100,13 +100,14 @@
         <version.jackon2x>2.12.6.1</version.jackon2x>
         
         <version.jersey1x>1.19</version.jersey1x>
-        <version.jersey2x>2.35</version.jersey2x>
+        <version.jersey2x>2.37</version.jersey2x>
         <version.httpclient>4.5.13</version.httpclient>
         <version.snakeyaml>1.32</version.snakeyaml>
-        <version.swagger>1.5.11</version.swagger>
+        <version.swagger>1.6.9</version.swagger>
 
         <version.metrics>3.1.0</version.metrics>
-        <version.hdldb>2.7.1</version.hdldb>
+        <!-- Cannot go above for jdk 8 retrop compatibility -->
+        <version.hdldb>2.5.2</version.hdldb>
 
         <version.ehcache>2.10.1</version.ehcache>
         <version.jedis>3.2.0</version.jedis>
@@ -138,7 +139,9 @@
         <assertj.version>3.2.0</assertj.version>
         <jsonassert.version>1.2.3</jsonassert.version>
         <easymock.version>3.1</easymock.version>
-        <swagger.version>2.2.2</swagger.version>
+
+        <swagger.version>2.10.5</swagger.version>
+
         <meanbean.version>2.0.3</meanbean.version>
         <apache.shiro.version>1.5.3</apache.shiro.version>
         <apache.ignite.version>2.13.0</apache.ignite.version>
@@ -408,6 +411,11 @@
             <!-- Swagger -->
             <dependency>
                 <groupId>io.swagger</groupId>
+                <artifactId>swagger-core</artifactId>
+                <version>${version.swagger}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger</groupId>
                 <artifactId>swagger-annotations</artifactId>
                 <version>${version.swagger}</version>
             </dependency>
@@ -568,7 +576,6 @@
                 <version>${version.jersey1x}</version>
             </dependency>
 
-
             <!-- JERSEY 2X -->
             <dependency>
                 <groupId>org.glassfish.jersey.core</groupId>
@@ -578,6 +585,11 @@
             <dependency>
                 <groupId>org.glassfish.jersey.core</groupId>
                 <artifactId>jersey-common</artifactId>
+                <version>${version.jersey2x}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.inject</groupId>
+                <artifactId>jersey-hk2</artifactId>
                 <version>${version.jersey2x}</version>
             </dependency>
             <dependency>

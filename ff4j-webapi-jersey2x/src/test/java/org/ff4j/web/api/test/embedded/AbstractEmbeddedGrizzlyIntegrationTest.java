@@ -27,6 +27,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import org.ff4j.web.api.FF4jJacksonMapper;
 import org.ff4j.web.api.test.SampleFF4jJersey2Application;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -39,23 +40,20 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-import io.swagger.jaxrs.json.JacksonJsonProvider;
-
 public class AbstractEmbeddedGrizzlyIntegrationTest {
     
     private static final String HOST = "localhost";
     
     private static final int PORT = 3388;
     
-    private static WebappContext webappContext;
+    protected static WebappContext webappContext;
     
-    private static Client client = null;;
+    private static Client client = null;
     
     private static HttpServer server = null;
     
     @BeforeClass
-    public static void initOnce()  
-    throws IOException {
+    public static void initOnce() {
         // WebContext for testing
         webappContext = new WebappContext("Test Context");
         ServletRegistration servletRegistration = webappContext.addServlet( "jersey-servlet", ServletContainer.class);
