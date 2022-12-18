@@ -323,6 +323,18 @@ public class Feature implements Serializable {
     }
 
     /**
+     * Get Class name.
+     * @return
+     *      classname
+     */
+    public String getFlippingStrategyClassName() {
+        if (flippingStrategy != null) {
+            return flippingStrategy.getClass().getSimpleName();
+        }
+        return null;
+    }
+
+    /**
      * Setter accessor for attribute 'flippingStrategy'.
      *
      * @param flippingStrategy

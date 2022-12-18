@@ -24,18 +24,18 @@ import java.util.Map;
  */
 
 /**
- * Each feature should implement the flipping strategy. (enabling/disabling will be handle by flipper.
+ * Each feature should implement flipping strategy. (enabling/disabling will be handled by flipper.
  * 
  * @author Cedrick Lunven (@clunven)
  */
 public interface FlippingStrategy extends Serializable {
 
     /**
-     * Allow to parameterized Flipping Strategy
+     * Allows adding parameters to Flipping Strategy
      * 
      * @param featureName
      *            current featureName
-     * @param initValue
+     * @param initParam
      *            initial Value
      */
     void init(String featureName, Map<String, String> initParam);
