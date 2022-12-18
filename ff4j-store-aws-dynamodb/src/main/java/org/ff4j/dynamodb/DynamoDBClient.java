@@ -61,11 +61,33 @@ public abstract class DynamoDBClient<FF4J, STORE> {
     public DynamoDBClient(DynamoDbClient client) {
         this.client = client;
         dynamoDB = DynamoDbEnhancedClient.builder().dynamoDbClient(client).build();
-
         loadPropertiesIfExist();
-
         this.persistentClass = (Class<STORE>) ((ParameterizedType) getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[1];
+        table = dynamoDB.table(tableName, TableSchema.fromClass(persistentClass));
+    }
+
+    /**
+     * Extension Point for DynamoDB client custom configuration.
+     *
+     * @param client
+     *      dynamo client (from sdk)
+     * @param props
+     *      properties to initialize the component
+     * @param tableName
+     *      (optional) override default table name
+     */
+    public DynamoDBClient(DynamoDbClient client, Properties props, String tableName) {
+        this.client          = client;
+        this.dynamoDB        = DynamoDbEnhancedClient.builder().dynamoDbClient(client).build();
+        this.persistentClass = (Class<STORE>) ((ParameterizedType) getClass()
+                .getGenericSuperclass()).getActualTypeArguments()[1];
+        // Load properties not from the classpath
+        loadProperties(props);
+        // Possibility to override tableName
+        if (tableName != null) {
+            this.tableName = tableName;
+        }
         table = dynamoDB.table(tableName, TableSchema.fromClass(persistentClass));
     }
 
