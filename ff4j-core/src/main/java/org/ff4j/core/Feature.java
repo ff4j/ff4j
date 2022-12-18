@@ -327,7 +327,7 @@ public class Feature implements Serializable {
      * @return
      *      classname
      */
-    public String getFlippingStrategyClassName() {
+    public String displayStrategyClassName() {
         if (flippingStrategy != null) {
             return flippingStrategy.getClass().getSimpleName();
         }

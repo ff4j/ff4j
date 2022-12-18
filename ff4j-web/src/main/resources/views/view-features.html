@@ -85,7 +85,7 @@
 	 <td style="word-break: break-all;">
 	   <!-- FlippingStrategy -->
 	   <span th:if="${feat.flippingStrategy} != null">
-	     <b><span th:text="${feat.flippingStrategyClassName}">---</span></b>
+	     <b><span th:text="${feat.displayStrategyClassName}">---</span></b>
 	     <span th:each="initParam : ${feat.flippingStrategy.initParams}">
             <li type="square">
             <span th:text="${initParam.key}"></span>=
