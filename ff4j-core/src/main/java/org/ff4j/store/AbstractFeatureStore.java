@@ -55,7 +55,6 @@ public abstract class AbstractFeatureStore implements FeatureStore {
         if (xmlConfFile == null || xmlConfFile.isEmpty()) {
             throw new IllegalArgumentException("Configuration filename cannot be null nor empty");
         }
-        // Load as Inputstream
         InputStream xmlIS = getClass().getClassLoader().getResourceAsStream(xmlConfFile);
         if (xmlIS == null) {
             throw new IllegalArgumentException("File " + xmlConfFile + " could not be read, please check path and rights");
@@ -117,7 +116,7 @@ public abstract class AbstractFeatureStore implements FeatureStore {
     public Map<String, Feature> readGroup(String groupName) {
         Util.assertParamHasLength(groupName, "groupName");
         Map < String, Feature > features = readAll();
-        Map < String, Feature > group = new HashMap< String, Feature >();
+        Map < String, Feature > group = new HashMap<>();
         for (Map.Entry<String,Feature> uid : features.entrySet()) {
             if (groupName.equals(uid.getValue().getGroup())) {
                 group.put(uid.getKey(), uid.getValue());
@@ -136,7 +135,7 @@ public abstract class AbstractFeatureStore implements FeatureStore {
         Util.assertParamHasLength(groupName, "groupName");
         Map < String, Feature > features = readAll();
         System.out.println(features);
-        Map < String, Feature > group = new HashMap< String, Feature >();
+        Map < String, Feature > group = new HashMap<>();
         for (Map.Entry<String,Feature> uid : features.entrySet()) {
             if (groupName.equals(uid.getValue().getGroup())) {
                 group.put(uid.getKey(), uid.getValue());
@@ -194,7 +193,7 @@ public abstract class AbstractFeatureStore implements FeatureStore {
     @Override
     public Set<String> readAllGroups() {
         Map < String, Feature > features = readAll();
-        Set < String > groups = new HashSet<String>();
+        Set < String > groups = new HashSet<>();
         for (Map.Entry<String,Feature> uid : features.entrySet()) {
             groups.add(uid.getValue().getGroup());
         }
@@ -205,19 +204,13 @@ public abstract class AbstractFeatureStore implements FeatureStore {
     
     /** {@inheritDoc} */
     @Override
-    public void createSchema() {
-        /* 
-         * In most of cases there is nothing to do. The feature and properties are createdat runtime.
-         * But not always (JDBC, Mongo, Cassandra)... this is the reason why the dedicated store must 
-         * override this method. It a default implementation (Pattern Adapter).
-         */
-        return;
-    }
+    public void createSchema() {}
     
     /**
      * Import features from a set of feature.
      *
      * @param features
+     *      features to import
      */
     public void importFeatures(Collection < Feature > features) {
         if (features != null) {
@@ -233,10 +226,10 @@ public abstract class AbstractFeatureStore implements FeatureStore {
     /** {@inheritDoc} */
     public String toJson() {
         StringBuilder sb = new StringBuilder("{");
-        sb.append("\"type\":\"" + this.getClass().getName() + "\"");
+        sb.append("\"type\":\"").append(this.getClass().getName()).append("\"");
         sb.append(JsonUtils.cacheJson(this));
         Set<String> myFeatures = readAll().keySet();
-        sb.append(",\"numberOfFeatures\":" + myFeatures.size());
+        sb.append(",\"numberOfFeatures\":").append(myFeatures.size());
         sb.append(",\"features\":[");
         boolean first = true;
         for (String myFeature : myFeatures) {
@@ -244,10 +237,10 @@ public abstract class AbstractFeatureStore implements FeatureStore {
                 sb.append(",");
             }
             first = false;
-            sb.append("\"" + myFeature + "\"");
+            sb.append("\"").append(myFeature).append("\"");
         }
         Set<String> myGroups = readAllGroups();
-        sb.append("],\"numberOfGroups\":" + myGroups.size());
+        sb.append("],\"numberOfGroups\":").append(myGroups.size());
         sb.append(",\"groups\":[");
         first = true;
         for (String myGroup : myGroups) {
@@ -255,7 +248,7 @@ public abstract class AbstractFeatureStore implements FeatureStore {
                 sb.append(",");
             }
             first = false;
-            sb.append("\"" + myGroup + "\"");
+            sb.append("\"").append(myGroup).append("\"");
         }
         sb.append("]");
         sb.append("}");
@@ -297,8 +290,8 @@ public abstract class AbstractFeatureStore implements FeatureStore {
     /**
      * Validate feature uid.
      *
-     * @param uid
-     *      target uid
+     * @param groupName
+     *      target groupName
      */
     protected void assertGroupExist(String groupName) {
         Util.assertHasLength(groupName);
@@ -310,8 +303,8 @@ public abstract class AbstractFeatureStore implements FeatureStore {
     /**
      * Validate feature uid.
      *
-     * @param uid
-     *      target uid
+     * @param feature
+     *      target feature
      */
     protected void assertFeatureNotNull(Feature feature) {
         if (feature == null) {

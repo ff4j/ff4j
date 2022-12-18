@@ -69,7 +69,7 @@
 		<dependency>
 			<groupId>org.fusesource.jansi</groupId>
 			<artifactId>jansi</artifactId>
-			<version>1.11</version>
+			<version>1.18</version>
 		</dependency>
 
 	</dependencies>

@@ -25,13 +25,13 @@ CREATE TYPE IF NOT EXISTS ff4j_udt_property (
  fixedvalues set<text>
 );
 
-CREATE TABLE IF NOT EXISTS ff4j_features ( 
-  groupname    text, 
-  uid          text, 
-  enabled      boolean, 
-  description  text, 
-  strategy     frozen<ff4j_udt_strategy>, 
-  roles        set<text>, 
+CREATE TABLE IF NOT EXISTS ff4j_features (
+  groupname    text,
+  uid          text,
+  enabled      boolean,
+  description  text,
+  strategy     frozen<ff4j_udt_strategy>,
+  roles        set<text>,
   properties   map<text, frozen<ff4j_udt_property>>,
   PRIMARY KEY((uid))
 );
