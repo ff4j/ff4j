@@ -38,7 +38,6 @@ import static org.ff4j.web.bean.WebConstants.OP_TOGGLE_GROUP;
 import static org.ff4j.web.bean.WebConstants.STRATEGY;
 import static org.ff4j.web.bean.WebConstants.STRATEGY_INIT;
 import static org.ff4j.web.bean.WebConstants.SUBOPERATION;
-import static org.ff4j.web.embedded.ConsoleRenderer.msg;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -81,7 +80,20 @@ public class FeaturesController extends AbstractController {
 	public FeaturesController(FF4j ff4j, TemplateEngine te) {
 		super(ff4j, VIEW_FEATURES, te);
 	}
-	
+
+    /**
+     * Build info messages.
+     *
+     * @param featureName
+     *            target feature name
+     * @param operationId
+     *            target operationId
+     * @return
+     */
+    public static String msg(String featureName, String operationId) {
+        return String.format("Feature <b>%s</b> has been successfully %s", featureName, operationId);
+    }
+
     /** {@inheritDoc} */
     public void get(HttpServletRequest req, HttpServletResponse res, WebContext ctx) throws IOException {
         String operation = req.getParameter(WebConstants.OPERATION);

@@ -137,47 +137,46 @@
             </button>
             <ul class="dropdown-menu" role="menu" style="width:250px;">
                 <li><a href="#" onclick="javascript:
+                    $('#modalEdit #strategy').val('org.ff4j.strategy.ClientFilterStrategy');
+                    $('#modalEdit #stratlist').show();
+                    $('#modalEdit #initParams').val('grantedClients=c1,c2,c3')">ClientFilter</a>
+                </li>
+                <li><a href="#" onclick="javascript:
+                    $('#modalEdit #strategy').val('org.ff4j.strategy.DarkLaunchStrategy');
+                    $('#modalEdit #stratlist').show();
+                    $('#modalEdit #initParams').val('weight=0.5')">DarkLaunch</a>
+                </li>
+                <li><a href="#" onclick="javascript:
                     $('#modalEdit #strategy').val('org.ff4j.strategy.el.ExpressionFlipStrategy');
                     $('#modalEdit #stratlist').show();
                     $('#modalEdit #initParams').val('expression=dummy OR foo')">Expression</a>
                 </li>
-              <li><a href="#" onclick="javascript:
+                <li><a href="#" onclick="javascript:
+                    $('#modalEdit #strategy').val('org.ff4j.strategy.time.OfficeHourStrategy');
+                    $('#modalEdit #stratlist').show();
+                    $('#modalEdit #initParams').val('monday=08:00-12:00,13:30-18:00;tuesday=08:00-12:00,13:30-18:00;publicHolidays=2015-01-01,2015-05-01,2015-12-25')">OfficeHour</a>
+                </li>
+                <li><a href="#" onclick="javascript:
                     $('#modalEdit #strategy').val('org.ff4j.strategy.PonderationStrategy');
                     $('#modalEdit #stratlist').show();
-                    $('#modalEdit #initParams').val('weight=0.5')">Ponderation</a></li>
+                    $('#modalEdit #initParams').val('weight=0.5')">Ponderation</a>
+                </li>
                 <li><a href="#" onclick="javascript:
-                    $('#modalEdit #strategy').val('org.ff4j.strategy.time.ReleaseDateFlipStrategy');
-                    $('#modalEdit #stratlist').show();
-                    $('#modalEdit #initParams').val('releaseDate=2013-07-14-14:00')">ReleaseDate</a></li>
-              <li><a href="#" onclick="javascript:
-                    $('#modalEdit #strategy').val('org.ff4j.strategy.ClientFilterStrategy');
-                    $('#modalEdit #stratlist').show();
-                    $('#modalEdit #initParams').val('grantedClients=c1,c2,c3')">ClientFilter</a></li>
-              <li><a href="#" onclick="javascript:
-                    $('#modalEdit #strategy').val('org.ff4j.strategy.ServerFilterStrategy');
-                    $('#modalEdit #stratlist').show();
-                    $('#modalEdit #initParams').val('grantedServers=s1,s2,s3')">ServerFilter</a></li>
-              <li><a href="#" onclick="javascript:
                           $('#modalEdit #strategy').val('org.ff4j.strategy.RegionFlippingStrategy');
                           $('#modalEdit #stratlist').show();
                           $('#modalEdit #initParams').val('environments=AMER,ASIA')">Region</a></li>
-                    <li class="divider"></li>
-              <li class="divider"></li>
-                <b><span>Strategies used</span></b>
-                <li th:each="stragy : ${listOfStrategyUsed}" >
-                    <span th:if="${stragy} != null">
-	                    <span th:each="initParam : ${stragy.initParams}">
-                         <a href="#" th:onclick="javascript:
-                        $('#modalEdit #strategy').val([[${stragy.type}]]);
-                        $('#modalEdit #stratlist').show();
-                        $('#modalEdit #initParams').val([[${initParam}]]);" >
-                             <b><span th:text="${stragy.class.simpleName}">---</span></b>
-                        </a>
-                        </span>
-                    </span>
+                <li><a href="#" onclick="javascript:
+                    $('#modalEdit #strategy').val('org.ff4j.strategy.time.ReleaseDateFlipStrategy');
+                    $('#modalEdit #stratlist').show();
+                    $('#modalEdit #initParams').val('releaseDate=2022-07-14-14:00')">ReleaseDate</a>
+                </li>
+                <li><a href="#" onclick="javascript:
+                    $('#modalEdit #strategy').val('org.ff4j.strategy.ServerFilterStrategy');
+                    $('#modalEdit #stratlist').show();
+                    $('#modalEdit #initParams').val('grantedServers=s1,s2,s3')">ServerFilter</a>
                 </li>
                 <li class="divider"></li>
-              <li><a href="#" onclick="javascript:
+                <li><a href="#" onclick="javascript:
                     $('#modalEdit #strategy').val('');
                     $('#modalEdit #stratlist').hide();
                     $('#modalEdit #startparam').val('')">None</a></li>
