@@ -22,7 +22,7 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<properties>
 		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-		<consul-client.version>0.14.0</consul-client.version>
+		<consul-client.version>0.17.1</consul-client.version>
 		<consul-embedded.version>0.3.1</consul-embedded.version>
 	</properties>
 
