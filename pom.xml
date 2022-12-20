@@ -87,7 +87,7 @@
         <version.commons-dbcp>1.4</version.commons-dbcp>
         <version.commons-io>2.7</version.commons-io>
         <version.commons-fileupload>1.4</version.commons-fileupload>
-        <version.commons-cli>1.3.1</version.commons-cli>
+        <version.commons-cli>1.5.0</version.commons-cli>
 
         <version.servlet-api>2.5</version.servlet-api>
         <version.jsp-api>2.2</version.jsp-api>
