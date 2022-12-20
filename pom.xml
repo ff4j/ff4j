@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.ff4j</groupId>
     <artifactId>ff4j-parent</artifactId>
-    <version>1.8.14-SNAPSHOT</version>
+    <version>1.9</version>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <!-- ~ MAIN INFO ~ -->
@@ -33,7 +33,7 @@
         <connection>scm:git:git@github.com:ff4j/ff4j.git</connection>
         <developerConnection>scm:git:git@github.com:ff4j/ff4j.git</developerConnection>
         <url>git@github.com:ff4j/ff4j.git</url>
-        <tag>HEAD</tag>
+        <tag>1.9</tag>
     </scm>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -61,7 +61,7 @@
     <properties>
 
         <!-- Compiling -->
-        <github.login/>
+        <github.login />
         <encoding>UTF-8</encoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -905,7 +905,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -918,7 +918,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -932,7 +932,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
