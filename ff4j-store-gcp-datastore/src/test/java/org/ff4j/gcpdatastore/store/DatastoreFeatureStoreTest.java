@@ -6,6 +6,7 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.gcpdatastore.store.feature.DatastoreFeatureStore;
 import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.ClassRule;
+import org.junit.Test;
 
 /*
  * #%L
@@ -45,5 +46,10 @@ public class DatastoreFeatureStoreTest extends FeatureStoreTestSupport {
         store.clear();
         store.importFeaturesFromXmlFile("test-ff4j-features.xml");
         return store;
+    }
+
+    @Test
+    public void testAddFeature() throws Exception {
+        // overriding
     }
 }
