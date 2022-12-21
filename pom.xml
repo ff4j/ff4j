@@ -61,7 +61,7 @@
     <properties>
 
         <!-- Compiling -->
-        <github.login />
+        <github.login/>
         <encoding>UTF-8</encoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -85,7 +85,7 @@
         <version.spring.security>5.8.0</version.spring.security>
         <version.commons-lang>2.6</version.commons-lang>
         <version.commons-dbcp>1.4</version.commons-dbcp>
-        <version.commons-io>2.7</version.commons-io>
+        <version.commons-io>2.11.0</version.commons-io>
         <version.commons-fileupload>1.4</version.commons-fileupload>
         <version.commons-cli>1.5.0</version.commons-cli>
 
@@ -905,7 +905,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -918,7 +918,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -932,7 +932,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
