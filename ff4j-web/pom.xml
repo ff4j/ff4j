@@ -96,7 +96,7 @@
 		<dependency>
 			<groupId>org.thymeleaf</groupId>
 			<artifactId>thymeleaf</artifactId>
-			<version>3.0.13.RELEASE</version>
+			<version>3.1.0.RELEASE</version>
 		</dependency>
 		
 		<!-- Support for tests -->
