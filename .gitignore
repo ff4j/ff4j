@@ -3,6 +3,7 @@
 .classpath
 .project
 .cache
+.java-version
 
 # idea conf files
 .idea
