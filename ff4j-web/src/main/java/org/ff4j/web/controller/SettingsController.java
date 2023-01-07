@@ -1,13 +1,10 @@
 package org.ff4j.web.controller;
 
-import static org.ff4j.web.bean.WebConstants.KEY_AUDITENABLE;
-import static org.ff4j.web.bean.WebConstants.TOGGLE_AUDIT;
-
 /*
  * #%L
- * ff4j-sample-web
+ * ff4j-web
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,12 +20,8 @@ import static org.ff4j.web.bean.WebConstants.TOGGLE_AUDIT;
  * #L%
  */
 
-
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.ff4j.FF4j;
 import org.ff4j.utils.Util;
 import org.ff4j.web.bean.WebConstants;
@@ -36,6 +29,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
+
+import java.io.IOException;
+
+import static org.ff4j.web.bean.WebConstants.KEY_AUDITENABLE;
+import static org.ff4j.web.bean.WebConstants.TOGGLE_AUDIT;
 
 /**
  * Controller for main class

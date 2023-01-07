@@ -1,17 +1,10 @@
 package org.ff4j.web;
 
-import org.ff4j.web.bean.WebConstants;
-
-import static org.ff4j.web.bean.WebConstants.VIEW_404;
-import static org.ff4j.web.bean.WebConstants.VIEW_API;
-import static org.ff4j.web.bean.WebConstants.VIEW_DEFAULT;
-import static org.ff4j.web.bean.WebConstants.VIEW_STATIC;
-
 /*
  * #%L
- * AdministrationConsoleServlet.java (ff4j-web) by Cedrick LUNVEN
+ * ff4j-web
  * %%
- * Copyright (C) 2013 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,11 +20,13 @@ import static org.ff4j.web.bean.WebConstants.VIEW_STATIC;
  * #L%
  */
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.ff4j.web.bean.WebConstants;
+
 import java.io.IOException;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import static org.ff4j.web.bean.WebConstants.*;
 
 /**
  * Unique Servlet to manage FlipPoints and security
@@ -45,7 +40,7 @@ public class FF4jDispatcherServlet extends FF4jServlet {
 
     /** {@inheritDoc} */
     public void doGet(HttpServletRequest req, HttpServletResponse res)
-    throws ServletException, IOException {
+    throws IOException {
         // Issue #437 : resources cannot be obtained without trailing slash
         if (redirectUrlWithoutSlash(req, res)) return;
 
@@ -79,7 +74,7 @@ public class FF4jDispatcherServlet extends FF4jServlet {
 
     /** {@inheritDoc} */
     public void doPost(HttpServletRequest req, HttpServletResponse res)
-    throws ServletException, IOException {
+    throws IOException {
         res.setCharacterEncoding(WebConstants.UTF8_ENCODING);
 
         String targetView = getTargetView(req);

@@ -1,11 +1,10 @@
 package org.ff4j.web.controller;
-import java.util.Date;
 
 /*
  * #%L
- * ff4j-sample-web
+ * ff4j-web
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,14 +20,15 @@ import java.util.Date;
  * #L%
  */
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.ff4j.FF4j;
 import org.ff4j.audit.EventQueryDefinition;
 import org.ff4j.web.bean.WebConstants;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
+
+import java.util.Date;
 
 /**
  * Display features metaData. 

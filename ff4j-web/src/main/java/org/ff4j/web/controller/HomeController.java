@@ -20,34 +20,20 @@ package org.ff4j.web.controller;
  * #L%
  */
 
-import static org.ff4j.web.bean.WebConstants.ERROR;
-import static org.ff4j.web.bean.WebConstants.FLIPFILE;
-import static org.ff4j.web.bean.WebConstants.OPERATION;
-import static org.ff4j.web.embedded.ConsoleOperations.importFile;
-
-import java.util.Calendar;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.io.FilenameUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.ff4j.FF4j;
 import org.ff4j.cache.FF4jCacheProxy;
-import org.ff4j.conf.FF4jConfiguration;
-import org.ff4j.conf.XmlParser;
-import org.ff4j.parser.properties.PropertiesParser;
-import org.ff4j.parser.yaml.YamlParser;
 import org.ff4j.web.bean.HomeBean;
 import org.ff4j.web.bean.WebConstants;
-import org.ff4j.web.embedded.ConsoleConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
+
+import java.util.Calendar;
+
+import static org.ff4j.web.bean.WebConstants.ERROR;
 
 /**
  * Controller for main class
@@ -75,7 +61,8 @@ public class HomeController extends AbstractController {
         String operation = req.getParameter(WebConstants.OPERATION);
 
         // Upload Configuration File
-        if (ServletFileUpload.isMultipartContent(req)) {
+        // fixme
+        /*if (ServletFileUpload.isMultipartContent(req)) {
             List<FileItem> items = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(req);
             for (FileItem item : items) {
                 if (item.isFormField()) {
@@ -88,10 +75,10 @@ public class HomeController extends AbstractController {
                         FF4jConfiguration ff4jConfig = null;
                         if (filename.toLowerCase().endsWith(ConsoleConstants.FORMAT_XML)) {
                             ff4jConfig = new XmlParser().parseConfigurationFile(item.getInputStream());
-                        } else if (filename.toLowerCase().endsWith(ConsoleConstants.FORMAT_YML) || 
+                        } else if (filename.toLowerCase().endsWith(ConsoleConstants.FORMAT_YML) ||
                                    filename.toLowerCase().endsWith(ConsoleConstants.FORMAT_YAML)) {
                             ff4jConfig = new YamlParser().parseConfigurationFile(item.getInputStream());
-                        } else if (filename.toLowerCase().endsWith(ConsoleConstants.FORMAT_PROPERTIES)) { 
+                        } else if (filename.toLowerCase().endsWith(ConsoleConstants.FORMAT_PROPERTIES)) {
                             ff4jConfig = new PropertiesParser().parseConfigurationFile(item.getInputStream());
                         }
                         if (ff4jConfig != null ) {
@@ -111,7 +98,7 @@ public class HomeController extends AbstractController {
             ctx.setVariable("msgType", msgType);
             ctx.setVariable("msgInfo", msg);
             get(req, res, ctx);
-        } else if (WebConstants.OP_CREATE_SCHEMA.equalsIgnoreCase(operation)) {
+        } else*/ if (WebConstants.OP_CREATE_SCHEMA.equalsIgnoreCase(operation)) {
             try {
                 getFf4j().createSchema();
                 msg = "Schema has been created in DB (if required).";
