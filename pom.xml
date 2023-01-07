@@ -182,13 +182,10 @@
         <!-- Custom Flipping Strategy -->
         <module>ff4j-strategy-drools</module>
         <!--
-        TODO: uncomment
         <module>ff4j-webapi-jersey2x</module> -> fixme: test failures
         <module>ff4j-store-gcp-datastore</module> -> fixme: Needs docker env
         <module>ff4j-store-ignite</module> -> fixme: test failures
         <module>ff4j-store-neo4j</module> -> fixme: test failures
-        
-        &lt;!&ndash;Custom Flipping Strategy &ndash;&gt;
         -->
     </modules>
 
