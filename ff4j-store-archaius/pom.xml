@@ -1,22 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~         COORDINATES      ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<artifactId>ff4j-store-archaius</artifactId>
 	<packaging>jar</packaging>
 	<name>ff4j-store-archaius</name>
-
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~         PARENT           ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<parent>
 		<groupId>org.ff4j</groupId>
 		<artifactId>ff4j-parent</artifactId>
-		<version>1.10-SNAPSHOT</version>
+		<version>2.0.0-SNAPSHOT</version>
 	</parent>
-
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~      PROPERTIES          ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -24,26 +21,22 @@
 		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
 		<archaius.version>0.7.7</archaius.version>
 	</properties>
-
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~       DEPENDENCIES       ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<dependencies>
-
 		<!-- logger -->
 		<dependency>
 			<groupId>org.ff4j</groupId>
 			<artifactId>ff4j-store-commonsconfig</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
         <!-- Archaius -->
         <dependency>
             <groupId>com.netflix.archaius</groupId>
             <artifactId>archaius-core</artifactId>
             <version>${archaius.version}</version>
         </dependency>
-        
         <!-- Spring -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -53,7 +46,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
         </dependency>
-
 		<!-- Tests -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -81,8 +73,5 @@
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
         </dependency>
-
 	</dependencies>
-
-
 </project>
