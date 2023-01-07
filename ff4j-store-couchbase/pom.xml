@@ -1,22 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <!-- ~     COORDINATES          ~ -->
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <artifactId>ff4j-store-couchbase</artifactId>
     <packaging>jar</packaging>
     <name>ff4j-store-couchbase</name>
-    
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <!-- ~   PARENT                 ~ -->
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <parent>
         <groupId>org.ff4j</groupId>
         <artifactId>ff4j-parent</artifactId>
-        <version>1.10-SNAPSHOT</version>
+        <version>2.0.0-SNAPSHOT</version>
     </parent>
-
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <!-- ~        PROPERTIES        ~ -->
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -29,12 +26,10 @@
         <java.version>1.8</java.version>
         <couchbase.client.version>2.7.23</couchbase.client.version>
     </properties>
-    
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <!-- ~      DEPENDENCIES        ~ -->
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <dependencies>
-    
         <!--  core -->
         <dependency>
             <artifactId>ff4j-core</artifactId>
@@ -54,14 +49,12 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
         </dependency>
-        
         <!-- couchbase -->
         <dependency>
             <groupId>com.couchbase.client</groupId>
             <artifactId>java-client</artifactId>
             <version>${couchbase.client.version}</version>
         </dependency>
-
         <!-- Tests -->
         <dependency>
             <artifactId>ff4j-test</artifactId>
@@ -74,6 +67,5 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-       
     </dependencies>
 </project>
