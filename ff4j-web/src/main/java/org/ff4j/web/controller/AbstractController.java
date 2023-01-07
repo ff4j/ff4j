@@ -1,14 +1,10 @@
 package org.ff4j.web.controller;
 
-import static org.ff4j.web.utils.WebUtils.getCookie;
-import static org.ff4j.web.utils.WebUtils.getSessionAttribute;
-import static org.ff4j.web.utils.WebUtils.setSessionAttribute;
-
 /*
  * #%L
- * ff4j-sample-web
+ * ff4j-web
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,19 +20,9 @@ import static org.ff4j.web.utils.WebUtils.setSessionAttribute;
  * #L%
  */
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.ff4j.FF4j;
 import org.ff4j.audit.EventQueryDefinition;
 import org.ff4j.utils.Util;
@@ -45,6 +31,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
+import org.thymeleaf.web.IWebExchange;
+import org.thymeleaf.web.servlet.JakartaServletWebApplication;
+
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static org.ff4j.web.utils.WebUtils.*;
 
 /**
  * Display view.
@@ -209,7 +204,9 @@ public abstract class AbstractController {
      *      current response
      */
     private WebContext makeWebContext(HttpServletRequest req, HttpServletResponse res) {
-        WebContext ctx = new WebContext(req, res,  req.getSession().getServletContext(), res.getLocale());
+        IWebExchange webExchange = JakartaServletWebApplication.buildApplication(req.getServletContext())
+                .buildExchange(req, res);
+        WebContext ctx = new WebContext(webExchange);
         ctx.setVariable("uptime",  getUptime());
         ctx.setVariable("version", Optional.ofNullable(ff4j.getVersion()).orElse("1.8.x"));
 

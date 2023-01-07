@@ -1,27 +1,10 @@
 package org.ff4j.web.embedded;
 
-import static org.ff4j.web.embedded.ConsoleConstants.CONTENT_TYPE_PROPERTIES;
-import static org.ff4j.web.embedded.ConsoleConstants.CONTENT_TYPE_XML;
-import static org.ff4j.web.embedded.ConsoleConstants.CONTENT_TYPE_YAML;
-import static org.ff4j.web.embedded.ConsoleConstants.DESCRIPTION;
-import static org.ff4j.web.embedded.ConsoleConstants.FEATID;
-import static org.ff4j.web.embedded.ConsoleConstants.FORMAT_PROPERTIES;
-import static org.ff4j.web.embedded.ConsoleConstants.FORMAT_XML;
-import static org.ff4j.web.embedded.ConsoleConstants.FORMAT_YAML;
-import static org.ff4j.web.embedded.ConsoleConstants.FORMAT_YML;
-import static org.ff4j.web.embedded.ConsoleConstants.GROUPNAME;
-import static org.ff4j.web.embedded.ConsoleConstants.PERMISSION;
-import static org.ff4j.web.embedded.ConsoleConstants.PERMISSION_RESTRICTED;
-import static org.ff4j.web.embedded.ConsoleConstants.PREFIX_CHECKBOX;
-import static org.ff4j.web.embedded.ConsoleConstants.SDF;
-import static org.ff4j.web.embedded.ConsoleConstants.STRATEGY;
-import static org.ff4j.web.embedded.ConsoleConstants.STRATEGY_INIT;
-
 /*
  * #%L
  * ff4j-web
  * %%
- * Copyright (C) 2013 - 2015 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,20 +20,9 @@ import static org.ff4j.web.embedded.ConsoleConstants.STRATEGY_INIT;
  * #L%
  */
 
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.ff4j.FF4j;
 import org.ff4j.conf.FF4jConfiguration;
 import org.ff4j.conf.FF4jConfigurationParser;
@@ -68,6 +40,13 @@ import org.ff4j.utils.Util;
 import org.ff4j.web.bean.WebConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.Map.Entry;
+
+import static org.ff4j.web.embedded.ConsoleConstants.*;
 
 public final class ConsoleOperations {
     
@@ -138,7 +117,7 @@ public final class ConsoleOperations {
             final String permission = req.getParameter(PERMISSION);
             if (null != permission && PERMISSION_RESTRICTED.equals(permission)) {
                 @SuppressWarnings("unchecked")
-                Map<String, Object> parameters = req.getParameterMap();
+                Map<String, String[]> parameters = req.getParameterMap();
                 Set<String> permissions = new HashSet<String>();
                 for (String key : parameters.keySet()) {
                     if (key.startsWith(PREFIX_CHECKBOX)) {
@@ -312,7 +291,7 @@ public final class ConsoleOperations {
             final String permission = req.getParameter(PERMISSION);
             if (null != permission && PERMISSION_RESTRICTED.equals(permission)) {
                 @SuppressWarnings("unchecked")
-                Map<String, Object> parameters = req.getParameterMap();
+                Map<String, String[]> parameters = req.getParameterMap();
                 Set<String> permissions = new HashSet<String>();
                 for (String key : parameters.keySet()) {
                     if (key.startsWith(PREFIX_CHECKBOX)) {

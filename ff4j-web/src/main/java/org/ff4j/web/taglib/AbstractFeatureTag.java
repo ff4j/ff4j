@@ -20,17 +20,16 @@ package org.ff4j.web.taglib;
  * #L%
  */
 
-import java.io.IOException;
-import java.util.Map;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.TagSupport;
-
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.tagext.TagSupport;
 import org.ff4j.FF4j;
 import org.ff4j.core.FlippingExecutionContext;
 
-import static org.ff4j.web.embedded.ConsoleConstants.*;
+import java.io.IOException;
+import java.util.Map;
+
+import static org.ff4j.web.embedded.ConsoleConstants.FF4J_SESSIONATTRIBUTE_NAME;
 
 /**
  * Parent class for FF4J TagLib library.

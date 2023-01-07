@@ -20,26 +20,8 @@ package org.ff4j.web.controller;
  * #L%
  */
 
-import static org.ff4j.web.bean.WebConstants.CONTENT_TYPE_JSON;
-import static org.ff4j.web.bean.WebConstants.GRAPH_BAR_HITRATIO;
-import static org.ff4j.web.bean.WebConstants.GRAPH_PIE_HITRATIO;
-import static org.ff4j.web.bean.WebConstants.GRAPH_PIE_HOST;
-import static org.ff4j.web.bean.WebConstants.GRAPH_PIE_SOURCE;
-import static org.ff4j.web.bean.WebConstants.GRAPH_PIE_USER;
-import static org.ff4j.web.bean.WebConstants.OP_AUDIT;
-import static org.ff4j.web.bean.WebConstants.OP_EXPORT;
-import static org.ff4j.web.bean.WebConstants.OP_FEATURES;
-import static org.ff4j.web.bean.WebConstants.OP_FEATUREUSAGE;
-import static org.ff4j.web.bean.WebConstants.OP_PROPERTIES;
-import static org.ff4j.web.bean.WebConstants.OP_TIMESERIES;
-
-import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.ff4j.FF4j;
 import org.ff4j.audit.Event;
 import org.ff4j.audit.EventQueryDefinition;
@@ -54,6 +36,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
+
+import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import static org.ff4j.web.bean.WebConstants.*;
 
 /**
  * Mini API to get informations through AJAX in JSON.

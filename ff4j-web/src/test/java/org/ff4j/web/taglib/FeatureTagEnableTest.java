@@ -20,6 +20,7 @@ package org.ff4j.web.taglib;
  * #L%
  */
 
+import jakarta.servlet.jsp.tagext.Tag;
 import org.ff4j.FF4j;
 import org.ff4j.core.FlippingExecutionContext;
 import org.junit.Assert;
@@ -29,8 +30,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockPageContext;
-
-import javax.servlet.jsp.tagext.Tag;
 
 import static org.ff4j.web.embedded.ConsoleConstants.FF4J_SESSIONATTRIBUTE_NAME;
 import static org.mockito.Mockito.never;

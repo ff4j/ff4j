@@ -156,9 +156,9 @@
         <module>ff4j-aop</module>
         <module>ff4j-config-yaml</module>
         <module>ff4j-config-properties</module>
+        <module>ff4j-web</module>
         <!--
         TODO: uncomment
-        <module>ff4j-web</module>
         <module>ff4j-cli</module>
         <module>ff4j-jmx</module>
 
