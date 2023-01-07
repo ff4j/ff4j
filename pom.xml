@@ -160,14 +160,15 @@
         <module>ff4j-cli</module>
         <module>ff4j-webapi</module>
         <module>ff4j-utils-json</module>
+        <module>ff4j-security-spring</module>
+        <module>ff4j-security-shiro</module>
         <!--
         TODO: uncomment
         &lt;!&ndash; Authorization Manager &ndash;&gt;
 
         <module>ff4j-webapi-jersey2x</module>
 
-        <module>ff4j-security-spring</module>
-        <module>ff4j-security-shiro</module>
+
 
         &lt;!&ndash; Stores &ndash;&gt;
         <module>ff4j-store-archaius</module>
@@ -205,6 +206,13 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-framework-bom</artifactId>
                 <version>6.0.3</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-bom</artifactId>
+                <version>6.0.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
