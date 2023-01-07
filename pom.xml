@@ -81,8 +81,6 @@
 
         <version.cglib>3.1</version.cglib>
         <version.aopalliance>1.0</version.aopalliance>
-        <version.spring>5.3.24</version.spring>
-        <version.spring.security>5.8.1</version.spring.security>
         <version.commons-lang>2.6</version.commons-lang>
         <version.commons-dbcp>1.4</version.commons-dbcp>
         <version.commons-io>2.11.0</version.commons-io>
@@ -157,22 +155,20 @@
         <module>ff4j-config-yaml</module>
         <module>ff4j-config-properties</module>
         <module>ff4j-web</module>
+        <module>ff4j-jmx</module>
+        <module>ff4j-store-jcache</module>
+        <module>ff4j-cli</module>
+        <module>ff4j-webapi</module>
+        <module>ff4j-utils-json</module>
         <!--
         TODO: uncomment
-        <module>ff4j-cli</module>
-        <module>ff4j-jmx</module>
-
-
-        <module>ff4j-webapi</module>
-        <module>ff4j-webapi-jersey2x</module>
-        <module>ff4j-utils-json</module>
-
         &lt;!&ndash; Authorization Manager &ndash;&gt;
+
+        <module>ff4j-webapi-jersey2x</module>
+
         <module>ff4j-security-spring</module>
         <module>ff4j-security-shiro</module>
-        
 
-        
         &lt;!&ndash; Stores &ndash;&gt;
         <module>ff4j-store-archaius</module>
         <module>ff4j-store-arangodb</module>
@@ -189,7 +185,6 @@
         <module>ff4j-store-hazelcast</module>
         <module>ff4j-store-hbase</module>
         <module>ff4j-store-ignite</module>
-        <module>ff4j-store-jcache</module>
         <module>ff4j-store-mongodb</module>
         <module>ff4j-store-neo4j</module>
         <module>ff4j-store-redis</module>
@@ -206,6 +201,13 @@
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-framework-bom</artifactId>
+                <version>6.0.3</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-bom</artifactId>
@@ -230,6 +232,7 @@
                 <scope>test</scope>
             </dependency>
             <!-- Swagger -->
+            <!-- todo: do we need to use spring-doc -->
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger2</artifactId>
@@ -284,83 +287,6 @@
                 <version>${easymock.version}</version>
                 <scope>test</scope>
             </dependency>
-            <!-- TODO: Why do we need this ?-->
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-test</artifactId>
-                <version>${spring-boot.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <!-- Spring -->
-            <!-- TODO: Can we have a bom instead of managing dependencies by us ?-->
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-core</artifactId>
-                <version>${version.spring}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-beans</artifactId>
-                <version>${version.spring}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-aop</artifactId>
-                <version>${version.spring}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context</artifactId>
-                <version>${version.spring}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-tx</artifactId>
-                <version>${version.spring}</version>
-            </dependency>
-            <dependency>
-                <groupId>cglib</groupId>
-                <artifactId>cglib</artifactId>
-                <version>${version.cglib}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-web</artifactId>
-                <version>${version.spring}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-webmvc</artifactId>
-                <version>${version.spring}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-test</artifactId>
-                <version>${version.spring}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-jdbc</artifactId>
-                <version>${version.spring}</version>
-            </dependency>
-            <!-- Spring security -->
-            <!-- TODO: Can we have a bom instead of managing dependencies by us ?-->
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-core</artifactId>
-                <version>${version.spring.security}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-web</artifactId>
-                <version>${version.spring.security}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-config</artifactId>
-                <version>${version.spring.security}</version>
-            </dependency>
-
             <!-- commons -->
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -479,12 +405,6 @@
                 <artifactId>powermock-api-mockito</artifactId>
                 <version>${version.powermock}</version>
             </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-aspects</artifactId>
-                <version>${version.spring}</version>
-            </dependency>
-
             <!-- web -->
             <!-- TODO: Need to use jakarta -->
             <dependency>
