@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.ff4j</groupId>
     <artifactId>ff4j-parent</artifactId>
-    <version>1.10-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <!-- ~ MAIN INFO ~ -->
@@ -64,9 +64,9 @@
         <github.login/>
         <encoding>UTF-8</encoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
 
         <!-- License -->
         <license.licenseName>apache_v2</license.licenseName>
@@ -152,25 +152,28 @@
     <modules>
 
         <module>ff4j-core</module>
-        <module>ff4j-aop</module>
         <module>ff4j-test</module>
+        <module>ff4j-aop</module>
+        <module>ff4j-config-yaml</module>
+        <module>ff4j-config-properties</module>
+        <!--
+        TODO: uncomment
+        <module>ff4j-web</module>
         <module>ff4j-cli</module>
         <module>ff4j-jmx</module>
 
-        <module>ff4j-web</module>
+
         <module>ff4j-webapi</module>
         <module>ff4j-webapi-jersey2x</module>
         <module>ff4j-utils-json</module>
 
-        <!-- Authorization Manager -->
+        &lt;!&ndash; Authorization Manager &ndash;&gt;
         <module>ff4j-security-spring</module>
         <module>ff4j-security-shiro</module>
         
-        <!-- Read values files -->
-        <module>ff4j-config-yaml</module>
-        <module>ff4j-config-properties</module>
+
         
-        <!-- Stores -->
+        &lt;!&ndash; Stores &ndash;&gt;
         <module>ff4j-store-archaius</module>
         <module>ff4j-store-arangodb</module>
         <module>ff4j-store-aws-dynamodb</module>
@@ -192,9 +195,9 @@
         <module>ff4j-store-redis</module>
         <module>ff4j-store-springjdbc</module>
         
-        <!--Custom Flipping Strategy -->
+        &lt;!&ndash;Custom Flipping Strategy &ndash;&gt;
         <module>ff4j-strategy-drools</module>
-
+        -->
     </modules>
 
 
@@ -260,24 +263,28 @@
                 <version>${jsonassert.version}</version>
                 <scope>test</scope>
             </dependency>
+            <!-- TODO: Why do we need this ?-->
             <dependency>
                 <groupId>info.cukes</groupId>
                 <artifactId>cucumber-junit</artifactId>
                 <version>${cucumber.version}</version>
                 <scope>test</scope>
             </dependency>
+            <!-- TODO: Why do we need this ?-->
             <dependency>
                 <groupId>info.cukes</groupId>
                 <artifactId>cucumber-spring</artifactId>
                 <version>${cucumber.version}</version>
                 <scope>test</scope>
             </dependency>
+            <!-- TODO: Why do we need this ?-->
             <dependency>
                 <groupId>org.easymock</groupId>
                 <artifactId>easymock</artifactId>
                 <version>${easymock.version}</version>
                 <scope>test</scope>
             </dependency>
+            <!-- TODO: Why do we need this ?-->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-test</artifactId>
@@ -285,6 +292,7 @@
                 <scope>test</scope>
             </dependency>
             <!-- Spring -->
+            <!-- TODO: Can we have a bom instead of managing dependencies by us ?-->
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-core</artifactId>
@@ -335,8 +343,8 @@
                 <artifactId>spring-jdbc</artifactId>
                 <version>${version.spring}</version>
             </dependency>
-
             <!-- Spring security -->
+            <!-- TODO: Can we have a bom instead of managing dependencies by us ?-->
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-core</artifactId>
@@ -384,6 +392,7 @@
                 <artifactId>commons-io</artifactId>
                 <version>${version.commons-io}</version>
             </dependency>
+            <!-- todo: do we need this? as there is no support for latest servlet -->
             <dependency>
                 <groupId>commons-fileupload</groupId>
                 <artifactId>commons-fileupload</artifactId>
@@ -477,6 +486,7 @@
             </dependency>
 
             <!-- web -->
+            <!-- TODO: Need to use jakarta -->
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>servlet-api</artifactId>
