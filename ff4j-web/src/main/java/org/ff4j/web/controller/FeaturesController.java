@@ -20,37 +20,8 @@ package org.ff4j.web.controller;
  * #L%
  */
 
-import static org.ff4j.web.bean.WebConstants.DESCRIPTION;
-import static org.ff4j.web.bean.WebConstants.GROUPNAME;
-import static org.ff4j.web.bean.WebConstants.NEW_NAME;
-import static org.ff4j.web.bean.WebConstants.OP_ADD_PERMISSION;
-import static org.ff4j.web.bean.WebConstants.OP_CLEAR_PERMISSIONS;
-import static org.ff4j.web.bean.WebConstants.OP_COPY_FEATURE;
-import static org.ff4j.web.bean.WebConstants.OP_CREATE_FEATURE;
-import static org.ff4j.web.bean.WebConstants.OP_DISABLE;
-import static org.ff4j.web.bean.WebConstants.OP_EDIT_FEATURE;
-import static org.ff4j.web.bean.WebConstants.OP_ENABLE;
-import static org.ff4j.web.bean.WebConstants.OP_RENAME_FEATURE;
-import static org.ff4j.web.bean.WebConstants.OP_RMV_FEATURE;
-import static org.ff4j.web.bean.WebConstants.OP_RMV_PERMISSION;
-import static org.ff4j.web.bean.WebConstants.OP_RMV_PROPERTY;
-import static org.ff4j.web.bean.WebConstants.OP_TOGGLE_GROUP;
-import static org.ff4j.web.bean.WebConstants.STRATEGY;
-import static org.ff4j.web.bean.WebConstants.STRATEGY_INIT;
-import static org.ff4j.web.bean.WebConstants.SUBOPERATION;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FlippingStrategy;
@@ -62,6 +33,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
+
+import java.io.IOException;
+import java.util.*;
+
+import static org.ff4j.web.bean.WebConstants.*;
 
 /**
  * Controller for main class

@@ -20,8 +20,7 @@ package org.ff4j.web.taglib;
  * #L%
  */
 
-import javax.servlet.jsp.PageContext;
-
+import jakarta.servlet.jsp.PageContext;
 import org.ff4j.FF4j;
 import org.ff4j.core.FlippingExecutionContext;
 

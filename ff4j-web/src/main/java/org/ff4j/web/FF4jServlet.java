@@ -1,21 +1,10 @@
 package org.ff4j.web;
 
-import static org.ff4j.web.bean.WebConstants.CSS_SESSIONATTRIBUTE_NAME;
-import static org.ff4j.web.bean.WebConstants.FF4J_SESSIONATTRIBUTE_NAME;
-import static org.ff4j.web.bean.WebConstants.SERVLETPARAM_CSS;
-import static org.ff4j.web.bean.WebConstants.SERVLETPARAM_FF4JPROVIDER;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
 /*
  * #%L
  * ff4j-web
  * %%
- * Copyright (C) 2013 - 2015 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,29 +20,25 @@ import java.util.Map;
  * #L%
  */
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
 import org.ff4j.FF4j;
-import org.ff4j.web.controller.AbstractController;
-import org.ff4j.web.controller.AuditController;
-import org.ff4j.web.controller.FeatureUsageController;
-import org.ff4j.web.controller.FeaturesController;
-import org.ff4j.web.controller.HomeController;
-import org.ff4j.web.controller.InfosController;
-import org.ff4j.web.controller.NotFoundController;
-import org.ff4j.web.controller.OperationsController;
-import org.ff4j.web.controller.PropertiesController;
-import org.ff4j.web.controller.SettingsController;
-import org.ff4j.web.controller.StaticResourceController;
-import org.ff4j.web.controller.TimeSeriesController;
+import org.ff4j.web.controller.*;
 import org.ff4j.web.thymeleaf.CustomMessageResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.ff4j.web.bean.WebConstants.*;
 
 /**
  * Servlet initialisation to put FF4J in HTTP Session.

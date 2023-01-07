@@ -1,22 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~ COORDINATES ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<artifactId>ff4j-web</artifactId>
 	<packaging>jar</packaging>
 	<name>ff4j-web</name>
-
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~ PARENT ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<parent>
 		<groupId>org.ff4j</groupId>
 		<artifactId>ff4j-parent</artifactId>
-		<version>1.10-SNAPSHOT</version>
+		<version>2.0.0-SNAPSHOT</version>
 	</parent>
-
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~ PROPERTIES ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -24,12 +21,21 @@
 		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
 		<version.jacoco>0.8.7</version.jacoco>
 	</properties>
-
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~ DEPENDENCIES ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-framework-bom</artifactId>
+				<version>6.0.3</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	<dependencies>
-
 		<!-- core -->
 		<dependency>
 			<artifactId>ff4j-core</artifactId>
@@ -46,7 +52,6 @@
 			<artifactId>ff4j-config-yaml</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
 		<!-- web -->
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -57,23 +62,24 @@
 			<artifactId>commons-fileupload</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+			<version>6.0.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>javax.servlet.jsp</groupId>
-			<artifactId>jsp-api</artifactId>
+			<groupId>jakarta.servlet.jsp</groupId>
+			<artifactId>jakarta.servlet.jsp-api</artifactId>
+			<version>3.1.0</version>
 			<scope>provided</scope>
 		</dependency>
-		
 		<!-- TagLibs -->
 		<dependency>
-			<groupId>javax.servlet.jsp.jstl</groupId>
-			<artifactId>jstl-api</artifactId>
-			<version>1.2</version>
+			<groupId>jakarta.servlet.jsp.jstl</groupId>
+			<artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+			<version>3.0.0</version>
 		</dependency>
-		
+
 		<dependency>
 		    <groupId>javax.activation</groupId>
     		<artifactId>activation</artifactId>
@@ -84,21 +90,18 @@
 		    <artifactId>jaxb-api</artifactId>
 		    <version>2.3.1</version>
 		</dependency>
-		
 		<!-- Fixing issue #241 -->
 		<dependency>
             <groupId>org.apache.taglibs</groupId>
             <artifactId>taglibs-standard-impl</artifactId>
             <version>1.2.5</version>
         </dependency>
-		
 		<!-- Templating Engine -->
 		<dependency>
 			<groupId>org.thymeleaf</groupId>
 			<artifactId>thymeleaf</artifactId>
-			<version>3.0.15.RELEASE</version>
+			<version>3.1.1.RELEASE</version>
 		</dependency>
-		
 		<!-- Support for tests -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -113,22 +116,13 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
+			<version>6.0.3</version>
 			<scope>test</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.0.1</version>
-			<scope>test</scope>
-		</dependency>
-		
 		<!-- logs -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
 		</dependency>
-
 	</dependencies>
-
 </project>

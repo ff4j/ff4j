@@ -20,23 +20,20 @@ package org.ff4j.web.controller;
  * #L%
  */
 
-import static org.ff4j.web.bean.WebConstants.CONTENT_TYPE_CSS;
-import static org.ff4j.web.bean.WebConstants.CONTENT_TYPE_JS;
-import static org.ff4j.web.bean.WebConstants.CONTENT_TYPE_TEXT;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.ff4j.FF4j;
+import org.ff4j.web.utils.FileUtils;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 
+import javax.activation.MimetypesFileTypeMap;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.activation.MimetypesFileTypeMap;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.ff4j.FF4j;
-import org.ff4j.web.utils.FileUtils;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
+import static org.ff4j.web.bean.WebConstants.*;
 
 /**
  * Load static resource and create response, overriding content type.
