@@ -171,12 +171,12 @@
         <module>ff4j-store-cassandra</module>
         <module>ff4j-store-consul</module>
         <module>ff4j-store-couchbase</module>
+        <module>ff4j-store-couchdb</module>
         <!--
         TODO: uncomment
         <module>ff4j-webapi-jersey2x</module>
 
         &lt;!&ndash; Stores &ndash;&gt;
-        <module>ff4j-store-couchdb</module>
         <module>ff4j-store-ehcache</module>
         <module>ff4j-store-elastic</module>
         <module>ff4j-store-gcp-datastore</module>
