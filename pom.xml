@@ -179,6 +179,8 @@
         <module>ff4j-store-mongodb</module>
         <module>ff4j-store-redis</module>
         <module>ff4j-store-springjdbc</module>
+        <!-- Custom Flipping Strategy -->
+        <module>ff4j-strategy-drools</module>
         <!--
         TODO: uncomment
         <module>ff4j-webapi-jersey2x</module> -> fixme: test failures
@@ -187,7 +189,6 @@
         <module>ff4j-store-neo4j</module> -> fixme: test failures
         
         &lt;!&ndash;Custom Flipping Strategy &ndash;&gt;
-        <module>ff4j-strategy-drools</module>
         -->
     </modules>
 
