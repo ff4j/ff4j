@@ -1,35 +1,29 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	
 	<modelVersion>4.0.0</modelVersion>
-
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~ COORDINATES ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<artifactId>ff4j-store-couchdb</artifactId>
 	<packaging>jar</packaging>
 	<name>ff4j-store-couchdb</name>
-
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~ PARENT ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<parent>
 		<groupId>org.ff4j</groupId>
 		<artifactId>ff4j-parent</artifactId>
-		<version>1.10-SNAPSHOT</version>
+		<version>2.0.0-SNAPSHOT</version>
 	</parent>
-
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~ PROPERTIES ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<properties>
 		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
 	</properties>
-
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~ DEPENDENCIES ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<dependencies>
-
 		<!-- core -->
         <dependency>
             <artifactId>ff4j-core</artifactId>
@@ -41,13 +35,11 @@
             <artifactId>ff4j-utils-json</artifactId>
             <version>${project.version}</version>
         </dependency>
-
 		<dependency>
 			<groupId>org.lightcouch</groupId>
 			<artifactId>lightcouch</artifactId>
 			<version>0.2.0</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -68,7 +60,6 @@
 			<artifactId>org.ektorp.spring</artifactId>
 			<version>1.5.0</version>
 		</dependency>
-
 		<!-- ****************** Tests  ***************************** -->
 		<dependency>
 			<artifactId>ff4j-test</artifactId>
@@ -107,7 +98,5 @@
 			<version>1.14.3</version>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
-
 </project>
