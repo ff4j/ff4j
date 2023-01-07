@@ -178,15 +178,13 @@
         <module>ff4j-store-hbase</module>
         <module>ff4j-store-mongodb</module>
         <module>ff4j-store-redis</module>
+        <module>ff4j-store-springjdbc</module>
         <!--
         TODO: uncomment
         <module>ff4j-webapi-jersey2x</module> -> fixme: test failures
-
-        &lt;!&ndash; Stores &ndash;&gt;
         <module>ff4j-store-gcp-datastore</module> -> fixme: Needs docker env
         <module>ff4j-store-ignite</module> -> fixme: test failures
         <module>ff4j-store-neo4j</module> -> fixme: test failures
-        <module>ff4j-store-springjdbc</module>
         
         &lt;!&ndash;Custom Flipping Strategy &ndash;&gt;
         <module>ff4j-strategy-drools</module>
