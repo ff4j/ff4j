@@ -22,3 +22,5 @@ dist
 .factorypath
 .sts4-cache
 *.log
+
+.java-version
