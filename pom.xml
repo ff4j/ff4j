@@ -82,7 +82,7 @@
         <version.cglib>3.1</version.cglib>
         <version.aopalliance>1.0</version.aopalliance>
         <version.spring>5.3.24</version.spring>
-        <version.spring.security>5.8.0</version.spring.security>
+        <version.spring.security>5.8.1</version.spring.security>
         <version.commons-lang>2.6</version.commons-lang>
         <version.commons-dbcp>1.4</version.commons-dbcp>
         <version.commons-io>2.11.0</version.commons-io>
