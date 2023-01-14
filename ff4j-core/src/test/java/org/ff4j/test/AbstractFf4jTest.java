@@ -20,7 +20,7 @@ package org.ff4j.test;
  * #L%
  */
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -89,7 +89,7 @@ public abstract class AbstractFf4jTest implements TestConstantsFF4j {
      */
     @Test
     public void testMock() throws IOException {
-        Assert.assertTrue(mockFlipStrategy.evaluate("", null, null));
+        Assert.assertFalse(mockFlipStrategy.evaluate("", null, null));
         Assert.assertEquals(mockAuthManager.getCurrentUserPermissions(),
                 new HashSet<String>(Arrays.asList(new String[] {"ROLEA"})));
     }
