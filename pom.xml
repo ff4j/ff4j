@@ -77,8 +77,7 @@
         <version.slf4j>1.7.36</version.slf4j>
         <version.junit>4.13.2</version.junit>
         <version.powermock>1.5.5</version.powermock>
-        <version.mockito>1.9.5</version.mockito>
-
+        <version.mockito>4.11.0</version.mockito>
         <version.cglib>3.1</version.cglib>
         <version.aopalliance>1.0</version.aopalliance>
         <version.commons-lang>2.6</version.commons-lang>
@@ -181,14 +180,10 @@
         <module>ff4j-store-springjdbc</module>
         <!-- Custom Flipping Strategy -->
         <module>ff4j-strategy-drools</module>
-        <!--
-        TODO: uncomment
-        <module>ff4j-webapi-jersey2x</module> -> fixme: test failures
-        <module>ff4j-store-gcp-datastore</module> -> fixme: Needs docker env
+        <module>ff4j-webapi-jersey2x</module>
+        <!--<module>ff4j-store-gcp-datastore</module> -> fixme: Needs docker env
         <module>ff4j-store-ignite</module> -> fixme: test failures
         <module>ff4j-store-neo4j</module> -> fixme: test failures
-        
-        &lt;!&ndash;Custom Flipping Strategy &ndash;&gt;
         -->
     </modules>
 
@@ -219,6 +214,14 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-bom</artifactId>
+                <version>${version.mockito}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
@@ -388,16 +391,6 @@
                 <groupId>commons-dbcp</groupId>
                 <artifactId>commons-dbcp</artifactId>
                 <version>${version.commons-dbcp}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-all</artifactId>
-                <version>${version.mockito}</version>
-            </dependency>
-             <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-core</artifactId>
-                <version>${version.mockito}</version>
             </dependency>
             <dependency>
                 <groupId>org.powermock</groupId>

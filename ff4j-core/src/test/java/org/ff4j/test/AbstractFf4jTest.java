@@ -20,7 +20,8 @@ package org.ff4j.test;
  * #L%
  */
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -70,7 +71,7 @@ public abstract class AbstractFf4jTest implements TestConstantsFF4j {
         
         // Create MOCK
         mockFlipStrategy = mock(FlippingStrategy.class);
-        when(mockFlipStrategy.evaluate(any(String.class), any(FeatureStore.class), any(FlippingExecutionContext.class)))
+        when(mockFlipStrategy.evaluate(any(String.class), isNull(FeatureStore.class), isNull(FlippingExecutionContext.class)))
                 .thenReturn(true);
         when(mockFlipStrategy.getInitParams()).thenReturn(null);
 
