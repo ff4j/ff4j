@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.ff4j</groupId>
+	<artifactId>ff4j-parent</artifactId>
+	<version>3.0.0-SNAPSHOT</version>
+
+	<name>Feature Flipping 4 Java</name>
+	<packaging>pom</packaging>
+	<url>http://ff4j.org</url>
+	<inceptionYear>2013</inceptionYear>
+	<description>
+        FF4J, stands for Feature Flipping for Java, helps you to implement the 'feature toggle' agile development practice.
+        Features (services/behaviour/treatments/screen parts) can be enabled and disabled at runtime but also limited to
+        an authorized sub-set of users (e.g : beta-testers for beta feature). Once the feature is enabled and granted you can
+        implement your own strategy to flip through custom FlippingStrategy.
+    </description>
+
+	<properties>
+
+		<!-- General -->
+		<github.login />
+		<version.jdk>17</version.jdk>
+		<encoding>UTF-8</encoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<version.maven.minimal>3.8.6</version.maven.minimal>
+
+		<!-- Java -->
+		<maven.plugin.compiler.source>17</maven.plugin.compiler.source>
+		<maven.plugin.compiler.target>17</maven.plugin.compiler.target>
+		<maven.plugin.javadoc.source>17</maven.plugin.javadoc.source>
+
+		<!-- Third Parties (alphabetical order) -->
+		<version.commons-dbcp2>2.9.0</version.commons-dbcp2>
+		<version.hsqldb>2.7.1</version.hsqldb>
+		<version.logback>1.4.5</version.logback>
+		<version.jackson>2.14.1</version.jackson>
+		<version.jupiter-platform>1.9.1</version.jupiter-platform>
+		<version.jupiter-unit>5.9.1</version.jupiter-unit>
+		<version.mockito>4.10.0</version.mockito>
+		<version.slf4j>2.0.5</version.slf4j>
+		<version.snakeyaml>1.33</version.snakeyaml>
+
+		<!-- MAVEN (alphabetical order) -->
+		<version.maven.plugin.clean>3.2.0</version.maven.plugin.clean>
+		<version.maven.plugin.compiler>3.10.1</version.maven.plugin.compiler>
+		<version.maven.plugin.dependency>3.4.0</version.maven.plugin.dependency>
+		<version.maven.plugin.deploy>3.0.0</version.maven.plugin.deploy>
+		<version.maven.plugin.enforce>3.1.0</version.maven.plugin.enforce>
+		<version.maven.plugin.gpg>3.0.1</version.maven.plugin.gpg>
+		<version.maven.plugin.install>3.1.0</version.maven.plugin.install>
+		<version.maven.plugin.jacoco>0.8.8</version.maven.plugin.jacoco>
+		<version.maven.plugin.jar>3.3.0</version.maven.plugin.jar>
+		<version.maven.plugin.javadoc>3.4.1</version.maven.plugin.javadoc>
+		<version.maven.plugin.nexus>1.6.13</version.maven.plugin.nexus>
+		<version.maven.plugin.release>3.0.0-M7</version.maven.plugin.release>
+		<version.maven.plugin.resources>3.3.0</version.maven.plugin.resources>
+		<version.maven.plugin.site>4.0.0-M4</version.maven.plugin.site>
+		<version.maven.plugin.source>3.2.1</version.maven.plugin.source>
+		<version.maven.plugin.surefire>3.0.0-M7</version.maven.plugin.surefire>
+		<version.maven.plugin.versions>2.14.1</version.maven.plugin.versions>
+
+	</properties>
+
+	<!-- Sub modules -->
+	<modules>
+		<module>ff4j-core</module>
+		<module>ff4j-openfeature-java</module>
+	</modules>
+
+	<!-- Enforce dependencies versions -->
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${version.slf4j}</version>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>${version.logback}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-engine</artifactId>
+				<version>${version.jupiter-unit}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-params</artifactId>
+				<version>${version.jupiter-unit}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.platform</groupId>
+				<artifactId>junit-platform-runner</artifactId>
+				<version>${version.jupiter-platform}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.platform</groupId>
+				<artifactId>junit-platform-launcher</artifactId>
+				<version>${version.jupiter-platform}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.platform</groupId>
+				<artifactId>junit-platform-console-standalone</artifactId>
+				<version>${version.jupiter-platform}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hsqldb</groupId>
+				<artifactId>hsqldb</artifactId>
+				<version>${version.hsqldb}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-dbcp2</artifactId>
+				<version>${version.commons-dbcp2}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson</groupId>
+				<artifactId>jackson-bom</artifactId>
+				<version>${version.jackson}</version>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>org.yaml</groupId>
+				<artifactId>snakeyaml</artifactId>
+				<version>${version.snakeyaml}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-core</artifactId>
+				<version>${version.mockito}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<!-- Setting Build, packaging, release -->
+	<build>
+
+		<plugins>
+
+			<!-- Unit Test Coverage -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${version.maven.plugin.jacoco}</version>
+				<executions>
+					<execution>
+						<id>default-prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>default-report</id>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Deploy to nexus (Central Maven) -->
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>${version.maven.plugin.nexus}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ossrh</serverId>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
+
+			<!-- Compiling with JDK 11 requires some minimal Maven version -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>${version.maven.plugin.enforce}</version>
+				<executions>
+					<execution>
+						<id>enforce-versions</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireMavenVersion>
+									<version>${version.maven.minimal}</version>
+								</requireMavenVersion>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${version.maven.plugin.compiler}</version>
+					<configuration>
+						<release>${version.jdk}</release>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>${version.maven.plugin.dependency}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>${version.maven.plugin.javadoc}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>${version.maven.plugin.clean}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>${version.maven.plugin.site}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>${version.maven.plugin.deploy}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>${version.maven.plugin.install}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>${version.maven.plugin.release}</version>
+					<configuration>
+						<autoVersionSubmodules>true</autoVersionSubmodules>
+						<useReleaseProfile>false</useReleaseProfile>
+						<releaseProfiles>release</releaseProfiles>
+						<goals>deploy</goals>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>versions-maven-plugin</artifactId>
+					<version>${version.maven.plugin.versions}</version>
+					<configuration>
+						<generateBackupPoms>false</generateBackupPoms>
+					</configuration>
+				</plugin>
+
+				<!-- Unit Testing -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${version.maven.plugin.surefire}</version>
+				</plugin>
+
+				<!-- Manifest checking -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>${version.maven.plugin.jar}</version>
+					<configuration>
+						<excludes>
+							<exclude>**/logback.xml</exclude>
+						</excludes>
+						<archive>
+							<manifest>
+								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+								<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+							</manifest>
+						</archive>
+					</configuration>
+				</plugin>
+
+				<!-- Force UTF-8 -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>${version.maven.plugin.resources}</version>
+					<configuration>
+						<escapeString>\</escapeString>
+						<encoding>UTF-8</encoding>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+	</build>
+
+	<scm>
+		<connection>scm:git:git@github.com:ff4j/ff4j.git</connection>
+		<developerConnection>scm:git:git@github.com:ff4j/ff4j.git</developerConnection>
+		<url>git@github.com:ff4j/ff4j.git</url>
+		<tag>HEAD</tag>
+	</scm>
+	
+	<licenses>
+		<license>
+			<name>Apache 2</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	
+	<organization>
+		<name>FF4J</name>
+		<url>http://ff4j.github.io</url>
+	</organization>
+
+	<profiles>
+		<profile>
+			<id>release</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>${version.maven.plugin.source}</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>${version.maven.plugin.javadoc}</version>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>${version.maven.plugin.gpg}</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<developers>
+		<developer>
+			<id>clunven</id>
+			<name>Cedrick LUNVEN</name>
+			<email>cedrick.lunven@gmail.com</email>
+			<url>https://github.com/clun</url>
+			<organization>ff4j</organization>
+			<organizationUrl>ff4j.github.io</organizationUrl>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>-6</timezone>
+			<properties>
+				<picUrl>https://en.gravatar.com/userimage/51914944/4da178b06ad331be75ae495215d238c8.png</picUrl>
+			</properties>
+		</developer>
+	</developers>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
+
+</project>
