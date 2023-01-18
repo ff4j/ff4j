@@ -22,18 +22,30 @@ package org.ff4j.web.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 import org.ff4j.FF4j;
 import org.ff4j.cache.FF4jCacheProxy;
+import org.ff4j.conf.FF4jConfiguration;
+import org.ff4j.conf.XmlParser;
+import org.ff4j.parser.properties.PropertiesParser;
+import org.ff4j.parser.yaml.YamlParser;
 import org.ff4j.web.bean.HomeBean;
 import org.ff4j.web.bean.WebConstants;
+import org.ff4j.web.embedded.ConsoleConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
+import java.io.IOException;
 import java.util.Calendar;
+import java.util.Locale;
 
 import static org.ff4j.web.bean.WebConstants.ERROR;
+import static org.ff4j.web.bean.WebConstants.FLIPFILE;
+import static org.ff4j.web.bean.WebConstants.OPERATION;
+import static org.ff4j.web.embedded.ConsoleOperations.importFile;
+import static org.thymeleaf.util.StringUtils.isEmpty;
 
 /**
  * Controller for main class
@@ -45,42 +57,51 @@ public class HomeController extends AbstractController {
     /** Logger for this class. */
     public static final Logger LOGGER = LoggerFactory.getLogger(HomeController.class);
 
-	/** View name. */
+    /** View name. */
 	private static final String VIEW_HOME = "home";
+    public static final String MULTIPART_FORM_DATA = "multipart/form-data";
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
 	public HomeController(FF4j ff4j, TemplateEngine te) {
 		super(ff4j, VIEW_HOME, te);
 	}
+
+    private boolean isMultipartContent(String contentType){
+        return !isEmpty(contentType) &&
+                contentType.toLowerCase(Locale.ENGLISH).startsWith(MULTIPART_FORM_DATA);
+    }
+
+    private static FF4jConfiguration getFf4jConfiguration(Part part, String filename) throws IOException {
+
+        FF4jConfiguration ff4jConfig = null;
+        if (filename.toLowerCase().endsWith(ConsoleConstants.FORMAT_XML)) {
+            ff4jConfig = new XmlParser().parseConfigurationFile(part.getInputStream());
+        } else if (filename.toLowerCase().endsWith(ConsoleConstants.FORMAT_YML) ||
+                filename.toLowerCase().endsWith(ConsoleConstants.FORMAT_YAML)) {
+            ff4jConfig = new YamlParser().parseConfigurationFile(part.getInputStream());
+        } else if (filename.toLowerCase().endsWith(ConsoleConstants.FORMAT_PROPERTIES)) {
+            ff4jConfig = new PropertiesParser().parseConfigurationFile(part.getInputStream());
+        }
+        return ff4jConfig;
+    }
 
 	/** {@inheritDoc} */
     public void post(HttpServletRequest req, HttpServletResponse res, WebContext ctx)
     throws Exception {
         String msg       = null;
         String msgType   = "success";
-        String operation = req.getParameter(WebConstants.OPERATION);
+        String operation = req.getParameter(OPERATION);
 
-        // Upload Configuration File
-        // fixme
-        /*if (ServletFileUpload.isMultipartContent(req)) {
-            List<FileItem> items = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(req);
-            for (FileItem item : items) {
-                if (item.isFormField()) {
-                    if (OPERATION.equalsIgnoreCase(item.getFieldName())) {
-                        LOGGER.info("Processing action : " + item.getString());
-                    }
-                } else if (FLIPFILE.equalsIgnoreCase(item.getFieldName())) {
-                    String filename = FilenameUtils.getName(item.getName());
+        if(isMultipartContent(req.getContentType())){
+            for (Part part : req.getParts()) {
+                if (OPERATION.equalsIgnoreCase(part.getName())) {
+                    LOGGER.info("Processing action : " + part.getName());
+                } else if (FLIPFILE.equalsIgnoreCase(part.getName())) {
+                    String filename = part.getSubmittedFileName();
+                    LOGGER.info("Processing flipfile : " + filename);
                     try {
-                        FF4jConfiguration ff4jConfig = null;
-                        if (filename.toLowerCase().endsWith(ConsoleConstants.FORMAT_XML)) {
-                            ff4jConfig = new XmlParser().parseConfigurationFile(item.getInputStream());
-                        } else if (filename.toLowerCase().endsWith(ConsoleConstants.FORMAT_YML) ||
-                                   filename.toLowerCase().endsWith(ConsoleConstants.FORMAT_YAML)) {
-                            ff4jConfig = new YamlParser().parseConfigurationFile(item.getInputStream());
-                        } else if (filename.toLowerCase().endsWith(ConsoleConstants.FORMAT_PROPERTIES)) {
-                            ff4jConfig = new PropertiesParser().parseConfigurationFile(item.getInputStream());
-                        }
+
+                        FF4jConfiguration ff4jConfig = getFf4jConfiguration(part,filename);
                         if (ff4jConfig != null ) {
                             importFile(getFf4j(), ff4jConfig);
                             msg = "The file <b>" + filename + "</b> has been successfully imported";
@@ -88,7 +109,7 @@ public class HomeController extends AbstractController {
                             msgType = ERROR;
                             msg = "Invalid FILE, must be XML, YAML or PROPERTIES files";
                         }
-                    } catch(RuntimeException re) {
+                    } catch (RuntimeException re) {
                         msgType = ERROR;
                         msg = "Cannot Import Config:" + re.getMessage();
                         break;
@@ -98,7 +119,7 @@ public class HomeController extends AbstractController {
             ctx.setVariable("msgType", msgType);
             ctx.setVariable("msgInfo", msg);
             get(req, res, ctx);
-        } else*/ if (WebConstants.OP_CREATE_SCHEMA.equalsIgnoreCase(operation)) {
+        } else if (WebConstants.OP_CREATE_SCHEMA.equalsIgnoreCase(operation)) {
             try {
                 getFf4j().createSchema();
                 msg = "Schema has been created in DB (if required).";
