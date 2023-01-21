@@ -123,7 +123,7 @@
         <version.maven.plugin.source>2.2.1</version.maven.plugin.source>
         <version.maven.plugin.license>1.8</version.maven.plugin.license>
         <version.maven.plugin.nexus>1.6.8</version.maven.plugin.nexus>
-        <version.maven.plugin.compiler>3.3</version.maven.plugin.compiler>
+        <version.maven.plugin.compiler>3.10.1</version.maven.plugin.compiler>
         <version.maven.plugin.jar>3.2.0</version.maven.plugin.jar>
         <version.maven.plugin.dependency>2.8</version.maven.plugin.dependency>
 
@@ -178,12 +178,13 @@
         <module>ff4j-store-mongodb</module>
         <module>ff4j-store-redis</module>
         <module>ff4j-store-springjdbc</module>
+        <module>ff4j-store-ignite</module>
+        <module>ff4j-store-neo4j</module>
         <!-- Custom Flipping Strategy -->
         <module>ff4j-strategy-drools</module>
         <module>ff4j-webapi-jersey2x</module>
         <!--<module>ff4j-store-gcp-datastore</module> -> fixme: Needs docker env
-        <module>ff4j-store-ignite</module> -> fixme: test failures
-        <module>ff4j-store-neo4j</module> -> fixme: test failures
+         -> fixme: test failures-> fixme: test failures
         -->
     </modules>
 
