@@ -73,6 +73,8 @@ public abstract class AbstractFf4jTest implements TestConstantsFF4j {
         mockFlipStrategy = mock(FlippingStrategy.class);
         when(mockFlipStrategy.evaluate(any(String.class), isNull(FeatureStore.class), isNull(FlippingExecutionContext.class)))
                 .thenReturn(true);
+        when(mockFlipStrategy.evaluate(any(String.class), any(FeatureStore.class), any(FlippingExecutionContext.class)))
+            .thenReturn(true);
         when(mockFlipStrategy.getInitParams()).thenReturn(null);
 
         // Init of FF4J
