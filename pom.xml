@@ -183,9 +183,7 @@
         <!-- Custom Flipping Strategy -->
         <module>ff4j-strategy-drools</module>
         <module>ff4j-webapi-jersey2x</module>
-        <!--<module>ff4j-store-gcp-datastore</module> -> fixme: Needs docker env
-         -> fixme: test failures-> fixme: test failures
-        -->
+        <module>ff4j-store-gcp-datastore</module>
     </modules>
 
 
