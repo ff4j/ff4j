@@ -1,96 +1,96 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~         COORDINATES      ~ -->
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<artifactId>ff4j-store-consul</artifactId>
-	<packaging>jar</packaging>
-	<name>ff4j-store-consul</name>
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~         PARENT           ~ -->
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<parent>
-		<groupId>org.ff4j</groupId>
-		<artifactId>ff4j-parent</artifactId>
-		<version>2.0.0-SNAPSHOT</version>
-	</parent>
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~      PROPERTIES          ~ -->
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<properties>
-		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-		<consul-client.version>0.17.1</consul-client.version>
-		<consul-embedded.version>0.3.1</consul-embedded.version>
-	</properties>
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~       DEPENDENCIES       ~ -->
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<dependencies>
-		<!-- FF4J -->
-		<dependency>
-			<groupId>org.ff4j</groupId>
-			<artifactId>ff4j-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-            <groupId>org.ff4j</groupId>
-            <artifactId>ff4j-utils-json</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-		<!-- Consul Client -->
-		<dependency>
-         <groupId>com.orbitz.consul</groupId>
-         <artifactId>consul-client</artifactId>
-         <version>${consul-client.version}</version>
-        </dependency>
-         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-guava</artifactId>
-        </dependency>
-		<!-- Tests -->
-		<dependency>
-			<artifactId>ff4j-test</artifactId>
-			<groupId>org.ff4j</groupId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-            <groupId>com.pszymczyk.consul</groupId>
-            <artifactId>embedded-consul</artifactId>
-           <version>${consul-embedded.version}</version>
-           <scope>test</scope>
-        </dependency>
-		<dependency>
-			<groupId>org.fusesource.jansi</groupId>
-			<artifactId>jansi</artifactId>
-			<version>1.18</version>
-		</dependency>
-	</dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~         COORDINATES      ~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <artifactId>ff4j-store-consul</artifactId>
+  <packaging>jar</packaging>
+  <name>ff4j-store-consul</name>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~         PARENT           ~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <parent>
+    <groupId>org.ff4j</groupId>
+    <artifactId>ff4j-parent</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
+  </parent>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~      PROPERTIES          ~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <properties>
+    <license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
+    <consul-client.version>0.17.1</consul-client.version>
+    <consul-embedded.version>0.3.1</consul-embedded.version>
+  </properties>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~       DEPENDENCIES       ~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <dependencies>
+    <!-- FF4J -->
+    <dependency>
+      <groupId>org.ff4j</groupId>
+      <artifactId>ff4j-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ff4j</groupId>
+      <artifactId>ff4j-utils-json</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <!-- Consul Client -->
+    <dependency>
+      <groupId>com.orbitz.consul</groupId>
+      <artifactId>consul-client</artifactId>
+      <version>${consul-client.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-guava</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.fusesource.jansi</groupId>
+      <artifactId>jansi</artifactId>
+    </dependency>
+    <!-- Tests -->
+    <dependency>
+      <artifactId>ff4j-test</artifactId>
+      <groupId>org.ff4j</groupId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.pszymczyk.consul</groupId>
+      <artifactId>embedded-consul</artifactId>
+      <version>${consul-embedded.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>

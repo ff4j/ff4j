@@ -1,102 +1,102 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~ COORDINATES ~ -->
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<artifactId>ff4j-store-couchdb</artifactId>
-	<packaging>jar</packaging>
-	<name>ff4j-store-couchdb</name>
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~ PARENT ~ -->
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<parent>
-		<groupId>org.ff4j</groupId>
-		<artifactId>ff4j-parent</artifactId>
-		<version>2.0.0-SNAPSHOT</version>
-	</parent>
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~ PROPERTIES ~ -->
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<properties>
-		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-	</properties>
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- ~ DEPENDENCIES ~ -->
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<dependencies>
-		<!-- core -->
-        <dependency>
-            <artifactId>ff4j-core</artifactId>
-            <groupId>org.ff4j</groupId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.ff4j</groupId>
-            <artifactId>ff4j-utils-json</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-		<dependency>
-			<groupId>org.lightcouch</groupId>
-			<artifactId>lightcouch</artifactId>
-			<version>0.2.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.24</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-			<version>1.15</version>
-		</dependency>
-		<dependency>
-			<groupId>org.ektorp</groupId>
-			<artifactId>org.ektorp</artifactId>
-			<version>1.5.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.ektorp</groupId>
-			<artifactId>org.ektorp.spring</artifactId>
-			<version>1.5.0</version>
-		</dependency>
-		<!-- ****************** Tests  ***************************** -->
-		<dependency>
-			<artifactId>ff4j-test</artifactId>
-			<groupId>org.ff4j</groupId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>testcontainers</artifactId>
-			<version>1.14.3</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~ COORDINATES ~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <artifactId>ff4j-store-couchdb</artifactId>
+  <packaging>jar</packaging>
+  <name>ff4j-store-couchdb</name>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~ PARENT ~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <parent>
+    <groupId>org.ff4j</groupId>
+    <artifactId>ff4j-parent</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
+  </parent>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~ PROPERTIES ~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <properties>
+    <license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
+    <version.lightcouch>0.2.0</version.lightcouch>
+    <version.commons-codec>1.15</version.commons-codec>
+    <version.org.ektorp>1.5.0</version.org.ektorp>
+  </properties>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~ DEPENDENCIES ~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <dependencies>
+    <!-- core -->
+    <dependency>
+      <artifactId>ff4j-core</artifactId>
+      <groupId>org.ff4j</groupId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ff4j</groupId>
+      <artifactId>ff4j-utils-json</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.lightcouch</groupId>
+      <artifactId>lightcouch</artifactId>
+      <version>${version.lightcouch}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>${version.commons-codec}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ektorp</groupId>
+      <artifactId>org.ektorp</artifactId>
+      <version>${version.org.ektorp}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ektorp</groupId>
+      <artifactId>org.ektorp.spring</artifactId>
+      <version>${version.org.ektorp}</version>
+    </dependency>
+    <!-- ****************** Tests  ***************************** -->
+    <dependency>
+      <artifactId>ff4j-test</artifactId>
+      <groupId>org.ff4j</groupId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers</artifactId>
+    </dependency>
+  </dependencies>
 </project>

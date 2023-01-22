@@ -19,6 +19,7 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<properties>
 		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
+		<version.jsr250-api>1.0</version.jsr250-api>
 	</properties>
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~ DEPENDENCIES ~ -->
@@ -52,7 +53,7 @@
 		<dependency>
 			<groupId>javax.annotation</groupId>
 			<artifactId>jsr250-api</artifactId>
-			<version>1.0</version>
+			<version>${version.jsr250-api}</version>
 		</dependency>
 		<!-- json -->
 		<dependency>
@@ -63,7 +64,6 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>
