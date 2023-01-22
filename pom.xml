@@ -77,6 +77,7 @@
         <version.spring-security>6.0.1</version.spring-security>
         <version.gson-extras>1.2.0</version.gson-extras>
         <version.jakarta.servlet-api>6.0.0</version.jakarta.servlet-api>
+        <version.lombok>1.18.24</version.lombok>
         <version.logback>1.2.11</version.logback>
         <version.slf4j>1.7.36</version.slf4j>
         <version.junit>4.13.2</version.junit>
@@ -104,6 +105,8 @@
         <version.jetty>9.4.18.v20190429</version.jetty>
         <version.gson>2.8.9</version.gson>
         <version.assertj>3.2.0</version.assertj>
+        <version.testcontainers>1.17.6</version.testcontainers>
+        <version.jansi>1.18</version.jansi>
         <!-- Cannot go above for jdk 8 retrop compatibility -->
         <version.hdldb>2.5.2</version.hdldb>
         <version.ehcache>2.10.1</version.ehcache>
@@ -207,6 +210,17 @@
                 <scope>import</scope>
             </dependency>
             <!-- Libraries -->
+            <dependency>
+                <groupId>org.fusesource.jansi</groupId>
+                <artifactId>jansi</artifactId>
+                <version>${version.jansi}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${version.lombok}</version>
+                <scope>provided</scope>
+            </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
@@ -469,6 +483,12 @@
                 <groupId>org.powermock</groupId>
                 <artifactId>powermock-api-mockito</artifactId>
                 <version>${version.powermock}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers</artifactId>
+                <version>${version.testcontainers}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
