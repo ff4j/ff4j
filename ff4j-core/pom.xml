@@ -14,6 +14,10 @@
 		<artifactId>ff4j-parent</artifactId>
 		<version>2.0.0-SNAPSHOT</version>
 	</parent>
+
+	<properties>
+		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
+	</properties>
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~      DEPENDENCIES        ~ -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -21,22 +25,18 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-dbcp</groupId>
 			<artifactId>commons-dbcp</artifactId>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -49,7 +49,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<properties>
-	 	<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-	</properties>
 </project>
