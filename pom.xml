@@ -73,6 +73,10 @@
         <license.licenseResolver>${project.baseUri}src/license</license.licenseResolver>
 
         <!-- Versions -->
+        <version.spring-framework>6.0.3</version.spring-framework>
+        <version.spring-security>6.0.1</version.spring-security>
+        <version.gson-extras>1.2.0</version.gson-extras>
+        <version.jakarta.servlet-api>6.0.0</version.jakarta.servlet-api>
         <version.logback>1.2.11</version.logback>
         <version.slf4j>1.7.36</version.slf4j>
         <version.junit>4.13.2</version.junit>
@@ -83,32 +87,28 @@
         <version.commons-lang>2.6</version.commons-lang>
         <version.commons-dbcp>1.4</version.commons-dbcp>
         <version.commons-io>2.11.0</version.commons-io>
-        <version.commons-fileupload>1.4</version.commons-fileupload>
         <version.commons-cli>1.5.0</version.commons-cli>
-
-        <version.servlet-api>2.5</version.servlet-api>
-        <version.jsp-api>2.2</version.jsp-api>
         <version.jstl>1.2</version.jstl>
         <version.taglib>1.1.2</version.taglib>
         <version.jsr311>1.1.1</version.jsr311>
         <version.jacoco>0.8.7</version.jacoco>
         <version.jackson>2.14.1</version.jackson>
         <version.jackon2x>2.12.6.1</version.jackon2x>
-        
         <version.jersey1x>1.19</version.jersey1x>
         <version.jersey2x>2.37</version.jersey2x>
         <version.httpclient>4.5.14</version.httpclient>
         <version.snakeyaml>1.33</version.snakeyaml>
         <version.swagger>1.6.9</version.swagger>
-
         <version.metrics>3.1.0</version.metrics>
+        <version.ignite-core>2.14.0</version.ignite-core>
+        <version.jetty>9.4.18.v20190429</version.jetty>
+        <version.gson>2.8.9</version.gson>
+        <version.assertj>3.2.0</version.assertj>
         <!-- Cannot go above for jdk 8 retrop compatibility -->
         <version.hdldb>2.5.2</version.hdldb>
-
         <version.ehcache>2.10.1</version.ehcache>
         <version.jedis>3.2.0</version.jedis>
         <version.neo4j>2.3.12</version.neo4j>
-
         <!-- VERSIONS PLUGINS -->
         <version.maven.plugin.failsafe>2.18.1</version.maven.plugin.failsafe>
         <version.maven.plugin.redis>1.4.6</version.maven.plugin.redis>
@@ -126,21 +126,6 @@
         <version.maven.plugin.compiler>3.10.1</version.maven.plugin.compiler>
         <version.maven.plugin.jar>3.2.0</version.maven.plugin.jar>
         <version.maven.plugin.dependency>2.8</version.maven.plugin.dependency>
-
-        <jetty.version>9.4.18.v20190429</jetty.version>
-        <commons.lang>3.2.2</commons.lang>
-        <commons.lang3>3.2.1</commons.lang3>
-        <cucumber.version>1.2.4</cucumber.version>
-        <gson.version>2.8.9</gson.version>
-        <assertj.version>3.2.0</assertj.version>
-        <jsonassert.version>1.2.3</jsonassert.version>
-        <easymock.version>3.1</easymock.version>
-
-        <swagger.version>2.10.5</swagger.version>
-
-        <meanbean.version>2.0.3</meanbean.version>
-        <apache.shiro.version>1.5.3</apache.shiro.version>
-        <apache.ignite.version>2.14.0</apache.ignite.version>
     </properties>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -192,24 +177,25 @@
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <dependencyManagement>
         <dependencies>
+            <!-- BOM -->
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-framework-bom</artifactId>
-                <version>6.0.3</version>
+                <version>${version.spring-framework}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-bom</artifactId>
-                <version>6.0.1</version>
+                <version>${version.spring-security}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-bom</artifactId>
-                <version>${jetty.version}</version>
+                <version>${version.jetty}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -220,80 +206,12 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>${commons.lang3}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-collections</groupId>
-                <artifactId>commons-collections</artifactId>
-                <version>${commons.lang}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.meanbean</groupId>
-                <artifactId>meanbean</artifactId>
-                <version>${meanbean.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <!-- Swagger -->
-            <!-- todo: do we need to use spring-doc -->
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger2</artifactId>
-                <version>${swagger.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger-ui</artifactId>
-                <version>${swagger.version}</version>
-            </dependency>
-            <!-- Test dependency -->
+            <!-- Libraries -->
             <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
-                <version>${gson.version}</version>
+                <version>${version.gson}</version>
             </dependency>
-            <dependency>
-                <groupId>org.danilopianini</groupId>
-                <artifactId>gson-extras</artifactId>
-                <version>0.1.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.assertj</groupId>
-                <artifactId>assertj-core</artifactId>
-                <version>${assertj.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.skyscreamer</groupId>
-                <artifactId>jsonassert</artifactId>
-                <version>${jsonassert.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <!-- TODO: Why do we need this ?-->
-            <dependency>
-                <groupId>info.cukes</groupId>
-                <artifactId>cucumber-junit</artifactId>
-                <version>${cucumber.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <!-- TODO: Why do we need this ?-->
-            <dependency>
-                <groupId>info.cukes</groupId>
-                <artifactId>cucumber-spring</artifactId>
-                <version>${cucumber.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <!-- TODO: Why do we need this ?-->
-            <dependency>
-                <groupId>org.easymock</groupId>
-                <artifactId>easymock</artifactId>
-                <version>${easymock.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <!-- commons -->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
@@ -324,30 +242,21 @@
                 <artifactId>commons-io</artifactId>
                 <version>${version.commons-io}</version>
             </dependency>
-            <!-- todo: do we need this? as there is no support for latest servlet -->
-            <dependency>
-                <groupId>commons-fileupload</groupId>
-                <artifactId>commons-fileupload</artifactId>
-                <version>${version.commons-fileupload}</version>
-            </dependency>
             <dependency>
                 <groupId>commons-cli</groupId>
                 <artifactId>commons-cli</artifactId>
                 <version>${version.commons-cli}</version>
             </dependency>
-
             <dependency>
                 <groupId>io.dropwizard.metrics</groupId>
                 <artifactId>metrics-core</artifactId>
                 <version>${version.metrics}</version>
             </dependency>
-
-			<dependency>
-				<groupId>org.yaml</groupId>
-				<artifactId>snakeyaml</artifactId>
-				<version>${version.snakeyaml}</version>
-			</dependency>
-		
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${version.snakeyaml}</version>
+            </dependency>
             <!-- Swagger -->
             <dependency>
                 <groupId>io.swagger</groupId>
@@ -374,48 +283,14 @@
                 <artifactId>swagger-jersey2-jaxrs</artifactId>
                 <version>${version.swagger}</version>
             </dependency>
-
-            <!-- Tests -->
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${version.junit}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.hsqldb</groupId>
-                <artifactId>hsqldb</artifactId>
-                <version>${version.hdldb}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-dbcp</groupId>
-                <artifactId>commons-dbcp</artifactId>
-                <version>${version.commons-dbcp}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.powermock</groupId>
-                <artifactId>powermock-module-junit4</artifactId>
-                <version>${version.powermock}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.powermock</groupId>
-                <artifactId>powermock-api-mockito</artifactId>
-                <version>${version.powermock}</version>
-            </dependency>
             <!-- web -->
-            <!-- TODO: Need to use jakarta -->
             <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>servlet-api</artifactId>
-                <version>${version.servlet-api}</version>
+                <groupId>jakarta.servlet</groupId>
+                <artifactId>jakarta.servlet-api</artifactId>
+                <version>${version.jakarta.servlet-api}</version>
+                <scope>provided</scope>
             </dependency>
-            <dependency>
-                <groupId>javax.servlet.jsp</groupId>
-                <artifactId>jsp-api</artifactId>
-                <version>${version.jsp-api}</version>
-            </dependency>
-
             <!-- JSON -->
-           
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
@@ -436,8 +311,6 @@
 	            <artifactId>jackson-datatype-guava</artifactId>
 	           	<version>${version.jackson}</version>
         	</dependency>
-            
-
             <dependency>
                 <artifactId>jsr311-api</artifactId>
                 <groupId>javax.ws.rs</groupId>
@@ -453,7 +326,6 @@
                 <artifactId>standard</artifactId>
                 <version>${version.taglib}</version>
             </dependency>
-
             <!-- JERSEY 1X -->
             <dependency>
                 <groupId>com.sun.jersey</groupId>
@@ -500,7 +372,6 @@
                 <artifactId>jersey-test-framework-grizzly2</artifactId>
                 <version>${version.jersey1x}</version>
             </dependency>
-
             <!-- JERSEY 2X -->
             <dependency>
                 <groupId>org.glassfish.jersey.core</groupId>
@@ -547,17 +418,58 @@
                 <artifactId>jersey-test-framework-provider-grizzly2</artifactId>
                 <version>${version.jersey2x}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
                 <version>${version.httpclient}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.apache.ignite</groupId>
                 <artifactId>ignite-core</artifactId>
-                <version>${apache.ignite.version}</version>
+                <version>${version.ignite-core}</version>
+            </dependency>
+            <!-- Test -->
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${version.assertj}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.danilopianini</groupId>
+                <artifactId>gson-extras</artifactId>
+                <version>${version.gson-extras}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${version.junit}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.hsqldb</groupId>
+                <artifactId>hsqldb</artifactId>
+                <version>${version.hdldb}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>commons-dbcp</groupId>
+                <artifactId>commons-dbcp</artifactId>
+                <version>${version.commons-dbcp}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-module-junit4</artifactId>
+                <version>${version.powermock}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-api-mockito</artifactId>
+                <version>${version.powermock}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -793,7 +705,7 @@
 				    <artifactId>maven-war-plugin</artifactId>
 				    <version>2.1</version>
 				    <configuration>
-				        <archive>                   
+				        <archive>
 				            <manifest>
 				                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 				                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
