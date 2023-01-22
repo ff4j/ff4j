@@ -1,7 +1,7 @@
 package org.ff4j.feature.togglestrategy.time;
 
-import org.ff4j.backend.Backend;
-import org.ff4j.feature.Flag;
+import org.ff4j.backend.BackendSupport;
+import org.ff4j.feature.Feature;
 import org.ff4j.feature.togglestrategy.AbstractToggleStrategy;
 import org.ff4j.property.PropertyDate;
 import org.ff4j.property.evaluate.FF4jEvaluationContext;
@@ -28,7 +28,7 @@ public class ReleaseDateToggleStrategy extends AbstractToggleStrategy {
      * @param config
      *      configuration
      */
-    public ReleaseDateToggleStrategy(Backend backend, Flag relatedFeature, FF4jEvaluationContext config) {
+    public ReleaseDateToggleStrategy(BackendSupport backend, Feature relatedFeature, FF4jEvaluationContext config) {
         this(backend, relatedFeature, (Date) config.getProperty(RELEASE_DATE).getValue());
     }
 
@@ -42,7 +42,7 @@ public class ReleaseDateToggleStrategy extends AbstractToggleStrategy {
      * @param release
      *      release
      */
-    public ReleaseDateToggleStrategy(Backend backend, Flag relatedFeature, Date release) {
+    public ReleaseDateToggleStrategy(BackendSupport backend, Feature relatedFeature, Date release) {
         super(backend, relatedFeature, new FF4jEvaluationContext(new PropertyDate(RELEASE_DATE, release)));
     }
 

@@ -1,7 +1,7 @@
 package org.ff4j.feature.togglestrategy;
 
-import org.ff4j.backend.Backend;
-import org.ff4j.feature.Flag;
+import org.ff4j.backend.BackendSupport;
+import org.ff4j.feature.Feature;
 import org.ff4j.property.PropertyDouble;
 import org.ff4j.property.evaluate.FF4jEvaluationContext;
 
@@ -23,7 +23,7 @@ public class DarkLaunchToggleStrategy extends AbstractToggleStrategy {
      * @param config
      *      configuration
      */
-    public DarkLaunchToggleStrategy(Backend backend, Flag relatedFeature, FF4jEvaluationContext config) {
+    public DarkLaunchToggleStrategy(BackendSupport backend, Feature relatedFeature, FF4jEvaluationContext config) {
         this(backend, relatedFeature, (Double) config.getProperty(PARAM_WEIGHT).getValue());
     }
 
@@ -37,7 +37,7 @@ public class DarkLaunchToggleStrategy extends AbstractToggleStrategy {
      * @param weight
      *      weight
      */
-    public DarkLaunchToggleStrategy(Backend backend, Flag relatedFeature, Double weight) {
+    public DarkLaunchToggleStrategy(BackendSupport backend, Feature relatedFeature, Double weight) {
         super(backend, relatedFeature, new FF4jEvaluationContext(new PropertyDouble(PARAM_WEIGHT, weight)));
         if (weight < 0 || weight > 1) throw new IllegalArgumentException("Percentage should be between 0 and 1");
     }

@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.ff4j.backend.Backend;
-import org.ff4j.feature.Flag;
+import org.ff4j.backend.BackendSupport;
+import org.ff4j.feature.Feature;
 import org.ff4j.feature.togglestrategy.AbstractToggleStrategy;
 import org.ff4j.property.PropertyCalendar;
 import org.ff4j.property.evaluate.FF4jEvaluationContext;
@@ -57,7 +57,7 @@ public class OfficeHourToggleStrategy extends AbstractToggleStrategy {
      * @param config
      *      configuration
      */
-    public OfficeHourToggleStrategy(Backend backend, Flag relatedFeature, FF4jEvaluationContext config) {
+    public OfficeHourToggleStrategy(BackendSupport backend, Feature relatedFeature, FF4jEvaluationContext config) {
         super(backend, relatedFeature,config);
         parseWeek();
         parsePublicHoliday();

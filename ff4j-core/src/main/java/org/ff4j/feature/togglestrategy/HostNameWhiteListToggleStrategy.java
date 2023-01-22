@@ -1,7 +1,7 @@
 package org.ff4j.feature.togglestrategy;
 
-import org.ff4j.backend.Backend;
-import org.ff4j.feature.Flag;
+import org.ff4j.backend.BackendSupport;
+import org.ff4j.feature.Feature;
 import org.ff4j.property.evaluate.FF4jEvaluationContext;
 import org.ff4j.property.list.PropertyListString;
 import org.ff4j.utils.Assert;
@@ -29,7 +29,7 @@ public class HostNameWhiteListToggleStrategy extends AbstractToggleStrategy {
      * @param config
      *      configuration
      */
-    public HostNameWhiteListToggleStrategy(Backend backend, Flag relatedFeature, FF4jEvaluationContext config) {
+    public HostNameWhiteListToggleStrategy(BackendSupport backend, Feature relatedFeature, FF4jEvaluationContext config) {
         this(backend, relatedFeature, (List<String>) config.getProperty(WHITE_LIST).getValue());
     }
 
@@ -43,7 +43,7 @@ public class HostNameWhiteListToggleStrategy extends AbstractToggleStrategy {
      * @param hosts
      *      list of hosts
      */
-    public HostNameWhiteListToggleStrategy(Backend backend, Flag relatedFeature, List<String> hosts) {
+    public HostNameWhiteListToggleStrategy(BackendSupport backend, Feature relatedFeature, List<String> hosts) {
         super(backend, relatedFeature, new FF4jEvaluationContext());
         Assert.assertNotNull(hosts);
         Assert.assertTrue(hosts.size() > 0);
@@ -60,7 +60,7 @@ public class HostNameWhiteListToggleStrategy extends AbstractToggleStrategy {
      * @param host
      *      list of hosts
      */
-    public HostNameWhiteListToggleStrategy(Backend backend, Flag relatedFeature, String... host) {
+    public HostNameWhiteListToggleStrategy(BackendSupport backend, Feature relatedFeature, String... host) {
         this(backend, relatedFeature, Arrays.asList(host));
     }
 

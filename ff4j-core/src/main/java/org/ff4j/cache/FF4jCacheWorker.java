@@ -1,10 +1,11 @@
 package org.ff4j.cache;
 
-import org.ff4j.FF4jClient;
+import org.ff4j.FF4j;
 import org.ff4j.backend.Backend;
-import org.ff4j.feature.Flag;
+import org.ff4j.feature.Feature;
 import org.ff4j.property.Property;
 
+import java.util.Map;
 import java.util.stream.Stream;
 
 /**
@@ -13,13 +14,13 @@ import java.util.stream.Stream;
 public class FF4jCacheWorker implements Runnable {
 
     /** Reference to ff4j. */
-    private FF4jClient ff4j;
+    private final FF4j ff4j;
     
-    /** Target feature store to be proxified to cache features. */
-    private final FF4jCache cache;
+    /** Access to cache. */
+    private final FF4jCacheRepository cache;
 
     /** Worker for a namespace. */
-    private final String namespace;
+    private final String workspace;
     
     /**
      * Constructor.
@@ -29,10 +30,10 @@ public class FF4jCacheWorker implements Runnable {
      * @param cacheManager
      *      cache manager
      */
-    public FF4jCacheWorker(FF4jClient ff4j, FF4jCache cacheManager, String namespace) {
+    public FF4jCacheWorker(FF4j ff4j, FF4jCacheRepository cacheManager, String workspace) {
         this.ff4j       = ff4j;
         this.cache      = cacheManager;
-        this.namespace  = namespace;
+        this.workspace = workspace;
     }
 
     /** {@inheritDoc} */
@@ -40,15 +41,18 @@ public class FF4jCacheWorker implements Runnable {
     public void run() {
         try {
             // Access store first, if failed an error is raised and cache is not cleared.
-            Backend accessedBackend = ff4j.getBackend();
-            Stream<Flag>     features   = accessedBackend.findAllFeatures(namespace);
-            Stream<Property<?>> properties = accessedBackend.findAllProperties(namespace);
+            Backend accessedBackend = ff4j.getBackendOperations();
+            Stream<Feature>     features   = accessedBackend.getFeatures(workspace);
+            Stream<Property<?>> properties = accessedBackend.getProperties(workspace);
+            Map<String, Boolean> flags = accessedBackend.getFeatureFlags(workspace);
             // Clear cache
-            cache.clearFeatures(namespace);
-            cache.clearFeatures(namespace);
+            cache.clearFeatures(workspace);
+            cache.clearFeatures(workspace);
+            cache.clearFeaturesFlags(workspace);
             // Populate cache
-            features.forEach(f -> cache.putFeature(namespace, f));
-            properties.forEach(p -> cache.putProperty(namespace, p));
+            features.forEach(f -> cache.cacheFeature(workspace, f) );
+            properties.forEach(p -> cache.cacheProperty(workspace, p));
+            flags.forEach((k,v) ->cache.cacheFeatureFlag(workspace, k, v));
         } catch (Exception ex) {
             // Work in background (worker) failed 'silently'
             ex.printStackTrace();

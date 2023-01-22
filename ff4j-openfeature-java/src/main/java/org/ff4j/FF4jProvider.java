@@ -1,9 +1,11 @@
 package org.ff4j;
 
 import dev.openfeature.sdk.*;
-import org.ff4j.backend.Backend;
+import org.ff4j.backend.BackendSupport;
 import org.ff4j.property.Property;
-import org.ff4j.property.serialize.BooleanSerializer;
+import org.ff4j.property.PropertyDouble;
+import org.ff4j.property.evaluate.FF4jEvaluationContext;
+import org.ff4j.property.exception.PropertyNotFoundException;
 
 import java.util.List;
 import java.util.Map;
@@ -19,13 +21,13 @@ public class FF4jProvider implements FeatureProvider {
     private static Metadata METADATA = new FF4jMetaData();
 
     /** FF4j Client. */
-    private FF4jClient ff4j;
+    private FF4j ff4j;
 
     /**
      * Access to the ff4j client.
      *
      */
-    public FF4jProvider(FF4jClient ff4j, Backend backend, Property<?> parent, Map<String, String> config) {
+    public FF4jProvider(FF4j ff4j, BackendSupport backend, Property<?> parent, Map<String, String> config) {
     }
 
     /**
@@ -34,7 +36,7 @@ public class FF4jProvider implements FeatureProvider {
      * @param ff4jClient
      *      target client
      */
-    public FF4jProvider(FF4jClient ff4jClient) {
+    public FF4jProvider(FF4j ff4jClient) {
         this.ff4j  = ff4jClient;
 
         //FlagEvaluationDetails <= flagKey
@@ -68,19 +70,36 @@ public class FF4jProvider implements FeatureProvider {
      */
     @Override
     public ProviderEvaluation<Boolean> getBooleanEvaluation(String uid, Boolean defaultValue, EvaluationContext evaluationContext) {
-        // Read property from DB
-        Property<?> p = ff4j.findPropertyById(uid).get();
-        // Error if returned Value cannot be cast as a Boolean
-        Boolean b = new BooleanSerializer().deserialize(p.getValueAsString());
+        try {
+            return ProviderEvaluation.<Boolean>builder()
+                    .value(ff4j.getBoolean(uid, mapContext(evaluationContext)))
+                    .reason(String.valueOf(Reason.TARGETING_MATCH))
+                    .build();
+        } catch(PropertyNotFoundException nfex) {
+            return ProviderEvaluation.<Boolean>builder()
+                    .value(false)
+                    .reason(String.valueOf(Reason.UNKNOWN))
+                    .errorMessage(nfex.getMessage())
+                    .build();
+        } catch(RuntimeException rex) {
+            return ProviderEvaluation.<Boolean>builder()
+                    .value(false)
+                    .reason(String.valueOf(Reason.ERROR))
+                    .errorMessage(rex.getMessage())
+                    .build();
+        }
+    }
 
-        ProviderEvaluation<Boolean> result = ProviderEvaluation.<Boolean>builder()
-                // the unique identifier for a feature flag
-                .value(b)
-                // Specific value returned by FF4j is not same as value (String)
-                .variant(p.getValueAsString())
-                // a string explaining why the flag value was returned
-                .reason(String.valueOf(Reason.TARGETING_MATCH))
-                .build();
+    private FF4jEvaluationContext mapContext(EvaluationContext evaluationContext) {
+        FF4jEvaluationContext ctx = new FF4jEvaluationContext();
+        evaluationContext.asMap().forEach((k,v)-> ctx.put(k, mapFF4jProperty(k,v)));
+        return ctx;
+    }
+
+    private Property<?> mapFF4jProperty(String id, Value value) {
+        if (value.isBoolean()) {
+            return new PropertyDouble(id, value.asDouble());
+        }
         return null;
     }
 

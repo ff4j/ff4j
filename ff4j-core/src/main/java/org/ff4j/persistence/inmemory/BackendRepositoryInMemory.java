@@ -1,16 +1,17 @@
 package org.ff4j.persistence.inmemory;
 
-import org.ff4j.FF4jClientConfiguration;
+import org.ff4j.FF4jConfiguration;
 import org.ff4j.backend.BackendRepository;
-import org.ff4j.feature.Flag;
-import org.ff4j.feature.exception.FeatureAlreadyExistException;
-import org.ff4j.feature.exception.FeatureNotFoundException;
-import org.ff4j.namespace.exception.NamespaceAlreadyException;
-import org.ff4j.namespace.exception.NamespaceNotFoundException;
+import org.ff4j.feature.Feature;
+import org.ff4j.feature.exception.FeatureFlagAlreadyExistException;
+import org.ff4j.feature.exception.FeatureFlagNotFoundException;
 import org.ff4j.property.Property;
+import org.ff4j.property.evaluate.FF4jEvaluationContext;
 import org.ff4j.property.exception.PropertyAlreadyExistException;
 import org.ff4j.property.exception.PropertyNotFoundException;
 import org.ff4j.utils.Assert;
+import org.ff4j.workspace.exception.WorkspaceAlreadyException;
+import org.ff4j.workspace.exception.WorkspaceNotFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,10 +24,10 @@ import java.util.stream.Stream;
 public class BackendRepositoryInMemory implements BackendRepository {
 
     /** Cached Feature Map */
-    private final Map<String, NamespaceInMemory> namespaces = new HashMap<>();
+    private final Map<String, Workspace> namespaces = new HashMap<>();
 
     /** Hold Configuration. */
-    private FF4jClientConfiguration configuration = new FF4jClientConfiguration();
+    private FF4jConfiguration configuration = new FF4jConfiguration();
 
     /**
      * Default constructor.
@@ -44,13 +45,13 @@ public class BackendRepositoryInMemory implements BackendRepository {
 
     /** {@inheritDoc} */
     @Override
-    public FF4jClientConfiguration readConfiguration() {
+    public FF4jConfiguration readConfiguration() {
         return configuration;
     }
 
     /** {@inheritDoc} */
     @Override
-    public void saveConfiguration(FF4jClientConfiguration config) {
+    public void saveConfiguration(FF4jConfiguration config) {
         this.configuration = config;
     }
 
@@ -59,30 +60,47 @@ public class BackendRepositoryInMemory implements BackendRepository {
     // -------------------------------------
 
     /** {@inheritDoc} */
-    @Override
-    public Stream<String> findAllNamespaces() {
+    public Stream<String> findAllWorkspaces() {
         return namespaces.keySet().stream();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public boolean existNamespace(String namespace) {
+    /**
+     * Test workspace existence.
+     * @param namespace
+     * @return
+     */
+    private boolean existWorkspace(String namespace) {
         Assert.assertHasLength(namespace);
         return namespaces.containsKey(namespace);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void createNamespace(String namespace) {
-        if (existNamespace(namespace)) throw new NamespaceAlreadyException(namespace);
-        namespaces.put(namespace, new NamespaceInMemory(namespace));
+    public void createWorkspace(String namespace) {
+        if (existWorkspace(namespace)) throw new WorkspaceAlreadyException(namespace);
+        namespaces.put(namespace, new Workspace(namespace));
     }
 
     /** {@inheritDoc} */
     @Override
-    public void deleteNamespace(String namespace) {
-        if (!existNamespace(namespace)) throw new NamespaceNotFoundException(namespace);
+    public void deleteWorkspace(String namespace) {
+        if (!existWorkspace(namespace)) throw new WorkspaceNotFoundException(namespace);
         namespaces.remove(namespace);
+    }
+
+    @Override
+    public Stream<Feature> getFeatures(String workspace) {
+        return null;
+    }
+
+    @Override
+    public Stream<String> getFeaturesNames(String workspace) {
+        return null;
+    }
+
+    @Override
+    public Optional<Feature> findFeature(String workspace, String uid) {
+        return Optional.empty();
     }
 
     // -------------------------------------
@@ -90,59 +108,69 @@ public class BackendRepositoryInMemory implements BackendRepository {
     // -------------------------------------
 
     /** {@inheritDoc} */
-    @Override
-    public Stream<Flag> findAllFeatures(String namespace) {
-        if (!existNamespace(namespace)) throw new NamespaceNotFoundException(namespace);
-        return namespaces.get(namespace).getFeatures().values().stream();
+
+    public Stream<Feature> findAllFeatureFlags(String workspace) {
+        if (!existWorkspace(workspace)) throw new WorkspaceNotFoundException(workspace);
+        return namespaces.get(workspace).getFeatures().values().stream();
     }
 
     /** {@inheritDoc} */
-    @Override
-    public boolean existsFeature(String namespace, String uid) {
+
+    public boolean existsFeatureFlag(String workspace, String uid) {
         Assert.assertHasLength(uid);
-        if (!existNamespace(namespace)) throw new NamespaceNotFoundException(namespace);
-        return namespaces.get(namespace).getFeatures().containsKey(uid);
+        if (!existWorkspace(workspace)) throw new WorkspaceNotFoundException(workspace);
+        return namespaces.get(workspace).getFeatures().containsKey(uid);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void createFeature(String namespace, Flag feature) throws FeatureAlreadyExistException {
-        Assert.assertNotNull(feature);
-        if (existsFeature(namespace, feature.getUid())) throw new FeatureAlreadyExistException(namespace, feature.getUid());
-        namespaces.get(namespace).getFeatures().put(feature.getUid(), feature);
+    public void createFeature(String workspace, Feature flag) throws FeatureFlagAlreadyExistException {
+        Assert.assertNotNull(flag);
+        if (existsFeatureFlag(workspace, flag.getUid())) throw new FeatureFlagAlreadyExistException(workspace, flag.getUid());
+        namespaces.get(workspace).getFeatures().put(flag.getUid(), flag);
+    }
+
+    @Override
+    public void saveFeature(String workspace, Feature flag) throws FeatureFlagNotFoundException {
+
+    }
+
+    /** {@inheritDoc} */
+
+    public void saveFeatureFlag(String workspace, Feature flag) throws FeatureFlagNotFoundException {
+        if (!existWorkspace(workspace)) throw new WorkspaceNotFoundException(workspace);
+        Assert.assertNotNull(flag);
+        Assert.assertHasLength(flag.getUid());
+        namespaces.get(workspace).getFeatures().put(flag.getUid(), flag);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void saveFeature(String namespace, Flag feature) throws FeatureNotFoundException {
-        if (!existNamespace(namespace)) throw new NamespaceNotFoundException(namespace);
-        Assert.assertNotNull(feature);
-        Assert.assertHasLength(feature.getUid());
-        namespaces.get(namespace).getFeatures().put(feature.getUid(), feature);
+    public void deleteFeature(String workspace, String uid) throws FeatureFlagNotFoundException {
+        if (!existsFeatureFlag(workspace, uid)) throw new FeatureFlagNotFoundException(workspace, uid);
+        namespaces.get(workspace).getFeatures().remove(uid);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void deleteFeature(String namespace, String uid) throws FeatureNotFoundException {
-        if (!existsFeature(namespace, uid)) throw new FeatureNotFoundException(namespace, uid);
-        namespaces.get(namespace).getFeatures().remove(uid);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void renameFeature(String namespace, String old, String uid) throws FeatureNotFoundException {
-        if (!existsFeature(namespace, old)) throw new FeatureNotFoundException(namespace, old);
-        findFeatureById(namespace, old).ifPresent(feature -> {
-            createFeature(namespace, feature.clone(uid));
-            deleteFeature(namespace, old);
+    public void renameFeature(String workspace, String old, String uid) throws FeatureFlagNotFoundException {
+        if (!existsFeatureFlag(workspace, old)) throw new FeatureFlagNotFoundException(workspace, old);
+        findFeatureFlagById(workspace, old).ifPresent(feature -> {
+            createFeature(workspace, feature.clone(uid));
+            deleteFeature(workspace, old);
         });
     }
 
-    /** {@inheritDoc} */
     @Override
-    public Optional<Flag> findFeatureById(String namespace, String uid) {
-        return existNamespace(namespace) ?
-                Optional.ofNullable(namespaces.get(namespace).getFeatures().get(uid)) :
+    public Stream<String> getPropertiesNames(String workspace) {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+
+    public Optional<Feature> findFeatureFlagById(String workspace, String uid) {
+        return existWorkspace(workspace) ?
+                Optional.ofNullable(namespaces.get(workspace).getFeatures().get(uid)) :
                 Optional.empty();
     }
 
@@ -151,60 +179,82 @@ public class BackendRepositoryInMemory implements BackendRepository {
     // -------------------------------------
 
     /** {@inheritDoc} */
-    @Override
-    public Stream<Property<?>> findAllProperties(String namespace) {
-        if (!existNamespace(namespace)) throw new NamespaceNotFoundException(namespace);
-        return namespaces.get(namespace).getProperties().values().stream();
+    public Stream<Property<?>> findAllProperties(String workspace) {
+        if (!existWorkspace(workspace)) throw new WorkspaceNotFoundException(workspace);
+        return namespaces.get(workspace).getProperties().values().stream();
     }
 
     /** {@inheritDoc} */
-    @Override
-    public boolean existsProperty(String namespace, String uid) {
+    public boolean existsProperty(String workspace, String uid) {
         Assert.assertHasLength(uid);
-        if (!existNamespace(namespace)) throw new NamespaceNotFoundException(namespace);
-        return namespaces.get(namespace).getProperties().containsKey(uid);
+        if (!existWorkspace(workspace)) throw new WorkspaceNotFoundException(workspace);
+        return namespaces.get(workspace).getProperties().containsKey(uid);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void createProperty(String namespace, Property<?> property) throws PropertyAlreadyExistException {
+    public void createProperty(String workspace, Property<?> property) throws PropertyAlreadyExistException {
         Assert.assertNotNull(property);
-        if (existsProperty(namespace, property.getUid())) throw new PropertyAlreadyExistException(namespace, property.getUid());
-        namespaces.get(namespace).getProperties().put(property.getUid(), property);
+        if (existsProperty(workspace, property.getUid())) throw new PropertyAlreadyExistException(workspace, property.getUid());
+        namespaces.get(workspace).getProperties().put(property.getUid(), property);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void saveProperty(String namespace, Property<?> property) {
-        if (!existNamespace(namespace)) throw new NamespaceNotFoundException(namespace);
+    public void saveProperty(String workspace, Property<?> property) {
+        if (!existWorkspace(workspace)) throw new WorkspaceNotFoundException(workspace);
         Assert.assertNotNull(property);
         Assert.assertHasLength(property.getUid());
-        namespaces.get(namespace).getProperties().put(property.getUid(), property);
+        namespaces.get(workspace).getProperties().put(property.getUid(), property);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void deleteProperty(String namespace, String uid) {
-        if (!existsProperty(namespace, uid)) throw new PropertyNotFoundException(namespace, uid);
-        namespaces.get(namespace).getProperties().remove(uid);
+    public void deleteProperty(String workspace, String uid) {
+        if (!existsProperty(workspace, uid)) throw new PropertyNotFoundException(workspace, uid);
+        namespaces.get(workspace).getProperties().remove(uid);
     }
 
     /** {@inheritDoc} */
-    @Override
-    public Optional<Property<?>> findPropertyById(String namespace, String uid) {
-        return existNamespace(namespace) ?
-                Optional.ofNullable(namespaces.get(namespace).getProperties().get(uid)) :
+
+    public Optional<Property<?>> findPropertyById(String workspace, String uid) {
+        return existWorkspace(workspace) ?
+                Optional.ofNullable(namespaces.get(workspace).getProperties().get(uid)) :
                 Optional.empty();
     }
 
     /** {@inheritDoc} */
     @Override
-    public void renameProperty(String namespace, String old, String uid) {
-        if (!existsProperty(namespace, uid)) throw new PropertyNotFoundException(namespace, uid);
-        findPropertyById(namespace, old).ifPresent(property -> {
-            deleteProperty(namespace, old);
-            createProperty(namespace, property);
+    public void renameProperty(String workspace, String old, String uid) {
+        if (!existsProperty(workspace, uid)) throw new PropertyNotFoundException(workspace, uid);
+        findPropertyById(workspace, old).ifPresent(property -> {
+            deleteProperty(workspace, old);
+            createProperty(workspace, property);
         });
     }
 
+    @Override
+    public Stream<String> getWorkspaces() {
+        return null;
+    }
+
+    @Override
+    public Map<String, Boolean> getFeatureFlags(String workspace, FF4jEvaluationContext context) {
+        return null;
+    }
+
+    @Override
+    public Optional<Boolean> findFeatureFlag(String workspace, String uid, FF4jEvaluationContext context) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Stream<Property<?>> getProperties(String workspace) {
+        return null;
+    }
+
+    @Override
+    public Optional<Property<?>> findProperty(String workspace, String uid) {
+        return Optional.empty();
+    }
 }

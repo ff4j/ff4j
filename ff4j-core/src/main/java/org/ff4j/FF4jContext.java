@@ -11,7 +11,7 @@ import java.util.Optional;
 public class FF4jContext extends FF4jEvaluationContext {
     
     /** Get reference to ff4j. */
-    private final transient FF4jClient ff4j;
+    private final transient FF4j ff4j;
 
     // -------------------------------------
     // ---- Extra Feature for FF4j       ---
@@ -29,7 +29,7 @@ public class FF4jContext extends FF4jEvaluationContext {
      * @param ff4j
      *           ff4j reference
      */
-    public FF4jContext(FF4jClient ff4j) {
+    public FF4jContext(FF4j ff4j) {
         this.ff4j = ff4j;
     }
 
@@ -39,7 +39,7 @@ public class FF4jContext extends FF4jEvaluationContext {
      * @return
      *       current value of 'ff4j'
      */
-    public FF4jClient getFf4j() {
+    public FF4j getFf4j() {
         return ff4j;
     }
 

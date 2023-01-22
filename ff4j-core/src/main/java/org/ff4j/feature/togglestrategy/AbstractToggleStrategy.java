@@ -4,14 +4,14 @@ import java.util.function.Predicate;
 
 import org.ff4j.property.evaluate.AbstractEvaluationPolicy;
 import org.ff4j.property.evaluate.FF4jEvaluationContext;
-import org.ff4j.backend.Backend;
-import org.ff4j.feature.Flag;
+import org.ff4j.backend.BackendSupport;
+import org.ff4j.feature.Feature;
 
 /**
  * Super class for Toggle Strategy implementation with utilities.
  */
 public abstract class AbstractToggleStrategy
-        extends AbstractEvaluationPolicy<Boolean, Flag>
+        extends AbstractEvaluationPolicy<Boolean, Feature>
         implements Predicate<FF4jEvaluationContext> {
 
     /**
@@ -24,7 +24,7 @@ public abstract class AbstractToggleStrategy
      * @param config
      *      configuration
      */
-    public AbstractToggleStrategy(Backend backend, Flag relatedFeature, FF4jEvaluationContext config) {
+    public AbstractToggleStrategy(BackendSupport backend, Feature relatedFeature, FF4jEvaluationContext config) {
         super(backend, relatedFeature, config);
     }
 

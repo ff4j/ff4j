@@ -1,7 +1,7 @@
 package org.ff4j.feature.togglestrategy.expression;
 
-import org.ff4j.backend.Backend;
-import org.ff4j.feature.Flag;
+import org.ff4j.backend.BackendSupport;
+import org.ff4j.feature.Feature;
 import org.ff4j.feature.togglestrategy.AbstractToggleStrategy;
 import org.ff4j.property.PropertyString;
 import org.ff4j.property.evaluate.FF4jEvaluationContext;
@@ -37,7 +37,7 @@ public class ExpressionToggleStrategy extends AbstractToggleStrategy {
      * @param config
      *      configuration
      */
-    public ExpressionToggleStrategy(Backend backend, Flag relatedFeature, FF4jEvaluationContext config) {
+    public ExpressionToggleStrategy(BackendSupport backend, Feature relatedFeature, FF4jEvaluationContext config) {
         super(backend, relatedFeature, config);
         // Parse Expression at load to test validity
         cachedExpression.put(PARAM_EXPRESSION,
@@ -55,7 +55,7 @@ public class ExpressionToggleStrategy extends AbstractToggleStrategy {
      * @param expression
      *      expression
      */
-    public ExpressionToggleStrategy(Backend backend, Flag relatedFeature, String expression) {
+    public ExpressionToggleStrategy(BackendSupport backend, Feature relatedFeature, String expression) {
         super(backend, relatedFeature, new FF4jEvaluationContext(new PropertyString(PARAM_EXPRESSION, expression)));
     }
 
@@ -88,7 +88,7 @@ public class ExpressionToggleStrategy extends AbstractToggleStrategy {
         // Locate Repository
         getBackend()
         // Get all features
-        .findAllFeatures(namespace)
+        .getFeatures(namespace)
          // and only check toggle On and not the full test (would lead to cyclic)
         .forEach(f ->  statusMap.put(f.getUid(), f.isToggled()));
         return statusMap;

@@ -5,7 +5,7 @@ import java.io.Serial;
 /**
  * Store could be parameterized to through exception when Feature not found.
  */
-public class FeatureAlreadyExistException extends RuntimeException {
+public class FeatureFlagAlreadyExistException extends RuntimeException {
 
 	/**
 	 * Serial.
@@ -24,7 +24,7 @@ public class FeatureAlreadyExistException extends RuntimeException {
      * @param uid
      *           feature identifier
      **/
-    public FeatureAlreadyExistException(String namespace, String uid) {
+    public FeatureFlagAlreadyExistException(String namespace, String uid) {
         super(String.format(ERROR_MESSAGE_APP, uid, namespace));
     }
    

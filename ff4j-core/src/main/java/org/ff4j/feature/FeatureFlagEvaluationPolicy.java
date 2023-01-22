@@ -1,7 +1,6 @@
 package org.ff4j.feature;
 
-import org.ff4j.FF4jContext;
-import org.ff4j.backend.Backend;
+import org.ff4j.backend.BackendSupport;
 import org.ff4j.feature.togglestrategy.AbstractToggleStrategy;
 import org.ff4j.property.evaluate.AbstractEvaluationPolicy;
 import org.ff4j.property.evaluate.FF4jEvaluationContext;
@@ -11,7 +10,7 @@ import java.util.Iterator;
 /**
  * Override default evaluation to bring only the value.
  */
-public class FlagEvaluationStrategy extends AbstractEvaluationPolicy<Boolean, Flag> {
+public class FeatureFlagEvaluationPolicy extends AbstractEvaluationPolicy<Boolean, Feature> {
 
     /**
      * Full Constructor.
@@ -23,7 +22,7 @@ public class FlagEvaluationStrategy extends AbstractEvaluationPolicy<Boolean, Fl
      * @param config
      *      configuration
      */
-    public FlagEvaluationStrategy(Backend backend, Flag relatedProperty, FF4jEvaluationContext config) {
+    public FeatureFlagEvaluationPolicy(BackendSupport backend, Feature relatedProperty, FF4jEvaluationContext config) {
         super(backend, relatedProperty, config);
     }
 
@@ -31,7 +30,7 @@ public class FlagEvaluationStrategy extends AbstractEvaluationPolicy<Boolean, Fl
     @Override
     public Boolean evaluate(FF4jEvaluationContext evaluationContext) {
         // If the feature is not toggled value is false
-        Flag flag = getTarget();
+        Feature flag = getTarget();
         boolean returned = flag.isToggled();
         if (returned && !flag.getToggleStrategies().isEmpty()) {
             Iterator<AbstractToggleStrategy> iterator = flag.getToggleStrategies().iterator();

@@ -1,153 +1,117 @@
 package org.ff4j.cache;
 
-import org.ff4j.feature.Flag;
+import org.ff4j.FF4j;
+import org.ff4j.FF4jClient;
+import org.ff4j.FF4jConfiguration;
 import org.ff4j.property.Property;
-import org.ff4j.property.PropertyString;
+import org.ff4j.property.evaluate.FF4jEvaluationContext;
 
+import java.time.Duration;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 /**
- * Cache Layer on top of Backend. to enhance performances.
+ * Implementation of local cache to offload persistence.
  */
-public interface FF4jCache {
+public class FF4jCache implements FF4jClient {
 
-    // -------------------------------------
-    // ---- Work with Features   -----------
-    // -------------------------------------
+    /** Delay before starting polling. */
+    public static final long INITIAL_DELAY = 0;
+
+    /** FF4j reference. */
+    private final FF4j ff4j;
+
+    /** Configuration reference. */
+    private final FF4jConfiguration ff4jConfiguration;
+
+    /** Cache manager. */
+    private final FF4jCacheRepository cacheRepository;
+
+    /** Time-to-live for items in the cache. */
+    protected final Duration cacheTimeToLive;
+
+    /** Scheduler for the worker. */
+    private ScheduledExecutorService executor;
 
     /**
-     * List feature names in cache.
+     * Set up the proxy with polling and local data.
      *
-     * @param namespace
-     *      current namespace
-     * @return
-     *      feature names in cache
+     * @param config
+     *      ff4j configuration
+     * @param ff4j
+     *      ff4j reference to lookup for backends when not in cache
      */
-    Set < String > findAllFeatureNames(String namespace);
+    public FF4jCache(FF4j ff4j, FF4jConfiguration config) {
+        super();
+        this.ff4j = ff4j;
+        this.ff4jConfiguration = config;
+        this.cacheRepository = config.getCacheRepository();
+        this.cacheTimeToLive = config.getCacheTimeToLive();
+        if (config.isCachePolling()) startPolling();
+    }
+
+    /** Enable polling. */
+    public void startPolling() {
+        executor = Executors.newScheduledThreadPool(1, r -> {
+            Thread t = new Thread(r, "FF4jCacheAutoRefreshWorker");
+            t.setDaemon(true);
+            return t;
+        });
+        // Create worker
+        FF4jCacheWorker worker = new FF4jCacheWorker(ff4j, cacheRepository, ff4jConfiguration.getWorkspace());
+        // Setup and start scheduler
+        executor.scheduleWithFixedDelay(worker, INITIAL_DELAY,
+                ff4jConfiguration.getCachePollingInterval().toMillis(), TimeUnit.MILLISECONDS);
+    }
+
+    /** Stop Polling. */
+    public void stopPolling() {
+        if (executor != null) {
+            executor.shutdown();
+            executor = null;
+        }
+    }
+
+    @Override
+    public boolean test(String workspace, String uid, FF4jEvaluationContext context) {
+        return false;
+    }
+
+    @Override
+    public Stream<String> getWorkspaces() {
+        return null;
+    }
+
+    @Override
+    public Map<String, Boolean> getFeatureFlags(String workspace, FF4jEvaluationContext context) {
+        return null;
+    }
+
+    @Override
+    public Optional<Boolean> findFeatureFlag(String workspace, String uid, FF4jEvaluationContext context) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Stream<Property<?>> getProperties(String workspace) {
+        return null;
+    }
+
+    @Override
+    public Optional<Property<?>> findProperty(String workspace, String uid) {
+        return Optional.empty();
+    }
 
     /**
-     * Remove everything present within feature cache.
+     * Gets cacheRepository
      *
-     * @param namespace
-     *      current namespace
+     * @return value of cacheRepository
      */
-    void clearFeatures(String namespace);
-
-    /**
-     * Return {@link Flag} stored in cache.
-     *
-     * @param namespace
-     *      current namespace
-     * @param featureId
-     *            target feature identifier
-     * @return target feature if exists
-     */
-    Optional<Flag> findFeatureById(String namespace, String featureId);
-
-    /**
-     * Add feature to cache.
-     *
-     * @param namespace
-     *      current namespace
-     * @param feat
-     *      target feature to be cached
-     */
-    void putFeature(String namespace, Flag feat);
-
-    /**
-     * Remove a feature from cache by its identifier. Could be invoked for any modification of target feature through store or
-     * when time-to-live reached.
-     *
-     * @param namespace
-     *      current namespace
-     * @param featureId
-     *      feature identifier
-     */
-    void evictFeature(String namespace, String featureId);
-
-    // -------------------------------------
-    // ---- Work with Properties -----------
-    // -------------------------------------
-
-    /**
-     * Remove everything present within properties cache.
-     *
-     * @param namespace
-     *      current namespace
-     */
-    void clearProperties(String namespace);
-
-    /**
-     * Add property to cache.
-     *
-     * @param namespace
-     *      current namespace
-     * @param feat
-     *      target property to be cached
-     */
-    void putProperty(String namespace, Property<?> feat);
-
-    /**
-     * Remove a property from cache by its identifier. Could be invoked for any modification of target feature through store or
-     * when time-to-live reached.
-     *
-     * @param namespace
-     *      current namespace
-     * @param propertyName
-     *      property unique identifier
-     */
-    void evictProperty(String namespace, String propertyName);
-
-    /**
-     * Return {@link PropertyString} stored in cache.
-     *
-     * @param namespace
-     *      current namespace
-     * @param featureId
-     *            target feature identifier
-     * @return target property if exists
-     */
-    Optional<Property<?>> findPropertyById(String namespace, String featureId);
-
-    /**
-     * List property names in cache.
-     *
-     * @param namespace
-     *      current namespace
-     * @return
-     *      feature names in cache
-     */
-    Set < String > findAllPropertiesNames(String namespace);
-
-    // -----------------------------------------
-    // ---- Work with Cache Metadata -----------
-    // -----------------------------------------
-
-    /**
-     * Access to embedded implementation of cache for Features.
-     * 
-     * @return native implementation of cache.
-     */
-    Object getFeatureNativeCache();
-    
-    /**
-     * Access to embedded implementation of cach for Properties
-     * 
-     * @return native implementation of cache.
-     */
-    Object getPropertyNativeCache();
-
-    /**
-     * Get name of expected cache.
-     * 
-     * @return target cache name
-     */
-    String getCacheProviderName();
-    
-    /**
-     * Customize behaviour when an error is thrown.
-     */
-    default void onException(Throwable error) {};
-
+    public FF4jCacheRepository getCacheRepository() {
+        return cacheRepository;
+    }
 }

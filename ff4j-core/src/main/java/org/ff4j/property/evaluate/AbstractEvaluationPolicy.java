@@ -1,6 +1,6 @@
 package org.ff4j.property.evaluate;
 
-import org.ff4j.backend.Backend;
+import org.ff4j.backend.BackendSupport;
 import org.ff4j.property.Property;
 
 /**
@@ -12,7 +12,7 @@ import org.ff4j.property.Property;
 public abstract class AbstractEvaluationPolicy<T, P extends Property<T>> implements FF4jEvaluationPolicy<T> {
 
     /** Access all objects in the repository, security, audit. */
-    private final Backend backend;
+    private final BackendSupport backend;
 
     /** Hold reference to parent property. */
     private final P target;
@@ -30,7 +30,7 @@ public abstract class AbstractEvaluationPolicy<T, P extends Property<T>> impleme
      * @param config
      *      configuration
      */
-    public AbstractEvaluationPolicy(Backend backend, P relatedProperty, FF4jEvaluationContext config) {
+    public AbstractEvaluationPolicy(BackendSupport backend, P relatedProperty, FF4jEvaluationContext config) {
         this.config          = config;
         this.backend         = backend;
         this.target = relatedProperty;
@@ -41,7 +41,7 @@ public abstract class AbstractEvaluationPolicy<T, P extends Property<T>> impleme
      *
      * @return value of backend
      */
-    public Backend getBackend() {
+    public BackendSupport getBackend() {
         return backend;
     }
 

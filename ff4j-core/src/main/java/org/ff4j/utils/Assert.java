@@ -417,7 +417,7 @@ public class Assert {
     // -------------------------------------
     
     /** Predicate to evaluate if  string content is not empty. */
-    private static Predicate<String> HAS_LENGTH = str -> (str!=null) && !str.isEmpty();
+    public static Predicate<String> HAS_LENGTH = str -> (str!=null) && !str.isEmpty();
     
     /** default error message. */
     private static final String MSG_HAS_LENGTH = "'%s' should not be null nor empty.";

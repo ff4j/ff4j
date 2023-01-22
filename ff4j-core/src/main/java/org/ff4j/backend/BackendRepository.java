@@ -1,9 +1,9 @@
 package org.ff4j.backend;
 
-import org.ff4j.FF4jClientConfiguration;
-import org.ff4j.feature.Flag;
-import org.ff4j.feature.exception.FeatureAlreadyExistException;
-import org.ff4j.feature.exception.FeatureNotFoundException;
+import org.ff4j.FF4jConfiguration;
+import org.ff4j.feature.Feature;
+import org.ff4j.feature.exception.FeatureFlagAlreadyExistException;
+import org.ff4j.feature.exception.FeatureFlagNotFoundException;
 import org.ff4j.property.Property;
 import org.ff4j.property.exception.PropertyAlreadyExistException;
 
@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 /**
  * Interface to interact with FF4j persistence.
  */
-public interface BackendRepository {
+public interface BackendRepository extends BackendRepositoryReadOnly {
 
     // -------------------------------------
     // -------  Initialization  ------------
@@ -30,7 +30,7 @@ public interface BackendRepository {
      * @return
      *      ff4j client configuration
      */
-    FF4jClientConfiguration readConfiguration();
+    FF4jConfiguration readConfiguration();
 
     /**
      * Update configuration.
@@ -38,170 +38,200 @@ public interface BackendRepository {
      * @param config
      *      updated configuration
      */
-    void saveConfiguration(FF4jClientConfiguration config);
+    void saveConfiguration(FF4jConfiguration config);
 
     // -------------------------------------
-    // ---- Work with Namespaces -----------
+    // ---- Work with Workspaces -----------
     // -------------------------------------
 
     /**
-     * List available namespaces.
+     * Create a workspace.
      *
-     * @return
-     *      namespace identifiers
+     * @param workspace
+     *      workspace identifier
      */
-    Stream<String> findAllNamespaces();
+    void createWorkspace(String workspace);
 
     /**
-     * Create a namespace.
+     * Delete a workspace.
      *
-     * @param namespace
-     *      namespace identifier
+     * @param workspace
+     *      workspace identifier
      */
-    void createNamespace(String namespace);
-
-    /**
-     * Delete a namespace.
-     *
-     * @param namespace
-     *      namespace identifier
-     */
-    void deleteNamespace(String namespace);
-
-    /**
-     * Check existence of a namespace.
-     *
-     * @param namespace
-     *      namespace identifier
-     * @return
-     *      if namespace exists
-     */
-    boolean existNamespace(String namespace);
+    void deleteWorkspace(String workspace);
 
     // -------------------------------------
     // ---- Work with Features   -----------
     // -------------------------------------
 
     /**
-     * List all features in a namespace.
+     * List all features in a workspace.
      *
-     * @param namespace
-     *       namespace name
-     * @return
-     *      all features
+     * @param workspace
+     *         workspace name
+     * @return all features
      */
-    Stream<Flag> findAllFeatures(String namespace);
+    Stream<Feature> getFeatures(String workspace);
 
     /**
-     * Check existence of a feature.
+     * List all features in a workspace.
      *
-     * @param namespace
-     *      namespace identifier
-     * @param uid
-     *      feature identifier
-     * @return
-     *      if feature exists
+     * @return all features
      */
-    boolean existsFeature(String namespace, String uid);
+    default Stream<Feature> getFeatures() {
+        return getFeatures(getCurrentWorkspace());
+    }
 
     /**
-     * Create a feature.
+     * List features names in a workspace.
      *
-     * @param namespace
-     *      namespace identifier
-     * @param feature
-     *      feature object
-     * @exception FeatureAlreadyExistException
-     *      the feature was already existing
+     * @param workspace
+     *         workspace name
+     * @return all features names
      */
-    void createFeature(String namespace, Flag feature)
-    throws FeatureAlreadyExistException;
+    Stream<String> getFeaturesNames(String workspace);
 
     /**
-     * Upsert a feature.
+     * List features names in a workspace.
      *
-     * @param namespace
-     *      namespace identifier
-     * @param feature
-     *      feature object
-     * @exception FeatureNotFoundException
-     *      the feature has not been found.
+     * @return all features names
      */
-    void saveFeature(String namespace, Flag feature)
-    throws FeatureNotFoundException;
-
-    /**
-     * Delete a feature.
-     *
-     * @param namespace
-     *      namespace identifier
-     * @param uid
-     *      feature identifier
-     * @exception FeatureNotFoundException
-     *      the feature has not been found.
-     */
-    void deleteFeature(String namespace, String uid)
-    throws FeatureNotFoundException;
-
-    /**
-     * Rename a feature.
-     *
-     * @param namespace
-     *      namespace identifier
-     * @param old
-     *      previous feature identifier
-     * @param uid
-     *      new feature identifier
-     * @exception FeatureNotFoundException
-     *      the feature has not been found.
-     */
-    void renameFeature(String namespace, String old, String uid)
-    throws FeatureNotFoundException;
+    default Stream<String> getFeaturesNames() {
+        return getFeaturesNames(getCurrentWorkspace());
+    }
 
     /**
      * Find a feature from its id.
      *
-     * @param namespace
-     *      namespace identifier
+     * @param workspace
+     *         workspace identifier
      * @param uid
-     *      feature identifier
-     * @return
-     *      feature object if exist
+     *         feature identifier
+     * @return feature object if exist
      */
-    Optional<Flag> findFeatureById(String namespace, String uid);
+    Optional<Feature> findFeature(String workspace, String uid);
 
     /**
-     * ToggleOn a feature within a namespace.
+     * Find a feature from its id.
      *
-     * @param namespace
-     *      namespace name
      * @param uid
-     *      feature identifier
-     * @exception FeatureNotFoundException
-     *      the feature has not been found.
+     *         feature identifier
+     * @return feature object if exist
      */
-    default void toggleOnFeature(String namespace, String uid)
-    throws FeatureNotFoundException {
-        findFeatureById(namespace, uid).ifPresentOrElse(
-                f -> saveFeature(namespace, f.toggleOn()),
-                () -> { throw new FeatureNotFoundException(namespace, uid); } );
+    default Optional<Feature> findFeature(String uid) {
+        return findFeature(getCurrentWorkspace(), uid);
     }
 
     /**
-     * Toggle Off a feature within a namespace.
+     * Find a feature from its id.
      *
-     * @param namespace
-     *      namespace name
+     * @param uid
+     *         feature identifier
+     * @return feature object if exist
+     */
+    default Feature getFeature(String uid) {
+        return findFeature(uid).orElseThrow(() -> new FeatureFlagNotFoundException(getCurrentWorkspace(), uid));
+    }
+
+    /**
+     * Find a feature from its id.
+     *
+     * @param workspace
+     *         workspace identifier
+     * @param uid
+     *         feature identifier
+     * @return feature object if exist
+     */
+    default Feature getFeature(String workspace, String uid) {
+        return findFeature(workspace, uid).orElseThrow(() -> new FeatureFlagNotFoundException(workspace, uid));
+    }
+
+    /**
+     * Create a flag.
+     *
+     * @param workspace
+     *      workspace identifier
+     * @param flag
+     *      flag object
+     * @exception FeatureFlagAlreadyExistException
+     *      the flag was already existing
+     */
+    void createFeature(String workspace, Feature flag)
+    throws FeatureFlagAlreadyExistException;
+
+    /**
+     * Upsert a flag.
+     *
+     * @param workspace
+     *      workspace identifier
+     * @param flag
+     *      flag object
+     * @exception FeatureFlagNotFoundException
+     *      the flag has not been found.
+     */
+    void saveFeature(String workspace, Feature flag)
+    throws FeatureFlagNotFoundException;
+
+    /**
+     * Delete a feature.
+     *
+     * @param workspace
+     *      workspace identifier
      * @param uid
      *      feature identifier
-     * @exception FeatureNotFoundException
+     * @exception FeatureFlagNotFoundException
      *      the feature has not been found.
      */
-    default void toggleOffFeature(String namespace, String uid)
-    throws FeatureNotFoundException {
-        findFeatureById(namespace, uid).ifPresentOrElse(
-                f -> saveFeature(namespace, f.toggleOff()),
-                () -> { throw new FeatureNotFoundException(namespace, uid); } );
+    void deleteFeature(String workspace, String uid)
+    throws FeatureFlagNotFoundException;
+
+    /**
+     * Rename a feature.
+     *
+     * @param workspace
+     *      workspace identifier
+     * @param old
+     *      previous feature identifier
+     * @param uid
+     *      new feature identifier
+     * @exception FeatureFlagNotFoundException
+     *      the feature has not been found.
+     */
+    void renameFeature(String workspace, String old, String uid)
+    throws FeatureFlagNotFoundException;
+
+    /**
+     * ToggleOn a feature within a workspace.
+     *
+     * @param workspace
+     *      workspace name
+     * @param flag
+     *      feature identifier
+     * @exception FeatureFlagNotFoundException
+     *      the feature has not been found.
+     */
+    default void toggleOn(String workspace, String flag)
+    throws FeatureFlagNotFoundException {
+        findFeature(workspace, flag).ifPresentOrElse(
+                f -> saveFeature(workspace, f.toggleOn()),
+                () -> { throw new FeatureFlagNotFoundException(workspace, flag); } );
+    }
+
+    /**
+     * Toggle Off a feature within a workspace.
+     *
+     * @param workspace
+     *      workspace name
+     * @param uid
+     *      feature identifier
+     * @exception FeatureFlagNotFoundException
+     *      the feature has not been found.
+     */
+    default void toggleOff(String workspace, String uid)
+    throws FeatureFlagNotFoundException {
+        findFeature(workspace, uid).ifPresentOrElse(
+                f -> saveFeature(workspace, f.toggleOff()),
+                () -> { throw new FeatureFlagNotFoundException(workspace, uid); } );
     }
 
     // -------------------------------------
@@ -209,88 +239,66 @@ public interface BackendRepository {
     // -------------------------------------
 
     /**
-     * List all properties in a namespace.
+     * List features names in a workspace.
      *
-     * @param namespace
-     *       namespace name
-     * @return
-     *      all properties
+     * @param workspace
+     *         workspace name
+     * @return all property names
      */
-    Stream<Property<?>> findAllProperties(String namespace);
+    Stream<String> getPropertiesNames(String workspace);
 
     /**
-     * Check existence of a property.
+     * List features names in a workspace.
      *
-     * @param namespace
-     *      namespace identifier
-     * @param uid
-     *      property identifier
-     * @return
-     *      if property exists
+     * @return all property names
      */
-    boolean existsProperty(String namespace, String uid);
+    default Stream<String> getPropertiesNames() {
+        return getPropertiesNames(getCurrentWorkspace());
+    }
 
     /**
      * Create a feature.
      *
-     * @param namespace
-     *      namespace identifier
+     * @param workspace
+     *      workspace identifier
      * @param property
      *      property object
      * @exception PropertyAlreadyExistException
      *      the property was already existing
      */
-    void createProperty(String namespace, Property<?> property)
+    void createProperty(String workspace, Property<?> property)
     throws PropertyAlreadyExistException;
 
     /**
      * Upsert a property.
      *
-     * @param namespace
-     *      namespace identifier
+     * @param workspace
+     *      workspace identifier
      * @param property
      *      property object
      */
-    void saveProperty(String namespace, Property<?> property);
+    void saveProperty(String workspace, Property<?> property);
 
     /**
      * Delete a property.
      *
-     * @param namespace
-     *      namespace identifier
+     * @param workspace
+     *      workspace identifier
      * @param uid
      *      property identifier
      */
-    void deleteProperty(String namespace, String uid);
+    void deleteProperty(String workspace, String uid);
 
     /**
      * Rename a property.
      *
-     * @param namespace
-     *      namespace identifier
+     * @param workspace
+     *      workspace identifier
      * @param old
      *      previous property identifier
      * @param uid
      *      new property identifier
      */
-    void renameProperty(String namespace, String old, String uid);
-
-    /**
-     * Find a property from its id.
-     *
-     * @param namespace
-     *      namespace identifier
-     * @param uid
-     *      property identifier
-    * @param <T>
-     *      property value
-     * @return
-     *      property object if exist
-
-     * @return
-     */
-    Optional<Property<?>> findPropertyById(String namespace, String uid);
-
-
+    void renameProperty(String workspace, String old, String uid);
 
 }

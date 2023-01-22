@@ -1,6 +1,6 @@
 package org.ff4j.property.evaluate;
 
-import org.ff4j.backend.Backend;
+import org.ff4j.backend.BackendSupport;
 import org.ff4j.exception.InvalidEvaluationPolicyException;
 import org.ff4j.property.Property;
 import org.ff4j.utils.Assert;
@@ -43,11 +43,11 @@ public interface FF4jEvaluationPolicy<T> {
      *      evaluation property
      */
     static <T, P extends Property<T>> FF4jEvaluationPolicy<T> getEvaluationPolicy(
-            String className, Backend backend, P relatedProperty, FF4jEvaluationContext config) {
+            String className, BackendSupport backend, P relatedProperty, FF4jEvaluationContext config) {
         try {
             Assert.assertNotNull(className);
             return (FF4jEvaluationPolicy<T>) Class.forName(className)
-                 .getConstructor(Backend.class, Property.class, Map.class)
+                 .getConstructor(BackendSupport.class, Property.class, Map.class)
                  .newInstance(backend, relatedProperty, config);
         } catch (Exception ie) {
             throw new InvalidEvaluationPolicyException(className, ie);

@@ -1,7 +1,7 @@
 package org.ff4j.backend;
 
-import org.ff4j.FF4jClientConfiguration;
-import org.ff4j.feature.Flag;
+import org.ff4j.FF4jConfiguration;
+import org.ff4j.feature.Feature;
 import org.ff4j.property.Property;
 
 /**
@@ -43,7 +43,7 @@ public interface BackendRepositoryListener {
      * @param config
      *      configuration
      */
-    void onSaveConfiguration(FF4jClientConfiguration config);
+    void onSaveConfiguration(FF4jConfiguration config);
 
     /* -----------------------------*/
     /*  Operations on Namespace     */
@@ -56,9 +56,9 @@ public interface BackendRepositoryListener {
     /*  CRUD Operation on Features.  */
     /* ------------------------------*/
     
-    void onFeatureCreate(String namespace, Flag f);
+    void onFeatureCreate(String namespace, Feature f);
     void onFeatureTest(String namespace, String uid, boolean status);
-    void onFeatureUpdate(String namespace, Flag f);
+    void onFeatureUpdate(String namespace, Feature f);
     void onFeaturRename(String namespace, String oldUid, String newUid);
     void onFeatureToggleOn(String namespace, String uid);
     void onFeatureToggleOff(String namespace,String uid);

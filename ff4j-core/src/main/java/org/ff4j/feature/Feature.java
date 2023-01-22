@@ -1,6 +1,6 @@
 package org.ff4j.feature;
 
-import org.ff4j.backend.Backend;
+import org.ff4j.backend.BackendSupport;
 import org.ff4j.feature.togglestrategy.AbstractToggleStrategy;
 import org.ff4j.property.PropertyBoolean;
 
@@ -12,15 +12,15 @@ import java.util.List;
 /**
  * Represents a flag.
  */
-public class Flag extends PropertyBoolean {
+public class Feature extends PropertyBoolean {
 
     /**
-     * Initialize {@link Flag} with id;
+     * Initialize {@link Feature} with id;
      *
      * @param uid
      *       unique identifier
      */
-    public Flag(final String uid) {
+    public Feature(final String uid) {
         super(uid, false);
         //this.evaluationStrategy = new FeatureEvaluationStrategy();
     }
@@ -31,7 +31,7 @@ public class Flag extends PropertyBoolean {
      * @return
      *      clone
      */
-    public Flag clone() {
+    public Feature clone() {
         return clone(this.getUid());
     }
 
@@ -41,13 +41,13 @@ public class Flag extends PropertyBoolean {
      * @return
      *      clone
      */
-    public Flag clone(String newName) {
-        Flag clone = new Flag(newName);
+    public Feature clone(String newName) {
+        Feature clone = new Feature(newName);
         clone.creationDate   = this.creationDate;
         clone.createdBy      = this.createdBy;
         clone.description    = this.description;
         clone.lastModified   = Instant.now();
-        Backend.getContext()
+        BackendSupport.getContext()
                .getUser()
                .ifPresent(user -> clone.setLastModifiedBy(user.getName()));
         clone.namespace      = this.getNamespace();
@@ -70,7 +70,7 @@ public class Flag extends PropertyBoolean {
      * @return
      *      current feature to be enabled
      */
-    private Flag toggle(boolean status) {
+    private Feature toggle(boolean status) {
         this.value = status;
         return this;
     }
@@ -91,7 +91,7 @@ public class Flag extends PropertyBoolean {
      * @return
      *      current feature to be disabled
      */
-    public Flag toggleOff() {
+    public Feature toggleOff() {
         return toggle(false);
     }
     
@@ -101,7 +101,7 @@ public class Flag extends PropertyBoolean {
      * @return
      *      current feature to be enabled
      */
-    public Flag toggleOn() {
+    public Feature toggleOn() {
         return toggle(true);
     }
     
@@ -128,7 +128,7 @@ public class Flag extends PropertyBoolean {
      * @return
      *       current value of 'toggleStrategies'
      */
-    public Flag addToggleStrategies(AbstractToggleStrategy... ts) {
+    public Feature addToggleStrategies(AbstractToggleStrategy... ts) {
         if (null != ts) {
             toggleStrategies.addAll(Arrays.asList(ts));
         }
@@ -141,7 +141,7 @@ public class Flag extends PropertyBoolean {
      * @return
      *       current value of 'toggleStrategies'
      */
-    public Flag addToggleStrategy(AbstractToggleStrategy ts) {
+    public Feature addToggleStrategy(AbstractToggleStrategy ts) {
         if (null != ts) {
             toggleStrategies.add(ts);
         }
@@ -156,7 +156,7 @@ public class Flag extends PropertyBoolean {
      * @return
      *      current value for toggle
      */
-    public Flag setToggleStrategies(List<AbstractToggleStrategy> toggles) {
+    public Feature setToggleStrategies(List<AbstractToggleStrategy> toggles) {
         toggleStrategies = toggles;
         return this;
     }

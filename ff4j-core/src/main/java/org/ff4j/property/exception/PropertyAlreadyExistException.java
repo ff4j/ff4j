@@ -15,18 +15,18 @@ public class PropertyAlreadyExistException extends RuntimeException {
 	
 	
     /** Error Message. */
-    public static final String ERROR_MESSAGE_APP = "Property '%s' already exist in namespace '%s'";
+    public static final String ERROR_MESSAGE_APP = "Property '%s' already exist in workspace '%s'";
 
     /**
      * Parameterized constructor.
      *
-     * @param namespace
-     *           namespace name
+     * @param workspace
+     *           workspace name
      * @param uid
      *           Property identifier
      **/
-    public PropertyAlreadyExistException(String namespace, String uid) {
-        super(String.format(ERROR_MESSAGE_APP, uid, namespace));
+    public PropertyAlreadyExistException(String workspace, String uid) {
+        super(String.format(ERROR_MESSAGE_APP, uid, workspace));
     }
    
 }

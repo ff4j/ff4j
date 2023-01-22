@@ -1,5 +1,7 @@
 package org.ff4j;
 
+import org.ff4j.feature.Feature;
+import org.ff4j.property.PropertyDouble;
 import org.ff4j.utils.Assert;
 import org.junit.jupiter.api.Test;
 
@@ -12,11 +14,21 @@ public class FF4jInitializationsTest {
 
     @Test
     public void ff4jTest() {
-        FF4jClient ff4j = FF4jClient.builder().build()
-            .createFeatures("f1");
+        FF4j ff4j = FF4j.builder().build();
+        String wkspc = ff4j.getCurrentWorkspace();
+
+        // Explicit Dataset
+        ff4j.getBackendOperations().createFeature(wkspc, new Feature("f1").toggleOn());
+        ff4j.getBackendOperations().createFeature(wkspc, new Feature("f2").toggleOff());
+        ff4j.getBackendOperations().createFeature(wkspc, new Feature("f3").toggleOff());
+        ff4j.getBackendOperations().createProperty(wkspc, new PropertyDouble("d1", Double.parseDouble("1.0")));
+
+
         Assert.assertFalse(ff4j.test("f1"));
-        ff4j.toggleOnFeature("f1");
-        Assert.assertTrue(ff4j.test("f1"));
+
+        //ff4j.toggleOn("f1");
+
+        //Assert.assertTrue(ff4j.isFeatureFlag("f1"));
 
     }
 

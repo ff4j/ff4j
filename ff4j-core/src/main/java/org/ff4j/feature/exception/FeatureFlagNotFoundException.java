@@ -5,7 +5,7 @@ import java.io.Serial;
 /**
  * Store could be parameterized to through exception when Feature not found.
  */
-public class FeatureNotFoundException extends RuntimeException {
+public class FeatureFlagNotFoundException extends RuntimeException {
 
 	/**
 	 * Serial.
@@ -19,14 +19,14 @@ public class FeatureNotFoundException extends RuntimeException {
     /**
      * Parameterized constructor.
      * 
-     * @param namespace
-     *           namespace name
+     * @param workspace
+     *           workspace name
      * @param uid
      *           feature identifier
 
      **/
-    public FeatureNotFoundException(String namespace, String uid) {
-        super(String.format(ERROR_MESSAGE_APP, uid, namespace));
+    public FeatureFlagNotFoundException(String workspace, String uid) {
+        super(String.format(ERROR_MESSAGE_APP, uid, workspace));
     }
    
 }

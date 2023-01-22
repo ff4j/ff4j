@@ -14,7 +14,7 @@ public class PropertyNotFoundException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     /** target message. */
-    public static final String ERROR_MESSAGE_NAMESPACE = "Property '%s' does not exist in namespace '%s'";
+    public static final String ERROR_MESSAGE_NAMESPACE = "Property '%s' does not exist in workspace '%s'";
 
     /** target message. */
     public static final String ERROR_MESSAGE = "Property '%s' has not been found";
@@ -22,13 +22,13 @@ public class PropertyNotFoundException extends RuntimeException {
     /**
      * Parameterized constructor.
      * 
-     * @param namespace
-     *           namespace name
+     * @param workspace
+     *           workspace name
      * @param uid
      *           property identifier
      **/
-    public PropertyNotFoundException(String namespace, String uid) {
-        super(String.format(ERROR_MESSAGE_NAMESPACE, uid, namespace));
+    public PropertyNotFoundException(String workspace, String uid) {
+        super(String.format(ERROR_MESSAGE_NAMESPACE, uid, workspace));
     }
 
     /**
@@ -40,6 +40,4 @@ public class PropertyNotFoundException extends RuntimeException {
         super(String.format(ERROR_MESSAGE, uid));
     }
 
-
-   
 }

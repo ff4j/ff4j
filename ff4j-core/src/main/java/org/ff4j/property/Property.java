@@ -1,6 +1,6 @@
 package org.ff4j.property;
 
-import org.ff4j.backend.Backend;
+import org.ff4j.backend.BackendSupport;
 import org.ff4j.property.evaluate.AbstractEvaluationPolicy;
 import org.ff4j.property.evaluate.FF4jEvaluationContext;
 import org.ff4j.property.evaluate.FF4jEvaluationPolicy;
@@ -69,7 +69,7 @@ public abstract class Property<T> implements Comparable<Property<T>>, Cloneable 
         Assert.assertHasLength(uid);
         this.uid = uid;
         this.lastModified = creationDate;
-        Backend.getContext().getUser().ifPresent(user -> {
+        BackendSupport.getContext().getUser().ifPresent(user -> {
             this.createdBy = user.getName();
             this.lastModifiedBy = user.getName();
         });
