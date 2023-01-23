@@ -1,4 +1,3 @@
----
 -- #%L
 -- ff4j-core
 -- %%
@@ -15,9 +14,7 @@
 -- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
--- #L%
----
--- Main Table to store Features
+-- #L%-- Main Table to store Features
 
 CREATE TABLE T_FF4J_FEATURES_01 (
   "FEAT_UID"     	VARCHAR(100),

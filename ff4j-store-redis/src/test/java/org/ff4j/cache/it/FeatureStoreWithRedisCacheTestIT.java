@@ -1,23 +1,10 @@
 package org.ff4j.cache.it;
 
-import static org.ff4j.test.TestsFf4jConstants.F1;
-import static org.ff4j.test.TestsFf4jConstants.F2;
-import static org.ff4j.test.TestsFf4jConstants.F4;
-import static org.ff4j.test.TestsFf4jConstants.G0;
-import static org.ff4j.test.TestsFf4jConstants.G1;
-import static org.ff4j.test.TestsFf4jConstants.ROLE_NEW;
-import static org.ff4j.test.TestsFf4jConstants.ROLE_USER;
-import static org.ff4j.test.TestsFf4jConstants.TEST_FEATURES_FILE;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-/*
+/*-
  * #%L
- * ff4j-cache-redis
+ * ff4j-store-redis
  * %%
- * Copyright (C) 2013 - 2014 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +19,19 @@ import java.util.Set;
  * limitations under the License.
  * #L%
  */
+
+import static org.ff4j.test.TestsFf4jConstants.F1;
+import static org.ff4j.test.TestsFf4jConstants.F2;
+import static org.ff4j.test.TestsFf4jConstants.F4;
+import static org.ff4j.test.TestsFf4jConstants.G0;
+import static org.ff4j.test.TestsFf4jConstants.G1;
+import static org.ff4j.test.TestsFf4jConstants.ROLE_NEW;
+import static org.ff4j.test.TestsFf4jConstants.ROLE_USER;
+import static org.ff4j.test.TestsFf4jConstants.TEST_FEATURES_FILE;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.ff4j.cache.FF4JCacheManager;
 import org.ff4j.cache.FF4jCacheManagerRedis;

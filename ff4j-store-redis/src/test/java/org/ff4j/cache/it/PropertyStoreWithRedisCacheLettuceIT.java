@@ -1,14 +1,10 @@
 package org.ff4j.cache.it;
 
-import org.ff4j.cache.FF4JCacheManager;
-import org.ff4j.cache.FF4jCacheManagerRedisLettuce;
-import org.junit.Ignore;
-
-/*
+/*-
  * #%L
  * ff4j-store-redis
  * %%
- * Copyright (C) 2021 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +19,10 @@ import org.junit.Ignore;
  * limitations under the License.
  * #L%
  */
+
+import org.ff4j.cache.FF4JCacheManager;
+import org.ff4j.cache.FF4jCacheManagerRedisLettuce;
+import org.junit.Ignore;
 
 import io.lettuce.core.RedisClient;
 

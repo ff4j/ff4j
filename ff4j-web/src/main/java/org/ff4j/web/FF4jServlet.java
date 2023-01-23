@@ -1,6 +1,6 @@
 package org.ff4j.web;
 
-/*
+/*-
  * #%L
  * ff4j-web
  * %%

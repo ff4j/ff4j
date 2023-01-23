@@ -1,24 +1,10 @@
 package org.ff4j.test.property;
 
-import java.io.InputStream;
-import java.util.Date;
-import java.util.HashMap;
-
-import org.ff4j.FF4j;
-import org.ff4j.conf.XmlParser;
-import org.ff4j.property.Property;
-import org.ff4j.property.PropertyString;
-import org.ff4j.property.PropertyDate;
-import org.ff4j.property.store.InMemoryPropertyStore;
-import org.ff4j.property.store.PropertyStore;
-import org.junit.Assert;
-import org.junit.Test;
-
-/*
+/*-
  * #%L
  * ff4j-core
  * %%
- * Copyright (C) 2013 - 2015 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +19,20 @@ import org.junit.Test;
  * limitations under the License.
  * #L%
  */
+
+import java.io.InputStream;
+import java.util.Date;
+import java.util.HashMap;
+
+import org.ff4j.FF4j;
+import org.ff4j.conf.XmlParser;
+import org.ff4j.property.Property;
+import org.ff4j.property.PropertyString;
+import org.ff4j.property.PropertyDate;
+import org.ff4j.property.store.InMemoryPropertyStore;
+import org.ff4j.property.store.PropertyStore;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Test for {@link InMemoryPropertyStore}.

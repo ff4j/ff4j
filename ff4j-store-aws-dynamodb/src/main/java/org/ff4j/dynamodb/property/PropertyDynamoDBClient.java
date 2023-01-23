@@ -1,22 +1,10 @@
 package org.ff4j.dynamodb.property;
 
-import org.ff4j.dynamodb.DynamoDBClient;
-import org.ff4j.exception.PropertyNotFoundException;
-import org.ff4j.property.Property;
-import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
-import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
-import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
-import software.amazon.awssdk.services.dynamodb.model.*;
-
-import java.util.*;
-
-import static org.ff4j.dynamodb.DynamoDBConstants.*;
-
-/*
+/*-
  * #%L
  * ff4j-store-aws-dynamodb
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +19,18 @@ import static org.ff4j.dynamodb.DynamoDBConstants.*;
  * limitations under the License.
  * #L%
  */
+
+import org.ff4j.dynamodb.DynamoDBClient;
+import org.ff4j.exception.PropertyNotFoundException;
+import org.ff4j.property.Property;
+import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
+import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
+import software.amazon.awssdk.services.dynamodb.model.*;
+
+import java.util.*;
+
+import static org.ff4j.dynamodb.DynamoDBConstants.*;
 
 
 /**

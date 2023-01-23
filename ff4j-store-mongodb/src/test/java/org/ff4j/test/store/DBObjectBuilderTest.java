@@ -1,13 +1,10 @@
 package org.ff4j.test.store;
 
-import org.ff4j.audit.Event;
-import org.ff4j.audit.EventConstants;
-
-/*
+/*-
  * #%L
- * ff4j-store-mongodb-v3
+ * ff4j-store-mongodb
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +19,9 @@ import org.ff4j.audit.EventConstants;
  * limitations under the License.
  * #L%
  */
+
+import org.ff4j.audit.Event;
+import org.ff4j.audit.EventConstants;
 
 
 import org.ff4j.mongo.mapper.FeatureDocumentBuilder;

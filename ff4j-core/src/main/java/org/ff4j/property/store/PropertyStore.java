@@ -1,16 +1,10 @@
 package org.ff4j.property.store;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-
-import org.ff4j.property.Property;
-
-/*
+/*-
  * #%L
  * ff4j-core
  * %%
- * Copyright (C) 2013 - 2015 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +19,12 @@ import org.ff4j.property.Property;
  * limitations under the License.
  * #L%
  */
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+
+import org.ff4j.property.Property;
 
 /**
  * CRUD repository to perform operation on properties.

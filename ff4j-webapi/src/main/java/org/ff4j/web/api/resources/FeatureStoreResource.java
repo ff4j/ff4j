@@ -1,16 +1,10 @@
 package org.ff4j.web.api.resources;
 
-import static org.ff4j.web.FF4jWebConstants.RESOURCE_CACHE;
-import static org.ff4j.web.FF4jWebConstants.RESOURCE_FEATURES;
-import static org.ff4j.web.FF4jWebConstants.RESOURCE_GROUPS;
-import static org.ff4j.web.FF4jWebConstants.STORE_CLEAR;
-import static org.ff4j.web.FF4jWebConstants.STORE_CREATESCHEMA;
-
-/*
+/*-
  * #%L
- * ff4j-web
+ * ff4j-webapi
  * %%
- * Copyright (C) 2013 - 2014 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +19,12 @@ import static org.ff4j.web.FF4jWebConstants.STORE_CREATESCHEMA;
  * limitations under the License.
  * #L%
  */
+
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_CACHE;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_FEATURES;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_GROUPS;
+import static org.ff4j.web.FF4jWebConstants.STORE_CLEAR;
+import static org.ff4j.web.FF4jWebConstants.STORE_CREATESCHEMA;
 
 import java.util.ArrayList;
 import java.util.HashMap;

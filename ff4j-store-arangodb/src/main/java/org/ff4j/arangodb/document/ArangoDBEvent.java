@@ -1,15 +1,10 @@
 package org.ff4j.arangodb.document;
 
-import com.arangodb.entity.DocumentField;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-/*
+/*-
  * #%L
  * ff4j-store-arangodb
  * %%
- * Copyright (C) 2013 - 2020 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +19,11 @@ import lombok.NoArgsConstructor;
  * limitations under the License.
  * #L%
  */
+
+import com.arangodb.entity.DocumentField;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * ArangoDB document for storing {@link org.ff4j.audit.Event} event

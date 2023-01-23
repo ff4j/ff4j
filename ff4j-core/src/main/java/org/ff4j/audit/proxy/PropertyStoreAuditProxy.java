@@ -1,20 +1,10 @@
 package org.ff4j.audit.proxy;
 
-import static org.ff4j.audit.EventConstants.ACTION_CLEAR;
-import static org.ff4j.audit.EventConstants.ACTION_CREATE;
-import static org.ff4j.audit.EventConstants.ACTION_CREATESCHEMA;
-import static org.ff4j.audit.EventConstants.ACTION_DELETE;
-import static org.ff4j.audit.EventConstants.ACTION_UPDATE;
-import static org.ff4j.audit.EventConstants.TARGET_PROPERTY;
-import static org.ff4j.audit.EventConstants.TARGET_PSTORE;
-
-import java.util.Collection;
-
-/*
+/*-
  * #%L
  * ff4j-core
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +19,16 @@ import java.util.Collection;
  * limitations under the License.
  * #L%
  */
+
+import static org.ff4j.audit.EventConstants.ACTION_CLEAR;
+import static org.ff4j.audit.EventConstants.ACTION_CREATE;
+import static org.ff4j.audit.EventConstants.ACTION_CREATESCHEMA;
+import static org.ff4j.audit.EventConstants.ACTION_DELETE;
+import static org.ff4j.audit.EventConstants.ACTION_UPDATE;
+import static org.ff4j.audit.EventConstants.TARGET_PROPERTY;
+import static org.ff4j.audit.EventConstants.TARGET_PSTORE;
+
+import java.util.Collection;
 
 import java.util.Map;
 import java.util.Set;

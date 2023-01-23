@@ -1,19 +1,10 @@
 package org.ff4j.dynamodb.feature;
 
-import org.ff4j.core.Feature;
-import org.ff4j.core.FeatureStore;
-import org.ff4j.test.store.FeatureStoreTestSupport;
-import org.junit.*;
-import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
-
-import static org.ff4j.test.TestsFf4jConstants.AWESOME;
-import static org.ff4j.test.TestsFf4jConstants.ROLE_TEST;
-
-/*
+/*-
  * #%L
  * ff4j-store-aws-dynamodb
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +19,15 @@ import static org.ff4j.test.TestsFf4jConstants.ROLE_TEST;
  * limitations under the License.
  * #L%
  */
+
+import org.ff4j.core.Feature;
+import org.ff4j.core.FeatureStore;
+import org.ff4j.test.store.FeatureStoreTestSupport;
+import org.junit.*;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
+
+import static org.ff4j.test.TestsFf4jConstants.AWESOME;
+import static org.ff4j.test.TestsFf4jConstants.ROLE_TEST;
 
 /**
  * Run against a real AWS environment.

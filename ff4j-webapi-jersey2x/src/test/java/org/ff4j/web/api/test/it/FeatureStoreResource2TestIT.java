@@ -1,18 +1,10 @@
 package org.ff4j.web.api.test.it;
 
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.ff4j.store.InMemoryFeatureStore;
-import org.junit.Assert;
-import org.junit.Test;
-
-/*
+/*-
  * #%L
- * ff4j-web
+ * ff4j-webapi-jersey2x
  * %%
- * Copyright (C) 2013 - 2014 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +19,14 @@ import org.junit.Test;
  * limitations under the License.
  * #L%
  */
+
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import org.ff4j.store.InMemoryFeatureStore;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class FeatureStoreResource2TestIT extends AbstractWebResourceTestIT {
 

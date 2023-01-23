@@ -1,13 +1,10 @@
 package org.ff4j.web.api.test.filter;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-/*
+/*-
  * #%L
  * ff4j-webapi-jersey2x
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +19,9 @@ import static org.mockito.Mockito.when;
  * limitations under the License.
  * #L%
  */
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 import java.util.Date;

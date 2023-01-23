@@ -1,12 +1,10 @@
 package org.ff4j.aop.test.noalterbean;
 
-import org.ff4j.aop.Flip;
-
-/*
+/*-
  * #%L
  * ff4j-aop
  * %%
- * Copyright (C) 2013 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +19,8 @@ import org.ff4j.aop.Flip;
  * limitations under the License.
  * #L%
  */
+
+import org.ff4j.aop.Flip;
 
 public interface SampleService {
 

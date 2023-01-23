@@ -1,13 +1,10 @@
 package org.ff4j.cache;
 
-import org.ff4j.core.Feature;
-import org.ff4j.property.PropertyString;
-
-/*
+/*-
  * #%L
- * ff4j-store-ehcache
+ * ff4j-store-jcache
  * %%
- * Copyright (C) 2013 - 2015 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +19,9 @@ import org.ff4j.property.PropertyString;
  * limitations under the License.
  * #L%
  */
+
+import org.ff4j.core.Feature;
+import org.ff4j.property.PropertyString;
 
 import org.ff4j.test.cache.AbstractCacheManagerJUnitTest;
 import org.jsr107.ri.spi.RICachingProvider;

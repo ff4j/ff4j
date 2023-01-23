@@ -1,5 +1,25 @@
 package org.ff4j.elastic.store;
 
+/*-
+ * #%L
+ * ff4j-store-elastic
+ * %%
+ * Copyright (C) 2013 - 2023 FF4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import static org.ff4j.elastic.ElasticQueryBuilder.createFeature;
 import static org.ff4j.elastic.ElasticQueryBuilder.deleteFeature;
 import static org.ff4j.elastic.ElasticQueryBuilder.findAllFeatures;
@@ -32,17 +52,6 @@ import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 import io.searchbox.core.SearchResult.Hit;
-
-/*
- * #%L ff4j-store-elastic %% Copyright (C) 2013 - 2016 FF4J %% Licensed under the Apache License, Version 2.0 (the "License"); you
- * may not use this file except in compliance with the License. You may obtain a copy of the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
- * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License. #L%
- */
 
 /**
  * Implementation of the {@link FeatureStore} to work ElasticSearch storage DB.

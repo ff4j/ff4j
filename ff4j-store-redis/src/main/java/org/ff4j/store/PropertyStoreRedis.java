@@ -1,24 +1,10 @@
 package org.ff4j.store;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-
-import org.ff4j.exception.PropertyAlreadyExistException;
-import org.ff4j.property.Property;
-import org.ff4j.property.store.AbstractPropertyStore;
-import org.ff4j.redis.RedisConnection;
-import org.ff4j.redis.RedisKeysBuilder;
-import org.ff4j.utils.Util;
-import org.ff4j.utils.json.PropertyJsonParser;
-
-import redis.clients.jedis.Jedis;
-
-/*
+/*-
  * #%L
  * ff4j-store-redis
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +19,20 @@ import redis.clients.jedis.Jedis;
  * limitations under the License.
  * #L%
  */
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+
+import org.ff4j.exception.PropertyAlreadyExistException;
+import org.ff4j.property.Property;
+import org.ff4j.property.store.AbstractPropertyStore;
+import org.ff4j.redis.RedisConnection;
+import org.ff4j.redis.RedisKeysBuilder;
+import org.ff4j.utils.Util;
+import org.ff4j.utils.json.PropertyJsonParser;
+
+import redis.clients.jedis.Jedis;
 
 /**
  * Implementation of property store for REDIS.

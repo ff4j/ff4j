@@ -1,19 +1,10 @@
 package org.ff4j.couchdb.store;
 
-import static org.ff4j.couchdb.CouchDbConstants.DEFAULT_FEATURE_TYPE;
-
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-/*
+/*-
  * #%L
- * ff4j-web
+ * ff4j-store-couchdb
  * %%
- * Copyright (C) 2013 - 2014 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +19,15 @@ import java.util.stream.Collectors;
  * limitations under the License.
  * #L%
  */
+
+import static org.ff4j.couchdb.CouchDbConstants.DEFAULT_FEATURE_TYPE;
+
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.DocumentNotFoundException;
 import org.ektorp.UpdateConflictException;

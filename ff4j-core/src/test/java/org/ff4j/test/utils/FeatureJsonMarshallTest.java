@@ -1,10 +1,10 @@
 package org.ff4j.test.utils;
 
-/*
+/*-
  * #%L
- * ff4j-web
+ * ff4j-core
  * %%
- * Copyright (C) 2013 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

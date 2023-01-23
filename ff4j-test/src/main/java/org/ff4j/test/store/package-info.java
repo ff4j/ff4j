@@ -1,17 +1,10 @@
-/**
- * SuperClasses to test features stores.
- * <p>
- *
- * @author Cedrick Lunven (@clunven)</a>
- * @version 1.3
- */
 package org.ff4j.test.store;
 
-/*
+/*-
  * #%L
- * ff4j-core
+ * ff4j-test
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

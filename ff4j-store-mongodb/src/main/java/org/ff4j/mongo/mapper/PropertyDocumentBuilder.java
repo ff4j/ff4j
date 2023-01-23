@@ -1,16 +1,10 @@
 package org.ff4j.mongo.mapper;
 
-import static org.ff4j.mongo.MongoDbConstants.PROPERTY_DESCRIPTION;
-import static org.ff4j.mongo.MongoDbConstants.PROPERTY_FIXEDVALUES;
-import static org.ff4j.mongo.MongoDbConstants.PROPERTY_NAME;
-import static org.ff4j.mongo.MongoDbConstants.PROPERTY_TYPE;
-import static org.ff4j.mongo.MongoDbConstants.PROPERTY_VALUE;
-
-/*
+/*-
  * #%L
  * ff4j-store-mongodb
  * %%
- * Copyright (C) 2013 - 2014 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +19,12 @@ import static org.ff4j.mongo.MongoDbConstants.PROPERTY_VALUE;
  * limitations under the License.
  * #L%
  */
+
+import static org.ff4j.mongo.MongoDbConstants.PROPERTY_DESCRIPTION;
+import static org.ff4j.mongo.MongoDbConstants.PROPERTY_FIXEDVALUES;
+import static org.ff4j.mongo.MongoDbConstants.PROPERTY_NAME;
+import static org.ff4j.mongo.MongoDbConstants.PROPERTY_TYPE;
+import static org.ff4j.mongo.MongoDbConstants.PROPERTY_VALUE;
 
 import java.util.Set;
 

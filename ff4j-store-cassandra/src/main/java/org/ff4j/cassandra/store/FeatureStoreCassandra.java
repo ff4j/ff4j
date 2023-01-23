@@ -1,10 +1,10 @@
 package org.ff4j.cassandra.store;
 
-/*
+/*-
  * #%L
  * ff4j-store-cassandra
  * %%
- * Copyright (C) 2013 - 2020 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,13 +57,13 @@ import com.datastax.oss.driver.shaded.guava.common.base.Functions;
  * Implementation of {@link FeatureStore} to work with Cassandra Storage.
  * 
  * Minimize the Number of Writes : 
- * Writes in Cassandra aren’t free, but they’re awfully cheap. Cassandra is optimized for high write throughput, 
+ * Writes in Cassandra aren?t free, but they?re awfully cheap. Cassandra is optimized for high write throughput, 
  * and almost all writes are equally efficient [1]. If you can perform extra writes to improve the efficiency of
- * your read queries, it’s almost always a good tradeoff. Reads tend to be more expensive and are much more 
+ * your read queries, it?s almost always a good tradeoff. Reads tend to be more expensive and are much more 
  * difficult to tune.
  * 
  * Minimize Data Duplication
- * Denormalization and duplication of data is a fact of life with Cassandra. Don’t be afraid of it. Disk space 
+ * Denormalization and duplication of data is a fact of life with Cassandra. Don?t be afraid of it. Disk space 
  * is generally the cheapest resource (compared to CPU, memory, disk IOPs, or network), and Cassandra is 
  * architected around that fact. In order to get the most efficient reads, you often need to duplicate data.
  * 

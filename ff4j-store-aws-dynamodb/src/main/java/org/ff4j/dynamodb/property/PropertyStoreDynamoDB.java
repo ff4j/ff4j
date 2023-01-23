@@ -1,23 +1,10 @@
 package org.ff4j.dynamodb.property;
 
-import org.ff4j.exception.PropertyAlreadyExistException;
-import org.ff4j.exception.PropertyNotFoundException;
-import org.ff4j.property.Property;
-import org.ff4j.property.store.AbstractPropertyStore;
-import org.ff4j.utils.Util;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
-import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
-
-import java.util.Map;
-import java.util.Set;
-
-/*
+/*-
  * #%L
  * ff4j-store-aws-dynamodb
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +19,19 @@ import java.util.Set;
  * limitations under the License.
  * #L%
  */
+
+import org.ff4j.exception.PropertyAlreadyExistException;
+import org.ff4j.exception.PropertyNotFoundException;
+import org.ff4j.property.Property;
+import org.ff4j.property.store.AbstractPropertyStore;
+import org.ff4j.utils.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
+
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Implementation of {@link org.ff4j.property.store.PropertyStore} using Amazon DynamoDB.<br />

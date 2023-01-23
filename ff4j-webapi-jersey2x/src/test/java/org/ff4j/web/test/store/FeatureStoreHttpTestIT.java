@@ -1,12 +1,10 @@
 package org.ff4j.web.test.store;
 
-import org.ff4j.web.api.test.it.AbstractWebResourceTestIT;
-
-/*
+/*-
  * #%L
- * ff4j-web
+ * ff4j-webapi-jersey2x
  * %%
- * Copyright (C) 2013 - 2014 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +19,8 @@ import org.ff4j.web.api.test.it.AbstractWebResourceTestIT;
  * limitations under the License.
  * #L%
  */
+
+import org.ff4j.web.api.test.it.AbstractWebResourceTestIT;
 
 public class FeatureStoreHttpTestIT extends AbstractWebResourceTestIT {
 

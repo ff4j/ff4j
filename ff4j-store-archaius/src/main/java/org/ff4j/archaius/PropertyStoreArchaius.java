@@ -1,15 +1,10 @@
 package org.ff4j.archaius;
 
-import org.apache.commons.configuration.AbstractConfiguration;
-import org.ff4j.commonsconf.FF4jConfiguration;
-import org.ff4j.commonsconf.PropertyStoreCommonsConfig;
-import org.ff4j.property.store.PropertyStore;
-
-/*
+/*-
  * #%L
- * ff4j-archaius
+ * ff4j-store-archaius
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +19,11 @@ import org.ff4j.property.store.PropertyStore;
  * limitations under the License.
  * #L%
  */
+
+import org.apache.commons.configuration.AbstractConfiguration;
+import org.ff4j.commonsconf.FF4jConfiguration;
+import org.ff4j.commonsconf.PropertyStoreCommonsConfig;
+import org.ff4j.property.store.PropertyStore;
 
 import com.netflix.config.ConfigurationManager;
 import com.netflix.config.DynamicConfiguration;

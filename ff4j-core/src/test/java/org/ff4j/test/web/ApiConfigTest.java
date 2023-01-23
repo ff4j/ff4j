@@ -1,16 +1,10 @@
 package org.ff4j.test.web;
 
-import java.util.HashMap;
-import java.util.Set;
-
-import org.ff4j.FF4j;
-import org.ff4j.utils.Util;
-
-/*
+/*-
  * #%L
  * ff4j-core
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +19,12 @@ import org.ff4j.utils.Util;
  * limitations under the License.
  * #L%
  */
+
+import java.util.HashMap;
+import java.util.Set;
+
+import org.ff4j.FF4j;
+import org.ff4j.utils.Util;
 
 
 import org.ff4j.web.ApiConfig;

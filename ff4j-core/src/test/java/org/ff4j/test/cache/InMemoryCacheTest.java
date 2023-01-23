@@ -1,19 +1,10 @@
 package org.ff4j.test.cache;
 
-import org.ff4j.cache.FF4jCacheProxy;
-import org.ff4j.cache.InMemoryCacheManager;
-import org.ff4j.core.Feature;
-import org.ff4j.core.FeatureStore;
-import org.ff4j.property.PropertyString;
-import org.ff4j.property.store.InMemoryPropertyStore;
-import org.ff4j.store.InMemoryFeatureStore;
-import org.ff4j.test.store.CoreFeatureStoreTestSupport;
-
-/*
+/*-
  * #%L
  * ff4j-core
  * %%
- * Copyright (C) 2013 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +19,15 @@ import org.ff4j.test.store.CoreFeatureStoreTestSupport;
  * limitations under the License.
  * #L%
  */
+
+import org.ff4j.cache.FF4jCacheProxy;
+import org.ff4j.cache.InMemoryCacheManager;
+import org.ff4j.core.Feature;
+import org.ff4j.core.FeatureStore;
+import org.ff4j.property.PropertyString;
+import org.ff4j.property.store.InMemoryPropertyStore;
+import org.ff4j.store.InMemoryFeatureStore;
+import org.ff4j.test.store.CoreFeatureStoreTestSupport;
 
 import org.junit.Assert;
 import org.junit.Test;

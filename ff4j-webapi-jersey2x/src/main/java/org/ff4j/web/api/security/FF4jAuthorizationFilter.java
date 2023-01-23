@@ -1,14 +1,10 @@
 package org.ff4j.web.api.security;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
-
-/*
+/*-
  * #%L
- * ff4j-web
+ * ff4j-webapi-jersey2x
  * %%
- * Copyright (C) 2013 - 2014 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +19,10 @@ import java.util.HashSet;
  * limitations under the License.
  * #L%
  */
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
 
 import java.util.Set;
 

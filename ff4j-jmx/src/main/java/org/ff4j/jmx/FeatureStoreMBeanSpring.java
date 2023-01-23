@@ -1,22 +1,10 @@
 package org.ff4j.jmx;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-
-import org.ff4j.core.Feature;
-import org.ff4j.core.FeatureStore;
-import org.springframework.jmx.export.annotation.ManagedOperation;
-import org.springframework.jmx.export.annotation.ManagedOperationParameter;
-import org.springframework.jmx.export.annotation.ManagedOperationParameters;
-import org.springframework.jmx.export.annotation.ManagedResource;
-import org.springframework.stereotype.Component;
-
-/*
+/*-
  * #%L
  * ff4j-jmx
  * %%
- * Copyright (C) 2013 - 2014 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +19,18 @@ import org.springframework.stereotype.Component;
  * limitations under the License.
  * #L%
  */
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+
+import org.ff4j.core.Feature;
+import org.ff4j.core.FeatureStore;
+import org.springframework.jmx.export.annotation.ManagedOperation;
+import org.springframework.jmx.export.annotation.ManagedOperationParameter;
+import org.springframework.jmx.export.annotation.ManagedOperationParameters;
+import org.springframework.jmx.export.annotation.ManagedResource;
+import org.springframework.stereotype.Component;
 
 /**
  * Allow to process features logic through JMX.
