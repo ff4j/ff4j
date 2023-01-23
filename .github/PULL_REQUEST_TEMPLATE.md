@@ -4,10 +4,9 @@
 
 Closes : <!-- refer the github issue. Ex: #084-->
 
-# Checklist:
+# Checklist for self review:
 
-- [ ] My code follows the contribution guidelines of this project
-- [ ] I have performed a self-review of my own code
+- [ ] My code follows the [contribution guidelines](https://github.com/ff4j/ff4j/blob/main/CONTRIBUTING.md) of this project
 - [ ] My changes generate no new warnings
 - [ ] I have added tests that prove my fix is effective or that my feature works
 - [ ] New and existing unit tests pass locally with my changes
