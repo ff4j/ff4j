@@ -1,16 +1,10 @@
 package org.ff4j.couchdb.document;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import org.ektorp.support.CouchDbDocument;
-
-/*
+/*-
  * #%L
  * ff4j-store-couchdb
  * %%
- * Copyright (C) 2013 - 2019 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +19,12 @@ import org.ektorp.support.CouchDbDocument;
  * limitations under the License.
  * #L%
  */
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import org.ektorp.support.CouchDbDocument;
 
 @Data
 @NoArgsConstructor

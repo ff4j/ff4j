@@ -1,17 +1,10 @@
 package org.ff4j.web.api.resources;
 
-import static org.ff4j.web.FF4jWebConstants.OPERATION_CHECK;
-import static org.ff4j.web.FF4jWebConstants.RESOURCE_SECURITY;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-/*
+/*-
  * #%L
- * ff4j-web
+ * ff4j-webapi
  * %%
- * Copyright (C) 2013 - 2014 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +19,13 @@ import java.util.Set;
  * limitations under the License.
  * #L%
  */
+
+import static org.ff4j.web.FF4jWebConstants.OPERATION_CHECK;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_SECURITY;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;

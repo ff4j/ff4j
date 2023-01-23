@@ -1,15 +1,10 @@
 package org.ff4j.store;
 
-import static org.ff4j.store.JdbcStoreConstants.COL_FEAT_GROUPNAME;
-import static org.ff4j.store.JdbcStoreConstants.COL_ROLE_FEATID;
-import static org.ff4j.store.JdbcStoreConstants.COL_ROLE_ROLENAME;
-import static org.ff4j.utils.JdbcUtils.buildStatement;
-
-/*
+/*-
  * #%L
  * ff4j-core
  * %%
- * Copyright (C) 2013 - 2015 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +19,11 @@ import static org.ff4j.utils.JdbcUtils.buildStatement;
  * limitations under the License.
  * #L%
  */
+
+import static org.ff4j.store.JdbcStoreConstants.COL_FEAT_GROUPNAME;
+import static org.ff4j.store.JdbcStoreConstants.COL_ROLE_FEATID;
+import static org.ff4j.store.JdbcStoreConstants.COL_ROLE_ROLENAME;
+import static org.ff4j.utils.JdbcUtils.buildStatement;
 
 import static org.ff4j.utils.JdbcUtils.closeConnection;
 import static org.ff4j.utils.JdbcUtils.closeResultSet;

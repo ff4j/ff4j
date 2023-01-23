@@ -1,14 +1,10 @@
 package org.ff4j.propertystore;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
-
-/*
+/*-
  * #%L
  * ff4j-store-jcache
  * %%
- * Copyright (C) 2013 - 2015 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +19,10 @@ import java.util.Set;
  * limitations under the License.
  * #L%
  */
+
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
 
 
 import org.ehcache.jsr107.EhcacheCachingProvider;

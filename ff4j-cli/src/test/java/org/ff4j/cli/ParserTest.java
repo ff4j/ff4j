@@ -1,12 +1,10 @@
 package org.ff4j.cli;
 
-import org.apache.commons.cli.CommandLine;
-
-/*
+/*-
  * #%L
  * ff4j-cli
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +19,8 @@ import org.apache.commons.cli.CommandLine;
  * limitations under the License.
  * #L%
  */
+
+import org.apache.commons.cli.CommandLine;
 
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;

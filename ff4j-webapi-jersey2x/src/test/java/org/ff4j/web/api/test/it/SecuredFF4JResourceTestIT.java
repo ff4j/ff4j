@@ -1,19 +1,10 @@
 package org.ff4j.web.api.test.it;
 
-import static org.ff4j.test.TestsFf4jConstants.F4;
-import static org.ff4j.test.TestsFf4jConstants.TEST_FEATURES_FILE;
-import static org.ff4j.web.FF4jWebConstants.HEADER_AUTHORIZATION;
-import static org.ff4j.web.FF4jWebConstants.OPERATION_DISABLE;
-import static org.ff4j.web.FF4jWebConstants.PARAM_AUTHKEY;
-import static org.ff4j.web.FF4jWebConstants.RESOURCE_FEATURES;
-import static org.ff4j.web.FF4jWebConstants.RESOURCE_GROUPS;
-import static org.ff4j.web.FF4jWebConstants.RESOURCE_STORE;
-
-/*
+/*-
  * #%L
- * ff4j-web
+ * ff4j-webapi-jersey2x
  * %%
- * Copyright (C) 2013 - 2015 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +19,15 @@ import static org.ff4j.web.FF4jWebConstants.RESOURCE_STORE;
  * limitations under the License.
  * #L%
  */
+
+import static org.ff4j.test.TestsFf4jConstants.F4;
+import static org.ff4j.test.TestsFf4jConstants.TEST_FEATURES_FILE;
+import static org.ff4j.web.FF4jWebConstants.HEADER_AUTHORIZATION;
+import static org.ff4j.web.FF4jWebConstants.OPERATION_DISABLE;
+import static org.ff4j.web.FF4jWebConstants.PARAM_AUTHKEY;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_FEATURES;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_GROUPS;
+import static org.ff4j.web.FF4jWebConstants.RESOURCE_STORE;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.client.Entity;

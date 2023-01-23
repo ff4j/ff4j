@@ -1,22 +1,10 @@
 package org.ff4j.audit.chart;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import org.ff4j.audit.Event;
-import org.ff4j.audit.MutableHitCount;
-import org.ff4j.utils.JsonUtils;
-
-/*
+/*-
  * #%L
  * ff4j-core
  * %%
- * Copyright (C) 2013 - 2014 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +19,18 @@ import org.ff4j.utils.JsonUtils;
  * limitations under the License.
  * #L%
  */
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import org.ff4j.audit.Event;
+import org.ff4j.audit.MutableHitCount;
+import org.ff4j.utils.JsonUtils;
 
 /**
  * Information for timeSerie.

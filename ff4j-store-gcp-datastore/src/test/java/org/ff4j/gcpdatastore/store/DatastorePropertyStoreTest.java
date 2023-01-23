@@ -1,17 +1,10 @@
 package org.ff4j.gcpdatastore.store;
 
-import com.google.cloud.datastore.Datastore;
-import com.google.cloud.datastore.DatastoreOptions;
-import org.ff4j.gcpdatastore.store.property.DatastorePropertyStore;
-import org.ff4j.property.store.PropertyStore;
-import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.ClassRule;
-
-/*
+/*-
  * #%L
  * ff4j-store-gcp-datastore
  * %%
- * Copyright (C) 2022 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +19,13 @@ import org.junit.ClassRule;
  * limitations under the License.
  * #L%
  */
+
+import com.google.cloud.datastore.Datastore;
+import com.google.cloud.datastore.DatastoreOptions;
+import org.ff4j.gcpdatastore.store.property.DatastorePropertyStore;
+import org.ff4j.property.store.PropertyStore;
+import org.ff4j.test.propertystore.PropertyStoreTestSupport;
+import org.junit.ClassRule;
 
 public class DatastorePropertyStoreTest extends PropertyStoreTestSupport {
 

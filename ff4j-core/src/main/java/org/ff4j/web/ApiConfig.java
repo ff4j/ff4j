@@ -1,13 +1,10 @@
 package org.ff4j.web;
 
-import static org.ff4j.web.FF4jWebConstants.ROLE_READ;
-import static org.ff4j.web.FF4jWebConstants.ROLE_WRITE;
-
-/*
+/*-
  * #%L
  * ff4j-core
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +19,9 @@ import static org.ff4j.web.FF4jWebConstants.ROLE_WRITE;
  * limitations under the License.
  * #L%
  */
+
+import static org.ff4j.web.FF4jWebConstants.ROLE_READ;
+import static org.ff4j.web.FF4jWebConstants.ROLE_WRITE;
 
 
 import java.util.HashMap;

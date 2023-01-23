@@ -1,13 +1,10 @@
 package org.ff4j.web.api.resources;
 
-import static org.ff4j.web.FF4jWebConstants.PARAM_END;
-import static org.ff4j.web.FF4jWebConstants.PARAM_START;
-
-/*
+/*-
  * #%L
- * ff4j-web
+ * ff4j-webapi
  * %%
- * Copyright (C) 2013 - 2014 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +19,9 @@ import static org.ff4j.web.FF4jWebConstants.PARAM_START;
  * limitations under the License.
  * #L%
  */
+
+import static org.ff4j.web.FF4jWebConstants.PARAM_END;
+import static org.ff4j.web.FF4jWebConstants.PARAM_START;
 
 import java.util.Calendar;
 import java.util.Date;

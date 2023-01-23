@@ -1,12 +1,10 @@
 package org.ff4j.property;
 
-import org.ff4j.exception.InvalidPropertyTypeException;
-
-/*
+/*-
  * #%L
  * ff4j-core
  * %%
- * Copyright (C) 2013 - 2015 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +20,10 @@ import org.ff4j.exception.InvalidPropertyTypeException;
  * #L%
  */
 
+import org.ff4j.exception.InvalidPropertyTypeException;
+
 /**
- * Représentation of a property double
+ * Repr?sentation of a property double
  *
  * @author Cedrick Lunven (@clunven)
  */

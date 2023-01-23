@@ -1,13 +1,10 @@
 package org.ff4j.core;
 
-import java.io.Serializable;
-import java.util.Map;
-
-/*
+/*-
  * #%L
  * ff4j-core
  * %%
- * Copyright (C) 2013 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +19,9 @@ import java.util.Map;
  * limitations under the License.
  * #L%
  */
+
+import java.io.Serializable;
+import java.util.Map;
 
 /**
  * Each feature should implement flipping strategy. (enabling/disabling will be handled by flipper.

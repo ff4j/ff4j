@@ -1,22 +1,10 @@
 package org.ff4j.cache;
 
-import static org.ff4j.test.TestsFf4jConstants.F4;
-import static org.ff4j.test.TestsFf4jConstants.TEST_FEATURES_FILE;
-
-import org.ff4j.core.Feature;
-import org.ff4j.core.FeatureStore;
-import org.ff4j.property.PropertyString;
-import org.ff4j.redis.RedisKeysBuilder;
-import org.ff4j.store.InMemoryFeatureStore;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-
-/*
+/*-
  * #%L
- * ff4j-cache-redis
+ * ff4j-store-redis
  * %%
- * Copyright (C) 2013 - 2014 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +19,18 @@ import org.junit.Test;
  * limitations under the License.
  * #L%
  */
+
+import static org.ff4j.test.TestsFf4jConstants.F4;
+import static org.ff4j.test.TestsFf4jConstants.TEST_FEATURES_FILE;
+
+import org.ff4j.core.Feature;
+import org.ff4j.core.FeatureStore;
+import org.ff4j.property.PropertyString;
+import org.ff4j.redis.RedisKeysBuilder;
+import org.ff4j.store.InMemoryFeatureStore;
+import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
 @Ignore
 public class RedisCacheManagerTestIT {
 

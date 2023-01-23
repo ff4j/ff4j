@@ -1,18 +1,10 @@
 package org.ff4j.arangodb.store;
 
-
-import com.arangodb.ArangoCollection;
-import com.arangodb.ArangoCursor;
-
-import java.util.List;
-
-import static java.lang.String.format;
-
-/*
+/*-
  * #%L
  * ff4j-store-arangodb
  * %%
- * Copyright (C) 2013 - 2020 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +19,14 @@ import static java.lang.String.format;
  * limitations under the License.
  * #L%
  */
+
+
+import com.arangodb.ArangoCollection;
+import com.arangodb.ArangoCursor;
+
+import java.util.List;
+
+import static java.lang.String.format;
 
 /**
  * Wrapper for commons ArangoDB collection's methods

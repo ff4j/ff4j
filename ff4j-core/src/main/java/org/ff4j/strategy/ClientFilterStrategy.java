@@ -1,18 +1,10 @@
 package org.ff4j.strategy;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import org.ff4j.core.FeatureStore;
-import org.ff4j.core.FlippingExecutionContext;
-
-/*
+/*-
  * #%L
  * ff4j-core
  * %%
- * Copyright (C) 2013 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +19,14 @@ import org.ff4j.core.FlippingExecutionContext;
  * limitations under the License.
  * #L%
  */
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.ff4j.core.FeatureStore;
+import org.ff4j.core.FlippingExecutionContext;
 
 /**
  * This strategy will check hostName and flipped only if it's contained in expected list.

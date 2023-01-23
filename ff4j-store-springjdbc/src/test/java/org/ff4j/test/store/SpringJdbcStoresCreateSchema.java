@@ -1,15 +1,10 @@
 package org.ff4j.test.store;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
-import javax.sql.DataSource;
-
-/*
+/*-
  * #%L
  * ff4j-store-springjdbc
  * %%
- * Copyright (C) 2013 - 2017 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +19,11 @@ import javax.sql.DataSource;
  * limitations under the License.
  * #L%
  */
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
 
 
 import org.ff4j.springjdbc.store.FeatureStoreSpringJdbc;

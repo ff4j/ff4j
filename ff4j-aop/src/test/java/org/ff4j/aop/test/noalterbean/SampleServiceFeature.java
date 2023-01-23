@@ -1,12 +1,10 @@
 package org.ff4j.aop.test.noalterbean;
 
-import org.springframework.stereotype.Component;
-
-/*
+/*-
  * #%L
  * ff4j-aop
  * %%
- * Copyright (C) 2013 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +19,8 @@ import org.springframework.stereotype.Component;
  * limitations under the License.
  * #L%
  */
+
+import org.springframework.stereotype.Component;
 
 @Component("ff4j.aop.noalterbean")
 public class SampleServiceFeature implements SampleService {

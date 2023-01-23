@@ -1,13 +1,10 @@
 package org.ff4j.parser.properties;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
 /*-
  * #%L
- * ff4j-utils-yaml
+ * ff4j-config-properties
  * %%
- * Copyright (C) 2013 - 2018 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +19,9 @@ import java.io.IOException;
  * limitations under the License.
  * #L%
  */
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 import java.io.InputStream;
 import java.lang.reflect.Constructor;

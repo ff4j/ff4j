@@ -1,16 +1,10 @@
 package org.ff4j.commonsconf;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
-/*
+/*-
  * #%L
- * ff4j-archaius
+ * ff4j-store-commonsconfig
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +19,12 @@ import java.util.List;
  * limitations under the License.
  * #L%
  */
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 import java.util.Properties;
 

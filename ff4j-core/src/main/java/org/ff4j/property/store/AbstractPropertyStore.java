@@ -1,22 +1,10 @@
 package org.ff4j.property.store;
 
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-
-import org.ff4j.conf.XmlConfig;
-import org.ff4j.conf.XmlParser;
-import org.ff4j.exception.PropertyAlreadyExistException;
-import org.ff4j.exception.PropertyNotFoundException;
-import org.ff4j.property.Property;
-import org.ff4j.utils.Util;
-
-/*
+/*-
  * #%L
  * ff4j-core
  * %%
- * Copyright (C) 2013 - 2015 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +19,18 @@ import org.ff4j.utils.Util;
  * limitations under the License.
  * #L%
  */
+
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+
+import org.ff4j.conf.XmlConfig;
+import org.ff4j.conf.XmlParser;
+import org.ff4j.exception.PropertyAlreadyExistException;
+import org.ff4j.exception.PropertyNotFoundException;
+import org.ff4j.property.Property;
+import org.ff4j.utils.Util;
 
 /**
  * Superclass for any property store.

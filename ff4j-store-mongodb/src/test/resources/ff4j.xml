@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
   #%L
-  ff4j-core
+  ff4j-store-mongodb
   %%
-  Copyright (C) 2013 Ff4J
+  Copyright (C) 2013 - 2023 FF4J
   %%
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   #L%
-  --> 
+  -->
 
 <features xmlns="http://www.ff4j.org/schema/ff4j" 
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

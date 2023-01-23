@@ -1,4 +1,3 @@
----
 -- #%L
 -- ff4j-store-jdbc
 -- %%
@@ -16,8 +15,6 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 -- #L%
----
-
 INSERT INTO FF4J_FEATURES(FEAT_UID, ENABLE, DESCRIPTION) VALUES('AwesomeFeature',  1, 'some desc');
 
 -- First

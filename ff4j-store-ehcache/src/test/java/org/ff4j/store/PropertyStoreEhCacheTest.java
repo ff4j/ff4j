@@ -1,17 +1,10 @@
 package org.ff4j.store;
 
-import java.util.Date;
-
-import org.ff4j.ehcache.FF4jEhCacheWrapper;
-import org.ff4j.property.PropertyDate;
-import org.ff4j.property.PropertyLogLevel;
-import org.ff4j.property.PropertyLogLevel.LogLevel;
-
-/*
+/*-
  * #%L
  * ff4j-store-ehcache
  * %%
- * Copyright (C) 2013 - 2015 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +19,13 @@ import org.ff4j.property.PropertyLogLevel.LogLevel;
  * limitations under the License.
  * #L%
  */
+
+import java.util.Date;
+
+import org.ff4j.ehcache.FF4jEhCacheWrapper;
+import org.ff4j.property.PropertyDate;
+import org.ff4j.property.PropertyLogLevel;
+import org.ff4j.property.PropertyLogLevel.LogLevel;
 
 
 import org.ff4j.property.store.PropertyStore;

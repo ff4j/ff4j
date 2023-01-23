@@ -1,24 +1,10 @@
 package org.ff4j.cli;
 
-import static org.ff4j.cli.FF4jCliDisplay.displayConf;
-import static org.ff4j.cli.FF4jCliDisplay.displayEnvironments;
-import static org.ff4j.cli.FF4jCliDisplay.displayFeatures;
-import static org.ff4j.cli.FF4jCliDisplay.displayHelpConnected;
-import static org.ff4j.cli.FF4jCliDisplay.displayHelpNotConnected;
-import static org.ff4j.cli.FF4jCliDisplay.displayProperties;
-import static org.ff4j.cli.FF4jCliOptions.addGroupOptions;
-import static org.ff4j.cli.FF4jCliOptions.connectOptions;
-import static org.ff4j.cli.FF4jCliOptions.enableFeatureOptions;
-import static org.ff4j.cli.FF4jCliOptions.enableGroupOptions;
-import static org.ff4j.cli.FF4jCliOptions.grantOptions;
-import static org.ff4j.cli.FF4jCliOptions.propertyOptions;
-import static org.ff4j.cli.ansi.AnsiTerminal.foreGroundColor;
-
-/*
+/*-
  * #%L
  * ff4j-cli
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +19,20 @@ import static org.ff4j.cli.ansi.AnsiTerminal.foreGroundColor;
  * limitations under the License.
  * #L%
  */
+
+import static org.ff4j.cli.FF4jCliDisplay.displayConf;
+import static org.ff4j.cli.FF4jCliDisplay.displayEnvironments;
+import static org.ff4j.cli.FF4jCliDisplay.displayFeatures;
+import static org.ff4j.cli.FF4jCliDisplay.displayHelpConnected;
+import static org.ff4j.cli.FF4jCliDisplay.displayHelpNotConnected;
+import static org.ff4j.cli.FF4jCliDisplay.displayProperties;
+import static org.ff4j.cli.FF4jCliOptions.addGroupOptions;
+import static org.ff4j.cli.FF4jCliOptions.connectOptions;
+import static org.ff4j.cli.FF4jCliOptions.enableFeatureOptions;
+import static org.ff4j.cli.FF4jCliOptions.enableGroupOptions;
+import static org.ff4j.cli.FF4jCliOptions.grantOptions;
+import static org.ff4j.cli.FF4jCliOptions.propertyOptions;
+import static org.ff4j.cli.ansi.AnsiTerminal.foreGroundColor;
 
 import static org.ff4j.cli.ansi.AnsiTerminal.logError;
 import static org.ff4j.cli.ansi.AnsiTerminal.logInfo;

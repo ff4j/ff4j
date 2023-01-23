@@ -1,13 +1,10 @@
 package org.ff4j.web.api.test.it;
 
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-
-/*
+/*-
  * #%L
- * ff4j-web
+ * ff4j-webapi-jersey2x
  * %%
- * Copyright (C) 2013 - 2014 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +19,9 @@ import javax.ws.rs.client.WebTarget;
  * limitations under the License.
  * #L%
  */
+
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;

@@ -124,7 +124,7 @@
         <version.maven.plugin.sonar>2.2</version.maven.plugin.sonar>
         <version.maven.plugin.javadoc>2.10.3</version.maven.plugin.javadoc>
         <version.maven.plugin.source>2.2.1</version.maven.plugin.source>
-        <version.maven.plugin.license>1.8</version.maven.plugin.license>
+        <version.maven.plugin.license>2.0.0</version.maven.plugin.license>
         <version.maven.plugin.nexus>1.6.8</version.maven.plugin.nexus>
         <version.maven.plugin.compiler>3.10.1</version.maven.plugin.compiler>
         <version.maven.plugin.jar>3.2.0</version.maven.plugin.jar>

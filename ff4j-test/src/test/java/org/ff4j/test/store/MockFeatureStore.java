@@ -1,13 +1,10 @@
 package org.ff4j.test.store;
 
-import java.util.Collection;
-import java.util.HashMap;
-
-/*
+/*-
  * #%L
  * ff4j-test
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +19,9 @@ import java.util.HashMap;
  * limitations under the License.
  * #L%
  */
+
+import java.util.Collection;
+import java.util.HashMap;
 
 
 import java.util.Map;

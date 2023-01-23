@@ -1,18 +1,10 @@
 package org.ff4j.arangodb.store;
 
-import org.ff4j.property.store.PropertyStore;
-import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.ClassRule;
-import org.junit.Ignore;
-
-import com.arangodb.ArangoDB;
-import com.arangodb.ArangoDatabase;
-
-/*
+/*-
  * #%L
  * ff4j-store-arangodb
  * %%
- * Copyright (C) 2013 - 2019 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +19,14 @@ import com.arangodb.ArangoDatabase;
  * limitations under the License.
  * #L%
  */
+
+import org.ff4j.property.store.PropertyStore;
+import org.ff4j.test.propertystore.PropertyStoreTestSupport;
+import org.junit.ClassRule;
+import org.junit.Ignore;
+
+import com.arangodb.ArangoDB;
+import com.arangodb.ArangoDatabase;
 
 /**
  * ArangoDB property store tests

@@ -1,13 +1,10 @@
 package org.ff4j.cassandra.store;
 
-import java.util.HashMap;
-import java.util.HashSet;
-
-/*
+/*-
  * #%L
  * ff4j-store-cassandra
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +19,9 @@ import java.util.HashSet;
  * limitations under the License.
  * #L%
  */
+
+import java.util.HashMap;
+import java.util.HashSet;
 
 import java.util.Map;
 import java.util.Set;

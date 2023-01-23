@@ -1,18 +1,10 @@
 package org.ff4j.aop.test.limit;
 
-import java.lang.reflect.AccessibleObject;
-
-import java.lang.reflect.Method;
-
-import org.aopalliance.intercept.MethodInvocation;
-import org.ff4j.FF4j;
-import org.ff4j.aop.FeatureAdvisor;
-
-/*
+/*-
  * #%L
  * ff4j-aop
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +19,14 @@ import org.ff4j.aop.FeatureAdvisor;
  * limitations under the License.
  * #L%
  */
+
+import java.lang.reflect.AccessibleObject;
+
+import java.lang.reflect.Method;
+
+import org.aopalliance.intercept.MethodInvocation;
+import org.ff4j.FF4j;
+import org.ff4j.aop.FeatureAdvisor;
 
 
 import org.ff4j.aop.Flip;

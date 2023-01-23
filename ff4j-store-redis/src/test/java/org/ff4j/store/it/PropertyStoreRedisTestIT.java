@@ -1,14 +1,10 @@
 package org.ff4j.store.it;
 
-import java.util.Map;
-
-import org.ff4j.property.Property;
-
-/*
+/*-
  * #%L
  * ff4j-store-redis
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +19,10 @@ import org.ff4j.property.Property;
  * limitations under the License.
  * #L%
  */
+
+import java.util.Map;
+
+import org.ff4j.property.Property;
 
 
 import org.ff4j.property.store.PropertyStore;

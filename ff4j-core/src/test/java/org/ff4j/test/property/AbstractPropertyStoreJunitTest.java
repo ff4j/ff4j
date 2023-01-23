@@ -1,15 +1,10 @@
 package org.ff4j.test.property;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-/*
+/*-
  * #%L
- * ff4j-test
+ * ff4j-core
  * %%
- * Copyright (C) 2013 - 2015 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +19,11 @@ import java.util.Set;
  * limitations under the License.
  * #L%
  */
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.ff4j.core.FeatureStore;
 import org.ff4j.exception.PropertyAlreadyExistException;

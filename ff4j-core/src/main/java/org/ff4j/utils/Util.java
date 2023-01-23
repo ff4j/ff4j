@@ -1,13 +1,10 @@
 package org.ff4j.utils;
 
-import java.awt.Color;
-import java.lang.reflect.Constructor;
-
-/*
+/*-
  * #%L
  * ff4j-core
  * %%
- * Copyright (C) 2013 - 2014 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +19,9 @@ import java.lang.reflect.Constructor;
  * limitations under the License.
  * #L%
  */
+
+import java.awt.Color;
+import java.lang.reflect.Constructor;
 
 import java.util.ArrayList;
 import java.util.Arrays;

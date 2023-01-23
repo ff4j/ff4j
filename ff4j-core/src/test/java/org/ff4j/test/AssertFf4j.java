@@ -1,13 +1,10 @@
 package org.ff4j.test;
 
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-/*
+/*-
  * #%L
  * ff4j-core
  * %%
- * Copyright (C) 2013 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +19,9 @@ import java.util.concurrent.TimeUnit;
  * limitations under the License.
  * #L%
  */
+
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.ff4j.FF4j;
 import org.ff4j.property.Property;

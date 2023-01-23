@@ -1,16 +1,10 @@
 package org.ff4j.test.audit;
 
-import static org.ff4j.audit.EventConstants.ACTION_CHECK_OFF;
-import static org.ff4j.audit.EventConstants.ACTION_CHECK_OK;
-import static org.ff4j.audit.EventConstants.SOURCE_JAVA;
-import static org.ff4j.audit.EventConstants.TARGET_FEATURE;
-import static org.mockito.Mockito.doThrow;
-
-/*
+/*-
  * #%L
  * ff4j-core
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +19,12 @@ import static org.mockito.Mockito.doThrow;
  * limitations under the License.
  * #L%
  */
+
+import static org.ff4j.audit.EventConstants.ACTION_CHECK_OFF;
+import static org.ff4j.audit.EventConstants.ACTION_CHECK_OK;
+import static org.ff4j.audit.EventConstants.SOURCE_JAVA;
+import static org.ff4j.audit.EventConstants.TARGET_FEATURE;
+import static org.mockito.Mockito.doThrow;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

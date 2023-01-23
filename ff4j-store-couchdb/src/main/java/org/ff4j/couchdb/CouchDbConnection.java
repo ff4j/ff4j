@@ -1,18 +1,10 @@
 package org.ff4j.couchdb;
 
-import static org.ff4j.couchdb.CouchDbConstants.DEFAULT_DATABASE_PORT;
-import static org.ff4j.couchdb.CouchDbConstants.DEFAULT_DBNAME;
-import static org.ff4j.couchdb.CouchDbConstants.DEFAULT_EVENT_TYPE;
-import static org.ff4j.couchdb.CouchDbConstants.DEFAULT_FEATURE_TYPE;
-import static org.ff4j.couchdb.CouchDbConstants.DEFAULT_PROPERTY_TYPE;
-
-import java.net.MalformedURLException;
-
-/*
+/*-
  * #%L
- * ff4j-store-couchbase
+ * ff4j-store-couchdb
  * %%
- * Copyright (C) 2013 - 2017 FF4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +19,14 @@ import java.net.MalformedURLException;
  * limitations under the License.
  * #L%
  */
+
+import static org.ff4j.couchdb.CouchDbConstants.DEFAULT_DATABASE_PORT;
+import static org.ff4j.couchdb.CouchDbConstants.DEFAULT_DBNAME;
+import static org.ff4j.couchdb.CouchDbConstants.DEFAULT_EVENT_TYPE;
+import static org.ff4j.couchdb.CouchDbConstants.DEFAULT_FEATURE_TYPE;
+import static org.ff4j.couchdb.CouchDbConstants.DEFAULT_PROPERTY_TYPE;
+
+import java.net.MalformedURLException;
 
 import org.ektorp.CouchDbConnector;
 import org.ektorp.CouchDbInstance;

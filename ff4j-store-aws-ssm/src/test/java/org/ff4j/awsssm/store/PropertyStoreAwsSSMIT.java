@@ -1,12 +1,10 @@
 package org.ff4j.awsssm.store;
 
-import java.util.Map;
-
-/*
+/*-
  * #%L
  * ff4j-store-aws-ssm
  * %%
- * Copyright (C) 2013 Ff4J
+ * Copyright (C) 2013 - 2023 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +19,8 @@ import java.util.Map;
  * limitations under the License.
  * #L%
  */
+
+import java.util.Map;
 
 import org.ff4j.property.Property;
 import org.ff4j.property.PropertyLogLevel;
