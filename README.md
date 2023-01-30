@@ -1,13 +1,13 @@
 # ✨✨✨ FF4J - Feature Flipping for Java ✨✨✨
 
-[![Build Status](https://travis-ci.org/ff4j/ff4j.svg?branch=master)](https://travis-ci.org/ff4j/ff4j)
-[![Backers on Open Collective](https://opencollective.com/ff4j/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/ff4j/sponsors/badge.svg)](#sponsors) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.ff4j/ff4j-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.ff4j/ff4j-core/) 
-[![Coverage Status](https://coveralls.io/repos/github/ff4j/ff4j/badge.svg?branch=master)](https://coveralls.io/github/ff4j/ff4j?branch=master)
+[![Build Status](https://github.com/ff4j/ff4j/actions/workflows/build_workflow.yml/badge.svg?branch=main)
+[![Backers on Open Collective](https://opencollective.com/ff4j/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/ff4j/sponsors/badge.svg)](#sponsors) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.ff4j/ff4j-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.ff4j/ff4j-core/)
+[![codecov](https://codecov.io/gh/ff4j/ff4j/branch/master/graph/badge.svg?token=qMQlFdPN80)](https://codecov.io/gh/ff4j/ff4j)
 
-[![Codacy Badge](https://api.codacy.com/project/badge/grade/c900676eb9674bc48c246dc112e60e16)](https://www.codacy.com/app/cedrick-lunven/ff4j)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/9eeaf11647704bb991243b9eb380efb0)](https://www.codacy.com/gh/ff4j/ff4j/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ff4j/ff4j&amp;utm_campaign=Badge_Grade)
 [![Join the chat at https://gitter.im/ff4j/ff4j](https://badges.gitter.im/ff4j/ff4j.svg)](https://gitter.im/ff4j/ff4j?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![License Apache2](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0)
-[![SourceSpy Dashboard](https://sourcespy.com/shield.svg)](https://sourcespy.com/github/ff4jff4j/)
+[![SourceSpy Dashboard](https://sourcespy.com/shield.svg)](https://sourcespy.com/github/ff4j/ff4j/)
 
 
 <img src="http://ff4j.github.io/images/ff4j.png" height="100px" />
