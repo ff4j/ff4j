@@ -129,6 +129,7 @@
         <version.maven.plugin.compiler>3.10.1</version.maven.plugin.compiler>
         <version.maven.plugin.jar>3.2.0</version.maven.plugin.jar>
         <version.maven.plugin.dependency>2.8</version.maven.plugin.dependency>
+        <version.enforcer>3.1.0</version.enforcer>
     </properties>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -500,6 +501,34 @@
     <build>
 
         <plugins>
+
+            <!-- maven enforcer -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>${version.enforcer}</version>
+                <configuration>
+                    <rules>
+                        <dependencyConvergence/>
+                        <requireReleaseDeps>
+                            <failWhenParentIsSnapshot>false</failWhenParentIsSnapshot>
+                            <excludes>
+                                <exclude>${project.groupId}:*</exclude>
+                            </excludes>
+                        </requireReleaseDeps>
+                    </rules>
+                    <fail>true</fail>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>enforce-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <phase>validate</phase>
+                    </execution>
+                </executions>
+            </plugin>
 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

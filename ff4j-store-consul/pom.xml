@@ -23,6 +23,7 @@
     <license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
     <consul-client.version>0.17.1</consul-client.version>
     <consul-embedded.version>0.3.1</consul-embedded.version>
+    <retrofit.version>2.3.0</retrofit.version>
   </properties>
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <!-- ~       DEPENDENCIES       ~ -->
@@ -44,6 +45,17 @@
       <groupId>com.orbitz.consul</groupId>
       <artifactId>consul-client</artifactId>
       <version>${consul-client.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>retrofit</artifactId>
+          <groupId>com.squareup.retrofit2</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.squareup.retrofit2</groupId>
+      <artifactId>retrofit</artifactId>
+      <version>${retrofit.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -60,6 +72,12 @@
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-guava</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>guava</artifactId>
+          <groupId>com.google.guava</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.fusesource.jansi</groupId>

@@ -22,6 +22,8 @@
   <properties>
     <license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
     <version.hamcrest-all>1.3</version.hamcrest-all>
+    <concurrentlinkedhashmap-lru.version>1.4.2</concurrentlinkedhashmap-lru.version>
+    <scala-library.version>2.11.7</scala-library.version>
     <argLine>
       --add-opens=java.base/jdk.internal.misc=ALL-UNNAMED
       --add-opens=java.base/sun.nio.ch=ALL-UNNAMED
@@ -62,6 +64,26 @@
       <groupId>org.neo4j</groupId>
       <artifactId>neo4j</artifactId>
       <version>${version.neo4j}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.googlecode.concurrentlinkedhashmap</groupId>
+          <artifactId>concurrentlinkedhashmap-lru</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.scala-lang</groupId>
+          <artifactId>scala-library</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.googlecode.concurrentlinkedhashmap</groupId>
+      <artifactId>concurrentlinkedhashmap-lru</artifactId>
+      <version>${concurrentlinkedhashmap-lru.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+      <version>${scala-library.version}</version>
     </dependency>
     <!-- TESTS -->
     <dependency>
