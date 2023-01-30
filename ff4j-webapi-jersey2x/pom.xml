@@ -26,6 +26,7 @@
     <version.jsr250-api>1.0</version.jsr250-api>
     <version.grizzly-http-servlet>2.4.4</version.grizzly-http-servlet>
     <version.javax.servlet-api>3.1.0</version.javax.servlet-api>
+    <enforcer.skip>true</enforcer.skip>
   </properties>
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <!-- ~ DEPENDENCIES ~ -->

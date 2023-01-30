@@ -38,6 +38,12 @@
       <groupId>com.netflix.archaius</groupId>
       <artifactId>archaius-core</artifactId>
       <version>${archaius.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-configuration</groupId>
+          <artifactId>commons-configuration</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <!-- Spring -->
     <dependency>
