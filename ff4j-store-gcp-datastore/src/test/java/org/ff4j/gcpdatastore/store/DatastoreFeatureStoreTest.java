@@ -48,6 +48,8 @@ public class DatastoreFeatureStoreTest extends FeatureStoreTestSupport {
         return store;
     }
 
+    @Test
+    public void testStoreHasBeenInitialized() {}
     //@Test
     //public void testAddFeature() throws Exception {
         // overriding

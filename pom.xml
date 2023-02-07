@@ -151,28 +151,28 @@
         <module>ff4j-security-spring</module>
         <module>ff4j-security-shiro</module>
         <!-- Stores -->
-        <module>ff4j-store-commonsconfig</module>
-        <module>ff4j-store-archaius</module>
         <module>ff4j-store-arangodb</module>
+        <module>ff4j-store-archaius</module>
         <module>ff4j-store-aws-dynamodb</module>
         <module>ff4j-store-aws-ssm</module>
         <module>ff4j-store-cassandra</module>
+        <module>ff4j-store-commonsconfig</module>
         <module>ff4j-store-consul</module>
         <module>ff4j-store-couchbase</module>
         <module>ff4j-store-couchdb</module>
         <module>ff4j-store-ehcache</module>
         <module>ff4j-store-elastic</module>
+        <module>ff4j-store-gcp-datastore</module>
         <module>ff4j-store-hazelcast</module>
         <module>ff4j-store-hbase</module>
+        <module>ff4j-store-ignite</module>
         <module>ff4j-store-mongodb</module>
         <module>ff4j-store-redis</module>
         <module>ff4j-store-springjdbc</module>
-        <module>ff4j-store-ignite</module>
         <module>ff4j-store-neo4j</module>
         <!-- Custom Flipping Strategy -->
         <module>ff4j-strategy-drools</module>
-        <module>ff4j-webapi-jersey2x</module>
-        <module>ff4j-store-gcp-datastore</module>
+
     </modules>
 
 
