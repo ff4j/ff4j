@@ -39,6 +39,7 @@ import org.ff4j.property.Property;
 import org.ff4j.property.PropertyString;
 import org.ff4j.utils.MappingUtil;
 import org.ff4j.utils.Util;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
 
@@ -52,7 +53,7 @@ public class YamlParser implements FF4jConfigurationParser<FF4jConfiguration> {
     /**
      * Initialization of the Yaml parser
      */
-    private Yaml safeYaml = new Yaml(new SafeConstructor());
+    private Yaml safeYaml = new Yaml(new SafeConstructor(new LoaderOptions()));
     
     /**
      * Default constructor.
