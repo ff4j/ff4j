@@ -25,7 +25,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisKeyCommands;
+import io.lettuce.core.api.sync.RedisStringCommands;
+import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
 import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
 import org.ff4j.redis.RedisKeysBuilder;
@@ -36,9 +39,7 @@ import org.ff4j.utils.json.PropertyJsonParser;
 import io.lettuce.core.KeyScanCursor;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.ScanArgs;
-import io.lettuce.core.api.sync.RedisCommands;
 import io.lettuce.core.cluster.RedisClusterClient;
-import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
 
 /**
  * Implementation of ditributed cache to limit overhead, with REDIS (JEDIS).
@@ -49,16 +50,23 @@ public class FF4jCacheManagerRedisLettuce implements FF4JCacheManager {
 
     /** time to live for cache on top of store. */
     protected int timeToLive = 900000000;
-    
-    /** Lettuce client. */ 
-    private RedisCommands<String, String> redisCommands;
-    
-    /** Support the cluster based redis deployment. */
-    private RedisAdvancedClusterCommands<String, String> redisCommandsCluster;
-    
+
+    /**
+     * Holder field for getXXXNativeCache methods.
+     * {@link Object} type is unfortunately mandatory here since there is no single common interface
+     * for {@link io.lettuce.core.api.sync.RedisCommands} and {@link io.lettuce.core.cluster.api.sync.RedisClusterCommands}.
+     */
+    private final Object nativeCache;
+
+    /** Access to Redis Key related commands */
+    private final RedisKeyCommands<String, String> redisKeyCommands;
+
+    /** Access to Redis String based commands */
+    private final RedisStringCommands<String, String> redisStringCommands;
+
     /** Default key builder. */
-    private RedisKeysBuilder keyBuilder = new RedisKeysBuilder();
-    
+    private final RedisKeysBuilder keyBuilder;
+
     /**
      * Public void.
      */
@@ -66,15 +74,21 @@ public class FF4jCacheManagerRedisLettuce implements FF4JCacheManager {
         this(redisClient, new RedisKeysBuilder());
     }
     public FF4jCacheManagerRedisLettuce(RedisClient redisClient, RedisKeysBuilder keyBuilder) {
-        this.redisCommands = redisClient.connect().sync();
-        this.keyBuilder    = keyBuilder;
+        StatefulRedisConnection<String, String> redisConnection = redisClient.connect();
+        this.nativeCache = redisConnection.sync();
+        this.redisKeyCommands = redisConnection.sync();
+        this.redisStringCommands = redisConnection.sync();
+        this.keyBuilder = keyBuilder;
     }
     public FF4jCacheManagerRedisLettuce(RedisClusterClient redisClusterClient) {
         this(redisClusterClient, new RedisKeysBuilder());
     }
     public FF4jCacheManagerRedisLettuce(RedisClusterClient redisClusterClient, RedisKeysBuilder keyBuilder) {
-        this.redisCommandsCluster = redisClusterClient.connect().sync();
-        this.keyBuilder    = keyBuilder;
+        StatefulRedisClusterConnection<String, String> redisClusterConnection = redisClusterClient.connect();
+        this.nativeCache = redisClusterConnection.sync();
+        this.redisKeyCommands = redisClusterConnection.sync();
+        this.redisStringCommands = redisClusterConnection.sync();
+        this.keyBuilder = keyBuilder;
     }
 
     /** {@inheritDoc} */
@@ -95,11 +109,7 @@ public class FF4jCacheManagerRedisLettuce implements FF4JCacheManager {
         try {
             Set<String> matchingKeys = getKeys(keyBuilder.getKeyFeature("*"));
             if (!matchingKeys.isEmpty()) {
-                if (null != redisCommands) {
-                    redisCommands.del(matchingKeys.toArray(new String[matchingKeys.size()]));
-                } else {
-                    redisCommandsCluster.del(matchingKeys.toArray(new String[matchingKeys.size()]));
-                }
+                redisKeyCommands.del(matchingKeys.toArray(new String[matchingKeys.size()]));
             }
         } catch(RuntimeException re) {
             onException(re);
@@ -112,11 +122,7 @@ public class FF4jCacheManagerRedisLettuce implements FF4JCacheManager {
         try {
             Set<String> matchingKeys = getKeys(keyBuilder.getKeyProperty("*"));
             if (!matchingKeys.isEmpty()) {
-                if (null != redisCommands) {
-                    redisCommands.del(matchingKeys.toArray(new String[matchingKeys.size()]));
-                } else {
-                    redisCommandsCluster.del(matchingKeys.toArray(new String[matchingKeys.size()]));
-                }
+                redisKeyCommands.del(matchingKeys.toArray(new String[matchingKeys.size()]));
             }
         } catch(RuntimeException re) {
                 onException(re);
@@ -128,11 +134,7 @@ public class FF4jCacheManagerRedisLettuce implements FF4JCacheManager {
     public void evictFeature(String uid) {
         Util.assertParamHasLength(uid, " feature identifier");
         try {
-            if (null != redisCommands) {
-                redisCommands.del(keyBuilder.getKeyFeature(uid));
-            } else {
-                redisCommandsCluster.del(keyBuilder.getKeyFeature(uid));
-            }
+            redisKeyCommands.del(keyBuilder.getKeyFeature(uid));
         } catch(RuntimeException re) {
             onException(re);
         }
@@ -146,11 +148,7 @@ public class FF4jCacheManagerRedisLettuce implements FF4JCacheManager {
             if (propertyName == null || propertyName.isEmpty()) {
                 throw new IllegalArgumentException("PropertyName cannot be null nor empty");
             }
-            if (null != redisCommands) {
-                redisCommands.del(keyBuilder.getKeyProperty(propertyName));
-            } else {
-                redisCommandsCluster.del(keyBuilder.getKeyProperty(propertyName));
-            }
+            redisKeyCommands.del(keyBuilder.getKeyProperty(propertyName));
         } catch(RuntimeException re) {
             onException(re);
         }
@@ -161,13 +159,8 @@ public class FF4jCacheManagerRedisLettuce implements FF4JCacheManager {
     public void putFeature(Feature fp) {
         Util.assertNotNull(fp);
         try {
-            if (null != redisCommands) { 
-                redisCommands.set(keyBuilder.getKeyFeature(fp.getUid()), fp.toJson());
-                redisCommands.expire(keyBuilder.getKeyFeature(fp.getUid()), getTimeToLive());
-            } else {
-                redisCommandsCluster.set(keyBuilder.getKeyFeature(fp.getUid()), fp.toJson());
-                redisCommandsCluster.expire(keyBuilder.getKeyFeature(fp.getUid()), getTimeToLive());
-            }
+            redisStringCommands.set(keyBuilder.getKeyFeature(fp.getUid()), fp.toJson());
+            redisKeyCommands.expire(keyBuilder.getKeyFeature(fp.getUid()), getTimeToLive());
         } catch(RuntimeException re) {
             onException(re);
         }
@@ -178,13 +171,8 @@ public class FF4jCacheManagerRedisLettuce implements FF4JCacheManager {
     public void putProperty(Property<?> property) {
         Util.assertNotNull(property);
         try {
-            if (null != redisCommands) {
-                redisCommands.set(keyBuilder.getKeyProperty(property.getName()), property.toJson());
-                redisCommands.expire(keyBuilder.getKeyProperty(property.getName()), getTimeToLive());
-            } else {
-                redisCommandsCluster.set(keyBuilder.getKeyProperty(property.getName()), property.toJson());
-                redisCommandsCluster.expire(keyBuilder.getKeyProperty(property.getName()), getTimeToLive());
-            }
+            redisStringCommands.set(keyBuilder.getKeyProperty(property.getName()), property.toJson());
+            redisKeyCommands.expire(keyBuilder.getKeyProperty(property.getName()), getTimeToLive());
         } catch(RuntimeException re) {
             onException(re);
         }
@@ -196,11 +184,7 @@ public class FF4jCacheManagerRedisLettuce implements FF4JCacheManager {
         Util.assertParamHasLength(uid, "feature uid");
         String value = "";
         try {
-            if (null != redisCommands) {
-                value = redisCommands.get(keyBuilder.getKeyFeature(uid));
-            } else {
-                value = redisCommandsCluster.get(keyBuilder.getKeyFeature(uid));
-            }
+            value = redisStringCommands.get(keyBuilder.getKeyFeature(uid));
             if (value != null) {
                 return FeatureJsonParser.parseFeature(value);
             }
@@ -216,11 +200,7 @@ public class FF4jCacheManagerRedisLettuce implements FF4JCacheManager {
         Util.assertParamHasLength(propertyName, "property name");
         String value = "";
         try {
-            if (null != redisCommands) {
-                value = redisCommands.get(keyBuilder.getKeyProperty(propertyName));
-            } else {
-                value = redisCommandsCluster.get(keyBuilder.getKeyProperty(propertyName));
-            }
+            value = redisStringCommands.get(keyBuilder.getKeyProperty(propertyName));
             if (value != null) {
                 return PropertyJsonParser.parseProperty(value);
             }
@@ -232,32 +212,27 @@ public class FF4jCacheManagerRedisLettuce implements FF4JCacheManager {
 
     /** {@inheritDoc} */
     public Set<String> listCachedPropertyNames() {
-        List <String > keys = new ArrayList<>();
+        List<String> keys = new ArrayList<>();
         try {
-            if (null != redisCommands) {
-                keys = redisCommands.keys(keyBuilder.getKeyProperty("*"));
-            } else {
-                keys = redisCommandsCluster.keys(keyBuilder.getKeyProperty("*"));
-            }
-        } catch(RuntimeException re) {
+            keys = redisKeyCommands.keys(keyBuilder.getKeyProperty("*"));
+        } catch (RuntimeException re) {
             onException(re);
         }
-        return new HashSet<String>(keys);
+        return new HashSet<>(keys);
     }
 
     /** {@inheritDoc} */
     public Object getFeatureNativeCache() {
-        return (null != redisCommands) ? redisCommands : redisCommandsCluster;
+        return nativeCache;
     }
 
     /** {@inheritDoc} */
     public Object getPropertyNativeCache() {
-        return (null != redisCommands) ? redisCommands : redisCommandsCluster;
+        return nativeCache;
     }
 
     private Set<String> getKeys(String pattern) {
         try {
-            RedisKeyCommands<String,String> redisKeyCommands = (null != redisCommands ) ? redisCommands : redisCommandsCluster;
             KeyScanCursor<String> ksc = redisKeyCommands.scan(new ScanArgs().match(pattern));
             Set<String> matchingKeys = new HashSet<>(ksc.getKeys());
             while (!ksc.isFinished()) {

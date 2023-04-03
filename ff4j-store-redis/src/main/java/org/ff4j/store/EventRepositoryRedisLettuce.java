@@ -45,9 +45,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.lettuce.core.RedisClient;
-import io.lettuce.core.api.sync.RedisCommands;
+import io.lettuce.core.api.sync.RedisSortedSetCommands;
 import io.lettuce.core.cluster.RedisClusterClient;
-import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
 
 /**
  * Persist audit events into REDIS storage technology.
@@ -63,15 +62,12 @@ public class EventRepositoryRedisLettuce extends AbstractEventRepository {
      * Jackson ObjectMapper for serialization and deserialization purpose.
      */
     private static ObjectMapper objectMapper = new ObjectMapper();
-    
-    /** Lettuce client. */ 
-    private RedisCommands<String, String> redisCommands;
-    
-    /** Support the cluster based redis deployment. */
-    private RedisAdvancedClusterCommands<String, String> redisCommandsCluster;
-    
+
+    /** Access to Redis sorted set commands */
+    private final RedisSortedSetCommands<String, String> redisSortedSetCommands;
+
     /** Default key builder. */
-    private RedisKeysBuilder keyBuilder = new RedisKeysBuilder();
+    private final RedisKeysBuilder keyBuilder;
     
     /**
      * Public void.
@@ -80,15 +76,15 @@ public class EventRepositoryRedisLettuce extends AbstractEventRepository {
         this(redisClient, new RedisKeysBuilder());
     }
     public EventRepositoryRedisLettuce(RedisClient redisClient, RedisKeysBuilder keyBuilder) {
-        this.redisCommands = redisClient.connect().sync();
-        this.keyBuilder    = keyBuilder;
+        this.redisSortedSetCommands = redisClient.connect().sync();
+        this.keyBuilder = keyBuilder;
     }
     public EventRepositoryRedisLettuce(RedisClusterClient redisClusterClient) {
         this(redisClusterClient, new RedisKeysBuilder());
     }
     public EventRepositoryRedisLettuce(RedisClusterClient redisClusterClient, RedisKeysBuilder keyBuilder) {
-        this.redisCommandsCluster = redisClusterClient.connect().sync();
-        this.keyBuilder    = keyBuilder;
+        this.redisSortedSetCommands = redisClusterClient.connect().sync();
+        this.keyBuilder = keyBuilder;
     }
 
     static {
@@ -119,11 +115,7 @@ public class EventRepositoryRedisLettuce extends AbstractEventRepository {
             long timeStamp = evt.getTimestamp();
             String hashId = keyBuilder.getHashKey(evt.getTimestamp());
             evt.setUuid(String.valueOf(timeStamp));
-            if (null != redisCommands) {
-                redisCommands.zadd(hashId, timeStamp, objectMapper.writeValueAsString(evt));
-            } else {
-                redisCommandsCluster.zadd(hashId, timeStamp, objectMapper.writeValueAsString(evt));
-            }
+            redisSortedSetCommands.zadd(hashId, timeStamp, objectMapper.writeValueAsString(evt));
             return true;
         } catch (JsonProcessingException e) {
             // We do not returned false, it will be retried 3 times for nothing, faile immediately
@@ -140,9 +132,7 @@ public class EventRepositoryRedisLettuce extends AbstractEventRepository {
             
         // Check for the event within 100ms time range passed, hoping there won't be more than 10 for this.
         @SuppressWarnings("deprecation")
-        List<String> events = (null != redisCommands) ? 
-                redisCommands.zrangebyscore(hashKey, timestamp - 100L, timestamp + 100L, 0, 10) :
-                redisCommandsCluster.zrangebyscore(hashKey, timestamp - 100L, timestamp + 100L, 0, 10);
+        List<String> events = redisSortedSetCommands.zrangebyscore(hashKey, timestamp - 100L, timestamp + 100L, 0, 10);
 
         // Loop through the result set and match the timestamp passed in.
         for (String evt : events) {
@@ -233,9 +223,7 @@ public class EventRepositoryRedisLettuce extends AbstractEventRepository {
     public EventSeries getAuditTrail(EventQueryDefinition query) {
         EventSeries eventSeries = new EventSeries();
         String hashKey = keyBuilder.getHashKey(query.getFrom());
-        List<String> events = (null != redisCommands) ? 
-                redisCommands.zrangebyscore(hashKey, query.getFrom(), query.getTo(), 0, 100):
-                redisCommandsCluster.zrangebyscore(hashKey, query.getFrom(), query.getTo(), 0, 100);
+        List<String> events = redisSortedSetCommands.zrangebyscore(hashKey, query.getFrom(), query.getTo(), 0, 100);
         for (String event : events) {
             eventSeries.add(marshallEvent(event));
         }
@@ -262,12 +250,9 @@ public class EventRepositoryRedisLettuce extends AbstractEventRepository {
      */
     @SuppressWarnings("deprecation")
     private Set<String> getEventsFromRedis(EventQueryDefinition query) {
-        List< String > eventList = (null != redisCommands) ? 
-                redisCommands.zrangebyscore(
-                        keyBuilder.getHashKey(query.getFrom()), query.getFrom(), query.getTo(), 0, UPPER_LIMIT) :
-                redisCommandsCluster.zrangebyscore(
-                        keyBuilder.getHashKey(query.getFrom()), query.getFrom(), query.getTo(), 0, UPPER_LIMIT);
-        return new HashSet<>(eventList);                            
+        List<String> eventList = redisSortedSetCommands.zrangebyscore(
+                keyBuilder.getHashKey(query.getFrom()), query.getFrom(), query.getTo(), 0, UPPER_LIMIT);
+        return new HashSet<>(eventList);
     }
 
     /**
