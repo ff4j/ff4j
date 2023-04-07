@@ -95,7 +95,7 @@ public class PropertyStoreRedisLettuce extends AbstractPropertyStore {
             redisCommands.set(keyBuilder.getKeyProperty(prop.getName()), prop.toJson());
             redisCommands.persist(keyBuilder.getKeyProperty(prop.getName()));
         } else {
-            redisCommandsCluster.sadd(keyBuilder.getKeyPropertyMap());
+            redisCommandsCluster.sadd(keyBuilder.getKeyPropertyMap(), prop.getName());
             redisCommandsCluster.set(keyBuilder.getKeyProperty(prop.getName()), prop.toJson());
             redisCommandsCluster.persist(keyBuilder.getKeyProperty(prop.getName()));
         }

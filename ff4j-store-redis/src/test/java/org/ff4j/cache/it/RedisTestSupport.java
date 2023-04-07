@@ -27,6 +27,7 @@ import org.ff4j.cache.FF4JCacheManager;
 import org.ff4j.conf.XmlParser;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.AssertFf4j;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,6 +64,12 @@ public abstract class RedisTestSupport {
         ff4j = new FF4j(new XmlParser(), TEST_FEATURES_FILE);
         ff4j.cache(cache);
         assertFf4j = new AssertFf4j(ff4j);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        cache.clearFeatures();
+        cache.clearProperties();
     }
 
     @Test
