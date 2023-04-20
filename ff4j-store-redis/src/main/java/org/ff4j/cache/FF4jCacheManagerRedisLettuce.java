@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.lettuce.core.*;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisKeyCommands;
 import io.lettuce.core.api.sync.RedisStringCommands;
@@ -32,17 +33,17 @@ import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
 import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
 import org.ff4j.redis.RedisKeysBuilder;
+import org.ff4j.redis.clientsidecache.RedisClientSideCache;
+import org.ff4j.redis.clientsidecache.ClientSideCacheRedisKeyCommands;
+import org.ff4j.redis.clientsidecache.ClientSideCacheRedisStringCommands;
 import org.ff4j.utils.Util;
 import org.ff4j.utils.json.FeatureJsonParser;
 import org.ff4j.utils.json.PropertyJsonParser;
 
-import io.lettuce.core.KeyScanCursor;
-import io.lettuce.core.RedisClient;
-import io.lettuce.core.ScanArgs;
 import io.lettuce.core.cluster.RedisClusterClient;
 
 /**
- * Implementation of ditributed cache to limit overhead, with REDIS (JEDIS).
+ * Implementation of distributed cache to limit overhead, with REDIS (Lettuce).
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
@@ -71,15 +72,30 @@ public class FF4jCacheManagerRedisLettuce implements FF4JCacheManager {
      * Public void.
      */
     public FF4jCacheManagerRedisLettuce(RedisClient redisClient) {
-        this(redisClient, new RedisKeysBuilder());
+        this(redisClient, new RedisKeysBuilder(), false);
     }
+
     public FF4jCacheManagerRedisLettuce(RedisClient redisClient, RedisKeysBuilder keyBuilder) {
-        StatefulRedisConnection<String, String> redisConnection = redisClient.connect();
-        this.nativeCache = redisConnection.sync();
-        this.redisKeyCommands = redisConnection.sync();
-        this.redisStringCommands = redisConnection.sync();
-        this.keyBuilder = keyBuilder;
+        this(redisClient, keyBuilder, false);
     }
+
+    public FF4jCacheManagerRedisLettuce(RedisClient redisClient, RedisKeysBuilder keyBuilder, boolean enableClientSideCache) {
+        StatefulRedisConnection<String, String> redisConnection = redisClient.connect();
+        RedisKeyCommands<String, String> redisKeyCommands = redisConnection.sync();
+        RedisStringCommands<String, String> redisStringCommands = redisConnection.sync();
+        this.nativeCache = redisConnection.sync();
+        this.keyBuilder = keyBuilder;
+
+        if (enableClientSideCache) {
+            RedisClientSideCache<String, String> clientSideCache = new RedisClientSideCache<>(redisConnection);
+            redisKeyCommands = new ClientSideCacheRedisKeyCommands<>(redisKeyCommands, clientSideCache);
+            redisStringCommands = new ClientSideCacheRedisStringCommands<>(redisStringCommands, clientSideCache);
+        }
+
+        this.redisKeyCommands = redisKeyCommands;
+        this.redisStringCommands = redisStringCommands;
+    }
+
     public FF4jCacheManagerRedisLettuce(RedisClusterClient redisClusterClient) {
         this(redisClusterClient, new RedisKeysBuilder());
     }
