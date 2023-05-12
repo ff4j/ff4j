@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <body>
 
-<div th:fragment="modal-import">
+<th:block th:fragment="modal-import">
  <form class="form-horizontal" action="" th:action="@{home}" method="POST" enctype="multipart/form-data" >
-  <div class="modal hide fade" id="modalImport" tabindex="-1" role="dialog" 
+  <div class="modal hide fade" id="modalImport" tabindex="-1" role="dialog"
   	   aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">   
-      <button class="close" data-dismiss="modal">x</button>   
+    <div class="modal-header">
+      <button class="close" data-dismiss="modal">x</button>
       <h4 id="myModalLabel"><i class="icon-upload-alt"></i>&nbsp;
       <span th:text="#{modal.import.title}" >Import </span></h4>
     </div>
@@ -28,27 +28,27 @@
     </div>
   </div>
 </form>
-</div>
+</th:block>
 
-<div th:fragment="modal-export">
-  <div class="modal hide fade" id="modalExport" tabindex="-1" role="dialog" 
+<th:block th:fragment="modal-export">
+  <div class="modal hide fade" id="modalExport" tabindex="-1" role="dialog"
   	   aria-labelledby="myModalLabele" aria-hidden="true">
-    <div class="modal-header">   
-      <button class="close" data-dismiss="modal">x</button>   
+    <div class="modal-header">
+      <button class="close" data-dismiss="modal">x</button>
       <h4 id="myModalLabel"><i class="icon-download-alt"></i>&nbsp;
       <span th:text="#{modal.export.title}" >Export </span></h4>
     </div>
     <div class="modal-body">
      <div class="shortcuts">
-	   <a href="" th:href="@{api/export/xml}" class="shortcut"> 
+	   <a href="" th:href="@{api/export/xml}" class="shortcut">
 	    <i class="shortcut-icon icon-download-alt" style="color:#880000"></i>
 	    <span class="shortcut-label" >XML</span>
 	   </a>
-	   <a href="" th:href="@{api/export/yml}" class="shortcut" > 
+	   <a href="" th:href="@{api/export/yml}" class="shortcut" >
 	    <i class="shortcut-icon icon-download-alt" style="color:#008800"></i>
 	    <span class="shortcut-label">YAML</span>
 	   </a>
-	   <a href="" th:href="@{api/export/properties}" class="shortcut" > 
+	   <a href="" th:href="@{api/export/properties}" class="shortcut" >
 	    <i class="shortcut-icon icon-download-alt" style="color:#000088"></i>
 	    <span class="shortcut-label">PROPERTIES</span>
 	   </a>
@@ -61,48 +61,48 @@
        </button>
     </div>
   </div>
-</div>
+</th:block>
 
-<div th:fragment="modal-edit">
+<th:block th:fragment="modal-edit">
 
 <form class="form-horizontal" th:action="@{features}" action="" method="POST" >
-  <div class="modal hide fade" id="modalEdit" 
-        tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">    
+  <div class="modal hide fade" id="modalEdit"
+        tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
       <button class="close" data-dismiss="modal">x</button>
       <h4 id="myModalLabel">
       <i class="icon-pencil"></i>&nbsp;
       <span th:text="#{modal.editfeature.title}" >Edit Feature</span></h4>
     </div>
-    
+
   <!-- Body -->
-  <div class="modal-body" style="height:500px;">    
-    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px"> 
-      <label class="control-label" for="uid" 
+  <div class="modal-body" style="height:500px;">
+    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">
+      <label class="control-label" for="uid"
              style="color:#687684;font-style:normal;font-weight:normal;"
              th:text="#{modal.createfeature.featurename}" >Feature Name</label>
-      <div class="controls">   
-        <input type="text" name="uid" id="uid" 
-            style="width:350px;height:18px;color:#008bab;background-color:white" required="required" readonly="true"/>  
+      <div class="controls">
+        <input type="text" name="uid" id="uid"
+            style="width:350px;height:18px;color:#008bab;background-color:white" required="required" readonly="true"/>
       </div>
     </div>
 
-    <!-- Description --> 
-    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">   
-      <label class="control-label" for="desc" 
+    <!-- Description -->
+    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">
+      <label class="control-label" for="desc"
              style="color:#687684;font-style:normal"
-             th:text="#{modal.createfeature.description}" >Description</label>  
+             th:text="#{modal.createfeature.description}" >Description</label>
       <div class="controls">
         <textarea class="field span4" style="width:350px;color:#008bab"
             name="desc" id="desc" rows="2" cols="30"></textarea>
       </div>
     </div>
 
-    <!-- Group --> 
-    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">   
+    <!-- Group -->
+    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">
       <label class="control-label" for="group"
              style="color:#687684;font-style:normal"
-             th:text="#{modal.editfeature.group}" >Group</label>  
+             th:text="#{modal.editfeature.group}" >Group</label>
         <div class="controls">
           <div class="btn-group">
             <input type="text" name="groupName" id="groupName" style="width:350px;height:18px;color:#008bab" />
@@ -119,15 +119,15 @@
                <li class="divider"></li>
               <li><a href="#" onclick="javascript:$('#groupName').val('');">None</a></li>
             </ul>
-          </div> <!-- btn-group -->     
+          </div> <!-- btn-group -->
         </div> <!-- controls -->
       </div> <!-- control-group -->
 
-    <!-- Strategy --> 
-    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">   
-      <label class="control-label" for="strategy" 
+    <!-- Strategy -->
+    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">
+      <label class="control-label" for="strategy"
              style="color:#687684;font-style:normal"
-             th:text="#{modal.editfeature.strategy}" >Strategy</label>  
+             th:text="#{modal.editfeature.strategy}" >Strategy</label>
       <div class="controls">
         <div class="btn-group">
             <input type="text" name="strategy" id="strategy" style="width:350px;height:18px;font-style:normal;color:#008bab" />
@@ -192,19 +192,19 @@
          </tbody>
         </table>
       </div>
-      
-        
-        
+
+
+
       </div>
 
-    <!-- Permissions --> 
-    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">   
-      <label class="control-label" for="permission" 
+    <!-- Permissions -->
+    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">
+      <label class="control-label" for="permission"
              style="color:#687684;font-style:normal"
-             th:text="#{modal.editfeature.permissions}" >Permissions</label>  
+             th:text="#{modal.editfeature.permissions}" >Permissions</label>
       <div class="controls">
         <div class="btn-group">
-            <input type="text" name="permission" id="permission" style="width:350px;height:18px;font-style:normal;color:#008bab" 
+            <input type="text" name="permission" id="permission" style="width:350px;height:18px;font-style:normal;color:#008bab"
             value="Public" readonly="readonly" />
             <button type="button" class="btn btn-green dropdown-toggle" data-toggle="dropdown" style="float:right;margin-left:-5px">
               <span class="caret"></span>
@@ -224,11 +224,11 @@
          </tbody>
         </table>
       </div>
-     </div><!-- Control group -->     
-     
-    <!-- Properties --> 
-    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">   
-      <label class="control-label" for="properties" style="color:#00ab8b;font-style:normal">Properties</label>  
+     </div><!-- Control group -->
+
+    <!-- Properties -->
+    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">
+      <label class="control-label" for="properties" style="color:#00ab8b;font-style:normal">Properties</label>
       <div class="controls"  id="propertyList">
         <table class="table table-bordered table-condensed" style="margin-top:8px;width:345px">
          <tbody id="modalEditFeatureProperties">
@@ -236,9 +236,9 @@
         </table>
       </div>
      </div><!-- Control group -->
-     
+
     </div> <!-- Modal-body -->
-    
+
     <div class="modal-footer" >
     <button class="btn btn" data-dismiss="modal">
       <i class="icon-remove" ></i>&nbsp;
@@ -248,7 +248,7 @@
       <i class="icon-ok icon-white" ></i>&nbsp;
       <span th:text="#{modal.button.validate}">Validate</span></button>
     </div>
-      
+
     <input type="hidden" name="op" value="update"  />
   </div>
 </form>
@@ -257,19 +257,19 @@
  $(document).on("click", ".open-EditFlipDialog", function () {
 	 ff4j_updateModalEditFeature($(this).data('id'));
  });
- 
+
 </script>
 
-</div>
+</th:block>
 
 <!-- --------------------------------------------- -->
 <!-- Fragment - Modal to create a new feature      -->
 <!-- --------------------------------------------- -->
-<div th:fragment="modal-create">
+<th:block th:fragment="modal-create">
 
 <!-- Creation FORM -->
 <form class="form-horizontal" th:action="@{features}" action="" method="POST" >
- <div class="modal hide fade" id="modalCreate" tabindex="-1" 
+ <div class="modal hide fade" id="modalCreate" tabindex="-1"
        role="dialog" aria-labelledby="labelCreate" aria-hidden="true">
    <div class="modal-header">
       <button class="close" data-dismiss="modal">x</button>
@@ -277,29 +277,29 @@
       <i class="icon-file"></i>&nbsp;
       <span th:text="#{modal.createfeature.title}" >Create Feature</span></h4>
    </div>
-   
+
   <!-- Body -->
-  <div class="modal-body" style="height:150px;">    
-    
-    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px"> 
-      <label class="control-label" for="uid" 
+  <div class="modal-body" style="height:150px;">
+
+    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">
+      <label class="control-label" for="uid"
         style="color:#687684;font-style:normal;font-weight:normal;" th:text="#{modal.createfeature.featurename}" >Feature Name</label>
-      <div class="controls">   
-        <input type="text" name="uid" id="uid" 
-            style="width:350px;height:18px;color:#008bab;background-color:white" required="required" />  
+      <div class="controls">
+        <input type="text" name="uid" id="uid"
+            style="width:350px;height:18px;color:#008bab;background-color:white" required="required" />
       </div>
     </div>
-   
-   <!-- Description --> 
-    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">   
-      <label class="control-label" for="desc" style="color:#687684;font-style:normal" th:text="#{modal.createfeature.description}">Description</label>  
+
+   <!-- Description -->
+    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">
+      <label class="control-label" for="desc" style="color:#687684;font-style:normal" th:text="#{modal.createfeature.description}">Description</label>
       <div class="controls">
         <textarea class="field span4" style="width:350px;color:#008bab"
             name="desc" id="desc" rows="2" cols="30"></textarea>
       </div>
     </div>
 
-    <!-- Message --> 
+    <!-- Message -->
     <div class="control-group" style="margin-left:50px;float:left">
      <span style="color:#008bab;font-style:italic" th:text="#{modal.createfeature.comment}">
        Once created, you will access all attributes through edit button
@@ -327,40 +327,40 @@
  </div>
 </form>
 
-</div>
+</th:block>
 
 <!-- --------------------------------------------- -->
 <!-- Fragment - Modal to ask for feature deleting  -->
 <!-- --------------------------------------------- -->
-<div th:fragment="modal-deleteFeature">
+<th:block th:fragment="modal-deleteFeature">
   <form class="form-horizontal" th:action="@{features}" action="" method="POST" >
-    <div class="modal hide fade" 
-         id="modalDeleteFeature" 
-         tabindex="-1" 
-         role="dialog" 
-         aria-labelledby="modalDeleteFeatureLabel" 
+    <div class="modal hide fade"
+         id="modalDeleteFeature"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="modalDeleteFeatureLabel"
          aria-hidden="true">
      <input type="hidden" name="op" value="delete"  />
-     <div class="modal-header"> 
-       <button class="close" data-dismiss="modal">x</button>   
+     <div class="modal-header">
+       <button class="close" data-dismiss="modal">x</button>
         <h4 id="modalDeleteFeatureLabel"><i class="icon-trash"></i>&nbsp;
         <span th:text="#{modal.deletefeature.title}" >Delete feature</span></h4>
      </div>
     <div class="modal-body">
 	  <div class="control-group" style="margin-left:50px;float:left">
-	    <span style="color:#ab0000;font-weight:bold" 
+	    <span style="color:#ab0000;font-weight:bold"
 	    	  th:text="#{modal.deletefeature.confirmMessage}">
 	         Are you sure you want to delete this feature ?
 	    </span>
 	  </div>
-      <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px"> 
-        <label class="control-label" for="uid" 
-               style="color:#687684;font-style:normal;font-weight:normal;" 
+      <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">
+        <label class="control-label" for="uid"
+               style="color:#687684;font-style:normal;font-weight:normal;"
                th:text="#{modal.createfeature.featurename}">Feature Named</label>
-        <div class="controls">   
-          <input type="text" name="uid" id="uid" 
-               style="width:350px;height:18px;color:#008bab;background-color:white" 
-               readonly="true" />  
+        <div class="controls">
+          <input type="text" name="uid" id="uid"
+               style="width:350px;height:18px;color:#008bab;background-color:white"
+               readonly="true" />
         </div>
       </div>
    </div>
@@ -381,34 +381,34 @@
 	 ff4j_updateModalDeleteFeature($(this).data('id'));
    });
  </script>
-</div>
+</th:block>
 
 <!-- --------------------------------------------- -->
 <!-- Fragment - Modal to toggle a group Feature    -->
 <!-- --------------------------------------------- -->
-<div th:fragment="modal-toggle">
+<th:block th:fragment="modal-toggle">
   <form class="form-horizontal" th:action="@{features}" action="" method="POST" >
-    <div class="modal hide fade" 
-         id="modalToggle" tabindex="-1" 
-         role="dialog" 
-         aria-labelledby="myModalLabel" 
+    <div class="modal hide fade"
+         id="modalToggle" tabindex="-1"
+         role="dialog"
+         aria-labelledby="myModalLabel"
          aria-hidden="true">
-     <div class="modal-header">   
-      <button class="close" data-dismiss="modal">x</button>   
+     <div class="modal-header">
+      <button class="close" data-dismiss="modal">x</button>
       <h4 id="myModalLabel">
       <i class="icon-th-list icon-white"></i>&nbsp;
       <span th:text="#{modal.togglegroup.title}" > Toggle a group of features</span>
       </h4>
      </div>
      <div class="modal-body" style="height:120px">
-       <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">   
+       <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">
          <label class="control-label" for="group" style="color:#687684;font-style:normal">
            <span th:text="#{modal.togglegroup.list}" >Toggle a group of features</span>
-         </label>  
+         </label>
          <div class="controls">
           <div class="btn-group">
             <input type="text" name="groupName" id="groupName" style="width:350px;height:18px;color:#008bab" />
-            <button type="button" class="btn btn-green dropdown-toggle" 
+            <button type="button" class="btn btn-green dropdown-toggle"
             		data-toggle="dropdown" style="float:right;margin-left:-5px">
               <span class="caret"></span>
               <span class="sr-only"><i class="icon-inbox icon-white" ></i></span>
@@ -425,16 +425,16 @@
           </div> <!-- btn-group -->
         </div> <!-- controls -->
       </div> <!-- control-group -->
-    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">   
+    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">
       <label class="control-label" for="ope" style="color:#687684;font-style:normal">
        <span th:text="#{modal.togglegroup.operation}" >Operation</span>
-      </label>  
+      </label>
       <div class="controls">
         <div class="btn-group">
-            <input type="text" name="ope" id="ope" 
+            <input type="text" name="ope" id="ope"
             	   style="width:350px;height:18px;color:#008bab;background-color:white" readonly="readonly" />
-            <button type="button" class="btn btn-green dropdown-toggle" 
-            		data-toggle="dropdown" 
+            <button type="button" class="btn btn-green dropdown-toggle"
+            		data-toggle="dropdown"
             		style="float:right;margin-left:-5px">
               <span class="caret"></span>
               <span class="sr-only"><i class="icon-cog icon-white" ></i></span>
@@ -459,28 +459,28 @@
    <input type="hidden" name="op" value="toggleGroup"  />
   </div>
 </form>
-</div>
+</th:block>
 
 <!-- --------------------------------------------- -->
 <!-- Fragment - Modal to rename a Feature          -->
 <!-- --------------------------------------------- -->
-<div th:fragment="modal-rename">
+<th:block th:fragment="modal-rename">
  <form class="form-horizontal" th:action="@{features}" action="" method="POST" >
 
-  <div class="modal hide fade" id="modalRenameFeature" tabindex="-1" 
+  <div class="modal hide fade" id="modalRenameFeature" tabindex="-1"
        role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">   
-      <button class="close" data-dismiss="modal">x</button>   
+    <div class="modal-header">
+      <button class="close" data-dismiss="modal">x</button>
       <h4 id="myModalLabel">
       <i class="icon-th-list icon-white"></i>&nbsp;
       <span th:text="#{modal.renamefeature.title}" >Rename Feature</span>
       </h4>
     </div>
     <div class="modal-body" style="height:120px">
-     <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">   
+     <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">
       <label class="control-label" for="group" style="color:#687684;font-style:normal">
         <span th:text="#{modal.renamefeature.list}" >Feature List</span>
-      </label> 
+      </label>
         <div class="controls">
           <div class="btn-group">
             <input type="text" name="uid" id="uid" style="width:350px;height:18px;color:#008bab" />
@@ -495,19 +495,19 @@
                 </a>
                </li>
             </ul>
-          </div> <!-- btn-group -->     
+          </div> <!-- btn-group -->
         </div> <!-- controls -->
-      </div> <!-- control-group -->      
-    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px"> 
-      <label class="control-label" for="uid" 
+      </div> <!-- control-group -->
+    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">
+      <label class="control-label" for="uid"
         style="color:#687684;font-style:normal;font-weight:normal;" th:text="#{modal.renamefeature.new}" >New Name </label>
-      <div class="controls">   
-        <input type="text" name="newname" id="newname" 
-            style="width:350px;height:18px;color:#008bab;background-color:white" required="required" />  
+      <div class="controls">
+        <input type="text" name="newname" id="newname"
+            style="width:350px;height:18px;color:#008bab;background-color:white" required="required" />
       </div>
-    </div> 
     </div>
-    
+    </div>
+
      <div class="modal-footer" >
     <button class="btn btn" data-dismiss="modal">
       <i class="icon-remove" ></i>&nbsp;
@@ -517,27 +517,27 @@
       <i class="icon-ok icon-white" ></i>&nbsp;
       <span th:text="#{modal.button.validate}">Validate</span></button>
   </div>
-    
+
    <input type="hidden" name="op" value="renameFeature"  />
 
   </div>
 </form>
 
 
-</div>
+</th:block>
 
 <!-- ******************** -->
 <!-- MODAL COPY FEATURE -->
 <!-- ******************** -->
-<div th:fragment="modal-copy">
+<th:block th:fragment="modal-copy">
 
 <form class="form-horizontal" th:action="@{features}" action="" method="POST" >
 
-  <div class="modal hide fade" id="modalCopyFeature" tabindex="-1" 
+  <div class="modal hide fade" id="modalCopyFeature" tabindex="-1"
        role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    
-    <div class="modal-header">   
-      <button class="close" data-dismiss="modal">x</button>   
+
+    <div class="modal-header">
+      <button class="close" data-dismiss="modal">x</button>
       <h4 id="myModalLabel">
       <i class="icon-th-list icon-white"></i>&nbsp;
       <span th:text="#{modal.copyfeature.title}" >Copy Feature</span>
@@ -545,11 +545,11 @@
     </div>
 
     <div class="modal-body" style="height:120px">
-    
-    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">   
+
+    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">
       <label class="control-label" for="group" style="color:#687684;font-style:normal">
         <span th:text="#{modal.copyfeature.list}" >Feature List</span>
-      </label> 
+      </label>
         <div class="controls">
           <div class="btn-group">
             <input type="text" name="uid" id="uid" style="width:350px;height:18px;color:#008bab" />
@@ -564,19 +564,19 @@
                 </a>
                </li>
             </ul>
-          </div> <!-- btn-group -->     
+          </div> <!-- btn-group -->
         </div> <!-- controls -->
-      </div> <!-- control-group -->      
-    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px"> 
-      <label class="control-label" for="uid" 
+      </div> <!-- control-group -->
+    <div class="control-group" style="margin-left:0px;float:left;margin-left:-45px">
+      <label class="control-label" for="uid"
         style="color:#687684;font-style:normal;font-weight:normal;" th:text="#{modal.copyfeature.new}" >New Name </label>
-      <div class="controls">   
-        <input type="text" name="newname" id="newname" 
-            style="width:350px;height:18px;color:#008bab;background-color:white" required="required" />  
+      <div class="controls">
+        <input type="text" name="newname" id="newname"
+            style="width:350px;height:18px;color:#008bab;background-color:white" required="required" />
       </div>
-    </div> 
     </div>
-    
+    </div>
+
      <div class="modal-footer" >
     <button class="btn btn" data-dismiss="modal">
       <i class="icon-remove" ></i>&nbsp;
@@ -586,17 +586,17 @@
       <i class="icon-ok icon-white" ></i>&nbsp;
       <span th:text="#{modal.button.validate}">Validate</span></button>
   </div>
-    
+
    <input type="hidden" name="op" value="copyFeature"  />
 
   </div>
 </form>
 
 
-</div>
+</th:block>
 
 
 
-    
+
 </body>
 </html>

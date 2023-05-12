@@ -1,12 +1,12 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org">
-<head th:include="header :: head"></head>
+<head th:insert="~{header :: head}"></head>
 <body>
 
-	<div class="navbar navbar-fixed-top" th:include="navbar :: navbar"></div>
+	<div class="navbar navbar-fixed-top" th:insert="~{navbar :: navbar}"></div>
 
-	<div class="subnavbar" th:include="navbar :: subnavbar"></div>
+	<div class="subnavbar" th:insert="~{navbar :: subnavbar}"></div>
 
 	<div id="wrapper" class="container">
 		<div class="row">
@@ -16,7 +16,7 @@
 						<div class="container">
 
 
-							<div th:include="messages :: messagebar" style="margin-top: 60px"></div>
+							<div th:insert="~{messages :: messagebar}" style="margin-top: 60px"></div>
 
 							<div class="row">
 								<div class="span6">
@@ -172,13 +172,13 @@
 													class="shortcut-icon icon-upload-alt"></i> <span
 													class="shortcut-label" th:text="#{home.admin.import}">Import</span>
 												</a>
-												
+
 												<a data-toggle="modal" href="#modalExport"
 													class="shortcut open-ExportDialog"> <i
 													class="shortcut-icon icon-download-alt"></i> <span
 													class="shortcut-label" th:text="#{home.admin.export}">Export</span>
 												</a>
-												
+
 												<a data-toggle="modal" href="#modalCreateSchema"
 													class="shortcut"> <i class="shortcut-icon icon-table"></i>
 													<span class="shortcut-label"
@@ -208,11 +208,11 @@
 		</div>
 	</div>
 
-	<div th:include="modal-features :: modal-import"></div>
-	<div th:include="modal-features :: modal-export"></div>
+	<div th:insert="~{modal-features :: modal-import}"></div>
+	<div th:insert="~{modal-features :: modal-export}"></div>
 
-	<div th:include="modal-home :: modal-createSchema"></div>
-	<div th:include="modal-home :: modal-clearCache"></div>
+	<div th:insert="~{modal-home :: modal-createSchema}"></div>
+	<div th:insert="~{modal-home :: modal-clearCache}"></div>
 
 
 </body>
