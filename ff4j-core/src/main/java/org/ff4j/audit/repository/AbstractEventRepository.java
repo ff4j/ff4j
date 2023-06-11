@@ -23,8 +23,9 @@ package org.ff4j.audit.repository;
 
 import static org.ff4j.audit.EventConstants.TITLE_BARCHAR_HIT;
 import static org.ff4j.audit.EventConstants.TITLE_PIE_HITCOUNT;
+import static org.ff4j.utils.TimeUtils.dateToString;
 
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -50,7 +51,7 @@ import org.ff4j.utils.Util;
 public abstract class AbstractEventRepository implements EventRepository {
     
     /** Create key. */
-    protected static final SimpleDateFormat KDF = new SimpleDateFormat("yyyyMMdd");
+    protected static final DateTimeFormatter KDF = DateTimeFormatter.ofPattern("yyyyMMdd");
     
     /** {@inheritDoc} */
     @Override
@@ -247,7 +248,7 @@ public abstract class AbstractEventRepository implements EventRepository {
      *      date as Key
      */
     protected String getKeyDate(long time) {
-        return KDF.format(new Date(time));
+        return dateToString(new Date(time), KDF);
     }
     
     /**

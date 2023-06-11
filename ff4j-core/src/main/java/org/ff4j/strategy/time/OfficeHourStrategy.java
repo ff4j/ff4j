@@ -20,9 +20,8 @@ package org.ff4j.strategy.time;
  * #L%
  */
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -32,6 +31,9 @@ import java.util.Map;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.strategy.AbstractFlipStrategy;
+
+import static org.ff4j.utils.TimeUtils.dateToString;
+import static org.ff4j.utils.TimeUtils.stringToDate;
 
 /**
  * Implemenetation of an office hour strategy.
@@ -46,7 +48,7 @@ public class OfficeHourStrategy extends AbstractFlipStrategy {
     private static final long serialVersionUID = -4384808702026232747L;
 
     /** Parsing date expression. */
-    private static final DateFormat SDF_DATE = new SimpleDateFormat("yyyy-MM-dd");
+    private static final DateTimeFormatter SDF_DATE = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     
     /** Constants. */
     private static final String MONDAY = "monday";
@@ -107,13 +109,13 @@ public class OfficeHourStrategy extends AbstractFlipStrategy {
             for (String day : days) {
                try {
                    Calendar c = Calendar.getInstance();
-                   c.setTime(SDF_DATE.parse(day.trim()));
+                   c.setTime(stringToDate(day.trim(), SDF_DATE));
                    c.set(Calendar.MILLISECOND, 0);
                    c.set(Calendar.SECOND, 0);
                    c.set(Calendar.MINUTE, 0);
                    c.set(Calendar.HOUR_OF_DAY, 0);
-                   publicHolidays.add(SDF_DATE.format(c.getTime()));
-                } catch (ParseException e) {
+                   publicHolidays.add(dateToString(c.getTime(), SDF_DATE));
+                } catch (Throwable e) {
                    throw new IllegalArgumentException("Invalid Syntax for <" + day + "> expected 'yyyy-MM-dd'", e);
                 }
             }
@@ -135,7 +137,7 @@ public class OfficeHourStrategy extends AbstractFlipStrategy {
                   String inter = partDay[0].trim();
                   String extractIntervals = inter.substring(1, inter.length() -1);
                   specialTimeTable.put(dateExpression,  parseIntervalsExpression(extractIntervals));
-               } catch (ParseException e) {
+               } catch (Throwable e) {
                    throw new IllegalArgumentException("Invalid Syntax for '" + dateExpression + "' expected 'yyyy-MM-dd'", e);
                }
            }
@@ -192,7 +194,7 @@ public class OfficeHourStrategy extends AbstractFlipStrategy {
         }
         
         // Priority 1 : Special Opening
-        String currentDate = SDF_DATE.format(now.getTime());
+        String currentDate = dateToString(now.getTime(), SDF_DATE);
         if (specialTimeTable.containsKey(currentDate)) {
             // Today is in special openings, apply
             return matches(now, specialTimeTable.get(currentDate));

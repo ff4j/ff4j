@@ -25,13 +25,15 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Map;
 
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
+
+import static org.ff4j.utils.TimeUtils.dateToString;
 
 /**
  * Generation of Java Interface.
@@ -63,7 +65,7 @@ public class GeneratorUtils {
         Util.assertNotNull(ff4j);
         StringBuilder sb = new StringBuilder();
         sb.append("/**\r\n * Constants for ff4j features and properties.");
-        sb.append("\r\n * Generated on : " + new SimpleDateFormat("yyyy-MM-DD HH:mm").format(new Date()));
+        sb.append("\r\n * Generated on : " +  dateToString( new Date(), DateTimeFormatter.ofPattern("yyyy-MM-DD HH:mm")));
         sb.append("\r\n *");
         sb.append("\r\n * @author FF4J Generator Engine");
         sb.append("\r\n */");

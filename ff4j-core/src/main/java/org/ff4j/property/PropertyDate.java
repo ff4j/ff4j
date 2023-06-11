@@ -21,8 +21,12 @@ package org.ff4j.property;
  */
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+
+import static org.ff4j.utils.TimeUtils.dateToString;
+import static org.ff4j.utils.TimeUtils.stringToDate;
 
 /**
  * 
@@ -34,7 +38,7 @@ public class PropertyDate extends Property< Date > {
     private static final long serialVersionUID = -134543098672660987L;
     
     /** expected expression. */
-    public static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static final DateTimeFormatter SDF = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * Default constructor.
@@ -57,7 +61,7 @@ public class PropertyDate extends Property< Date > {
      *
      * @param uid
      *      unique name
-     * @param lvl
+     * @param value
      *      current log level
      */
     public PropertyDate(String uid, String value) {
@@ -69,7 +73,7 @@ public class PropertyDate extends Property< Date > {
      *
      * @param uid
      *      unique name
-     * @param lvl
+     * @param date
      *      current log level
      */
     public PropertyDate(String uid, Date date) {
@@ -81,8 +85,8 @@ public class PropertyDate extends Property< Date > {
     @Override
     public Date fromString(String v) {
         try {
-            return SDF.parse(v);
-        } catch (ParseException e) {
+            return stringToDate(v, SDF);
+        } catch (Throwable e) {
            throw new IllegalArgumentException("Illegal expression for date, expecting yyyy-MM-dd HH:mm:ss", e);
         }
     }
@@ -97,7 +101,7 @@ public class PropertyDate extends Property< Date > {
         if (value == null) {
             return null;
         }
-        return SDF.format(value);
+        return dateToString(value, SDF);
     }
 
 }

@@ -21,6 +21,7 @@ package org.ff4j.audit.chart;
  */
 
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,6 +33,8 @@ import org.ff4j.audit.Event;
 import org.ff4j.audit.MutableHitCount;
 import org.ff4j.utils.JsonUtils;
 
+import static org.ff4j.utils.TimeUtils.dateToString;
+
 /**
  * Information for timeSerie.
  *
@@ -41,9 +44,12 @@ public class TimeSeriesChart extends AbstractChart {
     
     /** Serial. */
     private static final long serialVersionUID = 4131401051473272099L;
-    
+
     /** Target Simple Date format. */
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HH:mm:ss");
+    private String sdfPattren = "yyyyMMdd-HH:mm:ss";
+    /** Target Simple Date format. */
+    private DateTimeFormatter sdf =  DateTimeFormatter.ofPattern(sdfPattren);
+
 
     /** Init Once. */
     private List < String > timeSlots = new ArrayList<String>();
@@ -75,9 +81,9 @@ public class TimeSeriesChart extends AbstractChart {
     /**
      * Create slots and initiate data structure.
      *
-     * @param startTime
+     * @param from
      *      period start date
-     * @param endTime
+     * @param to
      *      period end date
      * @param units
      *      current units
@@ -89,26 +95,30 @@ public class TimeSeriesChart extends AbstractChart {
         switch (units) {
             case MINUTES:
                 slotWitdh = 1000 * 60;
-                this.sdf = new SimpleDateFormat("yyyyMMdd-HH:mm");
+                this.sdfPattren = "yyyyMMdd-HH:mm";
+                this.sdf = DateTimeFormatter.ofPattern(sdfPattren);
             break;
             case HOURS:
                 slotWitdh = 1000 * 60 * 60;
-                this.sdf = new SimpleDateFormat("yyyyMMdd-HH");
+                this.sdfPattren = "yyyyMMdd-HH";
+                this.sdf = DateTimeFormatter.ofPattern(sdfPattren);
             break;
             case DAYS:
                 slotWitdh = 1000 * 60 * 60 * 24;
-                this.sdf =  new SimpleDateFormat("yyyyMMdd");
+                this.sdfPattren = "yyyyMMdd";
+                this.sdf =  DateTimeFormatter.ofPattern(sdfPattren);
             break;
             default:
                 slotWitdh = 1000;
-                this.sdf = new SimpleDateFormat("yyyyMMdd-HH:mm:ss");
+                this.sdfPattren = "yyyyMMdd-HH:mm:ss";
+                this.sdf = DateTimeFormatter.ofPattern(sdfPattren);
             break;
         }
         // Create slots for the timeSeries base ones
         int nbslot = new Long(1 + (to - from) / slotWitdh).intValue();
         for (int i = 0; i < nbslot; i++) {
             long startSlotTime = from + slotWitdh * i;
-            String slotLabel   = sdf.format(new Date(startSlotTime));
+            String slotLabel   = dateToString(new Date(startSlotTime), sdf);
             getTimeSlots().add(slotLabel);
         }
     }
@@ -123,7 +133,7 @@ public class TimeSeriesChart extends AbstractChart {
         if (!series.containsKey(evt.getName())) {
             createNewSerie(evt.getName());
         }
-        String targetSlot = sdf.format(new Date(evt.getTimestamp()));
+        String targetSlot = dateToString(new Date(evt.getTimestamp()), sdf);
         Serie < Map <String, MutableHitCount > > targetSerie = series.get(evt.getName());
         if (targetSerie != null) {
             MutableHitCount mhc = targetSerie.getValue().get(targetSlot);
@@ -193,7 +203,7 @@ public class TimeSeriesChart extends AbstractChart {
      *       current value of 'sdf'
      */
     public SimpleDateFormat getSdf() {
-        return sdf;
+        return new SimpleDateFormat(sdfPattren);
     }
 
     /**
@@ -202,7 +212,8 @@ public class TimeSeriesChart extends AbstractChart {
      * 		new value for 'sdf '
      */
     public void setSdf(SimpleDateFormat sdf) {
-        this.sdf = sdf;
+        this.sdfPattren = sdf.toPattern();
+        this.sdf = DateTimeFormatter.ofPattern(sdfPattren);
     }
 
     /**

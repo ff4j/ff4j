@@ -21,7 +21,7 @@ package org.ff4j.conf;
  */
 
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Extension point to load configuration from multiple format files XML, YAML...
@@ -66,7 +66,7 @@ public interface FF4jConfigurationParser<C extends FF4jConfiguration> {
     String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
    
     /** expected expression. */
-    SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT);
+    DateTimeFormatter SIMPLE_DATE_FORMAT = DateTimeFormatter.ofPattern(DATE_FORMAT);
     
     /**
      * Export configuration into binary file.
@@ -81,7 +81,7 @@ public interface FF4jConfigurationParser<C extends FF4jConfiguration> {
     /**
      * Parsing of XML Configuration file.
      *
-     * @param file
+     * @param in
      *      target file
      * @return
      *      features and properties find within file

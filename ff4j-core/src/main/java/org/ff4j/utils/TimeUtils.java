@@ -21,6 +21,11 @@ package org.ff4j.utils;
  */
 
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -64,6 +69,26 @@ public class TimeUtils {
 		c2.set(Calendar.MINUTE, 0);
 		c2.set(Calendar.SECOND, 0);
 		return c2.getTimeInMillis();
+	}
+
+	/**
+	 * Converts string to date using DateTimFormatter
+	 * @param dateStr
+	 * @param dateTimeFormatter
+	 * @return converted date
+	 */
+	public static Date stringToDate(String dateStr, DateTimeFormatter dateTimeFormatter) {
+		return Date.from(LocalDateTime.parse(dateStr,dateTimeFormatter).atZone(ZoneId.systemDefault()).toInstant());
+	}
+
+	/**
+	 * Converts date to string using DateTimFormatter
+	 * @param date
+	 * @param dateTimeFormatter
+	 * @return converted string
+	 */
+	public static String dateToString(Date date, DateTimeFormatter dateTimeFormatter) {
+		return LocalDateTime.ofInstant(date.toInstant(), ZoneOffset.UTC).format(dateTimeFormatter);
 	}
 
 }

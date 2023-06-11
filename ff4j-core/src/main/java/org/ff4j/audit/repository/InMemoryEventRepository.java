@@ -21,6 +21,7 @@ package org.ff4j.audit.repository;
  */
 
 
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -39,6 +40,8 @@ import org.ff4j.audit.MutableHitCount;
 import org.ff4j.audit.chart.Serie;
 import org.ff4j.audit.chart.TimeSeriesChart;
 import org.ff4j.utils.Util;
+
+import static org.ff4j.utils.TimeUtils.dateToString;
 
 /**
  * Implementation of in memory {@link EventRepository} with limited events.
@@ -204,7 +207,7 @@ public class InMemoryEventRepository extends AbstractEventRepository {
                                 // Match FeatureName
                                 Serie < Map<String , MutableHitCount > > serie = tsc.getSeries().get(currentFeatureName);
                                 // Match SlotName
-                                String slotName = tsc.getSdf().format(new Date(evt.getTimestamp()));
+                                String slotName = dateToString(new Date(evt.getTimestamp()) , DateTimeFormatter.ofPattern(tsc.getSdf().toPattern()));
                                 // Should be always 'true' as the tsc.getsdf().format() will get a slotName.
                                 if (serie.getValue().containsKey(slotName)) {
                                     // Fast Increment
@@ -333,7 +336,7 @@ public class InMemoryEventRepository extends AbstractEventRepository {
     public Event getEventByUUID(String uuid, Long timestamp) {
         // Limited Search by key
         if (timestamp != null) {
-            String targetDate = KDF.format(new Date(timestamp.longValue()));
+            String targetDate = dateToString(new Date(timestamp.longValue()), KDF);
             return searchEventById(uuid, targetDate);
             
         } else {

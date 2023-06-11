@@ -46,6 +46,8 @@ import org.ff4j.property.PropertyShort;
 import org.ff4j.property.PropertyString;
 import org.ff4j.utils.Util;
 
+import static org.ff4j.utils.TimeUtils.dateToString;
+
 /**
  * Create {@link Property} from name type and value.
  *
@@ -77,9 +79,7 @@ public class PropertyFactory {
      *
      * @param pName
      *            property name.
-     * @param pType
-     *            property type
-     * @param pValue
+     * @param value
      *            property value
      * @return
      */
@@ -94,13 +94,13 @@ public class PropertyFactory {
         if (value instanceof Date) {
             return PropertyFactory.createProperty(pName, 
                     PropertyDate.class.getName(),
-                    PropertyDate.SDF.format(value), null, null);
+                    dateToString((Date) value,PropertyCalendar.SDF), null, null);
         }
         if (value instanceof Calendar) {
             Date valueDate = ((Calendar) value).getTime();
             return PropertyFactory.createProperty(pName, 
                     PropertyCalendar.class.getName(),
-                    PropertyCalendar.SDF.format(valueDate), null, null);
+                    dateToString(valueDate,PropertyCalendar.SDF), null, null);
         }
         if (value instanceof Property<?>) {
             return (Property<?>) value;

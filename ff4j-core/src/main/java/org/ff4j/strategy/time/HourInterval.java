@@ -23,11 +23,13 @@ package org.ff4j.strategy.time;
 
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
 import org.ff4j.utils.Util;
+
+import static org.ff4j.utils.TimeUtils.stringToDate;
 
 /**
  * Date Interval.
@@ -37,7 +39,7 @@ import org.ff4j.utils.Util;
 public final class HourInterval {
     
    /** Parsing expression. */
-   private static final DateFormat SDF_HOUR = new SimpleDateFormat("HH:mm");
+   private static final DateTimeFormatter SDF_HOUR = DateTimeFormatter.ofPattern("HH:mm");
    
    /** Lower bound of interval. */
    private Calendar from = Calendar.getInstance();
@@ -110,22 +112,22 @@ public final class HourInterval {
    /**
     * Initialization by dates
     *
-    * @param from
+    * @param f
     *      lower bound
-    * @param to
+    * @param t
     *      uppoer bound
     */
    public void init(String f, String t) {
        try {
-           from.setTime(SDF_HOUR.parse(f));
-           to.setTime(SDF_HOUR.parse(t));
+           from.setTime(stringToDate(f, SDF_HOUR));
+           to.setTime(stringToDate(t, SDF_HOUR));
            // Exchang bound if required
            if (!from.before(to)) {
                Calendar cal = to;
                to = from;
                from = cal;
            }
-       } catch (ParseException e) {
+       } catch (Throwable e) {
            throw new IllegalArgumentException("Cannot parse incoming expressions <" + f + ">, <" + t + ">", e);
        }
    }

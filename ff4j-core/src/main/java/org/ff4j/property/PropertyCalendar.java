@@ -20,9 +20,11 @@ package org.ff4j.property;
  * #L%
  */
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+
+import static org.ff4j.utils.TimeUtils.dateToString;
+import static org.ff4j.utils.TimeUtils.stringToDate;
 
 /**
  * 
@@ -34,7 +36,7 @@ public class PropertyCalendar extends Property< Calendar > {
     private static final long serialVersionUID = -134543098672660987L;
     
     /** expected expression. */
-    public  static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    public  static final DateTimeFormatter SDF = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     /**
      * Default constructor.
@@ -57,7 +59,7 @@ public class PropertyCalendar extends Property< Calendar > {
      *
      * @param uid
      *      unique name
-     * @param lvl
+     * @param value
      *      current log level
      */
     public PropertyCalendar(String uid, String value) {
@@ -69,7 +71,7 @@ public class PropertyCalendar extends Property< Calendar > {
      *
      * @param uid
      *      unique name
-     * @param lvl
+     * @param date
      *      current log level
      */
     public PropertyCalendar(String uid, Calendar date) {
@@ -81,9 +83,9 @@ public class PropertyCalendar extends Property< Calendar > {
     public Calendar fromString(String v) {
         try {
         	Calendar c = Calendar.getInstance();
-        	c.setTime(SDF.parse(v));
+        	c.setTime(stringToDate(v, SDF));
             return c;
-        } catch (ParseException e) {
+        } catch (Throwable e) {
            throw new IllegalArgumentException("Illegal expression for date, expecting yyyy-MM-dd HH:mm", e);
         }
     }
@@ -98,7 +100,7 @@ public class PropertyCalendar extends Property< Calendar > {
         if (value == null) {
             return null;
         }
-        return SDF.format(value.getTime());
+        return dateToString( value.getTime(), SDF);
     }
 
 }
