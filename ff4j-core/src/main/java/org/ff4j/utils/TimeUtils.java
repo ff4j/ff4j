@@ -77,8 +77,9 @@ public class TimeUtils {
 	 * @return converted date
 	 */
 	public static Date stringToDate(String dateStr,
-									DateTimeFormatter dateTimeFormatter) {
-		return Date.from(LocalDateTime.parse(dateStr,dateTimeFormatter)
+								DateTimeFormatter dateTimeFormatter) {
+		return Date.from(LocalDateTime
+						.parse(dateStr, dateTimeFormatter)
 						.atZone(ZoneId.systemDefault()).toInstant());
 	}
 

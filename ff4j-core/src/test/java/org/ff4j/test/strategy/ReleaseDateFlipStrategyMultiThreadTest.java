@@ -25,7 +25,6 @@ import org.apache.commons.logging.LogFactory;
 import org.ff4j.strategy.time.ReleaseDateFlipStrategy;
 import org.junit.Test;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -55,6 +54,7 @@ public class ReleaseDateFlipStrategyMultiThreadTest {
     private static CountDownLatch latch;
 
     private List<FeatureDateRunnable> runnables = new ArrayList<>();
+
     private static List<String> errors = new ArrayList<>();
 
 
@@ -83,6 +83,7 @@ public class ReleaseDateFlipStrategyMultiThreadTest {
         public FeatureDateRunnable(String strDate) {
             this.strDate = strDate;
         }
+
         public void run() {
             try {
                 new ReleaseDateFlipStrategy(strDate);
