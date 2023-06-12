@@ -90,7 +90,7 @@ public class TimeUtils {
 	 * @return converted string
 	 */
 	public static String dateToString(Date date,
-									  DateTimeFormatter dateTimeFormatter) {
+                         DateTimeFormatter dateTimeFormatter) {
 		return LocalDateTime.ofInstant(date.toInstant(),
                     ZoneOffset.UTC).format(dateTimeFormatter);
 	}
