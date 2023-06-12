@@ -76,8 +76,10 @@ public class TimeUtils {
 	 * @param dateTimeFormatter
 	 * @return converted date
 	 */
-	public static Date stringToDate(String dateStr, DateTimeFormatter dateTimeFormatter) {
-		return Date.from(LocalDateTime.parse(dateStr,dateTimeFormatter).atZone(ZoneId.systemDefault()).toInstant());
+	public static Date stringToDate(String dateStr,
+									DateTimeFormatter dateTimeFormatter) {
+		return Date.from(LocalDateTime.parse(dateStr,dateTimeFormatter)
+						.atZone(ZoneId.systemDefault()).toInstant());
 	}
 
 	/**
@@ -86,7 +88,9 @@ public class TimeUtils {
 	 * @param dateTimeFormatter
 	 * @return converted string
 	 */
-	public static String dateToString(Date date, DateTimeFormatter dateTimeFormatter) {
-		return LocalDateTime.ofInstant(date.toInstant(), ZoneOffset.UTC).format(dateTimeFormatter);
+	public static String dateToString(Date date,
+									  DateTimeFormatter dateTimeFormatter) {
+		return LocalDateTime.ofInstant(date.toInstant(),
+								ZoneOffset.UTC).format(dateTimeFormatter);
 	}
 }

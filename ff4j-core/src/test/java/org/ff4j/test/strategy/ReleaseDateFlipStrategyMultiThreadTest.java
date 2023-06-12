@@ -26,17 +26,11 @@ import org.ff4j.strategy.time.ReleaseDateFlipStrategy;
 import org.junit.Test;
 
 import java.text.ParseException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-import static org.ff4j.strategy.time.ReleaseDateFlipStrategy.PARAMNAME_RELEASEDATE;
-
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.runners.model.MultipleFailureException.assertEmpty;
 
 
 /**
@@ -55,7 +49,9 @@ public class ReleaseDateFlipStrategyMultiThreadTest {
             "2023-01-01-10:26",
             "2023-01-01-10:27"
     };
+
     int numThreads = 40;
+
     private static CountDownLatch latch;
 
     private List<FeatureDateRunnable> runnables = new ArrayList<>();
@@ -63,22 +59,25 @@ public class ReleaseDateFlipStrategyMultiThreadTest {
 
 
     @Test
-    public void testMultipleThreads() throws ParseException, InterruptedException {
+    public void testMultipleThreads() throws InterruptedException {
         for(int i=0; i<numThreads; i++) {
-            runnables.add(new FeatureDateRunnable(validDates[i%validDates.length]));
+            runnables.add(new
+                    FeatureDateRunnable(validDates[i%validDates.length]));
         }
         latch = new CountDownLatch(numThreads);
         for(Runnable r : runnables) {
             new Thread(r).start();
         }
         latch.await();
-        logger.info("Ran "+ numThreads + " trials, got errors in " + errors.size() + " trials");
+        logger.info("Ran "+ numThreads + " trials, got errors in "
+                                        + errors.size() + " trials");
         assertEquals(new ArrayList<>(), errors);
     }
 
 
     static class FeatureDateRunnable implements Runnable {
         protected final Log logger = LogFactory.getLog(getClass());
+
         private String strDate;
 
         public FeatureDateRunnable(String strDate) {
@@ -86,9 +85,10 @@ public class ReleaseDateFlipStrategyMultiThreadTest {
         }
         public void run() {
             try {
-                ReleaseDateFlipStrategy strategy = new ReleaseDateFlipStrategy(strDate);
+                new ReleaseDateFlipStrategy(strDate);
             } catch(Throwable t) {
-                String message = "Exception thrown when creating ReleaseDateFlipStrategy with date: " + strDate;
+                String message = "Exception thrown when creating " +
+                        "ReleaseDateFlipStrategy with date: " + strDate;
                 errors.add(message);
                 logger.error(message, t);
             } finally {
@@ -96,6 +96,4 @@ public class ReleaseDateFlipStrategyMultiThreadTest {
             }
         }
     }
-
-
 }

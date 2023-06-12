@@ -44,7 +44,8 @@ public class ReleaseDateFlipStrategy extends AbstractFlipStrategy {
     public static final String DATE_PATTERN = "yyyy-MM-dd-HH:mm";
 
     /** Pattern to create a release Date. */
-    public static final DateTimeFormatter SDF = DateTimeFormatter.ofPattern(DATE_PATTERN);
+    public static final DateTimeFormatter SDF
+            = DateTimeFormatter.ofPattern(DATE_PATTERN);
 
     /** Constant for release Date. */
     public static final String PARAMNAME_RELEASEDATE = "releaseDate";
@@ -78,7 +79,8 @@ public class ReleaseDateFlipStrategy extends AbstractFlipStrategy {
      */
     public ReleaseDateFlipStrategy(Date releaseDate) {
         this.releaseDate = releaseDate;
-        getInitParams().put(PARAMNAME_RELEASEDATE, dateToString(releaseDate,SDF));
+        getInitParams().put(PARAMNAME_RELEASEDATE,
+                dateToString(releaseDate,SDF));
     }
 
     /** {@inheritDoc} */
@@ -87,7 +89,8 @@ public class ReleaseDateFlipStrategy extends AbstractFlipStrategy {
         super.init(featureName, initParam);
         assertRequiredParameter(PARAMNAME_RELEASEDATE);
         try {
-            this.releaseDate = stringToDate(initParam.get(PARAMNAME_RELEASEDATE), SDF);
+            this.releaseDate = stringToDate(
+                    initParam.get(PARAMNAME_RELEASEDATE), SDF);
         } catch (Throwable e) {
             throw new IllegalArgumentException("Cannot parse release date, invalid format correct is '" + DATE_PATTERN + "'", e);
         }
