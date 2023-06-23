@@ -20,7 +20,14 @@ package org.ff4j.property.store;
  * #L%
  */
 import static org.ff4j.store.JdbcStoreConstants.COL_PROPERTY_ID;
-import static org.ff4j.utils.JdbcUtils.*;
+import static org.ff4j.utils.JdbcUtils.buildStatement;
+import static org.ff4j.utils.JdbcUtils.closeConnection;
+import static org.ff4j.utils.JdbcUtils.closeResultSet;
+import static org.ff4j.utils.JdbcUtils.closeStatement;
+import static org.ff4j.utils.JdbcUtils.executeUpdate;
+import static org.ff4j.utils.JdbcUtils.isTableExist;
+import static org.ff4j.utils.JdbcUtils.rollback;
+
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
