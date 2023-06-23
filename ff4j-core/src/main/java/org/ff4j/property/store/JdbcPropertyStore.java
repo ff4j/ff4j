@@ -128,7 +128,8 @@ public class JdbcPropertyStore extends AbstractPropertyStore {
             throw ex;
         } catch (Exception ex) {
             rollback(conn);
-            throw new PropertyAccessException("Cannot update properties database, SQL ERROR", ex);
+            throw new PropertyAccessException(
+                    "Cannot update properties database, SQL ERROR", ex);
         } finally {
             closeConnection(conn, previousAutoCommit);
         }
@@ -199,7 +200,8 @@ public class JdbcPropertyStore extends AbstractPropertyStore {
         }
         catch (Exception ex) {
             rollback(conn);
-            throw new PropertyAccessException("Cannot delete property database, SQL ERROR", ex);
+            throw new PropertyAccessException(
+                    "Cannot delete property database, SQL ERROR", ex);
         } finally {
             closeConnection(conn, previousAutoCommit);
         }
@@ -308,11 +310,11 @@ public class JdbcPropertyStore extends AbstractPropertyStore {
         }
     }
 
-    private void deleteProperty(String name, Connection conn) throws SQLException {
+    private void deleteProperty(String name, Connection conn)
+            throws SQLException {
         Util.assertHasLength(name);
         PreparedStatement ps;
         try {
-            conn = getDataSource().getConnection();
             if (!existProperty(name, conn)) {
                 throw new PropertyNotFoundException(name);
             }
@@ -323,7 +325,8 @@ public class JdbcPropertyStore extends AbstractPropertyStore {
         }
     }
 
-    private <T> void createProperty(Property<T> prop, Connection conn) throws SQLException {
+    private <T> void createProperty(Property<T> prop, Connection conn)
+            throws SQLException {
         Util.assertNotNull(prop);
         PreparedStatement ps = null;
         try {
@@ -335,7 +338,8 @@ public class JdbcPropertyStore extends AbstractPropertyStore {
             ps.setString(2, prop.getType());
             ps.setString(3, prop.asString());
             ps.setString(4, prop.getDescription());
-            if (prop.getFixedValues() != null && !prop.getFixedValues().isEmpty()) {
+            if (prop.getFixedValues() != null
+                    && !prop.getFixedValues().isEmpty()) {
                 String fixedValues = prop.getFixedValues().toString();
                 ps.setString(5, fixedValues.substring(1, fixedValues.length() - 1));
             } else {
