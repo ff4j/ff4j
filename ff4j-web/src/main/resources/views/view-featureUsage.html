@@ -1,6 +1,6 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:include="header :: head"></head>
+<head th:insert="~{header :: head}"></head>
 
 <link rel="stylesheet" type="text/css" media="all" href="" th:href="@{static/js/jqplot/jquery.jqplot.min.css}" />
 
@@ -19,29 +19,29 @@
 <link rel="stylesheet" type="text/css" media="all" href="" th:href="@{static/css/bootstrap-datetimepicker.min.css}" />
 
 <body>
-  
-<div class="navbar navbar-fixed-top" th:include="navbar :: navbar"></div>
 
-<div class="subnavbar" th:include="navbar :: subnavbarsupervision"></div>
+<div class="navbar navbar-fixed-top" th:insert="~{navbar :: navbar}"></div>
+
+<div class="subnavbar" th:insert="~{navbar :: subnavbarsupervision}"></div>
 
 <div id="wrapper" class="container" >
  <div class="row">
-  <div class="span9"> 
+  <div class="span9">
    <div id="content" class="clearfix" >
     <div class="main-inner" style="margin-top:60px">
      <div class="container">
 
         <div class="row">
-       <div class="span12">     
+       <div class="span12">
         <div class="widget">
-       
+
         <div class="widget-header">
          <i class="icon-bar-chart"></i>
          <h3 th:text="#{audit.title}">Audit</h3>
         </div>
-       
+
         <div class="widget-content" style="text-align:center">
-        
+
          <form class="form-horizontal" action="" th:action="@{featureUsage}" method="POST">
     <h4 style="color:#00AB8B">
       <div id="datetimepickerFrom1" class="input-append date">
@@ -64,15 +64,15 @@
       </button>
    </h4>
  </form>
- 
-        
+
+
      </div>
      </div>
      </div>
      </div>
-     
+
         <div class="row">
-        
+
          <div class="span4">
 
  <div class="widget widget-nopad">
@@ -85,13 +85,13 @@
     <script th:inline="javascript">
         var startTime = /*[[${fromJS}]]*/ null;
         var endTime   = /*[[${toJS}]]*/ null;
-        $(document).ready(ff4j_renderPie('pie', 
+        $(document).ready(ff4j_renderPie('pie',
         		ff4j_computePieHitRatio('api/featureUsage/pieHitRatio', startTime, endTime)));
-    </script>  
+    </script>
    </div>
 </div>
 </div>
-                        
+
  <div class="span8">
   <div class="widget widget-nopad">
    <div class="widget-header">
@@ -101,17 +101,17 @@
    <div class="widget-content" style="padding:15x;">
    <div id="featureUsageBar" style="margin:20px"></div>
    <script>
-   
+
    $(document).ready(function() {
      var barChart = ff4j_getBarHitRatio(startTime, endTime);
-	 
+
      $('#featureUsageBar').jqplot([barChart.data], {
 	   title: barChart.title,
 	   seriesColors: barChart.color,
 	   seriesDefaults:{
 	      renderer:        $.jqplot.BarRenderer,
 	      pointLabels:     { show: true },
-	      rendererOptions: { 
+	      rendererOptions: {
 	    	  varyBarColor: true,
 	    	  barWidth: 25,
               barPadding: -25,
@@ -137,14 +137,14 @@
 	 });
    });
    </script>
-   
+
    </div>
   </div>
  </div>
 
 </div>
 <div class="row">
-                    
+
 <div class="span4">
  <div class="widget widget-nopad">
   <div class="widget-header">
@@ -154,9 +154,9 @@
   <div class="widget-content">
    <div id="pie-user" class="divpie"></div>
     <script  type="text/javascript">
-        $(document).ready(ff4j_renderPie('pie-user',  
+        $(document).ready(ff4j_renderPie('pie-user',
                 ff4j_computePieHitRatio('api/featureUsage/pieUserRatio', startTime, endTime)));
-    </script> 
+    </script>
   </div>
  </div>
 </div>
@@ -170,9 +170,9 @@
   <div class="widget-content">
    <div id="pie-host" class="divpie"></div>
      <script  type="text/javascript">
-        $(document).ready(ff4j_renderPie('pie-host',  
+        $(document).ready(ff4j_renderPie('pie-host',
                 ff4j_computePieHitRatio('api/featureUsage/pieHostRatio', startTime, endTime)));
-    </script>  
+    </script>
   </div>
  </div>
 </div>
@@ -186,9 +186,9 @@
   <div class="widget-content">
     <div id="pie-source" class="divpie"></div>
    <script  type="text/javascript">
-        $(document).ready(ff4j_renderPie('pie-source',  
+        $(document).ready(ff4j_renderPie('pie-source',
                 ff4j_computePieHitRatio('api/featureUsage/pieSourceRatio', startTime, endTime)));
-    </script> 
+    </script>
   </div>
  </div>
 </div>
@@ -208,6 +208,6 @@
     $('#datetimepickerTo1').datetimepicker({});
   });
 </script>
-   
+
 </body>
 </html>

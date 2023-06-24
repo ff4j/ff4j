@@ -1,6 +1,6 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:include="header :: head"></head>
+<head th:insert="~{header :: head}"></head>
 
 <script type="text/javascript" src="" th:src="@{static/js/jqplot/jquery.jqplot.min.js}"></script>
 <script type="text/javascript" src="" th:src="@{static/js/jqplot/plugins/jqplot.barRenderer.min.js}"></script>
@@ -20,20 +20,20 @@
 <link rel="stylesheet" type="text/css" media="all" href="" th:href="@{static/css/bootstrap-datetimepicker.min.css}" />
 <link rel="stylesheet" type="text/css" media="all" href="" th:href="@{static/js/jqplot/jquery.jqplot.min.css}" />
 <body>
-  
-<div class="navbar navbar-fixed-top" th:include="navbar :: navbar"></div>
 
-<div class="subnavbar" th:include="navbar :: subnavbartimeseries"></div>
+<div class="navbar navbar-fixed-top" th:insert="~{navbar :: navbar}"></div>
+
+<div class="subnavbar" th:insert="~{navbar :: subnavbartimeseries}"></div>
 
 <div id="wrapper" class="container" >
  <div class="row">
-  <div class="span9"> 
+  <div class="span9">
    <div id="content" class="clearfix" >
     <div class="main-inner" style="margin-top:60px">
      <div class="container">
- 
+
       <div class="row">
-       <div class="span12">     
+       <div class="span12">
         <div class="widget">
          <div class="widget-header">
          <i class="icon-bar-chart"></i>
@@ -74,36 +74,36 @@
       </div> <!-- row -->
 
       <div class="row">
-       <div class="span12">     
+       <div class="span12">
         <div class="widget">
          <div class="widget-header">
           <i class="icon-bar-chart"></i>
           <h3 th:text="#{navbar.main.timeseries}">TimeSeries</h3>
          </div>
          <div class="widget-content">
-          
+
           <p>Click on serie name in Legend to toggle on/off series.</p>
-          
+
           <div id="maincurve" class="maincurveStyle"></div>
            <script th:inline="javascript">
             var startTime = /*[[${fromJS}]]*/ null;
             var endTime   = /*[[${toJS}]]*/ null;
             console.log(startTime);
             $(document).ready(
-            		ff4j_renderSparkline('maincurve', 
+            		ff4j_renderSparkline('maincurve',
             				ff4j_computeSparkline('api/timeSeries', startTime, endTime)));
            </script>
          </div>
         </div>
        </div>
       </div>
-      
+
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-   
+
 </body>
 </html>

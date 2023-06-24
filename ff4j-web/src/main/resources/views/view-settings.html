@@ -1,30 +1,30 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:include="header :: head"></head>
+<head th:insert="~{header :: head}"></head>
 <body>
-  
-<div class="navbar navbar-fixed-top" th:include="navbar :: navbar"></div>
 
-<div class="subnavbar" th:include="navbar :: subnavbar"></div>
+<div class="navbar navbar-fixed-top" th:insert="~{navbar :: navbar}"></div>
+
+<div class="subnavbar" th:insert="~{navbar :: subnavbar}"></div>
 
 <div id="wrapper" class="container" >
  <div class="row">
-  <div class="span9"> 
+  <div class="span9">
    <div id="content" class="clearfix" >
     <div class="main-inner" style="margin-top:60px">
      <div class="container">
-          
+
             <div class="widget widget-nopad">
-            <div class="widget-header"> 
+            <div class="widget-header">
               <i class="icon-cogs"></i>
               <h3><span th:text="#{setting.title}" >Settings</span></h3>
             </div>
              <div class="widget-content">
-                 
+
                  <h6 class="bigstats">
-          
+
     <table style="border-collapse:separate;border-spacing:0 10px;text-transform:none">
-     
+
      <tr>
       <td style="width:300px;text-align:right;margin-right:18px">
        <h4 th:text="#{setting.audit}" >Audit</h4>
@@ -43,20 +43,20 @@
       </td>
      </tr>
     </table>
-    
-    </h6>              
+
+    </h6>
                 </div>
-                <!-- /widget-content --> 
+                <!-- /widget-content -->
 
           </div>
-    	
-    	
+
+
 	 </div>
 	</div>
    </div>
   </div>
  </div>
 </div>
-   
+
 </body>
 </html>
