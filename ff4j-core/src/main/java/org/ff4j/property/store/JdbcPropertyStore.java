@@ -230,7 +230,8 @@ public class JdbcPropertyStore extends AbstractPropertyStore {
             throw ex;
         }catch (Exception ex) {
             rollback(conn);
-            throw new PropertyAccessException("Cannot delete property database, SQL ERROR", ex);
+            throw new PropertyAccessException(
+                    "Cannot delete property database, SQL ERROR", ex);
         } finally {
             closeConnection(conn, previousAutoCommit);
         }
