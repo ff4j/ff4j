@@ -321,7 +321,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore {
     private void deleteProperty(String name, Connection conn)
             throws SQLException {
         Util.assertHasLength(name);
-        PreparedStatement ps;
+        PreparedStatement ps = null;
         try {
             if (!existProperty(name, conn)) {
                 throw new PropertyNotFoundException(name);
@@ -329,7 +329,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore {
             ps = buildStatement(conn, getQueryBuilder().deleteProperty(), name);
             ps.executeUpdate();
         } finally {
-            closeConnection(conn);
+            closeStatement(ps);
         }
     }
 
