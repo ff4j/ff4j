@@ -73,62 +73,64 @@
         <license.licenseResolver>${project.baseUri}src/license</license.licenseResolver>
 
         <!-- Versions -->
-        <version.spring-framework>6.0.3</version.spring-framework>
-        <version.spring-security>6.0.1</version.spring-security>
-        <version.gson-extras>1.2.0</version.gson-extras>
-        <version.jakarta.servlet-api>6.0.0</version.jakarta.servlet-api>
-        <version.lombok>1.18.24</version.lombok>
-        <version.logback>1.2.11</version.logback>
-        <version.slf4j>1.7.36</version.slf4j>
-        <version.junit>4.13.2</version.junit>
-        <version.powermock>1.5.5</version.powermock>
-        <version.mockito>4.11.0</version.mockito>
-        <version.cglib>3.1</version.cglib>
         <version.aopalliance>1.0</version.aopalliance>
-        <version.commons-lang>2.6</version.commons-lang>
+        <version.assertj>3.2.0</version.assertj>
+        <version.cglib>3.1</version.cglib>
+        <version.commons-cli>1.5.0</version.commons-cli>
         <version.commons-dbcp>1.4</version.commons-dbcp>
         <version.commons-io>2.11.0</version.commons-io>
-        <version.commons-cli>1.5.0</version.commons-cli>
-        <version.jstl>1.2</version.jstl>
-        <version.taglib>1.1.2</version.taglib>
-        <version.jsr311>1.1.1</version.jsr311>
+        <version.commons-lang>2.6</version.commons-lang>
+        <version.gson>2.10.1</version.gson>
+        <version.gson-extras>1.2.0</version.gson-extras>
+        <version.httpclient>4.5.14</version.httpclient>
+        <version.ignite-core>2.14.0</version.ignite-core>
         <version.jacoco>0.8.7</version.jacoco>
         <version.jackson>2.14.1</version.jackson>
         <version.jackon2x>2.12.6.1</version.jackon2x>
-        <version.jersey1x>1.19</version.jersey1x>
-        <version.jersey2x>2.37</version.jersey2x>
-        <version.httpclient>4.5.14</version.httpclient>
-        <version.snakeyaml>2.0</version.snakeyaml>
-        <version.swagger>1.6.9</version.swagger>
-        <version.metrics>3.1.0</version.metrics>
-        <version.ignite-core>2.14.0</version.ignite-core>
-        <version.jetty>9.4.18.v20190429</version.jetty>
-        <version.gson>2.8.9</version.gson>
-        <version.assertj>3.2.0</version.assertj>
-        <version.testcontainers>1.17.6</version.testcontainers>
+        <version.jakarta.servlet-api>6.0.0</version.jakarta.servlet-api>
         <version.jansi>1.18</version.jansi>
+        <version.jersey1x>1.19.4</version.jersey1x>
+        <version.jersey2x>2.37</version.jersey2x>
+        <version.jetty>9.4.18.v20190429</version.jetty>
+        <version.jsr311>1.1.1</version.jsr311>
+        <version.jstl>1.2</version.jstl>
+        <version.junit>4.13.2</version.junit>
+        <version.logback>1.2.11</version.logback>
+        <version.lombok>1.18.28</version.lombok>
+        <version.metrics>3.1.0</version.metrics>
+        <version.mockito>4.11.0</version.mockito>
+        <version.powermock>1.5.5</version.powermock>
+        <version.slf4j>1.7.36</version.slf4j>
+        <version.snakeyaml>2.0</version.snakeyaml>
+        <version.spring-framework>6.0.10</version.spring-framework>
+        <version.spring-security>6.1.1</version.spring-security>
+        <version.swagger>1.6.9</version.swagger>
+        <version.taglib>1.1.2</version.taglib>
+        <version.testcontainers>1.17.6</version.testcontainers>
+        
         <!-- Cannot go above for jdk 8 retrop compatibility -->
         <version.hdldb>2.5.2</version.hdldb>
         <version.ehcache>2.10.1</version.ehcache>
         <version.jedis>3.2.0</version.jedis>
         <version.neo4j>2.3.12</version.neo4j>
+        
         <!-- VERSIONS PLUGINS -->
+        <version.maven.plugin.compiler>3.10.1</version.maven.plugin.compiler>
+        <version.maven.plugin.dependency>2.8</version.maven.plugin.dependency>
         <version.maven.plugin.failsafe>2.18.1</version.maven.plugin.failsafe>
-        <version.maven.plugin.redis>1.4.6</version.maven.plugin.redis>
-        <version.maven.plugin.surefire>2.22.2</version.maven.plugin.surefire>
         <version.maven.plugin.gpg>1.5</version.maven.plugin.gpg>
         <version.maven.plugin.graph>1.4</version.maven.plugin.graph>
-        <version.maven.plugin.site>3.4</version.maven.plugin.site>
-        <version.maven.plugin.resources>2.4</version.maven.plugin.resources>
-        <version.maven.plugin.release>2.5.2</version.maven.plugin.release>
-        <version.maven.plugin.sonar>2.2</version.maven.plugin.sonar>
+        <version.maven.plugin.jar>3.2.0</version.maven.plugin.jar>
         <version.maven.plugin.javadoc>2.10.3</version.maven.plugin.javadoc>
-        <version.maven.plugin.source>2.2.1</version.maven.plugin.source>
         <version.maven.plugin.license>2.0.0</version.maven.plugin.license>
         <version.maven.plugin.nexus>1.6.8</version.maven.plugin.nexus>
-        <version.maven.plugin.compiler>3.10.1</version.maven.plugin.compiler>
-        <version.maven.plugin.jar>3.2.0</version.maven.plugin.jar>
-        <version.maven.plugin.dependency>2.8</version.maven.plugin.dependency>
+        <version.maven.plugin.redis>1.4.6</version.maven.plugin.redis>
+        <version.maven.plugin.release>2.5.2</version.maven.plugin.release>
+        <version.maven.plugin.resources>2.4</version.maven.plugin.resources>
+        <version.maven.plugin.site>3.4</version.maven.plugin.site>
+        <version.maven.plugin.sonar>2.2</version.maven.plugin.sonar>
+        <version.maven.plugin.source>2.2.1</version.maven.plugin.source>
+        <version.maven.plugin.surefire>2.22.2</version.maven.plugin.surefire>
         <version.enforcer>3.1.0</version.enforcer>
     </properties>
 
