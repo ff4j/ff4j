@@ -38,7 +38,7 @@ import io.lettuce.core.cluster.RedisClusterClient;
  * @author Cedrick Lunven (@clunven)</a>
  */
 @Ignore
-public class PropertyStoreRedisTestLettuceClusterI extends PropertyStoreTestSupport {
+public class PropertyStoreRedisTestLettuceClusterIT extends PropertyStoreTestSupport {
 
     private static RedisClusterClient rcc = RedisClusterClient.create(RedisURI.create("redis://localhost:30001"));
     
