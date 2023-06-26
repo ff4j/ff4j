@@ -133,10 +133,10 @@ public class JdbcPropertyStore extends AbstractPropertyStore {
         } catch (PropertyAlreadyExistException ex) {
             rollback(conn);
             throw ex;
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
             rollback(conn);
             throw new PropertyAccessException(
-                    "Cannot update properties database, SQL ERROR", ex);
+                    "Cannot create properties database, SQL ERROR", ex);
         } finally {
             closeConnection(conn, previousAutoCommit);
         }
@@ -205,10 +205,10 @@ public class JdbcPropertyStore extends AbstractPropertyStore {
             rollback(conn);
             throw ex;
         }
-        catch (Exception ex) {
+        catch (SQLException ex) {
             rollback(conn);
             throw new PropertyAccessException(
-                    "Cannot delete property database, SQL ERROR", ex);
+                    "Cannot Update property database, SQL ERROR", ex);
         } finally {
             closeConnection(conn, previousAutoCommit);
         }
@@ -228,7 +228,7 @@ public class JdbcPropertyStore extends AbstractPropertyStore {
         } catch (PropertyNotFoundException ex) {
             rollback(conn);
             throw ex;
-        }catch (Exception ex) {
+        }catch (SQLException ex) {
             rollback(conn);
             throw new PropertyAccessException(
                     "Cannot delete property database, SQL ERROR", ex);
