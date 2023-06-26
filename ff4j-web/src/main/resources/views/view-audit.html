@@ -1,42 +1,42 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
-<head th:include="header :: head"></head>
+<head th:insert="~{header :: head}"></head>
 <script type="text/javascript" src="" th:src="@{static/js/jquery/jquery-3.5.1.min.js}"></script>
 <script type="text/javascript" src="" th:src="@{static/js/bootstrap-datetimepicker.min.js}"></script>
 <link rel="stylesheet" type="text/css" media="all" href="" th:href="@{static/css/bootstrap-datetimepicker.min.css}" />
 
 <script type="text/javascript" src="" th:src="@{static/js/jquery.dataTables.min.js}"></script>
 <link rel="stylesheet" type="text/css" media="all" href="" th:href="@{static/css/jquery.dataTables.min.css}" />
- 
-<body>
-  
-<div class="navbar navbar-fixed-top" th:include="navbar :: navbar"></div>
 
-<div class="subnavbar" th:include="navbar :: subnavbaraudit"></div>
+<body>
+
+<div class="navbar navbar-fixed-top" th:insert="~{navbar :: navbar}"></div>
+
+<div class="subnavbar" th:insert="~{navbar :: subnavbaraudit}"></div>
 
 <div id="wrapper" class="container" >
 
- <div th:include="messages :: messagebar" style="margin-top:60px"></div>
- 
+ <div th:insert="~{messages :: messagebar}" style="margin-top:60px"></div>
+
  <div class="row">
-  <div class="span9"> 
+  <div class="span9">
    <div id="content" class="clearfix" >
     <div class="main-inner" >
      <div class="container">
- 
+
       <div class="row">
-       <div class="span12">     
+       <div class="span12">
         <div class="widget">
-       
+
         <div class="widget-header">
          <i class="icon-bar-chart"></i>
          <h3 th:text="#{audit.title}">Audit</h3>
         </div>
-       
-        <div class="widget-content" style="text-align:center"> 
 
-  
+        <div class="widget-content" style="text-align:center">
+
+
   <form class="form-horizontal" action="" th:action="@{audit}" method="POST">
   <h4 style="color:#00AB8B">
       <div id="datetimepickerFrom1" class="input-append date">
@@ -59,22 +59,22 @@
 	  </button>
    </h4>
  </form>
- 
+
  <script type="text/javascript">
   $(function() {
     $('#datetimepickerFrom1').datetimepicker({});
     $('#datetimepickerTo1').datetimepicker({});
   });
 </script>
-     
+
  <script type="text/javascript">
  $(document).ready(function(){
 	    $('#auditTable').DataTable();
 	});
  </script>
-                    
-    <table id="auditTable" name="auditTable" 
-           class="table table-striped table-bordered" 
+
+    <table id="auditTable" name="auditTable"
+           class="table table-striped table-bordered"
            style="margin-top:10px;">
      <thead>
       <tr>
@@ -90,14 +90,14 @@
             <td>
                 <span th:text="${#dates.format(event.date,'MM/dd/yyyy HH:mm:ss')}">---</span>
             </td>
-            
+
             <td>
                 <span style="color:#008bab" th:text="${event.action}">---</span>
                 <span th:text="${event.type}">---</span>
                 <b><span th:text="${event.name}">---</span></b>
              </td>
              <td><span th:text="${event.user}">---</span></td>
-             
+
              <td>
                 <li><span th:text="#{audit.table.hostname}"></span> : <span th:text="${event.hostName}">---</span></li>
                 <li><span th:text="#{audit.table.source}"></span> :  <span th:text="${event.source}">---</span></li></td>
@@ -112,7 +112,7 @@
             </tbody>
         <!-- FeatureName -->
        </table>
-                             
+
                             </div>
                             <!-- /widget-content -->
                         </div>
@@ -127,6 +127,6 @@
     </div>
   </div>
 </div>
-   
+
 </body>
 </html>

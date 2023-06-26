@@ -26,6 +26,8 @@ import static org.ff4j.utils.JdbcUtils.closeResultSet;
 import static org.ff4j.utils.JdbcUtils.closeStatement;
 import static org.ff4j.utils.JdbcUtils.executeUpdate;
 import static org.ff4j.utils.JdbcUtils.isTableExist;
+import static org.ff4j.utils.JdbcUtils.rollback;
+
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -120,31 +122,23 @@ public class JdbcPropertyStore extends AbstractPropertyStore {
     /** {@inheritDoc} */
     public <T> void createProperty(Property<T> ap) {
         Util.assertNotNull(ap);
-        Connection sqlConn = null;
-        PreparedStatement ps = null;
+        Connection conn = null;
+        Boolean previousAutoCommit = null;
         try {
-            sqlConn = getDataSource().getConnection();
-            if (existProperty(ap.getName())) {
-                throw new PropertyAlreadyExistException(ap.getName());
-            }
-            ps = sqlConn.prepareStatement(getQueryBuilder().createProperty());
-            ps.setString(1, ap.getName());
-            ps.setString(2, ap.getType());
-            ps.setString(3, ap.asString());
-            ps.setString(4, ap.getDescription());
-            if (ap.getFixedValues() != null && !ap.getFixedValues().isEmpty()) {
-                String fixedValues = ap.getFixedValues().toString();
-                ps.setString(5, fixedValues.substring(1, fixedValues.length() - 1));
-            } else {
-                ps.setString(5, null);
-            }
-            ps.executeUpdate();
-        } catch (SQLException sqlEX) {
-            throw new PropertyAccessException("Cannot update properties database, SQL ERROR", sqlEX);
+            conn = getDataSource().getConnection();
+            previousAutoCommit = conn.getAutoCommit();
+            conn.setAutoCommit(false);
+            createProperty(ap, conn);
+            conn.commit();
+        } catch (PropertyAlreadyExistException ex) {
+            rollback(conn);
+            throw ex;
+        } catch (SQLException ex) {
+            rollback(conn);
+            throw new PropertyAccessException(
+                    "Cannot create properties database, SQL ERROR", ex);
         } finally {
-            // Connection is closed alse here within clos statement
-            closeStatement(ps);
-            closeConnection(sqlConn);
+            closeConnection(conn, previousAutoCommit);
         }
     }
 
@@ -198,27 +192,48 @@ public class JdbcPropertyStore extends AbstractPropertyStore {
         if (prop == null || prop.getName() == null) {
             throw new IllegalArgumentException("Cannot update property, please provide property name");
         }
-        deleteProperty(prop.getName());
-        createProperty(prop);
+        Connection conn = null;
+        Boolean previousAutoCommit = null;
+        try {
+            conn = getDataSource().getConnection();
+            previousAutoCommit = conn.getAutoCommit();
+            conn.setAutoCommit(false);
+            deleteProperty(prop.getName(), conn);
+            createProperty(prop, conn);
+            conn.commit();
+        } catch (PropertyNotFoundException ex) {
+            rollback(conn);
+            throw ex;
+        }
+        catch (SQLException ex) {
+            rollback(conn);
+            throw new PropertyAccessException(
+                    "Cannot Update property database, SQL ERROR", ex);
+        } finally {
+            closeConnection(conn, previousAutoCommit);
+        }
     }
    
     /** {@inheritDoc} */
     public void deleteProperty(String name) {
         Util.assertHasLength(name);
-        Connection   sqlConn = null;
-        PreparedStatement ps = null;
+        Connection   conn = null;
+        Boolean previousAutoCommit = null;
         try {
-            sqlConn = getDataSource().getConnection();
-            if (!existProperty(name)) {
-                throw new PropertyNotFoundException(name);
-            }
-            ps = buildStatement(sqlConn, getQueryBuilder().deleteProperty(), name);
-            ps.executeUpdate();
-        } catch (SQLException sqlEX) {
-            throw new PropertyAccessException("Cannot delete property database, SQL ERROR", sqlEX);
+            conn = getDataSource().getConnection();
+            previousAutoCommit = conn.getAutoCommit();
+            conn.setAutoCommit(false);
+            deleteProperty(name, conn);
+            conn.commit();
+        } catch (PropertyNotFoundException ex) {
+            rollback(conn);
+            throw ex;
+        }catch (SQLException ex) {
+            rollback(conn);
+            throw new PropertyAccessException(
+                    "Cannot delete property database, SQL ERROR", ex);
         } finally {
-            closeStatement(ps);
-            closeConnection(sqlConn);
+            closeConnection(conn, previousAutoCommit);
         }
     }
     
@@ -283,6 +298,64 @@ public class JdbcPropertyStore extends AbstractPropertyStore {
         } finally {
             closeStatement(ps);
             closeConnection(sqlConn);
+        }
+    }
+
+    private boolean existProperty(String name, Connection conn) {
+        Util.assertHasLength(name);
+        PreparedStatement  ps = null;
+        ResultSet rs = null;
+        try {
+            ps = buildStatement(conn, getQueryBuilder().existProperty(), name);
+            rs = ps.executeQuery();
+            rs.next();
+            return 1 == rs.getInt(1);
+        } catch (SQLException sqlEX) {
+            throw new PropertyAccessException("Cannot check feature existence, error related to database", sqlEX);
+        } finally {
+            closeResultSet(rs);
+            closeStatement(ps);
+        }
+    }
+
+    private void deleteProperty(String name, Connection conn)
+            throws SQLException {
+        Util.assertHasLength(name);
+        PreparedStatement ps = null;
+        try {
+            if (!existProperty(name, conn)) {
+                throw new PropertyNotFoundException(name);
+            }
+            ps = buildStatement(conn, getQueryBuilder().deleteProperty(), name);
+            ps.executeUpdate();
+        } finally {
+            closeStatement(ps);
+        }
+    }
+
+    private <T> void createProperty(Property<T> prop, Connection conn)
+            throws SQLException {
+        Util.assertNotNull(prop);
+        PreparedStatement ps = null;
+        try {
+            if (existProperty(prop.getName(), conn)) {
+                throw new PropertyAlreadyExistException(prop.getName());
+            }
+            ps = conn.prepareStatement(getQueryBuilder().createProperty());
+            ps.setString(1, prop.getName());
+            ps.setString(2, prop.getType());
+            ps.setString(3, prop.asString());
+            ps.setString(4, prop.getDescription());
+            if (prop.getFixedValues() != null
+                    && !prop.getFixedValues().isEmpty()) {
+                String fixedValues = prop.getFixedValues().toString();
+                ps.setString(5, fixedValues.substring(1, fixedValues.length() - 1));
+            } else {
+                ps.setString(5, null);
+            }
+            ps.executeUpdate();
+        } finally {
+            closeStatement(ps);
         }
     }
 

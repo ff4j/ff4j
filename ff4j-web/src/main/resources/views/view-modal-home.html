@@ -3,12 +3,12 @@
 <body>
 
 
- <div th:fragment="modal-createSchema">
+ <th:block th:fragment="modal-createSchema">
  <form class="form-horizontal" action="" th:action="@{home}" method="POST"  >
-  <div class="modal hide fade" id="modalCreateSchema" tabindex="-1" role="dialog" 
+  <div class="modal hide fade" id="modalCreateSchema" tabindex="-1" role="dialog"
   	   aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">   
-      <button class="close" data-dismiss="modal">x</button>   
+    <div class="modal-header">
+      <button class="close" data-dismiss="modal">x</button>
       <h4 id="myModalLabel"><i class="icon-upload-alt"></i>&nbsp;
       <span th:text="#{modal.createschema.title}" >Create Schema</span></h4>
     </div>
@@ -28,9 +28,9 @@
     </div>
   </div>
 </form>
-</div>
+ </th:block>
 
- <div th:fragment="modal-clearCache">
+ <th:block th:fragment="modal-clearCache">
      <form class="form-horizontal" action="" th:action="@{home}" method="POST"  >
          <div class="modal hide fade" id="modalClearCache" tabindex="-1" role="dialog"
               aria-labelledby="myModalLabel" aria-hidden="true">
@@ -55,7 +55,7 @@
              </div>
          </div>
      </form>
- </div>
-    
+ </th:block>
+
 </body>
 </html>

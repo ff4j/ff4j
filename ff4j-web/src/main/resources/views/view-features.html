@@ -1,26 +1,26 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:include="header :: head">
+<head th:insert="~{header :: head}">
 </head>
 <!-- DataTables -->
 <script type="text/javascript" src="" th:src="@{static/js/jquery.dataTables.min.js}"></script>
 <link rel="stylesheet" type="text/css" media="all" href="" th:href="@{static/css/jquery.dataTables.min.css}" />
 
 <body>
-  
-<div class="navbar navbar-fixed-top" th:include="navbar :: navbar"></div>
 
-<div class="subnavbar" th:include="navbar :: subnavbarfeatures"></div>
+<div class="navbar navbar-fixed-top" th:insert="~{navbar :: navbar}"></div>
+
+<div class="subnavbar" th:insert="~{navbar :: subnavbarfeatures}"></div>
 
 <div id="wrapper" class="container" >
  <div class="row">
-  <div class="span9"> 
+  <div class="span9">
    <div id="content" class="clearfix" >
     <div class="main-inner" style="margin-top:60px;margin-left:-30px">
      <div class="container">
-     
-  <div th:include="messages :: messagebar"></div>
-    
+
+  <div th:insert="~{messages :: messagebar}"></div>
+
   <div class="span12">
    <div class="widget widget-nopad">
     <div class="widget-header">
@@ -28,14 +28,14 @@
 	 <h3><span th:text="#{feature.title}" >Features</span></h3>
     </div>
     <div class="widget-content" style="padding:10px;">
-   
+
    <script type="text/javascript">
     $(document).ready(function(){
         $('#featureTable').DataTable();
     });
  </script>
- 
-	<table id="featureTable" name="featureTable" 
+
+	<table id="featureTable" name="featureTable"
 	       class="table table-striped table-bordered" style="margin-top:10px">
      <thead>
       <tr>
@@ -62,15 +62,15 @@
 	  <td>
 	    <!-- Permissions -->
 	    <div th:if="${not #sets.isEmpty(feat.permissions)}" >
-	      <span style="float:left;" 
+	      <span style="float:left;"
             th:text="${#sets.size(feat.permissions)} + ' items'">x</span>
            <a th:id="'linkPerm-' + ${indexFeat.count}"
-             style="color:#00ab8b;float:left;" 
+             style="color:#00ab8b;float:left;"
              th:href="'javascript:showFeaturePermissions(' + ${indexFeat.count} + ')'">
              &nbsp;(<i class="icon-eye-open"></i>)
          </a>
          <a th:id="'linkhidePerm-' + ${indexFeat.count}"
-             style="float:left;" 
+             style="float:left;"
              th:href="'javascript:hideFeaturePermissions(' + ${indexFeat.count} + ')'"
              class="hide">
              &nbsp;(<i class="icon-eye-close"></i>)</a>
@@ -97,15 +97,15 @@
 	 <td>
 	  <!-- CustomProperties -->
 	  <div th:if="${not #maps.isEmpty(feat.customProperties)}" >
-         <span style="float:left;" 
+         <span style="float:left;"
          th:text="${#maps.size(feat.customProperties)} + ' items '">x</span>
          <a th:id="'linkCustomP-' + ${indexFeat.count}"
-             style="color:#00ab8b;float:left;" 
+             style="color:#00ab8b;float:left;"
              th:href="'javascript:showCustomProperties(' + ${indexFeat.count} + ')'">
              (<i class="icon-eye-open"></i>)
          </a>
          <a th:id="'linkhideCustomP-' + ${indexFeat.count}"
-             style="color:#00ab8b;float:left;" 
+             style="color:#00ab8b;float:left;"
              th:href="'javascript:hideCustomProperties(' + ${indexFeat.count} + ')'"
              class="hide">
              (<i class="icon-eye-close"></i>)</a>
@@ -124,7 +124,7 @@
      <!-- Toggle -->
 	 <td style="width:8%;text-align:center">
 	  <label class="switch switch-green" th:disabled="${!enableEdit}">
-	   <input th:attr="id=${feat.uid}" id="x" 
+	   <input th:attr="id=${feat.uid}" id="x"
 	   		  type="checkbox" class="switch-input" th:onclick="${enableEdit}? 'javascript:toggle(this)'"
               th:checked="${feat.enable}" th:disabled="${!enableEdit}"/>
 		<span class="switch-label" data-on="On" data-off="Off"></span>
@@ -133,7 +133,7 @@
 	 </td>
      <!-- Edit -->
 	 <td style="width:5%;text-align:center" th:if="${enableEdit}">
-	  <a data-toggle="modal" href="#modalEdit" 
+	  <a data-toggle="modal" href="#modalEdit"
 	     th:attr="data-id=${feat.uid}"
 		 style="width:6px;margin-left:-3px;color:white;background-color:#008bab"
 		 class="open-EditFlipDialog btn">
@@ -142,7 +142,7 @@
 	 </td>
      <!-- Delete -->
 	 <td style="width:5%;text-align:center" th:if="${enableEdit}">
-	   <a data-toggle="modal" href="#modalDeleteFeature" 
+	   <a data-toggle="modal" href="#modalDeleteFeature"
          th:attr="data-id=${feat.uid}"
          style="width:6px;margin-left:-3px;color:white;background-color:#ab0000"
          class="open-DeleteFlipDialog btn">
@@ -155,29 +155,29 @@
     </div>
    </div>
   </div>
-     
+
 	 </div>
 	</div>
    </div>
   </div>
  </div>
 </div>
-   
-<div th:include="modal-features :: modal-deleteFeature"></div>
 
-<div th:include="modal-features :: modal-toggle"></div>
+<div th:insert="~{modal-features :: modal-deleteFeature}"></div>
 
-<div th:include="modal-features :: modal-edit"></div>
+<div th:insert="~{modal-features :: modal-toggle}"></div>
 
-<div th:include="modal-features :: modal-create"></div>
+<div th:insert="~{modal-features :: modal-edit}"></div>
 
-<div th:include="modal-features :: modal-rename"></div>
+<div th:insert="~{modal-features :: modal-create}"></div>
 
-<div th:include="modal-features :: modal-copy"></div>
+<div th:insert="~{modal-features :: modal-rename}"></div>
 
-<div th:include="modal-properties :: modal-createProperty"></div>
+<div th:insert="~{modal-features :: modal-copy}"></div>
 
-<div th:include="modal-properties :: modal-updateProperty"></div>
+<div th:insert="~{modal-properties :: modal-createProperty}"></div>
+
+<div th:insert="~{modal-properties :: modal-updateProperty}"></div>
 
 </body>
 </html>

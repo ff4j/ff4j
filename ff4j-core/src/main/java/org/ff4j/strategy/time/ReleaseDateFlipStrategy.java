@@ -9,9 +9,9 @@ package org.ff4j.strategy.time;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,8 +20,7 @@ package org.ff4j.strategy.time;
  * #L%
  */
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Map;
 
@@ -29,23 +28,27 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.strategy.AbstractFlipStrategy;
 
+import static org.ff4j.utils.TimeUtils.dateToString;
+import static org.ff4j.utils.TimeUtils.stringToDate;
+
 /**
  * The feature will be flipped after release date is reached.
- * 
+ *
  * @author Cedrick Lunven (@clunven)
  */
 public class ReleaseDateFlipStrategy extends AbstractFlipStrategy {
-    
+
     /** Serial. */
     private static final long serialVersionUID = 3857531924888301636L;
 
     public static final String DATE_PATTERN = "yyyy-MM-dd-HH:mm";
-    
+
     /** Pattern to create a release Date. */
-    public static final SimpleDateFormat SDF = new SimpleDateFormat(DATE_PATTERN);
+    public static final DateTimeFormatter SDF
+            = DateTimeFormatter.ofPattern(DATE_PATTERN);
 
     /** Constant for release Date. */
-    private static final String PARAMNAME_RELEASEDATE = "releaseDate";
+    public static final String PARAMNAME_RELEASEDATE = "releaseDate";
 
     /** Release Date. */
     private Date releaseDate = new Date();
@@ -57,13 +60,13 @@ public class ReleaseDateFlipStrategy extends AbstractFlipStrategy {
 
     /**
      * Initialization with a date expression.
-     * 
-     * @param date
+     *
+     * @param strDate
      */
     public ReleaseDateFlipStrategy(String strDate) {
         try {
-            this.releaseDate = SDF.parse(strDate);
-        } catch (ParseException e) {
+            this.releaseDate = stringToDate(strDate,SDF);
+        } catch (Throwable e) {
             throw new IllegalArgumentException("Cannot parse release date, invalid format correct is '" + DATE_PATTERN + "'", e);
         }
         getInitParams().put(PARAMNAME_RELEASEDATE, strDate);
@@ -71,12 +74,13 @@ public class ReleaseDateFlipStrategy extends AbstractFlipStrategy {
 
     /**
      * Initialisation with a date.
-     * 
+     *
      * @param releaseDate
      */
     public ReleaseDateFlipStrategy(Date releaseDate) {
         this.releaseDate = releaseDate;
-        getInitParams().put(PARAMNAME_RELEASEDATE, SDF.format(releaseDate));
+        getInitParams().put(PARAMNAME_RELEASEDATE,
+                dateToString(releaseDate,SDF));
     }
 
     /** {@inheritDoc} */
@@ -85,8 +89,9 @@ public class ReleaseDateFlipStrategy extends AbstractFlipStrategy {
         super.init(featureName, initParam);
         assertRequiredParameter(PARAMNAME_RELEASEDATE);
         try {
-            this.releaseDate = SDF.parse(initParam.get(PARAMNAME_RELEASEDATE));
-        } catch (ParseException e) {
+            this.releaseDate = stringToDate(
+                    initParam.get(PARAMNAME_RELEASEDATE), SDF);
+        } catch (Throwable e) {
             throw new IllegalArgumentException("Cannot parse release date, invalid format correct is '" + DATE_PATTERN + "'", e);
         }
     }
@@ -99,10 +104,10 @@ public class ReleaseDateFlipStrategy extends AbstractFlipStrategy {
         // No use of executionContext
         return new Date().after(releaseDate);
     }
-    
+
     /**
      * Setter accessor for attribute 'releaseDate'.
-     * 
+     *
      * @param releaseDate
      *            new value for 'releaseDate '
      */
