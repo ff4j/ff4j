@@ -38,7 +38,7 @@ public class ClientFilterStrategy extends AbstractFlipStrategy {
     /** Serial. */
     private static final long serialVersionUID = -485058682902446581L;
 
-    /** Threshold. */
+    /** initial parameter. */
     private static final String PARAM_CLIENTLIST = "grantedClients";
 
     /** Parameter to be checked in context. */
@@ -61,8 +61,8 @@ public class ClientFilterStrategy extends AbstractFlipStrategy {
     /**
      * Parameterized constructor.
      * 
-     * @param threshold
-     *            threshold
+     * @param clientList
+     *            clientList
      */
     public ClientFilterStrategy(String clientList) {
         this.rawClientList = clientList;

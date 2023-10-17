@@ -34,7 +34,7 @@ import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.strategy.AbstractFlipStrategy;
 
 /**
- * Implemenetation of an office hour strategy.
+ * Implementation of an office hour strategy.
  * 
  * Expression { "monday":["08:00-12:00", "13:30-18:00"], "tuesday":[], "wednesday":[], "thursday":[],"friday":[],"saturday":[] }
  *
@@ -79,10 +79,10 @@ public class OfficeHourStrategy extends AbstractFlipStrategy {
     public static final String OVERRIDE_DATE = "overridedDate";
     
     /** time table. */
-    private Map < Integer, List <HourInterval>> weekTimeTable = new HashMap<Integer, List<HourInterval>>();
+    private Map < Integer, List<HourInterval>> weekTimeTable = new HashMap<Integer, List<HourInterval>>();
     
     /** openings. */
-    private Map < String, List < HourInterval>> specialTimeTable = new HashMap< String, List<HourInterval>>();
+    private Map < String, List<HourInterval>> specialTimeTable = new HashMap< String, List<HourInterval>>();
     
     /** public holiday. */
     private List < String > publicHolidays = new ArrayList<String>();
@@ -101,7 +101,7 @@ public class OfficeHourStrategy extends AbstractFlipStrategy {
         weekTimeTable.put(Calendar.SATURDAY,    parseIntervalsExpression(initParam.get(SATURDAY)));
         weekTimeTable.put(Calendar.SUNDAY,      parseIntervalsExpression(initParam.get(SUNDAY)));
         
-        // Update publiholidays
+        // Update publicHolidays
         if (initParam.containsKey(PUBLICHOLIDAY)) {
             String[] days = initParam.get(PUBLICHOLIDAY).split(",");
             for (String day : days) {
@@ -150,9 +150,9 @@ public class OfficeHourStrategy extends AbstractFlipStrategy {
      * @return
      *      list of hour interval
      */
-    public List < HourInterval > parseIntervalsExpression(String expression) {
+    public List<HourInterval> parseIntervalsExpression(String expression) {
         // Always close
-        List < HourInterval > lhi = new ArrayList<HourInterval>();
+        List<HourInterval> lhi = new ArrayList<HourInterval>();
         if (expression != null && !"".equals(expression)) {
             String[] chunks = expression.split(",");
            for (String chunk : chunks) {
@@ -171,7 +171,7 @@ public class OfficeHourStrategy extends AbstractFlipStrategy {
      * @return
      *      if one of the interval matches
      */
-    public boolean matches(Calendar cal, List < HourInterval > listOfHI) {
+    public boolean matches(Calendar cal, List<HourInterval> listOfHI) {
         if (listOfHI == null) return false;
         int idx = 0;
         boolean found = false;
@@ -185,7 +185,7 @@ public class OfficeHourStrategy extends AbstractFlipStrategy {
     /** {@inheritDoc} */
     @Override
     public boolean evaluate(String featureName, FeatureStore store, FlippingExecutionContext executionContext) {
-        // Check current date agains interval
+        // Check current date against interval
         Calendar now = Calendar.getInstance();
         if (executionContext != null && executionContext.containsKey(OVERRIDE_DATE)) {
             now = (Calendar) executionContext.getValue(OVERRIDE_DATE, false);

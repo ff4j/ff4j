@@ -40,8 +40,8 @@ public class WhiteListStrategy extends ClientFilterStrategy {
     /**
      * Parameterized constructor.
      * 
-     * @param threshold
-     *            threshold
+     * @param clientList
+     *            clientList
      */
     public WhiteListStrategy(String clientList) {
         super(clientList);
