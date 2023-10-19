@@ -24,7 +24,7 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FlippingExecutionContext;
 
 /**
- * BLOCK acces for defined list of Clients.
+ * BLOCK access for defined list of Clients.
  *
  * @author Cedrick Lunven (@clunven)
  */
@@ -43,8 +43,8 @@ public class BlackListStrategy extends ClientFilterStrategy {
     /**
      * Parameterized constructor.
      * 
-     * @param threshold
-     *            threshold
+     * @param clientList
+     *            clientList
      */
     public BlackListStrategy(String clientList) {
         super(clientList);

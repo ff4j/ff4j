@@ -30,7 +30,8 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FlippingExecutionContext;
 
 /**
- * This strategy will flip feature as soon as the release date is reached.
+ * This strategy will check region
+ * and flipped only if it's contained in expected list.
  * 
  * @author Cedrick Lunven (@clunven)
  */
@@ -45,7 +46,7 @@ public class RegionFlippingStrategy extends AbstractFlipStrategy implements Seri
 	public static final String INIT_PARAMNAME_REGIONS = "environments";
 
 	/**
-	 * current user attribute
+	 * Parameter to be checked in context
 	 */
 	public static final String PARAMNAME_USER_REGION = "region";
 

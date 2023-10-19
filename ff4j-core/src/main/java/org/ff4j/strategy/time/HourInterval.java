@@ -110,9 +110,9 @@ public final class HourInterval {
    /**
     * Initialization by dates
     *
-    * @param from
+    * @param f
     *      lower bound
-    * @param to
+    * @param t
     *      uppoer bound
     */
    public void init(String f, String t) {
