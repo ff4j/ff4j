@@ -19,7 +19,6 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<properties>
 		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-		<version.jacoco>0.8.7</version.jacoco>
 	</properties>
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~ DEPENDENCIES ~ -->
@@ -64,14 +63,14 @@
 			<version>3.0.0</version>
 		</dependency>
 		<dependency>
-		    <groupId>javax.activation</groupId>
-    		<artifactId>activation</artifactId>
-    		<version>1.1.1</version>
+			<groupId>javax.activation</groupId>
+			<artifactId>activation</artifactId>
+			<version>1.1.1</version>
 		</dependency>
 		<dependency>
-		    <groupId>javax.xml.bind</groupId>
-		    <artifactId>jaxb-api</artifactId>
-		    <version>2.3.1</version>
+			<groupId>jakarta.xml.bind</groupId>
+			<artifactId>jakarta.xml.bind-api</artifactId>
+			<version>4.0.1</version>
 		</dependency>
 		<!-- Fixing issue #241 -->
 		<dependency>
@@ -99,7 +98,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-			<version>6.0.3</version>
+			<version>${version.spring-framework}</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- logs -->

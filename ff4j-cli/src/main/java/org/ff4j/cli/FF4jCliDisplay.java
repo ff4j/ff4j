@@ -30,7 +30,7 @@ import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.ff4j.FF4j;
 import org.ff4j.cli.ansi.AnsiForegroundColor;
 import org.ff4j.cli.ansi.AnsiTerminal;

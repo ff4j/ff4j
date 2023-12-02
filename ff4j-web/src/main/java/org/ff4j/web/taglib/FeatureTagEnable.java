@@ -62,5 +62,4 @@ public class FeatureTagEnable extends AbstractFeatureTag {
     protected boolean evalWithExecutionContext(FF4j ff4j, PageContext pageContext, FlippingExecutionContext executionContext) {
         return ff4j.check(getFeatureid(), executionContext);
     }
-
 }
