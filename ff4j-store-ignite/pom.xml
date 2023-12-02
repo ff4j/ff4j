@@ -19,9 +19,6 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<properties>
 		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-		<jsr107.version>1.0.0</jsr107.version>
-		<ignite.version>1.9.0</ignite.version>
-
 		<argLine>
 			--add-opens=java.base/jdk.internal.misc=ALL-UNNAMED
 			--add-opens=java.base/sun.nio.ch=ALL-UNNAMED

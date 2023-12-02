@@ -23,6 +23,7 @@ package org.ff4j.web.utils;
 import static org.ff4j.web.bean.WebConstants.NEW_LINE;
 import static org.ff4j.web.bean.WebConstants.UTF8_ENCODING;
 
+import jakarta.xml.bind.DatatypeConverter;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -32,7 +33,6 @@ import java.io.InputStream;
 import java.util.Scanner;
 
 import javax.imageio.ImageIO;
-import javax.xml.bind.DatatypeConverter;
 
 /**
  * Read file for HDD.

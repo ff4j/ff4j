@@ -26,7 +26,7 @@ import java.sql.Connection;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.ff4j.utils.JdbcUtils;
 
 /**
@@ -57,7 +57,6 @@ public class JdbcTestHelper {
         dbcpDataSource.setUsername("sa");
         dbcpDataSource.setPassword("");
         dbcpDataSource.setUrl("jdbc:hsqldb:mem:.");
-        dbcpDataSource.setMaxActive(3);
         dbcpDataSource.setMaxIdle(2);
         dbcpDataSource.setInitialSize(2);
         dbcpDataSource.setValidationQuery("select 1 from INFORMATION_SCHEMA.SYSTEM_USERS;");
