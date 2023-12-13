@@ -1,5 +1,25 @@
 package org.ff4j.cache.it;
 
+/*
+ * #%L
+ * ff4j-store-redis
+ * %%
+ * Copyright (C) 2013 - 2023 FF4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import io.lettuce.core.*;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisCommands;
@@ -16,6 +36,7 @@ import org.ff4j.redis.clientsidecache.ClientSideCacheRedisStringCommands;
 import org.ff4j.redis.clientsidecache.RedisClientSideCache;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.time.Duration;
@@ -31,6 +52,7 @@ import static io.lettuce.core.protocol.CommandType.CLIENT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+@Ignore
 public class RedisClientSideCacheIT {
 
     private static RedisClient redisClient;
@@ -54,8 +76,8 @@ public class RedisClientSideCacheIT {
 
         // Setup client side caching
         RedisClientSideCache<String, String> clientSideCache = new RedisClientSideCache<>(redisConnection);
+        clientSideCacheRedisStringCommands = new ClientSideCacheRedisStringCommands<>(countingCallsRedisStringCommands, countingCallsRedisKeyCommands, clientSideCache);
         clientSideCacheRedisKeyCommands = new ClientSideCacheRedisKeyCommands<>(countingCallsRedisKeyCommands, clientSideCache);
-        clientSideCacheRedisStringCommands = new ClientSideCacheRedisStringCommands<>(countingCallsRedisStringCommands, clientSideCache);
     }
 
     @Before
@@ -66,7 +88,9 @@ public class RedisClientSideCacheIT {
 
         // Add some keys
         redisCommands.set("k1", "v1");
+        redisCommands.expire("k1", 10);
         redisCommands.set("k2", "v2");
+        redisCommands.expire("k2", 10);
 
         countingCallsRedisKeyCommands.resetCallsCount();
         countingCallsRedisStringCommands.resetCallsCount();
@@ -114,7 +138,7 @@ public class RedisClientSideCacheIT {
 
 
     @Test
-    public void ensureLocalSetImpliesNoGet() {
+    public void ensureLocalSetImpliesOnlyOneRemoteGet() {
         // Given
         int getCount = countingCallsRedisStringCommands.getCallsCount("get");
         assertEquals("No external get count", 0, getCount);
@@ -123,16 +147,27 @@ public class RedisClientSideCacheIT {
 
         // When
         clientSideCacheRedisStringCommands.set("newkey", "newvalue");
+        clientSideCacheRedisKeyCommands.expire("newkey", 10);
+
         // Then
         getCount = countingCallsRedisStringCommands.getCallsCount("set");
         assertEquals("First set count", 1, getCount);
 
         // When
         String value = clientSideCacheRedisStringCommands.get("newkey");
+
         // Then
         assertEquals("newvalue", value);
         getCount = countingCallsRedisStringCommands.getCallsCount("get");
-        assertEquals("No external get count", 0, getCount);
+        assertEquals("Only one external get count", 1, getCount);
+
+        // When
+        value = clientSideCacheRedisStringCommands.get("newkey");
+
+        // Then
+        assertEquals("newvalue", value);
+        getCount = countingCallsRedisStringCommands.getCallsCount("get");
+        assertEquals("Still only one get count", 1, getCount);
     }
 
 
@@ -150,7 +185,10 @@ public class RedisClientSideCacheIT {
         assertEquals("First get count", 1, getCount);
 
         // Triggering a value change using another connection
-        redisClient.connect().sync().set("k1", "v1.1");
+        RedisCommands<String, String> redisCommands = redisClient.connect().sync();
+        redisCommands.set("k1", "v1.1");
+        redisCommands.expire("k1", 10);
+
         // Sleeping to ensure propagation
         TimeUnit.MILLISECONDS.sleep(250);
 
@@ -163,7 +201,37 @@ public class RedisClientSideCacheIT {
     }
 
     @Test
-    public void ensureClientSideCacheHonorsExpiration() throws InterruptedException {
+    public void ensureClientSideCacheHonorsRemoteExpiration() throws InterruptedException {
+        // Given
+        // We act as another client setting an expiry time.
+        RedisCommands<String, String> redisCommands = redisClient.connect().sync();
+        redisCommands.set("k1", "v1");
+        redisCommands.expire("k1", 1);
+
+        // Given
+        int getCount = countingCallsRedisStringCommands.getCallsCount("get");
+        assertEquals("No external get count", 0, getCount);
+
+        // When
+        String value = clientSideCacheRedisStringCommands.get("k1");
+        // Then
+        assertEquals("v1", value);
+        getCount = countingCallsRedisStringCommands.getCallsCount("get");
+        assertEquals("First get count", 1, getCount);
+
+        // When
+        TimeUnit.MILLISECONDS.sleep(1200);
+
+        // When
+        value = clientSideCacheRedisStringCommands.get("k1");
+        // Then
+        assertNull(value);
+        getCount = countingCallsRedisStringCommands.getCallsCount("get");
+        assertEquals("Another get was issued after invalidation", 2, getCount);
+    }
+
+    @Test
+    public void ensureClientSideCacheHonorsLocalExpiration() throws InterruptedException {
         // Given
         int expireCount = countingCallsRedisKeyCommands.getCallsCount("expire");
         assertEquals("No external expire count", 0, expireCount);

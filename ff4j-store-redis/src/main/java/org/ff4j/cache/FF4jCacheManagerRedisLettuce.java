@@ -9,9 +9,9 @@ package org.ff4j.cache;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -88,8 +88,8 @@ public class FF4jCacheManagerRedisLettuce implements FF4JCacheManager {
 
         if (enableClientSideCache) {
             RedisClientSideCache<String, String> clientSideCache = new RedisClientSideCache<>(redisConnection);
+            redisStringCommands = new ClientSideCacheRedisStringCommands<>(redisStringCommands, redisKeyCommands, clientSideCache);
             redisKeyCommands = new ClientSideCacheRedisKeyCommands<>(redisKeyCommands, clientSideCache);
-            redisStringCommands = new ClientSideCacheRedisStringCommands<>(redisStringCommands, clientSideCache);
         }
 
         this.redisKeyCommands = redisKeyCommands;
@@ -131,7 +131,7 @@ public class FF4jCacheManagerRedisLettuce implements FF4JCacheManager {
             onException(re);
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void clearProperties() {
@@ -281,7 +281,7 @@ public class FF4jCacheManagerRedisLettuce implements FF4JCacheManager {
     public void setTimeToLive(int timeToLive) {
         this.timeToLive = timeToLive;
     }
-    
+
     /**
      * Getter accessor for attribute 'keyBuilder'.
      *

@@ -1,6 +1,27 @@
 package org.ff4j.redis.clientsidecache;
 
+/*-
+ * #%L
+ * ff4j-store-redis
+ * %%
+ * Copyright (C) 2013 - 2023 FF4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import io.lettuce.core.*;
+import io.lettuce.core.api.sync.RedisKeyCommands;
 import io.lettuce.core.api.sync.RedisStringCommands;
 import io.lettuce.core.output.KeyValueStreamingChannel;
 import org.slf4j.Logger;
@@ -15,10 +36,12 @@ public class ClientSideCacheRedisStringCommands<K, V> implements RedisStringComm
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final RedisStringCommands<K, V> delegate;
+    private final RedisKeyCommands<K, V> redisKeyCommands;
     private final RedisClientSideCache<K, V> clientSideCache;
 
-    public ClientSideCacheRedisStringCommands(RedisStringCommands<K, V> delegate, RedisClientSideCache<K, V> clientSideCache) {
+    public ClientSideCacheRedisStringCommands(RedisStringCommands<K, V> delegate, RedisKeyCommands<K, V> redisKeyCommands, RedisClientSideCache<K, V> clientSideCache) {
         this.delegate = delegate;
+        this.redisKeyCommands = redisKeyCommands;
         this.clientSideCache = clientSideCache;
     }
 
@@ -105,7 +128,13 @@ public class ClientSideCacheRedisStringCommands<K, V> implements RedisStringComm
         V value = clientSideCache.get(key);
         if (value == null) {
             value = delegate.get(key);
-            clientSideCache.put(key, value);
+            if (value != null) {
+                long ttl = redisKeyCommands.ttl(key);
+                // Don't cache a value with no expiry time.
+                if (ttl >= 0) {
+                    clientSideCache.put(key, value, ttl);
+                }
+            }
         }
         return value;
     }
@@ -184,7 +213,8 @@ public class ClientSideCacheRedisStringCommands<K, V> implements RedisStringComm
 
     @Override
     public String set(K key, V value) {
-        clientSideCache.put(key, value);
+        // We could store the value in the clientSideCache immediately, but we wouldn't have the TTL information.
+        // So we just set the value in Redis server, and the expiry time will be retrieved during the next "get".
         return delegate.set(key, value);
     }
 
