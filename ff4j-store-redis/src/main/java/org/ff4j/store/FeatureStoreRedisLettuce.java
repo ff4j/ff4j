@@ -25,6 +25,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import io.lettuce.core.api.sync.RedisKeyCommands;
+import io.lettuce.core.api.sync.RedisSetCommands;
+import io.lettuce.core.api.sync.RedisStringCommands;
 import org.ff4j.core.Feature;
 import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.exception.FeatureNotFoundException;
@@ -45,15 +48,18 @@ import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
  */
 public class FeatureStoreRedisLettuce extends AbstractFeatureStore {
 
-    /** Supports sentinel based redis deployment. */ 
-    private RedisCommands<String, String> redisCommands;
-    
-    /** Support the cluster based redis deployment. */
-    private RedisAdvancedClusterCommands<String, String> redisCommandsCluster;
-    
+    /** Access to Redis Key related commands */
+    private final RedisKeyCommands<String, String> redisKeyCommands;
+
+    /** Access to Redis String based commands */
+    private final RedisStringCommands<String, String> redisStringCommands;
+
+    /** Access to Redis Set based commands */
+    private final RedisSetCommands<String, String> redisSetCommands;
+
     /** Default key builder. */
-    private RedisKeysBuilder keyBuilder = new RedisKeysBuilder();
-    
+    private final RedisKeysBuilder keyBuilder;
+
     /**
      * Public void.
      */
@@ -61,14 +67,18 @@ public class FeatureStoreRedisLettuce extends AbstractFeatureStore {
         this(redisClient, new RedisKeysBuilder());
     }
     public FeatureStoreRedisLettuce(RedisClient redisClient, RedisKeysBuilder keyBuilder) {
-        this.redisCommands = redisClient.connect().sync();
+        this.redisKeyCommands = redisClient.connect().sync();
+        this.redisStringCommands = redisClient.connect().sync();
+        this.redisSetCommands = redisClient.connect().sync();
         this.keyBuilder    = keyBuilder;
     }
     public FeatureStoreRedisLettuce(RedisClusterClient redisClusterClient) {
         this(redisClusterClient, new RedisKeysBuilder());
     }
     public FeatureStoreRedisLettuce(RedisClusterClient redisClusterClient, RedisKeysBuilder keyBuilder) {
-        this.redisCommandsCluster = redisClusterClient.connect().sync();
+        this.redisKeyCommands = redisClusterClient.connect().sync();
+        this.redisStringCommands = redisClusterClient.connect().sync();
+        this.redisSetCommands = redisClusterClient.connect().sync();
         this.keyBuilder    = keyBuilder;
     }
     
@@ -77,9 +87,7 @@ public class FeatureStoreRedisLettuce extends AbstractFeatureStore {
     public boolean exist(String uid) {
         Util.assertParamHasLength(uid, "Feature identifier");
         String key = keyBuilder.getKeyFeature(uid);
-        return 1 == ((null != redisCommands) ? 
-                redisCommands.exists(key) : 
-                redisCommandsCluster.exists(key));
+        return 1 == redisKeyCommands.exists(key);
     }
     
     /** {@inheritDoc} */
@@ -89,9 +97,7 @@ public class FeatureStoreRedisLettuce extends AbstractFeatureStore {
             throw new FeatureNotFoundException(uid);
         }
         String key = keyBuilder.getKeyFeature(uid);
-        return FeatureJsonParser.parseFeature((null != redisCommands) ? 
-                redisCommands.get(key) : 
-                redisCommandsCluster.get(key));
+        return FeatureJsonParser.parseFeature(redisStringCommands.get(key));
     }
     
     /** {@inheritDoc} */
@@ -102,13 +108,8 @@ public class FeatureStoreRedisLettuce extends AbstractFeatureStore {
             throw new FeatureNotFoundException(fp.getUid());
         }
         String key = keyBuilder.getKeyFeature(fp.getUid());
-        if (null != redisCommands) {
-            redisCommands.set(key, fp.toJson());
-            redisCommands.persist(key);
-        } else {
-            redisCommandsCluster.set(key, fp.toJson());
-            redisCommandsCluster.persist(key);
-        }
+        redisStringCommands.set(key, fp.toJson());
+        redisKeyCommands.persist(key);
     }
     
     /** {@inheritDoc} */
@@ -140,23 +141,15 @@ public class FeatureStoreRedisLettuce extends AbstractFeatureStore {
         if (exist(fp.getUid())) {
             throw new FeatureAlreadyExistException(fp.getUid());
         }
-        if (null != redisCommands) {
-            redisCommands.sadd(keyBuilder.getKeyFeatureMap(), fp.getUid());
-            redisCommands.set(keyBuilder.getKeyFeature(fp.getUid()), fp.toJson());
-            redisCommands.persist(fp.getUid());
-        } else {
-            redisCommandsCluster.sadd(keyBuilder.getKeyFeatureMap(), fp.getUid());
-            redisCommandsCluster.set(keyBuilder.getKeyFeature(fp.getUid()), fp.toJson());
-            redisCommandsCluster.persist(fp.getUid());
-        }
+        redisSetCommands.sadd(keyBuilder.getKeyFeatureMap(), fp.getUid());
+        redisStringCommands.set(keyBuilder.getKeyFeature(fp.getUid()), fp.toJson());
+        redisKeyCommands.persist(fp.getUid());
     }
 
     /** {@inheritDoc} */
     @Override
     public Map<String, Feature> readAll() {
-        Set<String> features = (null != redisCommands) ? 
-            redisCommands.smembers(keyBuilder.getKeyFeatureMap()) : 
-            redisCommandsCluster.smembers(keyBuilder.getKeyFeatureMap());
+        Set<String> features = redisSetCommands.smembers(keyBuilder.getKeyFeatureMap());
         Map<String, Feature> featuresMap = new HashMap<>();
         if (features != null) {
             for (String key : features) {
@@ -172,13 +165,8 @@ public class FeatureStoreRedisLettuce extends AbstractFeatureStore {
         if (!exist(fpId)) {
             throw new FeatureNotFoundException(fpId);
         }
-        if (null != redisCommands) {
-            redisCommands.srem(keyBuilder.getKeyFeatureMap(), fpId);
-            redisCommands.del(keyBuilder.getKeyFeature(fpId));
-        } else {
-            redisCommandsCluster.srem(keyBuilder.getKeyFeatureMap(), fpId);
-            redisCommandsCluster.del(keyBuilder.getKeyFeature(fpId));
-        }
+        redisSetCommands.srem(keyBuilder.getKeyFeatureMap(), fpId);
+        redisKeyCommands.del(keyBuilder.getKeyFeature(fpId));
     }
     
     /** {@inheritDoc} */
@@ -295,9 +283,7 @@ public class FeatureStoreRedisLettuce extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public void clear() {
-        Set<String> myKeys = (null != redisCommands) ? 
-            redisCommands.smembers(keyBuilder.getKeyFeatureMap()) : 
-            redisCommandsCluster.smembers(keyBuilder.getKeyFeatureMap());
+        Set<String> myKeys = redisSetCommands.smembers(keyBuilder.getKeyFeatureMap());
         for (String key : myKeys) {
             delete(key);
         }
