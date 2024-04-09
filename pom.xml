@@ -1,1008 +1,1001 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!-- ~ COORDONATES ~ -->
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.ff4j</groupId>
-    <artifactId>ff4j-parent</artifactId>
-    <version>2.0.1-SNAPSHOT</version>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~ COORDONATES ~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.ff4j</groupId>
+  <artifactId>ff4j-parent</artifactId>
+  <version>2.0.1-SNAPSHOT</version>
 
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!-- ~ MAIN INFO ~ -->
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <name>Feature Flipping 4 Java</name>
-    <packaging>pom</packaging>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~ MAIN INFO ~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <name>Feature Flipping 4 Java</name>
+  <packaging>pom</packaging>
+  <url>http://ff4j.org</url>
+  <inceptionYear>2013</inceptionYear>
+  <description>
+    FF4J, stands for Feature Flipping for Java, helps you implementing the 'feature toggle' agile
+    development
+    practice.
+    Features (services/behaviour/treatments/screen parts) can be enabled and disabled at runtime but
+    also limited to
+    an authorized
+    sub-set of users (e.g : beta-testers for beta feature). Once the feature is enabled and granted
+    you can
+    implement your own strategy
+    to flip through custom FlippingStrategy.
+  </description>
+
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~ GIT (GITHUB) ~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <scm>
+    <connection>scm:git:git@github.com:ff4j/ff4j.git</connection>
+    <developerConnection>scm:git:git@github.com:ff4j/ff4j.git</developerConnection>
+    <url>git@github.com:ff4j/ff4j.git</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~ LICENSE (APACHE2) ~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~ ORGANIZATION ~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <organization>
+    <name>FF4J</name>
     <url>http://ff4j.org</url>
-    <inceptionYear>2013</inceptionYear>
-    <description>
-        FF4J, stands for Feature Flipping for Java, helps you implementing the 'feature toggle' agile development
-        practice.
-        Features (services/behaviour/treatments/screen parts) can be enabled and disabled at runtime but also limited to
-        an authorized
-        sub-set of users (e.g : beta-testers for beta feature). Once the feature is enabled and granted you can
-        implement your own strategy
-        to flip through custom FlippingStrategy.
-    </description>
+  </organization>
 
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!-- ~ GIT (GITHUB) ~ -->
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <scm>
-        <connection>scm:git:git@github.com:ff4j/ff4j.git</connection>
-        <developerConnection>scm:git:git@github.com:ff4j/ff4j.git</developerConnection>
-        <url>git@github.com:ff4j/ff4j.git</url>
-        <tag>HEAD</tag>
-    </scm>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~ PROPERTIES               ~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <properties>
 
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!-- ~ LICENSE (APACHE2) ~ -->
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <licenses>
-        <license>
-            <name>Apache 2</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+    <!-- Compiling -->
+    <github.login/>
+    <encoding>UTF-8</encoding>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <java.version>21</java.version>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
 
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!-- ~ ORGANIZATION ~ -->
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <organization>
-        <name>FF4J</name>
-        <url>http://ff4j.org</url>
-    </organization>
+    <!-- License -->
+    <license.licenseName>apache_v2</license.licenseName>
+    <license.licenseResolver>${project.baseUri}src/license</license.licenseResolver>
 
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!-- ~ PROPERTIES               ~ -->
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <properties>
+    <!-- Versions -->
+    <version.aopalliance>1.0</version.aopalliance>
+    <version.assertj>3.24.2</version.assertj>
+    <version.cglib>3.3.0</version.cglib>
+    <version.commons-cli>1.6.0</version.commons-cli>
+    <version.commons-dbcp2>2.11.0</version.commons-dbcp2>
+    <version.commons-io>2.15.0</version.commons-io>
+    <version.commons-lang3>3.14.0</version.commons-lang3>
+    <version.gson>2.10.1</version.gson>
+    <version.gson-extras>1.2.0</version.gson-extras>
+    <version.httpclient5>5.2.2</version.httpclient5>
+    <version.ignite-core>2.16.0</version.ignite-core>
+    <version.jacoco>0.8.11</version.jacoco>
+    <version.jackson>2.16.0</version.jackson>
+    <version.jakarta.servlet-api>6.0.0</version.jakarta.servlet-api>
+    <version.jansi>2.4.1</version.jansi>
+    <version.jersey1x>1.19.4</version.jersey1x>
+    <version.jersey2x>3.1.3</version.jersey2x>
+    <version.jetty>12.0.3</version.jetty>
+    <version.jsr311>1.1.1</version.jsr311>
+    <version.jstl>3.0.0</version.jstl>
+    <version.junit>4.13.2</version.junit>
+    <version.logback>1.4.11</version.logback>
+    <version.lombok>1.18.30</version.lombok>
+    <version.metrics>4.2.22</version.metrics>
+    <version.mockito>5.7.0</version.mockito>
+    <version.powermock>2.0.9</version.powermock>
+    <version.slf4j>2.0.9</version.slf4j>
+    <version.snakeyaml>2.2</version.snakeyaml>
+    <version.spring-framework>6.1.1</version.spring-framework>
+    <version.spring-security>6.2.0</version.spring-security>
+    <version.swagger>1.6.12</version.swagger>
+    <version.taglib>1.2.5</version.taglib>
+    <version.testcontainers>1.17.6</version.testcontainers>
 
-        <!-- Compiling -->
-        <github.login />
-        <encoding>UTF-8</encoding>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>21</java.version>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+    <!-- Cannot go above for jdk 8 retrop compatibility -->
+    <version.hdldb>2.7.2</version.hdldb>
+    <version.ehcache>3.10.8</version.ehcache>
+    <version.jedis>4.4.6</version.jedis>
+    <version.neo4j>2.3.12</version.neo4j>
 
-        <!-- License -->
-        <license.licenseName>apache_v2</license.licenseName>
-        <license.licenseResolver>${project.baseUri}src/license</license.licenseResolver>
+    <!-- VERSIONS PLUGINS -->
+    <version.maven.plugin.compiler>3.11.0</version.maven.plugin.compiler>
+    <version.maven.plugin.dependency>2.8</version.maven.plugin.dependency>
+    <version.maven.plugin.failsafe>2.18.1</version.maven.plugin.failsafe>
+    <version.maven.plugin.gpg>1.5</version.maven.plugin.gpg>
+    <version.maven.plugin.graph>1.4</version.maven.plugin.graph>
+    <version.maven.plugin.jar>3.2.0</version.maven.plugin.jar>
+    <version.maven.plugin.javadoc>2.10.3</version.maven.plugin.javadoc>
+    <version.maven.plugin.license>2.0.0</version.maven.plugin.license>
+    <version.maven.plugin.nexus>1.6.8</version.maven.plugin.nexus>
+    <version.maven.plugin.redis>1.4.6</version.maven.plugin.redis>
+    <version.maven.plugin.release>2.5.2</version.maven.plugin.release>
+    <version.maven.plugin.resources>2.4</version.maven.plugin.resources>
+    <version.maven.plugin.site>3.4</version.maven.plugin.site>
+    <version.maven.plugin.sonar>2.2</version.maven.plugin.sonar>
+    <version.maven.plugin.source>2.2.1</version.maven.plugin.source>
+    <version.maven.plugin.surefire>2.22.2</version.maven.plugin.surefire>
+    <version.enforcer>3.1.0</version.enforcer>
+  </properties>
 
-        <!-- Versions -->
-        <version.aopalliance>1.0</version.aopalliance>
-        <version.assertj>3.24.2</version.assertj>
-        <version.cglib>3.3.0</version.cglib>
-        <version.commons-cli>1.6.0</version.commons-cli>
-        <version.commons-dbcp2>2.11.0</version.commons-dbcp2>
-        <version.commons-io>2.15.0</version.commons-io>
-        <version.commons-lang3>3.14.0</version.commons-lang3>
-        <version.gson>2.10.1</version.gson>
-        <version.gson-extras>1.2.0</version.gson-extras>
-        <version.httpclient5>5.2.2</version.httpclient5>
-        <version.ignite-core>2.15.0</version.ignite-core>
-        <version.jacoco>0.8.11</version.jacoco>
-        <version.jackson>2.16.0</version.jackson>
-        <version.jakarta.servlet-api>6.0.0</version.jakarta.servlet-api>
-        <version.jansi>2.4.1</version.jansi>
-        <version.jersey1x>1.19.4</version.jersey1x>
-        <version.jersey2x>3.1.3</version.jersey2x>
-        <version.jetty>12.0.3</version.jetty>
-        <version.jsr311>1.1.1</version.jsr311>
-        <version.jstl>3.0.0</version.jstl>
-        <version.junit>4.13.2</version.junit>
-        <version.logback>1.4.11</version.logback>
-        <version.lombok>1.18.30</version.lombok>
-        <version.metrics>4.2.22</version.metrics>
-        <version.mockito>5.7.0</version.mockito>
-        <version.powermock>2.0.9</version.powermock>
-        <version.slf4j>2.0.9</version.slf4j>
-        <version.snakeyaml>2.2</version.snakeyaml>
-        <version.spring-framework>6.1.1</version.spring-framework>
-        <version.spring-security>6.2.0</version.spring-security>
-        <version.swagger>1.6.12</version.swagger>
-        <version.taglib>1.2.5</version.taglib>
-        <version.testcontainers>1.17.6</version.testcontainers>
-        
-        <!-- Cannot go above for jdk 8 retrop compatibility -->
-        <version.hdldb>2.7.2</version.hdldb>
-        <version.ehcache>3.10.8</version.ehcache>
-        <version.jedis>4.4.6</version.jedis>
-        <version.neo4j>5.14.0</version.neo4j>
-        
-        <!-- VERSIONS PLUGINS -->
-        <version.maven.plugin.compiler>3.11.0</version.maven.plugin.compiler>
-        <version.maven.plugin.dependency>2.8</version.maven.plugin.dependency>
-        <version.maven.plugin.failsafe>2.18.1</version.maven.plugin.failsafe>
-        <version.maven.plugin.gpg>1.5</version.maven.plugin.gpg>
-        <version.maven.plugin.graph>1.4</version.maven.plugin.graph>
-        <version.maven.plugin.jar>3.2.0</version.maven.plugin.jar>
-        <version.maven.plugin.javadoc>2.10.3</version.maven.plugin.javadoc>
-        <version.maven.plugin.license>2.0.0</version.maven.plugin.license>
-        <version.maven.plugin.nexus>1.6.8</version.maven.plugin.nexus>
-        <version.maven.plugin.redis>1.4.6</version.maven.plugin.redis>
-        <version.maven.plugin.release>2.5.2</version.maven.plugin.release>
-        <version.maven.plugin.resources>2.4</version.maven.plugin.resources>
-        <version.maven.plugin.site>3.4</version.maven.plugin.site>
-        <version.maven.plugin.sonar>2.2</version.maven.plugin.sonar>
-        <version.maven.plugin.source>2.2.1</version.maven.plugin.source>
-        <version.maven.plugin.surefire>2.22.2</version.maven.plugin.surefire>
-        <version.enforcer>3.1.0</version.enforcer>
-    </properties>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~ CHILD MODULES            ~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <modules>
+    <module>ff4j-core</module>
+    <module>ff4j-test</module>
+    <module>ff4j-aop</module>
+    <module>ff4j-config-yaml</module>
+    <module>ff4j-config-properties</module>
+    <module>ff4j-web</module>
+    <module>ff4j-jmx</module>
+    <module>ff4j-store-jcache</module>
+    <module>ff4j-cli</module>
+    <module>ff4j-webapi</module>
+    <module>ff4j-utils-json</module>
+    <module>ff4j-security-spring</module>
+    <module>ff4j-security-shiro</module>
+    <module>ff4j-store-arangodb</module>
+    <module>ff4j-store-archaius</module>
+    <module>ff4j-store-aws-dynamodb</module>
+    <module>ff4j-store-aws-ssm</module>
+    <module>ff4j-store-cassandra</module>
+    <module>ff4j-store-commonsconfig</module>
+    <module>ff4j-store-consul</module>
+    <module>ff4j-store-couchbase</module>
+    <module>ff4j-store-couchdb</module>
+    <module>ff4j-store-ehcache</module>
+    <module>ff4j-store-elastic</module>
+    <module>ff4j-store-gcp-datastore</module>
+    <module>ff4j-store-hazelcast</module>
+    <module>ff4j-store-hbase</module>
+    <module>ff4j-store-mongodb</module>
+    <module>ff4j-store-redis</module>
+    <module>ff4j-store-springjdbc</module>
+    <module>ff4j-strategy-drools</module>
+    <module>ff4j-store-ignite</module>
+    <module>ff4j-store-neo4j</module>
+  </modules>
 
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!-- ~ CHILD MODULES            ~ -->
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <modules>
-        <module>ff4j-core</module>
-        <module>ff4j-test</module>
-        <module>ff4j-aop</module>
-        <module>ff4j-config-yaml</module>
-        <module>ff4j-config-properties</module>
-        <module>ff4j-web</module>
-        <module>ff4j-jmx</module>
-        <module>ff4j-store-jcache</module>
-        <module>ff4j-cli</module>
-        <module>ff4j-webapi</module>
-        <module>ff4j-utils-json</module>
-        <module>ff4j-security-spring</module>
-        <module>ff4j-security-shiro</module>
-        <module>ff4j-store-arangodb</module>
-        <module>ff4j-store-archaius</module>
-        <module>ff4j-store-aws-dynamodb</module>
-        <module>ff4j-store-aws-ssm</module>
-        <module>ff4j-store-cassandra</module>
-        <module>ff4j-store-commonsconfig</module>
-        <module>ff4j-store-consul</module>
-        <module>ff4j-store-couchbase</module>
-        <module>ff4j-store-couchdb</module>
-        <module>ff4j-store-ehcache</module>
-        <module>ff4j-store-elastic</module>
-        <module>ff4j-store-gcp-datastore</module>
-        <module>ff4j-store-hazelcast</module>
-        <module>ff4j-store-hbase</module>
-        <module>ff4j-store-mongodb</module>
-        <module>ff4j-store-redis</module>
-        <module>ff4j-store-springjdbc</module>
-        <module>ff4j-strategy-drools</module>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~ DEPENDENCIES             ~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <dependencyManagement>
+    <dependencies>
+      <!-- BOM -->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-framework-bom</artifactId>
+        <version>${version.spring-framework}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-bom</artifactId>
+        <version>${version.spring-security}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-bom</artifactId>
+        <version>${version.jetty}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-bom</artifactId>
+        <version>${version.mockito}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <!-- Libraries -->
+      <dependency>
+        <groupId>org.fusesource.jansi</groupId>
+        <artifactId>jansi</artifactId>
+        <version>${version.jansi}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>${version.lombok}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>${version.gson}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${version.slf4j}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>${version.slf4j}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${version.logback}</version>
+      </dependency>
+      <dependency>
+        <groupId>aopalliance</groupId>
+        <artifactId>aopalliance</artifactId>
+        <version>${version.aopalliance}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${version.commons-lang3}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${version.commons-io}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-cli</groupId>
+        <artifactId>commons-cli</artifactId>
+        <version>${version.commons-cli}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.dropwizard.metrics</groupId>
+        <artifactId>metrics-core</artifactId>
+        <version>${version.metrics}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.yaml</groupId>
+        <artifactId>snakeyaml</artifactId>
+        <version>${version.snakeyaml}</version>
+      </dependency>
+      <!-- Swagger -->
+      <dependency>
+        <groupId>io.swagger</groupId>
+        <artifactId>swagger-core</artifactId>
+        <version>${version.swagger}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.swagger</groupId>
+        <artifactId>swagger-annotations</artifactId>
+        <version>${version.swagger}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.swagger</groupId>
+        <artifactId>swagger-jaxrs</artifactId>
+        <version>${version.swagger}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.swagger</groupId>
+        <artifactId>swagger-jersey-jaxrs</artifactId>
+        <version>${version.swagger}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.swagger</groupId>
+        <artifactId>swagger-jersey2-jaxrs</artifactId>
+        <version>${version.swagger}</version>
+      </dependency>
+      <!-- web -->
+      <dependency>
+        <groupId>jakarta.servlet</groupId>
+        <artifactId>jakarta.servlet-api</artifactId>
+        <version>${version.jakarta.servlet-api}</version>
+        <scope>provided</scope>
+      </dependency>
+      <!-- JSON -->
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${version.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${version.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${version.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-guava</artifactId>
+        <version>${version.jackson}</version>
+      </dependency>
+      <dependency>
+        <artifactId>jsr311-api</artifactId>
+        <groupId>javax.ws.rs</groupId>
+        <version>${version.jsr311}</version>
+      </dependency>
+      <dependency>
+        <groupId>jakarta.servlet.jsp.jstl</groupId>
+        <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+        <version>${version.jstl}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.taglibs</groupId>
+        <artifactId>taglibs-standard-impl</artifactId>
+        <version>${version.taglib}</version>
+      </dependency>
+      <!-- JERSEY 1X -->
+      <dependency>
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-client</artifactId>
+        <version>${version.jersey1x}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-core</artifactId>
+        <version>${version.jersey1x}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-servlet</artifactId>
+        <version>${version.jersey1x}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.jersey.contribs</groupId>
+        <artifactId>jersey-multipart</artifactId>
+        <version>${version.jersey1x}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-server</artifactId>
+        <version>${version.jersey1x}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-json</artifactId>
+        <version>${version.jersey1x}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.jersey.contribs</groupId>
+        <artifactId>jersey-spring</artifactId>
+        <version>${version.jersey1x}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.jersey.jersey-test-framework</groupId>
+        <artifactId>jersey-test-framework-inmemory</artifactId>
+        <version>${version.jersey1x}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.jersey.jersey-test-framework</groupId>
+        <artifactId>jersey-test-framework-grizzly2</artifactId>
+        <version>${version.jersey1x}</version>
+      </dependency>
+      <!-- JERSEY 2X -->
+      <dependency>
+        <groupId>org.glassfish.jersey.core</groupId>
+        <artifactId>jersey-client</artifactId>
+        <version>${version.jersey2x}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.jersey.core</groupId>
+        <artifactId>jersey-common</artifactId>
+        <version>${version.jersey2x}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.jersey.inject</groupId>
+        <artifactId>jersey-hk2</artifactId>
+        <version>${version.jersey2x}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.jersey.core</groupId>
+        <artifactId>jersey-server</artifactId>
+        <version>${version.jersey2x}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.jersey.media</groupId>
+        <artifactId>jersey-media-json-jackson</artifactId>
+        <version>${version.jersey2x}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.jersey.containers</groupId>
+        <artifactId>jersey-container-servlet</artifactId>
+        <version>${version.jersey2x}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.jersey.connectors</groupId>
+        <artifactId>jersey-grizzly-connector</artifactId>
+        <version>${version.jersey2x}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.jersey.test-framework</groupId>
+        <artifactId>jersey-test-framework-core</artifactId>
+        <version>${version.jersey2x}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.jersey.test-framework.providers</groupId>
+        <artifactId>jersey-test-framework-provider-grizzly2</artifactId>
+        <version>${version.jersey2x}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents.client5</groupId>
+        <artifactId>httpclient5</artifactId>
+        <version>${version.httpclient5}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.ignite</groupId>
+        <artifactId>ignite-core</artifactId>
+        <version>${version.ignite-core}</version>
+      </dependency>
+      <!-- Test -->
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${version.assertj}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.danilopianini</groupId>
+        <artifactId>gson-extras</artifactId>
+        <version>${version.gson-extras}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${version.junit}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.hsqldb</groupId>
+        <artifactId>hsqldb</artifactId>
+        <version>${version.hdldb}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-dbcp2</artifactId>
+        <version>${version.commons-dbcp2}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${version.mockito}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.powermock</groupId>
+        <artifactId>powermock-module-junit4</artifactId>
+        <version>${version.powermock}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.powermock</groupId>
+        <artifactId>powermock-api-mockito</artifactId>
+        <version>${version.powermock}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers</artifactId>
+        <version>${version.testcontainers}</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~ BUILD ~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <build>
 
-        <!-- TODO -->
-        <!--  fixme: Has breaking changes
-        <module>ff4j-store-neo4j</module>
-        -->
-        <!-- fixme: Currently not supported with jdk 21
-        https://stackoverflow.com/questions/77210731/apache-ignite-support-for-java-21
-        https://github.com/apache/ignite/issues/10954
-        https://lists.apache.org/thread/3nqy8chd0xyopvvhk6o19g2z3p10smzb
-        https://github.com/apache/ignite-3
-        <module>ff4j-store-ignite</module>
-        -->
+    <plugins>
 
-    </modules>
+      <!-- maven enforcer -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${version.enforcer}</version>
+        <configuration>
+          <rules>
+            <dependencyConvergence/>
+            <requireReleaseDeps>
+              <failWhenParentIsSnapshot>false</failWhenParentIsSnapshot>
+              <excludes>
+                <exclude>${project.groupId}:*</exclude>
+              </excludes>
+            </requireReleaseDeps>
+          </rules>
+          <fail>true</fail>
+        </configuration>
+        <executions>
+          <execution>
+            <id>enforce-versions</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <phase>validate</phase>
+          </execution>
+        </executions>
+      </plugin>
 
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <version>${version.maven.plugin.license}</version>
+        <configuration>
+          <verbose>false</verbose>
+          <extraExtensions>
+            <myProprietaryExtension>java</myProprietaryExtension>
+          </extraExtensions>
+        </configuration>
+        <executions>
+          <execution>
+            <id>add-license</id>
+            <goals>
+              <goal>update-file-header</goal>
+            </goals>
+            <phase>process-sources</phase>
+            <configuration>
+              <licenseName>apache_v2</licenseName>
+              <roots>
+                <root>src/main/java</root>
+                <root>src/test</root>
+              </roots>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
 
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!-- ~ DEPENDENCIES             ~ -->
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <dependencyManagement>
-        <dependencies>
-            <!-- BOM -->
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-framework-bom</artifactId>
-                <version>${version.spring-framework}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-bom</artifactId>
-                <version>${version.spring-security}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-bom</artifactId>
-                <version>${version.jetty}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-bom</artifactId>
-                <version>${version.mockito}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <!-- Libraries -->
-            <dependency>
-                <groupId>org.fusesource.jansi</groupId>
-                <artifactId>jansi</artifactId>
-                <version>${version.jansi}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${version.lombok}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.google.code.gson</groupId>
-                <artifactId>gson</artifactId>
-                <version>${version.gson}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${version.slf4j}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>jcl-over-slf4j</artifactId>
-                <version>${version.slf4j}</version>
-            </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>${version.logback}</version>
-            </dependency>
-            <dependency>
-                <groupId>aopalliance</groupId>
-                <artifactId>aopalliance</artifactId>
-                <version>${version.aopalliance}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>${version.commons-lang3}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>${version.commons-io}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-cli</groupId>
-                <artifactId>commons-cli</artifactId>
-                <version>${version.commons-cli}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.dropwizard.metrics</groupId>
-                <artifactId>metrics-core</artifactId>
-                <version>${version.metrics}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.yaml</groupId>
-                <artifactId>snakeyaml</artifactId>
-                <version>${version.snakeyaml}</version>
-            </dependency>
-            <!-- Swagger -->
-            <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-core</artifactId>
-                <version>${version.swagger}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-annotations</artifactId>
-                <version>${version.swagger}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-jaxrs</artifactId>
-                <version>${version.swagger}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-jersey-jaxrs</artifactId>
-                <version>${version.swagger}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-jersey2-jaxrs</artifactId>
-                <version>${version.swagger}</version>
-            </dependency>
-            <!-- web -->
-            <dependency>
-                <groupId>jakarta.servlet</groupId>
-                <artifactId>jakarta.servlet-api</artifactId>
-                <version>${version.jakarta.servlet-api}</version>
-                <scope>provided</scope>
-            </dependency>
-            <!-- JSON -->
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-                <version>${version.jackson}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${version.jackson}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${version.jackson}</version>
-            </dependency>
-        	<dependency>
-	            <groupId>com.fasterxml.jackson.datatype</groupId>
-	            <artifactId>jackson-datatype-guava</artifactId>
-	           	<version>${version.jackson}</version>
-        	</dependency>
-            <dependency>
-                <artifactId>jsr311-api</artifactId>
-                <groupId>javax.ws.rs</groupId>
-                <version>${version.jsr311}</version>
-            </dependency>
-            <dependency>
-                <groupId>jakarta.servlet.jsp.jstl</groupId>
-                <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
-                <version>${version.jstl}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.taglibs</groupId>
-                <artifactId>taglibs-standard-impl</artifactId>
-                <version>${version.taglib}</version>
-            </dependency>
-            <!-- JERSEY 1X -->
-            <dependency>
-                <groupId>com.sun.jersey</groupId>
-                <artifactId>jersey-client</artifactId>
-                <version>${version.jersey1x}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.jersey</groupId>
-                <artifactId>jersey-core</artifactId>
-                <version>${version.jersey1x}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.jersey</groupId>
-                <artifactId>jersey-servlet</artifactId>
-                <version>${version.jersey1x}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.jersey.contribs</groupId>
-                <artifactId>jersey-multipart</artifactId>
-                <version>${version.jersey1x}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.jersey</groupId>
-                <artifactId>jersey-server</artifactId>
-                <version>${version.jersey1x}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.jersey</groupId>
-                <artifactId>jersey-json</artifactId>
-                <version>${version.jersey1x}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.jersey.contribs</groupId>
-                <artifactId>jersey-spring</artifactId>
-                <version>${version.jersey1x}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.jersey.jersey-test-framework</groupId>
-                <artifactId>jersey-test-framework-inmemory</artifactId>
-                <version>${version.jersey1x}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.jersey.jersey-test-framework</groupId>
-                <artifactId>jersey-test-framework-grizzly2</artifactId>
-                <version>${version.jersey1x}</version>
-            </dependency>
-            <!-- JERSEY 2X -->
-            <dependency>
-                <groupId>org.glassfish.jersey.core</groupId>
-                <artifactId>jersey-client</artifactId>
-                <version>${version.jersey2x}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.core</groupId>
-                <artifactId>jersey-common</artifactId>
-                <version>${version.jersey2x}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.inject</groupId>
-                <artifactId>jersey-hk2</artifactId>
-                <version>${version.jersey2x}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.core</groupId>
-                <artifactId>jersey-server</artifactId>
-                <version>${version.jersey2x}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.media</groupId>
-                <artifactId>jersey-media-json-jackson</artifactId>
-                <version>${version.jersey2x}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.containers</groupId>
-                <artifactId>jersey-container-servlet</artifactId>
-                <version>${version.jersey2x}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.connectors</groupId>
-                <artifactId>jersey-grizzly-connector</artifactId>
-                <version>${version.jersey2x}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.test-framework</groupId>
-                <artifactId>jersey-test-framework-core</artifactId>
-                <version>${version.jersey2x}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.test-framework.providers</groupId>
-                <artifactId>jersey-test-framework-provider-grizzly2</artifactId>
-                <version>${version.jersey2x}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents.client5</groupId>
-                <artifactId>httpclient5</artifactId>
-                <version>${version.httpclient5}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.ignite</groupId>
-                <artifactId>ignite-core</artifactId>
-                <version>${version.ignite-core}</version>
-            </dependency>
-            <!-- Test -->
-            <dependency>
-                <groupId>org.assertj</groupId>
-                <artifactId>assertj-core</artifactId>
-                <version>${version.assertj}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.danilopianini</groupId>
-                <artifactId>gson-extras</artifactId>
-                <version>${version.gson-extras}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${version.junit}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.hsqldb</groupId>
-                <artifactId>hsqldb</artifactId>
-                <version>${version.hdldb}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-dbcp2</artifactId>
-                <version>${version.commons-dbcp2}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-core</artifactId>
-                <version>${version.mockito}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.powermock</groupId>
-                <artifactId>powermock-module-junit4</artifactId>
-                <version>${version.powermock}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.powermock</groupId>
-                <artifactId>powermock-api-mockito</artifactId>
-                <version>${version.powermock}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>testcontainers</artifactId>
-                <version>${version.testcontainers}</version>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+      <!-- Coveralls.io -->
+      <plugin>
+        <groupId>org.eluder.coveralls</groupId>
+        <artifactId>coveralls-maven-plugin</artifactId>
+        <version>4.1.0</version>
+      </plugin>
 
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!-- ~ BUILD ~ -->
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <build>
+      <!-- Junit -->
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${version.maven.plugin.surefire}</version>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+        <executions>
+          <execution>
+            <id>unit-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <skip>${maven.test.skip}</skip>
+              <argLine>${argLine}</argLine>
+              <excludes>
+                <exclude>**/*IT.java</exclude>
+              </excludes>
+            </configuration>
+          </execution>
 
+          <execution>
+            <id>integration-test</id>
+            <phase>integration-test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <skip>${skipITs}</skip>
+              <argLine>${argLine}</argLine>
+              <includes>
+                <include>**/*IT.java</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${version.jacoco}</version>
+        <executions>
+          <execution>
+            <id>default-prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>default-prepare-agent-integration</id>
+            <goals>
+              <goal>prepare-agent-integration</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>default-report</id>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>default-report-integration</id>
+            <goals>
+              <goal>report-integration</goal>
+            </goals>
+          </execution>
+          <!--
+          <execution>
+              <id>default-check</id>
+              <goals>
+                  <goal>check</goal>
+              </goals>
+              <configuration>
+                  <rules>
+                      <rule implementation="org.jacoco.maven.RuleConfiguration">
+                          <element>BUNDLE</element>
+                          <limits>
+                              <limit implementation="org.jacoco.report.check.Limit">
+                                  <counter>COMPLEXITY</counter>
+                                  <value>COVEREDRATIO</value>
+                                  <minimum>0.60</minimum>
+                              </limit>
+                          </limits>
+                      </rule>
+                  </rules>
+              </configuration>
+          </execution>
+          -->
+        </executions>
+      </plugin>
+
+      <!-- Deploy nexus -->
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>${version.maven.plugin.nexus}</version>
+        <extensions>true</extensions>
+        <configuration>
+          <serverId>ossrh</serverId>
+          <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+          <autoReleaseAfterClose>true</autoReleaseAfterClose>
+        </configuration>
+      </plugin>
+
+    </plugins>
+
+    <pluginManagement>
+
+      <plugins>
+
+        <!-- Compiler version -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${version.maven.plugin.compiler}</version>
+          <configuration>
+            <source>${maven.compiler.source}</source>
+            <target>${maven.compiler.target}</target>
+            <showWarnings>false</showWarnings>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>${version.maven.plugin.dependency}</version>
+        </plugin>
+
+        <!-- Javadoc -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${version.maven.plugin.javadoc}</version>
+        </plugin>
+
+        <!-- release through SCM -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>${version.maven.plugin.release}</version>
+          <configuration>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+            <useReleaseProfile>false</useReleaseProfile>
+            <releaseProfiles>release</releaseProfiles>
+            <arguments>-Dgpg.passphrase=${gpg.passphrase}</arguments>
+            <goals>deploy</goals>
+          </configuration>
+        </plugin>
+
+        <!-- ~~~~~~~~~~~~ -->
+        <!-- Unit Testing -->
+        <!-- ~~~~~~~~~~~~ -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <skip>false</skip>
+            <testFailureIgnore>false</testFailureIgnore>
+            <!-- forkMode=always ≡ forkCount=1,reuseForks=false -->
+            <forkCount>1</forkCount>
+            <reuseForks>false</reuseForks>
+          </configuration>
+        </plugin>
+
+        <!-- Manifest checking -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${version.maven.plugin.jar}</version>
+          <configuration>
+            <excludes>
+              <exclude>**/logback.xml</exclude>
+            </excludes>
+            <archive>
+              <manifest>
+                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+              </manifest>
+            </archive>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>2.1</version>
+          <configuration>
+            <archive>
+              <manifest>
+                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+              </manifest>
+            </archive>
+          </configuration>
+        </plugin>
+
+        <!-- Force UTF-8 -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>${version.maven.plugin.resources}</version>
+          <configuration>
+            <escapeString>\</escapeString>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+
+        <!-- Remove Eclipse Warnings -->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <versionRange>[1.0.0,)</versionRange>
+                    <goals>
+                      <goal>enforce</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore/>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+                    <versionRange>[1.0.0,)</versionRange>
+                    <goals>
+                      <goal>update-file-header</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore/>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <versionRange>[0.7.0,)</versionRange>
+                    <goals>
+                      <goal>prepare-agent</goal>
+                      <goal>report</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore/>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+
+      </plugins>
+    </pluginManagement>
+
+  </build>
+
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~ Profiles (tooling) ~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <profiles>
+
+    <profile>
+      <id>doclint-java8-disable</id>
+      <activation>
+        <jdk>[1.8,)</jdk>
+      </activation>
+      <!-- Global Properties -->
+      <properties>
+        <additionalparam>-Xdoclint:none</additionalparam>
+      </properties>
+      <build>
         <plugins>
-
-            <!-- maven enforcer -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>${version.enforcer}</version>
-                <configuration>
-                    <rules>
-                        <dependencyConvergence />
-                        <requireReleaseDeps>
-                            <failWhenParentIsSnapshot>false</failWhenParentIsSnapshot>
-                            <excludes>
-                                <exclude>${project.groupId}:*</exclude>
-                            </excludes>
-                        </requireReleaseDeps>
-                    </rules>
-                    <fail>true</fail>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>enforce-versions</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <phase>validate</phase>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <version>${version.maven.plugin.license}</version>
-                <configuration>
-                    <verbose>false</verbose>
-                    <extraExtensions>
-                        <myProprietaryExtension>java</myProprietaryExtension>
-                    </extraExtensions>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>add-license</id>
-                        <goals>
-                            <goal>update-file-header</goal>
-                        </goals>
-                        <phase>process-sources</phase>
-                        <configuration>
-                            <licenseName>apache_v2</licenseName>
-                            <roots>
-                                <root>src/main/java</root>
-                                <root>src/test</root>
-                            </roots>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Coveralls.io -->
-            <plugin>
-                <groupId>org.eluder.coveralls</groupId>
-                <artifactId>coveralls-maven-plugin</artifactId>
-                <version>4.1.0</version>
-            </plugin>
-
-            <!-- Junit -->
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${version.maven.plugin.surefire}</version>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>unit-test</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <skip>${maven.test.skip}</skip>
-                            <argLine>${argLine}</argLine>
-                            <excludes>
-                                <exclude>**/*IT.java</exclude>
-                            </excludes>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>integration-test</id>
-                        <phase>integration-test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <skip>${skipITs}</skip>
-                            <argLine>${argLine}</argLine>
-                            <includes>
-                                <include>**/*IT.java</include>
-                            </includes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${version.jacoco}</version>
-                <executions>
-                    <execution>
-                        <id>default-prepare-agent</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>default-prepare-agent-integration</id>
-                        <goals>
-                            <goal>prepare-agent-integration</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>default-report</id>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>default-report-integration</id>
-                        <goals>
-                            <goal>report-integration</goal>
-                        </goals>
-                    </execution>
-                    <!--
-                    <execution>
-                        <id>default-check</id>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <rule implementation="org.jacoco.maven.RuleConfiguration">
-                                    <element>BUNDLE</element>
-                                    <limits>
-                                        <limit implementation="org.jacoco.report.check.Limit">
-                                            <counter>COMPLEXITY</counter>
-                                            <value>COVEREDRATIO</value>
-                                            <minimum>0.60</minimum>
-                                        </limit>
-                                    </limits>
-                                </rule>
-                            </rules>
-                        </configuration>
-                    </execution>
-                    -->
-                </executions>
-            </plugin>
-
-            <!-- Deploy nexus -->
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>${version.maven.plugin.nexus}</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                </configuration>
-            </plugin>
-
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <configuration>
+              <additionalparam>-Xdoclint:none</additionalparam>
+            </configuration>
+          </plugin>
         </plugins>
+      </build>
+    </profile>
 
-        <pluginManagement>
+    <!-- Dependencies Graph -->
+    <profile>
+      <id>graph</id>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>mvnplugins.fusesource.org</id>
+          <url>https://mvnplugins.fusesource.org/repo/release</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+        </pluginRepository>
+      </pluginRepositories>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.fusesource.mvnplugins</groupId>
+            <artifactId>maven-graph-plugin</artifactId>
+            <version>${version.maven.plugin.graph}</version>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
 
-            <plugins>
+    <profile>
+      <id>release</id>
+      <activation>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>${version.maven.plugin.source}</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>${version.maven.plugin.javadoc}</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>${version.maven.plugin.gpg}</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
 
-                <!-- Compiler version -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${version.maven.plugin.compiler}</version>
-                    <configuration>
-                        <source>${maven.compiler.source}</source>
-                        <target>${maven.compiler.target}</target>
-                        <showWarnings>false</showWarnings>
-                    </configuration>
-                </plugin>
+  </profiles>
 
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-dependency-plugin</artifactId>
-                    <version>${version.maven.plugin.dependency}</version>
-                </plugin>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~ Project Stuff ~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <developers>
+    <developer>
+      <id>clunven</id>
+      <name>Cedrick LUNVEN</name>
+      <email>cedrick.lunven@gmail.com</email>
+      <url>https://github.com/clun</url>
+      <organization>ff4j</organization>
+      <organizationUrl>ff4j.org</organizationUrl>
+      <roles>
+        <role>architect</role>
+        <role>developer</role>
+      </roles>
+      <timezone>-6</timezone>
+      <properties>
+        <picUrl>https://en.gravatar.com/userimage/51914944/4da178b06ad331be75ae495215d238c8.png
+        </picUrl>
+      </properties>
+    </developer>
+  </developers>
 
-                <!-- Javadoc -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>${version.maven.plugin.javadoc}</version>
-                </plugin>
+  <!-- Builds on jenkins continuous integration -->
+  <ciManagement>
+    <system>Jenkins@Cloudbees</system>
+    <url>https://travis-ci.org/clun/ff4j/builds</url>
+  </ciManagement>
 
-                <!-- release through SCM -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>${version.maven.plugin.release}</version>
-                    <configuration>
-                        <autoVersionSubmodules>true</autoVersionSubmodules>
-                        <useReleaseProfile>false</useReleaseProfile>
-                        <releaseProfiles>release</releaseProfiles>
-                        <arguments>-Dgpg.passphrase=${gpg.passphrase}</arguments>
-                        <goals>deploy</goals>
-                    </configuration>
-                </plugin>
+  <!-- Jira issue management -->
+  <issueManagement>
+    <system>IssueTracking@Github</system>
+    <url>
+      <![CDATA[https://github.com/clun/ff4j/issues?sort=created&direction=desc&state=open]]></url>
+  </issueManagement>
 
-                <!-- ~~~~~~~~~~~~ -->
-                <!-- Unit Testing -->
-                <!-- ~~~~~~~~~~~~ -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <configuration>
-                        <skip>false</skip>
-                        <testFailureIgnore>false</testFailureIgnore>
-                        <!-- forkMode=always ≡ forkCount=1,reuseForks=false -->
-                        <forkCount>1</forkCount>
-                        <reuseForks>false</reuseForks>
-                    </configuration>
-                </plugin>
-
-                <!-- Manifest checking -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>${version.maven.plugin.jar}</version>
-                    <configuration>
-                        <excludes>
-                            <exclude>**/logback.xml</exclude>
-                        </excludes>
-                        <archive>
-                            <manifest>
-                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                            </manifest>
-                        </archive>
-                    </configuration>
-                </plugin>
-                <plugin>
-                	<groupId>org.apache.maven.plugins</groupId>
-				    <artifactId>maven-war-plugin</artifactId>
-				    <version>2.1</version>
-				    <configuration>
-				        <archive>
-				            <manifest>
-				                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-				                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-				            </manifest>
-				        </archive>
-				    </configuration>
-				</plugin>
-
-                <!-- Force UTF-8 -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <version>${version.maven.plugin.resources}</version>
-                    <configuration>
-                        <escapeString>\</escapeString>
-                        <encoding>UTF-8</encoding>
-                    </configuration>
-                </plugin>
-
-                <!-- Remove Eclipse Warnings -->
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.apache.maven.plugins</groupId>
-                                        <artifactId>maven-enforcer-plugin</artifactId>
-                                        <versionRange>[1.0.0,)</versionRange>
-                                        <goals>
-                                            <goal>enforce</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore />
-                                    </action>
-                                </pluginExecution>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.codehaus.mojo</groupId>
-                                        <artifactId>license-maven-plugin</artifactId>
-                                        <versionRange>[1.0.0,)</versionRange>
-                                        <goals>
-                                            <goal>update-file-header</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore />
-                                    </action>
-                                </pluginExecution>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.jacoco</groupId>
-                                        <artifactId>jacoco-maven-plugin</artifactId>
-                                        <versionRange>[0.7.0,)</versionRange>
-                                        <goals>
-                                            <goal>prepare-agent</goal>
-                                            <goal>report</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore />
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
-
-            </plugins>
-        </pluginManagement>
-
-    </build>
-
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!-- ~ Profiles (tooling) ~ -->
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <profiles>
-
-        <profile>
-            <id>doclint-java8-disable</id>
-            <activation>
-                <jdk>[1.8,)</jdk>
-            </activation>
-            <!-- Global Properties -->
-            <properties>
-                <additionalparam>-Xdoclint:none</additionalparam>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <configuration>
-                            <additionalparam>-Xdoclint:none</additionalparam>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!-- Dependencies Graph -->
-        <profile>
-            <id>graph</id>
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>mvnplugins.fusesource.org</id>
-                    <url>https://mvnplugins.fusesource.org/repo/release</url>
-                    <releases>
-                        <enabled>true</enabled>
-                    </releases>
-                </pluginRepository>
-            </pluginRepositories>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.fusesource.mvnplugins</groupId>
-                        <artifactId>maven-graph-plugin</artifactId>
-                        <version>${version.maven.plugin.graph}</version>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <id>release</id>
-            <activation>
-                <property>
-                    <name>performRelease</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>${version.maven.plugin.source}</version>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>${version.maven.plugin.javadoc}</version>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>${version.maven.plugin.gpg}</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-    </profiles>
-
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!-- ~ Project Stuff ~ -->
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <developers>
-        <developer>
-            <id>clunven</id>
-            <name>Cedrick LUNVEN</name>
-            <email>cedrick.lunven@gmail.com</email>
-            <url>https://github.com/clun</url>
-            <organization>ff4j</organization>
-            <organizationUrl>ff4j.org</organizationUrl>
-            <roles>
-                <role>architect</role>
-                <role>developer</role>
-            </roles>
-            <timezone>-6</timezone>
-            <properties>
-                <picUrl>https://en.gravatar.com/userimage/51914944/4da178b06ad331be75ae495215d238c8.png</picUrl>
-            </properties>
-        </developer>
-    </developers>
-
-    <!-- Builds on jenkins continuous integration -->
-    <ciManagement>
-        <system>Jenkins@Cloudbees</system>
-        <url>https://travis-ci.org/clun/ff4j/builds</url>
-    </ciManagement>
-
-    <!-- Jira issue management -->
-    <issueManagement>
-        <system>IssueTracking@Github</system>
-        <url><![CDATA[https://github.com/clun/ff4j/issues?sort=created&direction=desc&state=open]]></url>
-    </issueManagement>
-
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!-- ~ Site deployment ~ -->
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-        <site>
-            <id>website</id>
-            <url>file://C:/clunven/dev/mvnsite</url>
-        </site>
-    </distributionManagement>
-
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~ Site deployment ~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+    <site>
+      <id>website</id>
+      <url>file://C:/clunven/dev/mvnsite</url>
+    </site>
+  </distributionManagement>
 </project>
