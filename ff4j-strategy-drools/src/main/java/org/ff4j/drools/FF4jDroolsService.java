@@ -26,8 +26,8 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.drools.core.ClockType;
+import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.kie.api.KieServices;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.ResourceType;
@@ -36,7 +36,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,7 +142,8 @@ public final class FF4jDroolsService implements Serializable {
         _instance.ruleFiles     = ruleFiles; 
         
         KieHelper helper = new KieHelper();
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeBase()
+            .getSessionConfiguration();
         sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
         //ruleFiles.stream().forEach(drlFile -> helper.addContent(loadResourceAsString(drlFile), ResourceType.determineResourceType(drlFile)));
         for (String drlFile : ruleFiles) {

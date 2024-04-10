@@ -23,7 +23,6 @@ package org.ff4j.cache;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
 import org.ff4j.redis.RedisConnection;
@@ -31,10 +30,9 @@ import org.ff4j.redis.RedisKeysBuilder;
 import org.ff4j.utils.Util;
 import org.ff4j.utils.json.FeatureJsonParser;
 import org.ff4j.utils.json.PropertyJsonParser;
-
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.ScanParams;
-import redis.clients.jedis.ScanResult;
+import redis.clients.jedis.params.ScanParams;
+import redis.clients.jedis.resps.ScanResult;
 
 /**
  * Implementation of ditributed cache to limit overhead, with REDIS (JEDIS).

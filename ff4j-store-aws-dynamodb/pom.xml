@@ -20,7 +20,7 @@
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <properties>
     <license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-    <aws.sdk.version>2.15.64</aws.sdk.version>
+    <aws.sdk.version>2.25.27</aws.sdk.version>
   </properties>
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <!-- ~      DEPENDENCIES        ~ -->

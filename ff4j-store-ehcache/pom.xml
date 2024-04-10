@@ -19,10 +19,10 @@
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <properties>
     <license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-    <version.ehcache>2.10.9.2</version.ehcache>
-    <version.terracotta-toolkit-runtime>4.3.1</version.terracotta-toolkit-runtime>
-    <version.terracotta-toolkit-api>2.7</version.terracotta-toolkit-api>
-    <version.terracotta-toolkit-api-internal>1.17</version.terracotta-toolkit-api-internal>
+    <version.ehcache>2.11.0.11.8</version.ehcache>
+    <version.terracotta-toolkit-runtime>4.4.0.11.8</version.terracotta-toolkit-runtime>
+    <version.terracotta-toolkit-api>2.10</version.terracotta-toolkit-api>
+    <version.terracotta-toolkit-api-internal>2.2.0</version.terracotta-toolkit-api-internal>
   </properties>
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <!-- ~      DEPENDENCIES        ~ -->

@@ -22,7 +22,7 @@
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <properties>
     <license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-    <hbase.version>1.7.2</hbase.version>
+    <hbase.version>2.5.8</hbase.version>
     <enforcer.skip>true</enforcer.skip>
   </properties>
 
