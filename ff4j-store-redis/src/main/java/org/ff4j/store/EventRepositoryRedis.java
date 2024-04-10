@@ -20,12 +20,17 @@ package org.ff4j.store;
  * #L%
  */
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-
 import org.ff4j.audit.Event;
 import org.ff4j.audit.EventQueryDefinition;
 import org.ff4j.audit.EventSeries;
@@ -35,14 +40,6 @@ import org.ff4j.audit.repository.AbstractEventRepository;
 import org.ff4j.redis.RedisConnection;
 import org.ff4j.redis.RedisKeysBuilder;
 import org.ff4j.utils.Util;
-
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import redis.clients.jedis.Jedis;
 
 /**
@@ -144,7 +141,7 @@ public class EventRepositoryRedis extends AbstractEventRepository {
             String hashKey = keyBuilder.getHashKey(timestamp);
             
             // Check for the event within 100ms time range passed, hoping there won't be more than 10 for this.
-            Set<String> events = jedis.zrangeByScore(hashKey, timestamp - 100L, timestamp + 100L, 0, 10);
+            var events = jedis.zrangeByScore(hashKey, timestamp - 100L, timestamp + 100L, 0, 10);
 
             // Loop through the result set and match the timestamp passed in.
             for (String evt : events) {
@@ -242,7 +239,7 @@ public class EventRepositoryRedis extends AbstractEventRepository {
         try {
             jedis = getJedis();
             String hashKey = keyBuilder.getHashKey(query.getFrom());
-            Set<String> events = jedis.zrangeByScore(hashKey, query.getFrom(), query.getTo(), 0, 100);
+            var events = jedis.zrangeByScore(hashKey, query.getFrom(), query.getTo(), 0, 100);
             
             // FIXME: Server side pagination model isn't present? This could be a lot of data.
             for (String event : events) {
@@ -296,7 +293,8 @@ public class EventRepositoryRedis extends AbstractEventRepository {
         try {
             jedis = getJedis();
             String hashKey = keyBuilder.getHashKey(query.getFrom());
-            events = jedis.zrangeByScore(hashKey, query.getFrom(), query.getTo(), 0, UPPER_LIMIT);
+            events = new HashSet<>(
+                jedis.zrangeByScore(hashKey, query.getFrom(), query.getTo(), 0, UPPER_LIMIT));
         } finally {
             if (jedis != null) {
                 jedis.close();

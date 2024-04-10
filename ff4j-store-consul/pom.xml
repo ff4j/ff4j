@@ -19,9 +19,9 @@
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <properties>
     <license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-    <consul-client.version>0.17.1</consul-client.version>
-    <consul-embedded.version>0.3.1</consul-embedded.version>
-    <retrofit.version>2.5.0</retrofit.version>
+    <consul-client.version>1.5.3</consul-client.version>
+    <consul-embedded.version>2.2.1</consul-embedded.version>
+    <retrofit.version>2.11.0</retrofit.version>
   </properties>
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <!-- ~       DEPENDENCIES       ~ -->
@@ -48,12 +48,30 @@
           <artifactId>retrofit</artifactId>
           <groupId>com.squareup.retrofit2</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>kotlin-stdlib-common</artifactId>
+          <groupId>org.jetbrains.kotlin</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>kotlin-stdlib</artifactId>
+          <groupId>org.jetbrains.kotlin</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jsr305</artifactId>
+          <groupId>com.google.code.findbugs</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
       <groupId>com.squareup.retrofit2</groupId>
       <artifactId>retrofit</artifactId>
       <version>${retrofit.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>okhttp</artifactId>
+          <groupId>com.squareup.okhttp3</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -107,6 +125,20 @@
       <artifactId>embedded-consul</artifactId>
       <version>${consul-embedded.version}</version>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-lang</artifactId>
+          <groupId>commons-lang</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>ant-launcher</artifactId>
+          <groupId>org.apache.ant</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>ant</artifactId>
+          <groupId>org.apache.ant</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 </project>

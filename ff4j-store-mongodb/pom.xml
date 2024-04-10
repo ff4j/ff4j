@@ -20,7 +20,7 @@
   <properties>
     <license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
     <testcontainers.version>1.14.3</testcontainers.version>
-    <version.mongodb-driver-sync>4.8.1</version.mongodb-driver-sync>
+    <version.mongodb-driver-sync>5.0.1</version.mongodb-driver-sync>
   </properties>
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <!-- ~      DEPENDENCIES        ~ -->

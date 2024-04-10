@@ -19,7 +19,7 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<properties>
 		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-		<drools.version>6.5.0.Final</drools.version>
+		<drools.version>9.44.0.Final</drools.version>
 	</properties>
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- ~ DEPENDENCIES ~ -->

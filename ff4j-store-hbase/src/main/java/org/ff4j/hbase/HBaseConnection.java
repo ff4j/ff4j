@@ -113,7 +113,7 @@ public class HBaseConnection {
             throw new IllegalStateException("Connection has not been initialized");
         }
         try {
-            HBaseAdmin.checkHBaseAvailable(config);
+            HBaseAdmin.available(config);
         } catch (Exception e) {
            throw new IllegalArgumentException("Cannot connect to server HBASE, please check /etc/hosts or settings.");
         } 
