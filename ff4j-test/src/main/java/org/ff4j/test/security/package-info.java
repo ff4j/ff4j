@@ -1,10 +1,10 @@
 package org.ff4j.test.security;
 
-/*
+/*-
  * #%L
  * ff4j-test
  * %%
- * Copyright (C) 2013 - 2016 FF4J
+ * Copyright (C) 2013 - 2024 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

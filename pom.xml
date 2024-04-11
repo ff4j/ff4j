@@ -543,6 +543,7 @@
         <version>${version.maven.plugin.license}</version>
         <configuration>
           <verbose>false</verbose>
+          <failOnNotUptodateHeader>true</failOnNotUptodateHeader>
           <extraExtensions>
             <myProprietaryExtension>java</myProprietaryExtension>
           </extraExtensions>

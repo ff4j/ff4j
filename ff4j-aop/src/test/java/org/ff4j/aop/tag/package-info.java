@@ -1,7 +1,4 @@
 /**
- * 
- */
-/**
  * Class to TODO
  *
  * @author Cedrick Lunven (@clunven)</a>
