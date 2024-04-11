@@ -24,6 +24,7 @@
     <version.lightcouch>0.2.0</version.lightcouch>
     <version.commons-codec>1.16.1</version.commons-codec>
     <version.org.ektorp>1.5.0</version.org.ektorp>
+    <version.httpclient>4.5.13</version.httpclient>
   </properties>
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <!-- ~ DEPENDENCIES ~ -->
@@ -44,6 +45,21 @@
       <groupId>org.lightcouch</groupId>
       <artifactId>lightcouch</artifactId>
       <version>${version.lightcouch}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-codec</groupId>
+          <artifactId>commons-codec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpclient</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>${version.httpclient}</version>
       <exclusions>
         <exclusion>
           <groupId>commons-codec</groupId>
