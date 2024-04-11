@@ -22,7 +22,6 @@
     <version.hamcrest-all>1.3</version.hamcrest-all>
     <concurrentlinkedhashmap-lru.version>1.4.2</concurrentlinkedhashmap-lru.version>
     <scala-library.version>2.11.7</scala-library.version>
-    <enforcer.skip>true</enforcer.skip>
     <argLine>
       --add-opens=java.base/jdk.internal.misc=ALL-UNNAMED
       --add-opens=java.base/sun.nio.ch=ALL-UNNAMED
