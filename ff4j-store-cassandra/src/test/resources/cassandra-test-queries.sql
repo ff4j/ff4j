@@ -1,4 +1,3 @@
----
 -- #%L
 -- ff4j-store-cassandra
 -- %%

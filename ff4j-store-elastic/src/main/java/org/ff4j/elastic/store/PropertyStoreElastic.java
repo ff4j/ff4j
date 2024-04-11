@@ -4,7 +4,7 @@ package org.ff4j.elastic.store;
  * #%L
  * ff4j-store-elastic
  * %%
- * Copyright (C) 2013 - 2023 FF4J
+ * Copyright (C) 2013 - 2024 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
