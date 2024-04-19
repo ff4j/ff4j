@@ -39,7 +39,7 @@ public class ServerFilterStrategy extends AbstractFlipStrategy {
     /** Serial. */
     private static final long serialVersionUID = -906325193127116574L;
 
-    /** Threshold. */
+    /** initial parameter. */
     private static final String PARAM_SERVERLIST = "grantedServers";
 
     /** Parameter to be checked in context. */
@@ -62,8 +62,8 @@ public class ServerFilterStrategy extends AbstractFlipStrategy {
     /**
      * Parameterized constructor.
      * 
-     * @param threshold
-     *            threshold
+     * @param targetServers
+     *            targetServers
      */
     public ServerFilterStrategy(String targetServers) {
         this.rawServerList = targetServers;
