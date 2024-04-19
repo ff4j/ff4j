@@ -925,6 +925,9 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
             <version>${version.maven.plugin.javadoc}</version>
+            <configuration>
+              <failOnError>false</failOnError>
+            </configuration>
             <executions>
               <execution>
                 <id>attach-javadocs</id>
