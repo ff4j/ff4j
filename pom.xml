@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <!-- ~ COORDONATES ~ -->
@@ -122,7 +122,7 @@
     <version.maven.plugin.compiler>3.13.0</version.maven.plugin.compiler>
     <version.maven.plugin.dependency>3.6.1</version.maven.plugin.dependency>
     <version.maven.plugin.failsafe>2.18.1</version.maven.plugin.failsafe>
-    <version.maven.plugin.gpg>1.5</version.maven.plugin.gpg>
+    <version.maven.plugin.gpg>3.2.2</version.maven.plugin.gpg>
     <version.maven.plugin.graph>1.4</version.maven.plugin.graph>
     <version.maven.plugin.jar>3.3.0</version.maven.plugin.jar>
     <version.maven.plugin.javadoc>3.6.3</version.maven.plugin.javadoc>
@@ -680,6 +680,28 @@
         </configuration>
       </plugin>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>${version.maven.plugin.gpg}</version>
+      </plugin>
+
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>${version.maven.plugin.release}</version>
+        <configuration>
+          <tagNameFormat>@{project.version}</tagNameFormat>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+          <useReleaseProfile>false</useReleaseProfile>
+          <releaseProfiles>release</releaseProfiles>
+          <goals>deploy</goals>
+        </configuration>
+      </plugin>
+
+
+
     </plugins>
 
     <pluginManagement>
@@ -709,20 +731,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>${version.maven.plugin.javadoc}</version>
-        </plugin>
-
-        <!-- release through SCM -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-release-plugin</artifactId>
-          <version>${version.maven.plugin.release}</version>
-          <configuration>
-            <autoVersionSubmodules>true</autoVersionSubmodules>
-            <useReleaseProfile>false</useReleaseProfile>
-            <releaseProfiles>release</releaseProfiles>
-            <arguments>-Dgpg.passphrase=${gpg.passphrase}</arguments>
-            <goals>deploy</goals>
-          </configuration>
         </plugin>
 
         <!-- ~~~~~~~~~~~~ -->
