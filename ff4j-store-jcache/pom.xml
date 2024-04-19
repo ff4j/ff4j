@@ -23,7 +23,7 @@
     <ignite.version>1.4.0</ignite.version>
     <ehcache.version>3.8.1</ehcache.version>
     <jsr107.version>1.1.1</jsr107.version>
-    <hazelcast.version>5.3.0</hazelcast.version>
+    <hazelcast.version>5.3.5</hazelcast.version>
     <version.cache-api>1.1.1</version.cache-api>
   </properties>
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
