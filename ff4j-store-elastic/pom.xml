@@ -13,7 +13,7 @@
   </parent>
   <properties>
     <license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-    <elasticsearch.version>8.14.0</elasticsearch.version>
+    <elasticsearch.version>8.15.1</elasticsearch.version>
     <jest.version>6.3.1</jest.version>
     <httpclient.version>4.5.2</httpclient.version>
     <gson.version>2.8.6</gson.version>
