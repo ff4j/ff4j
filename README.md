@@ -44,15 +44,15 @@ Administrate FF4j (including features and properties) with the web UI. Packaged 
 
 - **JMX and MBeans** Limited set of operations can be performed through JMX. ff4j exposes some Mbeans to read metrics or toggle features from external tools (Nagios...). Not all applications are web based.(batches, shell, standalone...)
 
-More information can be found at [ff4j.org](http://ff4j.org) or 
+More information can be found at [https://ff4j.github.io/](https://ff4j.github.io/) or 
 [Reference Documentation](https://github.com/ff4j/ff4j/wiki) in the wiki.
 
 
-<img src="http://ff4j.org/images/feature_08_technos.png" /> 
+<img src="http://ff4j.github.io/images/feature_08_technos.png" /> 
 
 ## 🔨 Getting Started
 
-[Check the Getting started here](http://ff4j.org/#10min)
+[Check the Getting started here](http://ff4j.github.io/#10min)
 
 ## 👀 Screenshot
 
