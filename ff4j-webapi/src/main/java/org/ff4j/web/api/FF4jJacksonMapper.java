@@ -21,8 +21,8 @@ package org.ff4j.web.api;
  */
 
 
-import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.Provider;
+import jakarta.ws.rs.ext.ContextResolver;
+import jakarta.ws.rs.ext.Provider;
 
 import org.ff4j.utils.json.FF4jCustomObjectMapper;
 

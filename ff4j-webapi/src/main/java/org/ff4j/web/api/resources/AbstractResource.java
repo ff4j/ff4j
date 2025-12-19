@@ -20,10 +20,10 @@ package org.ff4j.web.api.resources;
  * #L%
  */
 
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.Request;
+import jakarta.ws.rs.core.SecurityContext;
+import jakarta.ws.rs.core.UriInfo;
 
 import org.ff4j.FF4j;
 import org.ff4j.audit.repository.EventRepository;

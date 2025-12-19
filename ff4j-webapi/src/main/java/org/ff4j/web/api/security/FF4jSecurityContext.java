@@ -25,7 +25,7 @@ import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.ws.rs.core.SecurityContext;
+import jakarta.ws.rs.core.SecurityContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

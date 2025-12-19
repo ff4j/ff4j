@@ -33,10 +33,14 @@
 		</dependency>
 		<!-- REST -->
 		<dependency>
-			<artifactId>jsr311-api</artifactId>
-			<groupId>javax.ws.rs</groupId>
+			<groupId>jakarta.ws.rs</groupId>
+			<artifactId>jakarta.ws.rs-api</artifactId>
 			<!-- Won't be included in Jersey2x -->
-			 <optional>true</optional>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.annotation</groupId>
+			<artifactId>jakarta.annotation-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.swagger</groupId>
@@ -49,11 +53,6 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.annotation</groupId>
-			<artifactId>jsr250-api</artifactId>
-			<version>${version.jsr250-api}</version>
 		</dependency>
 		<!-- json -->
 		<dependency>

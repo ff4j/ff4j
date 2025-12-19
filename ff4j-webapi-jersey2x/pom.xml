@@ -22,10 +22,8 @@
   <properties>
     <license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
     <version.jackson>2.14.1</version.jackson>
-    <version.javax.ws.rs-api>2.1.1</version.javax.ws.rs-api>
     <version.jsr250-api>1.0</version.jsr250-api>
     <version.grizzly-http-servlet>2.4.4</version.grizzly-http-servlet>
-    <version.javax.servlet-api>3.1.0</version.javax.servlet-api>
     <enforcer.skip>true</enforcer.skip>
   </properties>
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -37,18 +35,11 @@
       <groupId>org.ff4j</groupId>
       <artifactId>ff4j-webapi</artifactId>
       <version>${project.version}</version>
-      <exclusions>
-        <exclusion>
-          <artifactId>jsr311-api</artifactId>
-          <groupId>javax.ws.rs</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <!-- JSR-339 -->
     <dependency>
-      <groupId>javax.ws.rs</groupId>
-      <artifactId>javax.ws.rs-api</artifactId>
-      <version>${version.javax.ws.rs-api}</version>
+      <groupId>jakarta.ws.rs</groupId>
+      <artifactId>jakarta.ws.rs-api</artifactId>
     </dependency>
     <!-- json -->
     <dependency>
@@ -144,9 +135,8 @@
       <version>${version.grizzly-http-servlet}</version>
     </dependency>
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <version>${version.javax.servlet-api}</version>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <!-- Swagger -->

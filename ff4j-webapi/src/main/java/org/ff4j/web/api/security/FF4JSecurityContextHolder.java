@@ -21,7 +21,7 @@ package org.ff4j.web.api.security;
  */
 
 
-import javax.ws.rs.core.SecurityContext;
+import jakarta.ws.rs.core.SecurityContext;
 
 /**
  * Security Context holder.
