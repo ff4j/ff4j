@@ -20,15 +20,37 @@ package org.ff4j.test.store;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+/*-
+ * #%L
+ * ff4j-core
+ * %%
+ * Copyright (C) 2013 - 2024 FF4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import java.util.HashMap;
 
 
 import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.store.JdbcFeatureStore;
 import org.ff4j.utils.MappingUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -47,7 +69,7 @@ public class JdbcFeatureStoreTestInvalidData {
     private JdbcFeatureStore jdbcStore;
    
     /** {@inheritDoc} */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
         db = builder.
@@ -59,18 +81,20 @@ public class JdbcFeatureStoreTestInvalidData {
         jdbcStore.setDataSource(db);
     }
 
-    @Test(expected = FeatureAccessException.class)
+    @Test
     public void testReadInvalid() {
-        jdbcStore.read("forth");
+        assertThrows(FeatureAccessException.class, () ->
+            jdbcStore.read("forth"));
     }
     
-    @Test(expected = FeatureAccessException.class)
+    @Test
     public void testInvalidStrategy() {
-        MappingUtil.instanceFlippingStrategy("ID", "com.KO", new HashMap<String, String>());
+        assertThrows(FeatureAccessException.class, () ->
+            MappingUtil.instanceFlippingStrategy("ID", "com.KO", new HashMap<String, String>()));
     }
     
     /** {@inheritDoc} */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         db.shutdown();
     }

@@ -20,14 +20,36 @@ package org.ff4j.test.store;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+/*-
+ * #%L
+ * ff4j-core
+ * %%
+ * Copyright (C) 2013 - 2024 FF4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import java.util.LinkedHashMap;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.PonderationStrategy;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * All TEST LOGIC is in super class to be processed on EACH STORE.
@@ -48,7 +70,7 @@ public class InMemoryFeatureStoreTest extends CoreFeatureStoreTestSupport {
     public void testUnitFeatureInitialization() {
         InMemoryFeatureStore imfs = new InMemoryFeatureStore();
         imfs.create(new Feature("default", true, "grp1", "desc", null, new PonderationStrategy()));
-        Assert.assertEquals(1, imfs.readAll().size());
+        Assertions.assertEquals(1, imfs.readAll().size());
     }
 
     @Test
@@ -57,23 +79,29 @@ public class InMemoryFeatureStoreTest extends CoreFeatureStoreTestSupport {
         map1.put("new", new Feature("new", true, "description"));
         map1.put("old", new Feature("old", true, "description"));
         InMemoryFeatureStore imfs = new InMemoryFeatureStore(map1);
-        Assert.assertEquals(2, imfs.readAll().size());
-        Assert.assertNotNull(imfs.read("old"));
+        Assertions.assertEquals(2, imfs.readAll().size());
+        Assertions.assertNotNull(imfs.read("old"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testUnitFeatureInitialization3() {
-        new InMemoryFeatureStore("invalid.xml");
+        assertThrows(IllegalArgumentException.class, () -> {
+            new InMemoryFeatureStore("invalid.xml");
+        });
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testUnitFeatureInitialization5() {
-        new InMemoryFeatureStore((String) null);
+        assertThrows(IllegalArgumentException.class, () -> {
+            new InMemoryFeatureStore((String) null);
+        });
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testUnitFeatureInitialization6() {
-        new InMemoryFeatureStore("");
+        assertThrows(IllegalArgumentException.class, () -> {
+            new InMemoryFeatureStore("");
+        });
     }
     
     @Test
@@ -84,23 +112,29 @@ public class InMemoryFeatureStoreTest extends CoreFeatureStoreTestSupport {
         f.getFileName();
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testDonotImportEmpty() {
-        InMemoryFeatureStore f = new InMemoryFeatureStore();
-        f.importFeaturesFromXmlFile("");
+        assertThrows(IllegalArgumentException.class, () -> {
+            InMemoryFeatureStore f = new InMemoryFeatureStore();
+            f.importFeaturesFromXmlFile("");
+        });
     }
     
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testDonotImportNull() {
-        InMemoryFeatureStore f = new InMemoryFeatureStore();
-        f.importFeaturesFromXmlFile(null);
+        assertThrows(IllegalArgumentException.class, () -> {
+            InMemoryFeatureStore f = new InMemoryFeatureStore();
+            f.importFeaturesFromXmlFile(null);
+        });
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testDonotImportInvalid() {
-        InMemoryFeatureStore f = new InMemoryFeatureStore();
-        f.importFeaturesFromXmlFile("invalid.xml");
+        assertThrows(IllegalArgumentException.class, () -> {
+            InMemoryFeatureStore f = new InMemoryFeatureStore();
+            f.importFeaturesFromXmlFile("invalid.xml");
+        });
     }
     
     @Test
@@ -108,7 +142,7 @@ public class InMemoryFeatureStoreTest extends CoreFeatureStoreTestSupport {
         InMemoryFeatureStore f = new InMemoryFeatureStore();
         f.importFeaturesFromXmlFile("ff4j.xml");
         f.importFeaturesFromXmlFile("ff4j.xml");
-        Assert.assertFalse(f.readAll().isEmpty());
+        Assertions.assertFalse(f.readAll().isEmpty());
     }
     
 }

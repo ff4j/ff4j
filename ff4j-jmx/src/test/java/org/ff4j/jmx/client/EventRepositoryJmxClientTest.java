@@ -4,7 +4,7 @@ package org.ff4j.jmx.client;
  * #%L
  * ff4j-jmx
  * %%
- * Copyright (C) 2013 - 2024 FF4J
+ * Copyright (C) 2013 - 2025 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,14 +21,14 @@ package org.ff4j.jmx.client;
  */
 
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class EventRepositoryJmxClientTest {
    
     @Test
     public void testInit() {
-        Assert.assertNotNull(new EventRepositoryJmxClient());
+        Assertions.assertNotNull(new EventRepositoryJmxClient());
     }
 
 }

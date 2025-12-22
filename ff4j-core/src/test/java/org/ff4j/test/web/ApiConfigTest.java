@@ -29,8 +29,8 @@ import org.ff4j.utils.Util;
 
 import org.ff4j.web.ApiConfig;
 import org.ff4j.web.ApiConfigBuilder;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class ApiConfigTest {
     
@@ -69,7 +69,7 @@ public class ApiConfigTest {
         .withDocumentation().withoutAuthentication()
         .withoutAutorization().withoutDocumentation();
         ApiConfig conf = b.build();
-        Assert.assertNotNull(conf);
+        Assertions.assertNotNull(conf);
     
         new ApiConfigBuilder(new FF4j());
     }

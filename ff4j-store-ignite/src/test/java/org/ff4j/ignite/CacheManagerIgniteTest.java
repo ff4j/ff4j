@@ -27,8 +27,8 @@ import org.apache.ignite.Ignite;
 import org.apache.ignite.Ignition;
 import org.ff4j.cache.FF4JCacheManager;
 import org.ff4j.test.cache.AbstractCacheManagerJUnitTest;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 
 /**
  * Implementation of {@link CacheManager} for feautres and HazelCast
@@ -42,7 +42,7 @@ public class CacheManagerIgniteTest extends AbstractCacheManagerJUnitTest {
     /** ignite. */
     private static Ignite ignite;
     
-    @BeforeClass
+    @BeforeAll
     public static void startIgnite() {
         ignite = Ignition.start();
     }
@@ -55,7 +55,7 @@ public class CacheManagerIgniteTest extends AbstractCacheManagerJUnitTest {
         return cacheManager;
     }
     
-    @AfterClass
+    @AfterAll
     public static void stopIgnite() {
         if (ignite != null) {
             ignite.close();

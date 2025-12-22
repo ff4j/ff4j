@@ -24,10 +24,9 @@ package org.ff4j.store.it;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.store.PropertyStoreRedisLettuce;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Ignore;
-
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.cluster.RedisClusterClient;
 
@@ -37,7 +36,7 @@ import io.lettuce.core.cluster.RedisClusterClient;
  * We need a loca redis cluster to test it.
  * @author Cedrick Lunven (@clunven)</a>
  */
-@Ignore
+@Disabled
 public class PropertyStoreRedisTestLettuceClusterIT extends PropertyStoreTestSupport {
 
     private static RedisClusterClient rcc = RedisClusterClient.create(RedisURI.create("redis://localhost:30001"));
@@ -53,12 +52,12 @@ public class PropertyStoreRedisTestLettuceClusterIT extends PropertyStoreTestSup
     /**
      * Clean store after each test (avoid duplication)
      */
-    @After
+    @AfterEach
     public void cleanStore() {
         testedStore.clear();
     }
     
-    @AfterClass
+    @AfterAll
     public static void flushClient() {
         rcc.shutdown();
     }

@@ -4,7 +4,7 @@ package org.ff4j.utils.json;
  * #%L
  * ff4j-utils-json
  * %%
- * Copyright (C) 2013 - 2024 FF4J
+ * Copyright (C) 2013 - 2025 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,14 +21,14 @@ package org.ff4j.utils.json;
  */
 
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class CustomObjectMapperTest {
-    
+
     @Test
     public void init() {
-        Assert.assertNotNull(new FF4jCustomObjectMapper ()); 
+        Assertions.assertNotNull(new FF4jCustomObjectMapper());
     }
 
 }

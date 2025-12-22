@@ -20,6 +20,28 @@ package org.ff4j.test.strategy;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+/*-
+ * #%L
+ * ff4j-core
+ * %%
+ * Copyright (C) 2013 - 2024 FF4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,9 +54,9 @@ import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.time.HourInterval;
 import org.ff4j.strategy.time.OfficeHourStrategy;
 import org.ff4j.test.AbstractFf4jTest;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test different behavior or office hour
@@ -48,7 +70,7 @@ public class OfficeHourStrategyTest extends AbstractFf4jTest {
         return new FF4j(new XmlParser(),"test-strategy-officehour.xml");
     }
     
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
     }
@@ -67,11 +89,11 @@ public class OfficeHourStrategyTest extends AbstractFf4jTest {
     }
     
     private void assertTrue(int year, int month, int day, int hour) {
-        Assert.assertTrue(ff4j.check("first",  overrideDate(year,month,day, hour)));
+        Assertions.assertTrue(ff4j.check("first",  overrideDate(year,month,day, hour)));
     }
     
     private void assertFalse(int year, int month, int day, int hour) {
-        Assert.assertFalse(ff4j.check("first",  overrideDate(year,month,day, hour)));
+        Assertions.assertFalse(ff4j.check("first",  overrideDate(year,month,day, hour)));
     }
   
     @Test
@@ -149,14 +171,18 @@ public class OfficeHourStrategyTest extends AbstractFf4jTest {
          new HourInterval("18:00-12:00");
      }
      
-     @Test(expected = IllegalArgumentException.class)
+     @Test
      public void testIntervalError() {
-         new HourInterval("ksqjhdsqkjhdlh");
+         assertThrows(IllegalArgumentException.class, () -> {
+             new HourInterval("ksqjhdsqkjhdlh");
+         });
      }
      
-     @Test(expected = IllegalArgumentException.class)
+     @Test
      public void testIntervalError2() {
-         new HourInterval("10000", "1000");
+         assertThrows(IllegalArgumentException.class, () -> {
+             new HourInterval("10000", "1000");
+         });
      }
      
      @Test
@@ -189,28 +215,34 @@ public class OfficeHourStrategyTest extends AbstractFf4jTest {
          ohs.init("f1", initParams);
      }
      
-     @Test(expected = IllegalArgumentException.class)
+     @Test
      public void testOfficeHour3() {
-         OfficeHourStrategy ohs = new OfficeHourStrategy();
-         Map < String, String > initParams = new HashMap<String, String>();
-         initParams.put("publicHolidays", "20152-01-xx01,2015-05-01,2015-12-25");
-         ohs.init("f1", initParams);
+         assertThrows(IllegalArgumentException.class, () -> {
+             OfficeHourStrategy ohs = new OfficeHourStrategy();
+             Map<String, String> initParams = new HashMap<String, String>();
+             initParams.put("publicHolidays", "20152-01-xx01,2015-05-01,2015-12-25");
+             ohs.init("f1", initParams);
+         });
      }
      
-     @Test(expected = IllegalArgumentException.class)
+     @Test
      public void testOfficeHour4() {
-         OfficeHourStrategy ohs = new OfficeHourStrategy();
-         Map < String, String > initParams = new HashMap<String, String>();
-         initParams.put("specialOpenings", "[08:00-12:00]@2015@-01-01;[08:00-12:00]@2015-01-02"); 
-         ohs.init("f1", initParams);
+         assertThrows(IllegalArgumentException.class, () -> {
+             OfficeHourStrategy ohs = new OfficeHourStrategy();
+             Map<String, String> initParams = new HashMap<String, String>();
+             initParams.put("specialOpenings", "[08:00-12:00]@2015@-01-01;[08:00-12:00]@2015-01-02");
+             ohs.init("f1", initParams);
+         });
      }
      
-     @Test(expected = IllegalArgumentException.class)
+     @Test
      public void testOfficeHour5() {
-         OfficeHourStrategy ohs = new OfficeHourStrategy();
-         Map < String, String > initParams = new HashMap<String, String>();
-         initParams.put("specialOpenings", "[08:00-12:00]@2ss015-01-01;[08:00-12:00]@2015-01-02"); 
-         ohs.init("f1", initParams);
+         assertThrows(IllegalArgumentException.class, () -> {
+             OfficeHourStrategy ohs = new OfficeHourStrategy();
+             Map<String, String> initParams = new HashMap<String, String>();
+             initParams.put("specialOpenings", "[08:00-12:00]@2ss015-01-01;[08:00-12:00]@2015-01-02");
+             ohs.init("f1", initParams);
+         });
      }
      
      @Test

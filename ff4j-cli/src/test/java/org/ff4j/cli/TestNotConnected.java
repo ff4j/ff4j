@@ -4,7 +4,7 @@ package org.ff4j.cli;
  * #%L
  * ff4j-cli
  * %%
- * Copyright (C) 2013 - 2024 FF4J
+ * Copyright (C) 2013 - 2025 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,16 +20,16 @@ package org.ff4j.cli;
  * #L%
  */
 
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for command line interface.
  *
  * @author Cedrick LUNVEN (@clunven)
  */
-@Ignore
+@Disabled
 public class TestNotConnected extends AbstractCommandLineTest {
 	
 	@Test
@@ -70,25 +70,25 @@ public class TestNotConnected extends AbstractCommandLineTest {
 	@Test
 	public void testCmdConnectInvalidEnv() {
 		processor.evaluate("connect toto");
-		Assert.assertNull(processor.getCurrentEnv());
+		Assertions.assertNull(processor.getCurrentEnv());
 	}
 	
 	@Test
 	public void testCmdConnectInvalidCredential() {
 		processor.evaluate("connect dev -u invalid");
-		Assert.assertNull(processor.getCurrentEnv());
+		Assertions.assertNull(processor.getCurrentEnv());
 
 		processor.evaluate("connect dev -u invalid -p invalid");
-		Assert.assertNull(processor.getCurrentEnv());
+		Assertions.assertNull(processor.getCurrentEnv());
 		
 		processor.evaluate("connect dev -u admin -p invalid");
-		Assert.assertNull(processor.getCurrentEnv());
+		Assertions.assertNull(processor.getCurrentEnv());
 	}
 	
 	@Test
 	public void testCmdConnect() {
 		processor.evaluate("connect dev -u admin -p admin");
-		Assert.assertEquals("dev", processor.getCurrentEnv());
+		Assertions.assertEquals("dev", processor.getCurrentEnv());
 	}
 
 }

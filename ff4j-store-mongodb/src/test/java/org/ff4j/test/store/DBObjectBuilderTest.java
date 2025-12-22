@@ -26,17 +26,17 @@ import org.ff4j.audit.EventConstants;
 
 import org.ff4j.mongo.mapper.FeatureDocumentBuilder;
 import org.ff4j.mongo.mapper.MongoEventMapper;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class DBObjectBuilderTest {
     
     @Test
     public void tesDBBuilder() {
         FeatureDocumentBuilder db = new FeatureDocumentBuilder();
-        Assert.assertNotNull(db.getExpression("Value"));
-        Assert.assertNotNull(db.getStrategy("Value"));
-        Assert.assertNotNull(db.getDescription("Value"));
+        Assertions.assertNotNull(db.getExpression("Value"));
+        Assertions.assertNotNull(db.getStrategy("Value"));
+        Assertions.assertNotNull(db.getDescription("Value"));
     }
     
     @Test
@@ -45,7 +45,7 @@ public class DBObjectBuilderTest {
                 "toto", EventConstants.ACTION_CHECK_OFF);
         MongoEventMapper mem = new MongoEventMapper();
         Event evt2 = mem.fromStore(mem.toStore(evt));
-        Assert.assertEquals(evt.getUuid(), evt2.getUuid());
+        Assertions.assertEquals(evt.getUuid(), evt2.getUuid());
         
     }
 

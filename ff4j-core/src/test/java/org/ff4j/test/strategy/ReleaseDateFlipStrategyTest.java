@@ -20,6 +20,28 @@ package org.ff4j.test.strategy;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+/*-
+ * #%L
+ * ff4j-core
+ * %%
+ * Copyright (C) 2013 - 2024 FF4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,8 +52,8 @@ import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.strategy.time.ReleaseDateFlipStrategy;
 import org.ff4j.test.AbstractFf4jTest;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Testing class for {@link ReleaseDateFlipStrategy} class.
@@ -50,14 +72,14 @@ public class ReleaseDateFlipStrategyTest extends AbstractFf4jTest {
     public void testPastDayOK() throws ParseException {
         Feature f = ff4j.getFeature("past1");
         ReleaseDateFlipStrategy rds = (ReleaseDateFlipStrategy) f.getFlippingStrategy();
-        Assert.assertTrue(rds.evaluate("past1", null, null));
+        Assertions.assertTrue(rds.evaluate("past1", null, null));
     }
 
     @Test
     public void testFutureOK() throws ParseException {
         Feature f = ff4j.getFeature("future1");
         ReleaseDateFlipStrategy rds = (ReleaseDateFlipStrategy) f.getFlippingStrategy();
-        Assert.assertFalse(rds.evaluate("future1", null, null));
+        Assertions.assertFalse(rds.evaluate("future1", null, null));
     }
     
     @Test
@@ -67,17 +89,21 @@ public class ReleaseDateFlipStrategyTest extends AbstractFf4jTest {
         rds2.setReleaseDate(new Date());
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testInitInvalidDate() {
-        new ReleaseDateFlipStrategy("invalid");
+        assertThrows(IllegalArgumentException.class, () -> {
+            new ReleaseDateFlipStrategy("invalid");
+        });
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testInvalidDate() {
-        ReleaseDateFlipStrategy rds2 = new ReleaseDateFlipStrategy(new Date());
-        Map < String, String > params = new HashMap<String, String>();
-        params.put("releaseDate", "invalid");
-        rds2.init("f1", params);
+        assertThrows(IllegalArgumentException.class, () -> {
+            ReleaseDateFlipStrategy rds2 = new ReleaseDateFlipStrategy(new Date());
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("releaseDate", "invalid");
+            rds2.init("f1", params);
+        });
     }
 
 }

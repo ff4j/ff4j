@@ -23,9 +23,9 @@ package org.ff4j.web.taglib;
 import jakarta.servlet.jsp.tagext.Tag;
 import org.ff4j.FF4j;
 import org.ff4j.core.FlippingExecutionContext;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -40,7 +40,7 @@ public class FeatureTagEnableTest {
     private FF4j ff4j;
     private FeatureTagEnable featureTagEnable;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ff4j = spy(new FF4j());
         ff4j.createFeature("my-awesome-feature");
@@ -62,8 +62,8 @@ public class FeatureTagEnableTest {
 
         int result = featureTagEnable.doStartTag();
 
-        Assert.assertEquals(Tag.EVAL_BODY_INCLUDE, result);
-        Assert.assertSame(executionContext, ff4j.getCurrentContext());
+        Assertions.assertEquals(Tag.EVAL_BODY_INCLUDE, result);
+        Assertions.assertSame(executionContext, ff4j.getCurrentContext());
         Mockito.verify(ff4j).check("my-awesome-feature", executionContext);
     }
 
@@ -74,15 +74,15 @@ public class FeatureTagEnableTest {
         featureTagEnable.setShareHttpSession(true);
         int result = featureTagEnable.doStartTag();
 
-        Assert.assertEquals(Tag.EVAL_BODY_INCLUDE, result);
-        Assert.assertSame(executionContext, ff4j.getCurrentContext());
+        Assertions.assertEquals(Tag.EVAL_BODY_INCLUDE, result);
+        Assertions.assertSame(executionContext, ff4j.getCurrentContext());
         Mockito.verify(ff4j, never()).check("my-awesome-feature", executionContext);
 
         ArgumentCaptor<FlippingExecutionContext> argContext = ArgumentCaptor.forClass(FlippingExecutionContext.class);
         Mockito.verify(ff4j).check(Mockito.eq("my-awesome-feature"), argContext.capture());
 
         FlippingExecutionContext localExecutionContext = argContext.getValue();
-        Assert.assertFalse(localExecutionContext.isEmpty());
-        Assert.assertEquals("localhost", localExecutionContext.getString("LOCALE"));
+        Assertions.assertFalse(localExecutionContext.isEmpty());
+        Assertions.assertEquals("localhost", localExecutionContext.getString("LOCALE"));
     }
 }

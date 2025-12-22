@@ -21,6 +21,29 @@ package org.ff4j.test.property;
  */
 
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+/*-
+ * #%L
+ * ff4j-core
+ * %%
+ * Copyright (C) 2013 - 2024 FF4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,9 +55,8 @@ import org.ff4j.property.multi.AbstractPropertyList;
 import org.ff4j.property.multi.AbstractPropertyMap;
 import org.ff4j.property.multi.AbstractPropertySet;
 import org.ff4j.utils.Util;
-import org.junit.Assert;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class MultiValuedPropertyTest {
@@ -171,10 +193,12 @@ public class MultiValuedPropertyTest {
         dm.fromString("{ \"key\":\"value\"}");
     }
     
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testMultiMapError() {
-        DemoMap dm = new DemoMap("p1", null);
-        dm.size();
+        assertThrows(IllegalStateException.class, () -> {
+            DemoMap dm = new DemoMap("p1", null);
+            dm.size();
+        });
     }
     
 
@@ -184,23 +208,23 @@ public class MultiValuedPropertyTest {
         map.put("A", "v");
         DemoMap dm =  new DemoMap("P3",map);
         dm.keySet();
-        Assert.assertTrue(dm.size()>0);
-        Assert.assertFalse(dm.isEmpty());
-        Assert.assertTrue(dm.containsKey("A"));
-        Assert.assertTrue(dm.containsValue("v"));
-        Assert.assertEquals("v", dm.get("A"));
+        Assertions.assertTrue(dm.size()>0);
+        Assertions.assertFalse(dm.isEmpty());
+        Assertions.assertTrue(dm.containsKey("A"));
+        Assertions.assertTrue(dm.containsValue("v"));
+        Assertions.assertEquals("v", dm.get("A"));
         dm.clear();
-        Assert.assertTrue(dm.isEmpty());
+        Assertions.assertTrue(dm.isEmpty());
         dm.put("B", "v");
-        Assert.assertFalse(dm.isEmpty());
+        Assertions.assertFalse(dm.isEmpty());
         dm.remove("B");
-        Assert.assertTrue(dm.isEmpty());
+        Assertions.assertTrue(dm.isEmpty());
     }
     
     @Test
     public void testMultiSet2() {
         DemoSet ds =  new DemoSet("P2", "val1,val2");
-        Assert.assertNotNull(ds.iterator());
+        Assertions.assertNotNull(ds.iterator());
         ds.removeAll(new ArrayList<String>());
         ds.retainAll(Util.set("val1"));
         ds.add("val2");

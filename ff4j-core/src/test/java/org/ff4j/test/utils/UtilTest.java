@@ -20,6 +20,28 @@ package org.ff4j.test.utils;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+/*-
+ * #%L
+ * ff4j-core
+ * %%
+ * Copyright (C) 2013 - 2024 FF4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 
@@ -36,111 +58,118 @@ import org.ff4j.store.JdbcStoreConstants;
 import org.ff4j.utils.TimeUtils;
 import org.ff4j.utils.Util;
 import org.ff4j.web.FF4jWebConstants;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class UtilTest {
     
     @Test
     public void testHasLength() {
-        Assert.assertFalse(Util.hasLength(null));
-        Assert.assertFalse(Util.hasLength(""));
-        Assert.assertTrue(Util.hasLength("OK"));
+        Assertions.assertFalse(Util.hasLength(null));
+        Assertions.assertFalse(Util.hasLength(""));
+        Assertions.assertTrue(Util.hasLength("OK"));
     }
     
     @Test
     public void testIsValidClass() {
-        Assert.assertFalse(Util.isValidClass(null));
-        Assert.assertFalse(Util.isValidClass(NullType.class));
-        Assert.assertTrue(Util.isValidClass(String.class));
+        Assertions.assertFalse(Util.isValidClass(null));
+        Assertions.assertFalse(Util.isValidClass(NullType.class));
+        Assertions.assertTrue(Util.isValidClass(String.class));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAsserts() {
-        Util.assertNotNull("toto", (Object[]) null);
+        assertThrows(IllegalArgumentException.class, () ->
+            Util.assertNotNull("toto", (Object[]) null));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAssertsHasLength() {
-        Util.assertHasLength((String[]) null);
+        assertThrows(IllegalArgumentException.class, () ->
+            Util.assertHasLength((String[]) null));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAssertsNotEmpty() {
-        Util.assertNotEmpty(null);
+        assertThrows(IllegalArgumentException.class, () ->
+            Util.assertNotEmpty(null));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAssertsNotEmpty2() {
-        Util.assertNotEmpty(new ArrayList<String>());
+        assertThrows(IllegalArgumentException.class, () ->
+            Util.assertNotEmpty(new ArrayList<String>()));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAssertsNotEmptyOK() {
-        // OK
-        Util.assertNotEmpty(Util.set("1","2"));
-        Util.assertParamHasNotNull(null, "sample");
+        assertThrows(IllegalArgumentException.class, () -> {
+            // OK
+            Util.assertNotEmpty(Util.set("1", "2"));
+            Util.assertParamHasNotNull(null, "sample");
+        });
     }
     
     @Test
     public void testAssertsParams() {
         // OK
         Util.assertParamHasNotNull("x", "sample");
-        Assert.assertNull(Util.set((Object[]) null));
-        Assert.assertNull(Util.list((Object[])null));
-        Assert.assertNull(Util.join(null,","));
+        Assertions.assertNull(Util.set((Object[]) null));
+        Assertions.assertNull(Util.list((Object[])null));
+        Assertions.assertNull(Util.join(null,","));
     }
     
     @Test
     public void isClassCollection() {
-        Assert.assertTrue(Util.isClassCollection(Set.class));
-        Assert.assertTrue(Util.isClassCollection(HashMap.class));
-        Assert.assertFalse(Util.isClassCollection(String.class));
+        Assertions.assertTrue(Util.isClassCollection(Set.class));
+        Assertions.assertTrue(Util.isClassCollection(HashMap.class));
+        Assertions.assertFalse(Util.isClassCollection(String.class));
         
-        Assert.assertFalse(Util.isCollection(null));
-        Assert.assertFalse(Util.isCollection("toto"));
-        Assert.assertTrue(Util.isCollection(new ArrayList<String>()));
+        Assertions.assertFalse(Util.isCollection(null));
+        Assertions.assertFalse(Util.isCollection("toto"));
+        Assertions.assertTrue(Util.isCollection(new ArrayList<String>()));
         
-        Assert.assertTrue(Util.isEmpty(null));
-        Assert.assertTrue(Util.isEmpty(new ArrayList<String>()));
-        Assert.assertFalse(Util.isEmpty(Util.set("1")));
+        Assertions.assertTrue(Util.isEmpty(null));
+        Assertions.assertTrue(Util.isEmpty(new ArrayList<String>()));
+        Assertions.assertFalse(Util.isEmpty(Util.set("1")));
         
-        Assert.assertNull(Util.asCollection(null));
-        Assert.assertNotNull(Util.asCollection(new String[] {"a"}));
-        Assert.assertNotNull(Util.asCollection(Util.set("1")));
+        Assertions.assertNull(Util.asCollection(null));
+        Assertions.assertNotNull(Util.asCollection(new String[] {"a"}));
+        Assertions.assertNotNull(Util.asCollection(Util.set("1")));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void asCollectionError() {
-        Util.asCollection("1");
+        assertThrows(IllegalArgumentException.class, () ->
+            Util.asCollection("1"));
     }
     
     @Test
     public void testGetKeysByValue() {
-        Assert.assertNull(Util.getKeysByValue(null, "aa"));
+        Assertions.assertNull(Util.getKeysByValue(null, "aa"));
         Map < String, String > code = new HashMap<String, String>();
         code.put("key1", "val");
         code.put("key2", "val");
         
         Set < String > keys = Util.getKeysByValue(code, "val");
-        Assert.assertNotNull(keys);
-        Assert.assertFalse(keys.isEmpty());
-        Assert.assertTrue(keys.contains("key1"));
+        Assertions.assertNotNull(keys);
+        Assertions.assertFalse(keys.isEmpty());
+        Assertions.assertTrue(keys.contains("key1"));
         
         Set < String > keys2 = Util.getKeysByValue(code, "invalidval");
-        Assert.assertNotNull(keys2);
-        Assert.assertTrue(keys2.isEmpty());
+        Assertions.assertNotNull(keys2);
+        Assertions.assertTrue(keys2.isEmpty());
     }
     
     @Test
     public void testFirstKeyByValue() {
-        Assert.assertNull(Util.getFirstKeyByValue(null, "aa"));
+        Assertions.assertNull(Util.getFirstKeyByValue(null, "aa"));
         Map < String, String > code = new HashMap<String, String>();
         code.put("key1", "val");
         code.put("key2", "val");
         
-        Assert.assertNull(Util.getFirstKeyByValue(code, "invalid"));
-        Assert.assertNotNull(Util.getFirstKeyByValue(code, "val"));
+        Assertions.assertNull(Util.getFirstKeyByValue(code, "invalid"));
+        Assertions.assertNotNull(Util.getFirstKeyByValue(code, "val"));
     }
     
     @Test
@@ -168,7 +197,7 @@ public class UtilTest {
         Util.generateHSVGradient("442299", "ee1100", 9);
         Util.generateRGBGradient("ee1100", "442299", 9);
         Util.generateRGBGradient("442299", "ee1100", 9);
-        Assert.assertNotNull(Util.getRandomElement(g1));
+        Assertions.assertNotNull(Util.getRandomElement(g1));
         Util.getColorsGradient(9);
     }
 

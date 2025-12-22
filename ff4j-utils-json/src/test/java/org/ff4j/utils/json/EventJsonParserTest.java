@@ -26,10 +26,12 @@ import org.ff4j.audit.EventBuilder;
 import org.ff4j.conf.XmlParser;
 import org.ff4j.security.AuthorizationsManager;
 import org.ff4j.utils.Util;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -69,8 +71,8 @@ public class EventJsonParserTest {
         for (String key : events.keySet()) {
             // Check serialised
             Event e1 = EventJsonParser.parseEvent(events.get(key).toJson());
-            Assert.assertEquals(events.get(key).getName(), e1.getName());
-            Assert.assertTrue(events.get(key).compareTo(e1) == 0);
+            Assertions.assertEquals(events.get(key).getName(), e1.getName());
+            Assertions.assertTrue(events.get(key).compareTo(e1) == 0);
         }
     }
 
@@ -108,17 +110,18 @@ public class EventJsonParserTest {
 
         String eventsArrayAsJson = EventJsonParser.eventArrayToJson(e);
         Event[] ee = EventJsonParser.parseEventArray(eventsArrayAsJson);
-        Assert.assertEquals(events.size(), ee.length);
+        Assertions.assertEquals(events.size(), ee.length);
     }
 
     @Test
     public void testInit() throws Exception {
-        Assert.assertNotNull(Util.instanciatePrivate(EventJsonParser.class));
+        Assertions.assertNotNull(Util.instanciatePrivate(EventJsonParser.class));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testInvalidJsonGetIllegalArgument() {
-        EventJsonParser.parseEvent("something:invald");
+        assertThrows(IllegalArgumentException.class, () ->
+            EventJsonParser.parseEvent("something:invald"));
     }
 
     @Test
@@ -129,19 +132,20 @@ public class EventJsonParserTest {
         event2.setUuid("e2");
 
         Event[] events = {event1, event2};
-        Assert.assertNotNull(EventJsonParser.eventArrayToJson(events));
-        Assert.assertNotNull(EventJsonParser.eventArrayToJson(null));
+        Assertions.assertNotNull(EventJsonParser.eventArrayToJson(events));
+        Assertions.assertNotNull(EventJsonParser.eventArrayToJson(null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testparseEventArrayError() {
-        EventJsonParser.parseEventArray("something:invalid");
+        assertThrows(IllegalArgumentException.class, () ->
+            EventJsonParser.parseEventArray("something:invalid"));
     }
 
 
     @Test
     public void testparseFeatureArrayEmpty() {
-        Assert.assertNull(EventJsonParser.parseEventArray(null));
-        Assert.assertNull(EventJsonParser.parseEventArray(""));
+        Assertions.assertNull(EventJsonParser.parseEventArray(null));
+        Assertions.assertNull(EventJsonParser.parseEventArray(""));
     }
 }

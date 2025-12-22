@@ -21,6 +21,29 @@ package org.ff4j.test.property;
  */
 
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+/*-
+ * #%L
+ * ff4j-core
+ * %%
+ * Copyright (C) 2013 - 2024 FF4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
@@ -33,8 +56,8 @@ import org.ff4j.property.util.PropertyFactory;
 import org.ff4j.property.util.PropertyJsonBean;
 import org.ff4j.test.unsafe.UnsafeProperty;
 import org.ff4j.utils.Util;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 
 public class PropertyFactoryTest {
@@ -58,32 +81,37 @@ public class PropertyFactoryTest {
         PropertyFactory.createProperty("p1", Calendar.getInstance());
         
         Property<?> pList = PropertyFactory.createProperty("p1", Util.list("a","b","c"));
-        Assert.assertTrue(pList.getClass().equals(PropertyString.class));
+        Assertions.assertTrue(pList.getClass().equals(PropertyString.class));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPropertyFactory1() {
-        PropertyFactory.createProperty(null, (int) 1);
+        assertThrows(IllegalArgumentException.class, () ->
+            PropertyFactory.createProperty(null, (int) 1));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPropertyFactory3() {
-        PropertyFactory.createProperty("p1", null);
+        assertThrows(IllegalArgumentException.class, () ->
+            PropertyFactory.createProperty("p1", null));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPropertyFactory4() {
-        PropertyFactory.createProperty("p1", "java.lang.String", "s1", "desc", null);
+        assertThrows(IllegalArgumentException.class, () ->
+            PropertyFactory.createProperty("p1", "java.lang.String", "s1", "desc", null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPropertyFactory5() {
-        PropertyFactory.createProperty("p1", this);
+        assertThrows(IllegalArgumentException.class, () ->
+            PropertyFactory.createProperty("p1", this));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPropertyFactory6() {
-        PropertyFactory.createProperty("p1", this);
+        assertThrows(IllegalArgumentException.class, () ->
+            PropertyFactory.createProperty("p1", this));
     }
     
     @Test
@@ -96,30 +124,30 @@ public class PropertyFactoryTest {
         PropertyFactory.createProperty("p1", PropertyString.class.getName(), "s1", "desc", null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPropertyFactory9() {
-        PropertyFactory.createProperty("p1", PropertyString.class.getName(), "s1", "desc", Util.set("s3", "s2"));
+        assertThrows(IllegalArgumentException.class, () ->
+            PropertyFactory.createProperty("p1", PropertyString.class.getName(), "s1", "desc", Util.set("s3", "s2")));
     }
 
     @Test
     public void testPropertyFactory10() {
-        IllegalArgumentException exception = Assert.assertThrows(IllegalArgumentException.class, () -> {
-            PropertyFactory.createProperty("p1", UnsafeProperty.class.getName(), "s1", "desc", Util.set("s3", "s2"));
-        });
-        Assert.assertEquals(0, UnsafeProperty.count);
-        Assert.assertEquals("Cannot create property <p1> invalid type <org.ff4j.test.unsafe.UnsafeProperty>", exception.getCause().getMessage());
+        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () ->
+            PropertyFactory.createProperty("p1", UnsafeProperty.class.getName(), "s1", "desc", Util.set("s3", "s2")));
+        Assertions.assertEquals(0, UnsafeProperty.count);
+        Assertions.assertEquals("Cannot create property <p1> invalid type <org.ff4j.test.unsafe.UnsafeProperty>", exception.getCause().getMessage());
     }
 
     @Test
     public void testCreateProperty() {
-        Assert.assertNull(PropertyFactory.createProperty(null));
+        Assertions.assertNull(PropertyFactory.createProperty(null));
     }
     
     
     @Test
     public void testCreatePropertyOK() {
         PropertyJsonBean jsonBean = new PropertyJsonBean(new PropertyString("p1", "v1"));
-        Assert.assertNotNull(PropertyFactory.createProperty(jsonBean));
+        Assertions.assertNotNull(PropertyFactory.createProperty(jsonBean));
     }
 
 }

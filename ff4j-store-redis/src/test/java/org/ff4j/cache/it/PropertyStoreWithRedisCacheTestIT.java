@@ -23,7 +23,7 @@ package org.ff4j.cache.it;
 import org.ff4j.cache.FF4JCacheManager;
 import org.ff4j.cache.FF4jCacheManagerRedis;
 import org.ff4j.redis.RedisConnection;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 
 
 /**
@@ -33,7 +33,7 @@ import org.junit.Ignore;
  *
  * Ignore because Docker may not be available in all cases.
  */
-@Ignore
+@Disabled
 public class PropertyStoreWithRedisCacheTestIT extends RedisTestSupport {
 
     /** {@inheritDoc} */

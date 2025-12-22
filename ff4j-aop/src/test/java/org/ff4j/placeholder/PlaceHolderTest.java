@@ -26,14 +26,14 @@ import org.ff4j.core.Feature;
 import org.ff4j.property.PropertyInt;
 import org.ff4j.spring.autowire.FF4JFeature;
 import org.ff4j.spring.autowire.FF4JProperty;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration("classpath:applicationContext-ff4j-placeholder.xml")
 public class PlaceHolderTest {
 
@@ -76,27 +76,27 @@ public class PlaceHolderTest {
     @Test
     public void testPlaceholderWithinXMLFile() {
         // Given, configuration loaded
-        Assert.assertNotNull(ff4j);
-        Assert.assertNotNull(ff4j.getPropertiesStore());
-        Assert.assertNotNull(ff4j.getFeatureStore());
+        Assertions.assertNotNull(ff4j);
+        Assertions.assertNotNull(ff4j.getPropertiesStore());
+        Assertions.assertNotNull(ff4j.getFeatureStore());
         // When (injection)
         // Then
-        Assert.assertEquals(1, sb.getP());
-        Assert.assertEquals(true, sb.isF());
+        Assertions.assertEquals(1, sb.getP());
+        Assertions.assertEquals(true, sb.isF());
     }
 
     @Test
     public void testPlaceHolderWithAnnotation() {
-        Assert.assertEquals(Integer.valueOf(1), pro.getValue());
-        Assert.assertEquals(Integer.valueOf(1), pro2);
-        Assert.assertEquals(1, pro3);
-        Assert.assertNull(pro4);
+        Assertions.assertEquals(Integer.valueOf(1), pro.getValue());
+        Assertions.assertEquals(Integer.valueOf(1), pro2);
+        Assertions.assertEquals(1, pro3);
+        Assertions.assertNull(pro4);
 
-        Assert.assertEquals(true, feat.isEnable());
-        Assert.assertEquals(true, feat2);
-        Assert.assertEquals(true, feat3);
-        Assert.assertNull(feat4);
-        Assert.assertNotNull(exo);
+        Assertions.assertEquals(true, feat.isEnable());
+        Assertions.assertEquals(true, feat2);
+        Assertions.assertEquals(true, feat3);
+        Assertions.assertNull(feat4);
+        Assertions.assertNotNull(exo);
     }
 
 }

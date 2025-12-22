@@ -23,7 +23,7 @@ package org.ff4j.hazelcast;
 import javax.cache.CacheManager;
 import org.ff4j.cache.FF4JCacheManager;
 import org.ff4j.test.cache.AbstractCacheManagerJUnitTest;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 
 /**
  * Implementation of {@link CacheManager} for feautres and HazelCast
@@ -34,7 +34,7 @@ public class CacheManagerHazelCastTest extends AbstractCacheManagerJUnitTest {
 
     private static CacheManagerHazelCast cacheManagerHazelCast;
 
-    @BeforeClass
+    @BeforeAll
     public static void setupHazelcast() {
         cacheManagerHazelCast = new CacheManagerHazelCast();
     }

@@ -25,15 +25,15 @@ import java.io.IOException;
 import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.elastic.ElasticQueryBuilder;
 import org.ff4j.test.audit.EventRepositoryTestSupport;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * Implementation of Unit Test for event repository.
  *
  * @author Cedrick LUNVEN (@clunven)
  */
-@Ignore
+@Disabled
 public class EventRepositoryElasticTest extends EventRepositoryTestSupport {
 	
     /** {@inheritDoc} */

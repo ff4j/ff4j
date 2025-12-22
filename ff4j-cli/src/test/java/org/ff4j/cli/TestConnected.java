@@ -27,11 +27,11 @@ import java.util.Set;
 import org.ff4j.security.AuthorizationsManager;
 
 
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore
+@Disabled
 public class TestConnected extends AbstractCommandLineTest {
 
 	@Test
@@ -39,7 +39,7 @@ public class TestConnected extends AbstractCommandLineTest {
 		
 		processor.evaluate("connect dev -u admin -p admin");
 		
-		Assert.assertEquals("dev", processor.getCurrentEnv());
+		Assertions.assertEquals("dev", processor.getCurrentEnv());
 		
 		FF4jCliDisplay.displayPrompt(processor.getCurrentEnv());
 		
@@ -54,10 +54,10 @@ public class TestConnected extends AbstractCommandLineTest {
 		processor.evaluate("properties");
 		
 		processor.evaluate("enableAudit");
-		Assert.assertTrue(processor.getCurrentFF4J().isEnableAudit());
+		Assertions.assertTrue(processor.getCurrentFF4J().isEnableAudit());
 		
 		processor.evaluate("disableAudit");
-		Assert.assertFalse(processor.getCurrentFF4J().isEnableAudit());
+		Assertions.assertFalse(processor.getCurrentFF4J().isEnableAudit());
 		
 		processor.evaluate("enable");
 		processor.evaluate("enable -f notexist");

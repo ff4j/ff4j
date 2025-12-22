@@ -28,16 +28,17 @@ import org.ff4j.neo4j.store.FeatureStoreNeo4J;
 import org.ff4j.property.Property;
 import org.ff4j.property.PropertyString;
 import org.ff4j.strategy.PonderationStrategy;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseSettings;
 import org.neo4j.test.TestGraphDatabaseFactory;
 
 import static org.ff4j.neo4j.FF4jNeo4jConstants.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FeatureStoreNeo4jLimitTest {
 
@@ -50,7 +51,7 @@ public class FeatureStoreNeo4jLimitTest {
     /**
      * Create temporary database for each unit test.
      */
-    @BeforeClass
+    @BeforeAll
     public static void prepareTestDatabase() {
        
         // Embedded DATABASE
@@ -75,7 +76,7 @@ public class FeatureStoreNeo4jLimitTest {
    
     @Test
     public void testDefaultInit() {
-        Assert.assertNotNull(new FeatureStoreNeo4J());
+        Assertions.assertNotNull(new FeatureStoreNeo4J());
     }
     
     @Test
@@ -89,7 +90,7 @@ public class FeatureStoreNeo4jLimitTest {
         }
         // Remove last
         testedStore.delete("f1");
-        Assert.assertFalse(testedStore.existGroup("g0"));
+        Assertions.assertFalse(testedStore.existGroup("g0"));
     }
     
     @Test
@@ -113,7 +114,7 @@ public class FeatureStoreNeo4jLimitTest {
         
         f1.setGroup("g2");
         testedStore.update(f1);
-        Assert.assertEquals("g2", testedStore.read("h1").getGroup());
+        Assertions.assertEquals("g2", testedStore.read("h1").getGroup());
         
         f1.getFlippingStrategy().getInitParams().put("p3", "v3");
         testedStore.update(f1);
@@ -122,17 +123,19 @@ public class FeatureStoreNeo4jLimitTest {
         testedStore.setGraphDb(testedStore.getGraphDb());
     }
     
-    @Test(expected = GroupNotFoundException.class)
+    @Test
     public void testRemoveFromInvalidGroup() {
-        try (Transaction tx= graphDb.beginTx() ) {
-            graphDb.execute("CREATE (x1:FF4J_FEATURE { uid:'x1', enable:false });");
-            tx.success();
-        }
-        testedStore.removeFromGroup("x1", "invalidGroup");
+        assertThrows(GroupNotFoundException.class, () -> {
+            try (Transaction tx = graphDb.beginTx()) {
+                graphDb.execute("CREATE (x1:FF4J_FEATURE { uid:'x1', enable:false });");
+                tx.success();
+            }
+            testedStore.removeFromGroup("x1", "invalidGroup");
+        });
     }
     
     
-    @AfterClass
+    @AfterAll
     public static void destroyTestDatabase() {
         graphDb.shutdown();
     }

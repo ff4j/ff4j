@@ -20,6 +20,28 @@ package org.ff4j.store;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+/*-
+ * #%L
+ * ff4j-store-ehcache
+ * %%
+ * Copyright (C) 2013 - 2024 FF4J
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import java.util.Date;
 
 import org.ff4j.ehcache.FF4jEhCacheWrapper;
@@ -30,9 +52,8 @@ import org.ff4j.property.PropertyLogLevel.LogLevel;
 
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.Assert;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import net.sf.ehcache.config.Configuration;
 
 /**
@@ -56,24 +77,26 @@ public class PropertyStoreEhCacheTest extends PropertyStoreTestSupport {
         Configuration managerConfiguration = new Configuration();
         managerConfiguration.name("config");
         PropertyStoreEhCache storeEHcache = new PropertyStoreEhCache(managerConfiguration);
-        Assert.assertNotNull(storeEHcache);
+        Assertions.assertNotNull(storeEHcache);
     }
     
     @Test
     public void initWithXmlFile() {
         PropertyStoreEhCache storeEHcache = new PropertyStoreEhCache("ehcache.xml");
-        Assert.assertNotNull(storeEHcache);
+        Assertions.assertNotNull(storeEHcache);
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testInvalidXmlConfigFile() {
-       new PropertyStoreEhCache("does-notexist.xml");
+        assertThrows(IllegalArgumentException.class, () -> {
+            new PropertyStoreEhCache("does-notexist.xml");
+        });
     }
     
     @Test
     public void testCacheWrapper() {
         FF4jEhCacheWrapper wrapper = new FF4jEhCacheWrapper("ehcache.xml");
-        Assert.assertNotNull(wrapper.getCacheFeatures());
+        Assertions.assertNotNull(wrapper.getCacheFeatures());
               
     }
     
@@ -82,7 +105,7 @@ public class PropertyStoreEhCacheTest extends PropertyStoreTestSupport {
         Configuration managerConfiguration = new Configuration();
         managerConfiguration.name("config");
         FF4jEhCacheWrapper wrapper = new FF4jEhCacheWrapper(managerConfiguration);
-        Assert.assertNotNull(wrapper.getCacheFeatures());
+        Assertions.assertNotNull(wrapper.getCacheFeatures());
               
     }
     
@@ -95,7 +118,7 @@ public class PropertyStoreEhCacheTest extends PropertyStoreTestSupport {
         // When
         testedStore.createProperty(new PropertyDate("ddateee", new Date()));
         // Then
-        Assert.assertTrue(testedStore.existProperty("ddateee"));
+        Assertions.assertTrue(testedStore.existProperty("ddateee"));
     }
     
     @Test
@@ -112,7 +135,7 @@ public class PropertyStoreEhCacheTest extends PropertyStoreTestSupport {
         // When
         testedStore.updateProperty("updateOKK", "INFO");
         // Then
-        Assert.assertEquals(LogLevel.INFO, testedStore.readProperty("updateOKK").getValue());
+        Assertions.assertEquals(LogLevel.INFO, testedStore.readProperty("updateOKK").getValue());
     }
 
     /** TDD. */

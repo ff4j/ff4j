@@ -24,9 +24,9 @@ package org.ff4j.commonsconf;
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.ff4j.property.store.InMemoryPropertyStore;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * FF4JConfiguration could be used to inject properties into commons config.
@@ -41,7 +41,7 @@ public class CommonsConfigWithPropertyStoreTest {
     /** Configuration implementation relying on property store. */
     private FF4jConfiguration ff4jConf;
             
-    @Before
+    @BeforeEach
     public void initCommonsConfWithFF4j() throws ConfigurationException {
         // init configuration
         ff4jConf = new FF4jConfiguration(new InMemoryPropertyStore("ff4j-properties.xml"));
@@ -55,10 +55,10 @@ public class CommonsConfigWithPropertyStoreTest {
     public void readPropertyInCommonsConfFromFF4j() throws ConfigurationException {
         
         // Retrieve data from FF4J
-        Assert.assertEquals("hello", config.getString("e"));
+        Assertions.assertEquals("hello", config.getString("e"));
         
         // Retrieve whole property if required
-        Assert.assertEquals("comment", ff4jConf.getFf4jStore().readProperty("e").getDescription());
+        Assertions.assertEquals("comment", ff4jConf.getFf4jStore().readProperty("e").getDescription());
     }
 
 }

@@ -24,8 +24,8 @@ import org.ff4j.FF4j;
 import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.store.InMemoryFeatureStore;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -36,12 +36,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test parallel operations with autocreate=true over {@link FF4j}
- * 
+ *
  * @author Mariusz Zawadzki ( mariusz.r.zawadzki@gmail.com )
  */
 public class FF4j_autocreate_multithreaded_Test extends AbstractFf4jTest {
@@ -60,9 +59,9 @@ public class FF4j_autocreate_multithreaded_Test extends AbstractFf4jTest {
 
         // Default : store = inMemory, load features from ff4j.xml file
         ff4j.autoCreate();
-        assertFalse(ff4j.exist("autoCreatedFeature"));
+        Assertions.assertFalse(ff4j.exist("autoCreatedFeature"));
 
-        testParallel(() -> ff4j.check("autoCreatedFeature"), Assert::assertFalse);
+        testParallel(() -> ff4j.check("autoCreatedFeature"), Assertions::assertFalse);
 
         // Assertion
         assertTrue(ff4j.exist("autoCreatedFeature"));
@@ -74,9 +73,9 @@ public class FF4j_autocreate_multithreaded_Test extends AbstractFf4jTest {
 
         // Default : store = inMemory, load features from ff4j.xml file
         ff4j.autoCreate();
-        assertFalse(ff4j.exist("autoCreatedFeature"));
+        Assertions.assertFalse(ff4j.exist("autoCreatedFeature"));
 
-        testParallel(() -> ff4j.enable("autoCreatedFeature"), it-> Assert.assertEquals(it, ff4j));
+        testParallel(() -> ff4j.enable("autoCreatedFeature"), it -> Assertions.assertEquals(it, ff4j));
 
         // Assertion
         assertTrue(ff4j.exist("autoCreatedFeature"));
@@ -88,20 +87,20 @@ public class FF4j_autocreate_multithreaded_Test extends AbstractFf4jTest {
 
         // Default : store = inMemory, load features from ff4j.xml file
         ff4j.autoCreate();
-        assertFalse(ff4j.exist("autoCreatedFeature"));
+        Assertions.assertFalse(ff4j.exist("autoCreatedFeature"));
 
-        testParallel(() -> ff4j.disable("autoCreatedFeature"), it-> Assert.assertEquals(it, ff4j));
+        testParallel(() -> ff4j.disable("autoCreatedFeature"), it -> Assertions.assertEquals(it, ff4j));
 
         // Assertion
-        assertFalse(ff4j.check("autoCreatedFeature"));
+        Assertions.assertFalse(ff4j.check("autoCreatedFeature"));
     }
 
     private <T> void testParallel(Callable<T> testedMethod, Consumer<T> assertions) {
         // Auto creation by testing its value
-        Future<T> firstAutoCreate  = executor.submit(testedMethod);
+        Future<T> firstAutoCreate = executor.submit(testedMethod);
         Future<T> secondAutoCreate = executor.submit(testedMethod);
         Stream.of(firstAutoCreate, secondAutoCreate)
-                .map(it-> {
+                .map(it -> {
                     try {
                         return it.get();
                     } catch (ExecutionException | InterruptedException e) {
@@ -110,7 +109,7 @@ public class FF4j_autocreate_multithreaded_Test extends AbstractFf4jTest {
                 }).forEach(assertions);
     }
 
-    static class DelayingFeatureStore extends InMemoryFeatureStore{
+    static class DelayingFeatureStore extends InMemoryFeatureStore {
 
         AtomicInteger counter = new AtomicInteger(1);
         static final long BASE_DELAY = 100L;
@@ -118,6 +117,7 @@ public class FF4j_autocreate_multithreaded_Test extends AbstractFf4jTest {
         DelayingFeatureStore(String fileName) {
             super(fileName);
         }
+
         @Override
         public void create(Feature fp) {
             try {
@@ -129,7 +129,7 @@ public class FF4j_autocreate_multithreaded_Test extends AbstractFf4jTest {
         }
 
         private long increaseDelay() {
-            return 10L*counter.getAndIncrement();
+            return 10L * counter.getAndIncrement();
         }
     }
 }

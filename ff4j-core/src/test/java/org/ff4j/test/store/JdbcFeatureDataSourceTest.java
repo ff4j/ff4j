@@ -23,6 +23,7 @@ package org.ff4j.test.store;
 import static org.ff4j.utils.JdbcUtils.closeConnection;
 import static org.ff4j.utils.JdbcUtils.closeResultSet;
 import static org.ff4j.utils.JdbcUtils.closeStatement;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doThrow;
 
 import java.sql.Connection;
@@ -37,9 +38,9 @@ import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.store.JdbcFeatureStore;
 import org.ff4j.test.utils.JdbcTestHelper;
 import org.ff4j.utils.JdbcUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import static org.ff4j.store.JdbcStoreConstants.*;
@@ -66,29 +67,31 @@ public class JdbcFeatureDataSourceTest extends CoreFeatureStoreTestSupport {
     
     /** {@inheritDoc} */
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         JdbcTestHelper.initDBSchema(sqlDataSource, dropTable);
         dropTable = true;
     }
     
-    @Test(expected = FeatureAccessException.class)
+    @Test
     public void testClose2Times() {
-        Connection          sqlConn = null;
-        PreparedStatement   ps = null;
-        try {
-            // Pick connection
-            sqlConn = sqlDataSource.getConnection();
-            
-            // Query Exist
-            ps = JdbcUtils.buildStatement(sqlConn, SQL_EXIST, F1);
-            JdbcUtils.rollback(sqlConn);
-            ps.close();
-            ps.executeQuery();
-        } catch (SQLException sqlEX) {
-            throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
-        } 
+        assertThrows(FeatureAccessException.class, () -> {
+            Connection sqlConn = null;
+            PreparedStatement ps = null;
+            try {
+                // Pick connection
+                sqlConn = sqlDataSource.getConnection();
+
+                // Query Exist
+                ps = JdbcUtils.buildStatement(sqlConn, SQL_EXIST, F1);
+                JdbcUtils.rollback(sqlConn);
+                ps.close();
+                ps.executeQuery();
+            } catch (SQLException sqlEX) {
+                throw new FeatureAccessException("Cannot check feature existence, error related to database", sqlEX);
+            }
+        });
     }
 
     
@@ -122,39 +125,47 @@ public class JdbcFeatureDataSourceTest extends CoreFeatureStoreTestSupport {
         }
     }
     
-    @Test(expected = FeatureAccessException.class)
+    @Test
     public void testClosePS() throws SQLException {
-        PreparedStatement test = Mockito.mock(PreparedStatement.class);
-        doThrow(new SQLException()).when(test).close();
-        closeStatement(test);
+        assertThrows(FeatureAccessException.class, () -> {
+            PreparedStatement test = Mockito.mock(PreparedStatement.class);
+            doThrow(new SQLException()).when(test).close();
+            closeStatement(test);
+        });
     }
     
-    @Test(expected = FeatureAccessException.class)
+    @Test
     public void testCloseRS() throws SQLException {
-        ResultSet test = Mockito.mock(ResultSet.class);
-        doThrow(new SQLException()).when(test).close();
-        closeResultSet(test);
+        assertThrows(FeatureAccessException.class, () -> {
+            ResultSet test = Mockito.mock(ResultSet.class);
+            doThrow(new SQLException()).when(test).close();
+            closeResultSet(test);
+        });
     }
     
-    @Test(expected = FeatureAccessException.class)
+    @Test
     public void testCloseConn() throws SQLException {
-        Connection test = Mockito.mock(Connection.class);
-        doThrow(new SQLException()).when(test).close();
-        closeConnection(test);
+        assertThrows(FeatureAccessException.class, () -> {
+            Connection test = Mockito.mock(Connection.class);
+            doThrow(new SQLException()).when(test).close();
+            closeConnection(test);
+        });
     }
     
-    @Test(expected = FeatureAccessException.class)
+    @Test
     public void testRollback() throws SQLException {
-        Connection test = Mockito.mock(Connection.class);
-        doThrow(new SQLException()).when(test).rollback();
-        JdbcUtils.rollback(test);
+        assertThrows(FeatureAccessException.class, () -> {
+            Connection test = Mockito.mock(Connection.class);
+            doThrow(new SQLException()).when(test).rollback();
+            JdbcUtils.rollback(test);
+        });
     }
    
     @Test
     public void testDS() throws SQLException {
         DataSource test = Mockito.mock(DataSource.class);
         doThrow(new SQLException()).when(test).getConnection();
-        Assert.assertFalse(ff4j.getFeatureStore().exist("I-DONT-EXIST"));
+        Assertions.assertFalse(ff4j.getFeatureStore().exist("I-DONT-EXIST"));
     }
 
 }

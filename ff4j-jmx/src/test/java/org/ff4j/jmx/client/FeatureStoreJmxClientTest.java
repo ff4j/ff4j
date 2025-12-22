@@ -22,15 +22,15 @@ package org.ff4j.jmx.client;
 
 
 import org.ff4j.jmx.FeatureStoreMBeanSpring;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class FeatureStoreJmxClientTest {
    
     @Test
     public void testInit() {
-        Assert.assertNotNull(new FeatureStoreJmxClient());
-        Assert.assertNotNull(new FeatureStoreMBeanSpring());
+        Assertions.assertNotNull(new FeatureStoreJmxClient());
+        Assertions.assertNotNull(new FeatureStoreMBeanSpring());
     }
 
 }

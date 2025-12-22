@@ -26,12 +26,12 @@ import org.ff4j.mongo.mapper.PropertyDocumentBuilder;
 import org.ff4j.mongo.store.PropertyStoreMongo;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
@@ -46,7 +46,7 @@ import com.mongodb.client.MongoClients;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-@Ignore
+@Disabled
 public class PropertyStoreMongoCollectionCore1Test extends PropertyStoreTestSupport {
 
     private static final int MONGO_PORT = 27017;
@@ -57,14 +57,14 @@ public class PropertyStoreMongoCollectionCore1Test extends PropertyStoreTestSupp
     @ClassRule
     public static GenericContainer<?> mongoDBContainer = new GenericContainer<>("mongo:latest").withExposedPorts(MONGO_PORT);
 
-    @BeforeClass
+    @BeforeAll
     public static void startDocker() {
         mongoDBContainer = new MongoDBContainer();
         mongoDBContainer.start();
         mongoDBContainer.waitingFor(Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(180L)));
     }
 
-    @AfterClass
+    @AfterAll
     public static void stopDocker() {
         mongoDBContainer.stop();
     }
@@ -92,8 +92,8 @@ public class PropertyStoreMongoCollectionCore1Test extends PropertyStoreTestSupp
     @Test
     public void testInit() {
         PropertyDocumentBuilder pod = new PropertyDocumentBuilder();
-        Assert.assertNotNull(pod.getDescription("a"));
-        Assert.assertNotNull(pod.getType("a"));
-        Assert.assertNotNull(pod.getFixedValues("a"));
+        Assertions.assertNotNull(pod.getDescription("a"));
+        Assertions.assertNotNull(pod.getType("a"));
+        Assertions.assertNotNull(pod.getFixedValues("a"));
     }
 }

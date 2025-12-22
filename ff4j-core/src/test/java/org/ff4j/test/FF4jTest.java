@@ -20,13 +20,6 @@ package org.ff4j.test;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.util.*;
-
 import org.ff4j.FF4j;
 import org.ff4j.audit.Event;
 import org.ff4j.audit.EventConstants;
@@ -46,8 +39,20 @@ import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.PonderationStrategy;
 import org.ff4j.strategy.el.ExpressionFlipStrategy;
 import org.ff4j.utils.Util;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test operations over {@link FF4j}
@@ -61,13 +66,18 @@ public class FF4jTest extends AbstractFf4jTest {
         return new FF4j(new XmlParser(),"ff4j.xml");
     }
     
-    @Test(expected = FeatureNotFoundException.class)
+    @Test
     public void readFeatureNotFound() {
-        // Given
-        FF4j ff4j = new FF4j();
-        // When
-        ff4j.getFeature("i-dont-exist");
-        
+        assertThrows(FeatureNotFoundException.class, () -> {
+            // Given
+            FF4j ff4j = new FF4j();
+            // When
+            ff4j.getFeature("i-dont-exist");
+
+            // Then
+            // expect error...
+        });
+
         // Then
         // expect error...
     }
@@ -76,9 +86,9 @@ public class FF4jTest extends AbstractFf4jTest {
     public void testDeleteFeature() {
         FF4j ff4j = new FF4j(new XmlParser(),"ff4j.xml");
         ff4j.audit();
-        Assert.assertTrue(ff4j.exist(F1));
+        Assertions.assertTrue(ff4j.exist(F1));
         ff4j.delete(F1);
-        Assert.assertFalse(ff4j.exist(F1));
+        Assertions.assertFalse(ff4j.exist(F1));
     }
     
     @Test
@@ -86,12 +96,12 @@ public class FF4jTest extends AbstractFf4jTest {
         // Given
         FF4j ff4j = new FF4j(new XmlParser(), getClass().getClassLoader().getResourceAsStream("ff4j.xml"));
         ff4j.audit();
-        Assert.assertTrue(ff4j.exist(F1));
-        Assert.assertTrue(ff4j.getFeature(F1).isEnable());
+        Assertions.assertTrue(ff4j.exist(F1));
+        Assertions.assertTrue(ff4j.getFeature(F1).isEnable());
         // When
         ff4j.disable(F1);
         // Then
-        Assert.assertFalse(ff4j.getFeature(F1).isEnable());
+        Assertions.assertFalse(ff4j.getFeature(F1).isEnable());
     }
     
     @Test
@@ -100,9 +110,9 @@ public class FF4jTest extends AbstractFf4jTest {
         ff4j.createProperty(new PropertyString("p1", "v1"));
         ff4j.audit();
         ff4j.createProperty(new PropertyString("p2", "v2"));
-        Assert.assertTrue(ff4j.getPropertiesStore().existProperty("p1"));
+        Assertions.assertTrue(ff4j.getPropertiesStore().existProperty("p1"));
         ff4j.deleteProperty("p1");
-        Assert.assertFalse(ff4j.getPropertiesStore().existProperty("p1"));
+        Assertions.assertFalse(ff4j.getPropertiesStore().existProperty("p1"));
     }
     
     @Test
@@ -123,15 +133,15 @@ public class FF4jTest extends AbstractFf4jTest {
         
         // When
         Event evt = new Event("f1", EventConstants.TARGET_FEATURE, "f2", EventConstants.ACTION_CHECK_OK);
-        Assert.assertNotNull(evt.toJson());
-        Assert.assertNotNull(evt.toString());
+        Assertions.assertNotNull(evt.toJson());
+        Assertions.assertNotNull(evt.toString());
         
         // When
         EventPublisher ep = new EventPublisher();
         new EventPublisher(ep.getRepository(), null);
         ep.setRepository(new InMemoryEventRepository());
         // Then
-        Assert.assertNotNull(ep.getRepository());
+        Assertions.assertNotNull(ep.getRepository());
     }
     
     @Test
@@ -148,37 +158,37 @@ public class FF4jTest extends AbstractFf4jTest {
         // When
         ff4j.disableGroup("g1");
         // Then
-        Assert.assertFalse(ff4j.getFeature("f1").isEnable());
-        Assert.assertFalse(ff4j.getFeature("f2").isEnable());
+        Assertions.assertFalse(ff4j.getFeature("f1").isEnable());
+        Assertions.assertFalse(ff4j.getFeature("f2").isEnable());
         
         // When
         ff4j.enableGroup("g1");
         // Then
-        Assert.assertTrue(ff4j.getFeature("f1").isEnable());
-        Assert.assertTrue(ff4j.getFeature("f2").isEnable());
+        Assertions.assertTrue(ff4j.getFeature("f1").isEnable());
+        Assertions.assertTrue(ff4j.getFeature("f2").isEnable());
         
         // When
         ff4j.enable("f1");
         ff4j.setFileName(null);
         // Then
-        Assert.assertTrue(ff4j.getFeature("f1").isEnable());
+        Assertions.assertTrue(ff4j.getFeature("f1").isEnable());
     }
     
     @Test
     public void testReadCoreMetadata() {
         FF4j ff4j = new FF4j();
         ff4j.getVersion();
-        Assert.assertNotNull(ff4j.getStartTime());
-        Assert.assertNotNull(ff4j.getPropertiesStore());
-        Assert.assertNotNull(ff4j.getCurrentContext());
-        Assert.assertNotNull(ff4j.getProperties());
+        Assertions.assertNotNull(ff4j.getStartTime());
+        Assertions.assertNotNull(ff4j.getPropertiesStore());
+        Assertions.assertNotNull(ff4j.getCurrentContext());
+        Assertions.assertNotNull(ff4j.getProperties());
     }
     
     @Test
     public void testToString() {
         FF4j ff4j = new FF4j(new XmlParser(),"ff4j.xml");
         ff4j.toString();
-        Assert.assertNotNull(ff4j.getFeatureStore());
+        Assertions.assertNotNull(ff4j.getFeatureStore());
         ff4j.setFeatureStore(null);
         ff4j.setPropertiesStore(null);
         ff4j.setEventRepository(null);
@@ -242,13 +252,14 @@ public class FF4jTest extends AbstractFf4jTest {
         FF4j ff4j = new FF4j();
         ff4j.autoCreate(true);
         ff4j.enable("newffff");
-        Assert.assertTrue(ff4j.exist("newffff"));
-        Assert.assertTrue(ff4j.check("newffff"));
+        Assertions.assertTrue(ff4j.exist("newffff"));
+        Assertions.assertTrue(ff4j.check("newffff"));
     }
 
-    @Test(expected = FeatureNotFoundException.class)
+    @Test
     public void testEnableFeatureNotExist() {
-        ff4j.enable("newffff");
+        assertThrows(FeatureNotFoundException.class, () ->
+            ff4j.enable("newffff"));
     }
 
     // disabling...
@@ -258,35 +269,37 @@ public class FF4jTest extends AbstractFf4jTest {
         FF4j ff4j = new FF4j();
         ff4j.autoCreate(true);
         ff4j.disable("newffff");
-        Assert.assertTrue(ff4j.exist("newffff"));
-        Assert.assertFalse(ff4j.check("newffff"));
+        Assertions.assertTrue(ff4j.exist("newffff"));
+        Assertions.assertFalse(ff4j.check("newffff"));
     }
 
-    @Test(expected = FeatureNotFoundException.class)
+    @Test
     public void testDisableFeatureNotExist() {
-        FF4j ff4j = new FF4j();
-        ff4j.disable("newffff");
+        assertThrows(FeatureNotFoundException.class, () -> {
+            FF4j ff4j = new FF4j();
+            ff4j.disable("newffff");
+        });
     }
 
     @Test
     public void testGetFeatures() {
         FF4j ff4j = new FF4j(new XmlParser(),"ff4j.xml");
-        Assert.assertEquals(5, ff4j.getFeatures().size());
+        Assertions.assertEquals(5, ff4j.getFeatures().size());
     }
 
     @Test
     public void testFlipped() {
         FF4j ff4j = new FF4j().autoCreate(true).createFeature(
                 new Feature("coco", true, "grp2", "", Arrays.asList(new String[] {"ROLEA"})));
-        Assert.assertTrue(ff4j.check("coco"));
+        Assertions.assertTrue(ff4j.check("coco"));
         ff4j.setAuthorizationsManager(mockAuthManager);
-        Assert.assertTrue(ff4j.check("coco"));
+        Assertions.assertTrue(ff4j.check("coco"));
         FlippingExecutionContext ex = new FlippingExecutionContext();
         ex.putString("OK", "OK");
-        Assert.assertTrue(ff4j.check("coco", ex));
-        Assert.assertTrue(ff4j.checkOverridingStrategy("coco", mockFlipStrategy));
-        Assert.assertTrue(ff4j.checkOverridingStrategy("coco", null, null));
-        Assert.assertFalse(ff4j.checkOverridingStrategy("cocorico", mockFlipStrategy));
+        Assertions.assertTrue(ff4j.check("coco", ex));
+        Assertions.assertTrue(ff4j.checkOverridingStrategy("coco", mockFlipStrategy));
+        Assertions.assertTrue(ff4j.checkOverridingStrategy("coco", null, null));
+        Assertions.assertFalse(ff4j.checkOverridingStrategy("cocorico", mockFlipStrategy));
         // Update Coverage
         ff4j.setAuthManager("something");
     }
@@ -297,18 +310,18 @@ public class FF4jTest extends AbstractFf4jTest {
         ff4j.audit();
         ff4j.createFeature("N1", true, "description NEWS");
         ff4j.createFeature("N2", false, "description NEWS");
-        Assert.assertTrue(ff4j.check("N1"));
-        Assert.assertFalse(ff4j.checkOverridingStrategy("N1", new ExpressionFlipStrategy("N1", "N1 & N2")));
+        Assertions.assertTrue(ff4j.check("N1"));
+        Assertions.assertFalse(ff4j.checkOverridingStrategy("N1", new ExpressionFlipStrategy("N1", "N1 & N2")));
     }
         
     @Test
     public void testToString2() {
-        Assert.assertTrue(ff4j.toString().contains(InMemoryFeatureStore.class.getCanonicalName()));
+        Assertions.assertTrue(ff4j.toString().contains(InMemoryFeatureStore.class.getCanonicalName()));
     }
 
     @Test
     public void testExportFeatures() throws IOException {
-        Assert.assertNotNull(ff4j.exportFeatures());
+        Assertions.assertNotNull(ff4j.exportFeatures());
     }
 
     @Test
@@ -344,7 +357,7 @@ public class FF4jTest extends AbstractFf4jTest {
         List < Feature > listOfFeatures = new ArrayList<Feature>();
         listOfFeatures.add(new Feature("f1", true, null, null, Util.set("USER")));
         ff4j.importFeatures(listOfFeatures);
-        Assert.assertTrue(ff4j.exist("f1"));
+        Assertions.assertTrue(ff4j.exist("f1"));
         
         // no Error
         ff4j.importFeatures(null);
@@ -356,7 +369,7 @@ public class FF4jTest extends AbstractFf4jTest {
         List < Property<?> > listOfProperties = new ArrayList<Property<?>>();
         listOfProperties.add(new PropertyString("p1", "v1"));
         ff4j.importProperties(listOfProperties);
-        Assert.assertTrue(ff4j.getPropertiesStore().existProperty("p1"));
+        Assertions.assertTrue(ff4j.getPropertiesStore().existProperty("p1"));
         
         // no Error
         ff4j.importProperties(null);
@@ -364,7 +377,7 @@ public class FF4jTest extends AbstractFf4jTest {
     
     @Test
     public void testInitWithEventPublisher() {
-        Assert.assertNotNull(new FF4j().getEventPublisher());
+        Assertions.assertNotNull(new FF4j().getEventPublisher());
     }
     
     @Test
@@ -372,25 +385,27 @@ public class FF4jTest extends AbstractFf4jTest {
         FF4j ff4j = new FF4j();
         ff4j.createFeature("f1", true);
         ff4j.setAuthorizationsManager(new DefinedPermissionSecurityManager("a", new HashSet<String>()));
-        Assert.assertTrue(ff4j.checkOverridingStrategy("f1", new PonderationStrategy(1d)));
-        Assert.assertTrue(ff4j.isAllowed(ff4j.getFeature("f1")));
+        Assertions.assertTrue(ff4j.checkOverridingStrategy("f1", new PonderationStrategy(1d)));
+        Assertions.assertTrue(ff4j.isAllowed(ff4j.getFeature("f1")));
     }
     
     @Test
     public void testGetProperty() {
         FF4j ff4j = new FF4j();
         ff4j.createProperty(new PropertyString("p1", "v1"));
-        Assert.assertTrue(ff4j.existProperty("p1"));
-        Assert.assertNotNull(ff4j.getProperty("p1"));
-        Assert.assertNotNull(ff4j.getPropertyAsString("p1"));
-        Assert.assertEquals("v1", ff4j.getPropertyAsString("p1"));
+        Assertions.assertTrue(ff4j.existProperty("p1"));
+        Assertions.assertNotNull(ff4j.getProperty("p1"));
+        Assertions.assertNotNull(ff4j.getPropertyAsString("p1"));
+        Assertions.assertEquals("v1", ff4j.getPropertyAsString("p1"));
     }
 
-    @Test(expected = PropertyNotFoundException.class)
+    @Test
     public void testGetPropertyNotExists() {
-        FF4j ff4j = new FF4j();
-        Assert.assertFalse(ff4j.existProperty("p1"));
-        ff4j.getProperty("p1");
+        assertThrows(PropertyNotFoundException.class, () -> {
+            FF4j ff4j = new FF4j();
+            Assertions.assertFalse(ff4j.existProperty("p1"));
+            ff4j.getProperty("p1");
+        });
     }
 
     @Test
@@ -399,27 +414,30 @@ public class FF4jTest extends AbstractFf4jTest {
         ff4j.createFeature(new Feature("f1", true, "f1-desc", "g1"));
         ff4j.createFeature(new Feature("f2", true, "f2-desc", "g2"));
         Map<String, Feature> featuresG1 = ff4j.getFeaturesByGroup("g1");
-        Assert.assertTrue(ff4j.existGroup("g1"));
-        Assert.assertEquals(1, featuresG1.size());
-        Assert.assertTrue(featuresG1.containsKey("f1"));
-        Assert.assertEquals("g1", featuresG1.get("f1").getGroup());
+        Assertions.assertTrue(ff4j.existGroup("g1"));
+        Assertions.assertEquals(1, featuresG1.size());
+        Assertions.assertTrue(featuresG1.containsKey("f1"));
+        Assertions.assertEquals("g1", featuresG1.get("f1").getGroup());
     }
 
-    @Test(expected = GroupNotFoundException.class)
+    @Test
     public void testGetFeaturesByGroupNotExists() {
-        FF4j ff4j = new FF4j();
-        Assert.assertFalse(ff4j.existGroup("g1"));
-        ff4j.getFeaturesByGroup("g1");
+        assertThrows(GroupNotFoundException.class, () -> {
+            FF4j ff4j = new FF4j();
+            Assertions.assertFalse(ff4j.existGroup("g1"));
+            ff4j.getFeaturesByGroup("g1");
+        });
     }
 
     @Test
     public void testParseXmlConfigOK() {
-        Assert.assertNotNull(new FF4j().parseXmlConfig("test-featureXmlParserTest-ok.xml"));        
+        Assertions.assertNotNull(new FF4j().parseXmlConfig("test-featureXmlParserTest-ok.xml"));        
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testParseXmlConfigKO() {
-        Assert.assertNotNull(new FF4j().parseXmlConfig("do-not-ext.xml"));        
+        assertThrows(IllegalArgumentException.class, () ->
+            Assertions.assertNotNull(new FF4j().parseXmlConfig("do-not-ext.xml")));
     }
     
     @Test
@@ -441,11 +459,11 @@ public class FF4jTest extends AbstractFf4jTest {
     public void getConcreteFeatureStore() {
         FF4j ff4j = new FF4j();
         ff4j.cache(new InMemoryCacheManager());
-        Assert.assertNotNull(ff4j.getCacheProxy());
-        Assert.assertNotNull(ff4j.getConcreteFeatureStore());
-        Assert.assertNotNull(ff4j.getConcretePropertyStore());
+        Assertions.assertNotNull(ff4j.getCacheProxy());
+        Assertions.assertNotNull(ff4j.getConcreteFeatureStore());
+        Assertions.assertNotNull(ff4j.getConcretePropertyStore());
         ff4j.setPropertiesStore(new PropertyStoreAuditProxy(ff4j, ff4j.getPropertiesStore()));
-        Assert.assertNotNull(ff4j.getConcretePropertyStore());
+        Assertions.assertNotNull(ff4j.getConcretePropertyStore());
     }
     
     @Test
@@ -457,7 +475,7 @@ public class FF4jTest extends AbstractFf4jTest {
         ff4j.setEventRepository(null);
         // No error event with null elements
         ff4j.createSchema();
-        Assert.assertNotNull(ff4j);
+        Assertions.assertNotNull(ff4j);
     }
 
 }

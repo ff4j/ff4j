@@ -21,12 +21,12 @@ package org.ff4j.test;
  */
 
 import static org.mockito.Mockito.mock;
-import org.junit.Assert;
 
 import org.ff4j.FF4j;
 import org.ff4j.security.AuthorizationsManager;
 import org.ff4j.store.InMemoryFeatureStore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test class for {@link FF4j} initializations.
@@ -41,9 +41,9 @@ public class FF4jInitializationTest {
      * Factorisation of assertions for different ff4j initializations.
      */
     private void testingGeneratedFF4j(FF4j f) {
-        Assert.assertNotNull(f.getFeatureStore());
-        Assert.assertTrue(f.getFeatureStore() instanceof InMemoryFeatureStore);
-        Assert.assertFalse(f.check("new"));
+        Assertions.assertNotNull(f.getFeatureStore());
+        Assertions.assertTrue(f.getFeatureStore() instanceof InMemoryFeatureStore);
+        Assertions.assertFalse(f.check("new"));
     }
 
     @Test
@@ -67,14 +67,14 @@ public class FF4jInitializationTest {
         f3.autoCreate(true);
 
         testingGeneratedFF4j(f3);
-        Assert.assertNotNull(f3.getAuthorizationsManager());
+        Assertions.assertNotNull(f3.getAuthorizationsManager());
     }
 
     @Test
     public void testGetCacheProxy() {
         FF4j f1 = new FF4j();
         f1.setAutocreate(true);
-        Assert.assertNull(f1.getCacheProxy());
+        Assertions.assertNull(f1.getCacheProxy());
     }
 
 }

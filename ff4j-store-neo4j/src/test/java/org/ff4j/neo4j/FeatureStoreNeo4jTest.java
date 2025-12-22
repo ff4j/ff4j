@@ -24,8 +24,8 @@ package org.ff4j.neo4j;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.neo4j.store.FeatureStoreNeo4J;
 import org.ff4j.test.store.FeatureStoreTestSupport;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseSettings;
@@ -46,7 +46,7 @@ public class FeatureStoreNeo4jTest extends FeatureStoreTestSupport {
     /**
      * Create temporary database for each unit test.
      */
-    @BeforeClass
+    @BeforeAll
     public static void prepareTestDatabase() {
        
         // Embedded DATABASE
@@ -115,7 +115,7 @@ public class FeatureStoreNeo4jTest extends FeatureStoreTestSupport {
         }
     }
    
-    @AfterClass
+    @AfterAll
     public static void destroyTestDatabase() {
         graphDb.shutdown();
     }

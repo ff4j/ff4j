@@ -4,7 +4,7 @@ package org.ff4j.cli;
  * #%L
  * ff4j-cli
  * %%
- * Copyright (C) 2013 - 2024 FF4J
+ * Copyright (C) 2013 - 2025 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,12 @@ package org.ff4j.cli;
  */
 
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 public abstract class AbstractCommandLineTest {
 
@@ -48,12 +48,12 @@ public abstract class AbstractCommandLineTest {
 		String output = outContent.toString();
 		if (expression != null) {
 			for (String string : expression) {
-				assertTrue("Output must contain :" + string, output.contains(string));
+				assertTrue(output.contains(string), "Output must contain :" + string);
 			}
 		}
 	}
 	
-	@Before
+	@BeforeEach
 	public void init() {
 		processor = new FF4jCliProcessor("ff4j-cli-config.xml");
 		System.setOut(new PrintStream(outContent));

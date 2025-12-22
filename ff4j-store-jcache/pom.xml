@@ -49,6 +49,12 @@
       <version>${jsr107.version}</version>
       <scope>test</scope>
     </dependency>
+  <dependency>
+   <groupId>org.junit.jupiter</groupId>
+   <artifactId>junit-jupiter</artifactId>
+   <version>5.14.1</version>
+   <scope>test</scope>
+  </dependency>
     <!-- EhCache3-->
     <dependency>
       <groupId>org.ehcache</groupId>
@@ -67,11 +73,6 @@
       <artifactId>ff4j-test</artifactId>
       <groupId>org.ff4j</groupId>
       <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

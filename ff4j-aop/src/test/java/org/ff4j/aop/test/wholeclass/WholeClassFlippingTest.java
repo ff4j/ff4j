@@ -21,16 +21,16 @@ package org.ff4j.aop.test.wholeclass;
  */
 
 import org.ff4j.FF4j;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration("classpath:applicationContext-ff4j-aop-test.xml")
 public class WholeClassFlippingTest {
 
@@ -47,17 +47,17 @@ public class WholeClassFlippingTest {
     @Test
     public void testAOPClass() {
         // Given english mode
-        Assert.assertTrue(wholeClassFlipping.hello1().startsWith("Hello"));
-        Assert.assertTrue(wholeClassFlipping.hello2().startsWith("Big"));
+        Assertions.assertTrue(wholeClassFlipping.hello1().startsWith("Hello"));
+        Assertions.assertTrue(wholeClassFlipping.hello2().startsWith("Big"));
         // when
         ff4j.enable("language-french");
         // Then
-        Assert.assertTrue(wholeClassFlipping.hello1().startsWith("Francais"));
-        Assert.assertTrue(wholeClassFlipping.hello2().startsWith("Tour"));
+        Assertions.assertTrue(wholeClassFlipping.hello1().startsWith("Francais"));
+        Assertions.assertTrue(wholeClassFlipping.hello2().startsWith("Tour"));
 
     }
 
-    @After
+    @AfterEach
     public void disable() {
         ff4j.disable("language-french");
     }

@@ -27,9 +27,8 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.ehcache.FF4jEhCacheWrapper;
 import org.ff4j.store.FeatureStoreEhCache;
 import org.ff4j.test.store.FeatureStoreTestSupport;
-import org.junit.After;
-import org.junit.Ignore;
-
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.Configuration;
 import net.sf.ehcache.config.MemoryUnit;
@@ -43,7 +42,7 @@ import net.sf.ehcache.config.TerracottaConfiguration;
  * 
  * Working but quite slow to test all on each build
  */
-@Ignore
+@Disabled
 public class FeatureStoreTerracottaTestIT extends FeatureStoreTestSupport {
 
     /** Terracotta URL. */
@@ -77,7 +76,7 @@ public class FeatureStoreTerracottaTestIT extends FeatureStoreTestSupport {
     /**
      * Clean store after each test (avoid duplication)
      */
-    @After
+    @AfterEach
     public void cleanStore() {
         Map<String, Feature> f = testedStore.readAll();
         for (String key : f.keySet()) {

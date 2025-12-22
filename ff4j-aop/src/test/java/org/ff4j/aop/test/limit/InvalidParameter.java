@@ -31,10 +31,12 @@ import org.ff4j.aop.FeatureAdvisor;
 
 import org.ff4j.aop.Flip;
 import org.ff4j.conf.XmlParser;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@Disabled
 public class InvalidParameter {
 
     public interface IDoIt { @Flip(name = "f1") void doIt(String a); };
@@ -43,31 +45,45 @@ public class InvalidParameter {
     
     public class IDoItImpl2 implements IDoIt { public void doIt(String a) {} }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testInvalidParameter() throws Throwable {
-        final IDoIt service = new IDoItImpl();
-        service.doIt("");
-        
-        FeatureAdvisor fa = new FeatureAdvisor();
-        fa.setFf4j(new FF4j(new XmlParser(), "test-ff4j-features.xml"));
-        
-        MethodInvocation mi = new MethodInvocation() {
-            public Object proceed() throws Throwable { return null; }
-            public Object getThis() { return service; }
-            public AccessibleObject getStaticPart() { return null; }
-            public Object[] getArguments() { return null;}
-            public Method getMethod() {
-                try {
-                    Method m = IDoIt.class.getMethod("doIt", String.class);
-                    return m;
-                } catch (SecurityException e) {
-                    e.printStackTrace();
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
+        assertThrows(IllegalArgumentException.class, () -> {
+            final IDoIt service = new IDoItImpl();
+            service.doIt("");
+
+            FeatureAdvisor fa = new FeatureAdvisor();
+            fa.setFf4j(new FF4j(new XmlParser(), "test-ff4j-features.xml"));
+
+            MethodInvocation mi = new MethodInvocation() {
+                public Object proceed() throws Throwable {
+                    return null;
                 }
-                return null;
-            }
-        };
-        fa.invoke(mi);
+
+                public Object getThis() {
+                    return service;
+                }
+
+                public AccessibleObject getStaticPart() {
+                    return null;
+                }
+
+                public Object[] getArguments() {
+                    return null;
+                }
+
+                public Method getMethod() {
+                    try {
+                        Method m = IDoIt.class.getMethod("doIt", String.class);
+                        return m;
+                    } catch (SecurityException e) {
+                        e.printStackTrace();
+                    } catch (NoSuchMethodException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+            };
+            fa.invoke(mi);
+        });
     }
 }

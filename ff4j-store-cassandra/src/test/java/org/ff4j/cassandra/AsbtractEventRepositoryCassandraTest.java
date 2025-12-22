@@ -22,8 +22,7 @@ package org.ff4j.cassandra;
 
 import org.ff4j.cassandra.store.EventRepositoryCassandra;
 import org.ff4j.test.audit.EventRepositoryTestSupport;
-import org.junit.AfterClass;
-
+import org.junit.jupiter.api.AfterAll;
 import com.datastax.oss.driver.api.core.CqlSession;
 
 /**
@@ -46,7 +45,7 @@ public abstract class AsbtractEventRepositoryCassandraTest extends EventReposito
         return store;
     }
     
-    @AfterClass
+    @AfterAll
     public static void closeConnection() {
         cqlSession.close();
         cqlSession = null;

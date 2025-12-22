@@ -97,7 +97,8 @@
     <version.jakarta.ws.rs-api>3.1.0</version.jakarta.ws.rs-api>
     <version.jetty>12.0.8</version.jetty>
     <version.jstl>3.0.0</version.jstl>
-    <version.junit>4.13.2</version.junit>
+    <version.junit-jupiter>5.14.1</version.junit-jupiter>
+    <version.junit-pioneer>2.3.0</version.junit-pioneer>
     <version.logback>1.5.6</version.logback>
     <version.lombok>1.18.32</version.lombok>
     <version.metrics>4.2.25</version.metrics>
@@ -110,6 +111,7 @@
     <version.swagger>1.6.14</version.swagger>
     <version.taglib>1.2.5</version.taglib>
     <version.testcontainers>1.19.7</version.testcontainers>
+    <version.byte-buddy>1.14.19</version.byte-buddy>
 
     <!-- Cannot go above for jdk 8 retrop compatibility -->
     <version.hdldb>2.7.2</version.hdldb>
@@ -210,7 +212,26 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${version.junit-jupiter}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-bom</artifactId>
+        <version>${version.testcontainers}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <!-- Libraries -->
+      <dependency>
+        <groupId>net.bytebuddy</groupId>
+        <artifactId>byte-buddy</artifactId>
+        <version>${version.byte-buddy}</version>
+      </dependency>
       <dependency>
         <groupId>org.fusesource.jansi</groupId>
         <artifactId>jansi</artifactId>
@@ -462,12 +483,6 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>${version.junit}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
         <groupId>org.hsqldb</groupId>
         <artifactId>hsqldb</artifactId>
         <version>${version.hdldb}</version>
@@ -483,25 +498,16 @@
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
         <version>${version.mockito}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.powermock</groupId>
-        <artifactId>powermock-module-junit4</artifactId>
-        <version>${version.powermock}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.powermock</groupId>
         <artifactId>powermock-api-mockito</artifactId>
         <version>${version.powermock}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.testcontainers</groupId>
-        <artifactId>testcontainers</artifactId>
-        <version>${version.testcontainers}</version>
-        <scope>test</scope>
+        <groupId>org.junit-pioneer</groupId>
+        <artifactId>junit-pioneer</artifactId>
+        <version>${version.junit-pioneer}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -703,9 +709,6 @@
           <goals>deploy</goals>
         </configuration>
       </plugin>
-
-
-
     </plugins>
 
     <pluginManagement>

@@ -4,7 +4,7 @@ package org.ff4j.parser.properties;
  * #%L
  * ff4j-config-properties
  * %%
- * Copyright (C) 2013 - 2024 FF4J
+ * Copyright (C) 2013 - 2025 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,8 @@ package org.ff4j.parser.properties;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.InputStream;
 
@@ -30,14 +31,15 @@ import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.test.unsafe.UnsafeFlippingStrategy;
 import org.ff4j.test.unsafe.UnsafeProperty;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class PropertiesParserTest {
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void propertiesFile_shouldExist() {
-        new PropertiesParser().parseConfigurationFile(null);
+        assertThrows(IllegalArgumentException.class, () ->
+            new PropertiesParser().parseConfigurationFile(null));
     }
 
     @Test
@@ -55,10 +57,9 @@ public class PropertiesParserTest {
         // Given a properties file
         InputStream propsFile = getClass().getClassLoader().getResourceAsStream("unsafe/test-ff4j-features.properties");
         // When loading config
-        Assert.assertThrows(IllegalArgumentException.class, () -> {
-            new PropertiesParser().parseConfigurationFile(propsFile);
-        });
-        Assert.assertEquals(0, UnsafeProperty.count);
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+            new PropertiesParser().parseConfigurationFile(propsFile));
+        Assertions.assertEquals(0, UnsafeProperty.count);
     }
     
     @Test
@@ -66,10 +67,9 @@ public class PropertiesParserTest {
         // Given a properties file
         InputStream propsFile = getClass().getClassLoader().getResourceAsStream("unsafe/test-ff4j-strategy.properties");
         // When loading config
-        Assert.assertThrows(IllegalArgumentException.class, () -> {
-            new PropertiesParser().parseConfigurationFile(propsFile);
-        });
-        Assert.assertEquals(0, UnsafeFlippingStrategy.count);
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+            new PropertiesParser().parseConfigurationFile(propsFile));
+        Assertions.assertEquals(0, UnsafeFlippingStrategy.count);
     }
     
     @Test

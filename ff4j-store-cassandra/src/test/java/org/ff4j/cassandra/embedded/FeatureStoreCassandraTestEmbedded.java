@@ -25,8 +25,7 @@ import java.net.InetSocketAddress;
 import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
 import org.ff4j.cassandra.AsbtractFeatureStoreCassandraTest;
 import org.ff4j.core.FeatureStore;
-import org.junit.BeforeClass;
-
+import org.junit.jupiter.api.BeforeAll;
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.CqlSessionBuilder;
 import com.datastax.oss.driver.api.querybuilder.SchemaBuilder;
@@ -43,7 +42,7 @@ public class FeatureStoreCassandraTestEmbedded extends AsbtractFeatureStoreCassa
     private static final String LOCAL_NODE_KS    = "ff4j";
     private static final int    LOCAL_NODE_PORT  = 9142;
    
-    @BeforeClass
+    @BeforeAll
     public static void startEmbeddedCassandra() throws Exception {
         EmbeddedCassandraServerHelper.startEmbeddedCassandra(50000);
     }

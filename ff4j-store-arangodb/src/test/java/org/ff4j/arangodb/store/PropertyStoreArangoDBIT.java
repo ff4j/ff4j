@@ -23,15 +23,14 @@ package org.ff4j.arangodb.store;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
 import org.junit.ClassRule;
-import org.junit.Ignore;
-
+import org.junit.jupiter.api.Disabled;
 import com.arangodb.ArangoDB;
 import com.arangodb.ArangoDatabase;
 
 /**
  * ArangoDB property store tests
  */
-@Ignore
+@Disabled
 public class PropertyStoreArangoDBIT extends PropertyStoreTestSupport {
 
     @ClassRule

@@ -22,7 +22,7 @@ package org.ff4j.test.store;
 
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.JdbcFeatureStore;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -40,7 +40,7 @@ public class JdbcFeatureStoreXmlTest extends CoreFeatureStoreTestSupport {
         return new JdbcFeatureStore(db, "ff4j.xml");
     }
     /** {@inheritDoc} */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         db.shutdown();
     }

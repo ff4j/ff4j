@@ -22,8 +22,7 @@ package org.ff4j.cache.it;
 
 import org.ff4j.cache.FF4JCacheManager;
 import org.ff4j.cache.FF4jCacheManagerRedisLettuce;
-import org.junit.Ignore;
-
+import org.junit.jupiter.api.Disabled;
 import io.lettuce.core.RedisClient;
 
 /**
@@ -33,7 +32,7 @@ import io.lettuce.core.RedisClient;
  *
  * Ignore because Docker may not be available in all cases.
  */
-@Ignore
+@Disabled
 public class PropertyStoreWithRedisCacheLettuceIT extends RedisTestSupport {
 
     @Override

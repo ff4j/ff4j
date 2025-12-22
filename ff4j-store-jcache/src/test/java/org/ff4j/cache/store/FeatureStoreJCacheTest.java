@@ -34,6 +34,7 @@ import static org.ff4j.test.TestsFf4jConstants.ROLE_ADMIN;
 import static org.ff4j.test.TestsFf4jConstants.ROLE_NEW;
 import static org.ff4j.test.TestsFf4jConstants.ROLE_USER;
 import static org.ff4j.test.TestsFf4jConstants.TEST_FEATURES_FILE;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -56,10 +57,10 @@ import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.PonderationStrategy;
 import org.ff4j.test.AssertFf4j;
 import org.ff4j.utils.Util;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test to work with Redis as a store.
@@ -88,7 +89,7 @@ public class FeatureStoreJCacheTest {
     /**
      * Clean store after each test (avoid duplication)
      */
-    @After
+    @AfterEach
     public void cleanStore() {
         Map < String, Feature > f = testedStore.readAll();
         for (String key : f.keySet()) {
@@ -100,7 +101,7 @@ public class FeatureStoreJCacheTest {
     protected FeatureStore defaultStore = new InMemoryFeatureStore(TEST_FEATURES_FILE);
 
     /** {@inheritDoc} */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         ff4j = new FF4j();
         ff4j.setFeatureStore(initStore());
@@ -129,12 +130,12 @@ public class FeatureStoreJCacheTest {
         // When
         Map<String, Feature> features = testedStore.readAll();
         // Then
-        Assert.assertEquals(EXPECTED_FEATURES_NUMBERS, features.size());
+        Assertions.assertEquals(EXPECTED_FEATURES_NUMBERS, features.size());
         // Then testing whole structure
         Feature f = features.get(F4);
-        Assert.assertEquals(F4 + " does not exist", f.getUid(), F4);
-        Assert.assertTrue("no description", f.getDescription() != null && !"".equals(f.getDescription()));
-        Assert.assertTrue("no authorizations", f.getPermissions() != null && !f.getPermissions().isEmpty());
+        Assertions.assertEquals(f.getUid(), F4, F4 + " does not exist");
+        Assertions.assertTrue(f.getDescription() != null && !"".equals(f.getDescription()), "no description");
+        Assertions.assertTrue(f.getPermissions() != null && !f.getPermissions().isEmpty(), "no authorizations");
         assertFf4j.assertThatFeatureHasRole(F4, ROLE_ADMIN);
         assertFf4j.assertThatFeatureIsInGroup(F4, G1);
     }
@@ -142,33 +143,36 @@ public class FeatureStoreJCacheTest {
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testReadNull() {
-        // Given
-        // When
-        testedStore.read(null);
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.read(null));
         // Then, expected error...
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testReadEmpty() {
-        // Given
-        // When
-        testedStore.read("");
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.read(""));
         // Then, expected error...
     }
     
     /**
      * TDD.
      */
-    @Test(expected = FeatureNotFoundException.class)
+    @Test
     public void testReadNotExist() {
-        // Given
-        // When
-        testedStore.read("I-DONT-EXIST");
+        assertThrows(FeatureNotFoundException.class, () ->
+            // Given
+            // When
+            testedStore.read("I-DONT-EXIST"));
         // Then, expected error...
     }
 
@@ -182,9 +186,9 @@ public class FeatureStoreJCacheTest {
         // When
         Feature f = testedStore.read(F4);
         // Then
-        Assert.assertEquals(f.getUid(), F4);
-        Assert.assertTrue(f.getDescription() != null && !"".equals(f.getDescription()));
-        Assert.assertTrue(f.getPermissions() != null && !f.getPermissions().isEmpty());
+        Assertions.assertEquals(f.getUid(), F4);
+        Assertions.assertTrue(f.getDescription() != null && !"".equals(f.getDescription()));
+        Assertions.assertTrue(f.getPermissions() != null && !f.getPermissions().isEmpty());
         assertFf4j.assertThatFeatureHasRole(F4, ROLE_ADMIN);
         assertFf4j.assertThatFeatureIsInGroup(F4, G1);
     }
@@ -193,68 +197,78 @@ public class FeatureStoreJCacheTest {
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testEnableNull() {
-        // Given
-        // When
-        testedStore.enable(null);
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.enable(null));
         // Then, expected error...
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testEnableEmpty() {
-        // Given
-        // When
-        testedStore.enable("");
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.enable(""));
         // Then, expected error...
     }
 
     /**
      * TDD.
      */
-    @Test(expected = FeatureNotFoundException.class)
+    @Test
     public void testEnableFeatureDoesNotExist() {
-        // Given
-        assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
-        // When
-        testedStore.enable(F_DOESNOTEXIST);
+        assertThrows(FeatureNotFoundException.class, () -> {
+            // Given
+            assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
+            // When
+            testedStore.enable(F_DOESNOTEXIST);
+            // Then, expected error...
+        });
         // Then, expected error...
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testDisableNull() {
-        // Given
-        // When
-        testedStore.disable(null);
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.disable(null));
         // Then, expected error...
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testDisableEmpty() {
-        // Given
-        // When
-        testedStore.disable("");
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.disable(""));
         // Then, expected error...
     }
 
     /**
      * TDD.
      */
-    @Test(expected = FeatureNotFoundException.class)
+    @Test
     public void testDisableFeatureDoesNotExist() {
-        // Given
-        assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
-        // When
-        testedStore.disable(F_DOESNOTEXIST);
+        assertThrows(FeatureNotFoundException.class, () -> {
+            // Given
+            assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
+            // When
+            testedStore.disable(F_DOESNOTEXIST);
+            // Then, expected error...
+        });
         // Then, expected error...
     }
 
@@ -287,11 +301,12 @@ public class FeatureStoreJCacheTest {
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCreateNull() throws Exception {
-        // Given
-        // When
-        testedStore.create(null);
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.create(null));
         // Then, expected error...
     }
 
@@ -318,30 +333,34 @@ public class FeatureStoreJCacheTest {
     /**
      * TDD.
      */
-    @Test(expected = FeatureAlreadyExistException.class)
+    @Test
     public void testAddFeatureAlreadyExis() throws Exception {
-        // Given
-        assertFf4j.assertThatFeatureDoesNotExist("GOLOGOLO");
-        // When (first creation)
-        Feature fp = new Feature("GOLOGOLO", true, "description2");
-        testedStore.create(fp);
-        // Then (first creation)
-        assertFf4j.assertThatFeatureExist("GOLOGOLO");
-        // When (second creation)
-        Set<String> rights = new HashSet<String>(Arrays.asList(new String[] {ROLE_USER}));
-        Feature fp2 = new Feature("GOLOGOLO", true, G1, "description3", rights);
-        testedStore.create(fp2);
+        assertThrows(FeatureAlreadyExistException.class, () -> {
+            // Given
+            assertFf4j.assertThatFeatureDoesNotExist("GOLOGOLO");
+            // When (first creation)
+            Feature fp = new Feature("GOLOGOLO", true, "description2");
+            testedStore.create(fp);
+            // Then (first creation)
+            assertFf4j.assertThatFeatureExist("GOLOGOLO");
+            // When (second creation)
+            Set<String> rights = new HashSet<String>(Arrays.asList(new String[]{ROLE_USER}));
+            Feature fp2 = new Feature("GOLOGOLO", true, G1, "description3", rights);
+            testedStore.create(fp2);
+            // Then, expected exception
+        });
         // Then, expected exception
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testDeleteNull() throws Exception {
-        // Given
-        // When
-        testedStore.delete(null);
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.delete(null));
         // Then, expected error...
     }
 
@@ -367,56 +386,63 @@ public class FeatureStoreJCacheTest {
     /**
      * TDD.
      */
-    @Test(expected = FeatureNotFoundException.class)
+    @Test
     public void testDeteleFeatureDoesnotExist() throws Exception {
-        // Given
-        assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
-        // When
-        testedStore.delete(F_DOESNOTEXIST);
+        assertThrows(FeatureNotFoundException.class, () -> {
+            // Given
+            assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
+            // When
+            testedStore.delete(F_DOESNOTEXIST);
+            // Then , expected error
+        });
         // Then , expected error
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGrantRoleNullFeature() throws Exception {
-        // Given
-        // When
-        testedStore.grantRoleOnFeature(null, ROLE_ADMIN);
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.grantRoleOnFeature(null, ROLE_ADMIN));
         // Then, expected error...
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGrantRoleEmptyFeature() throws Exception {
-        // Given
-        // When
-        testedStore.grantRoleOnFeature("", ROLE_ADMIN);
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.grantRoleOnFeature("", ROLE_ADMIN));
         // Then, expected error...
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGrantRoleNullRole() throws Exception {
-        // Given
-        // When
-        testedStore.grantRoleOnFeature(F1, null);
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.grantRoleOnFeature(F1, null));
         // Then, expected error...
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGrantRoleEmptyRole() throws Exception {
-        // Given
-        // When
-        testedStore.grantRoleOnFeature(F1, "");
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.grantRoleOnFeature(F1, ""));
         // Then, expected error...
     }
 
@@ -437,56 +463,63 @@ public class FeatureStoreJCacheTest {
     /**
      * TDD.
      */
-    @Test(expected = FeatureNotFoundException.class)
+    @Test
     public void testGrantRoleToFeatureFeatureDoesNotExist() throws Exception {
-        // Given
-        assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
-        // When
-        testedStore.grantRoleOnFeature(F_DOESNOTEXIST, ROLE_USER);
+        assertThrows(FeatureNotFoundException.class, () -> {
+            // Given
+            assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
+            // When
+            testedStore.grantRoleOnFeature(F_DOESNOTEXIST, ROLE_USER);
+            // Then, expected failure
+        });
         // Then, expected failure
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRemoveRoleNullFeature() throws Exception {
-        // Given
-        // When
-        testedStore.removeRoleFromFeature(null, ROLE_ADMIN);
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.removeRoleFromFeature(null, ROLE_ADMIN));
         // Then, expected error...
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRemoveRoleEmptyFeature() throws Exception {
-        // Given
-        // When
-        testedStore.removeRoleFromFeature("", ROLE_ADMIN);
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.removeRoleFromFeature("", ROLE_ADMIN));
         // Then, expected error...
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRemoveRoleNullRole() throws Exception {
-        // Given
-        // When
-        testedStore.removeRoleFromFeature(F1, null);
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.removeRoleFromFeature(F1, null));
         // Then, expected error...
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRemoveRoleEmptyRole() throws Exception {
-        // Given
-        // When
-        testedStore.removeRoleFromFeature(F1, "");
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.removeRoleFromFeature(F1, ""));
         // Then, expected error...
     }
 
@@ -507,35 +540,42 @@ public class FeatureStoreJCacheTest {
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testUpdateNull() throws Exception {
-        // Given
-        // When
-        testedStore.update(null);
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.update(null));
         // Then, expected error...
     }
     
     /**
      * TDD.
      */
-    @Test(expected = FeatureNotFoundException.class)
+    @Test
     public void testFeatureDoesNotExit() {
-        // Given
-        assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
-        // When
-        testedStore.update(new Feature(F_DOESNOTEXIST));
+        assertThrows(FeatureNotFoundException.class, () -> {
+            // Given
+            assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
+            // When
+            testedStore.update(new Feature(F_DOESNOTEXIST));
+            // Then, expect error
+        });
         // Then, expect error
     }
 
     /**
      * TDD.
      */
-    @Test(expected = FeatureNotFoundException.class)
+    @Test
     public void testDeleteRoleFeatureDoesNotExit() {
-        // Given
-        assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
-        // When
-        testedStore.removeRoleFromFeature(F_DOESNOTEXIST, ROLE_USER);
+        assertThrows(FeatureNotFoundException.class, () -> {
+            // Given
+            assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
+            // When
+            testedStore.removeRoleFromFeature(F_DOESNOTEXIST, ROLE_USER);
+            // Then, expected to fail
+        });
         // Then, expected to fail
     }
 
@@ -549,7 +589,7 @@ public class FeatureStoreJCacheTest {
         FlippingStrategy newStrategy = new PonderationStrategy(0.12);
         // Given
         assertFf4j.assertThatFeatureExist(F1);
-        Assert.assertFalse(newDescription.equals(testedStore.read(F1).getDescription()));
+        Assertions.assertFalse(newDescription.equals(testedStore.read(F1).getDescription()));
         // When
         Feature fpBis = testedStore.read(F1);
         fpBis.setDescription(newDescription);
@@ -557,9 +597,9 @@ public class FeatureStoreJCacheTest {
         testedStore.update(fpBis);
         // Then
         Feature updatedFeature = testedStore.read(F1);
-        Assert.assertTrue(newDescription.equals(updatedFeature.getDescription()));
-        Assert.assertNotNull(updatedFeature.getFlippingStrategy());
-        Assert.assertEquals(newStrategy.toString(), updatedFeature.getFlippingStrategy().toString());
+        Assertions.assertTrue(newDescription.equals(updatedFeature.getDescription()));
+        Assertions.assertNotNull(updatedFeature.getFlippingStrategy());
+        Assertions.assertEquals(newStrategy.toString(), updatedFeature.getFlippingStrategy().toString());
     }
 
     /**
@@ -613,35 +653,39 @@ public class FeatureStoreJCacheTest {
         assertFf4j.assertThatFeatureHasRole(F1, ROLE_NEW);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testExistNull() {
-        ff4j.getFeatureStore().exist(null);
+        assertThrows(IllegalArgumentException.class, () ->
+            ff4j.getFeatureStore().exist(null));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testExistEmpty() {
-        ff4j.getFeatureStore().exist("");
+        assertThrows(IllegalArgumentException.class, () ->
+            ff4j.getFeatureStore().exist(""));
     }
     
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testExistGroupNull() throws Exception {
-        // Given
-        // When
-        testedStore.existGroup(null);
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.existGroup(null));
         // Then, expected error...
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testExistGroupEmpty() throws Exception {
-        // Given
-        // When
-        testedStore.existGroup("");
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.existGroup(""));
         // Then, expected error...
     }
 
@@ -654,29 +698,31 @@ public class FeatureStoreJCacheTest {
         assertFf4j.assertThatGroupExist(G1);
         assertFf4j.assertThatGroupDoesNotExist(G_DOESNOTEXIST);
         // Then
-        Assert.assertTrue(testedStore.existGroup(G1));
-        Assert.assertFalse(testedStore.existGroup(G_DOESNOTEXIST));
+        Assertions.assertTrue(testedStore.existGroup(G1));
+        Assertions.assertFalse(testedStore.existGroup(G_DOESNOTEXIST));
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testEnableGroupNull() throws Exception {
-        // Given
-        // When
-        testedStore.enableGroup(null);
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.enableGroup(null));
         // Then, expected error...
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testEnableGroupEmpty() throws Exception {
-        // Given
-        // When
-        testedStore.enableGroup("");
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.enableGroup(""));
         // Then, expected error...
     }
 
@@ -701,34 +747,39 @@ public class FeatureStoreJCacheTest {
     /**
      * TDD.
      */
-    @Test(expected = GroupNotFoundException.class)
+    @Test
     public void testEnableGroupDoesNotExist() {
-        // Given
-        assertFf4j.assertThatGroupDoesNotExist(G_DOESNOTEXIST);
-        // When
-        testedStore.enableGroup(G_DOESNOTEXIST);
+        assertThrows(GroupNotFoundException.class, () -> {
+            // Given
+            assertFf4j.assertThatGroupDoesNotExist(G_DOESNOTEXIST);
+            // When
+            testedStore.enableGroup(G_DOESNOTEXIST);
+            // Then, expected error
+        });
         // Then, expected error
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testDisableGroupNull() throws Exception {
-        // Given
-        // When
-        testedStore.disableGroup(null);
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.disableGroup(null));
         // Then, expected error...
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testDisableGroupEmpty() throws Exception {
-        // Given
-        // When
-        testedStore.disableGroup("");
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.disableGroup(""));
         // Then, expected error...
     }
 
@@ -752,34 +803,39 @@ public class FeatureStoreJCacheTest {
     /**
      * TDD.
      */
-    @Test(expected = GroupNotFoundException.class)
+    @Test
     public void testDisableGroupDoesNotExist() {
-        // Given
-        assertFf4j.assertThatGroupDoesNotExist(G_DOESNOTEXIST);
-        // When
-        testedStore.disableGroup(G_DOESNOTEXIST);
+        assertThrows(GroupNotFoundException.class, () -> {
+            // Given
+            assertFf4j.assertThatGroupDoesNotExist(G_DOESNOTEXIST);
+            // When
+            testedStore.disableGroup(G_DOESNOTEXIST);
+            // Then, expected error
+        });
         // Then, expected error
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testReadGroupNull() throws Exception {
-        // Given
-        // When
-        testedStore.readGroup(null);
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.readGroup(null));
         // Then, expected error...
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testReadGroupEmpty() throws Exception {
-        // Given
-        // When
-        testedStore.readGroup("");
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.readGroup(""));
         // Then, expected error...
     }
 
@@ -799,64 +855,71 @@ public class FeatureStoreJCacheTest {
         // When
         Map<String, Feature> group = testedStore.readGroup(G1);
         // Then
-        Assert.assertEquals(2, group.size());
-        Assert.assertTrue(group.containsKey(F3));
-        Assert.assertTrue(group.containsKey(F4));
+        Assertions.assertEquals(2, group.size());
+        Assertions.assertTrue(group.containsKey(F3));
+        Assertions.assertTrue(group.containsKey(F4));
     }
 
     /**
      * TDD.
      */
-    @Test(expected = GroupNotFoundException.class)
+    @Test
     public void testReadGroupDoesnotExist() {
-        // Given
-        assertFf4j.assertThatGroupDoesNotExist(G_DOESNOTEXIST);
-        // When
-        testedStore.readGroup(G_DOESNOTEXIST);
+        assertThrows(GroupNotFoundException.class, () -> {
+            // Given
+            assertFf4j.assertThatGroupDoesNotExist(G_DOESNOTEXIST);
+            // When
+            testedStore.readGroup(G_DOESNOTEXIST);
+            // Then, expect error
+        });
         // Then, expect error
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAddToGroupFeatureNull() throws Exception {
-        // Given
-        // When
-        testedStore.addToGroup(null, G0);
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.addToGroup(null, G0));
         // Then, expected error...
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAddToGroupFeatureEmpty() throws Exception {
-        // Given
-        // When
-        testedStore.addToGroup("", G0);
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.addToGroup("", G0));
         // Then, expected error...
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAddToGroupNull() throws Exception {
-        // Given
-        // When
-        testedStore.addToGroup(F1, null);
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.addToGroup(F1, null));
         // Then, expected error...
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAddToGroupEmpty() throws Exception {
-        // Given
-        // When
-        testedStore.addToGroup(F1, "");
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.addToGroup(F1, ""));
         // Then, expected error...
     }
 
@@ -879,56 +942,63 @@ public class FeatureStoreJCacheTest {
     /**
      * TDD.
      */
-    @Test(expected = FeatureNotFoundException.class)
+    @Test
     public void testAddToGroupFeatureDoeNotExist() {
-        // Given
-        assertFf4j.assertThatGroupDoesNotExist(G_DOESNOTEXIST);
-        // When
-        testedStore.addToGroup(F_DOESNOTEXIST, G0);
+        assertThrows(FeatureNotFoundException.class, () -> {
+            // Given
+            assertFf4j.assertThatGroupDoesNotExist(G_DOESNOTEXIST);
+            // When
+            testedStore.addToGroup(F_DOESNOTEXIST, G0);
+            // Then, expected error
+        });
         // Then, expected error
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRemoveToGroupFeatureNull() throws Exception {
-        // Given
-        // When
-        testedStore.removeFromGroup(null, G0);
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.removeFromGroup(null, G0));
         // Then, expected error...
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRemoveToGroupFeatureEmpty() throws Exception {
-        // Given
-        // When
-        testedStore.removeFromGroup("", G0);
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.removeFromGroup("", G0));
         // Then, expected error...
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRemoveToGroupNull() throws Exception {
-        // Given
-        // When
-        testedStore.removeFromGroup(F1, null);
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.removeFromGroup(F1, null));
         // Then, expected error...
     }
 
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRemoveToGroupEmpty() throws Exception {
-        // Given
-        // When
-        testedStore.removeFromGroup(F1, "");
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            // When
+            testedStore.removeFromGroup(F1, ""));
         // Then, expected error...
     }
 
@@ -951,42 +1021,50 @@ public class FeatureStoreJCacheTest {
     /**
      * TDD.
      */
-    @Test(expected = GroupNotFoundException.class)
+    @Test
     public void testRemoveLastFeatureOfGroupDeleteGroup() {
-        // Given
-        assertFf4j.assertThatGroupExist(G0);
-        assertFf4j.assertThatGroupHasSize(1, G0);
-        // When
-        testedStore.removeFromGroup(F2, G0);
-        // Then
-        assertFf4j.assertThatGroupDoesNotExist(G0);
-        // Expected error
-        testedStore.readGroup(G0);
+        assertThrows(GroupNotFoundException.class, () -> {
+            // Given
+            assertFf4j.assertThatGroupExist(G0);
+            assertFf4j.assertThatGroupHasSize(1, G0);
+            // When
+            testedStore.removeFromGroup(F2, G0);
+            // Then
+            assertFf4j.assertThatGroupDoesNotExist(G0);
+            // Expected error
+            testedStore.readGroup(G0);
+        });
     }
 
     /**
      * TDD.
      */
-    @Test(expected = FeatureNotFoundException.class)
+    @Test
     public void testRemoveFromGroupFeatureDoeNotExist() {
-        // Given
-        assertFf4j.assertThatGroupExist(G1);
-        assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
-        // When
-        testedStore.removeFromGroup(F_DOESNOTEXIST, G1);
+        assertThrows(FeatureNotFoundException.class, () -> {
+            // Given
+            assertFf4j.assertThatGroupExist(G1);
+            assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
+            // When
+            testedStore.removeFromGroup(F_DOESNOTEXIST, G1);
+            // Then, expected error
+        });
         // Then, expected error
     }
 
     /**
      * TDD.
      */
-    @Test(expected = GroupNotFoundException.class)
+    @Test
     public void testRemoveFromGroupDoesNotExist() {
-        // Given
-        assertFf4j.assertThatFeatureExist(F1);
-        assertFf4j.assertThatGroupDoesNotExist(G_DOESNOTEXIST);
-        // When
-        testedStore.removeFromGroup(F1, G_DOESNOTEXIST);
+        assertThrows(GroupNotFoundException.class, () -> {
+            // Given
+            assertFf4j.assertThatFeatureExist(F1);
+            assertFf4j.assertThatGroupDoesNotExist(G_DOESNOTEXIST);
+            // When
+            testedStore.removeFromGroup(F1, G_DOESNOTEXIST);
+            // Then, expected error
+        });
         // Then, expected error
     }
 
@@ -1017,9 +1095,9 @@ public class FeatureStoreJCacheTest {
         // When
         Set<String> groups = testedStore.readAllGroups();
         // Then
-        Assert.assertEquals(2, groups.size());
-        Assert.assertTrue(groups.contains(G0));
-        Assert.assertTrue(groups.contains(G1));
+        Assertions.assertEquals(2, groups.size());
+        Assertions.assertTrue(groups.contains(G0));
+        Assertions.assertTrue(groups.contains(G1));
     }
     
     /**
@@ -1072,31 +1150,34 @@ public class FeatureStoreJCacheTest {
         assertFf4j.assertThatFeatureHasFlippingStrategy(F2);
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testDonotUpdateNullFeature() {
-        testedStore.update(null);
+        assertThrows(IllegalArgumentException.class, () ->
+            testedStore.update(null));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testDonotDeleteNull() {
-        testedStore.delete(null);
+        assertThrows(IllegalArgumentException.class, () ->
+            testedStore.delete(null));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testDonotDeleteEmpty() {
-        testedStore.delete("");
+        assertThrows(IllegalArgumentException.class, () ->
+            testedStore.delete(""));
     }
     
     @Test
     public void testClear() {
         // Given
-        Assert.assertNotNull(testedStore);
+        Assertions.assertNotNull(testedStore);
         Map <String, Feature> before = testedStore.readAll();
-        Assert.assertFalse(before.isEmpty());
+        Assertions.assertFalse(before.isEmpty());
         // When
         testedStore.clear();
         // Then
-        Assert.assertTrue(testedStore.readAll().isEmpty());
+        Assertions.assertTrue(testedStore.readAll().isEmpty());
         /// Reinit
         for (String pName : before.keySet()) {
             testedStore.create(before.get(pName));
@@ -1151,7 +1232,7 @@ public class FeatureStoreJCacheTest {
             testedStore.update(myFeature);
         }
         assertFf4j.assertThatFeatureHasProperty(F1, "ppstring");
-        Assert.assertEquals("hello", 
+        Assertions.assertEquals("hello", 
                 ff4j.getFeatureStore().read(F1)//
                     .getCustomProperties().get("ppstring")//
                     .asString());
@@ -1162,7 +1243,7 @@ public class FeatureStoreJCacheTest {
         testedStore.update(myFeature);
         
         // Then
-        Assert.assertEquals("goodbye", 
+        Assertions.assertEquals("goodbye", 
                 ff4j.getFeatureStore().read(F1)//
                     .getCustomProperties().get("ppstring")//
                     .asString());
@@ -1186,7 +1267,7 @@ public class FeatureStoreJCacheTest {
                 .getFeatureStore().read(F1)//
                 .getCustomProperties().get("digitValue")
                 .getFixedValues();
-        Assert.assertEquals(4, fixValues.size());
+        Assertions.assertEquals(4, fixValues.size());
                 
         // When
         myFeature = ff4j.getFeatureStore().read(F1);
@@ -1201,7 +1282,7 @@ public class FeatureStoreJCacheTest {
                 .getFeatureStore().read(F1) //
                 .getCustomProperties().get("digitValue")
                 .getFixedValues();
-        Assert.assertEquals(5, fixValues2.size());
+        Assertions.assertEquals(5, fixValues2.size());
     }
     
     /**
@@ -1220,7 +1301,7 @@ public class FeatureStoreJCacheTest {
                 .getFeatureStore().read(F1)//
                 .getCustomProperties().get("regionIdentifier")
                 .getFixedValues();
-        Assert.assertEquals(3, fixValues.size()); 
+        Assertions.assertEquals(3, fixValues.size()); 
                 
         // When
         myFeature = ff4j.getFeatureStore().read(F1);
@@ -1235,7 +1316,7 @@ public class FeatureStoreJCacheTest {
                 .getFeatureStore().read(F1)//
                 .getCustomProperties().get("regionIdentifier")
                 .getFixedValues();
-        Assert.assertEquals(2, fixValues2.size());
+        Assertions.assertEquals(2, fixValues2.size());
     }
 
 

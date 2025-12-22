@@ -25,10 +25,9 @@ import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.test.store.FeatureStoreTestSupport;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Test;
-
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.Configuration;
@@ -57,7 +56,7 @@ public class EhCacheCacheProviderTest extends FeatureStoreTestSupport {
     /**
      * Clear all elements
      */
-    @After
+    @AfterEach
     public void tearDown() {
         ((Cache) cache.getFeatureNativeCache()).removeAll();
     }
@@ -69,7 +68,7 @@ public class EhCacheCacheProviderTest extends FeatureStoreTestSupport {
         managerConfiguration.setDefaultCacheConfiguration(new CacheConfiguration("toto", 1000));
         
         FeatureCacheProviderEhCache fcec = new FeatureCacheProviderEhCache(managerConfiguration);
-        Assert.assertNotNull(fcec.getCacheProviderName());
+        Assertions.assertNotNull(fcec.getCacheProviderName());
         fcec.setCacheFeatures(fcec.getCacheFeatures());
         fcec.setCacheProperties(fcec.getCacheProperties());
         fcec.setCacheConfiguration(fcec.getCacheConfiguration());

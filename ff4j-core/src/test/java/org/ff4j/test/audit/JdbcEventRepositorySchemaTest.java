@@ -27,10 +27,10 @@ import javax.sql.DataSource;
 
 import org.ff4j.audit.repository.JdbcEventRepository;
 import org.ff4j.store.JdbcQueryBuilder;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -52,7 +52,7 @@ public class JdbcEventRepositorySchemaTest {
     protected JdbcEventRepository testedStore;
 
     /** {@inheritDoc} */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         initStore();
     }
@@ -65,7 +65,7 @@ public class JdbcEventRepositorySchemaTest {
     }
    
     /** {@inheritDoc} */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         db.shutdown();
     }
@@ -75,11 +75,11 @@ public class JdbcEventRepositorySchemaTest {
         DataSource       ds = testedStore.getDataSource();
         JdbcQueryBuilder qb = testedStore.getQueryBuilder();
         // Given
-        Assert.assertFalse(isTableExist(ds, qb.getTableNameAudit()));
+        Assertions.assertFalse(isTableExist(ds, qb.getTableNameAudit()));
         // When
         testedStore.createSchema();
         // then
-        Assert.assertTrue(isTableExist(ds, qb.getTableNameAudit()));
+        Assertions.assertTrue(isTableExist(ds, qb.getTableNameAudit()));
         // When (no error)
         testedStore.createSchema();
     }

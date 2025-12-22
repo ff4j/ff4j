@@ -23,14 +23,14 @@ package org.ff4j.hbase;
 import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.hbase.store.EventRepositoryHBase;
 import org.ff4j.test.audit.EventRepositoryTestSupport;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 
 /**
  * Unit testing of implementation of {@link EventRepository} for HBASE Technology.
  * 
  * @author Cedrick LUNVEN (@clunven)
  */
-@Ignore
+@Disabled
 public class EventRepositoryHBaseTest extends EventRepositoryTestSupport {
 
     /** HBASE_HOST. */

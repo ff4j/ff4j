@@ -24,7 +24,7 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.couchbase.CouchbaseConnection;
 import org.ff4j.couchbase.store.FeatureStoreCouchbase;
 import org.ff4j.test.store.FeatureStoreTestSupport;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 
 /**
  * CouchBase Tests.
@@ -32,7 +32,7 @@ import org.junit.Ignore;
  * @author farrellyja
  * @author Cedrick LUNVEN (@clunven)
 */
-@Ignore
+@Disabled
 public class FeatureStoreCouchbaseTest extends FeatureStoreTestSupport {
     
     /** Reuse connection for tests. */

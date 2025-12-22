@@ -30,10 +30,10 @@ import org.ff4j.springjdbc.store.FeatureStoreSpringJdbc;
 import org.ff4j.springjdbc.store.PropertyStoreSpringJdbc;
 import org.ff4j.store.JdbcQueryBuilder;
 import org.ff4j.utils.JdbcUtils;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -54,7 +54,7 @@ public class SpringJdbcStoresCreateSchema {
     protected PropertyStoreSpringJdbc propertyStore;
 
     /** {@inheritDoc} */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         initStore();
     }
@@ -78,7 +78,7 @@ public class SpringJdbcStoresCreateSchema {
     }
    
     /** {@inheritDoc} */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         db.shutdown();
     }
@@ -87,21 +87,21 @@ public class SpringJdbcStoresCreateSchema {
     public void testCreateSchema() {
         JdbcQueryBuilder qb = testedStore.getQueryBuilder();
         // Given
-        Assert.assertFalse(JdbcUtils.isTableExist(
+        Assertions.assertFalse(JdbcUtils.isTableExist(
                 testedStore.getJdbcTemplate().getDataSource(), qb.getTableNameFeatures()));
-        Assert.assertFalse(JdbcUtils.isTableExist(
+        Assertions.assertFalse(JdbcUtils.isTableExist(
                 testedStore.getJdbcTemplate().getDataSource(), qb.getTableNameRoles()));
-        Assert.assertFalse(JdbcUtils.isTableExist(
+        Assertions.assertFalse(JdbcUtils.isTableExist(
                 testedStore.getJdbcTemplate().getDataSource(), qb.getTableNameCustomProperties()));
         // When
         testedStore.createSchema();
         propertyStore.createSchema();
         // then
-        Assert.assertTrue(JdbcUtils.isTableExist(
+        Assertions.assertTrue(JdbcUtils.isTableExist(
                 testedStore.getJdbcTemplate().getDataSource(), qb.getTableNameFeatures()));
-        Assert.assertTrue(JdbcUtils.isTableExist(
+        Assertions.assertTrue(JdbcUtils.isTableExist(
                 testedStore.getJdbcTemplate().getDataSource(), qb.getTableNameRoles()));
-        Assert.assertTrue(JdbcUtils.isTableExist(
+        Assertions.assertTrue(JdbcUtils.isTableExist(
                 testedStore.getJdbcTemplate().getDataSource(), qb.getTableNameCustomProperties()));
     }
     
@@ -111,8 +111,8 @@ public class SpringJdbcStoresCreateSchema {
 		queryBuilder.setDbSchema("FF4J");
         testedStore.createSchema();
         DataSource dataSource = testedStore.getJdbcTemplate().getDataSource();
-		Assert.assertTrue(JdbcUtils.isTableExist(dataSource, queryBuilder.getTableNameFeatures(), "FF4J"));
-		Assert.assertFalse(JdbcUtils.isTableExist(dataSource, queryBuilder.getTableNameFeatures(), "FF4J_2"));
+		Assertions.assertTrue(JdbcUtils.isTableExist(dataSource, queryBuilder.getTableNameFeatures(), "FF4J"));
+		Assertions.assertFalse(JdbcUtils.isTableExist(dataSource, queryBuilder.getTableNameFeatures(), "FF4J_2"));
     }
 
 }

@@ -24,8 +24,8 @@ import org.ff4j.aop.ContextLocation;
 
 
 import org.ff4j.spring.autowire.AutowiredFF4JBeanPostProcessor;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class FF4JBeanPostProcessorTest {
@@ -33,27 +33,27 @@ public class FF4JBeanPostProcessorTest {
     @Test
     public void testPostProcessorNullBean() {
         AutowiredFF4JBeanPostProcessor pp = new AutowiredFF4JBeanPostProcessor();
-        Assert.assertNull(pp.postProcessAfterInitialization(null,null));
+        Assertions.assertNull(pp.postProcessAfterInitialization(null,null));
     }
     
     @Test
     public void testFF4JTagOK() {
-        Assert.assertNotNull(checkFile("springctx-ff4jtags-1.xml").getBean("ff4j"));
+        Assertions.assertNotNull(checkFile("springctx-ff4jtags-1.xml").getBean("ff4j"));
     }
     
     @Test
     public void testFF4JTagEmpty() {
-        Assert.assertNotNull(checkFile("springctx-ff4jtags-2.xml").getBean("ff4j"));
+        Assertions.assertNotNull(checkFile("springctx-ff4jtags-2.xml").getBean("ff4j"));
     }
     
     @Test
     public void testFF4JTagAuthorisationManager() {
-        Assert.assertNotNull(checkFile("springctx-ff4jtags-3.xml").getBean("ff4j"));
+        Assertions.assertNotNull(checkFile("springctx-ff4jtags-3.xml").getBean("ff4j"));
     }
     
     @Test
     public void contextLocationparsing() {
-        Assert.assertNotNull(ContextLocation.valueOf("NONE"));
+        Assertions.assertNotNull(ContextLocation.valueOf("NONE"));
     }
     
     private ClassPathXmlApplicationContext checkFile(String fileName) {

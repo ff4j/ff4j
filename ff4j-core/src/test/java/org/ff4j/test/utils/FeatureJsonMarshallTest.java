@@ -35,11 +35,10 @@ import org.ff4j.utils.JdbcUtils;
 import org.ff4j.utils.JsonUtils;
 import org.ff4j.utils.MappingUtil;
 import org.ff4j.utils.Util;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -70,7 +69,7 @@ public class FeatureJsonMarshallTest implements TestConstantsFF4j {
     /**
      * Initi features before starting.
      */
-    @Before
+    @BeforeEach
     public void init() {
         f1 = ff4j.getFeature(F1);
         f2 = ff4j.getFeature(F2);
@@ -83,7 +82,7 @@ public class FeatureJsonMarshallTest implements TestConstantsFF4j {
      */
     @Test
     public void testFeatureIsSerializable() {
-        Assert.assertTrue(mapper.canSerialize(Feature.class));
+        Assertions.assertTrue(mapper.canSerialize(Feature.class));
     }
     
     /**
@@ -92,7 +91,7 @@ public class FeatureJsonMarshallTest implements TestConstantsFF4j {
      * @throws Exception
      */
     @Test
-    @Ignore
+    @Disabled
     public void testMarshaller() throws Exception {
         assertMarshalling(f1);
         assertMarshalling(f2);
@@ -105,7 +104,7 @@ public class FeatureJsonMarshallTest implements TestConstantsFF4j {
         Constructor<MappingUtil> ce = MappingUtil.class.getDeclaredConstructor();
         ce.setAccessible(true);
         ce.newInstance();
-        Assert.assertNull(MappingUtil.mapPropertyType(null));
+        Assertions.assertNull(MappingUtil.mapPropertyType(null));
         MappingUtil.toMap("A&B");
     }
     
@@ -149,7 +148,7 @@ public class FeatureJsonMarshallTest implements TestConstantsFF4j {
 
     /** TDD. */
     @Test
-    @Ignore
+    @Disabled
     public void marshallOfficeHourFlippingStrategy()
     throws Exception {
         // When-Then
@@ -182,7 +181,7 @@ public class FeatureJsonMarshallTest implements TestConstantsFF4j {
      *            feature
      **/
     private void assertMarshalling(Feature feat) throws Exception {
-        Assert.assertEquals(marshallWithJackson(feat), feat.toJson());
+        Assertions.assertEquals(marshallWithJackson(feat), feat.toJson());
     }
     
 }

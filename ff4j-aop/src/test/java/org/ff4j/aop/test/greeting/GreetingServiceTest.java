@@ -23,16 +23,16 @@ package org.ff4j.aop.test.greeting;
 import org.ff4j.FF4j;
 import org.ff4j.aop.test.context.ContextService;
 import org.ff4j.core.FlippingExecutionContext;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration("classpath:applicationContext-ff4j-aop-test.xml")
 public class GreetingServiceTest {
 
@@ -49,24 +49,24 @@ public class GreetingServiceTest {
 
     @Test
     public void testAOP() {
-        Assert.assertTrue(greeting.sayHello("CLU").startsWith("Hello"));
+        Assertions.assertTrue(greeting.sayHello("CLU").startsWith("Hello"));
         ff4j.enable("language-french");
-        Assert.assertTrue(greeting.sayHello("CLU").startsWith("Bonjour"));
+        Assertions.assertTrue(greeting.sayHello("CLU").startsWith("Bonjour"));
     }
 
     @Test
     public void testAOPWithParameter() {
         ff4j.enable("context-french");
 
-        Assert.assertTrue(context.sayHelloWithParameter("CLU", null).startsWith("Hello"));
+        Assertions.assertTrue(context.sayHelloWithParameter("CLU", null).startsWith("Hello"));
 
         FlippingExecutionContext executionContext = new FlippingExecutionContext();
 
         executionContext.putString("user.settings.language", "english");
-        Assert.assertTrue(context.sayHelloWithParameter("CLU", executionContext).startsWith("Hello"));
+        Assertions.assertTrue(context.sayHelloWithParameter("CLU", executionContext).startsWith("Hello"));
 
         executionContext.putString("user.settings.language", "french");
-        Assert.assertTrue(context.sayHelloWithParameter("CLU", executionContext).startsWith("Bonjour"));
+        Assertions.assertTrue(context.sayHelloWithParameter("CLU", executionContext).startsWith("Bonjour"));
     }
 
     @Test
@@ -76,13 +76,13 @@ public class GreetingServiceTest {
         FlippingExecutionContext executionContext = ff4j.getCurrentContext();
 
         executionContext.putString("user.settings.language", "english");
-        Assert.assertTrue(context.sayHelloWithThreadLocal("CLU").startsWith("Hello"));
+        Assertions.assertTrue(context.sayHelloWithThreadLocal("CLU").startsWith("Hello"));
 
         executionContext.putString("user.settings.language", "french");
-        Assert.assertTrue(context.sayHelloWithThreadLocal("CLU").startsWith("Bonjour"));
+        Assertions.assertTrue(context.sayHelloWithThreadLocal("CLU").startsWith("Bonjour"));
     }
 
-    @After
+    @AfterEach
     public void disable() {
         ff4j.disable("language-french");
     }

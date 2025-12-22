@@ -22,10 +22,10 @@ package org.ff4j.neo4j;
 
 import org.ff4j.core.FeatureStore;
 import org.ff4j.neo4j.store.FeatureStoreNeo4J;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseSettings;
 import org.neo4j.test.TestGraphDatabaseFactory;
@@ -38,7 +38,7 @@ public class FeatureStoreNeo4jSchemaTest {
     /**
      * Create temporary database for each unit test.
      */
-    @BeforeClass
+    @BeforeAll
     public static void prepareTestDatabase() {
        
         // Embedded DATABASE
@@ -48,7 +48,7 @@ public class FeatureStoreNeo4jSchemaTest {
                 .newGraphDatabase();
     }
 
-    @AfterClass
+    @AfterAll
     public static void destroyTestDatabase() {
         graphDb.shutdown();
     }
@@ -61,7 +61,7 @@ public class FeatureStoreNeo4jSchemaTest {
         fStore.createSchema();
         fStore.createSchema();
         // No error here even if calling the method twice
-        Assert.assertNotNull(fStore);
+        Assertions.assertNotNull(fStore);
         
     }    
 }

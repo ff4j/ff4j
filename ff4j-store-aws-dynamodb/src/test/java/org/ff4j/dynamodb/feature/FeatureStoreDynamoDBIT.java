@@ -9,9 +9,9 @@ package org.ff4j.dynamodb.feature;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,8 +22,11 @@ package org.ff4j.dynamodb.feature;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.dynamodb.DynamoDbBaseIntegrationTest;
 import org.ff4j.test.store.FeatureStoreTestSupport;
-import org.junit.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 import static org.ff4j.test.TestsFf4jConstants.AWESOME;
@@ -35,24 +38,20 @@ import static org.ff4j.test.TestsFf4jConstants.ROLE_TEST;
  * @author <a href="mailto:jeromevdl@gmail.com">Jerome VAN DER LINDEN</a>
  */
 // Needs an AWS environment, not available in Travis, this is why it is ignored
-@Ignore
-public class FeatureStoreDynamoDBIT extends FeatureStoreTestSupport {
+public class FeatureStoreDynamoDBIT extends FeatureStoreTestSupport implements DynamoDbBaseIntegrationTest {
 
-    private static FeatureStoreDynamoDB store;
+    private FeatureStoreDynamoDB store;
 
-    @BeforeClass
-    public static void init() {
-        DynamoDbClient dynamoDB = DynamoDbClient.create();
-        store = new FeatureStoreDynamoDB(dynamoDB);
-    }
-
-    @AfterClass
-    public static void clean() {
-       store.clear();
+    @AfterEach
+    public void clean() {
+        store.clear();
     }
 
     @Override
     protected FeatureStore initStore() {
+        DynamoDbClient dynamoDB = createDynamoDbClient();
+        createFeaturesTable(dynamoDB);
+        store = new FeatureStoreDynamoDB(dynamoDB);
         store.clearData();
         store.importFeaturesFromXmlFile("test-ff4j-features.xml");
         return store;
@@ -75,14 +74,14 @@ public class FeatureStoreDynamoDBIT extends FeatureStoreTestSupport {
     public void addEmptyStringAsRole() {
         // given
         Feature feature = testedStore.read(AWESOME);
-        Assert.assertTrue(feature.getPermissions().isEmpty());
+        Assertions.assertTrue(feature.getPermissions().isEmpty());
 
         // when
         feature.getPermissions().add("");
         testedStore.update(feature);
 
         // then
-        Assert.assertTrue(feature.getPermissions().isEmpty());
+        Assertions.assertTrue(feature.getPermissions().isEmpty());
     }
 
 }

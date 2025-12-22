@@ -28,10 +28,9 @@ import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.ehcache.FF4JEhCacheConstants;
 import org.ff4j.test.store.FeatureStoreTestSupport;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Test;
-
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import net.sf.ehcache.config.Configuration;
 
 /**
@@ -52,7 +51,7 @@ public class FeatureStoreEhCacheTest extends FeatureStoreTestSupport {
     /**
      * Clean store after each test (avoid duplication)
      */
-    @After
+    @AfterEach
     public void cleanStore() {
         Map < String, Feature > f = testedStore.readAll();
         for (String key : f.keySet()) {
@@ -65,13 +64,13 @@ public class FeatureStoreEhCacheTest extends FeatureStoreTestSupport {
         Configuration managerConfiguration = new Configuration();
         managerConfiguration.name("config");
         FeatureStoreEhCache storeEHcache = new FeatureStoreEhCache(managerConfiguration);
-        Assert.assertNotNull(storeEHcache);
+        Assertions.assertNotNull(storeEHcache);
     }
     
     @Test
     public void initWithXmlFile() {
         FeatureStoreEhCache storeEHcache = new FeatureStoreEhCache("ehcache.xml");
-        Assert.assertNotNull(storeEHcache);
+        Assertions.assertNotNull(storeEHcache);
     }
     
     @Test
@@ -79,7 +78,7 @@ public class FeatureStoreEhCacheTest extends FeatureStoreTestSupport {
     	Constructor<FF4JEhCacheConstants> ce = FF4JEhCacheConstants.class.getDeclaredConstructor();
 	    ce.setAccessible(true);
 	    ce.newInstance();
-	    Assert.assertNotNull(ce);
+	    Assertions.assertNotNull(ce);
     }
 
 }

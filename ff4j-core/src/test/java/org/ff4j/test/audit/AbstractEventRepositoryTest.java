@@ -29,6 +29,7 @@ import static org.ff4j.audit.EventConstants.SOURCE_JAVA;
 import static org.ff4j.audit.EventConstants.SOURCE_WEB;
 import static org.ff4j.audit.EventConstants.SOURCE_WEBAPI;
 import static org.ff4j.audit.EventConstants.TARGET_FEATURE;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -46,9 +47,9 @@ import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.core.Feature;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.utils.Util;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Superclass to test {@link EventRepository}.
@@ -67,7 +68,7 @@ public abstract class AbstractEventRepositoryTest {
     protected EventPublisher publisher;
     
     /** {@inheritDoc} */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         repo      = initRepository();
         publisher = new EventPublisher(repo);
@@ -115,42 +116,43 @@ public abstract class AbstractEventRepositoryTest {
     @Test
     public void testSaveEventUnit() throws InterruptedException {
         long start = System.currentTimeMillis();
-        Assert.assertEquals(0, repo.getFeatureUsageTotalHitCount(new EventQueryDefinition(start, System.currentTimeMillis())));
+        Assertions.assertEquals(0, repo.getFeatureUsageTotalHitCount(new EventQueryDefinition(start, System.currentTimeMillis())));
         repo.saveEvent(generateFeatureUsageEvent("f1"));
         Thread.sleep(100);
-        Assert.assertEquals(1, repo.getFeatureUsageTotalHitCount(new EventQueryDefinition(start-20, System.currentTimeMillis())));
+        Assertions.assertEquals(1, repo.getFeatureUsageTotalHitCount(new EventQueryDefinition(start-20, System.currentTimeMillis())));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSaveEventNull() {
-        Assert.assertFalse(repo.saveEvent(null));
+        assertThrows(IllegalArgumentException.class, () ->
+            Assertions.assertFalse(repo.saveEvent(null)));
     }
     
     @Test
     public void testSaveAuditTrail() throws InterruptedException {
         long start = System.currentTimeMillis();
         Event evt1 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CREATE);
-        Assert.assertTrue(repo.saveEvent(evt1));
+        Assertions.assertTrue(repo.saveEvent(evt1));
         Thread.sleep(200);
-        Assert.assertEquals(1, repo.getAuditTrail(new EventQueryDefinition(start-10, System.currentTimeMillis())).size());
+        Assertions.assertEquals(1, repo.getAuditTrail(new EventQueryDefinition(start-10, System.currentTimeMillis())).size());
     }
     
     @Test
     public void testPieChart() throws InterruptedException {
         long start = System.currentTimeMillis();
         Event evt1 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", EventConstants.ACTION_CREATE);
-        Assert.assertTrue(repo.saveEvent(evt1));
+        Assertions.assertTrue(repo.saveEvent(evt1));
         Thread.sleep(200);
         
         EventQueryDefinition eqd = new EventQueryDefinition(start-10, System.currentTimeMillis());
-        Assert.assertNotNull(repo.getFeatureUsagePieChart(eqd));
-        Assert.assertNotNull(repo.getHostPieChart(eqd));
-        Assert.assertNotNull(repo.getSourcePieChart(eqd));
-        Assert.assertNotNull(repo.getUserPieChart(eqd));
+        Assertions.assertNotNull(repo.getFeatureUsagePieChart(eqd));
+        Assertions.assertNotNull(repo.getHostPieChart(eqd));
+        Assertions.assertNotNull(repo.getSourcePieChart(eqd));
+        Assertions.assertNotNull(repo.getUserPieChart(eqd));
         
-        Assert.assertNotNull(repo.getHostBarChart(eqd));
-        Assert.assertNotNull(repo.getSourceBarChart(eqd));
-        Assert.assertNotNull(repo.getUserBarChart(eqd));
+        Assertions.assertNotNull(repo.getHostBarChart(eqd));
+        Assertions.assertNotNull(repo.getSourceBarChart(eqd));
+        Assertions.assertNotNull(repo.getUserBarChart(eqd));
         
     }
     
@@ -168,11 +170,11 @@ public abstract class AbstractEventRepositoryTest {
         // Assert bar chart (2 bars with 8 and 8)
         EventQueryDefinition testQuery = new EventQueryDefinition(start-10, System.currentTimeMillis()+10);
         BarChart bChart = repo.getFeatureUsageBarChart(testQuery);
-        Assert.assertEquals(2, bChart.getChartBars().size());
-        Assert.assertEquals(new Integer(8), bChart.getChartBars().get(0).getValue());
-        Assert.assertEquals(new Integer(8), bChart.getChartBars().get(1).getValue());
-        Assert.assertNotNull(bChart.getChartBars().get(0).getColor());
-        Assert.assertNotNull(bChart.getChartBars().get(1).getColor());
+        Assertions.assertEquals(2, bChart.getChartBars().size());
+        Assertions.assertEquals(new Integer(8), bChart.getChartBars().get(0).getValue());
+        Assertions.assertEquals(new Integer(8), bChart.getChartBars().get(1).getValue());
+        Assertions.assertNotNull(bChart.getChartBars().get(0).getColor());
+        Assertions.assertNotNull(bChart.getChartBars().get(1).getColor());
     }
     
     @Test
@@ -191,10 +193,10 @@ public abstract class AbstractEventRepositoryTest {
         EventQueryDefinition testQuery = new EventQueryDefinition(start, System.currentTimeMillis());
         // Assert Pie Chart (2 sectors with 8 and 8)
         Map < String, MutableHitCount > mapOfHit = repo.getFeatureUsageHitCount(testQuery);
-        Assert.assertEquals(2, mapOfHit.size());
-        Assert.assertTrue(mapOfHit.containsKey("f1"));
-        Assert.assertTrue(mapOfHit.containsKey("f2"));
-        Assert.assertEquals(8, mapOfHit.get("f1").get());
+        Assertions.assertEquals(2, mapOfHit.size());
+        Assertions.assertTrue(mapOfHit.containsKey("f1"));
+        Assertions.assertTrue(mapOfHit.containsKey("f2"));
+        Assertions.assertEquals(8, mapOfHit.get("f1").get());
     }
     
     @Test
@@ -211,7 +213,7 @@ public abstract class AbstractEventRepositoryTest {
         // Then
         EventQueryDefinition testQuery = new EventQueryDefinition(start-20, System.currentTimeMillis());
         EventSeries es = repo.searchFeatureUsageEvents(testQuery);
-        Assert.assertEquals(16, es.size());
+        Assertions.assertEquals(16, es.size());
         
         // Then
         
@@ -231,7 +233,7 @@ public abstract class AbstractEventRepositoryTest {
         // Then
         EventQueryDefinition testQuery = new EventQueryDefinition(start-20, System.currentTimeMillis());
         TimeSeriesChart  tsc = repo.getFeatureUsageHistory(testQuery, TimeUnit.HOURS);
-        Assert.assertEquals(1, tsc.getTimeSlots().size());
+        Assertions.assertEquals(1, tsc.getTimeSlots().size());
     }
     
     /** TDD. */
@@ -251,10 +253,10 @@ public abstract class AbstractEventRepositoryTest {
         // Then
         EventQueryDefinition testQuery = new EventQueryDefinition(start-20, System.currentTimeMillis());
         Map < String, MutableHitCount > mapOfHit = repo.getSourceHitCount(testQuery);
-        Assert.assertEquals(3, mapOfHit.size());
-        Assert.assertTrue(mapOfHit.containsKey(SOURCE_JAVA));
-        Assert.assertTrue(mapOfHit.containsKey(SOURCE_WEB));
-        Assert.assertEquals(1, mapOfHit.get(SOURCE_WEBAPI).get());
+        Assertions.assertEquals(3, mapOfHit.size());
+        Assertions.assertTrue(mapOfHit.containsKey(SOURCE_JAVA));
+        Assertions.assertTrue(mapOfHit.containsKey(SOURCE_WEB));
+        Assertions.assertEquals(1, mapOfHit.get(SOURCE_WEBAPI).get());
     }
     
     /** TDD. */
@@ -278,10 +280,10 @@ public abstract class AbstractEventRepositoryTest {
         // Then
         EventQueryDefinition testQuery = new EventQueryDefinition(start-20, System.currentTimeMillis());
         Map < String, MutableHitCount > mapOfHit = repo.getUserHitCount(testQuery);
-        Assert.assertEquals(2, mapOfHit.size());
-        Assert.assertTrue(mapOfHit.containsKey("JOHN"));
-        Assert.assertTrue(mapOfHit.containsKey("BOB"));
-        Assert.assertEquals(8, mapOfHit.get("BOB").get());
+        Assertions.assertEquals(2, mapOfHit.size());
+        Assertions.assertTrue(mapOfHit.containsKey("JOHN"));
+        Assertions.assertTrue(mapOfHit.containsKey("BOB"));
+        Assertions.assertEquals(8, mapOfHit.get("BOB").get());
     }
     
     /** TDD. */
@@ -298,8 +300,8 @@ public abstract class AbstractEventRepositoryTest {
         // Then
         EventQueryDefinition testQuery = new EventQueryDefinition(start, System.currentTimeMillis());
         Map < String, MutableHitCount > mapOfHit = repo.getHostHitCount(testQuery);
-        Assert.assertEquals(1, mapOfHit.size());
-        Assert.assertEquals(1, mapOfHit.values().size());
+        Assertions.assertEquals(1, mapOfHit.size());
+        Assertions.assertEquals(1, mapOfHit.values().size());
     }
     
     /** TDD. */
@@ -309,11 +311,11 @@ public abstract class AbstractEventRepositoryTest {
         // Given
         Event evt1 = new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CHECK_OFF);
         // When
-        Assert.assertTrue(repo.saveEvent(evt1));
+        Assertions.assertTrue(repo.saveEvent(evt1));
         Thread.sleep(100);
         // Then
-        Assert.assertEquals(0, repo.getFeatureUsageTotalHitCount(new EventQueryDefinition(start, System.currentTimeMillis())));
-        Assert.assertEquals(0, repo.getAuditTrail(new EventQueryDefinition(start, System.currentTimeMillis())).size());
+        Assertions.assertEquals(0, repo.getFeatureUsageTotalHitCount(new EventQueryDefinition(start, System.currentTimeMillis())));
+        Assertions.assertEquals(0, repo.getAuditTrail(new EventQueryDefinition(start, System.currentTimeMillis())).size());
     }
     
     /** TDD. */
@@ -324,7 +326,7 @@ public abstract class AbstractEventRepositoryTest {
             Thread.sleep(10);
             es.add(new Event(SOURCE_JAVA, TARGET_FEATURE, "f1", ACTION_CREATE));
         }
-        Assert.assertEquals(5, es.size());
+        Assertions.assertEquals(5, es.size());
     }
     
     /** TDD. */
@@ -340,7 +342,7 @@ public abstract class AbstractEventRepositoryTest {
         Thread.sleep(100);
         // Then
         Event evt = repo.getEventByUUID(dummyId, System.currentTimeMillis());
-        Assert.assertNotNull(evt);
+        Assertions.assertNotNull(evt);
     }
     
     /** TDD. */
@@ -356,7 +358,7 @@ public abstract class AbstractEventRepositoryTest {
         Thread.sleep(100);
         // Then
         Event evt = repo.getEventByUUID(dummyId, null);
-        Assert.assertNotNull(evt);
+        Assertions.assertNotNull(evt);
     }
     
     /** TDD. */
@@ -371,18 +373,18 @@ public abstract class AbstractEventRepositoryTest {
         repo.saveEvent(evtAudit);
         repo.saveEvent(evtFeatureUsage);
         Thread.sleep(100);
-        Assert.assertNotNull(repo.getEventByUUID(evtAudit.getUuid(), System.currentTimeMillis()));
-        Assert.assertNotNull(repo.getEventByUUID(evtFeatureUsage.getUuid(), System.currentTimeMillis()));
+        Assertions.assertNotNull(repo.getEventByUUID(evtAudit.getUuid(), System.currentTimeMillis()));
+        Assertions.assertNotNull(repo.getEventByUUID(evtFeatureUsage.getUuid(), System.currentTimeMillis()));
         // When
         EventQueryDefinition testQuery = new EventQueryDefinition(topStart-100, System.currentTimeMillis());
         repo.purgeFeatureUsage(testQuery);
-        Assert.assertNull(repo.getEventByUUID(evtFeatureUsage.getUuid(), System.currentTimeMillis()));
-        Assert.assertTrue(repo.searchFeatureUsageEvents(testQuery).isEmpty());
+        Assertions.assertNull(repo.getEventByUUID(evtFeatureUsage.getUuid(), System.currentTimeMillis()));
+        Assertions.assertTrue(repo.searchFeatureUsageEvents(testQuery).isEmpty());
         
         // Then
         EventQueryDefinition testQuery2 = new EventQueryDefinition(topStart-100, System.currentTimeMillis());
         repo.purgeAuditTrail(testQuery2);
-        Assert.assertNull(repo.getEventByUUID(evtAudit.getUuid(), System.currentTimeMillis()));
+        Assertions.assertNull(repo.getEventByUUID(evtAudit.getUuid(), System.currentTimeMillis()));
 
     }
 

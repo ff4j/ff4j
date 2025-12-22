@@ -4,7 +4,7 @@ package org.ff4j.parser.yaml;
  * #%L
  * ff4j-config-yaml
  * %%
- * Copyright (C) 2013 - 2024 FF4J
+ * Copyright (C) 2013 - 2025 FF4J
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,8 @@ package org.ff4j.parser.yaml;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.InputStream;
 
@@ -30,14 +31,15 @@ import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.test.unsafe.UnsafeProperty;
 import org.ff4j.test.unsafe.UnsafeFlippingStrategy;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class YamlParserTest {
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void yamlFile_shouldExist() {
-        new YamlParser().parseConfigurationFile(null);
+        assertThrows(IllegalArgumentException.class, () ->
+            new YamlParser().parseConfigurationFile(null));
     }
     
     @Test
@@ -55,10 +57,9 @@ public class YamlParserTest {
         // Given a YAML file
         InputStream ymlFile = getClass().getClassLoader().getResourceAsStream("unsafe/test-ff4j-features.yml");
         // When loading config
-        Assert.assertThrows(IllegalArgumentException.class, () -> {
-            new YamlParser().parseConfigurationFile(ymlFile);
-        });
-        Assert.assertEquals(0, UnsafeProperty.count);
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+            new YamlParser().parseConfigurationFile(ymlFile));
+        Assertions.assertEquals(0, UnsafeProperty.count);
     }
 
     @Test
@@ -66,10 +67,9 @@ public class YamlParserTest {
         // Given a YAML file
         InputStream ymlFile = getClass().getClassLoader().getResourceAsStream("unsafe/test-ff4j-strategy.yml");
         // When loading config
-        Assert.assertThrows(IllegalArgumentException.class, () -> {
-            new YamlParser().parseConfigurationFile(ymlFile);
-        });
-        Assert.assertEquals(0, UnsafeFlippingStrategy.count);
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+            new YamlParser().parseConfigurationFile(ymlFile));
+        Assertions.assertEquals(0, UnsafeFlippingStrategy.count);
     }
     
     @Test

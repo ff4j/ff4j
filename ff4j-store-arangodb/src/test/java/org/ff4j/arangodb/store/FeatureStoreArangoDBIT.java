@@ -24,15 +24,14 @@ package org.ff4j.arangodb.store;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.ClassRule;
-import org.junit.Ignore;
-
+import org.junit.jupiter.api.Disabled;
 import com.arangodb.ArangoDB;
 import com.arangodb.ArangoDatabase;
 
 /**
  * ArangoDB feature store tests
  */
-@Ignore
+@Disabled
 public class FeatureStoreArangoDBIT extends FeatureStoreTestSupport {
 
     @ClassRule

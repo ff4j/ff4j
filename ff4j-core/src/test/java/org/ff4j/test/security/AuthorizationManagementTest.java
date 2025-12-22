@@ -27,8 +27,8 @@ import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.security.AuthorizationsManager;
 import org.ff4j.test.AbstractFf4jTest;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 
 /**
@@ -70,12 +70,12 @@ public class AuthorizationManagementTest extends AbstractFf4jTest {
     @Test
     public void testToJson() {
         // Given
-        Assert.assertNotNull(ff4j);
-        Assert.assertNotNull(ff4j.getAuthorizationsManager());
+        Assertions.assertNotNull(ff4j);
+        Assertions.assertNotNull(ff4j.getAuthorizationsManager());
         // When
         String jsonExpr = ff4j.getAuthorizationsManager().toJson();
         // Then
-        Assert.assertNotNull(jsonExpr);
+        Assertions.assertNotNull(jsonExpr);
     }
 
 }

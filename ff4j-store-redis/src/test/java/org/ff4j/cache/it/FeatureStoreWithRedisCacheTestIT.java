@@ -28,6 +28,7 @@ import static org.ff4j.test.TestsFf4jConstants.G1;
 import static org.ff4j.test.TestsFf4jConstants.ROLE_NEW;
 import static org.ff4j.test.TestsFf4jConstants.ROLE_USER;
 import static org.ff4j.test.TestsFf4jConstants.TEST_FEATURES_FILE;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -42,15 +43,15 @@ import org.ff4j.exception.FeatureAlreadyExistException;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.store.FeatureStoreTestSupport;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * Class to test the REDIS {@link FeatureCacheProviderEhCache}.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-@Ignore
+@Disabled
 public class FeatureStoreWithRedisCacheTestIT extends FeatureStoreTestSupport {
 
     /** Initial feature number. */
@@ -114,7 +115,7 @@ public class FeatureStoreWithRedisCacheTestIT extends FeatureStoreTestSupport {
      */
     @Test
     @Override
-    @Ignore
+    @Disabled
     public void testEnableGroup() {
         // Given
         testedStore.disable(F2);
@@ -134,7 +135,7 @@ public class FeatureStoreWithRedisCacheTestIT extends FeatureStoreTestSupport {
      */
     @Test
     @Override
-    @Ignore
+    @Disabled
     public void testDisableGroup() {
         // Given
         testedStore.enable(F4);
@@ -153,20 +154,23 @@ public class FeatureStoreWithRedisCacheTestIT extends FeatureStoreTestSupport {
     /**
      * TDD.
      */
-    @Test(expected = FeatureAlreadyExistException.class)
-    @Ignore
+    @Test
+    @Disabled
     public void testAddFeatureAlreadyExis() throws Exception {
-        // Given
-        assertFf4j.assertThatFeatureDoesNotExist("GOLOGOLO");
-        // When (first creation)
-        Feature fp = new Feature("GOLOGOLO", true, "description2");
-        testedStore.create(fp);
-        // Then (first creation)
-        assertFf4j.assertThatFeatureExist("GOLOGOLO");
-        // When (second creation)
-        Set<String> rights = new HashSet<String>(Arrays.asList(new String[] {ROLE_USER}));
-        Feature fp2 = new Feature("GOLOGOLO", true, G1, "description3", rights);
-        testedStore.create(fp2);
+        assertThrows(FeatureAlreadyExistException.class, () -> {
+            // Given
+            assertFf4j.assertThatFeatureDoesNotExist("GOLOGOLO");
+            // When (first creation)
+            Feature fp = new Feature("GOLOGOLO", true, "description2");
+            testedStore.create(fp);
+            // Then (first creation)
+            assertFf4j.assertThatFeatureExist("GOLOGOLO");
+            // When (second creation)
+            Set<String> rights = new HashSet<String>(Arrays.asList(new String[]{ROLE_USER}));
+            Feature fp2 = new Feature("GOLOGOLO", true, G1, "description3", rights);
+            testedStore.create(fp2);
+            // Then, expected exception
+        });
         // Then, expected exception
     }
 

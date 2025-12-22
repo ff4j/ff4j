@@ -27,10 +27,10 @@ import javax.sql.DataSource;
 
 import org.ff4j.property.store.JdbcPropertyStore;
 import org.ff4j.store.JdbcQueryBuilder;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -52,7 +52,7 @@ public class JdbcPropertyStoreSchemaTest {
     protected JdbcPropertyStore testedStore;
 
     /** {@inheritDoc} */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         initStore();
     }
@@ -66,7 +66,7 @@ public class JdbcPropertyStoreSchemaTest {
     }
    
     /** {@inheritDoc} */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         db.shutdown();
     }
@@ -76,11 +76,11 @@ public class JdbcPropertyStoreSchemaTest {
         DataSource       ds = testedStore.getDataSource();
         JdbcQueryBuilder qb = testedStore.getQueryBuilder();
         // Given
-        Assert.assertFalse(isTableExist(ds, qb.getTableNameProperties()));
+        Assertions.assertFalse(isTableExist(ds, qb.getTableNameProperties()));
         // When
         testedStore.createSchema();
         // then
-        Assert.assertTrue(isTableExist(ds, qb.getTableNameProperties()));
+        Assertions.assertTrue(isTableExist(ds, qb.getTableNameProperties()));
         // When (no error)
         testedStore.createSchema();
     }

@@ -24,17 +24,16 @@ package org.ff4j.store.it;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.store.PropertyStoreRedisLettuce;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Ignore;
-
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import io.lettuce.core.RedisClient;
 
 /**
  * Implementatino of tests with REDIS
  * @author Cedrick Lunven (@clunven)</a>
  */
-@Ignore
+@Disabled
 public class PropertyStoreRedisTestLettuceIT extends PropertyStoreTestSupport {
 
     public static RedisClient rc = RedisClient.create("redis://localhost");
@@ -49,12 +48,12 @@ public class PropertyStoreRedisTestLettuceIT extends PropertyStoreTestSupport {
     /**
      * Clean store after each test (avoid duplication)
      */
-    @After
+    @AfterEach
     public void cleanStore() {
         testedStore.clear();
     }
     
-    @AfterClass
+    @AfterAll
     public static void flushClient() {
         rc.shutdown();
     }
