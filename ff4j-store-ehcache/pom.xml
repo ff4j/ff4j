@@ -19,10 +19,27 @@
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <properties>
     <license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-    <version.ehcache>2.11.0.11.8</version.ehcache>
-    <version.terracotta-toolkit-runtime>4.4.0.11.8</version.terracotta-toolkit-runtime>
+    <version.ehcache>2.10.10.24.8</version.ehcache>
+    <version.terracotta-toolkit-runtime>4.3.10.24.8</version.terracotta-toolkit-runtime>
     <version.terracotta-toolkit-api>2.10</version.terracotta-toolkit-api>
-    <version.terracotta-toolkit-api-internal>2.2.0</version.terracotta-toolkit-api-internal>
+    <argLine>
+      --add-opens=java.base/jdk.internal.misc=ALL-UNNAMED
+      --add-opens=java.base/sun.nio.ch=ALL-UNNAMED
+      --add-opens=java.management/com.sun.jmx.mbeanserver=ALL-UNNAMED
+      --add-opens=jdk.internal.jvmstat/sun.jvmstat.monitor=ALL-UNNAMED
+      --add-opens=java.base/sun.reflect.generics.reflectiveObjects=ALL-UNNAMED
+      --add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED
+      --add-opens=java.base/java.io=ALL-UNNAMED
+      --add-opens=java.base/java.nio=ALL-UNNAMED
+      --add-opens=java.base/java.util=ALL-UNNAMED
+      --add-opens=java.base/java.util.concurrent=ALL-UNNAMED
+      --add-opens=java.base/java.util.concurrent.locks=ALL-UNNAMED
+      --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED
+      --add-opens=java.base/java.lang=ALL-UNNAMED
+      --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
+      --add-opens=java.base/java.math=ALL-UNNAMED
+      --add-opens=java.sql/java.sql=ALL-UNNAMED
+    </argLine>
   </properties>
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <!-- ~      DEPENDENCIES        ~ -->
@@ -59,12 +76,6 @@
       <version>${version.terracotta-toolkit-api}</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.terracotta.toolkit</groupId>
-      <artifactId>terracotta-toolkit-api-internal</artifactId>
-      <version>${version.terracotta-toolkit-api-internal}</version>
-      <scope>test</scope>
-    </dependency>
     <!-- Tests -->
     <dependency>
       <artifactId>ff4j-test</artifactId>
@@ -72,12 +83,15 @@
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
-  <dependency>
-   <groupId>org.junit.jupiter</groupId>
-   <artifactId>junit-jupiter</artifactId>
-   <version>5.14.1</version>
-   <scope>test</scope>
-  </dependency>
+    <dependency>
+       <groupId>org.junit.jupiter</groupId>
+       <artifactId>junit-jupiter</artifactId>
+       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>junit-jupiter</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
@@ -121,13 +135,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
         <version>${version.maven.plugin.failsafe}</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.maven.surefire</groupId>
-            <artifactId>surefire-junit47</artifactId>
-            <version>${version.maven.plugin.failsafe}</version>
-          </dependency>
-        </dependencies>
         <executions>
           <execution>
             <goals>
