@@ -77,7 +77,7 @@
 
     <!-- Versions -->
     <version.aopalliance>1.0</version.aopalliance>
-    <version.assertj>3.25.3</version.assertj>
+    <version.assertj>3.27.7</version.assertj>
     <version.cglib>3.3.0</version.cglib>
     <version.commons-cli>1.7.0</version.commons-cli>
     <version.commons-dbcp2>2.12.0</version.commons-dbcp2>
