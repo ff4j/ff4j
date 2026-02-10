@@ -10,7 +10,7 @@
   </parent>
   <properties>
     <license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-    <version.shiro-core>2.0.0</version.shiro-core>
+    <version.shiro-core>2.1.0</version.shiro-core>
     <version.commons-configuration2>2.10.1</version.commons-configuration2>
     <version.bcprov-jdk18on>1.78</version.bcprov-jdk18on>
   </properties>
