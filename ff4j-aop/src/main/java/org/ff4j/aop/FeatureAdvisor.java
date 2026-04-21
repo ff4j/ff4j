@@ -308,8 +308,8 @@ public class FeatureAdvisor implements MethodInterceptor {
      *      errors occurred
      */
     protected Object invokeAlterBean(final MethodInvocation mi, String alterBeanName) throws Throwable {
-        final Method method = mi.getMethod();
-        final Class<?> targetClass = getExecutedClass(mi);
+        Method method = mi.getMethod();
+        Class<?> targetClass = getExecutedClass(mi);
         // Resolve to the interface that carries @Flip so that getBean() accepts any implementation,
         // not just the concrete class that owns the intercepted method (which breaks under CGLIB).
         Class<?> beanType = resolveFlipDeclaringType(method, targetClass);
@@ -318,13 +318,13 @@ public class FeatureAdvisor implements MethodInterceptor {
             final Object alterbean = appCtx.getBean(alterBeanName, beanType);
             final Method methodToInvoke = beanType.getMethod(method.getName(), method.getParameterTypes());
             return methodToInvoke.invoke(alterbean, mi.getArguments());
-        } catch (final InvocationTargetException invocationTargetException) {
-            if(!this.ff4j.isAlterBeanThrowInvocationTargetException() && invocationTargetException.getCause() != null) {
+        } catch (InvocationTargetException invocationTargetException) {
+            if(!ff4j.isAlterBeanThrowInvocationTargetException() && invocationTargetException.getCause() != null) {
                 throw invocationTargetException.getCause();
             }
-            throw this.makeIllegalArgumentException("ff4j-aop: Cannot invoke method " + method.getName() + " on bean " + alterBeanName, invocationTargetException);
+            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke method " + method.getName() + " on bean " + alterBeanName, invocationTargetException);
         } catch (Exception exception) {
-            throw this.makeIllegalArgumentException("ff4j-aop: Cannot invoke method " + method.getName() + " on bean " + alterBeanName, exception);
+            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke method " + method.getName() + " on bean " + alterBeanName, exception);
         }
     }
 
@@ -348,7 +348,7 @@ public class FeatureAdvisor implements MethodInterceptor {
         final Class<?> declaringClass = this.resolveFlipDeclaringType(method, this.getExecutedClass(mi));
         try {
             // Spring context may have a bean of expected type and priority of get instance
-            for (final Object bean : this.appCtx.getBeansOfType(declaringClass).values()) {
+            for (Object bean : appCtx.getBeansOfType(declaringClass).values()) {
                 // Correct bean implementing the same class, or proxy of existing class
                 if (AopUtils.isJdkDynamicProxy(bean) &&  ((Advised) bean).getTargetSource().getTarget().getClass().equals(alterClazz) ||
                     AopProxyUtils.ultimateTargetClass(bean).equals(alterClazz)) {
@@ -356,19 +356,19 @@ public class FeatureAdvisor implements MethodInterceptor {
                     return methodToInvoke.invoke(bean, mi.getArguments());
                 }
             }
-            // Otherwise instantiate manually
+            // Otherwise instanciate manually
             return mi.getMethod().invoke(ff.alterClazz().newInstance(), mi.getArguments());
         } catch (IllegalAccessException e) {
-            throw this.makeIllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
+            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
                     + " please check visibility", e);
-        } catch (final InvocationTargetException invocationTargetException) {
-            if(!this.ff4j.isAlterBeanThrowInvocationTargetException() && invocationTargetException.getCause() != null) {
+        } catch (InvocationTargetException invocationTargetException) {
+            if(!ff4j.isAlterBeanThrowInvocationTargetException() && invocationTargetException.getCause() != null) {
                 throw invocationTargetException.getCause();
             }
-            throw this.makeIllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
+            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
                     + " please check signatures", invocationTargetException);
-        } catch (final Exception exception) {
-            throw this.makeIllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
+        } catch (Exception exception) {
+            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
                     + " please check signatures", exception);
         }
     }
