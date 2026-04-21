@@ -9,9 +9,9 @@ package org.ff4j.aop;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,6 +36,7 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ClassUtils;
 
 import javax.lang.model.type.NullType;
 import java.lang.reflect.InvocationTargetException;
@@ -46,8 +47,8 @@ import static org.ff4j.utils.MappingUtil.toMap;
 
 /**
  * At runtime check presence of annotation @{Flip}, then evaluate if the related feature id is enabled.
- * If the feature is enabled, the implementation is route to the correct implementation. 
- * 
+ * If the feature is enabled, the implementation is route to the correct implementation.
+ *
  * @author Cedrick LUNVEN (@clunven)
  */
 @Component("ff.advisor")
@@ -55,7 +56,7 @@ public class FeatureAdvisor implements MethodInterceptor {
 
     /** Log with target className. */
     private final static Logger LOGGER = LoggerFactory.getLogger(FeatureAdvisor.class);
-    
+
     /** Spring Application Context. */
     @Autowired
     private ApplicationContext appCtx;
@@ -68,10 +69,10 @@ public class FeatureAdvisor implements MethodInterceptor {
     @Override
     public Object invoke(final MethodInvocation mi) throws Throwable {
         Flip ff4jAnnotation = getFF4jAnnotation(mi);
-        
+
         // Method is annotated
         if (ff4jAnnotation != null) {
-        	
+
         	String alterBean    = ff4jAnnotation.alterBean();
         	Class<?> alterClazz = ff4jAnnotation.alterClazz();
 
@@ -110,10 +111,10 @@ public class FeatureAdvisor implements MethodInterceptor {
         // No feature toggle (no annotation nor feature OFF)
         return mi.proceed();
     }
-   
+
     /**
      * Call if Flipped based on different parameters of the annotation
-     * 
+     *
      * @param ff
      *            annotation over current method
      * @param context
@@ -122,7 +123,7 @@ public class FeatureAdvisor implements MethodInterceptor {
     protected boolean check(Flip ff, MethodInvocation mi) {
         // Retrieve optional context with ThreadLocal
         FlippingExecutionContext context = getFlippingContext(ff, mi);
-        
+
         // Check ff4j
         String featureId = ff.name();
         if (ff.flippingStrategy() != NullType.class) {
@@ -132,7 +133,7 @@ public class FeatureAdvisor implements MethodInterceptor {
         }
         return getFf4j().check(featureId, context);
     }
-    
+
     /**
      * Pick annotation from method or class.
      *
@@ -153,12 +154,14 @@ public class FeatureAdvisor implements MethodInterceptor {
         if (AnnotatedElementUtils.hasAnnotation(currentImplementation, Flip.class)) {
             return AnnotatedElementUtils.findMergedAnnotation(currentImplementation, Flip.class);
         }
-        return null;
+        // CGLIB proxy: mi.getMethod().getDeclaringClass() is the concrete class, not the interface.
+        // @Flip may be on the interface method or the interface itself — scan all interfaces.
+        return findFlipOnInterfaces(mi.getMethod(), currentImplementation);
     }
-    
+
     /**
      * Retriveve {@link FlippingExecutionContext} from FF4J or as parameter.
-     * 
+     *
      * @param ff
      *      current annotation
      * @param mi
@@ -170,7 +173,7 @@ public class FeatureAdvisor implements MethodInterceptor {
             case FF4J:
                 return getFf4j().getCurrentContext();
             case PARAMETER:
-                // We are looking for the first parameter (not argument!) 
+                // We are looking for the first parameter (not argument!)
                 // that is an instance of FlippingExecutionContext
                 int p = 0;
                 for (Class<?> cls : mi.getMethod().getParameterTypes()) {
@@ -183,7 +186,7 @@ public class FeatureAdvisor implements MethodInterceptor {
             default: return null;
         }
     }
-    
+
     /**
      * Find current class based on the {@link MethodInvocation} and passing throug AOP Proxies.
      *
@@ -196,7 +199,7 @@ public class FeatureAdvisor implements MethodInterceptor {
         Class<?> executedClass = null;
         Object ref = pMInvoc.getThis();
         if (ref != null) {
-            executedClass = AopUtils.getTargetClass(ref); 
+            executedClass = AopUtils.getTargetClass(ref);
         }
         if (executedClass == null) {
             throw new IllegalArgumentException("ff4j-aop: Static methods cannot be feature flipped");
@@ -225,7 +228,7 @@ public class FeatureAdvisor implements MethodInterceptor {
         if (repo != null) {
             return repo.value();
         }
-        
+
         // There is no annotation on the bean, still be declared in applicationContext.xml
         try {
             // Use BeanDefinition names to loop on each bean and fetch target if proxified
@@ -243,36 +246,85 @@ public class FeatureAdvisor implements MethodInterceptor {
         }
         throw new IllegalArgumentException("ff4j-aop: Feature bean must be annotated as a Service or a Component");
     }
-    
+
     private IllegalArgumentException makeIllegalArgumentException(String message, Exception exception) {
         return new IllegalArgumentException(message, exception);
     }
 
     /**
+     * Scans all interfaces of {@code targetClass} for a {@code @Flip} annotation, checking both
+     * class-level and method-level annotations. This is the CGLIB fallback used when
+     * {@code mi.getMethod().getDeclaringClass()} returns the concrete class rather than the interface.
+     */
+    private Flip findFlipOnInterfaces(Method method, Class<?> targetClass) {
+        for (Class<?> iface : ClassUtils.getAllInterfacesForClass(targetClass)) {
+            if (AnnotatedElementUtils.hasAnnotation(iface, Flip.class)) {
+                return AnnotatedElementUtils.findMergedAnnotation(iface, Flip.class);
+            }
+            try {
+                final Method interfaceMethod = iface.getMethod(method.getName(), method.getParameterTypes());
+                if (AnnotatedElementUtils.hasAnnotation(interfaceMethod, Flip.class)) {
+                    return AnnotatedElementUtils.findMergedAnnotation(interfaceMethod, Flip.class);
+                }
+            } catch (NoSuchMethodException e) {
+                // Interface does not expose this method signature – keep scanning.
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the interface that carries the {@code @Flip} annotation for the given method
+     * (checked at both class and method level). Falls back to {@code method.getDeclaringClass()}
+     * when no matching interface is found, preserving the original non-CGLIB behaviour.
+     */
+    private Class<?> resolveFlipDeclaringType(Method method, Class<?> targetClass) {
+        for (final Class<?> iface : ClassUtils.getAllInterfacesForClass(targetClass)) {
+            if (AnnotatedElementUtils.hasAnnotation(iface, Flip.class)) {
+                return iface;
+            }
+            try {
+                final Method interfaceMethod = iface.getMethod(method.getName(), method.getParameterTypes());
+                if (AnnotatedElementUtils.hasAnnotation(interfaceMethod, Flip.class)) {
+                    return iface;
+                }
+            } catch (NoSuchMethodException e) {
+                // Interface does not expose this method signature – keep scanning.
+            }
+        }
+        return method.getDeclaringClass();
+    }
+
+    /**
      * Invoke another Bean for the current Method.
-     * 
+     *
      * @param mi
      *      current method invocation
-     * @param alterBean
-     *      target bean
+     * @param alterBeanName
+     *      target bean name
      * @return
      *      return of invocation
      * @throws Throwable
-     *      erros occured
+     *      errors occurred
      */
     protected Object invokeAlterBean(final MethodInvocation mi, String alterBeanName) throws Throwable {
-        Method method = mi.getMethod();
+        final Method method = mi.getMethod();
+        final Class<?> targetClass = getExecutedClass(mi);
+        // Resolve to the interface that carries @Flip so that getBean() accepts any implementation,
+        // not just the concrete class that owns the intercepted method (which breaks under CGLIB).
+        Class<?> beanType = resolveFlipDeclaringType(method, targetClass);
         try {
             LOGGER.debug("FeatureFlipping on method:{} class:{}", method.getName(), method.getDeclaringClass().getName());
-            Object alterbean = appCtx.getBean(alterBeanName, method.getDeclaringClass());
-            return method.invoke(alterbean, mi.getArguments());
-        } catch (InvocationTargetException invocationTargetException) {
-            if(!ff4j.isAlterBeanThrowInvocationTargetException() && invocationTargetException.getCause() != null) {
+            final Object alterbean = appCtx.getBean(alterBeanName, beanType);
+            final Method methodToInvoke = beanType.getMethod(method.getName(), method.getParameterTypes());
+            return methodToInvoke.invoke(alterbean, mi.getArguments());
+        } catch (final InvocationTargetException invocationTargetException) {
+            if(!this.ff4j.isAlterBeanThrowInvocationTargetException() && invocationTargetException.getCause() != null) {
                 throw invocationTargetException.getCause();
             }
-            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke method " + method.getName() + " on bean " + alterBeanName, invocationTargetException);
+            throw this.makeIllegalArgumentException("ff4j-aop: Cannot invoke method " + method.getName() + " on bean " + alterBeanName, invocationTargetException);
         } catch (Exception exception) {
-            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke method " + method.getName() + " on bean " + alterBeanName, exception);
+            throw this.makeIllegalArgumentException("ff4j-aop: Cannot invoke method " + method.getName() + " on bean " + alterBeanName, exception);
         }
     }
 
@@ -284,43 +336,46 @@ public class FeatureAdvisor implements MethodInterceptor {
      * @param ff
      *      ff4j annotation
      * @return
-     *      object returned by the 
+     *      object returned by the
      * @throws Throwable
      *      error during invocation
      */
     protected Object invokeAlterClazz(final MethodInvocation mi, Flip ff) throws Throwable {
-        Class<?> alterClazz     = ff.alterClazz();
-        Method   method         = mi.getMethod();
-        Class<?> declaringClass = method.getDeclaringClass();
+        final Class<?> alterClazz     = ff.alterClazz();
+        final Method   method         = mi.getMethod();
+        // Resolve to the interface type so getBeansOfType() finds all implementations
+        // regardless of which concrete class holds the intercepted method (CGLIB compatibility).
+        final Class<?> declaringClass = this.resolveFlipDeclaringType(method, this.getExecutedClass(mi));
         try {
             // Spring context may have a bean of expected type and priority of get instance
-            for (Object bean : appCtx.getBeansOfType(declaringClass).values()) {
+            for (final Object bean : this.appCtx.getBeansOfType(declaringClass).values()) {
                 // Correct bean implementing the same class, or proxy of existing class
                 if (AopUtils.isJdkDynamicProxy(bean) &&  ((Advised) bean).getTargetSource().getTarget().getClass().equals(alterClazz) ||
                     AopProxyUtils.ultimateTargetClass(bean).equals(alterClazz)) {
-                    return mi.getMethod().invoke(bean, mi.getArguments());
+                    final Method methodToInvoke = declaringClass.getMethod(method.getName(), method.getParameterTypes());
+                    return methodToInvoke.invoke(bean, mi.getArguments());
                 }
             }
-            // Otherwise instanciate manually
+            // Otherwise instantiate manually
             return mi.getMethod().invoke(ff.alterClazz().newInstance(), mi.getArguments());
         } catch (IllegalAccessException e) {
-            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
+            throw this.makeIllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
                     + " please check visibility", e);
-        } catch (InvocationTargetException invocationTargetException) {
-            if(!ff4j.isAlterBeanThrowInvocationTargetException() && invocationTargetException.getCause() != null) {
+        } catch (final InvocationTargetException invocationTargetException) {
+            if(!this.ff4j.isAlterBeanThrowInvocationTargetException() && invocationTargetException.getCause() != null) {
                 throw invocationTargetException.getCause();
             }
-            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
+            throw this.makeIllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
                     + " please check signatures", invocationTargetException);
-        } catch (Exception exception) {
-            throw makeIllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
+        } catch (final Exception exception) {
+            throw this.makeIllegalArgumentException("ff4j-aop: Cannot invoke " + method.getName() + " on alterbean " + declaringClass
                     + " please check signatures", exception);
         }
     }
 
     /**
      * Getter accessor for attribute 'ff4j'.
-     * 
+     *
      * @return current value of 'ff4j'
      */
     public FF4j getFf4j() {
