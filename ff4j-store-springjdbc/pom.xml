@@ -23,7 +23,7 @@
 	<properties>
 		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
 		<testcontainers.version>1.19.7</testcontainers.version>
-		<postgresql.version>42.7.3</postgresql.version>
+		<postgresql.version>42.7.11</postgresql.version>
 	</properties>
 	
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
