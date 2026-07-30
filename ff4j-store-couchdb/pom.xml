@@ -20,9 +20,9 @@
   <properties>
     <license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
     <version.lightcouch>0.2.0</version.lightcouch>
-    <version.commons-codec>1.16.1</version.commons-codec>
+    <version.commons-codec>1.22.0</version.commons-codec>
     <version.org.ektorp>1.5.0</version.org.ektorp>
-    <version.httpclient5>5.3.1</version.httpclient5>
+    <version.httpclient5>5.6.2</version.httpclient5>
   </properties>
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <!-- ~ DEPENDENCIES ~ -->

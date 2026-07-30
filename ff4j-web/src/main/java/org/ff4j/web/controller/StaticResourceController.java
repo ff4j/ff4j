@@ -27,7 +27,7 @@ import org.ff4j.web.utils.FileUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
-import javax.activation.MimetypesFileTypeMap;
+import jakarta.activation.MimetypesFileTypeMap;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;

@@ -22,13 +22,24 @@ package org.ff4j.gcpdatastore.store;
 
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreOptions;
+import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.gcpdatastore.store.feature.DatastoreFeatureStore;
 import org.ff4j.test.store.FeatureStoreTestSupport;
+import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import static org.ff4j.test.TestsFf4jConstants.*;
+
 public class DatastoreFeatureStoreTest extends FeatureStoreTestSupport {
+
+    private static final long QUERY_CONSISTENCY_TIMEOUT_MILLIS = 5_000;
 
     @ClassRule
     public static DatastoreTestContainer container = new DatastoreTestContainer();
@@ -50,8 +61,36 @@ public class DatastoreFeatureStoreTest extends FeatureStoreTestSupport {
 
     @Test
     public void testStoreHasBeenInitialized() {}
-    //@Test
-    //public void testAddFeature() throws Exception {
-        // overriding
-    //}
+
+    @Override
+    @Test
+    public void testAddFeature() throws Exception {
+        assertFf4j.assertThatFeatureDoesNotExist(FEATURE_NEW);
+
+        Set<String> rights = new HashSet<>(Collections.singletonList(ROLE_USER));
+        Feature feature = new Feature(FEATURE_NEW, true, "description", G1, rights);
+        testedStore.create(feature);
+
+        assertStoreEventuallyHasSize(EXPECTED_FEATURES_NUMBERS + 1);
+        assertFf4j.assertThatFeatureExist(FEATURE_NEW);
+        assertFf4j.assertThatFeatureIsInGroup(FEATURE_NEW, G1);
+
+        testedStore.delete(FEATURE_NEW);
+        assertFf4j.assertThatFeatureDoesNotExist(FEATURE_NEW);
+    }
+
+    private void assertStoreEventuallyHasSize(int expectedSize) throws InterruptedException {
+        // The Datastore emulator can expose a key lookup before the corresponding kind query catches up.
+        long deadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(QUERY_CONSISTENCY_TIMEOUT_MILLIS);
+        int actualSize;
+        do {
+            actualSize = testedStore.readAll().size();
+            if (actualSize == expectedSize) {
+                return;
+            }
+            Thread.sleep(100);
+        } while (System.nanoTime() < deadline);
+
+        Assert.assertEquals(expectedSize, actualSize);
+    }
 }

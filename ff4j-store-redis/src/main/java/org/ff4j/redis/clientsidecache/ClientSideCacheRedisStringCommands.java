@@ -112,6 +112,30 @@ public class ClientSideCacheRedisStringCommands<K, V> implements RedisStringComm
     }
 
     @Override
+    public Long bitopDiff(K destination, K key, K... keys) {
+        LOGGER.warn("bitopDiff is not currently supported by client side caching");
+        return delegate.bitopDiff(destination, key, keys);
+    }
+
+    @Override
+    public Long bitopDiff1(K destination, K key, K... keys) {
+        LOGGER.warn("bitopDiff1 is not currently supported by client side caching");
+        return delegate.bitopDiff1(destination, key, keys);
+    }
+
+    @Override
+    public Long bitopAndor(K destination, K key, K... keys) {
+        LOGGER.warn("bitopAndor is not currently supported by client side caching");
+        return delegate.bitopAndor(destination, key, keys);
+    }
+
+    @Override
+    public Long bitopOne(K destination, K... keys) {
+        LOGGER.warn("bitopOne is not currently supported by client side caching");
+        return delegate.bitopOne(destination, keys);
+    }
+
+    @Override
     public Long decr(K key) {
         LOGGER.warn("decr is not currently supported by client side caching");
         return delegate.decr(key);
@@ -270,6 +294,12 @@ public class ClientSideCacheRedisStringCommands<K, V> implements RedisStringComm
     public StringMatchResult stralgoLcs(StrAlgoArgs strAlgoArgs) {
         LOGGER.warn("stralgoLcs is not currently supported by client side caching");
         return delegate.stralgoLcs(strAlgoArgs);
+    }
+
+    @Override
+    public StringMatchResult lcs(LcsArgs lcsArgs) {
+        LOGGER.warn("lcs is not currently supported by client side caching");
+        return delegate.lcs(lcsArgs);
     }
 
     @Override

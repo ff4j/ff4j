@@ -680,6 +680,26 @@ public class RedisClientSideCacheIT {
         }
 
         @Override
+        public Long bitopDiff(K destination, K key, K... keys) {
+            return delegate.bitopDiff(destination, key, keys);
+        }
+
+        @Override
+        public Long bitopDiff1(K destination, K key, K... keys) {
+            return delegate.bitopDiff1(destination, key, keys);
+        }
+
+        @Override
+        public Long bitopAndor(K destination, K key, K... keys) {
+            return delegate.bitopAndor(destination, key, keys);
+        }
+
+        @Override
+        public Long bitopOne(K destination, K... keys) {
+            return delegate.bitopOne(destination, keys);
+        }
+
+        @Override
         public Long decr(K key) {
             return delegate.decr(key);
         }
@@ -804,6 +824,11 @@ public class RedisClientSideCacheIT {
         @Override
         public StringMatchResult stralgoLcs(StrAlgoArgs strAlgoArgs) {
             return delegate.stralgoLcs(strAlgoArgs);
+        }
+
+        @Override
+        public StringMatchResult lcs(LcsArgs lcsArgs) {
+            return delegate.lcs(lcsArgs);
         }
 
         @Override
