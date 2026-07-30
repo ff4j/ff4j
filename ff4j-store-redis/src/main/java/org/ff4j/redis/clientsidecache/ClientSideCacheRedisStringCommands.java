@@ -212,6 +212,24 @@ public class ClientSideCacheRedisStringCommands<K, V> implements RedisStringComm
     }
 
     @Override
+    public IncrexValue<Long> increx(K key) {
+        LOGGER.warn("increx is not currently supported by client side caching");
+        return delegate.increx(key);
+    }
+
+    @Override
+    public IncrexValue<Long> increx(K key, long amount, IncrexArgs args) {
+        LOGGER.warn("increx is not currently supported by client side caching");
+        return delegate.increx(key, amount, args);
+    }
+
+    @Override
+    public IncrexValue<Double> increx(K key, double amount, IncrexFloatArgs args) {
+        LOGGER.warn("increx is not currently supported by client side caching");
+        return delegate.increx(key, amount, args);
+    }
+
+    @Override
     public List<KeyValue<K, V>> mget(K... keys) {
         LOGGER.warn("mget is not currently supported by client side caching");
         return delegate.mget(keys);
@@ -233,6 +251,12 @@ public class ClientSideCacheRedisStringCommands<K, V> implements RedisStringComm
     public Boolean msetnx(Map<K, V> map) {
         LOGGER.warn("msetnx is not currently supported by client side caching");
         return delegate.msetnx(map);
+    }
+
+    @Override
+    public Boolean msetex(Map<K, V> map, MSetExArgs args) {
+        LOGGER.warn("msetex is not currently supported by client side caching");
+        return delegate.msetex(map, args);
     }
 
     @Override

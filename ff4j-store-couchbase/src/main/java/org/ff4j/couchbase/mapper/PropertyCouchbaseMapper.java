@@ -26,9 +26,7 @@ import org.ff4j.mapper.PropertyMapper;
 import org.ff4j.property.Property;
 import org.ff4j.utils.json.PropertyJsonParser;
 
-import com.couchbase.client.java.document.JsonDocument;
-import com.couchbase.client.java.document.json.JsonObject;
-import com.couchbase.client.java.transcoder.JsonTranscoder;
+import com.couchbase.client.java.json.JsonObject;
 
 /**
  * CRUD operation with couch base API.
@@ -36,30 +34,27 @@ import com.couchbase.client.java.transcoder.JsonTranscoder;
  * @author farrellyja
  * @author Cedrick LUNVEN (@clunven)
  */
-public class PropertyCouchbaseMapper implements PropertyMapper< JsonDocument > {
-    
-    /** Help JSON conversion. */
-    private static final JsonTranscoder TRANSCODER = new JsonTranscoder();
+public class PropertyCouchbaseMapper implements PropertyMapper<JsonObject> {
     
     /** {@inheritDoc} */
     @Override
-    public Property<?> fromStore(JsonDocument jsonDoc) {
+    public Property<?> fromStore(JsonObject jsonDoc) {
         if (jsonDoc == null) return null;
-        return PropertyJsonParser.parseProperty(jsonDoc.content().toString());
+        return PropertyJsonParser.parseProperty(jsonDoc.toString());
     }
 
     /** {@inheritDoc} */
     @Override
-    public JsonDocument toStore(Property<?> prop)  {
+    public JsonObject toStore(Property<?> prop)  {
         if (prop == null) return null;
         JsonObject jsonObject;
         try {
-            jsonObject = TRANSCODER.stringToJsonObject(prop.toJson());
+            jsonObject = JsonObject.fromJson(prop.toJson());
             jsonObject.put("_class", Property.class.getCanonicalName());
         } catch (Exception e) {
             throw new FeatureAccessException("Cannot parse the feature", e);
         }
-        return JsonDocument.create(prop.getName(), jsonObject);
+        return jsonObject;
     }
   
 }

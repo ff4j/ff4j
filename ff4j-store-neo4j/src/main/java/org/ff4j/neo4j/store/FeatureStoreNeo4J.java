@@ -106,12 +106,14 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
         Util.assertHasLength(featId);
         Map < String, Object > queryParameters = new HashMap<>();
         queryParameters.put("uid", featId);
-        Result result = graphDb.execute(QUERY_CYPHER_EXISTS,  queryParameters);
-        Object count = null;
-        if (result.hasNext()) {
-            count = result.next().get(QUERY_CYPHER_ALIAS);
+        try (Transaction tx = graphDb.beginTx()) {
+            Result result = tx.execute(QUERY_CYPHER_EXISTS, queryParameters);
+            Object count = null;
+            if (result.hasNext()) {
+                count = result.next().get(QUERY_CYPHER_ALIAS);
+            }
+            return (null != count) && (((long) count) > 0);
         }
-        return (null != count) && (((long) count) > 0);
     }
     
     /** {@inheritDoc} */
@@ -121,8 +123,8 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
         Transaction tx = graphDb.beginTx();
         Map<String, Object> queryParameters = new HashMap<>();
         queryParameters.put("uid", uid);
-        graphDb.execute(QUERY_CYPHER_ENABLE, queryParameters);
-        tx.success();
+        tx.execute(QUERY_CYPHER_ENABLE, queryParameters);
+        tx.commit();
     }
 
     /** {@inheritDoc} */
@@ -132,8 +134,8 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
         Transaction tx = graphDb.beginTx();
         Map<String, Object> queryParameters = new HashMap<>();
         queryParameters.put("uid", uid);
-        graphDb.execute(QUERY_CYPHER_DISABLE, queryParameters);
-        tx.success();
+        tx.execute(QUERY_CYPHER_DISABLE, queryParameters);
+        tx.commit();
     }
 
     /** {@inheritDoc} */
@@ -144,10 +146,10 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
         Transaction tx = graphDb.beginTx();
         Map<String, Object> queryParameters = new HashMap<>();
         queryParameters.put("uid", featId);
-        Result result = graphDb.execute(QUERY_CYPHER_READ_FEATURE, queryParameters);
+        Result result = tx.execute(QUERY_CYPHER_READ_FEATURE, queryParameters);
         if (!result.hasNext()) {
             // Exist but as no relation ship not return by first query
-            result = graphDb.execute(QUERY_CYPHER_NORELATIONSHIPS, queryParameters);
+            result = tx.execute(QUERY_CYPHER_NORELATIONSHIPS, queryParameters);
         }
         while (result.hasNext()) {
             Map<String, Object> response = result.next();
@@ -157,7 +159,7 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
             }
             addNeighBour2Feature(targetFeature, (Node) response.get("all"));
         }
-        tx.success();
+        tx.commit();
         return targetFeature;
     }
     
@@ -167,16 +169,16 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
         Map<String, Feature> allFeatures = new HashMap<>();
         Transaction tx = graphDb.beginTx();
         // Node with relationships
-        Result result = graphDb.execute(QUERY_CYPHER_READ_ALL);
+        Result result = tx.execute(QUERY_CYPHER_READ_ALL);
         while (result.hasNext()) {
             addToFeatureList(result.next(), allFeatures);
         }
         // Single nodes
-        result = graphDb.execute(QUERY_CYPHER_READ_SINGLE);
+        result = tx.execute(QUERY_CYPHER_READ_SINGLE);
         while (result.hasNext()) {
             addToFeatureList(result.next(), allFeatures);
         }
-        tx.success();
+        tx.commit();
         return allFeatures;
     }
     
@@ -195,30 +197,30 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
         Transaction tx = graphDb.beginTx();
 
         // Delete Flipping Strategy if it exists
-        graphDb.execute(QUERY_CYPHER_DELETE_STRATEGY_FEATURE, paramUID);
+        tx.execute(QUERY_CYPHER_DELETE_STRATEGY_FEATURE, paramUID);
 
         // Delete Related Property if exist
-        graphDb.execute(QUERY_CYPHER_DELETE_PROPERTIES_FEATURE, paramUID);
+        tx.execute(QUERY_CYPHER_DELETE_PROPERTIES_FEATURE, paramUID);
 
         // Check group
-        Result result = graphDb.execute(QUERY_CYPHER_GETGROUPNAME, paramUID);
+        Result result = tx.execute(QUERY_CYPHER_GETGROUPNAME, paramUID);
         if (result.hasNext()) {
             String groupName = (String) result.next().get(GROUPNAME);
             Map<String, Object> paramGroupName = new HashMap<>();
             paramGroupName.put(GROUP_NAME, groupName);
-            result = graphDb.execute(QUERY_CYPHER_COUNT_FEATURE_OF_GROUP, paramGroupName);
+            result = tx.execute(QUERY_CYPHER_COUNT_FEATURE_OF_GROUP, paramGroupName);
             if (result.hasNext()) {
                 long nbFeature = (long) result.next().get(QUERY_CYPHER_ALIAS);
                 if (nbFeature == 1) {
                     // This is the last feature of this Group => delete the GROUP
-                    graphDb.execute(QUERY_CYPHER_DELETE_GROUP_FEATURE, paramUID);
+                    tx.execute(QUERY_CYPHER_DELETE_GROUP_FEATURE, paramUID);
                 }
             }
         }
 
         // Delete feature
-        graphDb.execute(QUERY_CYPHER_DELETE_FEATURE, paramUID);
-        tx.success();
+        tx.execute(QUERY_CYPHER_DELETE_FEATURE, paramUID);
+        tx.commit();
     }
     
     /** {@inheritDoc} */
@@ -231,8 +233,8 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
             Map<String, Object> paramUID = new HashMap<>();
             paramUID.put("uid", uid);
             paramUID.put("roleName", roleName);
-            graphDb.execute(QUERY_CYPHER_ADD_ROLE, paramUID);
-            tx.success();
+            tx.execute(QUERY_CYPHER_ADD_ROLE, paramUID);
+            tx.commit();
         }
     }
     
@@ -248,8 +250,8 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
             Map<String, Object> paramUID = new HashMap<>();
             paramUID.put("uid", uid);
             paramUID.put("roles", roles);
-            graphDb.execute(QUERY_CYPHER_UPDATE_ROLE, paramUID);
-            tx.success();
+            tx.execute(QUERY_CYPHER_UPDATE_ROLE, paramUID);
+            tx.commit();
         }
     }
 
@@ -262,17 +264,17 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
         Map<String, Object> queryParameters = new HashMap<>();
         queryParameters.put("uid", fp.getUid());
         if (fp.getFlippingStrategy() != null) {
-            Result flippingNode = graphDb.execute(QUERY_CYPHER_GET_FLIPPINGSTRATEGY, queryParameters);
+            Result flippingNode = tx2.execute(QUERY_CYPHER_GET_FLIPPINGSTRATEGY, queryParameters);
             if (flippingNode.hasNext()) {
-                graphDb.execute(createUpdateFlippingStrategy(fp));
+                tx2.execute(createUpdateFlippingStrategy(fp));
             } else {
-                graphDb.execute(createQueryFlippingStrategy(fp));
+                tx2.execute(createQueryFlippingStrategy(fp));
             }
         } else {
             // Delete flipping strategy if exist (as null)
-            graphDb.execute(QUERY_CYPHER_DELETE_STRATEGY_FEATURE, queryParameters);
+            tx2.execute(QUERY_CYPHER_DELETE_STRATEGY_FEATURE, queryParameters);
         }
-        tx2.success();
+        tx2.commit();
     }
     
     /**
@@ -309,8 +311,8 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
 
         // Create or update core Feature as a first TX
         Transaction tx = graphDb.beginTx();
-        graphDb.execute(createUpdateCoreFeature(fp));
-        tx.success();
+        tx.execute(createUpdateCoreFeature(fp));
+        tx.commit();
         
         // Create, update or delete Flipping Strategy
         updateFlippingStrategy(fp);
@@ -322,8 +324,8 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
         Transaction tx3 = graphDb.beginTx();
         Map<String, Object> paramUID = new HashMap<>();
         paramUID.put("uid", fp.getUid());
-        graphDb.execute(QUERY_CYPHER_DELETE_PROPERTIES_FEATURE, paramUID);
-        tx3.success();
+        tx3.execute(QUERY_CYPHER_DELETE_PROPERTIES_FEATURE, paramUID);
+        tx3.commit();
         
         if (fp.getCustomProperties() != null && fp.getCustomProperties().size() > 0) {
             for (String pName : fp.getCustomProperties().keySet()) {
@@ -359,8 +361,8 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
         }
         cypherCreate.append("})-[:" + FF4jNeo4jRelationShips.PROPERTY_OF + "]->(f);");
         Transaction tx = graphDb.beginTx();
-        graphDb.execute(cypherCreate.toString());
-        tx.success();
+        tx.execute(cypherCreate.toString());
+        tx.commit();
     }
 
     private String getCurrentGroupName(String uid) {
@@ -368,11 +370,11 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
         Transaction tx = graphDb.beginTx();
         Map<String, Object> queryParameters = new HashMap<>();
         queryParameters.put("uid", uid);
-        Result result = graphDb.execute(QUERY_CYPHER_GETGROUPNAME, queryParameters);
+        Result result = tx.execute(QUERY_CYPHER_GETGROUPNAME, queryParameters);
         if (result.hasNext()) {
             groupName = (String) result.next().get(GROUPNAME);
         }
-        tx.success();
+        tx.commit();
         return groupName;
     }
 
@@ -484,19 +486,20 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
         }
         Transaction tx = graphDb.beginTx();
         // Create core
-        graphDb.execute(createQueryNewCoreFeature(fp));
+        tx.execute(createQueryNewCoreFeature(fp));
 
         // Create Flipping Strategy
         if (fp.getFlippingStrategy() != null) {
-            graphDb.execute(createQueryFlippingStrategy(fp));
+            tx.execute(createQueryFlippingStrategy(fp));
         }
+
+        tx.commit();
 
         // Create Group
         if (fp.getGroup() != null && !"".equals(fp.getGroup())) {
             addToGroup(fp.getUid(), fp.getGroup());
         }
 
-        tx.success();
         // Create Properties
         if (fp.getCustomProperties() != null && fp.getCustomProperties().size() > 0) {
             for (String pName : fp.getCustomProperties().keySet()) {
@@ -513,12 +516,14 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
         Util.assertHasLength(groupName);
         Map < String, Object > queryParameters = new HashMap<>();
         queryParameters.put(GROUP_NAME, groupName);
-        Result result = graphDb.execute(QUERY_CYPHER_EXISTS_GROUP,  queryParameters);
-        Object count = null;
-        if (result.hasNext()) {
-            count = result.next().get(QUERY_CYPHER_ALIAS);
+        try (Transaction tx = graphDb.beginTx()) {
+            Result result = tx.execute(QUERY_CYPHER_EXISTS_GROUP, queryParameters);
+            Object count = null;
+            if (result.hasNext()) {
+                count = result.next().get(QUERY_CYPHER_ALIAS);
+            }
+            return (null != count) && (((long) count) > 0);
         }
-        return (null != count) && (((long) count) > 0);
     }
     
     /** {@inheritDoc} */
@@ -530,12 +535,12 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
         Transaction tx = graphDb.beginTx();
         Map<String, Object> paramGroupName = new HashMap<>();
         paramGroupName.put(GROUP_NAME, groupName);
-        Result result = graphDb.execute(QUERY_CYPHER_READ_FEATURES_OF_GROUP, paramGroupName);
+        Result result = tx.execute(QUERY_CYPHER_READ_FEATURES_OF_GROUP, paramGroupName);
         while (result.hasNext()) {
             String member = (String) result.next().get("UID");
             groupFeatures.put(member, allFeatures.get(member));
         }
-        tx.success();
+        tx.commit();
         return groupFeatures;
     }
     
@@ -546,8 +551,8 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
         Transaction tx = graphDb.beginTx();
         Map<String, Object> paramGroupName = new HashMap<>();
         paramGroupName.put(GROUP_NAME, groupName);
-        graphDb.execute(QUERY_CYPHER_ENABLE_GROUP, paramGroupName);
-        tx.success();
+        tx.execute(QUERY_CYPHER_ENABLE_GROUP, paramGroupName);
+        tx.commit();
     }
 
     /** {@inheritDoc} */
@@ -557,8 +562,8 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
         Transaction tx = graphDb.beginTx();
         Map<String, Object> paramGroupName = new HashMap<>();
         paramGroupName.put(GROUP_NAME, groupName);
-        graphDb.execute(QUERY_CYPHER_DISABLE_GROUP, paramGroupName);
-        tx.success();
+        tx.execute(QUERY_CYPHER_DISABLE_GROUP, paramGroupName);
+        tx.commit();
     }
    
     /** {@inheritDoc} */
@@ -572,8 +577,8 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
             Transaction tx = graphDb.beginTx();
             String createGroup = "CREATE (" + groupName + ":" + FF4jNeo4jLabels.FF4J_FEATURE_GROUP;
             createGroup += " { name:'" + groupName + "' });";
-            graphDb.execute(createGroup);
-            tx.success();
+            tx.execute(createGroup);
+            tx.commit();
         }
 
         // Create relation ship (work with indexes)
@@ -581,8 +586,8 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
         Map<String, Object> params = new HashMap<>();
         params.put("uid", uid);
         params.put(GROUP_NAME, groupName);
-        graphDb.execute(QUERY_CYPHER_ADDTO_GROUP, params);
-        tx.success();
+        tx.execute(QUERY_CYPHER_ADDTO_GROUP, params);
+        tx.commit();
     }
 
     /** {@inheritDoc} */
@@ -593,8 +598,8 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
         Transaction tx = graphDb.beginTx();
         Map < String, Object > params = new HashMap<>();
         params.put("uid", uid);
-        graphDb.execute(QUERY_CYPHER_REMOVEFROMGROUP, params);
-        tx.success();
+        tx.execute(QUERY_CYPHER_REMOVEFROMGROUP, params);
+        tx.commit();
         
         // Delete node group if not more feature on it
         deleteOrphanGroups();
@@ -603,12 +608,14 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
     /** {@inheritDoc} */
     @Override
     public Set<String> readAllGroups() {
-        Result result = graphDb.execute(QUERY_READ_GROUPS);
-        Set < String > response = new HashSet<>();
-        while (result.hasNext()) {
-            response.add((String) result.next().get(GROUPNAME));
+        try (Transaction tx = graphDb.beginTx()) {
+            Result result = tx.execute(QUERY_READ_GROUPS);
+            Set<String> response = new HashSet<>();
+            while (result.hasNext()) {
+                response.add((String) result.next().get(GROUPNAME));
+            }
+            return response;
         }
-        return response;
     }
     
    
@@ -673,14 +680,16 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
         for (String groupName : groupNames) {
             Map < String, Object > paramGroupName = new HashMap<>();
             paramGroupName.put(GROUP_NAME, groupName);
-            Result result = graphDb.execute(QUERY_CYPHER_COUNT_FEATURE_OF_GROUP, paramGroupName);
+            Transaction tx = graphDb.beginTx();
+            Result result = tx.execute(QUERY_CYPHER_COUNT_FEATURE_OF_GROUP, paramGroupName);
             if (result.hasNext()) {
                 long nbFeature = (long) result.next().get(QUERY_CYPHER_ALIAS);
                 if (nbFeature == 0) {
                     // This is the last feature of this Group => delete the GROUP
-                    graphDb.execute(QUERY_CYPHER_DELETE_GROUP, paramGroupName );
+                    tx.execute(QUERY_CYPHER_DELETE_GROUP, paramGroupName);
                 }
             }
+            tx.commit();
         }
     }
     
@@ -688,26 +697,26 @@ public class FeatureStoreNeo4J extends AbstractFeatureStore {
     @Override
     public void clear() {
         Transaction tx = graphDb.beginTx();
-        graphDb.execute(QUERY_CYPHER_DELETE_ALLFEATURE);
-        graphDb.execute(QUERY_CYPHER_DELETE_ALLSINGLEFEATURE);
-        tx.success();
+        tx.execute(QUERY_CYPHER_DELETE_ALLFEATURE);
+        tx.execute(QUERY_CYPHER_DELETE_ALLSINGLEFEATURE);
+        tx.commit();
     }
     
     /** {@inheritDoc} */
     @Override
     public void createSchema() {
         try (Transaction tx = graphDb.beginTx() ) {
-            if (!graphDb.schema().getConstraints(FF4jNeo4jLabels.FF4J_FEATURE).iterator().hasNext()) {
-                graphDb.schema().constraintFor(FF4jNeo4jLabels.FF4J_FEATURE)//
+            if (!tx.schema().getConstraints(FF4jNeo4jLabels.FF4J_FEATURE).iterator().hasNext()) {
+                tx.schema().constraintFor(FF4jNeo4jLabels.FF4J_FEATURE)//
                         .assertPropertyIsUnique(NODEFEATURE_ATT_UID)//
                         .create();
             }
-            if (!graphDb.schema().getConstraints(FF4jNeo4jLabels.FF4J_FEATURE_GROUP).iterator().hasNext()) {
-                graphDb.schema().constraintFor(FF4jNeo4jLabels.FF4J_FEATURE_GROUP)//
+            if (!tx.schema().getConstraints(FF4jNeo4jLabels.FF4J_FEATURE_GROUP).iterator().hasNext()) {
+                tx.schema().constraintFor(FF4jNeo4jLabels.FF4J_FEATURE_GROUP)//
                     .assertPropertyIsUnique(NODEGROUP_ATT_NAME )//
                     .create();
             }
-            tx.success();
+            tx.commit();
         }
     }
 

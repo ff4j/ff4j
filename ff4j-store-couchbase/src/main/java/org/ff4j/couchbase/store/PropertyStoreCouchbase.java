@@ -31,10 +31,9 @@ import org.ff4j.property.store.AbstractPropertyStore;
 import org.ff4j.utils.Util;
 import org.ff4j.utils.json.PropertyJsonParser;
 
-import com.couchbase.client.java.Bucket;
-import com.couchbase.client.java.query.N1qlQuery;
-import com.couchbase.client.java.query.N1qlQueryResult;
-import com.couchbase.client.java.query.N1qlQueryRow;
+import com.couchbase.client.java.Collection;
+import com.couchbase.client.java.json.JsonObject;
+import com.couchbase.client.java.query.QueryResult;
 
 /**
  * Created by farrellyja on 10/11/2017.
@@ -48,7 +47,7 @@ public class PropertyStoreCouchbase extends AbstractPropertyStore {
     private CouchbaseConnection couchBaseConnection;
     
     /** Keep reference to bucket. */
-    private Bucket propertyBucket;
+    private Collection propertyCollection;
     
     /**
      * Default initialisation
@@ -73,7 +72,7 @@ public class PropertyStoreCouchbase extends AbstractPropertyStore {
     @Override
     public boolean existProperty(String name) {
         Util.assertHasLength(name);
-        return getPropertyBucket().exists(name);
+        return getPropertyCollection().exists(name).exists();
     }
 
     /** {@inheritDoc} */
@@ -84,31 +83,32 @@ public class PropertyStoreCouchbase extends AbstractPropertyStore {
         if (prop.getFixedValues() != null && !prop.getFixedValues().isEmpty() && !prop.getFixedValues().contains(prop.getValue())) {
             throw new IllegalArgumentException("Value " + prop.getValue() + " is not within fixed values " + prop.getFixedValues());
         }
-        getPropertyBucket().upsert(PROPERTY_MAPPER.toStore(prop));
+        getPropertyCollection().upsert(prop.getName(), PROPERTY_MAPPER.toStore(prop));
     }
 
     /** {@inheritDoc} */
     @Override
     public Property<?> readProperty(String name) {
         assertPropertyExist(name);
-        return PROPERTY_MAPPER.fromStore(getPropertyBucket().get(name));
+        return PROPERTY_MAPPER.fromStore(getPropertyCollection().get(name).contentAsObject());
     }
 
     /** {@inheritDoc} */
     @Override
     public void deleteProperty(String name) {
         assertPropertyExist(name);
-        getPropertyBucket().remove(name);
+        getPropertyCollection().remove(name);
     }
 
     /** {@inheritDoc} */
     @Override
     public Map<String, Property<?>> readAllProperties() {
-        N1qlQuery queryFeatures = N1qlQuery.simple("SELECT * FROM " + couchBaseConnection.getFf4jPropertyBucketName());
-        N1qlQueryResult queryResult = getPropertyBucket().query(queryFeatures);
+        String bucketName = couchBaseConnection.getFf4jPropertyBucketName();
+        QueryResult queryResult = couchBaseConnection.getCluster()
+                .query("SELECT RAW property FROM `" + bucketName.replace("`", "``") + "` AS property");
         Map<String, Property<?>> allProperties = new HashMap<>();
-        for (N1qlQueryRow row : queryResult.allRows()) {
-            Property<?> p = PropertyJsonParser.parseProperty(row.value().get(couchBaseConnection.getFf4jPropertyBucketName()).toString());
+        for (JsonObject row : queryResult.rowsAsObject()) {
+            Property<?> p = PropertyJsonParser.parseProperty(row.toString());
             allProperties.put(p.getName(), p);
         }
         return allProperties;
@@ -123,7 +123,7 @@ public class PropertyStoreCouchbase extends AbstractPropertyStore {
     /** {@inheritDoc} */
     @Override
     public void clear() {
-        getPropertyBucket().bucketManager().flush();
+        couchBaseConnection.getCluster().buckets().flushBucket(couchBaseConnection.getFf4jPropertyBucketName());
     }
     
     /**
@@ -132,13 +132,13 @@ public class PropertyStoreCouchbase extends AbstractPropertyStore {
      * @return
      *      reference to bucket
      */
-    private Bucket getPropertyBucket() {
-        if (propertyBucket == null) {
+    private Collection getPropertyCollection() {
+        if (propertyCollection == null) {
             Util.assertNotNull(getCouchBaseConnection());
-            propertyBucket = getCouchBaseConnection().getPropertiesBucket();
-            Util.assertNotNull(propertyBucket);
+            propertyCollection = getCouchBaseConnection().getPropertiesBucket().defaultCollection();
+            Util.assertNotNull(propertyCollection);
         }
-        return propertyBucket;
+        return propertyCollection;
     }
 
     /**

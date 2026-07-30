@@ -67,12 +67,14 @@ public class PropertyStoreNeo4j extends AbstractPropertyStore {
         Util.assertHasLength(name);
         Map < String, Object > queryParameters = new HashMap<>();
         queryParameters.put("name", name);
-        Result result = graphDb.execute(QUERY_CYPHER_EXISTS_PROPERTY,  queryParameters);
-        Object count = null;
-        if (result.hasNext()) {
-            count = result.next().get(QUERY_CYPHER_ALIAS);
+        try (Transaction tx = graphDb.beginTx()) {
+            Result result = tx.execute(QUERY_CYPHER_EXISTS_PROPERTY, queryParameters);
+            Object count = null;
+            if (result.hasNext()) {
+                count = result.next().get(QUERY_CYPHER_ALIAS);
+            }
+            return (null != count) && (((long) count) > 0);
         }
-        return (null != count) && (((long) count) > 0);
     }
 
     /** {@inheritDoc} */
@@ -108,8 +110,8 @@ public class PropertyStoreNeo4j extends AbstractPropertyStore {
         }
         cypherCreate.append("});");
         Transaction tx = graphDb.beginTx();
-        graphDb.execute(cypherCreate.toString());
-        tx.success();
+        tx.execute(cypherCreate.toString());
+        tx.commit();
     }
 
     /** {@inheritDoc} */
@@ -119,11 +121,11 @@ public class PropertyStoreNeo4j extends AbstractPropertyStore {
         Transaction tx = graphDb.beginTx();
         Map<String, Object> queryParameters = new HashMap<>();
         queryParameters.put("name", name);
-        Result result = graphDb.execute(QUERY_CYPHER_READ_PROPERTY, queryParameters);
+        Result result = tx.execute(QUERY_CYPHER_READ_PROPERTY, queryParameters);
         // Property must exist (existProperty executed before) : no JNPE here nor hasNext() tested
         Node node = (Node) result.next().get("p");
         pro = Neo4jMapper.fromNode2Property(node);
-        tx.success();
+        tx.commit();
         return pro;
     }
 
@@ -136,8 +138,8 @@ public class PropertyStoreNeo4j extends AbstractPropertyStore {
         Map<String, Object> queryParameters = new HashMap<>();
         queryParameters.put("name", name);
         queryParameters.put("value", newValue);
-        graphDb.execute(QUERY_CYPHER_UPDATE_PROPERTYVALUE, queryParameters);
-        tx.success();
+        tx.execute(QUERY_CYPHER_UPDATE_PROPERTYVALUE, queryParameters);
+        tx.commit();
     }
 
     /** {@inheritDoc} */
@@ -156,8 +158,8 @@ public class PropertyStoreNeo4j extends AbstractPropertyStore {
         paramUID.put("name", name);
         Transaction tx = graphDb.beginTx();
         // Delete feature
-        graphDb.execute(QUERY_CYPHER_DELETE_PROPERTY, paramUID);
-        tx.success();
+        tx.execute(QUERY_CYPHER_DELETE_PROPERTY, paramUID);
+        tx.commit();
     }
 
     /** {@inheritDoc} */
@@ -165,31 +167,33 @@ public class PropertyStoreNeo4j extends AbstractPropertyStore {
         Map<String, Property<?>> allProperties = new HashMap<>();
         Transaction tx = graphDb.beginTx();
         // Node with relationships
-        Result result = graphDb.execute(QUERY_CYPHER_READ_ALLPROPERTIES);
+        Result result = tx.execute(QUERY_CYPHER_READ_ALLPROPERTIES);
         while (result.hasNext()) {
             Node node = (Node) result.next().get("p");
             Property<?> current = Neo4jMapper.fromNode2Property(node);
             allProperties.put(current.getName(), current);
         }
-        tx.success();
+        tx.commit();
         return allProperties;
     }
 
     /** {@inheritDoc} */
     public Set<String> listPropertyNames() {
-        Result result = graphDb.execute(QUERY_READ_PROPERTYNAMES);
-        Set < String > response = new HashSet<>();
-        while (result.hasNext()) {
-            response.add((String) result.next().get("NAME"));
+        try (Transaction tx = graphDb.beginTx()) {
+            Result result = tx.execute(QUERY_READ_PROPERTYNAMES);
+            Set<String> response = new HashSet<>();
+            while (result.hasNext()) {
+                response.add((String) result.next().get("NAME"));
+            }
+            return response;
         }
-        return response;
     }
 
     /** {@inheritDoc} */
     public void clear() {
         Transaction tx = graphDb.beginTx();
-        graphDb.execute(QUERY_CYPHER_DELETE_ALLPROPERTY);
-        tx.success();
+        tx.execute(QUERY_CYPHER_DELETE_ALLPROPERTY);
+        tx.commit();
     }
 
     /**

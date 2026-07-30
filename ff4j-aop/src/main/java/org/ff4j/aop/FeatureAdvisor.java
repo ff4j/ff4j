@@ -264,8 +264,9 @@ public class FeatureAdvisor implements MethodInterceptor {
         Method method = mi.getMethod();
         try {
             LOGGER.debug("FeatureFlipping on method:{} class:{}", method.getName(), method.getDeclaringClass().getName());
-            Object alterbean = appCtx.getBean(alterBeanName, method.getDeclaringClass());
-            return method.invoke(alterbean, mi.getArguments());
+            Object alterbean = appCtx.getBean(alterBeanName);
+            Method invocableMethod = AopUtils.selectInvocableMethod(method, alterbean.getClass());
+            return invocableMethod.invoke(alterbean, mi.getArguments());
         } catch (InvocationTargetException invocationTargetException) {
             if(!ff4j.isAlterBeanThrowInvocationTargetException() && invocationTargetException.getCause() != null) {
                 throw invocationTargetException.getCause();

@@ -19,7 +19,7 @@
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <properties>
     <license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-    <arangodb.version>6.25.0</arangodb.version>
+    <arangodb.version>7.26.0</arangodb.version>
   </properties>
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <!-- ~ DEPENDENCIES ~ -->

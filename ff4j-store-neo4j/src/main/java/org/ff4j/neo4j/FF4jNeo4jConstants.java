@@ -78,8 +78,8 @@ public class FF4jNeo4jConstants {
     public static final String MATCH_F = "MATCH (f:";
     /** Cypher query. */
     public static final String QUERY_CYPHER_ADDTO_GROUP =
-            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + "  {uid: {uid} } ), " +
-            "(g:" + FF4jNeo4jLabels.FF4J_FEATURE_GROUP + " {name: {groupName} }) " + 
+            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + "  {uid: $uid } ), " +
+            "(g:" + FF4jNeo4jLabels.FF4J_FEATURE_GROUP + " {name: $groupName }) " +
             "CREATE (f)-[:" + FF4jNeo4jRelationShips.MEMBER_OF + "]->(g);";
     
     // -------------------------------------------------------
@@ -89,29 +89,29 @@ public class FF4jNeo4jConstants {
     public static final String RETURN_COUNT_AS = "RETURN count(*) AS ";
     /** Cypher query. */
     public static final String QUERY_CYPHER_EXISTS  =
-            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + " { uid:  {uid} }) " +
+            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + " { uid:  $uid }) " +
                     RETURN_COUNT_AS + QUERY_CYPHER_ALIAS;
 
     public static final String MATCH_P = "MATCH (p:";
     public static final String QUERY_CYPHER_EXISTS_PROPERTY  =
-            MATCH_P + FF4jNeo4jLabels.FF4J_PROPERTY + " { name:  {name} }) " +
+            MATCH_P + FF4jNeo4jLabels.FF4J_PROPERTY + " { name:  $name }) " +
                     RETURN_COUNT_AS + QUERY_CYPHER_ALIAS;
 
     public static final String QUERY_CYPHER_EXISTS_GROUP =
-            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE_GROUP + " { name:  {groupName} }) " +
+            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE_GROUP + " { name:  $groupName }) " +
                     RETURN_COUNT_AS + QUERY_CYPHER_ALIAS;
             
     /** Cypher query. */
     public static final String QUERY_CYPHER_READ_FEATURE =
-            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: {uid} })--(all) RETURN f,all";
+            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: $uid })--(all) RETURN f,all";
     
     /** Cypher query. */
     public static final String QUERY_CYPHER_READ_PROPERTY =
-            MATCH_P + FF4jNeo4jLabels.FF4J_PROPERTY + " { name: {name} }) RETURN p";
+            MATCH_P + FF4jNeo4jLabels.FF4J_PROPERTY + " { name: $name }) RETURN p";
     
     /** Cypher query. */
     public static final String QUERY_CYPHER_NORELATIONSHIPS =
-            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: {uid} }) RETURN f;";
+            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: $uid }) RETURN f;";
     
     /** Cypher query. */
     public static final String QUERY_CYPHER_READ_ALL =
@@ -127,17 +127,17 @@ public class FF4jNeo4jConstants {
     
     /** Cypher query. */
     public static final String QUERY_CYPHER_GETGROUPNAME =
-            "MATCH(f:" + FF4jNeo4jLabels.FF4J_FEATURE + "  { uid:  {uid} } ) " + 
+            "MATCH(f:" + FF4jNeo4jLabels.FF4J_FEATURE + "  { uid:  $uid } ) " +
              "--(g:" + FF4jNeo4jLabels.FF4J_FEATURE_GROUP + ") " + 
              "RETURN g.name as GROUPNAME;";
     
     /** Cypher query. */
     public static final String QUERY_CYPHER_GET_FLIPPINGSTRATEGY =
-            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: {uid} })" +
+            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: $uid })" +
             "--(s:" + FF4jNeo4jLabels.FF4J_FLIPPING_STRATEGY + ") " + 
             "RETURN s;";
 
-    public static final String NAME_GROUP_NAME = "]-( { name: {groupName} }) ";
+    public static final String NAME_GROUP_NAME = "]-( { name: $groupName }) ";
     public static final String WHERE_F = "WHERE (f)-[:";
     /** Cypher query. */
     public static final String QUERY_CYPHER_COUNT_FEATURE_OF_GROUP =
@@ -167,24 +167,24 @@ public class FF4jNeo4jConstants {
     
     /** Cypher query. */
     public static final String QUERY_CYPHER_ENABLE  =
-            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: {uid} }) " +
+            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: $uid }) " +
             "SET f.enable = true RETURN f.enable;";
     
     
     /** Cypher query. */
     public static final String QUERY_CYPHER_UPDATE_PROPERTYVALUE  =
-            MATCH_P + FF4jNeo4jLabels.FF4J_PROPERTY + " { name: {name} }) " +
-            "SET p." + NODEPROPERTY_ATT_VALUE + "= {value};";
+            MATCH_P + FF4jNeo4jLabels.FF4J_PROPERTY + " { name: $name }) " +
+            "SET p." + NODEPROPERTY_ATT_VALUE + "= $value;";
     
     /** Cypher query. */
     public static final String QUERY_CYPHER_DISABLE =
-            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: {uid} }) " +
+            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: $uid }) " +
             "SET f.enable = false RETURN f.enable;";
     
     /** Cypher query. */
     public static final String QUERY_CYPHER_ADD_ROLE =
-            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + "  {uid: {uid} }) " +
-            "SET f.roles = f.roles + {roleName} return f;";
+            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + "  {uid: $uid }) " +
+            "SET f.roles = f.roles + $roleName return f;";
     
     /** Cypher query. */
     public static final String QUERY_CYPHER_ENABLE_GROUP =
@@ -200,8 +200,8 @@ public class FF4jNeo4jConstants {
     
     /** Cypher query. */
     public static final String QUERY_CYPHER_UPDATE_ROLE =
-            "MATCH (f:FF4J_FEATURE { uid: {uid}  }) " + 
-            "SET f.roles = {roles} RETURN f";
+            "MATCH (f:FF4J_FEATURE { uid: $uid  }) " +
+            "SET f.roles = $roles RETURN f";
     
     // -------------------------------------------------------
     // --------------------- Delete --------------------------
@@ -209,36 +209,36 @@ public class FF4jNeo4jConstants {
     
     /** Delete properties related to the feature. */
     public static final String QUERY_CYPHER_DELETE_PROPERTIES_FEATURE =
-            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: {uid} })--(p:" + FF4jNeo4jLabels.FF4J_FEATURE_PROPERTY + " ) "  +
+            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: $uid })--(p:" + FF4jNeo4jLabels.FF4J_FEATURE_PROPERTY + " ) "  +
             "DETACH DELETE p;";
     
     /** Delete flipping strategy related to the feature. */
     public static final String QUERY_CYPHER_DELETE_STRATEGY_FEATURE =
-            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: {uid} })--(s:" + FF4jNeo4jLabels.FF4J_FLIPPING_STRATEGY + ") "  +
+            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: $uid })--(s:" + FF4jNeo4jLabels.FF4J_FLIPPING_STRATEGY + ") "  +
             "DETACH DELETE s;";
 
     /** Delete flipping strategy related to the feature. */
     public static final String QUERY_CYPHER_DELETE_GROUP_FEATURE =
-            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: {uid} })--(s:" + FF4jNeo4jLabels.FF4J_FEATURE_GROUP + ") "  +
+            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: $uid })--(s:" + FF4jNeo4jLabels.FF4J_FEATURE_GROUP + ") "  +
             "DETACH DELETE s;";
     
     /** Delete Feature with all its relationships*/
     public static final String QUERY_CYPHER_DELETE_FEATURE =
-            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: {uid}  }) " +
+            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: $uid  }) " +
             "DETACH DELETE f;";
     
     /** Delete property. */
     public static final String QUERY_CYPHER_DELETE_PROPERTY =
-            MATCH_P + FF4jNeo4jLabels.FF4J_PROPERTY + " { name: {name}  }) " +
+            MATCH_P + FF4jNeo4jLabels.FF4J_PROPERTY + " { name: $name  }) " +
                     "DETACH DELETE p;";
     
     /** Cypher query. */
     public static final String QUERY_CYPHER_REMOVEFROMGROUP =
-            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: {uid} })-[a:" + FF4jNeo4jRelationShips.MEMBER_OF + "]->() DELETE a;";
+            MATCH_F + FF4jNeo4jLabels.FF4J_FEATURE + " { uid: $uid })-[a:" + FF4jNeo4jRelationShips.MEMBER_OF + "]->() DELETE a;";
     
     /** Cypher query. */
     public static final String QUERY_CYPHER_DELETE_GROUP =
-            "MATCH (g:" + FF4jNeo4jLabels.FF4J_FEATURE_GROUP + " { name: {groupName} }) DETACH DELETE g;";
+            "MATCH (g:" + FF4jNeo4jLabels.FF4J_FEATURE_GROUP + " { name: $groupName }) DETACH DELETE g;";
     
     /** Cypher query. */
     public static final String QUERY_CYPHER_DELETE_ALLFEATURE =

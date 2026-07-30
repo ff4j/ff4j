@@ -23,7 +23,8 @@ package org.ff4j.arangodb.store;
 
 import org.ff4j.core.FeatureStore;
 import org.ff4j.test.store.FeatureStoreTestSupport;
-import org.junit.ClassRule;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 
 import com.arangodb.ArangoDB;
@@ -35,8 +36,17 @@ import com.arangodb.ArangoDatabase;
 @Ignore
 public class FeatureStoreArangoDBIT extends FeatureStoreTestSupport {
 
-    @ClassRule
     public static ArangoDBTestContainer container = new ArangoDBTestContainer();
+
+    @BeforeClass
+    public static void startContainer() {
+        container.start();
+    }
+
+    @AfterClass
+    public static void stopContainer() {
+        container.stop();
+    }
 
     @Override
     protected FeatureStore initStore() {

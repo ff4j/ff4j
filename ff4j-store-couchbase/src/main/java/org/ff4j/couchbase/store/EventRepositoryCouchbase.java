@@ -23,7 +23,6 @@ package org.ff4j.couchbase.store;
 import java.util.List;
 
 import com.couchbase.client.java.Bucket;
-import com.couchbase.client.java.view.ViewQuery;
 import com.couchbase.client.java.view.ViewResult;
 import com.couchbase.client.java.view.ViewRow;
 
@@ -35,11 +34,11 @@ import com.couchbase.client.java.view.ViewRow;
 public class EventRepositoryCouchbase {
 
     public void queryView(Bucket bucket, String design, String view) {
-        ViewQuery queryAllFeatures = ViewQuery.from(design, view);
-        ViewResult queryResult = bucket.query(queryAllFeatures);
-        List<ViewRow> rows = queryResult.allRows();
+        ViewResult queryResult = bucket.viewQuery(design, view);
+        List<ViewRow> rows = queryResult.rows();
         for (ViewRow viewRow : rows) {
-            System.out.println("Result view:" + viewRow.id() + ":" + viewRow.value());
+            System.out.println("Result view:" + viewRow.id().orElse("") + ":"
+                    + viewRow.valueAs(Object.class).orElse(null));
         }
     }
 

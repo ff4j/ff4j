@@ -19,7 +19,6 @@
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <properties>
     <license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-    <testcontainers.version>1.14.3</testcontainers.version>
     <version.mongodb-driver-sync>5.9.1</version.mongodb-driver-sync>
   </properties>
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -66,7 +65,7 @@
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>mongodb</artifactId>
+      <artifactId>testcontainers-mongodb</artifactId>
       <version>${version.testcontainers}</version>
       <scope>test</scope>
     </dependency>

@@ -65,6 +65,18 @@ public class ClientSideCacheRedisKeyCommands<K, V> implements RedisKeyCommands<K
     }
 
     @Override
+    public Long delex(K key, CompareCondition<V> condition) {
+        LOGGER.warn("delex is not currently supported by client side caching");
+        return delegate.delex(key, condition);
+    }
+
+    @Override
+    public String digestKey(K key) {
+        LOGGER.warn("digestKey is not currently supported by client side caching");
+        return delegate.digestKey(key);
+    }
+
+    @Override
     public Long unlink(K... keys) {
         LOGGER.warn("unlink is not currently supported by client side caching");
         return delegate.unlink(keys);
@@ -149,15 +161,27 @@ public class ClientSideCacheRedisKeyCommands<K, V> implements RedisKeyCommands<K
     }
 
     @Override
-    public List<K> keys(K pattern) {
+    public List<K> keys(String pattern) {
         LOGGER.warn("keys is not currently supported by client side caching");
         return delegate.keys(pattern);
     }
 
     @Override
-    public Long keys(KeyStreamingChannel<K> channel, K pattern) {
+    public List<K> keysLegacy(K pattern) {
+        LOGGER.warn("keysLegacy is not currently supported by client side caching");
+        return delegate.keysLegacy(pattern);
+    }
+
+    @Override
+    public Long keys(KeyStreamingChannel<K> channel, String pattern) {
         LOGGER.warn("keys is not currently supported by client side caching");
         return delegate.keys(channel, pattern);
+    }
+
+    @Override
+    public Long keysLegacy(KeyStreamingChannel<K> channel, K pattern) {
+        LOGGER.warn("keysLegacy is not currently supported by client side caching");
+        return delegate.keysLegacy(channel, pattern);
     }
 
     @Override

@@ -19,9 +19,9 @@
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <properties>
     <license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-    <version.ehcache>2.11.0.11.8</version.ehcache>
-    <version.terracotta-toolkit-runtime>4.4.0.11.8</version.terracotta-toolkit-runtime>
-    <version.terracotta-toolkit-api>2.10</version.terracotta-toolkit-api>
+    <version.ehcache>2.11.1.3.11</version.ehcache>
+    <version.terracotta-toolkit-runtime>4.5.0.0.62</version.terracotta-toolkit-runtime>
+    <version.terracotta-toolkit-api>2.11</version.terracotta-toolkit-api>
     <version.terracotta-toolkit-api-internal>2.2.0</version.terracotta-toolkit-api-internal>
   </properties>
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -95,7 +95,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>properties-maven-plugin</artifactId>
-        <version>1.0.0</version>
+        <version>1.3.0</version>
         <executions>
           <execution>
             <id>Define conf for TerraCotta</id>

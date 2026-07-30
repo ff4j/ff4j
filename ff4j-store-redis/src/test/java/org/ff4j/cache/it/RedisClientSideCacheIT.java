@@ -297,6 +297,16 @@ public class RedisClientSideCacheIT {
         }
 
         @Override
+        public Long delex(K key, CompareCondition<V> condition) {
+            return delegate.delex(key, condition);
+        }
+
+        @Override
+        public String digestKey(K key) {
+            return delegate.digestKey(key);
+        }
+
+        @Override
         public Long unlink(K... keys) {
             return delegate.unlink(keys);
         }
@@ -368,13 +378,23 @@ public class RedisClientSideCacheIT {
         }
 
         @Override
-        public List<K> keys(K pattern) {
+        public List<K> keys(String pattern) {
             return delegate.keys(pattern);
         }
 
         @Override
-        public Long keys(KeyStreamingChannel<K> channel, K pattern) {
+        public List<K> keysLegacy(K pattern) {
+            return delegate.keysLegacy(pattern);
+        }
+
+        @Override
+        public Long keys(KeyStreamingChannel<K> channel, String pattern) {
             return delegate.keys(channel, pattern);
+        }
+
+        @Override
+        public Long keysLegacy(KeyStreamingChannel<K> channel, K pattern) {
+            return delegate.keysLegacy(channel, pattern);
         }
 
         @Override
@@ -756,6 +776,21 @@ public class RedisClientSideCacheIT {
         }
 
         @Override
+        public IncrexValue<Long> increx(K key) {
+            return delegate.increx(key);
+        }
+
+        @Override
+        public IncrexValue<Long> increx(K key, long amount, IncrexArgs args) {
+            return delegate.increx(key, amount, args);
+        }
+
+        @Override
+        public IncrexValue<Double> increx(K key, double amount, IncrexFloatArgs args) {
+            return delegate.increx(key, amount, args);
+        }
+
+        @Override
         public List<KeyValue<K, V>> mget(K... keys) {
             return delegate.mget(keys);
         }
@@ -773,6 +808,11 @@ public class RedisClientSideCacheIT {
         @Override
         public Boolean msetnx(Map<K, V> map) {
             return delegate.msetnx(map);
+        }
+
+        @Override
+        public Boolean msetex(Map<K, V> map, MSetExArgs args) {
+            return delegate.msetex(map, args);
         }
 
         @Override

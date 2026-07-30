@@ -20,7 +20,7 @@ package org.ff4j.arangodb.document;
  * #L%
  */
 
-import com.arangodb.entity.DocumentField;
+import com.arangodb.serde.jackson.Key;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -42,7 +42,7 @@ public class ArangoDBFeature {
     /**
      * ArangoDB id
      */
-    @DocumentField(DocumentField.Type.KEY)
+    @Key
     private String id;
 
     /**

@@ -20,8 +20,11 @@
   <properties>
     <license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
     <version.hamcrest-all>1.3</version.hamcrest-all>
-    <concurrentlinkedhashmap-lru.version>1.4.2</concurrentlinkedhashmap-lru.version>
-    <scala-library.version>2.11.7</scala-library.version>
+    <version.jersey>2.46</version.jersey>
+    <version.netty>4.2.15.Final</version.netty>
+    <version.scala>2.13.17</version.scala>
+    <version.scala3>3.7.4</version.scala3>
+    <version.zstd>1.5.7-12</version.zstd>
     <argLine>
       --add-opens=java.base/jdk.internal.misc=ALL-UNNAMED
       --add-opens=java.base/sun.nio.ch=ALL-UNNAMED
@@ -41,6 +44,52 @@
       --add-opens=java.sql/java.sql=ALL-UNNAMED
     </argLine>
   </properties>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.glassfish.jersey</groupId>
+        <artifactId>jersey-bom</artifactId>
+        <version>${version.jersey}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>jakarta.activation</groupId>
+        <artifactId>jakarta.activation-api</artifactId>
+        <version>1.2.2</version>
+      </dependency>
+      <dependency>
+        <groupId>jakarta.xml.bind</groupId>
+        <artifactId>jakarta.xml.bind-api</artifactId>
+        <version>2.3.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.jersey.inject</groupId>
+        <artifactId>jersey-hk2</artifactId>
+        <version>${version.jersey}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-handler</artifactId>
+        <version>${version.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.scala-lang</groupId>
+        <artifactId>scala-library</artifactId>
+        <version>${version.scala}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.scala-lang</groupId>
+        <artifactId>scala3-library_3</artifactId>
+        <version>${version.scala3}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.luben</groupId>
+        <artifactId>zstd-jni</artifactId>
+        <version>${version.zstd}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <!-- ~ DEPENDENCIES ~ -->
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -62,40 +111,12 @@
       <groupId>org.neo4j</groupId>
       <artifactId>neo4j</artifactId>
       <version>${version.neo4j}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>com.googlecode.concurrentlinkedhashmap</groupId>
-          <artifactId>concurrentlinkedhashmap-lru</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.scala-lang</groupId>
-          <artifactId>scala-library</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.googlecode.concurrentlinkedhashmap</groupId>
-      <artifactId>concurrentlinkedhashmap-lru</artifactId>
-      <version>${concurrentlinkedhashmap-lru.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.scala-lang</groupId>
-      <artifactId>scala-library</artifactId>
-      <version>${scala-library.version}</version>
     </dependency>
     <!-- TESTS -->
     <dependency>
-      <groupId>org.neo4j</groupId>
-      <artifactId>neo4j-io</artifactId>
+      <groupId>org.neo4j.test</groupId>
+      <artifactId>neo4j-harness</artifactId>
       <version>${version.neo4j}</version>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.neo4j</groupId>
-      <artifactId>neo4j-kernel</artifactId>
-      <version>${version.neo4j}</version>
-      <type>test-jar</type>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -118,6 +139,12 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <version>6.1.2</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
@@ -161,18 +188,4 @@
       </plugin>
     </plugins>
   </build>
-  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  <!-- ~ REPOSITORIES             ~ -->
-  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  <repositories>
-    <repository>
-      <id>mvn-neo4j</id>
-      <url>https://m2.neo4j.org/content/groups/everything</url>
-    </repository>
-    <repository>
-      <id>neo4j-release-repository</id>
-      <name>Neo4j Maven 2 release repository</name>
-      <url>https://m2.neo4j.org/releases</url>
-    </repository>
-  </repositories>
 </project>

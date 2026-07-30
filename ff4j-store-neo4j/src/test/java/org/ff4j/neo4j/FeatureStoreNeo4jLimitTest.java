@@ -34,8 +34,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
-import org.neo4j.graphdb.factory.GraphDatabaseSettings;
-import org.neo4j.test.TestGraphDatabaseFactory;
+import org.neo4j.harness.Neo4j;
+import org.neo4j.harness.Neo4jBuilders;
 
 import static org.ff4j.neo4j.FF4jNeo4jConstants.*;
 
@@ -43,6 +43,9 @@ public class FeatureStoreNeo4jLimitTest {
 
     /** DataBase instance. */
     protected static GraphDatabaseService graphDb;
+
+    /** Embedded Neo4j test harness. */
+    protected static Neo4j neo4j;
     
     /** store. **/
     protected FeatureStoreNeo4J testedStore = new FeatureStoreNeo4J(graphDb);
@@ -54,22 +57,20 @@ public class FeatureStoreNeo4jLimitTest {
     public static void prepareTestDatabase() {
        
         // Embedded DATABASE
-        graphDb = new TestGraphDatabaseFactory().newImpermanentDatabaseBuilder()
-                .setConfig(GraphDatabaseSettings.string_block_size, "300")
-                .setConfig(GraphDatabaseSettings.array_block_size, "300")
-                .newGraphDatabase();
+        neo4j = Neo4jBuilders.newInProcessBuilder().withDisabledServer().build();
+        graphDb = neo4j.defaultDatabaseService();
         
         // Init Schema in a first Transaction
         try (Transaction tx = graphDb.beginTx() ) {
-            graphDb.schema().constraintFor(FF4jNeo4jLabels.FF4J_FEATURE)//
+            tx.schema().constraintFor(FF4jNeo4jLabels.FF4J_FEATURE)//
                     .assertPropertyIsUnique(NODEFEATURE_ATT_UID)//
                     .create();
-            graphDb.schema().constraintFor(FF4jNeo4jLabels.FF4J_FEATURE_GROUP)//
+            tx.schema().constraintFor(FF4jNeo4jLabels.FF4J_FEATURE_GROUP)//
                     .assertPropertyIsUnique(NODEGROUP_ATT_NAME )//
                     .create();
             // An index is automatically place
             // graphDb.schema().indexFor(FF4jNeo4jLabels.FF4J_FEATURE).on(NODEFEATURE_ATT_UID).create();
-            tx.success();
+            tx.commit();
         }
     }
    
@@ -81,11 +82,11 @@ public class FeatureStoreNeo4jLimitTest {
     @Test
     public void testDeleteLastElement() {
         try (Transaction tx= graphDb.beginTx() ) {
-            graphDb.execute("CREATE "
+            tx.execute("CREATE "
                     + " (g0:FF4J_FEATURE_GROUP { name:'g0' }),\n"
                     + " (f1:FF4J_FEATURE { uid:'f1', enable:false, description:'second', roles:['USER'] }),\n"
                     + " (f1)-[:MEMBER_OF]->(g0);");
-            tx.success();
+            tx.commit();
         }
         // Remove last
         testedStore.delete("f1");
@@ -95,11 +96,11 @@ public class FeatureStoreNeo4jLimitTest {
     @Test
     public void testChangeGroup() {
         try (Transaction tx= graphDb.beginTx() ) {
-            graphDb.execute("CREATE "
+            tx.execute("CREATE "
                     + " (h0:FF4J_FEATURE_GROUP { name:'h0' }),\n"
                     + " (h1:FF4J_FEATURE { uid:'h1', enable:false, description:'second', roles:['USER'] }),\n"
                     + " (h1)-[:MEMBER_OF]->(h0);");
-            tx.success();
+            tx.commit();
         }
         Feature f1 = testedStore.read("h1");
         Property<?> newP = new PropertyString("ppp", "vvv");
@@ -125,8 +126,8 @@ public class FeatureStoreNeo4jLimitTest {
     @Test(expected = GroupNotFoundException.class)
     public void testRemoveFromInvalidGroup() {
         try (Transaction tx= graphDb.beginTx() ) {
-            graphDb.execute("CREATE (x1:FF4J_FEATURE { uid:'x1', enable:false });");
-            tx.success();
+            tx.execute("CREATE (x1:FF4J_FEATURE { uid:'x1', enable:false });");
+            tx.commit();
         }
         testedStore.removeFromGroup("x1", "invalidGroup");
     }
@@ -134,7 +135,7 @@ public class FeatureStoreNeo4jLimitTest {
     
     @AfterClass
     public static void destroyTestDatabase() {
-        graphDb.shutdown();
+        neo4j.close();
     }
     
 

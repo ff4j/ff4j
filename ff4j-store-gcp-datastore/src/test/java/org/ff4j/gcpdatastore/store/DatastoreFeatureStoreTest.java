@@ -26,8 +26,9 @@ import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.gcpdatastore.store.feature.DatastoreFeatureStore;
 import org.ff4j.test.store.FeatureStoreTestSupport;
+import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.ClassRule;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -41,8 +42,17 @@ public class DatastoreFeatureStoreTest extends FeatureStoreTestSupport {
 
     private static final long QUERY_CONSISTENCY_TIMEOUT_MILLIS = 5_000;
 
-    @ClassRule
     public static DatastoreTestContainer container = new DatastoreTestContainer();
+
+    @BeforeClass
+    public static void startContainer() {
+        container.start();
+    }
+
+    @AfterClass
+    public static void stopContainer() {
+        container.stop();
+    }
 
     @Override
     protected FeatureStore initStore() {

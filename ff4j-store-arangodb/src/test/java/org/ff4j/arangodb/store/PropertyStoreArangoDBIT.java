@@ -22,7 +22,8 @@ package org.ff4j.arangodb.store;
 
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.ClassRule;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 
 import com.arangodb.ArangoDB;
@@ -34,8 +35,17 @@ import com.arangodb.ArangoDatabase;
 @Ignore
 public class PropertyStoreArangoDBIT extends PropertyStoreTestSupport {
 
-    @ClassRule
     public static ArangoDBTestContainer container = new ArangoDBTestContainer();
+
+    @BeforeClass
+    public static void startContainer() {
+        container.start();
+    }
+
+    @AfterClass
+    public static void stopContainer() {
+        container.stop();
+    }
 
     @Override
     protected PropertyStore initPropertyStore() {

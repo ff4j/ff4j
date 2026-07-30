@@ -29,7 +29,6 @@ import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.testcontainers.containers.GenericContainer;
@@ -55,7 +54,6 @@ public class FeatureStoreMongoCollectionCore1Test extends FeatureStoreTestSuppor
     /**
      * DataBase.
      */
-    @ClassRule
     public static GenericContainer<?> mongoDBContainer = new GenericContainer<>("mongo:latest").withExposedPorts(MONGO_PORT);
 
 

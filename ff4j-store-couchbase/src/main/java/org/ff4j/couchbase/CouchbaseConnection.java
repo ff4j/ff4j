@@ -34,8 +34,8 @@ import org.slf4j.LoggerFactory;
 
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.Cluster;
-import com.couchbase.client.java.CouchbaseCluster;
-import com.couchbase.client.java.env.CouchbaseEnvironment;
+import com.couchbase.client.java.ClusterOptions;
+import com.couchbase.client.java.env.ClusterEnvironment;
 
 /**
  * Wrapper to handle connectivity to CouchBase.
@@ -58,7 +58,7 @@ public class CouchbaseConnection {
     private String password = null;
     
     /** Override the default parameters. */
-    private CouchbaseEnvironment couchBaseEnvironment;
+    private ClusterEnvironment couchBaseEnvironment;
     
     /** Connection  String. */
     private String connectionString;
@@ -171,7 +171,7 @@ public class CouchbaseConnection {
     /**
      * Fluent method to init connectivity.
      */
-    public CouchbaseConnection couchBaseEnvironment(CouchbaseEnvironment env) {
+    public CouchbaseConnection couchBaseEnvironment(ClusterEnvironment env) {
         this.couchBaseEnvironment = env;
         return this;
     }
@@ -194,38 +194,24 @@ public class CouchbaseConnection {
      */
     public void initCluster() {
         if (couchBaseCluster == null) {
-            // Initialization from STRING
-            if (connectionString != null) {
-                LOGGER.info("Initializing connectivity from ConnectionString...");
-                if (couchBaseEnvironment != null) {
-                    this.couchBaseCluster = CouchbaseCluster.fromConnectionString(couchBaseEnvironment, connectionString);
-                } else {
-                    this.couchBaseCluster = CouchbaseCluster.fromConnectionString(connectionString);
-                }
+            String targetConnectionString = connectionString;
+            if (!Util.hasLength(targetConnectionString) && !clusterNodes.isEmpty()) {
+                targetConnectionString = "couchbase://" + String.join(",", clusterNodes);
             }
-            // Initialization from NODES
-            else if (!clusterNodes.isEmpty()) {
-                LOGGER.info("Initializing connectivity from Nodes...");
-                if (couchBaseEnvironment != null) {
-                    this.couchBaseCluster = CouchbaseCluster.create(couchBaseEnvironment, clusterNodes.toArray(new String[0]));
-                } else {
-                    this.couchBaseCluster = CouchbaseCluster.create(clusterNodes.toArray(new String[0]));
-                }
-            } 
-            // Default (and basic) and  initialization
-            else {
-                LOGGER.info("Initializing connectivity (Default conf)");
-                if (couchBaseEnvironment != null) {
-                    this.couchBaseCluster = CouchbaseCluster.create(couchBaseEnvironment);
-                } else {
-                    this.couchBaseCluster = CouchbaseCluster.create();
-                }
+            if (!Util.hasLength(targetConnectionString)) {
+                targetConnectionString = "couchbase://127.0.0.1";
             }
+
+            String clusterUserName = userName == null ? "" : userName;
+            String clusterPassword = password == null ? "" : password;
+            ClusterOptions options = ClusterOptions.clusterOptions(clusterUserName, clusterPassword);
+            if (couchBaseEnvironment != null) {
+                options.environment(couchBaseEnvironment);
+            }
+            LOGGER.info("Initializing Couchbase connectivity to {}", targetConnectionString);
+            couchBaseCluster = Cluster.connect(targetConnectionString, options);
         }
-        if (Util.hasLength(userName) && Util.hasLength(password)) {
-            couchBaseCluster.authenticate(userName, password);
-        }
-        LOGGER.info("Connection Etablished " + couchBaseCluster.toString());
+        LOGGER.info("Connection established {}", couchBaseCluster);
     }
     
     /**
@@ -233,11 +219,7 @@ public class CouchbaseConnection {
      */
     public void initFeatureBuckets() {
         if (ff4jFeatureBucket == null) {
-            if (Util.hasLength(ff4jFeatureBucketPassword)) {
-                ff4jFeatureBucket = getCluster().openBucket(ff4jFeatureBucketName, ff4jFeatureBucketPassword);
-            } else {
-                ff4jFeatureBucket = getCluster().openBucket(ff4jFeatureBucketName);
-            }
+            ff4jFeatureBucket = getCluster().bucket(ff4jFeatureBucketName);
         }
     }
     
@@ -246,11 +228,7 @@ public class CouchbaseConnection {
      */
     public void initPropertyBucket() {
         if (ff4jPropertyBucket == null) {
-            if (Util.hasLength(ff4jPropertyBucketPassword)) {
-                ff4jPropertyBucket = getCluster().openBucket(ff4jPropertyBucketName, ff4jPropertyBucketPassword);
-            } else {
-                ff4jPropertyBucket = getCluster().openBucket(ff4jPropertyBucketName);
-            }
+            ff4jPropertyBucket = getCluster().bucket(ff4jPropertyBucketName);
         }
     }
     
@@ -260,11 +238,7 @@ public class CouchbaseConnection {
     
     public void initAuditBucket() {
         if (ff4jAuditBucket == null) {
-            if (Util.hasLength(ff4jAuditBucketPassword)) {
-                ff4jAuditBucket = getCluster().openBucket(ff4jAuditBucketName, ff4jAuditBucketPassword);
-            } else {
-                ff4jAuditBucket = getCluster().openBucket(ff4jAuditBucketName);
-            }
+            ff4jAuditBucket = getCluster().bucket(ff4jAuditBucketName);
         }
     }
     
@@ -323,15 +297,9 @@ public class CouchbaseConnection {
      * Close current bucket
      */
     public void closeBuckets() {
-        if (ff4jFeatureBucket != null) {
-            ff4jFeatureBucket.close();
-        }
-        if (ff4jPropertyBucket != null) {
-            ff4jPropertyBucket.close();
-        }
-        if (ff4jAuditBucket != null) {
-            ff4jAuditBucket.close();
-        }
+        ff4jFeatureBucket = null;
+        ff4jPropertyBucket = null;
+        ff4jAuditBucket = null;
     }
 
     /**

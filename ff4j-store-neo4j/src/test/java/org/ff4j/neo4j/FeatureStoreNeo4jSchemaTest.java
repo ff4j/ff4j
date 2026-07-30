@@ -27,13 +27,16 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.factory.GraphDatabaseSettings;
-import org.neo4j.test.TestGraphDatabaseFactory;
+import org.neo4j.harness.Neo4j;
+import org.neo4j.harness.Neo4jBuilders;
 
 public class FeatureStoreNeo4jSchemaTest {
     
     /** DataBase instance. */
     protected static GraphDatabaseService graphDb;
+
+    /** Embedded Neo4j test harness. */
+    protected static Neo4j neo4j;
 
     /**
      * Create temporary database for each unit test.
@@ -42,15 +45,13 @@ public class FeatureStoreNeo4jSchemaTest {
     public static void prepareTestDatabase() {
        
         // Embedded DATABASE
-        graphDb = new TestGraphDatabaseFactory().newImpermanentDatabaseBuilder()
-                .setConfig(GraphDatabaseSettings.string_block_size, "300")
-                .setConfig(GraphDatabaseSettings.array_block_size, "300")
-                .newGraphDatabase();
+        neo4j = Neo4jBuilders.newInProcessBuilder().withDisabledServer().build();
+        graphDb = neo4j.defaultDatabaseService();
     }
 
     @AfterClass
     public static void destroyTestDatabase() {
-        graphDb.shutdown();
+        neo4j.close();
     }
     
     @Test

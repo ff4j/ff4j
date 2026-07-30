@@ -28,8 +28,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
-import org.neo4j.graphdb.factory.GraphDatabaseSettings;
-import org.neo4j.test.TestGraphDatabaseFactory;
+import org.neo4j.harness.Neo4j;
+import org.neo4j.harness.Neo4jBuilders;
 
 import static org.ff4j.neo4j.FF4jNeo4jConstants.*;
 
@@ -43,6 +43,9 @@ public class FeatureStoreNeo4jTest extends FeatureStoreTestSupport {
     /** DataBase instance. */
     protected static GraphDatabaseService graphDb;
 
+    /** Embedded Neo4j test harness. */
+    protected static Neo4j neo4j;
+
     /**
      * Create temporary database for each unit test.
      */
@@ -50,28 +53,26 @@ public class FeatureStoreNeo4jTest extends FeatureStoreTestSupport {
     public static void prepareTestDatabase() {
        
         // Embedded DATABASE
-        graphDb = new TestGraphDatabaseFactory().newImpermanentDatabaseBuilder()
-                .setConfig(GraphDatabaseSettings.string_block_size, "300")
-                .setConfig(GraphDatabaseSettings.array_block_size, "300")
-                .newGraphDatabase();
+        neo4j = Neo4jBuilders.newInProcessBuilder().withDisabledServer().build();
+        graphDb = neo4j.defaultDatabaseService();
         
         // Init Schema in a first Transaction
         try (Transaction tx = graphDb.beginTx() ) {
-            graphDb.schema().constraintFor(FF4jNeo4jLabels.FF4J_FEATURE)//
+            tx.schema().constraintFor(FF4jNeo4jLabels.FF4J_FEATURE)//
                     .assertPropertyIsUnique(NODEFEATURE_ATT_UID)//
                     .create();
-            graphDb.schema().constraintFor(FF4jNeo4jLabels.FF4J_FEATURE_GROUP)//
+            tx.schema().constraintFor(FF4jNeo4jLabels.FF4J_FEATURE_GROUP)//
                     .assertPropertyIsUnique(NODEGROUP_ATT_NAME )//
                     .create();
             // An index is automatically place
             // graphDb.schema().indexFor(FF4jNeo4jLabels.FF4J_FEATURE).on(NODEFEATURE_ATT_UID).create();
-            tx.success();
+            tx.commit();
         }
         
         // Create Data in a second Transaction
         try (Transaction tx2= graphDb.beginTx() ) {
         
-            graphDb.execute("CREATE (AwesomeFeature:FF4J_FEATURE { uid:'AwesomeFeature', enable:true, description:'some desc' }),\n"
+            tx2.execute("CREATE (AwesomeFeature:FF4J_FEATURE { uid:'AwesomeFeature', enable:true, description:'some desc' }),\n"
                     + " (first:FF4J_FEATURE { uid:'first',  enable:true, description:'first',  roles:['USER'] }),\n"
                     + " (ppint:FF4J_FEATURE_PROPERTY { name:'ppint', type:'org.ff4j.property.PropertyInt', value:'12' }),\n"
                     + " (ppdouble:FF4J_FEATURE_PROPERTY { name:'ppdouble', value:'12.5' }),\n"
@@ -81,14 +82,14 @@ public class FeatureStoreNeo4jTest extends FeatureStoreTestSupport {
                     + " (myLogLevel:FF4J_FEATURE_PROPERTY { name:'myLogLevel', value:'DEBUG', type:'org.ff4j.property.PropertyLogLevel' }),\n"
                     + " (digitValue:FF4J_FEATURE_PROPERTY { name:'digitValue', value:'1', type:'org.ff4j.property.PropertyInt', fixedValues: ['0','1','2','3'] }),\n"
                     + " (regionIdentifier:FF4J_FEATURE_PROPERTY { name:'regionIdentifier', value:'AMER', fixedValues: ['AMER','SSSS','EAST','EAST'] }),\n"
-                    + " ppint-[:PROPERTY_OF]->first,\n"
-                    + " ppdouble-[:PROPERTY_OF]->first,\n"
-                    + " ppboolean-[:PROPERTY_OF]->first," 
-                    + " ppstring-[:PROPERTY_OF]->first,\n"
-                    + " ppListInt-[:PROPERTY_OF]->first,\n"
-                    + " myLogLevel-[:PROPERTY_OF]->first,\n"
-                    + " digitValue-[:PROPERTY_OF]->first,\n" 
-                    + " regionIdentifier-[:PROPERTY_OF]->first,\n"
+                    + " (ppint)-[:PROPERTY_OF]->(first),\n"
+                    + " (ppdouble)-[:PROPERTY_OF]->(first),\n"
+                    + " (ppboolean)-[:PROPERTY_OF]->(first),"
+                    + " (ppstring)-[:PROPERTY_OF]->(first),\n"
+                    + " (ppListInt)-[:PROPERTY_OF]->(first),\n"
+                    + " (myLogLevel)-[:PROPERTY_OF]->(first),\n"
+                    + " (digitValue)-[:PROPERTY_OF]->(first),\n"
+                    + " (regionIdentifier)-[:PROPERTY_OF]->(first),\n"
 
                     + " (GRP0:FF4J_FEATURE_GROUP { name:'GRP0' }),\n"
                     + " (second:FF4J_FEATURE { uid:'second', enable:false, description:'second', roles:['USER'] }),\n"
@@ -100,7 +101,7 @@ public class FeatureStoreNeo4jTest extends FeatureStoreTestSupport {
 
                     + " (forth:FF4J_FEATURE { uid:'forth', enable:true, description:'forth', roles:['ADMINISTRATOR', 'BETA-TESTER'] }),\n"
                     + " (stratforth:FF4J_FLIPPING_STRATEGY { initParams: [ 'expression=third|second' ], type: 'org.ff4j.strategy.el.ExpressionFlipStrategy'}),\n"
-                    + " (stratforth)-[:STRATEGY_OF]->forth,\n" 
+                    + " (stratforth)-[:STRATEGY_OF]->(forth),\n"
                     + " (forth)-[:MEMBER_OF]->(GRP1),\n"
 
                     + " (a:FF4J_PROPERTY { name:'a', value:'AMER', fixedValues: ['AMER','EAST','EAST','EAST'] }),\n"
@@ -111,13 +112,13 @@ public class FeatureStoreNeo4jTest extends FeatureStoreTestSupport {
                     + " (f:FF4J_PROPERTY { name:'f', value:'12,13,14' }),\n"
                     + " (g:FF4J_PROPERTY { name:'g', value:'DEBUG', type:'org.ff4j.property.PropertyLogLevel'  });");
             
-            tx2.success();
+            tx2.commit();
         }
     }
    
     @AfterClass
     public static void destroyTestDatabase() {
-        graphDb.shutdown();
+        neo4j.close();
     }
     
     /** {@inheritDoc} */

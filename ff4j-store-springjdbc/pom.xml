@@ -22,7 +22,6 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<properties>
 		<license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
-		<testcontainers.version>1.21.4</testcontainers.version>
 		<postgresql.version>42.7.13</postgresql.version>
 	</properties>
 	
@@ -84,15 +83,15 @@
 		<!-- Test against Docker Containers with Test Containers -->
 		<dependency>
 			<groupId>org.testcontainers</groupId>
-			<artifactId>postgresql</artifactId>
+			<artifactId>testcontainers-postgresql</artifactId>
 			<scope>test</scope>
-			<version>${testcontainers.version}</version>
+			<version>${version.testcontainers}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>testcontainers</artifactId>
 			<scope>test</scope>
-			<version>${testcontainers.version}</version>
+			<version>${version.testcontainers}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
