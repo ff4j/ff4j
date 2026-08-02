@@ -126,7 +126,7 @@
     <version.maven.plugin.jar>3.5.1</version.maven.plugin.jar>
     <version.maven.plugin.javadoc>3.12.0</version.maven.plugin.javadoc>
     <version.maven.plugin.license>2.7.1</version.maven.plugin.license>
-    <version.maven.plugin.nexus>1.7.0</version.maven.plugin.nexus>
+    <version.maven.plugin.central>0.11.0</version.maven.plugin.central>
     <version.maven.plugin.redis>1.4.6</version.maven.plugin.redis>
     <version.maven.plugin.release>3.3.1</version.maven.plugin.release>
     <version.maven.plugin.resources>3.5.0</version.maven.plugin.resources>
@@ -666,16 +666,15 @@
         </executions>
       </plugin>
 
-      <!-- Deploy nexus -->
+      <!-- Deploy to Maven Central (Central Portal) -->
       <plugin>
-        <groupId>org.sonatype.plugins</groupId>
-        <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>${version.maven.plugin.nexus}</version>
+        <groupId>org.sonatype.central</groupId>
+        <artifactId>central-publishing-maven-plugin</artifactId>
+        <version>${version.maven.plugin.central}</version>
         <extensions>true</extensions>
         <configuration>
-          <serverId>ossrh</serverId>
-          <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-          <autoReleaseAfterClose>true</autoReleaseAfterClose>
+          <publishingServerId>central</publishingServerId>
+          <autoPublish>true</autoPublish>
         </configuration>
       </plugin>
 
@@ -997,13 +996,9 @@
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <distributionManagement>
     <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <id>central</id>
+      <url>https://central.sonatype.com/repository/maven-snapshots/</url>
     </snapshotRepository>
-    <repository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-    </repository>
     <site>
       <id>website</id>
       <url>file://C:/clunven/dev/mvnsite</url>
