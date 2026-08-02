@@ -1,12 +1,14 @@
 # ✨✨✨ FF4J - Feature Flipping for Java ✨✨✨
 
 ![Build Status](https://github.com/ff4j/ff4j/actions/workflows/build_workflow.yml/badge.svg?branch=main)
-[![Backers on Open Collective](https://opencollective.com/ff4j/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/ff4j/sponsors/badge.svg)](#sponsors) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.ff4j/ff4j-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.ff4j/ff4j-core/)
+[![Maven Central](https://img.shields.io/maven-central/v/org.ff4j/ff4j-core)](https://mvnrepository.com/artifact/org.ff4j/ff4j-core)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/9eeaf11647704bb991243b9eb380efb0)](https://www.codacy.com/gh/ff4j/ff4j/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ff4j/ff4j&amp;utm_campaign=Badge_Grade)
+
+[![chat](https://img.shields.io/badge/chat-on%20discord-blue?style=flat-square)](https://discord.com/invite/WUQxSNmZ9h)
+[![License Apache2](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![codecov](https://codecov.io/gh/ff4j/ff4j/branch/main/graph/badge.svg?token=qMQlFdPN80)](https://codecov.io/gh/ff4j/ff4j)
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/9eeaf11647704bb991243b9eb380efb0)](https://www.codacy.com/gh/ff4j/ff4j/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ff4j/ff4j&amp;utm_campaign=Badge_Grade)
-[![chat](https://img.shields.io/badge/chat-on%20discord-blue?style=flat-square)](https://discord.gg/y8RMbHQR)
-[![License Apache2](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0)
+[![Backers on Open Collective](https://opencollective.com/ff4j/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/ff4j/sponsors/badge.svg)](#sponsors) 
 
 
 <img src="http://ff4j.github.io/images/ff4j.png" height="100px" />
