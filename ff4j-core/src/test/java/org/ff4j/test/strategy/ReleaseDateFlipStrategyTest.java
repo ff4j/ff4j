@@ -20,6 +20,8 @@ package org.ff4j.test.strategy;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,8 +32,8 @@ import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.strategy.time.ReleaseDateFlipStrategy;
 import org.ff4j.test.AbstractFf4jTest;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Testing class for {@link ReleaseDateFlipStrategy} class.
@@ -50,14 +52,14 @@ public class ReleaseDateFlipStrategyTest extends AbstractFf4jTest {
     public void testPastDayOK() throws ParseException {
         Feature f = ff4j.getFeature("past1");
         ReleaseDateFlipStrategy rds = (ReleaseDateFlipStrategy) f.getFlippingStrategy();
-        Assert.assertTrue(rds.evaluate("past1", null, null));
+        Assertions.assertTrue(rds.evaluate("past1", null, null));
     }
 
     @Test
     public void testFutureOK() throws ParseException {
         Feature f = ff4j.getFeature("future1");
         ReleaseDateFlipStrategy rds = (ReleaseDateFlipStrategy) f.getFlippingStrategy();
-        Assert.assertFalse(rds.evaluate("future1", null, null));
+        Assertions.assertFalse(rds.evaluate("future1", null, null));
     }
     
     @Test
@@ -67,17 +69,21 @@ public class ReleaseDateFlipStrategyTest extends AbstractFf4jTest {
         rds2.setReleaseDate(new Date());
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testInitInvalidDate() {
-        new ReleaseDateFlipStrategy("invalid");
+        assertThrows(IllegalArgumentException.class, () -> {
+            new ReleaseDateFlipStrategy("invalid");
+        });
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testInvalidDate() {
-        ReleaseDateFlipStrategy rds2 = new ReleaseDateFlipStrategy(new Date());
-        Map < String, String > params = new HashMap<String, String>();
-        params.put("releaseDate", "invalid");
-        rds2.init("f1", params);
+        assertThrows(IllegalArgumentException.class, () -> {
+            ReleaseDateFlipStrategy rds2 = new ReleaseDateFlipStrategy(new Date());
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("releaseDate", "invalid");
+            rds2.init("f1", params);
+        });
     }
 
 }

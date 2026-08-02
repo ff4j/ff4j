@@ -22,14 +22,14 @@ package org.ff4j.aop.test.noalterbean;
 
 import org.ff4j.FF4j;
 import org.ff4j.test.AssertFf4j;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration("classpath:applicationContext-ff4j-aop-test.xml")
 public class SampleServiceFeatureTest {
 
@@ -53,13 +53,13 @@ public class SampleServiceFeatureTest {
     	// When feature is enabled 
     	String result1 = sample.someAwesomeFeature("HELLO");
     	// Then it works as expected
-    	Assert.assertEquals("HELLO", result1);
+    	Assertions.assertEquals("HELLO", result1);
     	
     	// When feature is disabled, nothing and return null
     	ff4j.disable("AwesomeFeature");
     	
     	// Then
-    	Assert.assertNull(sample.someAwesomeFeature("HELLO"));
+    	Assertions.assertNull(sample.someAwesomeFeature("HELLO"));
     	
     }
 

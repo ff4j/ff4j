@@ -26,7 +26,7 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.ParseException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ParserTest {
 

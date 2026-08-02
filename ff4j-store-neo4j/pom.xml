@@ -109,15 +109,16 @@
       <version>${version.hamcrest-all}</version>
       <scope>test</scope>
     </dependency>
+  <dependency>
+   <groupId>org.junit.jupiter</groupId>
+   <artifactId>junit-jupiter</artifactId>
+   <scope>test</scope>
+  </dependency>
     <dependency>
       <artifactId>ff4j-test</artifactId>
       <groupId>org.ff4j</groupId>
       <version>${project.version}</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
@@ -139,26 +140,6 @@
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <version>${version.maven.plugin.failsafe}</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.maven.surefire</groupId>
-            <artifactId>surefire-junit47</artifactId>
-            <version>${version.maven.plugin.failsafe}</version>
-          </dependency>
-        </dependencies>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->

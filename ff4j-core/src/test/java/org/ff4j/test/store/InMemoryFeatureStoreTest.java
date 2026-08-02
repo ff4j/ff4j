@@ -20,14 +20,16 @@ package org.ff4j.test.store;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.LinkedHashMap;
 
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.strategy.PonderationStrategy;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * All TEST LOGIC is in super class to be processed on EACH STORE.
@@ -48,7 +50,7 @@ public class InMemoryFeatureStoreTest extends CoreFeatureStoreTestSupport {
     public void testUnitFeatureInitialization() {
         InMemoryFeatureStore imfs = new InMemoryFeatureStore();
         imfs.create(new Feature("default", true, "grp1", "desc", null, new PonderationStrategy()));
-        Assert.assertEquals(1, imfs.readAll().size());
+        Assertions.assertEquals(1, imfs.readAll().size());
     }
 
     @Test
@@ -57,23 +59,29 @@ public class InMemoryFeatureStoreTest extends CoreFeatureStoreTestSupport {
         map1.put("new", new Feature("new", true, "description"));
         map1.put("old", new Feature("old", true, "description"));
         InMemoryFeatureStore imfs = new InMemoryFeatureStore(map1);
-        Assert.assertEquals(2, imfs.readAll().size());
-        Assert.assertNotNull(imfs.read("old"));
+        Assertions.assertEquals(2, imfs.readAll().size());
+        Assertions.assertNotNull(imfs.read("old"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testUnitFeatureInitialization3() {
-        new InMemoryFeatureStore("invalid.xml");
+        assertThrows(IllegalArgumentException.class, () -> {
+            new InMemoryFeatureStore("invalid.xml");
+        });
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testUnitFeatureInitialization5() {
-        new InMemoryFeatureStore((String) null);
+        assertThrows(IllegalArgumentException.class, () -> {
+            new InMemoryFeatureStore((String) null);
+        });
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testUnitFeatureInitialization6() {
-        new InMemoryFeatureStore("");
+        assertThrows(IllegalArgumentException.class, () -> {
+            new InMemoryFeatureStore("");
+        });
     }
     
     @Test
@@ -84,23 +92,29 @@ public class InMemoryFeatureStoreTest extends CoreFeatureStoreTestSupport {
         f.getFileName();
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testDonotImportEmpty() {
-        InMemoryFeatureStore f = new InMemoryFeatureStore();
-        f.importFeaturesFromXmlFile("");
+        assertThrows(IllegalArgumentException.class, () -> {
+            InMemoryFeatureStore f = new InMemoryFeatureStore();
+            f.importFeaturesFromXmlFile("");
+        });
     }
     
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testDonotImportNull() {
-        InMemoryFeatureStore f = new InMemoryFeatureStore();
-        f.importFeaturesFromXmlFile(null);
+        assertThrows(IllegalArgumentException.class, () -> {
+            InMemoryFeatureStore f = new InMemoryFeatureStore();
+            f.importFeaturesFromXmlFile(null);
+        });
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testDonotImportInvalid() {
-        InMemoryFeatureStore f = new InMemoryFeatureStore();
-        f.importFeaturesFromXmlFile("invalid.xml");
+        assertThrows(IllegalArgumentException.class, () -> {
+            InMemoryFeatureStore f = new InMemoryFeatureStore();
+            f.importFeaturesFromXmlFile("invalid.xml");
+        });
     }
     
     @Test
@@ -108,7 +122,7 @@ public class InMemoryFeatureStoreTest extends CoreFeatureStoreTestSupport {
         InMemoryFeatureStore f = new InMemoryFeatureStore();
         f.importFeaturesFromXmlFile("ff4j.xml");
         f.importFeaturesFromXmlFile("ff4j.xml");
-        Assert.assertFalse(f.readAll().isEmpty());
+        Assertions.assertFalse(f.readAll().isEmpty());
     }
     
 }

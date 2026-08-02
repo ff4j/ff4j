@@ -49,17 +49,17 @@
       <artifactId>java-driver-query-builder</artifactId>
       <version>${cassandra-java-driver.version}</version>
     </dependency>
-    <!-- Tests -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
     <dependency>
       <artifactId>ff4j-test</artifactId>
       <groupId>org.ff4j</groupId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
+  <dependency>
+   <groupId>org.junit.jupiter</groupId>
+   <artifactId>junit-jupiter</artifactId>
+   <scope>test</scope>
+  </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>

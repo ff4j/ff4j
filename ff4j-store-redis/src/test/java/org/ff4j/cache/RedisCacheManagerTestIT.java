@@ -28,10 +28,11 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.property.PropertyString;
 import org.ff4j.redis.RedisKeysBuilder;
 import org.ff4j.store.InMemoryFeatureStore;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-@Ignore
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+@Disabled
 public class RedisCacheManagerTestIT {
 
     private FF4jCacheManagerRedis cache = new FF4jCacheManagerRedis();
@@ -47,8 +48,8 @@ public class RedisCacheManagerTestIT {
 
         // Retrieve object
         Feature fcached = cache.getFeature(F4);
-        Assert.assertEquals(fcached.getUid(), fold.getUid());
-        Assert.assertEquals(fcached.getPermissions(), fold.getPermissions());
+        Assertions.assertEquals(fcached.getUid(), fold.getUid());
+        Assertions.assertEquals(fcached.getPermissions(), fold.getPermissions());
 
     }
 
@@ -56,15 +57,15 @@ public class RedisCacheManagerTestIT {
     public void testCacheManagerProperties() {
         cache.putProperty(new PropertyString("p1", "v1"));
         String keyP1 = cache.getKeyBuilder().getKeyProperty("p1");
-        Assert.assertNotNull(cache.getProperty("p1"));
-        Assert.assertTrue(cache.listCachedPropertyNames().contains(keyP1));
+        Assertions.assertNotNull(cache.getProperty("p1"));
+        Assertions.assertTrue(cache.listCachedPropertyNames().contains(keyP1));
     }
 
     @Test
     public void testCacheManagerFeatures() {
         cache.putFeature(new Feature("f1"));
-        Assert.assertNotNull(cache.getFeature("f1"));
-        Assert.assertTrue(cache
+        Assertions.assertNotNull(cache.getFeature("f1"));
+        Assertions.assertTrue(cache
                 .listCachedFeatureNames()
                 .contains(new RedisKeysBuilder().getKeyFeature("f1")));
     }

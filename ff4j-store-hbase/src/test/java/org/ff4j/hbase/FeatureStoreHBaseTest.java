@@ -24,14 +24,14 @@ package org.ff4j.hbase;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.hbase.store.FeatureStoreHBase;
 import org.ff4j.test.store.FeatureStoreTestSupport;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 
 /**
  * Unit test of {@link FeatureStore} for HBASE.
  *
  * @author Cedrick LUNVEN (@clunven)
  */
-@Ignore
+@Disabled
 public class FeatureStoreHBaseTest extends FeatureStoreTestSupport {
     
     /** HBASE_HOST. */

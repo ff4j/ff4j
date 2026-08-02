@@ -26,10 +26,10 @@ import java.util.List;
 import org.ff4j.FF4j;
 import org.ff4j.conf.XmlParser;
 import org.ff4j.security.SpringSecurityAuthorisationManager;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -52,7 +52,7 @@ public class FlipSecurityTests {
     /** Security context. */
     private SecurityContext securityCtx;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         securityCtx = SecurityContextHolder.getContext();
         // Init SpringSecurity Context
@@ -71,7 +71,7 @@ public class FlipSecurityTests {
         ff4j.setAuthorizationsManager(new SpringSecurityAuthorisationManager());
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         SecurityContextHolder.setContext(securityCtx);
     }
@@ -81,16 +81,16 @@ public class FlipSecurityTests {
 
         // check authentication
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Assert.assertTrue(auth.isAuthenticated());
+        Assertions.assertTrue(auth.isAuthenticated());
         
-        Assert.assertEquals("user1", ff4j.getAuthorizationsManager().getCurrentUserName());
+        Assertions.assertEquals("user1", ff4j.getAuthorizationsManager().getCurrentUserName());
         
 
         // init
 
         // not autorized because bad credential
-        Assert.assertFalse(ff4j.check("third"));
+        Assertions.assertFalse(ff4j.check("third"));
         // autorized because role ROLE_USER
-        Assert.assertTrue(ff4j.check("first"));
+        Assertions.assertTrue(ff4j.check("first"));
     }
 }

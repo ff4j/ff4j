@@ -21,14 +21,14 @@ package org.ff4j.utils.json;
  */
 
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class CustomObjectMapperTest {
     
     @Test
     public void init() {
-        Assert.assertNotNull(new FF4jCustomObjectMapper ()); 
+        Assertions.assertNotNull(new FF4jCustomObjectMapper ()); 
     }
 
 }

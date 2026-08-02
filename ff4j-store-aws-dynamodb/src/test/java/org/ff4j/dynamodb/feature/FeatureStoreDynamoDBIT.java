@@ -23,7 +23,10 @@ package org.ff4j.dynamodb.feature;
 import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.test.store.FeatureStoreTestSupport;
-import org.junit.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 import static org.ff4j.test.TestsFf4jConstants.AWESOME;
@@ -35,18 +38,18 @@ import static org.ff4j.test.TestsFf4jConstants.ROLE_TEST;
  * @author <a href="mailto:jeromevdl@gmail.com">Jerome VAN DER LINDEN</a>
  */
 // Needs an AWS environment, not available in Travis, this is why it is ignored
-@Ignore
+@Disabled
 public class FeatureStoreDynamoDBIT extends FeatureStoreTestSupport {
 
     private static FeatureStoreDynamoDB store;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         DynamoDbClient dynamoDB = DynamoDbClient.create();
         store = new FeatureStoreDynamoDB(dynamoDB);
     }
 
-    @AfterClass
+    @AfterAll
     public static void clean() {
        store.clear();
     }
@@ -59,7 +62,7 @@ public class FeatureStoreDynamoDBIT extends FeatureStoreTestSupport {
     }
 
     // TODO : move up but fails with Neo4j
-    @Test
+    @org.junit.jupiter.api.Test
     public void addRoleToFeatureWithoutRole() {
         // Given
         assertFf4j.assertThatFeatureHasNotRole(AWESOME, ROLE_TEST);
@@ -71,18 +74,18 @@ public class FeatureStoreDynamoDBIT extends FeatureStoreTestSupport {
         assertFf4j.assertThatFeatureHasRole(AWESOME, ROLE_TEST);
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void addEmptyStringAsRole() {
         // given
         Feature feature = testedStore.read(AWESOME);
-        Assert.assertTrue(feature.getPermissions().isEmpty());
+        Assertions.assertTrue(feature.getPermissions().isEmpty());
 
         // when
         feature.getPermissions().add("");
         testedStore.update(feature);
 
         // then
-        Assert.assertTrue(feature.getPermissions().isEmpty());
+        Assertions.assertTrue(feature.getPermissions().isEmpty());
     }
 
 }

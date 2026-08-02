@@ -20,6 +20,8 @@ package org.ff4j.awsssm.store;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.Map;
 
 import org.ff4j.property.Property;
@@ -27,25 +29,25 @@ import org.ff4j.property.PropertyLogLevel;
 import org.ff4j.property.PropertyString;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 
-@Ignore
+@Disabled
 public class PropertyStoreAwsSSMTest extends PropertyStoreTestSupport {
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         testedStore.createProperty(new PropertyString("a", "AMER"));
         testedStore.createProperty(new PropertyString("b", "12"));
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         testedStore.clear();
     }
@@ -55,18 +57,26 @@ public class PropertyStoreAwsSSMTest extends PropertyStoreTestSupport {
         return new PropertyStoreAwsSSM("/Dev/ff4j");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void newStoreBadPathBegin() {
-        // Given
-        new PropertyStoreAwsSSM("Toto");
+        assertThrows(IllegalArgumentException.class, () -> {
+            // Given
+            new PropertyStoreAwsSSM("Toto");
+            // When, Then
+            // Expect error
+        });
         // When, Then
         // Expect error
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void newStoreBadPathEnd() {
-        // Given
-        new PropertyStoreAwsSSM("/Toto/");
+        assertThrows(IllegalArgumentException.class, () -> {
+            // Given
+            new PropertyStoreAwsSSM("/Toto/");
+            // When, Then
+            // Expect error
+        });
         // When, Then
         // Expect error
     }
@@ -79,15 +89,15 @@ public class PropertyStoreAwsSSMTest extends PropertyStoreTestSupport {
         // When
         Property<?> log = testedStore.readProperty(READ_OK_FIXED);
         // Then
-        Assert.assertNotNull(log);
-        Assert.assertNotNull(log.getName());
-        Assert.assertEquals(READ_OK_FIXED, log.getName());
-        Assert.assertEquals(PropertyLogLevel.LogLevel.ERROR.name(), log.getValue());
+        Assertions.assertNotNull(log);
+        Assertions.assertNotNull(log.getName());
+        Assertions.assertEquals(READ_OK_FIXED, log.getName());
+        Assertions.assertEquals(PropertyLogLevel.LogLevel.ERROR.name(), log.getValue());
     }
 
     @Override
     @Test
-    @Ignore
+    @Disabled
     public void updateKOInvalidValue() {
         // Cannot through error as FixedValue are not in Commons-config.
         System.out.println("Not Supported as fixedValues are ignored");
@@ -95,7 +105,7 @@ public class PropertyStoreAwsSSMTest extends PropertyStoreTestSupport {
 
     @Override
     @Test
-    @Ignore
+    @Disabled
     public void updateOKProperties() {
         System.out.println("Not Supported as all properties are String");
     }
@@ -108,7 +118,7 @@ public class PropertyStoreAwsSSMTest extends PropertyStoreTestSupport {
         // When
         testedStore.updateProperty(UPDATE_OK, "INFO");
         // Then
-        Assert.assertEquals("INFO", testedStore.readProperty(UPDATE_OK).getValue());
+        Assertions.assertEquals("INFO", testedStore.readProperty(UPDATE_OK).getValue());
     }
 
     @Override
@@ -116,10 +126,10 @@ public class PropertyStoreAwsSSMTest extends PropertyStoreTestSupport {
     public void clear() {
         // Given
         Map<String, Property<?>> before = testedStore.readAllProperties();
-        Assert.assertFalse(before.isEmpty());
+        Assertions.assertFalse(before.isEmpty());
         // When
         testedStore.clear();
         // Then
-        Assert.assertTrue(testedStore.readAllProperties().isEmpty());
+        Assertions.assertTrue(testedStore.readAllProperties().isEmpty());
     }
 }

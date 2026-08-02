@@ -28,21 +28,22 @@ import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.property.PropertyInt;
 import org.ff4j.property.PropertyString;
 import org.ff4j.utils.Util;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.ff4j.test.TestsFf4jConstants.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Testing JDBC Store with spring ans conf as XML.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration("classpath:*applicationContext-jdbc-test.xml")
 public class SpringJdbcXMLDataSourceStoreTest extends FeatureStoreTestSupport {
    
@@ -52,6 +53,11 @@ public class SpringJdbcXMLDataSourceStoreTest extends FeatureStoreTestSupport {
     /** {@inheritDoc} */
     @Override
     protected FeatureStore initStore() {
+        // Shared Spring-managed database: reset per test so methods stay order-independent
+        store.clear();
+        store.importFeatures(new org.ff4j.conf.XmlParser()
+                .parseConfigurationFile(getClass().getClassLoader().getResourceAsStream("test-ff4j-features.xml"))
+                .getFeatures().values());
         return store;
     }
 
@@ -69,14 +75,17 @@ public class SpringJdbcXMLDataSourceStoreTest extends FeatureStoreTestSupport {
     /**
      * TDD : Exact same code from upper class
      */
-    @Test(expected = FeatureNotFoundException.class)
+    @Test
     @Override
     public void testRemoveFromGroupFeatureDoeNotExist() {
-        // Given
-        assertFf4j.assertThatGroupExist(G1);
-        assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
-        // When
-        testedStore.removeFromGroup(F_DOESNOTEXIST, G1);
+        assertThrows(FeatureNotFoundException.class, () -> {
+            // Given
+            assertFf4j.assertThatGroupExist(G1);
+            assertFf4j.assertThatFeatureDoesNotExist(F_DOESNOTEXIST);
+            // When
+            testedStore.removeFromGroup(F_DOESNOTEXIST, G1);
+            // Then, expected error
+        });
         // Then, expected error
     }
 
@@ -92,9 +101,9 @@ public class SpringJdbcXMLDataSourceStoreTest extends FeatureStoreTestSupport {
         // When
         Set<String> groups = testedStore.readAllGroups();
         // Then
-        Assert.assertEquals(2, groups.size());
-        Assert.assertTrue(groups.contains(G0));
-        Assert.assertTrue(groups.contains(G1));
+        Assertions.assertEquals(2, groups.size());
+        Assertions.assertTrue(groups.contains(G0));
+        Assertions.assertTrue(groups.contains(G1));
     }
 
     /**
@@ -144,7 +153,7 @@ public class SpringJdbcXMLDataSourceStoreTest extends FeatureStoreTestSupport {
                 .getFeatureStore().read(F1)//
                 .getCustomProperties().get("digitValue")
                 .getFixedValues();
-        Assert.assertEquals(4, fixValues.size()); 
+        Assertions.assertEquals(4, fixValues.size()); 
                 
         // When
         PropertyInt p1 = new PropertyInt("digitValue");
@@ -158,7 +167,7 @@ public class SpringJdbcXMLDataSourceStoreTest extends FeatureStoreTestSupport {
                 .getFeatureStore().read(F1)//
                 .getCustomProperties().get("digitValue")
                 .getFixedValues();
-        Assert.assertEquals(5, fixValues2.size());
+        Assertions.assertEquals(5, fixValues2.size());
     }
     
     /**
@@ -175,7 +184,7 @@ public class SpringJdbcXMLDataSourceStoreTest extends FeatureStoreTestSupport {
                 .getFeatureStore().read(F1)//
                 .getCustomProperties().get("regionIdentifier")
                 .getFixedValues();
-        Assert.assertEquals(3, fixValues.size()); 
+        Assertions.assertEquals(3, fixValues.size()); 
                 
         // When
         Feature myFeature = ff4j.getFeatureStore().read(F1);
@@ -190,6 +199,6 @@ public class SpringJdbcXMLDataSourceStoreTest extends FeatureStoreTestSupport {
                 .getFeatureStore().read(F1)//
                 .getCustomProperties().get("regionIdentifier")
                 .getFixedValues();
-        Assert.assertEquals(2, fixValues2.size());
+        Assertions.assertEquals(2, fixValues2.size());
     }
 }

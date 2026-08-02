@@ -22,10 +22,10 @@ package org.ff4j.cache;
 
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class EhCacheCacheManagerTest2 {
 
@@ -33,7 +33,7 @@ public class EhCacheCacheManagerTest2 {
     
     private FF4JCacheManager cacheManager = null; 
     
-    @Before
+    @BeforeEach
     /** Init cache. */
     public void initialize() {
         cacheManager = new FeatureCacheProviderEhCache();
@@ -52,27 +52,27 @@ public class EhCacheCacheManagerTest2 {
     @Test
     public void testPlayingWithCache() {
         // Update with Check
-        Assert.assertFalse(cacheManager.listCachedFeatureNames().contains("f1"));
+        Assertions.assertFalse(cacheManager.listCachedFeatureNames().contains("f1"));
         ff4j.check("f1");
-        Assert.assertTrue(cacheManager.listCachedFeatureNames().contains("f1"));
+        Assertions.assertTrue(cacheManager.listCachedFeatureNames().contains("f1"));
         
         // Updated for create/update
-        Assert.assertFalse(cacheManager.listCachedFeatureNames().contains("f3"));
+        Assertions.assertFalse(cacheManager.listCachedFeatureNames().contains("f3"));
         ff4j.createFeature(new Feature("f3", false));
-        Assert.assertTrue(cacheManager.listCachedFeatureNames().contains("f3"));
+        Assertions.assertTrue(cacheManager.listCachedFeatureNames().contains("f3"));
         ff4j.enable("f3");
         // Is cache also updated ?
-        Assert.assertFalse(cacheManager.listCachedFeatureNames().contains("f3"));
+        Assertions.assertFalse(cacheManager.listCachedFeatureNames().contains("f3"));
         
         // Updated for deletion
         ff4j.check("f3");
-        Assert.assertTrue(cacheManager.listCachedFeatureNames().contains("f3"));
+        Assertions.assertTrue(cacheManager.listCachedFeatureNames().contains("f3"));
         ff4j.delete("f3");
-        Assert.assertFalse(cacheManager.listCachedFeatureNames().contains("f3"));
+        Assertions.assertFalse(cacheManager.listCachedFeatureNames().contains("f3"));
         
     }
     
-    @After
+    @AfterEach
     public void clearCache() {
         ff4j.getCacheProxy().clear();
     }

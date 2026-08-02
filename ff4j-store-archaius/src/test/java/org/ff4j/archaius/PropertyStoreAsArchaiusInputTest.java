@@ -22,9 +22,8 @@ package org.ff4j.archaius;
 
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.store.PropertyStore;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import com.netflix.config.AbstractPollingScheduler;
 import com.netflix.config.ConfigurationManager;
 import com.netflix.config.DynamicConfiguration;
@@ -41,7 +40,7 @@ import com.netflix.config.PolledConfigurationSource;
  */
 public class PropertyStoreAsArchaiusInputTest {
     
-    @BeforeClass
+    @BeforeAll
     public static void initArchauisWithFF4j() throws InterruptedException {
         // Sample FF4J Store
         PropertyStore ff4jStore = new InMemoryPropertyStore("ff4j-properties.xml");

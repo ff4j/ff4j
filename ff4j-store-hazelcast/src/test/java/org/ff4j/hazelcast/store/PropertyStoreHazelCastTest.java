@@ -22,7 +22,7 @@ package org.ff4j.hazelcast.store;
 
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 
 /**
  * Test to work with Redis as a store.
@@ -34,7 +34,7 @@ public class PropertyStoreHazelCastTest extends PropertyStoreTestSupport {
 
     private static PropertyStoreHazelCast propertyStoreHazelCast;
 
-    @BeforeClass
+    @BeforeAll
     public static void setupHazelcast(){
         propertyStoreHazelCast = new PropertyStoreHazelCast();
         propertyStoreHazelCast.importPropertiesFromXmlFile("ff4j.xml");

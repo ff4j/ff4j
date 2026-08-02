@@ -24,14 +24,14 @@ import org.ff4j.consul.ConsulConnection;
 import org.ff4j.consul.store.PropertyStoreConsul;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 
 /**
  * Expect to run tests if a consul instance id UP.
  *
  * @author Cedrick LUNVEN (@clunven)
  */
-@Ignore
+@Disabled
 public class PropertyStoreConsulTestIT extends PropertyStoreTestSupport {
 
     /** {@inheritDoc} */

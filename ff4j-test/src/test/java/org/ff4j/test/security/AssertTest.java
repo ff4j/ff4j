@@ -29,8 +29,8 @@ import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.test.AssertFf4j;
 import org.ff4j.test.TestsFf4jConstants;
 import org.ff4j.utils.Util;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AssertTest {
     
@@ -38,7 +38,7 @@ public class AssertTest {
     
     private AssertFf4j assertFF4j = null;
     
-    @Before
+    @BeforeEach
     public void initFF4J() {
         if (assertFF4j == null) {
             ff4j = new FF4j();

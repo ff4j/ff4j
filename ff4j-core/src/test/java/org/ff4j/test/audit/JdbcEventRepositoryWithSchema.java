@@ -24,9 +24,9 @@ import org.ff4j.audit.Event;
 import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.audit.repository.JdbcEventRepository;
 import org.ff4j.store.JdbcQueryBuilder;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -40,7 +40,7 @@ public class JdbcEventRepositoryWithSchema {
     private EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
     private JdbcEventRepository repo;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         schemaNamedDb = builder.setType(EmbeddedDatabaseType.HSQL).//
                 addScript("classpath:named-schema-ddl.sql").//
@@ -49,7 +49,7 @@ public class JdbcEventRepositoryWithSchema {
     }
 
     /** {@inheritDoc} */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         Thread.sleep(200);
         schemaNamedDb.shutdown();

@@ -23,8 +23,8 @@ package org.ff4j.cassandra.docker;
 import java.net.InetSocketAddress;
 
 import org.ff4j.cassandra.AsbtractEventRepositoryCassandraTest;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.testcontainers.containers.CassandraContainer;
 import org.testcontainers.containers.GenericContainer;
 
@@ -42,13 +42,13 @@ public class EventRepositoryassandraTestDocker extends AsbtractEventRepositoryCa
     private static final String DOCKER_CASSANDRA_DC     = "datacenter1";
     private static final String DOCKER_CASSANDRA_IMAGE  = "cassandra:3.11.7";
     
-    @BeforeClass
+    @BeforeAll
     public static void startDocker() throws Exception {
         cassandraContainer = new CassandraContainer<>(DOCKER_CASSANDRA_IMAGE);
         cassandraContainer.start();
     }
     
-    @AfterClass
+    @AfterAll
     public static void stopDockker() {
         cassandraContainer.stop();
     }

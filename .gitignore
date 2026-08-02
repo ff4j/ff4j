@@ -18,9 +18,11 @@ dist
 
 # misc
 .DS_Store
-
+.claude/settings.local.json
+.bob
 .factorypath
 .sts4-cache
 *.log
 
 .java-version
+CLAUDE.md

@@ -39,10 +39,10 @@ import org.ff4j.store.JdbcQueryBuilder;
 import org.ff4j.strategy.PonderationStrategy;
 import org.ff4j.utils.JdbcUtils;
 import org.ff4j.utils.Util;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -64,7 +64,7 @@ public class JdbcFeatureStoreSchemaTest {
     protected JdbcFeatureStore testedStore;
 
     /** {@inheritDoc} */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         initStore();
     }
@@ -83,7 +83,7 @@ public class JdbcFeatureStoreSchemaTest {
     }
    
     /** {@inheritDoc} */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         db.shutdown();
     }
@@ -93,15 +93,15 @@ public class JdbcFeatureStoreSchemaTest {
         DataSource       ds = testedStore.getDataSource();
         JdbcQueryBuilder qb = testedStore.getQueryBuilder();
         // Given
-        Assert.assertFalse(isTableExist(ds, qb.getTableNameFeatures()));
-        Assert.assertFalse(isTableExist(ds, qb.getTableNameRoles()));
-        Assert.assertFalse(isTableExist(ds, qb.getTableNameCustomProperties()));
+        Assertions.assertFalse(isTableExist(ds, qb.getTableNameFeatures()));
+        Assertions.assertFalse(isTableExist(ds, qb.getTableNameRoles()));
+        Assertions.assertFalse(isTableExist(ds, qb.getTableNameCustomProperties()));
         // When
         testedStore.createSchema();
         // then
-        Assert.assertTrue(isTableExist(ds, qb.getTableNameFeatures()));
-        Assert.assertTrue(isTableExist(ds, qb.getTableNameRoles()));
-        Assert.assertTrue(isTableExist(ds, qb.getTableNameCustomProperties()));
+        Assertions.assertTrue(isTableExist(ds, qb.getTableNameFeatures()));
+        Assertions.assertTrue(isTableExist(ds, qb.getTableNameRoles()));
+        Assertions.assertTrue(isTableExist(ds, qb.getTableNameCustomProperties()));
         // When (no error)
         testedStore.createSchema();
     }
@@ -110,7 +110,7 @@ public class JdbcFeatureStoreSchemaTest {
     public void testworkWithSchema() {
         // Given
         testedStore.createSchema();
-        Assert.assertFalse(testedStore.exist("fx"));
+        Assertions.assertFalse(testedStore.exist("fx"));
         // When
         Feature fullFeature = new Feature("fx", true);
         fullFeature.setPermissions(Util.set("toto", "tata"));
@@ -119,7 +119,7 @@ public class JdbcFeatureStoreSchemaTest {
         fullFeature.setCustomProperties(customProperties);
         testedStore.create(fullFeature);
         // Then
-        Assert.assertTrue(testedStore.exist("fx"));
+        Assertions.assertTrue(testedStore.exist("fx"));
     }
     
     @Test
@@ -152,7 +152,7 @@ public class JdbcFeatureStoreSchemaTest {
 		JdbcQueryBuilder queryBuilder = testedStore.getQueryBuilder();
 		queryBuilder.setDbSchema("FF4J");
         testedStore.createSchema();
-        Assert.assertTrue(JdbcUtils.isTableExist(testedStore.getDataSource(), queryBuilder.getTableNameFeatures(), "FF4J"));
-        Assert.assertFalse(JdbcUtils.isTableExist(testedStore.getDataSource(), queryBuilder.getTableNameFeatures(), "FF4J_2"));
+        Assertions.assertTrue(JdbcUtils.isTableExist(testedStore.getDataSource(), queryBuilder.getTableNameFeatures(), "FF4J"));
+        Assertions.assertFalse(JdbcUtils.isTableExist(testedStore.getDataSource(), queryBuilder.getTableNameFeatures(), "FF4J_2"));
     }
 }

@@ -22,10 +22,6 @@
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <dependencies>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
     </dependency>
@@ -47,5 +43,10 @@
       <artifactId>jackson-databind</artifactId>
       <scope>test</scope>
     </dependency>
+  <dependency>
+   <groupId>org.junit.jupiter</groupId>
+   <artifactId>junit-jupiter</artifactId>
+   <scope>test</scope>
+  </dependency>
   </dependencies>
 </project>

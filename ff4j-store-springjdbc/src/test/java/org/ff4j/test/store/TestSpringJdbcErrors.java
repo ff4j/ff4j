@@ -21,22 +21,29 @@ package org.ff4j.test.store;
  */
 
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+
 import org.ff4j.springjdbc.store.FeatureStoreSpringJdbc;
 import org.ff4j.springjdbc.store.PropertyStoreSpringJdbc;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestSpringJdbcErrors {
     
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testErrorOnDataSource() {
-        FeatureStoreSpringJdbc s = new FeatureStoreSpringJdbc();
-        s.getJdbcTemplate();
+        assertThrows(IllegalStateException.class, () -> {
+            FeatureStoreSpringJdbc s = new FeatureStoreSpringJdbc();
+            s.getJdbcTemplate();
+        });
     }
     
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testErrorOnDataSourceProperty() {
-        PropertyStoreSpringJdbc s = new PropertyStoreSpringJdbc();
-        s.getJdbcTemplate();
+        assertThrows(IllegalStateException.class, () -> {
+            PropertyStoreSpringJdbc s = new PropertyStoreSpringJdbc();
+            s.getJdbcTemplate();
+        });
     }
 
 }

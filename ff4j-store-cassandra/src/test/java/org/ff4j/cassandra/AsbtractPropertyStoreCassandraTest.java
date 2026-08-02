@@ -22,8 +22,7 @@ package org.ff4j.cassandra;
 
 import org.ff4j.cassandra.store.PropertyStoreCassandra;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.AfterClass;
-
+import org.junit.jupiter.api.AfterAll;
 import com.datastax.oss.driver.api.core.CqlSession;
 
 /**
@@ -48,7 +47,7 @@ public abstract class AsbtractPropertyStoreCassandraTest extends PropertyStoreTe
         return store;
     }
     
-    @AfterClass
+    @AfterAll
     public static void closeConnection() {
         cqlSession.close();
         cqlSession = null;

@@ -20,6 +20,8 @@ package org.ff4j.test.propertystore;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
@@ -36,9 +38,9 @@ import org.ff4j.property.PropertyLogLevel;
 import org.ff4j.property.PropertyLogLevel.LogLevel;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.store.InMemoryFeatureStore;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * SuperClass to test stores within core project
@@ -63,7 +65,7 @@ public abstract class PropertyStoreTestSupport {
     protected FeatureStore defaultStore = new InMemoryFeatureStore();
     
     /** {@inheritDoc} */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         ff4j = new FF4j();
         ff4j.setPropertiesStore(initPropertyStore());
@@ -94,18 +96,20 @@ public abstract class PropertyStoreTestSupport {
     // --------------- exist -----------
     
     /** TDD. */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void existKONull() {
-        // given
-        testedStore.existProperty(null);
+        assertThrows(IllegalArgumentException.class, () ->
+            // given
+            testedStore.existProperty(null));
         // then expect to fail
     }
     
     /** TDD. */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void existKOEmpty() {
-        // Given
-        testedStore.existProperty("");
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            testedStore.existProperty(""));
         // Then
         // then expect to fail
     }
@@ -114,7 +118,7 @@ public abstract class PropertyStoreTestSupport {
     @Test
     public void existfalse() {
         // When-Then
-        Assert.assertFalse(testedStore.existProperty("propertyThatNotExist"));
+        Assertions.assertFalse(testedStore.existProperty("propertyThatNotExist"));
     }
     
     // --------------- create -----------    
@@ -123,11 +127,11 @@ public abstract class PropertyStoreTestSupport {
     @Test
     public void addPropertyOKsimple() {
         // Given
-        Assert.assertFalse(testedStore.existProperty(ADD_PROPERTY_O_KSIMPLE));
+        Assertions.assertFalse(testedStore.existProperty(ADD_PROPERTY_O_KSIMPLE));
         // When
         testedStore.createProperty(new PropertyString(ADD_PROPERTY_O_KSIMPLE, "ff4j"));
         // Then
-        Assert.assertTrue(testedStore.existProperty(ADD_PROPERTY_O_KSIMPLE));
+        Assertions.assertTrue(testedStore.existProperty(ADD_PROPERTY_O_KSIMPLE));
     }
     
     /** TDD. */
@@ -138,7 +142,7 @@ public abstract class PropertyStoreTestSupport {
         // When
         testedStore.createProperty(new PropertyLogLevel("logi", LogLevel.DEBUG));
         // Then
-        Assert.assertTrue(testedStore.existProperty("logi"));
+        Assertions.assertTrue(testedStore.existProperty("logi"));
     }
     
     /** TDD. */
@@ -149,25 +153,29 @@ public abstract class PropertyStoreTestSupport {
         // When
         testedStore.createProperty(new PropertyDate("ddate", new Date()));
         // Then
-        Assert.assertTrue(testedStore.existProperty("ddate"));
+        Assertions.assertTrue(testedStore.existProperty("ddate"));
     }
     
     /** TDD. */
-    @Test(expected = PropertyAlreadyExistException.class)
+    @Test
     public void addPropertyKOAlreadyExist() {
-        // Given
-        testedStore.createProperty(new PropertyLogLevel("log", LogLevel.DEBUG));
-        Assert.assertTrue(testedStore.existProperty("log"));
-        // When
-        testedStore.createProperty(new PropertyLogLevel("log", LogLevel.DEBUG));
+        assertThrows(PropertyAlreadyExistException.class, () -> {
+            // Given
+            testedStore.createProperty(new PropertyLogLevel("log", LogLevel.DEBUG));
+            Assertions.assertTrue(testedStore.existProperty("log"));
+            // When
+            testedStore.createProperty(new PropertyLogLevel("log", LogLevel.DEBUG));
+            // Then expect to fail
+        });
         // Then expect to fail
     }
     
     /** TDD. */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void addPropertyKONull() {
-        // Given
-        testedStore.createProperty(null);
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            testedStore.createProperty(null));
         // Then expect to fail
     }
     
@@ -180,12 +188,12 @@ public abstract class PropertyStoreTestSupport {
         // When
         Property<?> ap = testedStore.readProperty("toto");
         // Then
-        Assert.assertNotNull(ap);
-        Assert.assertNotNull(ap.getName());
-        Assert.assertEquals("toto", ap.getName());
-        Assert.assertEquals("ff4j", ap.getValue());
-        Assert.assertEquals("ff4j", ap.asString());
-        Assert.assertNull(ap.getFixedValues());
+        Assertions.assertNotNull(ap);
+        Assertions.assertNotNull(ap.getName());
+        Assertions.assertEquals("toto", ap.getName());
+        Assertions.assertEquals("ff4j", ap.getValue());
+        Assertions.assertEquals("ff4j", ap.asString());
+        Assertions.assertNull(ap.getFixedValues());
         
     }
     
@@ -196,85 +204,98 @@ public abstract class PropertyStoreTestSupport {
         // When
         Property<?> log = testedStore.readProperty(READ_OK_FIXED);
         // Then
-        Assert.assertNotNull(log);
-        Assert.assertNotNull(log.getName());
-        Assert.assertEquals(READ_OK_FIXED, log.getName());
-        Assert.assertEquals(LogLevel.ERROR, log.getValue());
-        Assert.assertEquals("ERROR", log.asString());
-        Assert.assertNotNull(log.getFixedValues());
+        Assertions.assertNotNull(log);
+        Assertions.assertNotNull(log.getName());
+        Assertions.assertEquals(READ_OK_FIXED, log.getName());
+        Assertions.assertEquals(LogLevel.ERROR, log.getValue());
+        Assertions.assertEquals("ERROR", log.asString());
+        Assertions.assertNotNull(log.getFixedValues());
     }
     
     /** TDD. */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void readKOnull() {
-        // Given
-        testedStore.readProperty(null);
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            testedStore.readProperty(null));
     }
     
     /** TDD. */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void readKOempty() {
-        // Given
-        testedStore.readProperty("");
+        assertThrows(IllegalArgumentException.class, () ->
+            // Given
+            testedStore.readProperty(""));
     }
     
     /** TDD. */
-    @Test(expected = PropertyNotFoundException.class)
+    @Test
     public void readKOnotExist() {
-        // Given
-        Assert.assertFalse(testedStore.existProperty(INVALID));
-        // When
-        testedStore.readProperty(INVALID);
+        assertThrows(PropertyNotFoundException.class, () -> {
+            // Given
+            Assertions.assertFalse(testedStore.existProperty(INVALID));
+            // When
+            testedStore.readProperty(INVALID);
+        });
     }
     
     // ------------------ update --------------------
     
     /** TDD. */
-    @Test(expected = PropertyNotFoundException.class)
+    @Test
     public void updateKOdoesnotExist() {
-        // Given
-        Assert.assertFalse(testedStore.existProperty(INVALID));
-        // When
-        testedStore.updateProperty(INVALID, "aa");
+        assertThrows(PropertyNotFoundException.class, () -> {
+            // Given
+            Assertions.assertFalse(testedStore.existProperty(INVALID));
+            // When
+            testedStore.updateProperty(INVALID, "aa");
+        });
     }
     
     /** TDD. */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void updateKOnull() {
-        // When
-        testedStore.updateProperty(null, "aa");
+        assertThrows(IllegalArgumentException.class, () ->
+            // When
+            testedStore.updateProperty(null, "aa"));
     }
     
     /** TDD. */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void updateKONullBis() {
-        // When
-        testedStore.updateProperty(null);
+        assertThrows(IllegalArgumentException.class, () ->
+            // When
+            testedStore.updateProperty(null));
     }
     
     
     /** TDD. */
-    @Test(expected = PropertyNotFoundException.class)
+    @Test
     public void updateKOPropertyNotFound() {
-        // When
-        PropertyString ps = new PropertyString("does-not-exist");
-        testedStore.updateProperty(ps);
+        assertThrows(PropertyNotFoundException.class, () -> {
+            // When
+            PropertyString ps = new PropertyString("does-not-exist");
+            testedStore.updateProperty(ps);
+        });
     }
     
     /** TDD. */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void updateKOempty() {
-        // When
-        testedStore.updateProperty("", "aa");
+        assertThrows(IllegalArgumentException.class, () ->
+            // When
+            testedStore.updateProperty("", "aa"));
     }
     
     /** TDD. */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void updateKOInvalidValue() {
-        // Given
-        testedStore.createProperty(new PropertyLogLevel("updateKOInvalidValue", LogLevel.ERROR));
-        // When
-        testedStore.updateProperty("updateKOInvalidValue", "KO");
+        assertThrows(IllegalArgumentException.class, () -> {
+            // Given
+            testedStore.createProperty(new PropertyLogLevel("updateKOInvalidValue", LogLevel.ERROR));
+            // When
+            testedStore.updateProperty("updateKOInvalidValue", "KO");
+        });
     }
     
     /** TDD. */
@@ -285,7 +306,7 @@ public abstract class PropertyStoreTestSupport {
         // When
         testedStore.updateProperty(UPDATE_OK, "INFO");
         // Then
-        Assert.assertEquals(LogLevel.INFO, testedStore.readProperty(UPDATE_OK).getValue());
+        Assertions.assertEquals(LogLevel.INFO, testedStore.readProperty(UPDATE_OK).getValue());
     }
     
     /** TDD. */
@@ -297,32 +318,36 @@ public abstract class PropertyStoreTestSupport {
         PropertyLogLevel pll = new PropertyLogLevel("logX", LogLevel.INFO);
         testedStore.updateProperty(pll);
         // Then
-        Assert.assertEquals(LogLevel.INFO, testedStore.readProperty("logX").getValue());
+        Assertions.assertEquals(LogLevel.INFO, testedStore.readProperty("logX").getValue());
     }
     
     // ------------------ delete -------------------- 
 
     /** TDD. */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void deleteKOnull() {
-        // When
-        testedStore.deleteProperty(null);
+        assertThrows(IllegalArgumentException.class, () ->
+            // When
+            testedStore.deleteProperty(null));
     }
     
     /** TDD. */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void deleteKOempty() {
-        // When
-        testedStore.deleteProperty("");
+        assertThrows(IllegalArgumentException.class, () ->
+            // When
+            testedStore.deleteProperty(""));
     }
     
     /** TDD. */
-    @Test(expected = PropertyNotFoundException.class)
+    @Test
     public void deleteKOdoesnotexist() {
-        // Given
-        Assert.assertFalse(testedStore.existProperty(INVALID));
-        // When
-        testedStore.deleteProperty(INVALID);
+        assertThrows(PropertyNotFoundException.class, () -> {
+            // Given
+            Assertions.assertFalse(testedStore.existProperty(INVALID));
+            // When
+            testedStore.deleteProperty(INVALID);
+        });
     }
     
     /** TDD. */
@@ -330,25 +355,25 @@ public abstract class PropertyStoreTestSupport {
     public void deleteOK() {
         // Given
         testedStore.createProperty(new PropertyString(DELETE_OK, "ff4j"));
-        Assert.assertTrue(testedStore.existProperty(DELETE_OK));
+        Assertions.assertTrue(testedStore.existProperty(DELETE_OK));
         // When
         testedStore.deleteProperty(DELETE_OK);
         // Then
-        Assert.assertFalse(testedStore.existProperty(DELETE_OK));
+        Assertions.assertFalse(testedStore.existProperty(DELETE_OK));
     }
     
     @Test
     public void existfilled() {
         // When-Then
-        Assert.assertTrue(testedStore.existProperty("a"));
-        Assert.assertFalse(testedStore.existProperty("koala"));
+        Assertions.assertTrue(testedStore.existProperty("a"));
+        Assertions.assertFalse(testedStore.existProperty("koala"));
     }
     
     @Test
     public void valueFixed() {
         // When-Then
-        Assert.assertTrue(testedStore.existProperty("a"));
-        Assert.assertEquals("AMER", testedStore.readProperty("a").getValue());
+        Assertions.assertTrue(testedStore.existProperty("a"));
+        Assertions.assertEquals("AMER", testedStore.readProperty("a").getValue());
     }
     
     /** TDD. */
@@ -357,32 +382,32 @@ public abstract class PropertyStoreTestSupport {
         // Given, When
         Set< String > proNames = testedStore.listPropertyNames();
         // Then
-        Assert.assertTrue(proNames.contains("a"));
+        Assertions.assertTrue(proNames.contains("a"));
     }
     
     /** TDD. */
     @Test
     public void readAllProperties() {
         // Given
-        Assert.assertNotNull(testedStore);
+        Assertions.assertNotNull(testedStore);
         // When
         Map <String, Property<?>> mapsOf = testedStore.readAllProperties();
         // When
-        Assert.assertTrue(mapsOf.containsKey("a"));
-        Assert.assertTrue(mapsOf.containsKey("b"));
+        Assertions.assertTrue(mapsOf.containsKey("a"));
+        Assertions.assertTrue(mapsOf.containsKey("b"));
     }
     
     /** TDD. */
     @Test
     public void clear() {
         // Given
-        Assert.assertNotNull(testedStore);
+        Assertions.assertNotNull(testedStore);
         Map <String, Property<?>> before = testedStore.readAllProperties();
-        Assert.assertFalse(before.isEmpty());
+        Assertions.assertFalse(before.isEmpty());
         // When
         testedStore.clear();
         // Then
-        Assert.assertTrue(testedStore.readAllProperties().isEmpty());
+        Assertions.assertTrue(testedStore.readAllProperties().isEmpty());
         
         /// Reinit
         for (Map.Entry<String,Property<?>> pName : before.entrySet()) {

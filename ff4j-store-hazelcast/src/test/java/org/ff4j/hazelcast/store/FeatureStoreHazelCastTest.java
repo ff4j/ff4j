@@ -24,7 +24,7 @@ package org.ff4j.hazelcast.store;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.FeatureStoreJCache;
 import org.ff4j.test.store.FeatureStoreTestSupport;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 
 /**
  * Test to work with Redis as a store.
@@ -35,7 +35,7 @@ public class FeatureStoreHazelCastTest extends FeatureStoreTestSupport {
 
     private static FeatureStoreJCache featureStoreHazelCast;
 
-    @BeforeClass
+    @BeforeAll
     public static void setupHazelcast(){
         featureStoreHazelCast = new FeatureStoreHazelCast();
         featureStoreHazelCast.importFeaturesFromXmlFile("ff4j.xml");

@@ -21,9 +21,9 @@ package org.ff4j.dynamodb.property;
  */
 
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 /**
@@ -32,19 +32,19 @@ import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
  * @author <a href="mailto:jeromevdl@gmail.com">Jerome VAN DER LINDEN</a>
  */
 // Needs an AWS environment, not available in Travis, this is why it is ignored
-@Ignore
+@Disabled
 public class PropertyStoreDynamoDBIT extends PropertyStoreTestSupport {
 
     private static PropertyStoreDynamoDB store;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         DynamoDbClient dynamoDB = DynamoDbClient.create();
         store = new PropertyStoreDynamoDB(dynamoDB);
         store.importPropertiesFromXmlFile("test-ff4j-features.xml");
     }
 
-    @AfterClass
+    @AfterAll
     public static void clean() {
        store.clear();
     }

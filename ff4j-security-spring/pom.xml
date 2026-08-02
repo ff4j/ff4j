@@ -47,11 +47,6 @@
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-config</artifactId>
     </dependency>
-    <!-- test -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
@@ -62,6 +57,11 @@
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
+  <dependency>
+   <groupId>org.junit.jupiter</groupId>
+   <artifactId>junit-jupiter</artifactId>
+   <scope>test</scope>
+  </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>

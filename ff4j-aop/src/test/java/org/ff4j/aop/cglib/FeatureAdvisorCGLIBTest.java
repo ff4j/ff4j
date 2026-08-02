@@ -25,18 +25,24 @@ import org.ff4j.aop.test.goodbye.GoodbyeService;
 import org.ff4j.aop.test.greeting.GreetingService;
 import org.ff4j.aop.test.wholeclass.WholeClassFlipping;
 import org.ff4j.spring.namespace.FF4jNameSpaceConstants;
-import org.junit.*;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.lang.reflect.Constructor;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.lang.reflect.InvocationTargetException;
+
 @ActiveProfiles("cglib")
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration("classpath:applicationContext-ff4j-aop-test.xml")
 public class FeatureAdvisorCGLIBTest {
 
@@ -55,7 +61,7 @@ public class FeatureAdvisorCGLIBTest {
     @Qualifier("whole.english")
     private WholeClassFlipping wholeClassFlipping;
 
-    @Before
+    @BeforeEach
     public void createFeatures() {
         if (!ff4j.exist("language-english")) {
             ff4j.createFeature("language-english");
@@ -65,73 +71,77 @@ public class FeatureAdvisorCGLIBTest {
         }
     }
 
-    @After
+    @AfterEach
     public void disableFeatures() {
         ff4j.disable("language-french");
         ff4j.disable("language-english");
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testAnnotatedFlippingwithalterBean() {
         ff4j.disable("language-french");
-        Assert.assertTrue(greeting.sayHello("CLU").startsWith("Hello"));
+        Assertions.assertTrue(greeting.sayHello("CLU").startsWith("Hello"));
 
         ff4j.enable("language-french");
-        Assert.assertTrue("Service did not flipped", greeting.sayHello("CLU").startsWith("Bonjour"));
+        Assertions.assertTrue(greeting.sayHello("CLU").startsWith("Bonjour"), "Service did not flipped");
     }
 
-    @Test
-    @Ignore
+    @org.junit.jupiter.api.Test
+    @Disabled
     public void testAnnotatedFlippingwithalterClazz() {
-        Assert.assertTrue(greeting.sayHelloWithClass("CLU").startsWith("Hi"));
+        Assertions.assertTrue(greeting.sayHelloWithClass("CLU").startsWith("Hi"));
         ff4j.enable("language-french");
-        Assert.assertTrue("Service did not flipped", greeting.sayHelloWithClass("CLU").startsWith("Salut"));
+        Assertions.assertTrue(greeting.sayHelloWithClass("CLU").startsWith("Salut"), "Service did not flipped");
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testAnnotatedFlippingifqualifiedimplementationisnotthefirstclassqualifiednameinnaturalordering() {
-        Assert.assertTrue(goodbye.sayGoodbye("CLU").startsWith("Au revoir"));
+        Assertions.assertTrue(goodbye.sayGoodbye("CLU").startsWith("Au revoir"));
         ff4j.enable("language-english");
-        Assert.assertTrue("Service did not flipped", goodbye.sayGoodbye("CLU").startsWith("Goodbye"));
+        Assertions.assertTrue(goodbye.sayGoodbye("CLU").startsWith("Goodbye"), "Service did not flipped");
     }
 
-    @Test
-    @Ignore
+    @org.junit.jupiter.api.Test
+    @Disabled
     public void testAnnotatedFlippingwithalterClazzifqualifiedimplementationisnotthefirstclassqualifiednameinnaturalordering() {
-        Assert.assertTrue(goodbye.sayGoodbyeWithClass("CLU").startsWith("A plus"));
+        Assertions.assertTrue(goodbye.sayGoodbyeWithClass("CLU").startsWith("A plus"));
         ff4j.enable("language-english");
-        Assert.assertTrue("Service did not flipped", goodbye.sayGoodbyeWithClass("CLU").startsWith("See you"));
+        Assertions.assertTrue(goodbye.sayGoodbyeWithClass("CLU").startsWith("See you"), "Service did not flipped");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @org.junit.jupiter.api.Test
     public void testAlterBeanInvokeThrowInvocationTargetExceptionNull() throws Exception {
-        ff4j.enable("language-english");
-        goodbye.sayGoodbyeInvocationTargetExceptionNull();
+        assertThrows(IllegalArgumentException.class, () -> {
+            ff4j.enable("language-english");
+            goodbye.sayGoodbyeInvocationTargetExceptionNull();
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @org.junit.jupiter.api.Test
     public void testAlterClazzInvokeThrowInvocationTargetExceptionNull() throws InvocationTargetException {
-        ff4j.enable("language-english");
-        goodbye.sayGoodbyeWithClassInvocationTargetExceptionNull();
+        assertThrows(IllegalArgumentException.class, () -> {
+            ff4j.enable("language-english");
+            goodbye.sayGoodbyeWithClassInvocationTargetExceptionNull();
+        });
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testNamespace() throws Exception {
         Constructor<FF4jNameSpaceConstants> c = FF4jNameSpaceConstants.class.getDeclaredConstructor();
         c.setAccessible(true);
-        Assert.assertNotNull(c.newInstance());
+        Assertions.assertNotNull(c.newInstance());
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testWholeClassFlipping() {
         // Given english mode
-        Assert.assertTrue(wholeClassFlipping.hello1().startsWith("Hello"));
-        Assert.assertTrue(wholeClassFlipping.hello2().startsWith("Big"));
+        Assertions.assertTrue(wholeClassFlipping.hello1().startsWith("Hello"));
+        Assertions.assertTrue(wholeClassFlipping.hello2().startsWith("Big"));
         // when
         ff4j.enable("language-french");
         // Then
-        Assert.assertTrue(wholeClassFlipping.hello1().startsWith("Francais"));
-        Assert.assertTrue(wholeClassFlipping.hello2().startsWith("Tour"));
+        Assertions.assertTrue(wholeClassFlipping.hello1().startsWith("Francais"));
+        Assertions.assertTrue(wholeClassFlipping.hello2().startsWith("Tour"));
 
     }
 }

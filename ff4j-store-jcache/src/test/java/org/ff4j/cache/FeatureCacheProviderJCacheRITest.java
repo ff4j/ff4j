@@ -20,13 +20,15 @@ package org.ff4j.cache;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.ff4j.core.Feature;
 import org.ff4j.property.PropertyString;
 
 import org.ff4j.test.cache.AbstractCacheManagerJUnitTest;
 import org.jsr107.ri.spi.RICachingProvider;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cache manager.
@@ -44,55 +46,61 @@ public class FeatureCacheProviderJCacheRITest extends AbstractCacheManagerJUnitT
     public void testCacheManagerProperties() {
         // Given
         FF4jJCacheManager fcm= new FF4jJCacheManager(RICachingProvider.class.getName());
-        Assert.assertNotNull(fcm.getCacheProviderName());
-        Assert.assertNotNull(fcm.getNativeCache());
-        Assert.assertNotNull(fcm.getPropertyNativeCache());
+        Assertions.assertNotNull(fcm.getCacheProviderName());
+        Assertions.assertNotNull(fcm.getNativeCache());
+        Assertions.assertNotNull(fcm.getPropertyNativeCache());
         // When
         fcm.putProperty(new PropertyString("p1", "v1"));
         // Then
-        Assert.assertNotNull(fcm.getProperty("p1"));
-        Assert.assertTrue(fcm.listCachedPropertyNames().contains("p1"));
+        Assertions.assertNotNull(fcm.getProperty("p1"));
+        Assertions.assertTrue(fcm.listCachedPropertyNames().contains("p1"));
         // When 
         fcm.evictProperty("p1");
         fcm.evictProperty("p2");
         // Then
-        Assert.assertNull(fcm.getProperty("p1"));
+        Assertions.assertNull(fcm.getProperty("p1"));
     }
     
     @Test
     public void testCacheManagerFeatures() {
         // Given
         FF4jJCacheManager fcm= new FF4jJCacheManager(RICachingProvider.class.getName());
-        Assert.assertNotNull(fcm.getFeatureNativeCache());
+        Assertions.assertNotNull(fcm.getFeatureNativeCache());
         // When
         fcm.putFeature(new Feature("f1", true));
         // Then
-        Assert.assertNotNull(fcm.getFeature("f1"));
-        Assert.assertTrue(fcm.listCachedFeatureNames().contains("f1"));
+        Assertions.assertNotNull(fcm.getFeature("f1"));
+        Assertions.assertTrue(fcm.listCachedFeatureNames().contains("f1"));
         // When 
         fcm.evictFeature("f1");
         // Then
-        Assert.assertNull(fcm.getFeature("p1"));
+        Assertions.assertNull(fcm.getFeature("p1"));
         // When
         fcm.setFeaturesCache(fcm.getFeaturesCache());
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCacheManagerNotInitialized() {
-        FF4jJCacheManager fcm= new FF4jJCacheManager();
-        fcm.createCacheForFeatures();
+        assertThrows(IllegalArgumentException.class, () -> {
+            FF4jJCacheManager fcm = new FF4jJCacheManager();
+            fcm.createCacheForFeatures();
+        });
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCacheManagerNotInitializedBis() {
-        FF4jJCacheManager fcm= new FF4jJCacheManager();
-        fcm.createCacheForProperties();
+        assertThrows(IllegalArgumentException.class, () -> {
+            FF4jJCacheManager fcm = new FF4jJCacheManager();
+            fcm.createCacheForProperties();
+        });
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCacheManagerNotInitializedNative() {
-        FF4jJCacheManager fcm = new FF4jJCacheManager();
-        fcm.getNativeCache();
+        assertThrows(IllegalArgumentException.class, () -> {
+            FF4jJCacheManager fcm = new FF4jJCacheManager();
+            fcm.getNativeCache();
+        });
     }
 
 }

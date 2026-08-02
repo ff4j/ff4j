@@ -20,14 +20,18 @@ package org.ff4j.test.store;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.ff4j.cache.FF4JCacheManager;
 import org.ff4j.cache.InMemoryCacheManager;
 import org.ff4j.core.FeatureStore;
+import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.store.PropertyStore;
+import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.test.cache.AbstractCacheManagerJUnitTest;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Enhance code coverage in limit use cases.
@@ -59,7 +63,7 @@ public class AbstractCacheManagerTest {
         ac.clean();
         ac.testEvictFeatureNotExist();
         ac.clean();
-        Assert.assertNotNull(ac);
+        Assertions.assertNotNull(ac);
     }
     
     @Test
@@ -67,7 +71,7 @@ public class AbstractCacheManagerTest {
         // enhance coverage by not throwing exception on java method
         PropertyStoreTestSupport ps = new PropertyStoreTestSupport() {
             protected PropertyStore initPropertyStore() {
-                return new MockPropertyStore();
+                return new InMemoryPropertyStore("test-ff4j-features.xml");
             }
         };
         ps.setUp();
@@ -90,7 +94,7 @@ public class AbstractCacheManagerTest {
         ps.updateKOPropertyNotFound();
         ps.updateKOInvalidValue();
         ps.updateKONullBis();
-        Assert.assertNotNull(ps);
+        Assertions.assertNotNull(ps);
     }
     
     @Test
@@ -98,7 +102,7 @@ public class AbstractCacheManagerTest {
         // enhance coverage by not throwing exception on java method
         FeatureStoreTestSupport ps = new FeatureStoreTestSupport() {
             protected FeatureStore initStore() {
-                return new MockFeatureStore();
+                return new InMemoryFeatureStore("test-ff4j-features.xml");
             }
         };
         ps.setUp();
@@ -155,17 +159,19 @@ public class AbstractCacheManagerTest {
         ps.testRemoveFromGroupDoesNotExist();
         ps.testRemoveFromGroupFeatureDoeNotExist();
         ps.testClear();
-        Assert.assertNotNull(ps);
+        Assertions.assertNotNull(ps);
     }
     
-    @Test(expected = AssertionError.class)
+    @Test
     public void testError() throws Exception {
-        FeatureStoreTestSupport ps = new FeatureStoreTestSupport() {
-            protected FeatureStore initStore() {
-                return new MockFeatureStore();
-            }
-        };
-        ps.setUp();
-        ps.testUpdateEditPropertyValue();
+        assertThrows(AssertionError.class, () -> {
+            FeatureStoreTestSupport ps = new FeatureStoreTestSupport() {
+                protected FeatureStore initStore() {
+                    return new MockFeatureStore();
+                }
+            };
+            ps.setUp();
+            ps.testUpdateEditPropertyValue();
+        });
     }
 }

@@ -20,6 +20,8 @@ package org.ff4j.test.cache;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -36,8 +38,8 @@ import org.ff4j.property.Property;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.store.InMemoryFeatureStore;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class CacheProxyWithPollingTest {
     
@@ -57,12 +59,12 @@ public class CacheProxyWithPollingTest {
         // When (Remove something)
         fs.delete("AwesomeFeature");
         // Then (Proxy is not yet refresh)
-        Assert.assertTrue(proxy.exist("AwesomeFeature"));
+        Assertions.assertTrue(proxy.exist("AwesomeFeature"));
         
         // When (wait for cache refresh)
         Thread.sleep(200);
         // Then (also delete in cache si Cache is refreshed)
-        Assert.assertFalse(proxy.exist("AwesomeFeature"));
+        Assertions.assertFalse(proxy.exist("AwesomeFeature"));
         
         Store2CachePollingScheduler scheduler = proxy.getStore2CachePoller();
         scheduler.setInitialDelay(scheduler.getInitialDelay());
@@ -73,16 +75,20 @@ public class CacheProxyWithPollingTest {
     }
     
     
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testStartCacheProxy() {
-        FF4jCacheProxy proxy = new FF4jCacheProxy();
-        proxy.startPolling(100);
+        assertThrows(IllegalStateException.class, () -> {
+            FF4jCacheProxy proxy = new FF4jCacheProxy();
+            proxy.startPolling(100);
+        });
     }
     
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testStopCacheProxy() {
-        FF4jCacheProxy proxy = new FF4jCacheProxy();
-        proxy.stopPolling();
+        assertThrows(IllegalStateException.class, () -> {
+            FF4jCacheProxy proxy = new FF4jCacheProxy();
+            proxy.stopPolling();
+        });
     }
 
 
@@ -128,7 +134,7 @@ public class CacheProxyWithPollingTest {
             List<Future<Property<?>>> fetchPropertyCalls = fetchPropertyService.invokeAll(multiplePropertyFetchCalls);
             //property should never be null
             for (Future<Property<?>> property : fetchPropertyCalls) {
-                Assert.assertNotNull(property);
+                Assertions.assertNotNull(property);
             }
 
         }

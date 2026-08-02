@@ -21,8 +21,11 @@ package org.ff4j.aop;
  */
 
 
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.stereotype.Component;
 
 
@@ -44,9 +47,10 @@ public class FeatureAdvisorBisTest {
         }
     }
 
-    @Ignore
-    @Test(expected = IllegalArgumentException.class)
+    @Disabled
+    @Test
     public void testInvalid() {
-        System.out.println("OK");
+        assertThrows(IllegalArgumentException.class, () ->
+            System.out.println("OK"));
     }
 }

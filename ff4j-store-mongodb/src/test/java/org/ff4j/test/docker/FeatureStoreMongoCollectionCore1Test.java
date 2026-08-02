@@ -26,12 +26,11 @@ import org.bson.Document;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.mongo.store.FeatureStoreMongo;
 import org.ff4j.test.store.FeatureStoreTestSupport;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
@@ -47,7 +46,7 @@ import com.mongodb.client.MongoCollection;
  *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-@Ignore
+@Disabled
 public class FeatureStoreMongoCollectionCore1Test extends FeatureStoreTestSupport {
 
     private static final int MONGO_PORT = 27017;
@@ -55,18 +54,17 @@ public class FeatureStoreMongoCollectionCore1Test extends FeatureStoreTestSuppor
     /**
      * DataBase.
      */
-    @ClassRule
     public static GenericContainer<?> mongoDBContainer = new GenericContainer<>("mongo:latest").withExposedPorts(MONGO_PORT);
 
 
-    @BeforeClass
+    @BeforeAll
     public static void startDocker() {
         mongoDBContainer = new MongoDBContainer();
         mongoDBContainer.start();
         mongoDBContainer.waitingFor(Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(180L)));
     }
 
-    @AfterClass
+    @AfterAll
     public static void stopDocker() {
         mongoDBContainer.stop();
     }
@@ -106,12 +104,12 @@ public class FeatureStoreMongoCollectionCore1Test extends FeatureStoreTestSuppor
      * LazyBSONObjectList vs BasicBSONObjectList
      */
     @Test
-    @Ignore
+    @Disabled
     public void emptyListAttributes() {
         MongoCollection<Document> features = getMongoClient().getDatabase("ff4j").getCollection("feature");
         // When
         FeatureStore mongoStore = new FeatureStoreMongo(features, "ff4j.xml");
         // Then (no error)
-        Assert.assertTrue(mongoStore.readAll().keySet().size() > 0);
+        Assertions.assertTrue(mongoStore.readAll().keySet().size() > 0);
     }
 }

@@ -20,15 +20,17 @@ package org.ff4j.test.store;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.HashMap;
 
 
 import org.ff4j.exception.FeatureAccessException;
 import org.ff4j.store.JdbcFeatureStore;
 import org.ff4j.utils.MappingUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -47,7 +49,7 @@ public class JdbcFeatureStoreTestInvalidData {
     private JdbcFeatureStore jdbcStore;
    
     /** {@inheritDoc} */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
         db = builder.
@@ -59,18 +61,20 @@ public class JdbcFeatureStoreTestInvalidData {
         jdbcStore.setDataSource(db);
     }
 
-    @Test(expected = FeatureAccessException.class)
+    @Test
     public void testReadInvalid() {
-        jdbcStore.read("forth");
+        assertThrows(FeatureAccessException.class, () ->
+            jdbcStore.read("forth"));
     }
     
-    @Test(expected = FeatureAccessException.class)
+    @Test
     public void testInvalidStrategy() {
-        MappingUtil.instanceFlippingStrategy("ID", "com.KO", new HashMap<String, String>());
+        assertThrows(FeatureAccessException.class, () ->
+            MappingUtil.instanceFlippingStrategy("ID", "com.KO", new HashMap<String, String>()));
     }
     
     /** {@inheritDoc} */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         db.shutdown();
     }

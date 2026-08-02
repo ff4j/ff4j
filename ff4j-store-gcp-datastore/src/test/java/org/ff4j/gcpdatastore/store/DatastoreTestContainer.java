@@ -26,7 +26,7 @@ import org.testcontainers.containers.wait.strategy.Wait;
 public class DatastoreTestContainer extends GenericContainer<DatastoreTestContainer> {
     private static final int PORT = 8081;
     private static final String[] COMMAND = {"gcloud", "beta", "emulators", "datastore", "start",
-            "--no-store-on-disk", "--host-port=0.0.0.0:" + PORT, "--quiet"};
+            "--no-store-on-disk", "--consistency=1.0", "--host-port=0.0.0.0:" + PORT, "--quiet"};
 
     public DatastoreTestContainer() {
         super("gcr.io/google.com/cloudsdktool/cloud-sdk:emulators");

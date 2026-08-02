@@ -22,10 +22,10 @@ package org.ff4j.test.cache;
 
 import org.ff4j.cache.FF4JCacheManager;
 import org.ff4j.core.Feature;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Cache manager.
@@ -46,13 +46,13 @@ public abstract class AbstractCacheManagerJUnitTest {
      */
     protected abstract FF4JCacheManager getCacheManager();
     
-    @Before
+    @BeforeEach
     /** Init cache. */
     public void initialize() {
         cacheManager = getCacheManager();
     }
     
-    @After
+    @AfterEach
     /** Clean cache. */
     public void clean() {
         getCacheManager().clearFeatures();
@@ -66,11 +66,11 @@ public abstract class AbstractCacheManagerJUnitTest {
     public void testPutOK() {
         // Given
         Feature ff = new Feature("ff", false, DESCRIPTION);
-        Assert.assertFalse(getCacheManager().listCachedFeatureNames().contains(ff.getUid()));
+        Assertions.assertFalse(getCacheManager().listCachedFeatureNames().contains(ff.getUid()));
         // When
         getCacheManager().putFeature(ff);
         // Then
-        Assert.assertTrue(getCacheManager().listCachedFeatureNames().contains(ff.getUid()));
+        Assertions.assertTrue(getCacheManager().listCachedFeatureNames().contains(ff.getUid()));
     }
     
     /**
@@ -79,12 +79,12 @@ public abstract class AbstractCacheManagerJUnitTest {
     @Test
     public void testPutSeveral() {
         // Given
-        Assert.assertTrue(getCacheManager().listCachedFeatureNames().isEmpty());
+        Assertions.assertTrue(getCacheManager().listCachedFeatureNames().isEmpty());
         // When
         getCacheManager().putFeature(new Feature("ff", false, DESCRIPTION));
         getCacheManager().putFeature(new Feature("ff2", false, DESCRIPTION));
         // Then
-        Assert.assertEquals(2, getCacheManager().listCachedFeatureNames().size());
+        Assertions.assertEquals(2, getCacheManager().listCachedFeatureNames().size());
     }
    
     /**
@@ -93,13 +93,13 @@ public abstract class AbstractCacheManagerJUnitTest {
     @Test
     public void testPutAvoidDoublon() {
         // Given
-        Assert.assertTrue(getCacheManager().listCachedFeatureNames().isEmpty());
+        Assertions.assertTrue(getCacheManager().listCachedFeatureNames().isEmpty());
         // When
         getCacheManager().putFeature(new Feature("ff", false, DESCRIPTION));
         getCacheManager().putFeature(new Feature("ff", false, DESCRIPTION));
         getCacheManager().putFeature(new Feature("ff2", false, DESCRIPTION));
         // Then
-        Assert.assertEquals(2, getCacheManager().listCachedFeatureNames().size());
+        Assertions.assertEquals(2, getCacheManager().listCachedFeatureNames().size());
     }
     
     /**
@@ -109,11 +109,11 @@ public abstract class AbstractCacheManagerJUnitTest {
     public void testEvictOK() {
         // Given
         getCacheManager().putFeature(new Feature("ff", false, DESCRIPTION));
-        Assert.assertTrue(getCacheManager().listCachedFeatureNames().contains("ff"));
+        Assertions.assertTrue(getCacheManager().listCachedFeatureNames().contains("ff"));
         // When
         getCacheManager().evictFeature("ff");
         // Then
-        Assert.assertFalse(getCacheManager().listCachedFeatureNames().contains("ff"));
+        Assertions.assertFalse(getCacheManager().listCachedFeatureNames().contains("ff"));
     }
     
     /**
@@ -122,7 +122,7 @@ public abstract class AbstractCacheManagerJUnitTest {
     @Test
     public void testEvictFeatureNotExist() {
         // Given
-        Assert.assertFalse(getCacheManager().listCachedFeatureNames().contains("ff"));
+        Assertions.assertFalse(getCacheManager().listCachedFeatureNames().contains("ff"));
         // When
         getCacheManager().evictFeature("ff");
         // Then
@@ -138,11 +138,11 @@ public abstract class AbstractCacheManagerJUnitTest {
         getCacheManager().putFeature(new Feature("ff", false, DESCRIPTION));
         getCacheManager().putFeature(new Feature("ff2", false, DESCRIPTION));
         getCacheManager().putFeature(new Feature("ff3", false, DESCRIPTION));
-        Assert.assertEquals(3, getCacheManager().listCachedFeatureNames().size());
+        Assertions.assertEquals(3, getCacheManager().listCachedFeatureNames().size());
         // When
         getCacheManager().clearFeatures();
         // Then
-        Assert.assertTrue(getCacheManager().listCachedFeatureNames().isEmpty());
+        Assertions.assertTrue(getCacheManager().listCachedFeatureNames().isEmpty());
     }
 
 }

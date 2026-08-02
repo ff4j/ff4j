@@ -21,15 +21,15 @@ package org.ff4j.aop.test.noannotation;
  */
 
 import org.ff4j.FF4j;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration("classpath:applicationContext-no-annotation.xml")
 public class AopWithoutAnnotationTest {
 
@@ -43,27 +43,27 @@ public class AopWithoutAnnotationTest {
     @Test
     public void testAOP() {
         ff4j.disable("language-french");
-        Assert.assertTrue(greeting.sayHello("CLU").startsWith("Hello"));
+        Assertions.assertTrue(greeting.sayHello("CLU").startsWith("Hello"));
         ff4j.enable("language-french");
         
-        Assert.assertTrue(greeting.sayHello("CLU").startsWith("Bonjour"));
+        Assertions.assertTrue(greeting.sayHello("CLU").startsWith("Bonjour"));
         ff4j.disable("language-french");
         
-        Assert.assertTrue(greeting.sayHello("CLU").startsWith("Hello"));
+        Assertions.assertTrue(greeting.sayHello("CLU").startsWith("Hello"));
     }
     
     @Test
     public void testAOPAlterClassSpring() {
-        Assert.assertTrue(greeting.sayHelloWithClass("CLU").startsWith("Hi"));
+        Assertions.assertTrue(greeting.sayHelloWithClass("CLU").startsWith("Hi"));
         ff4j.enable("language-french");
-        Assert.assertTrue(greeting.sayHelloWithClass("CLU").startsWith("Salut"));
+        Assertions.assertTrue(greeting.sayHelloWithClass("CLU").startsWith("Salut"));
     }
     
     @Test
     public void testAOPAlterClass() {
-        Assert.assertTrue(greeting.sayHallow("CLU").startsWith("Salut"));
+        Assertions.assertTrue(greeting.sayHallow("CLU").startsWith("Salut"));
         ff4j.enable("language-german");
-        Assert.assertTrue(greeting.sayHallow("CLU").startsWith("Hallo"));
+        Assertions.assertTrue(greeting.sayHallow("CLU").startsWith("Hallo"));
     }
 
 }

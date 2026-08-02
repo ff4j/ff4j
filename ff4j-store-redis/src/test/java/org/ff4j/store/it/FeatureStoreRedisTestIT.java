@@ -26,15 +26,15 @@ import org.ff4j.core.Feature;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.FeatureStoreRedis;
 import org.ff4j.test.store.FeatureStoreTestSupport;
-import org.junit.After;
-import org.junit.Ignore;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 
 /**
  * Test to work with Redis as a store.
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-@Ignore
+@Disabled
 public class FeatureStoreRedisTestIT extends FeatureStoreTestSupport {
    
     /** {@inheritDoc} */
@@ -48,7 +48,7 @@ public class FeatureStoreRedisTestIT extends FeatureStoreTestSupport {
     /**
      * Clean store after each test (avoid duplication)
      */
-    @After
+    @AfterEach
     public void cleanStore() {
         Map < String, Feature > f = testedStore.readAll();
         for (String key : f.keySet()) {

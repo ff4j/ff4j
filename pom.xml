@@ -79,62 +79,62 @@
     <version.aopalliance>1.0</version.aopalliance>
     <version.assertj>3.27.7</version.assertj>
     <version.cglib>3.3.0</version.cglib>
-    <version.commons-cli>1.7.0</version.commons-cli>
-    <version.commons-dbcp2>2.12.0</version.commons-dbcp2>
-    <version.commons-io>2.16.1</version.commons-io>
-    <version.commons-lang3>3.18.0</version.commons-lang3>
-    <version.gson>2.10.1</version.gson>
-    <version.gson-extras>1.2.0</version.gson-extras>
-    <version.httpclient5>5.2.2</version.httpclient5>
-    <version.ignite-core>2.16.0</version.ignite-core>
-    <version.jacoco>0.8.12</version.jacoco>
-    <version.jackson>2.17.0</version.jackson>
-    <version.jakarta.servlet-api>6.0.0</version.jakarta.servlet-api>
-    <version.jansi>2.4.1</version.jansi>
+    <version.commons-cli>1.11.0</version.commons-cli>
+    <version.commons-dbcp2>2.14.0</version.commons-dbcp2>
+    <version.commons-io>2.22.0</version.commons-io>
+    <version.commons-lang3>3.20.0</version.commons-lang3>
+    <version.gson>2.14.0</version.gson>
+    <version.gson-extras>1.3.0</version.gson-extras>
+    <version.httpclient5>5.6.3</version.httpclient5>
+    <version.ignite-core>2.18.0</version.ignite-core>
+    <version.jacoco>0.8.15</version.jacoco>
+    <version.jackson>2.22.1</version.jackson>
+    <!-- jackson-annotations dropped the patch digit starting with 2.20 -->
+    <version.jackson-annotations>2.22</version.jackson-annotations>
+    <version.jakarta.servlet-api>6.1.0</version.jakarta.servlet-api>
+    <version.jansi>2.4.3</version.jansi>
     <version.jakarta.annotation-api>2.1.1</version.jakarta.annotation-api>
     <version.jersey1x>1.19.4</version.jersey1x>
-    <version.jersey2x>3.1.6</version.jersey2x>
+    <version.jersey2x>3.1.12</version.jersey2x>
     <version.jakarta.ws.rs-api>3.1.0</version.jakarta.ws.rs-api>
-    <version.jetty>12.0.8</version.jetty>
+    <version.jetty>12.1.11</version.jetty>
     <version.jstl>3.0.0</version.jstl>
-    <version.junit>4.13.2</version.junit>
-    <version.logback>1.5.6</version.logback>
-    <version.lombok>1.18.32</version.lombok>
-    <version.metrics>4.2.25</version.metrics>
-    <version.mockito>5.11.0</version.mockito>
-    <version.powermock>2.0.9</version.powermock>
-    <version.slf4j>2.0.9</version.slf4j>
-    <version.snakeyaml>2.2</version.snakeyaml>
-    <version.spring-framework>6.1.6</version.spring-framework>
-    <version.spring-security>6.2.4</version.spring-security>
-    <version.swagger>1.6.14</version.swagger>
+    <version.junit>6.1.2</version.junit>
+    <version.logback>1.6.1</version.logback>
+    <version.lombok>1.18.46</version.lombok>
+    <version.metrics>4.2.39</version.metrics>
+    <version.mockito>5.23.0</version.mockito>
+    <version.slf4j>2.0.17</version.slf4j>
+    <version.snakeyaml>2.6</version.snakeyaml>
+    <version.spring-framework>6.2.19</version.spring-framework>
+    <version.spring-security>6.5.11</version.spring-security>
+    <version.swagger>1.6.16</version.swagger>
     <version.taglib>1.2.5</version.taglib>
-    <version.testcontainers>1.19.7</version.testcontainers>
+    <version.testcontainers>1.21.4</version.testcontainers>
 
-    <!-- Cannot go above for jdk 8 retrop compatibility -->
-    <version.hdldb>2.7.2</version.hdldb>
+    <!-- Pinned: next majors require code changes in the store modules -->
+    <version.hdldb>2.7.4</version.hdldb>
     <version.ehcache>3.10.8</version.ehcache>
     <version.jedis>4.4.6</version.jedis>
     <version.neo4j>2.3.12</version.neo4j>
 
     <!-- VERSIONS PLUGINS -->
-    <version.maven.plugin.compiler>3.13.0</version.maven.plugin.compiler>
-    <version.maven.plugin.dependency>3.6.1</version.maven.plugin.dependency>
-    <version.maven.plugin.failsafe>2.18.1</version.maven.plugin.failsafe>
-    <version.maven.plugin.gpg>3.2.2</version.maven.plugin.gpg>
+    <version.maven.plugin.compiler>3.15.0</version.maven.plugin.compiler>
+    <version.maven.plugin.dependency>3.11.0</version.maven.plugin.dependency>
+    <version.maven.plugin.gpg>3.2.8</version.maven.plugin.gpg>
     <version.maven.plugin.graph>1.4</version.maven.plugin.graph>
-    <version.maven.plugin.jar>3.3.0</version.maven.plugin.jar>
-    <version.maven.plugin.javadoc>3.6.3</version.maven.plugin.javadoc>
-    <version.maven.plugin.license>2.4.0</version.maven.plugin.license>
-    <version.maven.plugin.nexus>1.6.13</version.maven.plugin.nexus>
+    <version.maven.plugin.jar>3.5.1</version.maven.plugin.jar>
+    <version.maven.plugin.javadoc>3.12.0</version.maven.plugin.javadoc>
+    <version.maven.plugin.license>2.7.1</version.maven.plugin.license>
+    <version.maven.plugin.nexus>1.7.0</version.maven.plugin.nexus>
     <version.maven.plugin.redis>1.4.6</version.maven.plugin.redis>
-    <version.maven.plugin.release>3.0.1</version.maven.plugin.release>
-    <version.maven.plugin.resources>3.3.1</version.maven.plugin.resources>
+    <version.maven.plugin.release>3.3.1</version.maven.plugin.release>
+    <version.maven.plugin.resources>3.5.0</version.maven.plugin.resources>
     <version.maven.plugin.site>3.4</version.maven.plugin.site>
     <version.maven.plugin.sonar>2.2</version.maven.plugin.sonar>
     <version.maven.plugin.source>2.2.1</version.maven.plugin.source>
-    <version.maven.plugin.surefire>3.2.5</version.maven.plugin.surefire>
-    <version.enforcer>3.4.1</version.enforcer>
+    <version.maven.plugin.surefire>3.5.4</version.maven.plugin.surefire>
+    <version.enforcer>3.6.3</version.enforcer>
   </properties>
 
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -182,6 +182,13 @@
   <dependencyManagement>
     <dependencies>
       <!-- BOM -->
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${version.junit}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-framework-bom</artifactId>
@@ -314,7 +321,7 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-annotations</artifactId>
-        <version>${version.jackson}</version>
+        <version>${version.jackson-annotations}</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
@@ -462,12 +469,6 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>${version.junit}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
         <groupId>org.hsqldb</groupId>
         <artifactId>hsqldb</artifactId>
         <version>${version.hdldb}</version>
@@ -486,15 +487,9 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.powermock</groupId>
-        <artifactId>powermock-module-junit4</artifactId>
-        <version>${version.powermock}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.powermock</groupId>
-        <artifactId>powermock-api-mockito</artifactId>
-        <version>${version.powermock}</version>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>3.12.4</version>
         <scope>test</scope>
       </dependency>
       <dependency>

@@ -27,8 +27,8 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.test.store.CoreFeatureStoreTestSupport;
 import org.ff4j.utils.Util;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 
 public class FeatureStoreAuditProxyTest extends CoreFeatureStoreTestSupport {
@@ -55,7 +55,7 @@ public class FeatureStoreAuditProxyTest extends CoreFeatureStoreTestSupport {
         Feature fx1 = new Feature("fx1", true);
         Feature fx2 = new Feature("fx2", true);
         testedStore.importFeatures(Util.list(fx1, fx2));
-        Assert.assertTrue(testedStore.exist("fx1"));
+        Assertions.assertTrue(testedStore.exist("fx1"));
         testedStore.importFeatures(Util.list(fx1, fx2));
         
     }

@@ -26,12 +26,14 @@ import org.ff4j.property.PropertyLogLevel.LogLevel;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import com.netflix.config.AbstractPollingScheduler;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.netflix.config.DynamicConfiguration;
 import com.netflix.config.FixedDelayPollingScheduler;
 import com.netflix.config.PolledConfigurationSource;
@@ -45,7 +47,7 @@ public class PropertyStoreArchaiusPolledSourceTest extends PropertyStoreTestSupp
     
     private static DynamicConfiguration configuration = null;
             
-    @BeforeClass
+    @BeforeAll
     public static void initArchauis() throws InterruptedException {
      // Sample FF4J Store
         PropertyStore ff4jStore = new InMemoryPropertyStore("ff4j-properties.xml");
@@ -57,10 +59,12 @@ public class PropertyStoreArchaiusPolledSourceTest extends PropertyStoreTestSupp
         configuration = new DynamicConfiguration(ff4jSource,scheduler);
     }
     
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testPollInvalid() throws Exception {
-        PolledConfigurationSource ff4jSource = new FF4jPolledConfigurationSource();
-        ff4jSource.poll(true, null);
+        assertThrows(IllegalStateException.class, () -> {
+            PolledConfigurationSource ff4jSource = new FF4jPolledConfigurationSource();
+            ff4jSource.poll(true, null);
+        });
     }
     
     /** {@inheritDoc} */
@@ -72,7 +76,7 @@ public class PropertyStoreArchaiusPolledSourceTest extends PropertyStoreTestSupp
     /** TDD. */
     @Override
     @Test
-    @Ignore
+    @Disabled
     public void updateKOInvalidValue() {
         // Cannot through error as FixedValue are not in Commons-config.
         System.out.println("Not Supported as fixedValues are ignored");
@@ -81,7 +85,7 @@ public class PropertyStoreArchaiusPolledSourceTest extends PropertyStoreTestSupp
     /** TDD. */
     @Override
     @Test
-    @Ignore
+    @Disabled
     public void updateOKProperties() {
         System.out.println("Not Supported as all properties are String");
     }
@@ -95,10 +99,10 @@ public class PropertyStoreArchaiusPolledSourceTest extends PropertyStoreTestSupp
         // When
         Property<?> log = testedStore.readProperty(READ_OK_FIXED);
         // Then
-        Assert.assertNotNull(log);
-        Assert.assertNotNull(log.getName());
-        Assert.assertEquals(READ_OK_FIXED, log.getName());
-        Assert.assertEquals(LogLevel.ERROR.name(), log.getValue());
+        Assertions.assertNotNull(log);
+        Assertions.assertNotNull(log.getName());
+        Assertions.assertEquals(READ_OK_FIXED, log.getName());
+        Assertions.assertEquals(LogLevel.ERROR.name(), log.getValue());
     }
     
     /** TDD. */
@@ -110,7 +114,7 @@ public class PropertyStoreArchaiusPolledSourceTest extends PropertyStoreTestSupp
         // When
         testedStore.updateProperty(UPDATE_OK, "INFO");
         // Then
-        Assert.assertEquals("INFO", testedStore.readProperty(UPDATE_OK).getValue());
+        Assertions.assertEquals("INFO", testedStore.readProperty(UPDATE_OK).getValue());
     }
     
 

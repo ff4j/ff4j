@@ -29,16 +29,15 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import org.junit.Assert;
-
 import org.ff4j.FF4j;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.core.FlippingStrategy;
 import org.ff4j.security.AuthorizationsManager;
 import org.ff4j.utils.Util;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Abstract Internal Class to Test FF4J.
@@ -60,7 +59,7 @@ public abstract class AbstractFf4jTest implements TestConstantsFF4j {
     protected AssertFf4j assertFf4j = null;
 
     /** {@inheritDoc} */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         // Create MOCK
         mockAuthManager = mock(AuthorizationsManager.class);
@@ -71,7 +70,7 @@ public abstract class AbstractFf4jTest implements TestConstantsFF4j {
         
         // Create MOCK
         mockFlipStrategy = mock(FlippingStrategy.class);
-        when(mockFlipStrategy.evaluate(any(String.class), isNull(FeatureStore.class), isNull(FlippingExecutionContext.class)))
+        when(mockFlipStrategy.evaluate(any(String.class), isNull(), isNull()))
                 .thenReturn(true);
         when(mockFlipStrategy.evaluate(any(String.class), any(FeatureStore.class), any(FlippingExecutionContext.class)))
             .thenReturn(true);
@@ -92,8 +91,8 @@ public abstract class AbstractFf4jTest implements TestConstantsFF4j {
      */
     @Test
     public void testMock() throws IOException {
-        Assert.assertTrue(mockFlipStrategy.evaluate("", null, null));
-        Assert.assertEquals(mockAuthManager.getCurrentUserPermissions(),
+        Assertions.assertTrue(mockFlipStrategy.evaluate("", null, null));
+        Assertions.assertEquals(mockAuthManager.getCurrentUserPermissions(),
                 new HashSet<String>(Arrays.asList(new String[] {"ROLEA"})));
     }
 

@@ -20,6 +20,8 @@ package org.ff4j.test.property;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.io.InputStream;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,8 +33,8 @@ import org.ff4j.property.PropertyString;
 import org.ff4j.property.PropertyDate;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.store.PropertyStore;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for {@link InMemoryPropertyStore}.
@@ -51,16 +53,16 @@ public class InMemoryPropertiesStoreTest extends AbstractPropertyStoreJunitTest 
     @Test
     public void exist_filled() {
         // When-Then
-        Assert.assertTrue(testedStore.existProperty("a"));
-        Assert.assertFalse(testedStore.existProperty("k"));
+        Assertions.assertTrue(testedStore.existProperty("a"));
+        Assertions.assertFalse(testedStore.existProperty("k"));
     }
     
     /** TDD. */
     @Test
     public void valueFixed() {
         // When-Then
-        Assert.assertTrue(testedStore.existProperty("a"));
-        Assert.assertEquals("AMER", testedStore.readProperty("a").getValue());
+        Assertions.assertTrue(testedStore.existProperty("a"));
+        Assertions.assertEquals("AMER", testedStore.readProperty("a").getValue());
     }
     
     public void testProperty() {
@@ -80,7 +82,7 @@ public class InMemoryPropertiesStoreTest extends AbstractPropertyStoreJunitTest 
     public void testInheritMethods() {
         InMemoryPropertyStore ip = new InMemoryPropertyStore();
         ip.importPropertiesFromXmlFile("ff4j.xml");
-        Assert.assertNotNull(ip.toJson());
+        Assertions.assertNotNull(ip.toJson());
         ip.isEmpty();
     }
     
@@ -91,28 +93,34 @@ public class InMemoryPropertiesStoreTest extends AbstractPropertyStoreJunitTest 
         new InMemoryPropertyStore(in);
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testWithInvalidFileFailed() {
-        new InMemoryPropertyStore("");
+        assertThrows(IllegalArgumentException.class, () -> {
+            new InMemoryPropertyStore("");
+        });
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testWithInvalidFileFailed2() {
-        new InMemoryPropertyStore((String) null);
+        assertThrows(IllegalArgumentException.class, () -> {
+            new InMemoryPropertyStore((String) null);
+        });
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testInvalidXML() {
-        new InMemoryPropertyStore(new HashMap<String, Property<?>>());
-        InputStream in =  getClass().getClassLoader().getResourceAsStream("invalid.xml");
-        new InMemoryPropertyStore(in);
+        assertThrows(IllegalArgumentException.class, () -> {
+            new InMemoryPropertyStore(new HashMap<String, Property<?>>());
+            InputStream in = getClass().getClassLoader().getResourceAsStream("invalid.xml");
+            new InMemoryPropertyStore(in);
+        });
     }
 
     @Test
     public void testListProperties() {
         InMemoryPropertyStore ips = new InMemoryPropertyStore();
         ips.setProperties(null);
-        Assert.assertNull(ips.listPropertyNames());
+        Assertions.assertNull(ips.listPropertyNames());
     }
     
     @Test
@@ -120,14 +128,14 @@ public class InMemoryPropertiesStoreTest extends AbstractPropertyStoreJunitTest 
         InMemoryPropertyStore ips = new InMemoryPropertyStore();
         ips.setLocation("ff4j.xml");
         ips.setFileName("invalid.xml");
-        Assert.assertEquals("invalid.xml", ips.getFileName());
+        Assertions.assertEquals("invalid.xml", ips.getFileName());
     }
     
     @Test
     public void testEmpty() {
         // Given
         InMemoryPropertyStore ips = new InMemoryPropertyStore();
-        Assert.assertTrue(ips.isEmpty());
+        Assertions.assertTrue(ips.isEmpty());
     }
     
     @Test
@@ -135,7 +143,7 @@ public class InMemoryPropertiesStoreTest extends AbstractPropertyStoreJunitTest 
         // Given
         InMemoryPropertyStore ips = new InMemoryPropertyStore();
         ips.setProperties(null);
-        Assert.assertTrue(ips.isEmpty());
+        Assertions.assertTrue(ips.isEmpty());
     }
     
     @Test
@@ -143,19 +151,23 @@ public class InMemoryPropertiesStoreTest extends AbstractPropertyStoreJunitTest 
         // Given
         InMemoryPropertyStore ips = new InMemoryPropertyStore();
         ips.createProperty(new PropertyString("P1", "v1"));
-        Assert.assertFalse(ips.isEmpty());
+        Assertions.assertFalse(ips.isEmpty());
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testDonotImportNull() {
-        InMemoryPropertyStore f = new InMemoryPropertyStore();
-        f.importPropertiesFromXmlFile(null);
+        assertThrows(IllegalArgumentException.class, () -> {
+            InMemoryPropertyStore f = new InMemoryPropertyStore();
+            f.importPropertiesFromXmlFile(null);
+        });
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testDonotImportInvalid() {
-        InMemoryPropertyStore f = new InMemoryPropertyStore();
-        f.importPropertiesFromXmlFile("invalid.xml");
+        assertThrows(IllegalArgumentException.class, () -> {
+            InMemoryPropertyStore f = new InMemoryPropertyStore();
+            f.importPropertiesFromXmlFile("invalid.xml");
+        });
     }
     
     @Test

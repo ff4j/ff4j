@@ -24,8 +24,8 @@ package org.ff4j.test.store;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.springjdbc.store.PropertyStoreSpringJdbc;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -59,7 +59,7 @@ public class SpringJdbcPropertyStoreTest  extends PropertyStoreTestSupport {
     
     /** {@inheritDoc} */
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         db = builder.setType(EmbeddedDatabaseType.HSQL).//
@@ -69,7 +69,7 @@ public class SpringJdbcPropertyStoreTest  extends PropertyStoreTestSupport {
     }
 
     /** {@inheritDoc} */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         db.shutdown();
     }

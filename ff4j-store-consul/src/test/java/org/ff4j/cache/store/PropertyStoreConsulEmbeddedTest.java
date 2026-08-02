@@ -25,10 +25,9 @@ import org.ff4j.consul.ConsulConnection;
 import org.ff4j.consul.store.PropertyStoreConsul;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import com.orbitz.consul.Consul;
 import com.pszymczyk.consul.ConsulProcess;
 import com.pszymczyk.consul.ConsulStarterBuilder;
@@ -38,13 +37,13 @@ import com.pszymczyk.consul.ConsulStarterBuilder;
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-@Ignore
+@Disabled
 public class PropertyStoreConsulEmbeddedTest  extends PropertyStoreTestSupport {
     
     /** Initialisation of embedded consul. */
     private static ConsulProcess consulProcess;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         String customConfiguration = "{ \"datacenter\": \"test-dc\"," +                    
                     "\"log_level\": \"INFO\"," +
@@ -56,7 +55,7 @@ public class PropertyStoreConsulEmbeddedTest  extends PropertyStoreTestSupport {
                                             .build().start();    
     }
 
-    @AfterClass
+    @AfterAll
     public static void cleanup() throws Exception {
         consulProcess.close();
     }

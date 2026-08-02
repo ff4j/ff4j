@@ -23,8 +23,8 @@ package org.ff4j.test.property;
 import org.ff4j.property.store.JdbcPropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.store.JdbcQueryBuilder;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -59,7 +59,7 @@ public class JdbcPropertyStorePrefixTest  extends AbstractPropertyStoreJunitTest
     
     /** {@inheritDoc} */
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         db = builder.
@@ -69,7 +69,7 @@ public class JdbcPropertyStorePrefixTest  extends AbstractPropertyStoreJunitTest
     }
 
     /** {@inheritDoc} */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         db.shutdown();
     }

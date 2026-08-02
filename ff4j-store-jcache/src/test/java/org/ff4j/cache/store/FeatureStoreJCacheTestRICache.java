@@ -27,7 +27,7 @@ import org.ff4j.core.FeatureStore;
 import org.ff4j.store.FeatureStoreJCache;
 import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.jsr107.ri.spi.RICachingProvider;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 
 /**
  * Test to work with Redis as a store.
@@ -47,7 +47,7 @@ public class FeatureStoreJCacheTestRICache extends FeatureStoreTestSupport {
     /**
      * Clean store after each test (avoid duplication)
      */
-    @After
+    @AfterEach
     public void cleanStore() {
         Map < String, Feature > f = testedStore.readAll();
         for (String key : f.keySet()) {

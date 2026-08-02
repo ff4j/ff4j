@@ -24,8 +24,8 @@ import org.ff4j.FF4j;
 import org.ff4j.conf.XmlParser;
 import org.ff4j.core.Feature;
 import org.ff4j.store.InMemoryFeatureStore;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -36,8 +36,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test parallel operations with autocreate=true over {@link FF4j}
@@ -62,7 +62,7 @@ public class FF4j_autocreate_multithreaded_Test extends AbstractFf4jTest {
         ff4j.autoCreate();
         assertFalse(ff4j.exist("autoCreatedFeature"));
 
-        testParallel(() -> ff4j.check("autoCreatedFeature"), Assert::assertFalse);
+        testParallel(() -> ff4j.check("autoCreatedFeature"), Assertions::assertFalse);
 
         // Assertion
         assertTrue(ff4j.exist("autoCreatedFeature"));
@@ -76,7 +76,7 @@ public class FF4j_autocreate_multithreaded_Test extends AbstractFf4jTest {
         ff4j.autoCreate();
         assertFalse(ff4j.exist("autoCreatedFeature"));
 
-        testParallel(() -> ff4j.enable("autoCreatedFeature"), it-> Assert.assertEquals(it, ff4j));
+        testParallel(() -> ff4j.enable("autoCreatedFeature"), it-> Assertions.assertEquals(it, ff4j));
 
         // Assertion
         assertTrue(ff4j.exist("autoCreatedFeature"));
@@ -90,7 +90,7 @@ public class FF4j_autocreate_multithreaded_Test extends AbstractFf4jTest {
         ff4j.autoCreate();
         assertFalse(ff4j.exist("autoCreatedFeature"));
 
-        testParallel(() -> ff4j.disable("autoCreatedFeature"), it-> Assert.assertEquals(it, ff4j));
+        testParallel(() -> ff4j.disable("autoCreatedFeature"), it-> Assertions.assertEquals(it, ff4j));
 
         // Assertion
         assertFalse(ff4j.check("autoCreatedFeature"));

@@ -24,7 +24,7 @@ import org.ff4j.couchbase.CouchbaseConnection;
 import org.ff4j.couchbase.store.PropertyStoreCouchbase;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 
 /**
  * Class to TODO
@@ -32,7 +32,7 @@ import org.junit.Ignore;
  * @author Cedrick LUNVEN (@clunven)
  *
  */
-@Ignore
+@Disabled
 public class PropertyStoreCouchbaseTest extends PropertyStoreTestSupport {
 
     /** Reuse connection for tests. */

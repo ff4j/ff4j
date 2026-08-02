@@ -23,13 +23,13 @@ package org.ff4j.test.strategy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ff4j.strategy.time.ReleaseDateFlipStrategy;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-
-import static org.junit.Assert.assertEquals;
 
 
 /**

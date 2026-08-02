@@ -22,7 +22,7 @@ package org.ff4j.elastic.store;
 
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 
 /**
  * Testing property Store.
@@ -30,7 +30,7 @@ import org.junit.Ignore;
  * @author Cedrick LUNVEN (@clunven)
  * @author <a href="mailto:andre.blaszczyk@gmail.com">Andre Blaszczyk</a>
  */
-@Ignore
+@Disabled
 public class PropertyStoreElasticTest extends PropertyStoreTestSupport {
    
     /** {@inheritDoc} */

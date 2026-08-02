@@ -29,11 +29,11 @@ import org.ff4j.cli.ansi.AnsiTerminal;
 import org.ff4j.cli.ansi.AnsiTextAttribute;
 import org.ff4j.cli.util.OSSupported;
 import org.ff4j.cli.util.OSUtil;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore
+@Disabled
 public class AnsiTerminalTest {
 	
 	 @Test
@@ -53,33 +53,33 @@ public class AnsiTerminalTest {
 	@Test
 	public void testAnsi() {
 		for (AnsiBackGroundColor color : AnsiBackGroundColor.values()) {
-			Assert.assertNotNull(color.getCode());
+			Assertions.assertNotNull(color.getCode());
 		}
-		Assert.assertEquals(AnsiBackGroundColor.BLACK, AnsiBackGroundColor.valueOf("BLACK"));
+		Assertions.assertEquals(AnsiBackGroundColor.BLACK, AnsiBackGroundColor.valueOf("BLACK"));
 	}
 	
 	@Test
 	public void testAnsiFore() {
 		for (AnsiForegroundColor color : AnsiForegroundColor.values()) {
-			Assert.assertNotNull(color.getCode());
+			Assertions.assertNotNull(color.getCode());
 		}
-		Assert.assertEquals(AnsiForegroundColor.BLACK, AnsiForegroundColor.valueOf("BLACK"));
+		Assertions.assertEquals(AnsiForegroundColor.BLACK, AnsiForegroundColor.valueOf("BLACK"));
 	}	
 
 	@Test
 	public void testAnsiText() {
 		for (AnsiTextAttribute color : AnsiTextAttribute.values()) {
-			Assert.assertNotNull(color.getCode());
+			Assertions.assertNotNull(color.getCode());
 		}
-		Assert.assertEquals(AnsiTextAttribute.BOLD, AnsiTextAttribute.valueOf("BOLD"));
+		Assertions.assertEquals(AnsiTextAttribute.BOLD, AnsiTextAttribute.valueOf("BOLD"));
 	}
 	
 	@Test
 	public void testOSUtil() {
 		for (OSSupported os : OSSupported.values()) {
-			Assert.assertNotNull(os.getName());
+			Assertions.assertNotNull(os.getName());
 		}
-		Assert.assertEquals(OSSupported.WINDOWS, OSSupported.valueOf("WINDOWS"));
+		Assertions.assertEquals(OSSupported.WINDOWS, OSSupported.valueOf("WINDOWS"));
 	}
 	
 	@Test

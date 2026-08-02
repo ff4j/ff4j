@@ -25,10 +25,9 @@ import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Test;
-
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import net.sf.ehcache.Cache;
 
 /**
@@ -53,15 +52,15 @@ public class EhCacheCacheProviderBisTest extends PropertyStoreTestSupport {
     /**
      * Clear all elements
      */
-    @After
+    @AfterEach
     public void tearDown() {
         ((Cache) cache.getFeatureNativeCache()).removeAll();
     }
     
     @Test
     public void listCache() {
-        Assert.assertNotNull(cache.listCachedPropertyNames());
-        Assert.assertNotNull(cache.getPropertyNativeCache());
+        Assertions.assertNotNull(cache.listCachedPropertyNames());
+        Assertions.assertNotNull(cache.getPropertyNativeCache());
     }
         
 

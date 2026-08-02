@@ -20,6 +20,8 @@ package org.ff4j.test.cache;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.ff4j.cache.FF4jCacheProxy;
 import org.ff4j.cache.InMemoryCacheManager;
 import org.ff4j.core.Feature;
@@ -29,8 +31,8 @@ import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.test.store.CoreFeatureStoreTestSupport;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Testing class of {@link InMemoryCacheManager} class.
@@ -51,64 +53,78 @@ public class InMemoryCacheTest extends CoreFeatureStoreTestSupport {
     @Test
     public void testInitializations() {
         InMemoryCacheManager fcm = new InMemoryCacheManager();        
-        Assert.assertNotNull(fcm.getFeatureNativeCache());
-        Assert.assertNotNull(fcm.getPropertyNativeCache());
+        Assertions.assertNotNull(fcm.getFeatureNativeCache());
+        Assertions.assertNotNull(fcm.getPropertyNativeCache());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPutNullisIlegal() {
-        new InMemoryCacheManager().putFeature(null);
+        assertThrows(IllegalArgumentException.class, () ->
+            new InMemoryCacheManager().putFeature(null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPutNullisIlegal2() {
-        new InMemoryCacheManager().putFeature(null, 1);
+        assertThrows(IllegalArgumentException.class, () ->
+            new InMemoryCacheManager().putFeature(null, 1));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPutNullPropertyisIlegal() {
-        new InMemoryCacheManager().putProperty(null);
+        assertThrows(IllegalArgumentException.class, () ->
+            new InMemoryCacheManager().putProperty(null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPutNullFeatureId() {
-        Feature f = new Feature("a");
-        f.setUid(null);
-        new InMemoryCacheManager().putFeature(f);
+        assertThrows(IllegalArgumentException.class, () -> {
+            Feature f = new Feature("a");
+            f.setUid(null);
+            new InMemoryCacheManager().putFeature(f);
+        });
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPutNullFeatureId1() {
-        Feature f = new Feature("a");
-        f.setUid(null);
-        new InMemoryCacheManager().putFeature(f,1);
+        assertThrows(IllegalArgumentException.class, () -> {
+            Feature f = new Feature("a");
+            f.setUid(null);
+            new InMemoryCacheManager().putFeature(f, 1);
+        });
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPutNullPropertyName() {
-        PropertyString p = new PropertyString();
-        p.setName(null);
-        new InMemoryCacheManager().putProperty(p);
+        assertThrows(IllegalArgumentException.class, () -> {
+            PropertyString p = new PropertyString();
+            p.setName(null);
+            new InMemoryCacheManager().putProperty(p);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPutEmptyFeatureId() {
-        Feature f = new Feature("a");
-        f.setUid("");
-        new InMemoryCacheManager().putFeature(f);
+        assertThrows(IllegalArgumentException.class, () -> {
+            Feature f = new Feature("a");
+            f.setUid("");
+            new InMemoryCacheManager().putFeature(f);
+        });
     }
     
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPutEmptyPropertyName() {
-        PropertyString p = new PropertyString();
-        p.setName("");
-        new InMemoryCacheManager().putProperty(p);
+        assertThrows(IllegalArgumentException.class, () -> {
+            PropertyString p = new PropertyString();
+            p.setName("");
+            new InMemoryCacheManager().putProperty(p);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRequiredArgumentCacheManager() {
-        new FF4jCacheProxy().getCacheManager();
+        assertThrows(IllegalArgumentException.class, () ->
+            new FF4jCacheProxy().getCacheManager());
     }
 
     @Test
@@ -116,10 +132,10 @@ public class InMemoryCacheTest extends CoreFeatureStoreTestSupport {
         FF4jCacheProxy fscp = new FF4jCacheProxy(
                 new InMemoryFeatureStore("ff4j.xml"), null,  
                 new InMemoryCacheManager());
-        Assert.assertFalse(fscp.exist("toto"));
-        Assert.assertFalse(fscp.exist("toto"));
-        Assert.assertTrue(fscp.exist("first"));
-        Assert.assertTrue(fscp.exist("first"));
+        Assertions.assertFalse(fscp.exist("toto"));
+        Assertions.assertFalse(fscp.exist("toto"));
+        Assertions.assertTrue(fscp.exist("first"));
+        Assertions.assertTrue(fscp.exist("first"));
     }
     
     @Test
@@ -127,11 +143,11 @@ public class InMemoryCacheTest extends CoreFeatureStoreTestSupport {
         // Given
         InMemoryCacheManager imcm = new InMemoryCacheManager();
         imcm.putProperty(new PropertyString("p1"));
-        Assert.assertFalse(imcm.listCachedPropertyNames().isEmpty());
+        Assertions.assertFalse(imcm.listCachedPropertyNames().isEmpty());
         // When
         imcm.clearProperties();
         // Then
-        Assert.assertTrue(imcm.listCachedPropertyNames().isEmpty());
+        Assertions.assertTrue(imcm.listCachedPropertyNames().isEmpty());
     }
     
     @Test
@@ -139,11 +155,11 @@ public class InMemoryCacheTest extends CoreFeatureStoreTestSupport {
         // Given
         InMemoryCacheManager imcm = new InMemoryCacheManager();
         imcm.putProperty(new PropertyString("p1"));
-        Assert.assertFalse(imcm.listCachedPropertyNames().isEmpty());
+        Assertions.assertFalse(imcm.listCachedPropertyNames().isEmpty());
         // When
         imcm.evictProperty("p1");
         // Then
-        Assert.assertTrue(imcm.listCachedPropertyNames().isEmpty());
+        Assertions.assertTrue(imcm.listCachedPropertyNames().isEmpty());
     }
     
     @Test
@@ -151,11 +167,11 @@ public class InMemoryCacheTest extends CoreFeatureStoreTestSupport {
         // Given
         InMemoryCacheManager imcm = new InMemoryCacheManager();
         imcm.putProperty(new PropertyString("p2"));
-        Assert.assertFalse(imcm.listCachedPropertyNames().isEmpty());
+        Assertions.assertFalse(imcm.listCachedPropertyNames().isEmpty());
         // When
         imcm.evictProperty("p1");
         // Then
-        Assert.assertFalse(imcm.listCachedPropertyNames().isEmpty());
+        Assertions.assertFalse(imcm.listCachedPropertyNames().isEmpty());
     }
     
     @Test
@@ -166,7 +182,7 @@ public class InMemoryCacheTest extends CoreFeatureStoreTestSupport {
         // When
         Feature f = imcm.getFeature("f1");
         // Then
-        Assert.assertNotNull(f);
+        Assertions.assertNotNull(f);
         // When
         imcm.putFeature(new Feature("f1"), 1);
         
@@ -175,17 +191,17 @@ public class InMemoryCacheTest extends CoreFeatureStoreTestSupport {
     @Test
     public void testAccessors() {
         InMemoryCacheManager imcm = new InMemoryCacheManager();
-        Assert.assertNotNull(imcm.getCacheProviderName());
-        Assert.assertTrue(imcm.listCachedFeatureNames().isEmpty());
-        Assert.assertTrue(imcm.listCachedPropertyNames().isEmpty());
+        Assertions.assertNotNull(imcm.getCacheProviderName());
+        Assertions.assertTrue(imcm.listCachedFeatureNames().isEmpty());
+        Assertions.assertTrue(imcm.listCachedPropertyNames().isEmpty());
     }
     
     @Test
     public void testGetProperty() throws InterruptedException {
         InMemoryCacheManager imcm = new InMemoryCacheManager();
         imcm.putProperty(new PropertyString("p1"));
-        Assert.assertNull(imcm.getProperty("p2"));
-        Assert.assertNotNull(imcm.getProperty("p1"));
+        Assertions.assertNull(imcm.getProperty("p2"));
+        Assertions.assertNotNull(imcm.getProperty("p1"));
     }
 
     @Test
@@ -193,7 +209,7 @@ public class InMemoryCacheTest extends CoreFeatureStoreTestSupport {
         InMemoryCacheManager imcm = new InMemoryCacheManager();
         imcm.putFeature(new Feature("f2"), 1);
         Thread.sleep(1100);
-        Assert.assertNull(imcm.getFeature("f2"));
+        Assertions.assertNull(imcm.getFeature("f2"));
     }
     
     @Test
@@ -202,30 +218,36 @@ public class InMemoryCacheTest extends CoreFeatureStoreTestSupport {
         imcm.putProperty(new PropertyString("p1"), 1);
         imcm.putProperty(new PropertyString("p2"), 10);
         Thread.sleep(1100);
-        Assert.assertNull(imcm.getProperty("p1"));
-        Assert.assertNotNull(imcm.getProperty("p2"));
+        Assertions.assertNull(imcm.getProperty("p1"));
+        Assertions.assertNotNull(imcm.getProperty("p2"));
     }
     
-    @Test(expected = IllegalArgumentException.class)
-    public void testGetProperty2()  {
-        InMemoryCacheManager imcm = new InMemoryCacheManager();
-        imcm.putProperty(null, 1);
+    @Test
+    public void testGetProperty2() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            InMemoryCacheManager imcm = new InMemoryCacheManager();
+            imcm.putProperty(null, 1);
+        });
     }
     
-    @Test(expected = IllegalArgumentException.class)
-    public void testGetProperty3()  {
-        InMemoryCacheManager imcm = new InMemoryCacheManager();
-        PropertyString p1 = new PropertyString("p1");
-        p1.setName(null);
-        imcm.putProperty(p1, 1);
+    @Test
+    public void testGetProperty3() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            InMemoryCacheManager imcm = new InMemoryCacheManager();
+            PropertyString p1 = new PropertyString("p1");
+            p1.setName(null);
+            imcm.putProperty(p1, 1);
+        });
     }
     
-    @Test(expected = IllegalArgumentException.class)
-    public void testGetProperty4()  {
-        InMemoryCacheManager imcm = new InMemoryCacheManager();
-        PropertyString p1 = new PropertyString("p1");
-        p1.setName("");
-        imcm.putProperty(p1, 1);
+    @Test
+    public void testGetProperty4() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            InMemoryCacheManager imcm = new InMemoryCacheManager();
+            PropertyString p1 = new PropertyString("p1");
+            p1.setName("");
+            imcm.putProperty(p1, 1);
+        });
     }
    
 }

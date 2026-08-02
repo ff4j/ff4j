@@ -20,24 +20,24 @@ package org.ff4j.test.strategy.el;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import org.ff4j.strategy.el.ExpressionNode;
 import org.ff4j.strategy.el.ExpressionOperator;
 import org.ff4j.strategy.el.ExpressionParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Testing
  * 
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
-public class ExpressionParserTest extends TestCase {
+public class ExpressionParserTest {
 
     /**
      * Check Expression Parsing.
@@ -48,7 +48,7 @@ public class ExpressionParserTest extends TestCase {
      */
     private void assertNode(String expression, Map<String, Boolean> state, boolean expected) {
         ExpressionNode n = ExpressionParser.parseExpression(expression);
-        Assert.assertEquals(expected, n.evalue(state));
+        Assertions.assertEquals(expected, n.evalue(state));
     }
 
     /**
@@ -60,7 +60,7 @@ public class ExpressionParserTest extends TestCase {
      *            expression
      */
     private void assertOutPut(String expected, String input) {
-        Assert.assertEquals(expected, ExpressionParser.parseExpression(input).toString());
+        Assertions.assertEquals(expected, ExpressionParser.parseExpression(input).toString());
     }
 
     @Test
@@ -155,8 +155,8 @@ public class ExpressionParserTest extends TestCase {
     public void testDeepTree() {
         ExpressionNode n = ExpressionParser
                 .parseExpression("( (sampleA|sampleB) & (C|D|!B) & !(A|D) ) | ( (A&B&C)|(C&D)|((A|B)&D) )");
-        Assert.assertEquals(2, n.getSubNodes().size());
-        Assert.assertEquals(ExpressionOperator.OR, n.getOperator());
+        Assertions.assertEquals(2, n.getSubNodes().size());
+        Assertions.assertEquals(ExpressionOperator.OR, n.getOperator());
 
     }
 
@@ -174,8 +174,8 @@ public class ExpressionParserTest extends TestCase {
     @Test
     public void testValuesOf() {
         ExpressionOperator eo = ExpressionOperator.valueOf("OR");
-        Assert.assertNotNull(eo);
-        Assert.assertTrue(ExpressionOperator.values().length > 0);
+        Assertions.assertNotNull(eo);
+        Assertions.assertTrue(ExpressionOperator.values().length > 0);
     }
 
 }

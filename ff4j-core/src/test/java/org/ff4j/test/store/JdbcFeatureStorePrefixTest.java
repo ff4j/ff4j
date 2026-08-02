@@ -20,12 +20,14 @@ package org.ff4j.test.store;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.JdbcFeatureStore;
 import org.ff4j.store.JdbcQueryBuilder;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -55,7 +57,7 @@ public class JdbcFeatureStorePrefixTest extends CoreFeatureStoreTestSupport {
 
     /** {@inheritDoc} */
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         db = builder.setType(EmbeddedDatabaseType.HSQL).
@@ -64,13 +66,14 @@ public class JdbcFeatureStorePrefixTest extends CoreFeatureStoreTestSupport {
     }
 
     /** {@inheritDoc} */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         db.shutdown();
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRemoveFromGroupInvalidGroup() {
-        testedStore.removeFromGroup(F4, G0);
+        assertThrows(IllegalArgumentException.class, () ->
+            testedStore.removeFromGroup(F4, G0));
     }
 }

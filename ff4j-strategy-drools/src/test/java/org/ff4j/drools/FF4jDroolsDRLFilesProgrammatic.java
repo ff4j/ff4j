@@ -24,8 +24,8 @@ package org.ff4j.drools;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.utils.Util;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 
 /**
@@ -43,9 +43,9 @@ public class FF4jDroolsDRLFilesProgrammatic {
         Feature f1 = new Feature("f1", true);
         f1.setFlippingStrategy(new FF4jDroolsFlippingStrategy(Util.set("ff4jDroolsSample.drl")));
         ff4j.createFeature(f1);
-        Assert.assertTrue(ff4j.exist("f1"));
+        Assertions.assertTrue(ff4j.exist("f1"));
         // Then
-        Assert.assertTrue(ff4j.check("f1"));
+        Assertions.assertTrue(ff4j.check("f1"));
     }
     
 }

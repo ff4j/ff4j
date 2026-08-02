@@ -23,7 +23,7 @@ package org.ff4j.test.parser;
 import java.lang.reflect.Constructor;
 
 import org.ff4j.utils.MappingUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Check Constructor

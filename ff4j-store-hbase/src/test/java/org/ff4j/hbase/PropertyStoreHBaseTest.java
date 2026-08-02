@@ -23,15 +23,15 @@ package org.ff4j.hbase;
 import org.ff4j.hbase.store.PropertyStoreHBase;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * List of properties.
  * 
  * @author Cedrick LUNVEN (@clunven)
  */
-@Ignore
+@Disabled
 public class PropertyStoreHBaseTest extends PropertyStoreTestSupport {
 
     /** HBASE_HOST. */

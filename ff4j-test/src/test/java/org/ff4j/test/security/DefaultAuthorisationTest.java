@@ -22,8 +22,8 @@ package org.ff4j.test.security;
 
 
 import org.ff4j.utils.Util;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class DefaultAuthorisationTest {
     
@@ -32,16 +32,16 @@ public class DefaultAuthorisationTest {
         DefaultAuthorisationManager am = new DefaultAuthorisationManager();
         am.setAllPermissions(Util.set("a","b","c"));
         am.setCurrentUserPermissions(Util.set("b","c"));
-        Assert.assertNotNull(am.getCurrentUserPermissions());
-        Assert.assertNotNull(am.listAllPermissions());   
+        Assertions.assertNotNull(am.getCurrentUserPermissions());
+        Assertions.assertNotNull(am.listAllPermissions());   
     }
     
     @Test
     public void testDefaultSecurityManagerBis() {
         DefaultAuthorisationManager am = new DefaultAuthorisationManager(Util.set("b","c"), Util.set("a","b","c"));
-        Assert.assertNotNull(am.getCurrentUserPermissions());
-        Assert.assertNotNull(am.listAllPermissions());
-        Assert.assertNotNull(am.toJson());
+        Assertions.assertNotNull(am.getCurrentUserPermissions());
+        Assertions.assertNotNull(am.listAllPermissions());
+        Assertions.assertNotNull(am.toJson());
     }
 
 }

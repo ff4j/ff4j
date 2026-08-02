@@ -21,14 +21,14 @@ package org.ff4j.jmx.client;
  */
 
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class EventRepositoryJmxClientTest {
    
     @Test
     public void testInit() {
-        Assert.assertNotNull(new EventRepositoryJmxClient());
+        Assertions.assertNotNull(new EventRepositoryJmxClient());
     }
 
 }

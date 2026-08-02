@@ -25,8 +25,8 @@ import org.ff4j.conf.XmlParser;
 import org.ff4j.core.FlippingExecutionContext;
 import org.ff4j.strategy.el.ExpressionFlipStrategy;
 import org.ff4j.test.AssertFf4j;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link ExpressionFlipStrategy} class.
@@ -43,11 +43,11 @@ public class ExpressionFlipStategyTest {
 
     @Test
     public void testExpression() throws Exception {
-        Assert.assertNotNull(ff4j.getFeature("D"));
-        Assert.assertNotNull(ff4j.getFeature("D").getFlippingStrategy());
-        Assert.assertNotNull(ff4j.getFeature("D").getFlippingStrategy().getInitParams());
+        Assertions.assertNotNull(ff4j.getFeature("D"));
+        Assertions.assertNotNull(ff4j.getFeature("D").getFlippingStrategy());
+        Assertions.assertNotNull(ff4j.getFeature("D").getFlippingStrategy().getInitParams());
         boolean dFlipped = ff4j.check("D");
-        Assert.assertTrue(dFlipped);
+        Assertions.assertTrue(dFlipped);
     }
     
     @Test
@@ -66,15 +66,15 @@ public class ExpressionFlipStategyTest {
     public void testExplicitevaluate() {
         ExpressionFlipStrategy efs = new ExpressionFlipStrategy();
 
-        Assert.assertTrue(efs.evaluate("D", ff4j.getFeatureStore(), null));
-        Assert.assertTrue(efs.evaluate("TOTO", ff4j.getFeatureStore(), null));
+        Assertions.assertTrue(efs.evaluate("D", ff4j.getFeatureStore(), null));
+        Assertions.assertTrue(efs.evaluate("TOTO", ff4j.getFeatureStore(), null));
 
         FlippingExecutionContext fex = new FlippingExecutionContext();
         fex.putString(ExpressionFlipStrategy.PARAM_EXPRESSION, "D");
-        Assert.assertTrue(efs.evaluate("D", ff4j.getFeatureStore(), fex));
+        Assertions.assertTrue(efs.evaluate("D", ff4j.getFeatureStore(), fex));
 
         fex.putString(ExpressionFlipStrategy.PARAM_EXPRESSION, "TOTO");
-        Assert.assertFalse(efs.evaluate("D", ff4j.getFeatureStore(), fex));
+        Assertions.assertFalse(efs.evaluate("D", ff4j.getFeatureStore(), fex));
     }
 
 }

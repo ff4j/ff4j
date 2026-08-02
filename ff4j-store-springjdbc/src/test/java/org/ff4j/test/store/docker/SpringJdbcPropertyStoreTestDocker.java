@@ -25,8 +25,8 @@ import javax.sql.DataSource;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.springjdbc.store.PropertyStoreSpringJdbc;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
@@ -50,13 +50,13 @@ public class SpringJdbcPropertyStoreTestDocker extends PropertyStoreTestSupport 
      */
     private DataSource dataSource;
 
-    @BeforeClass
+    @BeforeAll
     public static void startDocker() {
         postgresContainer = new PostgreSQLContainer<>(DOCKER_POSTGRES_IMAGE);
         postgresContainer.start();
     }
 
-    @AfterClass
+    @AfterAll
     public static void stopDocker() {
         postgresContainer.stop();
     }

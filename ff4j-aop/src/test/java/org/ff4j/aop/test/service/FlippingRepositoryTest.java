@@ -21,16 +21,16 @@ package org.ff4j.aop.test.service;
  */
 
 import org.ff4j.FF4j;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration("classpath:applicationContext-ff4j-aop-test.xml")
 public class FlippingRepositoryTest {
 
@@ -48,17 +48,17 @@ public class FlippingRepositoryTest {
     public void testAOPClass() {
         // Given english mode
         System.out.println(repo.hello1());
-        Assert.assertTrue(repo.hello1().startsWith("Hello"));
-        Assert.assertTrue(repo.hello2().startsWith("Big"));
+        Assertions.assertTrue(repo.hello1().startsWith("Hello"));
+        Assertions.assertTrue(repo.hello2().startsWith("Big"));
         // when
         ff4j.enable("language-french");
         // Then
-        Assert.assertTrue(repo.hello1().startsWith("Francais"));
-        Assert.assertTrue(repo.hello2().startsWith("Tour"));
+        Assertions.assertTrue(repo.hello1().startsWith("Francais"));
+        Assertions.assertTrue(repo.hello2().startsWith("Tour"));
 
     }
 
-    @After
+    @AfterEach
     public void disable() {
         ff4j.disable("language-french");
     }

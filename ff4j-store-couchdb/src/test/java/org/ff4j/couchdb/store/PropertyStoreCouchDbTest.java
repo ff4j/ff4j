@@ -21,14 +21,14 @@ package org.ff4j.couchdb.store;
  */
 
 import org.ff4j.property.store.PropertyStore;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 
 /**
  * CouchDb Property Store Tests.
  *
  * @author Curtis White (@drizztguen77)
  */
-@Ignore
+@Disabled
 public class PropertyStoreCouchDbTest {
 
     /**

@@ -25,12 +25,14 @@ import com.google.cloud.datastore.DatastoreOptions;
 import org.ff4j.gcpdatastore.store.property.DatastorePropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.ClassRule;
 
 public class DatastorePropertyStoreTest extends PropertyStoreTestSupport {
 
-    @ClassRule
     public static DatastoreTestContainer container = new DatastoreTestContainer();
+
+    static {
+        container.start();
+    }
 
     @Override
     protected PropertyStore initPropertyStore() {

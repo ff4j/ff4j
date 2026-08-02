@@ -21,6 +21,9 @@ package org.ff4j.test.property;
  */
 
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
@@ -43,8 +46,8 @@ import org.ff4j.property.PropertyShort;
 import org.ff4j.property.PropertyString;
 import org.ff4j.property.util.PropertyJsonBean;
 import org.ff4j.utils.Util;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Basic testing of {@link PropertyString}.
@@ -59,8 +62,8 @@ public class PropertyTest {
         PropertyString p1 = new PropertyString("p1");
         p1.setReadOnly(p1.isReadOnly());
         PropertyString p2 = new PropertyString("p2", "EAST", Util.set("EAST","WEST","SOUTH","NORTH"));
-        Assert.assertNotNull(p1.getName());
-        Assert.assertNotNull(p2.getFixedValues());
+        Assertions.assertNotNull(p1.getName());
+        Assertions.assertNotNull(p2.getFixedValues());
     }
     
     @Test
@@ -69,49 +72,65 @@ public class PropertyTest {
         PropertyDouble d1 = new PropertyDouble("d1");
         PropertyDouble d2 = new PropertyDouble("d2", 1.2);
         PropertyDouble d3 = new PropertyDouble("d3", "1.3");
-        Assert.assertNotNull(d1.getName());
-        Assert.assertNotNull(d2.getFixedValues());
-        Assert.assertNotNull(d3.getName());
+        Assertions.assertNotNull(d1.getName());
+        Assertions.assertNotNull(d2.getFixedValues());
+        Assertions.assertNotNull(d3.getName());
     }
     
-    @Test(expected = InvalidPropertyTypeException.class)
+    @Test
     public void testInitPropertyDoubleInvalid() {
-        new PropertyDouble("d3", "invalid value");
+        assertThrows(InvalidPropertyTypeException.class, () -> {
+            new PropertyDouble("d3", "invalid value");
+        });
     }
     
-    @Test(expected = InvalidPropertyTypeException.class)
+    @Test
     public void testInitPropertyBigDecimalInvalid() {
-        new PropertyBigDecimal("d3", "invalid value");
+        assertThrows(InvalidPropertyTypeException.class, () -> {
+            new PropertyBigDecimal("d3", "invalid value");
+        });
     }
     
-    @Test(expected = InvalidPropertyTypeException.class)
+    @Test
     public void testInitPropertyBigIntegerInvalid() {
-        new PropertyBigInteger("d3", "invalid value");
+        assertThrows(InvalidPropertyTypeException.class, () -> {
+            new PropertyBigInteger("d3", "invalid value");
+        });
     }
     
-    @Test(expected = InvalidPropertyTypeException.class)
+    @Test
     public void testInitPropertyBooleanInvalid() {
-        new PropertyBoolean("d3", "invalid value");
+        assertThrows(InvalidPropertyTypeException.class, () -> {
+            new PropertyBoolean("d3", "invalid value");
+        });
     }
     
-    @Test(expected = InvalidPropertyTypeException.class)
+    @Test
     public void testInitPropertyFloatInvalid() {
-        new PropertyFloat("d3", "invalid value");
+        assertThrows(InvalidPropertyTypeException.class, () -> {
+            new PropertyFloat("d3", "invalid value");
+        });
     }
     
-    @Test(expected = InvalidPropertyTypeException.class)
+    @Test
     public void testInitPropertyIntInvalid() {
-        new PropertyInt("d3", "invalid value");
+        assertThrows(InvalidPropertyTypeException.class, () -> {
+            new PropertyInt("d3", "invalid value");
+        });
     }
     
-    @Test(expected = InvalidPropertyTypeException.class)
+    @Test
     public void testInitPropertyLongInvalid() {
-        new PropertyLong("d3", "invalid value");
+        assertThrows(InvalidPropertyTypeException.class, () -> {
+            new PropertyLong("d3", "invalid value");
+        });
     }
     
-    @Test(expected = InvalidPropertyTypeException.class)
+    @Test
     public void testInitPropertyShortInvalid() {
-        new PropertyShort("d3", "invalid value");
+        assertThrows(InvalidPropertyTypeException.class, () -> {
+            new PropertyShort("d3", "invalid value");
+        });
     }
     
     @Test
@@ -121,10 +140,10 @@ public class PropertyTest {
         PropertyInt d2 = new PropertyInt("d2", 1);
         PropertyInt d3 = new PropertyInt("d3", "2");
         PropertyInt d4 = new PropertyInt("d4", 2, Util.set(0,1,2));
-        Assert.assertNotNull(d1.getName());
-        Assert.assertNotNull(d2.getFixedValues());
-        Assert.assertNotNull(d3.getName());
-        Assert.assertNotNull(d4.getName());
+        Assertions.assertNotNull(d1.getName());
+        Assertions.assertNotNull(d2.getFixedValues());
+        Assertions.assertNotNull(d3.getName());
+        Assertions.assertNotNull(d4.getName());
         d4.toString();
     }
     
@@ -134,9 +153,9 @@ public class PropertyTest {
         PropertyBoolean d1 = new PropertyBoolean("d1");
         PropertyBoolean d2 = new PropertyBoolean("d2", true);
         PropertyBoolean d3 = new PropertyBoolean("d3", "false");
-        Assert.assertNotNull(d1.getName());
-        Assert.assertNotNull(d2.getFixedValues());
-        Assert.assertNotNull(d3.getName());
+        Assertions.assertNotNull(d1.getName());
+        Assertions.assertNotNull(d2.getFixedValues());
+        Assertions.assertNotNull(d3.getName());
     }
     
     @Test
@@ -145,9 +164,9 @@ public class PropertyTest {
         PropertyFloat d1 = new PropertyFloat("d1");
         PropertyFloat d2 = new PropertyFloat("d2", 1.1F);
         PropertyFloat d3 = new PropertyFloat("d3", "1.0");
-        Assert.assertNotNull(d1.getName());
-        Assert.assertNotNull(d2.getName());
-        Assert.assertNotNull(d3.getName());
+        Assertions.assertNotNull(d1.getName());
+        Assertions.assertNotNull(d2.getName());
+        Assertions.assertNotNull(d3.getName());
         d1.fromString("1.1");
     }
     
@@ -157,9 +176,9 @@ public class PropertyTest {
         PropertyLong d1 = new PropertyLong("d1");
         PropertyLong d2 = new PropertyLong("d2", 1L);
         PropertyLong d3 = new PropertyLong("d3", "1");
-        Assert.assertNotNull(d1.getName());
-        Assert.assertNotNull(d2.getName());
-        Assert.assertNotNull(d3.getName());
+        Assertions.assertNotNull(d1.getName());
+        Assertions.assertNotNull(d2.getName());
+        Assertions.assertNotNull(d3.getName());
         d1.fromString("1");
     }
     
@@ -169,9 +188,9 @@ public class PropertyTest {
         PropertyShort d1 = new PropertyShort("d1");
         PropertyShort d2 = new PropertyShort("d2", new Short("1"));
         PropertyShort d3 = new PropertyShort("d3", "2");
-        Assert.assertNotNull(d1.getName());
-        Assert.assertNotNull(d2.getFixedValues());
-        Assert.assertNotNull(d3.getName());
+        Assertions.assertNotNull(d1.getName());
+        Assertions.assertNotNull(d2.getFixedValues());
+        Assertions.assertNotNull(d3.getName());
         d1.fromString("1");
     }
     
@@ -181,9 +200,9 @@ public class PropertyTest {
         PropertyBigInteger d1 = new PropertyBigInteger("d1");
         PropertyBigInteger d2 = new PropertyBigInteger("d2", new BigInteger("1"));
         PropertyBigInteger d3 = new PropertyBigInteger("d3", "2");
-        Assert.assertNotNull(d1.getName());
-        Assert.assertNotNull(d2.getFixedValues());
-        Assert.assertNotNull(d3.getName());
+        Assertions.assertNotNull(d1.getName());
+        Assertions.assertNotNull(d2.getFixedValues());
+        Assertions.assertNotNull(d3.getName());
         d1.fromString("1");
     }
     
@@ -193,17 +212,19 @@ public class PropertyTest {
         PropertyByte d1 = new PropertyByte("d1");
         PropertyByte d2 = new PropertyByte("d2", "1");
         PropertyByte d3 = new PropertyByte("d3", new Byte((byte) 100));
-        Assert.assertNotNull(d1.getName());
-        Assert.assertNotNull(d2.getName());
-        Assert.assertNotNull(d3.getName());
+        Assertions.assertNotNull(d1.getName());
+        Assertions.assertNotNull(d2.getName());
+        Assertions.assertNotNull(d3.getName());
         d1.fromString("1");
         d1.fromString(null);
     }
     
-    @Test(expected = InvalidPropertyTypeException.class)
+    @Test
     public void tesInitPropertyByteInvalidType() {
-        PropertyByte d1 = new PropertyByte("d1");
-        d1.fromString("Invalide");
+        assertThrows(InvalidPropertyTypeException.class, () -> {
+            PropertyByte d1 = new PropertyByte("d1");
+            d1.fromString("Invalide");
+        });
     }
     
     @Test
@@ -221,9 +242,9 @@ public class PropertyTest {
         PropertyBigDecimal d1 = new PropertyBigDecimal("d1");
         PropertyBigDecimal d2 = new PropertyBigDecimal("d2", new BigDecimal("1"));
         PropertyBigDecimal d3 = new PropertyBigDecimal("d3", "2");
-        Assert.assertNotNull(d1.getName());
-        Assert.assertNotNull(d2.getFixedValues());
-        Assert.assertNotNull(d3.getName());
+        Assertions.assertNotNull(d1.getName());
+        Assertions.assertNotNull(d2.getFixedValues());
+        Assertions.assertNotNull(d3.getName());
         d1.fromString("1");
     }
     
@@ -232,12 +253,14 @@ public class PropertyTest {
         PropertyBigDecimal bd = new PropertyBigDecimal();
         bd.setValue(null);
         bd.asString();
-        Assert.assertNotNull(bd.parameterizedType());
+        Assertions.assertNotNull(bd.parameterizedType());
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPropertyString() {
-        new PropertyString("p1", "v1", Util.set("v0", "v2"));
+        assertThrows(IllegalArgumentException.class, () -> {
+            new PropertyString("p1", "v1", Util.set("v0", "v2"));
+        });
     }
     
     @Test
@@ -245,12 +268,12 @@ public class PropertyTest {
         PropertyDate d0 = new PropertyDate();
         d0.fromString("2015-01-02 13:00:00");
         PropertyDate d1 = new PropertyDate("d1");
-        Assert.assertNotNull(d1.getName());
+        Assertions.assertNotNull(d1.getName());
         PropertyDate d2 = new PropertyDate("d2", "2015-01-02 13:00:00");
-        Assert.assertNotNull(d2.getName());
+        Assertions.assertNotNull(d2.getName());
         Date dd = null;
         PropertyDate d3 = new PropertyDate("d3", dd);
-        Assert.assertNull(d3.asString());
+        Assertions.assertNull(d3.asString());
     }
     
     @Test
@@ -260,22 +283,26 @@ public class PropertyTest {
         new PropertyClass("c1");
         new PropertyClass("c2", String.class.getName());
         PropertyClass c3 = new PropertyClass("c3", String.class);
-        Assert.assertEquals(String.class.getName(), c3.asString());
+        Assertions.assertEquals(String.class.getName(), c3.asString());
         
         Class<?> cc = null;
         PropertyClass c4 = new PropertyClass("c3", cc);
-        Assert.assertNull(c4.asString());
+        Assertions.assertNull(c4.asString());
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void tesInitPropertyClass2() {
-       new PropertyClass("c3", "existPas");
+        assertThrows(IllegalArgumentException.class, () -> {
+            new PropertyClass("c3", "existPas");
+        });
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void tesInitPropertyDate2() {
-        PropertyDate d0 = new PropertyDate();
-        d0.fromString("invalid");
+        assertThrows(IllegalArgumentException.class, () -> {
+            PropertyDate d0 = new PropertyDate();
+            d0.fromString("invalid");
+        });
     }
     
     @Test
@@ -284,25 +311,27 @@ public class PropertyTest {
         PropertyCalendar d1 = new PropertyCalendar("d1");
         PropertyCalendar d2 = new PropertyCalendar("d2", "2015-01-02 13:00");
         PropertyCalendar d3 = new PropertyCalendar("d3", Calendar.getInstance());
-        Assert.assertNotNull(d1.getName());
-        Assert.assertNotNull(d2.getName());
-        Assert.assertNotNull(d3.getName());
+        Assertions.assertNotNull(d1.getName());
+        Assertions.assertNotNull(d2.getName());
+        Assertions.assertNotNull(d3.getName());
         d3.asString();
         d0.setName("d0");
         d0.fromString("2015-01-02 13:00");
         d0.setDescription("OK");
         d0.setType(PropertyCalendar.class.getName());
-        Assert.assertNotNull(d0.toJson());
+        Assertions.assertNotNull(d0.toJson());
         
         Calendar cc = null;
         PropertyCalendar d4 = new PropertyCalendar("d4", cc);
-        Assert.assertNull(d4.asString());
+        Assertions.assertNull(d4.asString());
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void tesInitPropertyCalendar2() {
-        PropertyCalendar d0 = new PropertyCalendar();
-        d0.fromString("invalid");
+        assertThrows(IllegalArgumentException.class, () -> {
+            PropertyCalendar d0 = new PropertyCalendar();
+            d0.fromString("invalid");
+        });
     }
     
     @Test
@@ -310,13 +339,13 @@ public class PropertyTest {
         PropertyString p2 = new PropertyString("p2", "EAST", Util.set("EAST","WEST","SOUTH","NORTH"));
         PropertyJsonBean jb = new PropertyJsonBean(p2);
         jb.setDescription("descs");
-        Assert.assertNotNull(jb);
-        Assert.assertNotNull(jb.getName());
-        Assert.assertNotNull(jb.getType());
-        Assert.assertNotNull(jb.getDescription());
-        Assert.assertNotNull(jb.getFixedValues());
-        Assert.assertNotNull(jb.getValue());
-        Assert.assertNotNull(jb.asProperty());
+        Assertions.assertNotNull(jb);
+        Assertions.assertNotNull(jb.getName());
+        Assertions.assertNotNull(jb.getType());
+        Assertions.assertNotNull(jb.getDescription());
+        Assertions.assertNotNull(jb.getFixedValues());
+        Assertions.assertNotNull(jb.getValue());
+        Assertions.assertNotNull(jb.asProperty());
     }
     
     @Test
@@ -326,7 +355,7 @@ public class PropertyTest {
         jb.setType(PropertyString.class.getName());
         jb.setFixedValues(Util.set("AMER", "EUROP"));
         jb.setValue("AMER");
-        Assert.assertNotNull(jb.toString());
+        Assertions.assertNotNull(jb.toString());
     }
     
     
@@ -339,7 +368,7 @@ public class PropertyTest {
         jb.addFixedValue("AMER");
         jb.addFixedValue("XRZ");
         jb.setValue("AMER");
-        Assert.assertNotNull(jb.toString());
+        Assertions.assertNotNull(jb.toString());
     }
 
     @Test
@@ -349,7 +378,7 @@ public class PropertyTest {
         jb.setType(PropertyString.class.getName());
         jb.setValue("\"value\"");
         jb.setDescription("A \"quoted\" description");
-        Assert.assertNotNull(jb.toString());
+        Assertions.assertNotNull(jb.toString());
     }
 
 }

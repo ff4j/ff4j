@@ -20,31 +20,35 @@ package org.ff4j.test.utils;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.ff4j.utils.IOUtil;
 import org.ff4j.utils.Util;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class IOUtilsTest {
     
     @Test
     public void testInit() throws Exception {
-        Assert.assertNotNull(Util.instanciatePrivate(IOUtil.class));
+        Assertions.assertNotNull(Util.instanciatePrivate(IOUtil.class));
     }
     
     @Test
     public void testResolveOK() throws Exception {
         IOUtil.setUseInetAddress(true);
         IOUtil.resolveHostName();
-        Assert.assertTrue(IOUtil.isUseInetAddress());
+        Assertions.assertTrue(IOUtil.isUseInetAddress());
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testResolveKO() throws Exception {
-        IOUtil.setUseInetAddress(false);
-        IOUtil.resolveHostName();
-        IOUtil.setUseInetAddress(true);
-        Assert.fail();
+        assertThrows(IllegalArgumentException.class, () -> {
+            IOUtil.setUseInetAddress(false);
+            IOUtil.resolveHostName();
+            IOUtil.setUseInetAddress(true);
+            Assertions.fail();
+        });
     }
 
 }

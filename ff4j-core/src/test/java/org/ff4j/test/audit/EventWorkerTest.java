@@ -35,8 +35,8 @@ import org.ff4j.audit.EventRejectedExecutionHandler;
 import org.ff4j.audit.EventWorker;
 import org.ff4j.audit.repository.EventRepository;
 import org.ff4j.audit.repository.InMemoryEventRepository;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class EventWorkerTest {
     
@@ -49,7 +49,7 @@ public class EventWorkerTest {
         // When
         ew.setName("NAME1");
         // Then
-        Assert.assertEquals("NAME1", ew.getName());
+        Assertions.assertEquals("NAME1", ew.getName());
     }
     
     @Test
@@ -71,12 +71,12 @@ public class EventWorkerTest {
         doThrow(new RuntimeException("Erreur")).when(er).saveEvent(evt);
         EventPublisher evtPublisher = new EventPublisher(er);
         evtPublisher.publish(evt);
-        Assert.assertNotNull(evt);
+        Assertions.assertNotNull(evt);
     }
     
     @Test
     public void testEventRejected() {
-        Assert.assertFalse(EventRejectedExecutionHandler.isMock());
+        Assertions.assertFalse(EventRejectedExecutionHandler.isMock());
     }
 
 }

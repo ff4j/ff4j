@@ -22,10 +22,10 @@ package org.ff4j.test.property;
 
 import org.ff4j.property.store.JdbcPropertyStore;
 import org.ff4j.property.store.PropertyStore;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -56,7 +56,7 @@ public class JdbcPropertyStoreTest  extends AbstractPropertyStoreJunitTest {
     
     /** {@inheritDoc} */
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         db = builder.setType(EmbeddedDatabaseType.HSQL).//
@@ -67,7 +67,7 @@ public class JdbcPropertyStoreTest  extends AbstractPropertyStoreJunitTest {
     }
 
     /** {@inheritDoc} */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         db.shutdown();
     }
@@ -78,7 +78,7 @@ public class JdbcPropertyStoreTest  extends AbstractPropertyStoreJunitTest {
         EmbeddedDatabase db2 = b2.setType(EmbeddedDatabaseType.HSQL).//
                 build();
         JdbcPropertyStore jdbcStore2 = new JdbcPropertyStore(db2, "ff4j.xml");
-        Assert.assertNotNull(jdbcStore2);
+        Assertions.assertNotNull(jdbcStore2);
     }
     
     @Test
@@ -87,7 +87,7 @@ public class JdbcPropertyStoreTest  extends AbstractPropertyStoreJunitTest {
         EmbeddedDatabase db2 = b2.setType(EmbeddedDatabaseType.HSQL).//
                 build();
         JdbcPropertyStore jdbcStore2 = new JdbcPropertyStore(db2, "ff4j.xml");
-        Assert.assertNotNull(jdbcStore2);
+        Assertions.assertNotNull(jdbcStore2);
     }
     
    

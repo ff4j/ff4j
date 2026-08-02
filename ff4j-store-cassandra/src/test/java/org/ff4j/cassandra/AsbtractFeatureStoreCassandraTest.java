@@ -23,8 +23,7 @@ package org.ff4j.cassandra;
 import org.ff4j.cassandra.store.FeatureStoreCassandra;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.test.store.FeatureStoreTestSupport;
-import org.junit.AfterClass;
-
+import org.junit.jupiter.api.AfterAll;
 import com.datastax.oss.driver.api.core.CqlSession;
 
 /**
@@ -49,7 +48,7 @@ public abstract class AsbtractFeatureStoreCassandraTest extends FeatureStoreTest
         return store;
     }
     
-    @AfterClass
+    @AfterAll
     public static void closeConnection() {
         cqlSession.close();
         cqlSession = null;

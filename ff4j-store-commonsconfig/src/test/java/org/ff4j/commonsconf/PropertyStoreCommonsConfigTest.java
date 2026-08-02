@@ -20,6 +20,8 @@ package org.ff4j.commonsconf;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -28,9 +30,9 @@ import org.ff4j.property.PropertyLogLevel;
 import org.ff4j.property.PropertyLogLevel.LogLevel;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * Initialize store for commons config.
@@ -53,19 +55,21 @@ public class PropertyStoreCommonsConfigTest extends PropertyStoreTestSupport {
     public void initializationOK() {
         PropertyStoreCommonsConfig psConf = new PropertyStoreCommonsConfig();
         psConf.setConfiguration(new PropertiesConfiguration());
-        Assert.assertNotNull(psConf.getConfiguration());
+        Assertions.assertNotNull(psConf.getConfiguration());
     }
     
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void initializationKO() {
-        PropertyStoreCommonsConfig psConf = new PropertyStoreCommonsConfig();
-        psConf.existProperty("toto");
+        assertThrows(IllegalStateException.class, () -> {
+            PropertyStoreCommonsConfig psConf = new PropertyStoreCommonsConfig();
+            psConf.existProperty("toto");
+        });
     }
     
     /** TDD. */
     @Override
     @Test
-    @Ignore
+    @Disabled
     public void updateKOInvalidValue() {
         // Cannot through error as FixedValue are not in Commons-config.
         System.out.println("Not Supported as fixedValues are ignored");
@@ -74,7 +78,7 @@ public class PropertyStoreCommonsConfigTest extends PropertyStoreTestSupport {
     /** TDD. */
     @Override
     @Test
-    @Ignore
+    @Disabled
     public void updateOKProperties() {
         System.out.println("Not Supported as all properties are String");
     }
@@ -88,10 +92,10 @@ public class PropertyStoreCommonsConfigTest extends PropertyStoreTestSupport {
         // When
         Property<?> log = testedStore.readProperty(READ_OK_FIXED);
         // Then
-        Assert.assertNotNull(log);
-        Assert.assertNotNull(log.getName());
-        Assert.assertEquals(READ_OK_FIXED, log.getName());
-        Assert.assertEquals(LogLevel.ERROR.name(), log.getValue());
+        Assertions.assertNotNull(log);
+        Assertions.assertNotNull(log.getName());
+        Assertions.assertEquals(READ_OK_FIXED, log.getName());
+        Assertions.assertEquals(LogLevel.ERROR.name(), log.getValue());
     }
     
     /** TDD. */
@@ -103,7 +107,7 @@ public class PropertyStoreCommonsConfigTest extends PropertyStoreTestSupport {
         // When
         testedStore.updateProperty(UPDATE_OK, "INFO");
         // Then
-        Assert.assertEquals("INFO", testedStore.readProperty(UPDATE_OK).getValue());
+        Assertions.assertEquals("INFO", testedStore.readProperty(UPDATE_OK).getValue());
     }
     
 

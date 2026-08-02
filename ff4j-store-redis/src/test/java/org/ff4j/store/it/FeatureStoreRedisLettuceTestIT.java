@@ -23,17 +23,16 @@ package org.ff4j.store.it;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.FeatureStoreRedisLettuce;
 import org.ff4j.test.store.FeatureStoreTestSupport;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Ignore;
-
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import io.lettuce.core.RedisClient;
 import redis.clients.jedis.Protocol;
 
 /**
  * Test to work with Redis as a store.
  */
-@Ignore
+@Disabled
 public class FeatureStoreRedisLettuceTestIT extends FeatureStoreTestSupport {
    
     public static RedisClient rc = RedisClient.create("redis://localhost:" + Protocol.DEFAULT_PORT);
@@ -46,7 +45,7 @@ public class FeatureStoreRedisLettuceTestIT extends FeatureStoreTestSupport {
         return redisStore;
     }
     
-    @AfterClass
+    @AfterAll
     public static void flushClient() {
         rc.shutdown();
     }
@@ -54,7 +53,7 @@ public class FeatureStoreRedisLettuceTestIT extends FeatureStoreTestSupport {
     /**
      * Clean store after each test (avoid duplication)
      */
-    @After
+    @AfterEach
     public void cleanStore() {
         testedStore.clear();
     }

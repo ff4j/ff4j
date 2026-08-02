@@ -20,6 +20,8 @@ package org.ff4j.test.utils;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.ArrayList;
 
 
@@ -40,8 +42,8 @@ import org.ff4j.utils.JdbcUtils;
 import org.ff4j.utils.JsonUtils;
 import org.ff4j.utils.MappingUtil;
 import org.ff4j.utils.Util;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 
 public class MappingUtilsTest {
@@ -73,52 +75,58 @@ public class MappingUtilsTest {
     public void testUtil() {
         Util.assertParamHasLength("toto", "tata");
         Set < String> ss = Util.set("one", "two");
-        Assert.assertNotNull(ss);
+        Assertions.assertNotNull(ss);
         Util.assertTrue(true);
         Util.assertNull(null);
     }
     
-    @Test(expected = FeatureAccessException.class)
+    @Test
     public void testIntanciateInvalidFlippingStrategy() {
-       MappingUtil.instanceFlippingStrategy("f1", "com.class.invalid", new HashMap<String, String>());
+        assertThrows(FeatureAccessException.class, () ->
+            MappingUtil.instanceFlippingStrategy("f1", "com.class.invalid", new HashMap<String, String>()));
     }
 
     @Test
     public void testInstantiateUnsafeProperty() {
-        Assert.assertThrows(FeatureAccessException.class, () -> {
-            MappingUtil.instanceFlippingStrategy("f1", "org.ff4j.test.unsafe.UnsafeProperty", new HashMap<String, String>());
-        });
-        Assert.assertEquals(0, UnsafeProperty.count);
+        Assertions.assertThrows(FeatureAccessException.class, () ->
+            MappingUtil.instanceFlippingStrategy("f1", "org.ff4j.test.unsafe.UnsafeProperty", new HashMap<String, String>()));
+        Assertions.assertEquals(0, UnsafeProperty.count);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAssert1() {
-        Util.assertTrue(false);
+        assertThrows(IllegalArgumentException.class, () ->
+            Util.assertTrue(false));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAssert3() {
-        Util.assertParamHasLength("", "tata");
+        assertThrows(IllegalArgumentException.class, () ->
+            Util.assertParamHasLength("", "tata"));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAssert4() {
-        Util.assertParamHasLength(null, "tata");
+        assertThrows(IllegalArgumentException.class, () ->
+            Util.assertParamHasLength(null, "tata"));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAssert2() {
-        Util.assertNull("");
+        assertThrows(IllegalArgumentException.class, () ->
+            Util.assertNull(""));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAssert5() {
-        Util.assertNotEmpty(null);
+        assertThrows(IllegalArgumentException.class, () ->
+            Util.assertNotEmpty(null));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAssert6() {
-        Util.assertNotEmpty(new ArrayList<String>());
+        assertThrows(IllegalArgumentException.class, () ->
+            Util.assertNotEmpty(new ArrayList<String>()));
     }
     
     @Test
@@ -135,31 +143,31 @@ public class MappingUtilsTest {
         // When
         String expression = JsonUtils.customPropertiesAsJson(props);
         // Then
-        Assert.assertNotNull(expression);
+        Assertions.assertNotNull(expression);
     }
     
     @Test
     public void testMappingPropertyToPrimitive() {
         // Primitive -> Property
-        Assert.assertEquals(PropertyInt.class.getName(), MappingUtil.mapPropertyType("int"));
-        Assert.assertEquals("unknown", MappingUtil.mapPropertyType("unknown"));
-        Assert.assertNull(MappingUtil.mapPropertyType(null));
+        Assertions.assertEquals(PropertyInt.class.getName(), MappingUtil.mapPropertyType("int"));
+        Assertions.assertEquals("unknown", MappingUtil.mapPropertyType("unknown"));
+        Assertions.assertNull(MappingUtil.mapPropertyType(null));
         
         // Property -> Primitive
-        Assert.assertEquals(PropertyInt.class.getName(), MappingUtil.mapPropertyType("int"));
+        Assertions.assertEquals(PropertyInt.class.getName(), MappingUtil.mapPropertyType("int"));
     }
     
     @Test
     public void testMapSimpleClass() {
         String className = null;
-        Assert.assertNull(MappingUtil.mapSimpleType(className));
-        Assert.assertEquals(Property.class.getName(), MappingUtil.mapSimpleType(Property.class.getName()));
-        Assert.assertEquals("long", MappingUtil.mapSimpleType(PropertyLong.class.getName()));
+        Assertions.assertNull(MappingUtil.mapSimpleType(className));
+        Assertions.assertEquals(Property.class.getName(), MappingUtil.mapSimpleType(Property.class.getName()));
+        Assertions.assertEquals("long", MappingUtil.mapSimpleType(PropertyLong.class.getName()));
         
         Class<?> classType = null;
-        Assert.assertNull(MappingUtil.mapSimpleType(classType));
-        Assert.assertEquals(Property.class.getName(), MappingUtil.mapSimpleType(Property.class));
-        Assert.assertEquals("long", MappingUtil.mapSimpleType(PropertyLong.class));
+        Assertions.assertNull(MappingUtil.mapSimpleType(classType));
+        Assertions.assertEquals(Property.class.getName(), MappingUtil.mapSimpleType(Property.class));
+        Assertions.assertEquals("long", MappingUtil.mapSimpleType(PropertyLong.class));
     }
 
 }

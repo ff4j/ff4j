@@ -26,11 +26,11 @@ import java.util.List;
 import org.ff4j.FF4j;
 import org.ff4j.conf.XmlParser;
 import org.ff4j.security.SpringSecurityAuthorisationManager;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -40,14 +40,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  * Testing security context.
  * 
  * @author clunven
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = {"classpath:*applicationContext-ff4j-security.xml"})
 public class FlipSecurityTests2 {
 
@@ -57,7 +57,7 @@ public class FlipSecurityTests2 {
     /** Security context. */
     private SecurityContext securityCtx;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         securityCtx = SecurityContextHolder.getContext();
         // Init SpringSecurity Context
@@ -76,7 +76,7 @@ public class FlipSecurityTests2 {
         ff4j.setAuthorizationsManager(new SpringSecurityAuthorisationManager());
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         SecurityContextHolder.setContext(securityCtx);
     }
@@ -85,12 +85,12 @@ public class FlipSecurityTests2 {
     public void testIsAuthenticatedAndAuthorized() {
         // check authentication
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Assert.assertTrue(auth.isAuthenticated());
+        Assertions.assertTrue(auth.isAuthenticated());
         // autorized because role ROLE_USER
-        Assert.assertTrue(ff4j.check("first"));
+        Assertions.assertTrue(ff4j.check("first"));
 
         // not autorized because bad credential
-        Assert.assertFalse(ff4j.check("third"));
+        Assertions.assertFalse(ff4j.check("third"));
 
     }
 

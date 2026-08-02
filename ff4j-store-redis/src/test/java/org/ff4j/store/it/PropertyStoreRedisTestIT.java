@@ -28,14 +28,14 @@ import org.ff4j.property.Property;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.store.PropertyStoreRedis;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.After;
-import org.junit.Ignore;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 
 /**
  * Implementatino of tests with REDIS
  * @author Cedrick Lunven (@clunven)</a>
  */
-@Ignore
+@Disabled
 public class PropertyStoreRedisTestIT extends PropertyStoreTestSupport {
 
     /** {@inheritDoc} */
@@ -48,7 +48,7 @@ public class PropertyStoreRedisTestIT extends PropertyStoreTestSupport {
     /**
      * Clean store after each test (avoid duplication)
      */
-    @After
+    @AfterEach
     public void cleanStore() {
         Map < String, Property<?> > f = testedStore.readAllProperties();
         for (String key : f.keySet()) {

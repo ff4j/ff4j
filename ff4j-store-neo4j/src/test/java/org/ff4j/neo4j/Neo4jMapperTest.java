@@ -21,12 +21,15 @@ package org.ff4j.neo4j;
  */
 
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+
 import java.util.HashMap;
 
 import org.ff4j.neo4j.mapper.Neo4jMapper;
 import org.ff4j.utils.Util;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.neo4j.graphdb.Node;
 
@@ -36,28 +39,32 @@ public class Neo4jMapperTest {
     @Test
     public void testNeo() throws Exception {
         Neo4jMapper nm = Util.instanciatePrivate(Neo4jMapper.class);
-        Assert.assertNotNull(nm);
+        Assertions.assertNotNull(nm);
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void fromNode2PropertyNoName() {
-        Node n = Mockito.mock(Node.class);
-        Mockito.when(n.getAllProperties()).thenReturn(new HashMap<String, Object>());
-        Neo4jMapper.fromNode2Property(n);
+        assertThrows(IllegalArgumentException.class, () -> {
+            Node n = Mockito.mock(Node.class);
+            Mockito.when(n.getAllProperties()).thenReturn(new HashMap<String, Object>());
+            Neo4jMapper.fromNode2Property(n);
+        });
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void fromNode2PropertyNoValue() {
-        HashMap<String, Object> properties = new HashMap<String, Object>();
-        properties.put("name", "nnn");
-        Node n = Mockito.mock(Node.class);
-        Mockito.when(n.getAllProperties()).thenReturn(properties);
-        Neo4jMapper.fromNode2Property(n);
+        assertThrows(IllegalArgumentException.class, () -> {
+            HashMap<String, Object> properties = new HashMap<String, Object>();
+            properties.put("name", "nnn");
+            Node n = Mockito.mock(Node.class);
+            Mockito.when(n.getAllProperties()).thenReturn(properties);
+            Neo4jMapper.fromNode2Property(n);
+        });
     }
     
     @Test
     public void testRelationShips() {
-        Assert.assertTrue(FF4jNeo4jRelationShips.values().length > 1);
+        Assertions.assertTrue(FF4jNeo4jRelationShips.values().length > 1);
         FF4jNeo4jRelationShips.valueOf("MEMBER_OF");
         
     }

@@ -20,6 +20,8 @@ package org.ff4j.test.cache;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,24 +36,28 @@ import org.ff4j.property.PropertyLogLevel.LogLevel;
 import org.ff4j.property.PropertyString;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.store.InMemoryFeatureStore;
-import org.junit.Assert;
 
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 
 public class CacheProxyTest {
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCacheProxyNullTriggerException() {
-        FF4jCacheProxy proxy = new FF4jCacheProxy();
-        proxy.getTargetFeatureStore();
+        assertThrows(IllegalArgumentException.class, () -> {
+            FF4jCacheProxy proxy = new FF4jCacheProxy();
+            proxy.getTargetFeatureStore();
+        });
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCacheProxyNullTriggerException2() {
-        FF4jCacheProxy proxy = new FF4jCacheProxy();
-        proxy.getTargetPropertyStore();
+        assertThrows(IllegalArgumentException.class, () -> {
+            FF4jCacheProxy proxy = new FF4jCacheProxy();
+            proxy.getTargetPropertyStore();
+        });
     }
     
     @Test
@@ -60,12 +66,12 @@ public class CacheProxyTest {
         FF4JCacheManager cm = new InMemoryCacheManager();
         proxy.setCacheManager(cm);
         proxy.isCached();
-        Assert.assertNotNull(proxy.getCacheProvider());
+        Assertions.assertNotNull(proxy.getCacheProvider());
         proxy.setTargetPropertyStore(new InMemoryPropertyStore());
-        Assert.assertEquals(0, proxy.readAllProperties().size());
+        Assertions.assertEquals(0, proxy.readAllProperties().size());
         proxy.createProperty(new PropertyString("p1", "v1"));
-        Assert.assertTrue(proxy.existProperty("p1"));
-        Assert.assertFalse(proxy.existProperty("p2"));
+        Assertions.assertTrue(proxy.existProperty("p1"));
+        Assertions.assertFalse(proxy.existProperty("p2"));
         
         proxy.setTargetFeatureStore(new InMemoryFeatureStore());
         Set < Feature> setOfFeatures = new HashSet<Feature>();
@@ -80,10 +86,10 @@ public class CacheProxyTest {
         proxy.setTargetPropertyStore(new InMemoryPropertyStore());
         proxy.setTargetFeatureStore(new InMemoryFeatureStore());
         proxy.setCacheManager(new InMemoryCacheManager());
-        Assert.assertTrue(proxy.isEmpty());
+        Assertions.assertTrue(proxy.isEmpty());
         
         proxy.create(new Feature("a"));
-        Assert.assertFalse(proxy.isEmpty());
+        Assertions.assertFalse(proxy.isEmpty());
         
         proxy.createProperty(new PropertyString("p1", "v1"));
         Property<?> p1 = proxy.readProperty("p1");
@@ -93,9 +99,9 @@ public class CacheProxyTest {
         
         proxy.updateProperty("p1", "v2");
         proxy.updateProperty(p1);
-        Assert.assertFalse(proxy.isEmpty());
+        Assertions.assertFalse(proxy.isEmpty());
         
-        Assert.assertFalse(proxy.listPropertyNames().isEmpty());
+        Assertions.assertFalse(proxy.listPropertyNames().isEmpty());
         proxy.deleteProperty("p1");
         proxy.clear();
         
@@ -121,10 +127,10 @@ public class CacheProxyTest {
     @Test
     public void testCacheProxy() {
         FF4j myFF4J = new FF4j();
-        Assert.assertNull(myFF4J.getCacheProxy());
+        Assertions.assertNull(myFF4J.getCacheProxy());
         myFF4J.setEnableAudit(true);
-        Assert.assertNull(myFF4J.getCacheProxy());
-        Assert.assertNotNull(myFF4J.getConcreteFeatureStore());
+        Assertions.assertNull(myFF4J.getCacheProxy());
+        Assertions.assertNotNull(myFF4J.getConcreteFeatureStore());
         
         
     }

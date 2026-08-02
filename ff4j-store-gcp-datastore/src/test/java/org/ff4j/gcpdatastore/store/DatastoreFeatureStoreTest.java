@@ -25,13 +25,15 @@ import com.google.cloud.datastore.DatastoreOptions;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.gcpdatastore.store.feature.DatastoreFeatureStore;
 import org.ff4j.test.store.FeatureStoreTestSupport;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DatastoreFeatureStoreTest extends FeatureStoreTestSupport {
 
-    @ClassRule
     public static DatastoreTestContainer container = new DatastoreTestContainer();
+
+    static {
+        container.start();
+    }
 
     @Override
     protected FeatureStore initStore() {

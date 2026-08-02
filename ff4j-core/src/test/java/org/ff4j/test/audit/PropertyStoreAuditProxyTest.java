@@ -25,7 +25,7 @@ import org.ff4j.audit.proxy.PropertyStoreAuditProxy;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.property.AbstractPropertyStoreJunitTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PropertyStoreAuditProxyTest extends AbstractPropertyStoreJunitTest {
 

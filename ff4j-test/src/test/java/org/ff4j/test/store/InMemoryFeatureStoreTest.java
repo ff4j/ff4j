@@ -20,9 +20,11 @@ package org.ff4j.test.store;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * All TEST LOGIC is in super class to be processed on EACH STORE.
@@ -40,21 +42,27 @@ public class InMemoryFeatureStoreTest extends FeatureStoreTestSupport {
     /**
      * TDD.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testUnitFeatureInitialization3() {
-        // Given
-        // 'invalid.xml' file does not exist.
-        new InMemoryFeatureStore("invalid.xml");
+        assertThrows(IllegalArgumentException.class, () -> {
+            // Given
+            // 'invalid.xml' file does not exist.
+            new InMemoryFeatureStore("invalid.xml");
+        });
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testWithInvalidFileFailed() {
-        new InMemoryFeatureStore("");
+        assertThrows(IllegalArgumentException.class, () -> {
+            new InMemoryFeatureStore("");
+        });
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testWithInvalidFileFailed2() {
-        new InMemoryFeatureStore((String) null);
+        assertThrows(IllegalArgumentException.class, () -> {
+            new InMemoryFeatureStore((String) null);
+        });
     }
 
 }

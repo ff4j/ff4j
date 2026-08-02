@@ -24,10 +24,10 @@ package org.ff4j.neo4j;
 import org.ff4j.neo4j.store.PropertyStoreNeo4j;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseSettings;
@@ -48,7 +48,7 @@ public class PropertyStoreNeo4jTest extends PropertyStoreTestSupport {
     /**
      * Create temporary database for each unit test.
      */
-    @BeforeClass
+    @BeforeAll
     public static void prepareTestDatabase() {
        
         // Embedded DATABASE
@@ -119,12 +119,12 @@ public class PropertyStoreNeo4jTest extends PropertyStoreTestSupport {
     
     @Test
     public void testDefaultInit() {
-        Assert.assertNotNull(new PropertyStoreNeo4j());
+        Assertions.assertNotNull(new PropertyStoreNeo4j());
         PropertyStoreNeo4j ps = new PropertyStoreNeo4j();
         ps.setGraphDb(ps.getGraphDb());
     }
    
-    @AfterClass
+    @AfterAll
     public static void destroyTestDatabase() {
         graphDb.shutdown();
     }

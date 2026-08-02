@@ -23,14 +23,14 @@ package org.ff4j.cassandra.astra;
 import java.io.File;
 
 import org.ff4j.cassandra.AsbtractFeatureStoreCassandraTest;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.config.DriverConfigLoader;
 
-@Ignore
+@Disabled
 public class FeatureStoreCassandraTestAstra extends AsbtractFeatureStoreCassandraTest {
 
     /** Logger for the class. */

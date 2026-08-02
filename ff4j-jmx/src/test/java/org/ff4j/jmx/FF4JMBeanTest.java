@@ -35,16 +35,16 @@ import javax.management.remote.JMXServiceURL;
 
 import org.ff4j.FF4j;
 import org.ff4j.test.AssertFf4j;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration("classpath:applicationContext-ff4j-jmx-test.xml")
 public class FF4JMBeanTest {
 
@@ -61,7 +61,7 @@ public class FF4JMBeanTest {
 
     private AssertFf4j assertFF4J = null;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         openJmxConnection();
         assertFF4J = new AssertFf4j(ff4j);
@@ -81,7 +81,7 @@ public class FF4JMBeanTest {
         mbServConn = jmxConnectionFactory.getMBeanServerConnection();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         closeJmxConnection();
     }
@@ -98,12 +98,12 @@ public class FF4JMBeanTest {
         ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
         @SuppressWarnings("unchecked")
         Map<String, Boolean> fs = (Map<String, Boolean>) mbServConn.getAttribute(objectName, "FeaturesStatus");
-        Assert.assertTrue(fs.containsKey("jmxEnabledFeature"));
-        Assert.assertFalse(fs.get("jmxEnabledFeature"));
-        Assert.assertTrue(fs.containsKey("jmxDisabledFeature"));
-        Assert.assertTrue(fs.get("jmxDisabledFeature"));
-        Assert.assertTrue(fs.containsKey("jmxFeatureWithAuth"));
-        Assert.assertFalse(fs.get("jmxFeatureWithAuth"));
+        Assertions.assertTrue(fs.containsKey("jmxEnabledFeature"));
+        Assertions.assertFalse(fs.get("jmxEnabledFeature"));
+        Assertions.assertTrue(fs.containsKey("jmxDisabledFeature"));
+        Assertions.assertTrue(fs.get("jmxDisabledFeature"));
+        Assertions.assertTrue(fs.containsKey("jmxFeatureWithAuth"));
+        Assertions.assertFalse(fs.get("jmxFeatureWithAuth"));
     }
 
     @Test
@@ -112,13 +112,13 @@ public class FF4JMBeanTest {
         ObjectName objectName = new ObjectName(FF4J_OBJECT_NAME);
         @SuppressWarnings("unchecked")
         Map<String, Boolean> fs = (Map<String, Boolean>) mbServConn.getAttribute(objectName, "FeaturesStatus");
-        Assert.assertTrue(fs.containsKey("jmxEnabledFeature"));
-        Assert.assertFalse(fs.get("jmxEnabledFeature"));
-        Assert.assertTrue(fs.containsKey("jmxDisabledFeature"));
-        Assert.assertTrue(fs.get("jmxDisabledFeature"));
-        Assert.assertTrue(fs.containsKey("jmxFeatureWithAuth"));
-        Assert.assertFalse(fs.get("jmxFeatureWithAuth"));
-        Assert.assertEquals(3, fs.size());
+        Assertions.assertTrue(fs.containsKey("jmxEnabledFeature"));
+        Assertions.assertFalse(fs.get("jmxEnabledFeature"));
+        Assertions.assertTrue(fs.containsKey("jmxDisabledFeature"));
+        Assertions.assertTrue(fs.get("jmxDisabledFeature"));
+        Assertions.assertTrue(fs.containsKey("jmxFeatureWithAuth"));
+        Assertions.assertFalse(fs.get("jmxFeatureWithAuth"));
+        Assertions.assertEquals(3, fs.size());
     }
 
     @Test
@@ -142,8 +142,8 @@ public class FF4JMBeanTest {
         Set<String> featureAuthRoles = (Set<String>) mbServConn.invoke(objectName, "getPermissions",
                 new Object[] {"jmxFeatureWithAuth"}, new String[] {"java.lang.String"});
 
-        Assert.assertTrue(featureAuthRoles.contains("ROLE_USER"));
-        Assert.assertTrue(featureAuthRoles.contains("ROLE_ADMIN"));
+        Assertions.assertTrue(featureAuthRoles.contains("ROLE_USER"));
+        Assertions.assertTrue(featureAuthRoles.contains("ROLE_ADMIN"));
 
         should_add_auth_role_to_feature();
         should_remove_auth_role_from_feature();
@@ -153,7 +153,7 @@ public class FF4JMBeanTest {
     public void defaultInitialisation() {
         FF4JMBean sampleBean = new FF4JMBean();
         sampleBean.setFf4j(ff4j);
-        Assert.assertNotNull(sampleBean);
+        Assertions.assertNotNull(sampleBean);
     }
 
     public void should_add_auth_role_to_feature() throws Exception {

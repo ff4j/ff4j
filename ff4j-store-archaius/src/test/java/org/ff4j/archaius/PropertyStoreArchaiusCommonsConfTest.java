@@ -20,6 +20,8 @@ package org.ff4j.archaius;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.ff4j.commonsconf.FF4jConfiguration;
 import org.ff4j.commonsconf.PropertyStoreCommonsConfig;
 import org.ff4j.property.Property;
@@ -28,9 +30,9 @@ import org.ff4j.property.PropertyLogLevel.LogLevel;
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * Initialized Archaius with a commons config (no dynamic config)
@@ -51,19 +53,21 @@ public class PropertyStoreArchaiusCommonsConfTest extends PropertyStoreTestSuppo
     public void testInitPropertyStore2() {
         PropertyStore sourceStore   = new InMemoryPropertyStore("ff4j-properties.xml");
         PropertyStore archaiusStore = new PropertyStoreArchaius(sourceStore);
-        Assert.assertTrue(archaiusStore.existProperty("a"));
+        Assertions.assertTrue(archaiusStore.existProperty("a"));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void initializationKO() {
-        PropertyStoreCommonsConfig psConf = new PropertyStoreCommonsConfig();
-        psConf.existProperty("toto");
+        assertThrows(IllegalStateException.class, () -> {
+            PropertyStoreCommonsConfig psConf = new PropertyStoreCommonsConfig();
+            psConf.existProperty("toto");
+        });
     }
     
     /** TDD. */
     @Override
     @Test
-    @Ignore
+    @Disabled
     public void updateKOInvalidValue() {
         // Cannot through error as FixedValue are not in Commons-config.
         System.out.println("Not Supported as fixedValues are ignored");
@@ -72,7 +76,7 @@ public class PropertyStoreArchaiusCommonsConfTest extends PropertyStoreTestSuppo
     /** TDD. */
     @Override
     @Test
-    @Ignore
+    @Disabled
     public void updateOKProperties() {
         System.out.println("Not Supported as all properties are String");
     }
@@ -86,10 +90,10 @@ public class PropertyStoreArchaiusCommonsConfTest extends PropertyStoreTestSuppo
         // When
         Property<?> log = testedStore.readProperty(READ_OK_FIXED);
         // Then
-        Assert.assertNotNull(log);
-        Assert.assertNotNull(log.getName());
-        Assert.assertEquals(READ_OK_FIXED, log.getName());
-        Assert.assertEquals(LogLevel.ERROR.name(), log.getValue());
+        Assertions.assertNotNull(log);
+        Assertions.assertNotNull(log.getName());
+        Assertions.assertEquals(READ_OK_FIXED, log.getName());
+        Assertions.assertEquals(LogLevel.ERROR.name(), log.getValue());
     }
     
     /** TDD. */
@@ -101,7 +105,7 @@ public class PropertyStoreArchaiusCommonsConfTest extends PropertyStoreTestSuppo
         // When
         testedStore.updateProperty(UPDATE_OK, "INFO");
         // Then
-        Assert.assertEquals("INFO", testedStore.readProperty(UPDATE_OK).getValue());
+        Assertions.assertEquals("INFO", testedStore.readProperty(UPDATE_OK).getValue());
     }
     
 }

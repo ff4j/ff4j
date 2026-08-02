@@ -20,6 +20,8 @@ package org.ff4j.test.store;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.ff4j.audit.EventQueryDefinition;
 
 import org.ff4j.core.FeatureStore;
@@ -27,9 +29,9 @@ import org.ff4j.exception.FeatureNotFoundException;
 import org.ff4j.exception.GroupNotFoundException;
 import org.ff4j.store.JdbcFeatureStore;
 import org.ff4j.store.JdbcQueryBuilder;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -58,7 +60,7 @@ public class JdbcFeatureStoreCoreTest extends CoreFeatureStoreTestSupport {
 
     /** {@inheritDoc} */
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         db = builder.setType(EmbeddedDatabaseType.HSQL).
@@ -67,19 +69,21 @@ public class JdbcFeatureStoreCoreTest extends CoreFeatureStoreTestSupport {
     }
 
     /** {@inheritDoc} */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         db.shutdown();
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRemoveFromGroupInvalidGroup() {
-        testedStore.removeFromGroup(F4, G0);
+        assertThrows(IllegalArgumentException.class, () ->
+            testedStore.removeFromGroup(F4, G0));
     }
     
-    @Test(expected = FeatureNotFoundException.class)
+    @Test
     public void readDoesNotExist() {
-        testedStore.read("dont-exist");
+        assertThrows(FeatureNotFoundException.class, () ->
+            testedStore.read("dont-exist"));
     }
     
     @Test
@@ -107,9 +111,10 @@ public class JdbcFeatureStoreCoreTest extends CoreFeatureStoreTestSupport {
         builder.buildWhereClause(e1, true, false);
     }
     
-    @Test(expected = GroupNotFoundException.class)
+    @Test
     public void readGroupDoesNotExist() {
-        testedStore.readGroup("dont-exist");
+        assertThrows(GroupNotFoundException.class, () ->
+            testedStore.readGroup("dont-exist"));
     }
     
     

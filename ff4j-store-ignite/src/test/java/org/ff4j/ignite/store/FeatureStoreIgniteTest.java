@@ -26,8 +26,8 @@ import org.apache.ignite.Ignition;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.FeatureStoreJCache;
 import org.ff4j.test.store.FeatureStoreTestSupport;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 
 /**
  * Test to work with Redis as a store.
@@ -39,7 +39,7 @@ public class FeatureStoreIgniteTest extends FeatureStoreTestSupport {
     /** ignite. */
     private static Ignite ignite;
     
-    @BeforeClass
+    @BeforeAll
     public static void startIgnite() {
         ignite = Ignition.start();
     }
@@ -52,7 +52,7 @@ public class FeatureStoreIgniteTest extends FeatureStoreTestSupport {
         return featureStore;
     }
     
-    @AfterClass
+    @AfterAll
     public static void stopIgnite() {
         if (ignite != null) {
             ignite.close();

@@ -27,10 +27,10 @@ import org.ff4j.cache.FF4JCacheManager;
 import org.ff4j.conf.XmlParser;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.AssertFf4j;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Provide support to run Redis in a testcontainer
@@ -58,7 +58,7 @@ public abstract class RedisTestSupport {
     protected FF4JCacheManager cache;
 
     /** {@inheritDoc} */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         cache = makeCache();
         ff4j = new FF4j(new XmlParser(), TEST_FEATURES_FILE);
@@ -66,7 +66,7 @@ public abstract class RedisTestSupport {
         assertFf4j = new AssertFf4j(ff4j);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         cache.clearFeatures();
         cache.clearProperties();
@@ -75,46 +75,46 @@ public abstract class RedisTestSupport {
     @Test
     public void testStoresAndCacheHaveBeenInitialized() {
         assertFf4j.assertThatStoreHasSize(INITIAL_FEATURES_SIZE);
-        Assert.assertTrue(cache.listCachedPropertyNames().isEmpty());
+        Assertions.assertTrue(cache.listCachedPropertyNames().isEmpty());
     }
 
     @Test
     public void testOnePropertyIsCachedThenCleared() {
         // Given
-        Assert.assertTrue(cache.listCachedPropertyNames().isEmpty());
+        Assertions.assertTrue(cache.listCachedPropertyNames().isEmpty());
         // When
         ff4j.getProperty("a");
         // Then
-        Assert.assertEquals(1, cache.listCachedPropertyNames().size());
+        Assertions.assertEquals(1, cache.listCachedPropertyNames().size());
         // When
         cache.clearProperties();
         // Then
-        Assert.assertTrue(cache.listCachedPropertyNames().isEmpty());
+        Assertions.assertTrue(cache.listCachedPropertyNames().isEmpty());
     }
 
     @Test
     public void testAllPropertiesAreCachedThenCleared() {
         // Given
-        Assert.assertTrue(cache.listCachedPropertyNames().isEmpty());
+        Assertions.assertTrue(cache.listCachedPropertyNames().isEmpty());
         // When
         PropertyStore propertyStore = ff4j.getPropertiesStore();
         propertyStore.listPropertyNames().forEach(propertyStore::readProperty);
         // Then
-        Assert.assertEquals(propertyStore.readAllProperties().size(), cache.listCachedPropertyNames().size());
+        Assertions.assertEquals(propertyStore.readAllProperties().size(), cache.listCachedPropertyNames().size());
         // When
         cache.clearProperties();
         // Then
-        Assert.assertTrue(cache.listCachedPropertyNames().isEmpty());
+        Assertions.assertTrue(cache.listCachedPropertyNames().isEmpty());
     }
 
     @Test
     public void testOneProperty() {
         // Given
-        Assert.assertTrue(cache.listCachedPropertyNames().isEmpty());
+        Assertions.assertTrue(cache.listCachedPropertyNames().isEmpty());
         // When
         ff4j.getProperty("a");
         // Then
-        Assert.assertEquals(1, cache.listCachedPropertyNames().size());
+        Assertions.assertEquals(1, cache.listCachedPropertyNames().size());
     }
 
 }

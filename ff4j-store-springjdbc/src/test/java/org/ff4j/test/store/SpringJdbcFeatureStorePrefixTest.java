@@ -24,8 +24,8 @@ package org.ff4j.test.store;
 import org.ff4j.core.FeatureStore;
 import org.ff4j.springjdbc.store.FeatureStoreSpringJdbc;
 import org.ff4j.store.JdbcQueryBuilder;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -60,7 +60,7 @@ public class SpringJdbcFeatureStorePrefixTest extends FeatureStoreTestSupport {
 
     /** {@inheritDoc} */
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         db = builder.setType(EmbeddedDatabaseType.HSQL).//
@@ -70,7 +70,7 @@ public class SpringJdbcFeatureStorePrefixTest extends FeatureStoreTestSupport {
     }
 
     /** {@inheritDoc} */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         db.shutdown();
     }

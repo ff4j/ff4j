@@ -20,6 +20,8 @@ package org.ff4j.utils.json;
  * #L%
  */
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,9 +32,8 @@ import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
 import org.ff4j.property.util.PropertyJsonBean;
 import org.ff4j.utils.Util;
-import org.junit.Assert;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class FeatureJsonParserTest {
@@ -65,49 +66,52 @@ public class FeatureJsonParserTest {
         }
         String featuresArrayAsJson = marshallWithJackson(f);
         Feature[] ff = FeatureJsonParser.parseFeatureArray(featuresArrayAsJson);
-        Assert.assertEquals(ff4j.getFeatures().size(), ff.length);
+        Assertions.assertEquals(ff4j.getFeatures().size(), ff.length);
     }
     
     @Test
     public void testInit() throws Exception {
-        Assert.assertNotNull(Util.instanciatePrivate(FeatureJsonParser.class));
+        Assertions.assertNotNull(Util.instanciatePrivate(FeatureJsonParser.class));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testInvalidJsonGetIllegalArgument() {
-        FeatureJsonParser.parseFeature("something:invald");
+        assertThrows(IllegalArgumentException.class, () ->
+            FeatureJsonParser.parseFeature("something:invald"));
     }
     
     @Test
     public void testSerialisation() {
         Feature[] features = { new Feature("f1"), new Feature("f2")};
-        Assert.assertNotNull(FeatureJsonParser.featureArrayToJson(features));
-        Assert.assertNotNull(FeatureJsonParser.featureArrayToJson(null));
+        Assertions.assertNotNull(FeatureJsonParser.featureArrayToJson(features));
+        Assertions.assertNotNull(FeatureJsonParser.featureArrayToJson(null));
     }
     
     @Test
     public void testParseFlipStrategyAsJson() {
-        Assert.assertNull(FeatureJsonParser.parseFlipStrategyAsJson("f1", ""));
-        Assert.assertNull(FeatureJsonParser.parseFlipStrategyAsJson("f1", null));
+        Assertions.assertNull(FeatureJsonParser.parseFlipStrategyAsJson("f1", ""));
+        Assertions.assertNull(FeatureJsonParser.parseFlipStrategyAsJson("f1", null));
         String fExp = "{\"initParams\":{\"weight\":\"0.6\"},\"type\":\"org.ff4j.strategy.PonderationStrategy\"}";
-        Assert.assertNotNull(FeatureJsonParser.parseFlipStrategyAsJson("f1", fExp));
+        Assertions.assertNotNull(FeatureJsonParser.parseFlipStrategyAsJson("f1", fExp));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testParseFlipStrategyAsJsonError() {
-        FeatureJsonParser.parseFlipStrategyAsJson("f1", "something:invalid");
+        assertThrows(IllegalArgumentException.class, () ->
+            FeatureJsonParser.parseFlipStrategyAsJson("f1", "something:invalid"));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testparseFeatureArrayError() {
-        FeatureJsonParser.parseFeatureArray("something:invalid");
+        assertThrows(IllegalArgumentException.class, () ->
+            FeatureJsonParser.parseFeatureArray("something:invalid"));
     }
     
     
     @Test
     public void testparseFeatureArrayEmpty() {
-        Assert.assertNull(FeatureJsonParser.parseFeatureArray(null));
-        Assert.assertNull(FeatureJsonParser.parseFeatureArray(""));
+        Assertions.assertNull(FeatureJsonParser.parseFeatureArray(null));
+        Assertions.assertNull(FeatureJsonParser.parseFeatureArray(""));
     }
     
     
@@ -170,11 +174,11 @@ public class FeatureJsonParserTest {
             // Custom properties are unforce to PropertyJsonBean
             for (String pName : props.keySet()) {
                 PropertyJsonBean pjb = new PropertyJsonBean(props.get(pName));
-                Assert.assertEquals(marshallWithJackson(pjb), pjb.asJson());
+                Assertions.assertEquals(marshallWithJackson(pjb), pjb.asJson());
             }
             feat.setCustomProperties(new HashMap<String, Property<?>>());
         } 
-        Assert.assertEquals(marshallWithJackson(feat), feat.toJson());
+        Assertions.assertEquals(marshallWithJackson(feat), feat.toJson());
         feat.setCustomProperties(props);
     }
 }
