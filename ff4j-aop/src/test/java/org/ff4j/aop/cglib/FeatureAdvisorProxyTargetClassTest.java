@@ -23,17 +23,17 @@ package org.ff4j.aop.cglib;
 import org.ff4j.FF4j;
 import org.ff4j.aop.test.greeting.GreetingService;
 import org.ff4j.aop.test.wholeclass.WholeClassFlipping;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  * Reproduces GitHub issue #761: {@code @Flip} does not switch to {@code alterBean} when
@@ -45,7 +45,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * to create CGLIB subclass proxies instead of JDK interface proxies.
  */
 @ActiveProfiles("proxyTargetClass")
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration("classpath:applicationContext-ff4j-aop-test.xml")
 public class FeatureAdvisorProxyTargetClassTest {
 
@@ -60,7 +60,7 @@ public class FeatureAdvisorProxyTargetClassTest {
     @Qualifier("whole.english")
     private WholeClassFlipping wholeClassFlipping;
 
-    @Before
+    @BeforeEach
     public void createFeatures() {
         if (!ff4j.exist("language-english")) {
             ff4j.createFeature("language-english");
@@ -70,7 +70,7 @@ public class FeatureAdvisorProxyTargetClassTest {
         }
     }
 
-    @After
+    @AfterEach
     public void disableFeatures() {
         ff4j.disable("language-french");
         ff4j.disable("language-english");
@@ -82,8 +82,8 @@ public class FeatureAdvisorProxyTargetClassTest {
      */
     @Test
     public void testBeanIsProxiedWithCglib() {
-        Assert.assertTrue("Expected a CGLIB proxy but got: " + greeting.getClass(),
-                AopUtils.isCglibProxy(greeting));
+        Assertions.assertTrue(AopUtils.isCglibProxy(greeting),
+                "Expected a CGLIB proxy but got: " + greeting.getClass());
     }
 
     /**
@@ -93,11 +93,11 @@ public class FeatureAdvisorProxyTargetClassTest {
     @Test
     public void testAlterBeanCalledWhenFeatureEnabledUnderCglibProxy() {
         ff4j.disable("language-french");
-        Assert.assertTrue("Expected English greeting", greeting.sayHello("CLU").startsWith("Hello"));
+        Assertions.assertTrue(greeting.sayHello("CLU").startsWith("Hello"), "Expected English greeting");
 
         ff4j.enable("language-french");
-        Assert.assertTrue("Service did not flip to French alter bean under CGLIB proxying",
-                greeting.sayHello("CLU").startsWith("Bonjour"));
+        Assertions.assertTrue(greeting.sayHello("CLU").startsWith("Bonjour"),
+                "Service did not flip to French alter bean under CGLIB proxying");
     }
 
     /**
@@ -105,14 +105,14 @@ public class FeatureAdvisorProxyTargetClassTest {
      */
     @Test
     public void testClassLevelFlipOnInterfaceWorksUnderCglibProxy() {
-        Assert.assertTrue(wholeClassFlipping.hello1().startsWith("Hello"));
-        Assert.assertTrue(wholeClassFlipping.hello2().startsWith("Big"));
+        Assertions.assertTrue(wholeClassFlipping.hello1().startsWith("Hello"));
+        Assertions.assertTrue(wholeClassFlipping.hello2().startsWith("Big"));
 
         ff4j.enable("language-french");
 
-        Assert.assertTrue("Class-level @Flip did not flip hello1 under CGLIB",
-                wholeClassFlipping.hello1().startsWith("Francais"));
-        Assert.assertTrue("Class-level @Flip did not flip hello2 under CGLIB",
-                wholeClassFlipping.hello2().startsWith("Tour"));
+        Assertions.assertTrue(wholeClassFlipping.hello1().startsWith("Francais"),
+                "Class-level @Flip did not flip hello1 under CGLIB");
+        Assertions.assertTrue(wholeClassFlipping.hello2().startsWith("Tour"),
+                "Class-level @Flip did not flip hello2 under CGLIB");
     }
 }
