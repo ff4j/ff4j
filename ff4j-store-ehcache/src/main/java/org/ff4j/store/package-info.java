@@ -2,7 +2,7 @@
  * FeatureStore for EHCACHE.
  * <p>
  *
- * @author Cedrick Lunven (@clunven)</a>
+ * @author Cedrick Lunven (@clunven)
  */
 package org.ff4j.store;
 

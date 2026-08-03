@@ -2,7 +2,7 @@
  * Declare your stores to remote JMX application.
  * <p>
  *
- * @author Cedrick Lunven (@clunven)</a>
+ * @author Cedrick Lunven (@clunven)
  */
 package org.ff4j.jmx.client;
 

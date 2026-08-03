@@ -2,7 +2,7 @@
  * Provides utilities static classes (File, IO, Time...)
  * <p>
  *
- * @author Cedrick Lunven (@clunven)</a>
+ * @author Cedrick Lunven (@clunven)
  * @version 1.1
  */
 package org.ff4j.utils;

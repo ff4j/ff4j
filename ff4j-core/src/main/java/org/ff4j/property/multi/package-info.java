@@ -1,8 +1,7 @@
 /**
- * Provides beans to work with ff4j multivalued types :Property<? extends Collection<?>>.
- * <p>
+ * Provides beans to work with ff4j multivalued types {@code Property<? extends Collection<?>>}.
  *
- * @author Cedrick Lunven (@clunven)</a>
+ * @author Cedrick Lunven (@clunven)
  * @version 1.3
  */
 package org.ff4j.property.multi;

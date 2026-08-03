@@ -41,17 +41,19 @@ public interface FeatureStore {
     void enable(String featureID);
 
     /**
-     * Create Feature is does not exist and enable it.
-     * 
-     * @param featureID
+     * Disable/DOWN/switch off a FlipPoint.
+     *
+     * @param fId
      *            unique feature identifier
      */
     void disable(String fId);
 
     /**
      * Check if Feature Exist.
-     * 
-     * @return unique feature identifier
+     *
+     * @param featId
+     *            unique feature identifier
+     * @return true if the feature exists
      */
     boolean exist(String featId);
 
@@ -64,10 +66,11 @@ public interface FeatureStore {
     void create(Feature fp);
 
     /**
-     * Create Feature is does not exist and enable it.
-     * 
-     * @param featureID
+     * Read a Feature from its identifier.
+     *
+     * @param featureUid
      *            unique feature identifier
+     * @return target feature
      */
     Feature read(String featureUid);
 
@@ -80,9 +83,9 @@ public interface FeatureStore {
 
     /**
      * Remove fliPoint from store.
-     * 
-     * @param fp
-     *            flipPoint
+     *
+     * @param fpId
+     *            unique feature identifier
      */
     void delete(String fpId);
 
@@ -96,15 +99,21 @@ public interface FeatureStore {
 
     /**
      * Add a role to a flipPOINT.
-     * 
+     *
+     * @param flipId
+     *            unique feature identifier
      * @param roleName
+     *            role to grant on the feature
      */
     void grantRoleOnFeature(String flipId, String roleName);
 
     /**
      * Remove role to acess flip point
-     * 
+     *
+     * @param flipId
+     *            unique feature identifier
      * @param roleName
+     *            role to remove from the feature
      */
     void removeRoleFromFeature(String flipId, String roleName);
 
@@ -129,6 +138,7 @@ public interface FeatureStore {
      * 
      * @param groupName
      *            target group name
+     * @return true if the group exists
      */
     boolean existGroup(String groupName);
 
@@ -184,9 +194,11 @@ public interface FeatureStore {
     /**
      * Initialize the target database schema by creating expected structures.
      * 
-     * <li> TABLE, INDEX will be created for JDBC, but also COLLECTION and INDEXS for MongoDb, or COLUMN FAMILY for Cassandra.
-     * <li> The structures will be created only if they don't exist.
-     * <li> In some cases, there is nothing todo (Ehcache, Redis, InMemory), the method won't failed but do nothing (it does not clear the DB) 
+     * <ul>
+     *  <li> TABLE, INDEX will be created for JDBC, but also COLLECTION and INDEXS for MongoDb, or COLUMN FAMILY for Cassandra.
+     *  <li> The structures will be created only if they don't exist.
+     *  <li> In some cases, there is nothing to do (Ehcache, Redis, InMemory), the method won't failed but do nothing (it does not clear the DB)
+     * </ul>
      * 
      * @since 1.6
      */

@@ -2,7 +2,7 @@
  * Implementation of AuthorisationManager using Apache Shiro.
  * <p>
  *
- * @author Cedrick Lunven (@clunven)</a>
+ * @author Cedrick Lunven (@clunven)
  */
 package org.ff4j.security;
 

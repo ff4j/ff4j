@@ -2,7 +2,7 @@
  * Provides bean definitions to work with web (API).
  * <p>
  *
- * @author Cedrick Lunven (@clunven)</a>
+ * @author Cedrick Lunven (@clunven)
  * @version 1.1
  */
 package org.ff4j.web;

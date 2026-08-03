@@ -2,7 +2,7 @@
  * Provides custom unchecked (Runtime) exceptions raised by the framework (e.g FeatureNotFoundException).
  * <p>
  *
- * @author Cedrick Lunven (@clunven)</a>
+ * @author Cedrick Lunven (@clunven)
  * @version 1.0
  */
 package org.ff4j.exception;

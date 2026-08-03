@@ -2,7 +2,7 @@
  * Provides interfaces and abstraction to implement mapping from beans to storage technology.
  * <p>
  *
- * @author Cedrick Lunven (@clunven)</a>
+ * @author Cedrick Lunven (@clunven)
  * @version 1.0
  */
 package org.ff4j.mapper;

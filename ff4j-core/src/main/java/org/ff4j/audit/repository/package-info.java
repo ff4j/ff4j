@@ -2,7 +2,7 @@
  * Provides repositories (inmemory, jdbc) to store audit metrics and events.
  * <p>
  *
- * @author Cedrick Lunven (@clunven)</a>
+ * @author Cedrick Lunven (@clunven)
  * @version 1.2
  */
 package org.ff4j.audit.repository;

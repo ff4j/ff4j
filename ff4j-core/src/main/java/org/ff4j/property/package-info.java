@@ -1,8 +1,7 @@
 /**
- * Provides beans to work with ff4j types Property<?>.
- * <p>
+ * Provides beans to work with ff4j types {@code Property<?>}.
  *
- * @author Cedrick Lunven (@clunven)</a>
+ * @author Cedrick Lunven (@clunven)
  * @since 1.3
  */
 package org.ff4j.property;

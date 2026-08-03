@@ -2,7 +2,7 @@
  * Provides core classes and beans (as Feature, FeatureStore) to implement feature toggle.
  * <p>
  *
- * @author Cedrick Lunven (@clunven)</a>
+ * @author Cedrick Lunven (@clunven)
  * @since 1.0
  */
 package org.ff4j.core;

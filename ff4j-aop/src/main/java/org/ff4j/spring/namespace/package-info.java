@@ -2,7 +2,7 @@
  * Provide simplified Capabilities to create FF4J context.
  * <p>
  *
- * @author Cedrick Lunven (@clunven)</a>
+ * @author Cedrick Lunven (@clunven)
  */
 package org.ff4j.spring.namespace;
 

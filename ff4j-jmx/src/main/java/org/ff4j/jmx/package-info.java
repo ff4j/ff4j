@@ -2,7 +2,7 @@
  * Provide MBean to work on features through JMX.
  * <p>
  *
- * @author Cedrick Lunven (@clunven)</a>
+ * @author Cedrick Lunven (@clunven)
  */
 package org.ff4j.jmx;
 

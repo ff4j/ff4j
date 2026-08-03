@@ -2,7 +2,7 @@
  * Use FF4j as data source for Spring Cloud Config
  * <p>
  *
- * @author Cedrick Lunven (@clunven)</a>
+ * @author Cedrick Lunven (@clunven)
  */
 package org.ff4j.spring.cloudconfig.source;
 

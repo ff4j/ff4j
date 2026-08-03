@@ -1,7 +1,7 @@
 /**
  * REST Resources of the API
  *
- * @author Cedrick Lunven (@clunven)</a>
+ * @author Cedrick Lunven (@clunven)
  */
 package org.ff4j.web.api.resources;
 

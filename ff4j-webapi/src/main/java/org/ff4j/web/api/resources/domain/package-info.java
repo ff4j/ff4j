@@ -1,7 +1,7 @@
 /**
  * POJO used in REST interfaces (ApiBeans)
  *
- * @author Cedrick Lunven (@clunven)</a>
+ * @author Cedrick Lunven (@clunven)
  */
 package org.ff4j.web.api.resources.domain;
 

@@ -1,7 +1,7 @@
 /**
  * Provides Proxies class for stores, they update audit on each operation.
  *
- * @author Cedrick Lunven (@clunven)</a>
+ * @author Cedrick Lunven (@clunven)
  * @version 1.2
  */
 package org.ff4j.audit.proxy;

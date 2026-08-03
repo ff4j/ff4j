@@ -2,7 +2,7 @@
  * Provides parsers to initialize the framework with xml definition files.
  * <p>
  *
- * @author Cedrick Lunven (@clunven)</a>
+ * @author Cedrick Lunven (@clunven)
  * @since 1.2
  */
 package org.ff4j.conf;

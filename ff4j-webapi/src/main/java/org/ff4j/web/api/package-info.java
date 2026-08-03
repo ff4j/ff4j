@@ -1,7 +1,7 @@
 /**
  * Implementation of REST API using Jersey.
  *
- * @author Cedrick Lunven (@clunven)</a>
+ * @author Cedrick Lunven (@clunven)
  * @version 1.0
  */
 package org.ff4j.web.api;

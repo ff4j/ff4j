@@ -2,7 +2,7 @@
  * Leverage on JSR107 to implement caches.
  * <p>
  *
- * @author Cedrick Lunven (@clunven)</a>
+ * @author Cedrick Lunven (@clunven)
  */
 package org.ff4j.consul;
 

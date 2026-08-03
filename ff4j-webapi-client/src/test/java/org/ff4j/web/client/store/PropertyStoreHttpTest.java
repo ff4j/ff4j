@@ -22,11 +22,15 @@ package org.ff4j.web.client.store;
 
 import static org.ff4j.test.TestsFf4jConstants.TEST_FEATURES_FILE;
 
+import java.net.http.HttpClient;
+
 import org.ff4j.property.store.InMemoryPropertyStore;
 import org.ff4j.property.store.PropertyStore;
 import org.ff4j.test.propertystore.PropertyStoreTestSupport;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Run the {@link PropertyStore} TCK against {@link PropertyStoreHttp} talking to an
@@ -54,7 +58,17 @@ public class PropertyStoreHttpTest extends PropertyStoreTestSupport {
     @Override
     protected PropertyStore initPropertyStore() {
         server.setPropertyStore(new InMemoryPropertyStore(TEST_FEATURES_FILE));
-        return new PropertyStoreHttp(server.getBaseUrl());
+        PropertyStoreHttp store = new PropertyStoreHttp();
+        store.setUrl(server.getBaseUrl());
+        store.setHttpClient(HttpClient.newHttpClient());
+        return store;
+    }
+
+    @Test
+    public void shouldExposeTargetUrl() {
+        PropertyStoreHttp store = new PropertyStoreHttp();
+        store.setUrl(server.getBaseUrl());
+        Assertions.assertEquals(server.getBaseUrl(), store.getUrl());
     }
 
 }

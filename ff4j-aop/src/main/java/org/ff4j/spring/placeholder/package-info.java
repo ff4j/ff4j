@@ -2,7 +2,7 @@
  * Substitutions in Spring XML Definition files with <em>@ff4jProperty</em>
  * <p>
  *
- * @author Cedrick Lunven (@clunven)</a>
+ * @author Cedrick Lunven (@clunven)
  */
 package org.ff4j.spring.placeholder;
 

@@ -2,7 +2,7 @@
  * Proposition of FlippingStrategy delegating the evaluation of feature toggling to JBoss Drools..
  * <p>
  *
- * @author Cedrick Lunven (@clunven)</a>
+ * @author Cedrick Lunven (@clunven)
  */
 package org.ff4j.drools;
 

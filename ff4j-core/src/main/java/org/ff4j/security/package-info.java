@@ -2,7 +2,7 @@
  * Provides definitions for security (permissions) in Feature Toggle
  * <p>
  *
- * @author Cedrick Lunven (@clunven)</a>
+ * @author Cedrick Lunven (@clunven)
  * @version 1.3
  */
 package org.ff4j.security;

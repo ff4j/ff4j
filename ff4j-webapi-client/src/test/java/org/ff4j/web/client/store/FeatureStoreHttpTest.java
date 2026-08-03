@@ -22,11 +22,15 @@ package org.ff4j.web.client.store;
 
 import static org.ff4j.test.TestsFf4jConstants.TEST_FEATURES_FILE;
 
+import java.net.http.HttpClient;
+
 import org.ff4j.core.FeatureStore;
 import org.ff4j.store.InMemoryFeatureStore;
 import org.ff4j.test.store.FeatureStoreTestSupport;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Run the {@link FeatureStore} TCK against {@link FeatureStoreHttp} talking to an
@@ -54,7 +58,17 @@ public class FeatureStoreHttpTest extends FeatureStoreTestSupport {
     @Override
     protected FeatureStore initStore() {
         server.setFeatureStore(new InMemoryFeatureStore(TEST_FEATURES_FILE));
-        return new FeatureStoreHttp(server.getBaseUrl());
+        FeatureStoreHttp store = new FeatureStoreHttp();
+        store.setUrl(server.getBaseUrl());
+        store.setHttpClient(HttpClient.newHttpClient());
+        return store;
+    }
+
+    @Test
+    public void shouldExposeTargetUrl() {
+        FeatureStoreHttp store = new FeatureStoreHttp();
+        store.setUrl(server.getBaseUrl());
+        Assertions.assertEquals(server.getBaseUrl(), store.getUrl());
     }
 
 }

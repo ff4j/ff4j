@@ -50,7 +50,8 @@ import org.ff4j.web.client.utils.HttpConnection;
  */
 public class PropertyStoreHttp extends AbstractPropertyStore {
 
-    public static final String OCCURED = " occured.";
+    /** String constants */
+    private static final String OCCURED = " occured.";
 
     /** Http status. */
     private static final int OK = 200;
@@ -201,7 +202,7 @@ public class PropertyStoreHttp extends AbstractPropertyStore {
             throw new PropertyAccessException("Cannot read properties, an HTTP error " + res.statusCode() + OCCURED);
         }
         Property<?>[] pArray = PropertyJsonParser.parsePropertyArray(res.body());
-        Map<String, Property<?>> properties = new HashMap<String, Property<?>>();
+        Map<String, Property<?>> properties = new HashMap<>();
         for (Property<?> pName : pArray) {
             properties.put(pName.getName(), pName);
         }

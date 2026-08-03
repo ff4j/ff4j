@@ -2,7 +2,7 @@
  * Provides flipping strategies time-oriented (ReleaseDate, OfficeHours..) 
  * <p>
  *
- * @author Cedrick Lunven (@clunven)</a>
+ * @author Cedrick Lunven (@clunven)
  */
 package org.ff4j.strategy.time;
 
