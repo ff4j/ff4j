@@ -151,6 +151,7 @@
     <module>ff4j-store-jcache</module>
     <module>ff4j-cli</module>
     <module>ff4j-webapi</module>
+    <module>ff4j-webapi-client</module>
     <module>ff4j-utils-json</module>
     <module>ff4j-security-spring</module>
     <module>ff4j-security-shiro</module>

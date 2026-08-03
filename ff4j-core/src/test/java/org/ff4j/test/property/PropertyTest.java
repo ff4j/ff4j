@@ -26,10 +26,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.Date;
 
 import org.ff4j.exception.InvalidPropertyTypeException;
+import org.ff4j.property.Property;
 import org.ff4j.property.PropertyBigDecimal;
 import org.ff4j.property.PropertyBigInteger;
 import org.ff4j.property.PropertyBoolean;
@@ -39,11 +42,13 @@ import org.ff4j.property.PropertyClass;
 import org.ff4j.property.PropertyDate;
 import org.ff4j.property.PropertyDouble;
 import org.ff4j.property.PropertyFloat;
+import org.ff4j.property.PropertyInstant;
 import org.ff4j.property.PropertyInt;
 import org.ff4j.property.PropertyLogLevel;
 import org.ff4j.property.PropertyLong;
 import org.ff4j.property.PropertyShort;
 import org.ff4j.property.PropertyString;
+import org.ff4j.property.util.PropertyFactory;
 import org.ff4j.property.util.PropertyJsonBean;
 import org.ff4j.utils.Util;
 import org.junit.jupiter.api.Assertions;
@@ -305,6 +310,22 @@ public class PropertyTest {
         });
     }
     
+    @Test
+    public void tesInitPropertyInstant() {
+        // constructor used to NPE: fromString() invoked before 'zone' initialization (issue)
+        PropertyInstant i1 = new PropertyInstant("i1", "2025-04-21 12:00:00.000");
+        Assertions.assertNotNull(i1.getValue());
+        Assertions.assertEquals(ZoneOffset.UTC, i1.getZone());
+        Assertions.assertEquals("2025-04-21 12:00:00.000", i1.asString());
+
+        Property<?> i2 = PropertyFactory.createProperty("i2",
+                PropertyInstant.class.getName(), "2025-04-21 12:00:00.000");
+        Assertions.assertNotNull(i2.getValue());
+
+        PropertyInstant i3 = new PropertyInstant("i3", Instant.parse("2025-04-21T12:00:00Z"));
+        Assertions.assertEquals("2025-04-21 12:00:00.000", i3.asString());
+    }
+
     @Test
     public void tesInitPropertyCalendar() {
         PropertyCalendar d0 = new PropertyCalendar();

@@ -93,7 +93,8 @@ public class PropertyInstant extends Property< Instant > {
     /** {@inheritDoc} */
     @Override
     public Instant fromString(String v) {
-        return LocalDateTime.parse(v, FORMATTER).toInstant(zone);
+        // invoked from the base constructor before field initializers run, zone may not be set yet
+        return LocalDateTime.parse(v, FORMATTER).toInstant(zone != null ? zone : ZoneOffset.UTC);
     }
 
     /**

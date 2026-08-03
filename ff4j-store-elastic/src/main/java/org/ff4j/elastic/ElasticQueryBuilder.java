@@ -52,7 +52,14 @@ import io.searchbox.core.Update;
 public class ElasticQueryBuilder {
 	
     public static final String TYPE_EVENT = "event";
-    
+
+    /**
+     * Elasticsearch returns only 10 hits per search by default: every "find all" query
+     * must set an explicit size or results are silently truncated (see issue #732).
+     * Capped by 'index.max_result_window' whose default is 10000.
+     */
+    public static final int MAX_RESULT_SIZE = 10000;
+
     /** Logger for the class. */
     private static final Logger LOGGER = LoggerFactory.getLogger(ElasticQueryBuilder.class);
     
@@ -85,7 +92,7 @@ public class ElasticQueryBuilder {
 
 	/** Read a group. */
 	public static Search findGroupByGroupName(String indexFeatures, String groupName) {
-		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder().size(MAX_RESULT_SIZE);
 		searchSourceBuilder.query(QueryBuilders.matchQuery(FeatureMapper.FEATURE_GROUP, groupName));
 		LOGGER.debug("[findGroupByGroupName] with '{}' query:{}", searchSourceBuilder.toString());
         Search search = new Search.Builder(searchSourceBuilder.toString())
@@ -135,11 +142,7 @@ public class ElasticQueryBuilder {
 	
 	/** Find all features. */
 	public static Search findAllFeatures(String indexFeatures) {
-		return new Search
-		        .Builder(new SearchSourceBuilder().toString())
-		        .addIndex(indexFeatures)
-                .addType(FeatureMapper.TYPE_FEATURE)
-                .build();
+		return findAllFeaturesLimit(indexFeatures, MAX_RESULT_SIZE);
 	}
 	
 	/** Find all features with a limit. */
@@ -153,7 +156,7 @@ public class ElasticQueryBuilder {
     
     /** Find technical ids of features in a group. */
     public static Search findFeaturesByGroupName(String indexFeatures, String groupName) {
-        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder().size(MAX_RESULT_SIZE);
         searchSourceBuilder.query(QueryBuilders.matchQuery(FeatureMapper.FEATURE_GROUP, groupName));
         return new Search.Builder(searchSourceBuilder.toString())
                 .addIndex(indexFeatures)
@@ -191,10 +194,7 @@ public class ElasticQueryBuilder {
     }
     
 	public static Search findAllProperties(String indexProperties) {
-	    return new Search.Builder(new SearchSourceBuilder().toString())
-                .addIndex(indexProperties)
-                .addType(PropertyMapper.TYPE_PROPERTY)
-                .build();	
+	    return findAllPropertiesLimit(indexProperties, MAX_RESULT_SIZE);
 	}
 
 	/** Find all features with a limit. */
@@ -280,7 +280,7 @@ public class ElasticQueryBuilder {
 
 		// Warning : default size is set to 10 results, that's why it's
 		// overridden
-		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder().size(100);
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder().size(MAX_RESULT_SIZE);
 		return new Search.Builder(searchSourceBuilder.query(booleanQuery).toString())
 		        .addIndex(indexEvents)
                 .addType(TYPE_EVENT)
@@ -317,10 +317,10 @@ public class ElasticQueryBuilder {
 		}
 	}
 
-	/** Find all features. */
+	/** Find all events. */
     public static Search findAllEvents(String indexEvents) {
         return new Search
-                .Builder(new SearchSourceBuilder().toString())
+                .Builder(new SearchSourceBuilder().size(MAX_RESULT_SIZE).toString())
                 .addIndex(indexEvents)
                 .addType(TYPE_EVENT)
                 .build();
