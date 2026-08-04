@@ -7,7 +7,7 @@
   <parent>
     <artifactId>ff4j-parent</artifactId>
     <groupId>org.ff4j</groupId>
-    <version>3.0.0-RC1</version>
+    <version>3.0.0-RC2-SNAPSHOT</version>
   </parent>
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <!-- ~     COORDINATES          ~ -->
