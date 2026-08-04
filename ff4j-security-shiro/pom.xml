@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.ff4j</groupId>
     <artifactId>ff4j-parent</artifactId>
-    <version>2.2-SNAPSHOT</version>
+    <version>3.0.0-RC1</version>
   </parent>
   <properties>
     <license.licenseResolver>${project.baseUri}/../src/license</license.licenseResolver>
