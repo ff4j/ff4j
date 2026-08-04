@@ -12,7 +12,7 @@
   <parent>
     <groupId>org.ff4j</groupId>
     <artifactId>ff4j-parent</artifactId>
-    <version>3.0.0-RC2-SNAPSHOT</version>
+    <version>3.0.0-RC1</version>
   </parent>
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <!-- ~        PROPERTIES        ~ -->
