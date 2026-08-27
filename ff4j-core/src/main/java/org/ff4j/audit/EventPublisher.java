@@ -9,9 +9,9 @@ package org.ff4j.audit;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -38,16 +38,16 @@ import org.ff4j.audit.repository.InMemoryEventRepository;
  * @author Cedrick Lunven (@clunven)
  */
 public class EventPublisher {
-   
+
     /** DEFAULT. */
     public static final int DEFAULT_QUEUE_CAPACITY = 100;
-    
+
     /** DEFAULT. */
     public static final int DEFAULT_POOL_SIZE = 4;
-    
+
     /** 2s to save the event other wize skip. */
     public static final long timeout = 2000L;
-    
+
     /** Executor for item writer. */
     private ExecutorService executor;
 
@@ -66,14 +66,14 @@ public class EventPublisher {
     public EventPublisher() {
         this(DEFAULT_QUEUE_CAPACITY, DEFAULT_POOL_SIZE, new InMemoryEventRepository());
     }
-    
+
     /**
      * Default constructor.
      */
     public EventPublisher(EventRepository er) {
         this(DEFAULT_QUEUE_CAPACITY, DEFAULT_POOL_SIZE, er);
     }
-        
+
     /**
      * Default constructor.
      */
@@ -85,13 +85,39 @@ public class EventPublisher {
      * Default constructor.
      */
     public EventPublisher(int queueCapacity, int poolSize, EventRepository er, long submitTimeout) {
+        this(queueCapacity, poolSize, er, submitTimeout, new EventRejectedExecutionHandler());
+    }
+
+    /**
+     * Create an event publisher with a configurable rejection handler.
+     *
+     * @param queueCapacity queue capacity
+     * @param poolSize worker pool size
+     * @param er event repository
+     * @param rejectionHandler handler invoked when the executor is saturated
+     */
+    public EventPublisher(int queueCapacity, int poolSize, EventRepository er,
+                          RejectedExecutionHandler rejectionHandler) {
+        this(queueCapacity, poolSize, er, timeout, rejectionHandler);
+    }
+
+    /**
+     * Create an event publisher with configurable sizing, timeout and rejection handler.
+     *
+     * @param queueCapacity queue capacity
+     * @param poolSize worker pool size
+     * @param er event repository
+     * @param submitTimeout maximum time to wait for event publication
+     * @param rejectionHandler handler invoked when the executor is saturated
+     */
+    public EventPublisher(int queueCapacity, int poolSize, EventRepository er, long submitTimeout,
+                          RejectedExecutionHandler rejectionHandler) {
         // Initializing queue
         final BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(queueCapacity);
         // Executor with worker to process threads
-        RejectedExecutionHandler rej = new EventRejectedExecutionHandler();
         ThreadFactory tFactorty = new PublisherThreadFactory();
-        this.executor = 
-                new ThreadPoolExecutor(poolSize, poolSize, 0L, TimeUnit.MILLISECONDS, queue, tFactorty, rej);
+        this.executor =
+                new ThreadPoolExecutor(poolSize, poolSize, 0L, TimeUnit.MILLISECONDS, queue, tFactorty, rejectionHandler);
         // Override repository
         this.repository = er;
         this.submitTimeout = submitTimeout;
@@ -120,7 +146,7 @@ public class EventPublisher {
 
     /**
      * Publish event to repository
-     * 
+     *
      * @param e
      *            event.
      */
@@ -148,7 +174,7 @@ public class EventPublisher {
 
     /**
      * Setter accessor for attribute 'repository'.
-     * 
+     *
      * @param repository
      *            new value for 'repository '
      */
@@ -158,7 +184,7 @@ public class EventPublisher {
 
     /**
      * Getter accessor for attribute 'repository'.
-     * 
+     *
      * @return current value of 'repository'
      */
     public EventRepository getRepository() {
