@@ -88,7 +88,7 @@
     <version.httpclient5>5.6.3</version.httpclient5>
     <version.ignite-core>2.18.0</version.ignite-core>
     <version.jacoco>0.8.15</version.jacoco>
-    <version.jackson>2.22.1</version.jackson>
+    <version.jackson>2.22.2</version.jackson>
     <!-- jackson-annotations dropped the patch digit starting with 2.20 -->
     <version.jackson-annotations>2.22</version.jackson-annotations>
     <version.jakarta.servlet-api>6.1.0</version.jakarta.servlet-api>
