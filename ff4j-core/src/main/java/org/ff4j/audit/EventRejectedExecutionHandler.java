@@ -20,7 +20,7 @@ package org.ff4j.audit;
  * #L%
  */
 
-
+import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -30,20 +30,106 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @author Cedrick Lunven (@clunven)</a>
  */
 public class EventRejectedExecutionHandler implements RejectedExecutionHandler {
+
+    /** Default delay between retries. */
+    public static final long DEFAULT_RETRY_DELAY = 1000L;
+
+    /** Default maximum retries for the bounded strategy. */
+    public static final int DEFAULT_MAX_RETRIES = 3;
+
+    /** Available strategies when the event publisher executor is saturated. */
+    public enum RejectionStrategy {
+        /** Retry until the task can be queued. */
+        RETRY_UNBOUNDED,
+        /** Retry up to the configured maximum. */
+        RETRY_BOUNDED,
+        /** Cancel the rejected task immediately. */
+        DISCARD
+    }
+
+    /** Rejection strategy. */
+    private final RejectionStrategy strategy;
+
+    /** Maximum retries for the bounded strategy. */
+    private final int maxRetries;
+
+    /** Delay between retries. */
+    private final long retryDelay;
  
     /** Simulate Interrupted. */
     private static boolean mock = false;
+
+    /** Create a handler with the legacy unbounded retry behavior. */
+    public EventRejectedExecutionHandler() {
+        this(RejectionStrategy.RETRY_UNBOUNDED, 0, DEFAULT_RETRY_DELAY);
+    }
+
+    /**
+     * Create a handler with default retry settings.
+     *
+     * @param strategy rejection strategy
+     */
+    public EventRejectedExecutionHandler(RejectionStrategy strategy) {
+        this(strategy, DEFAULT_MAX_RETRIES, DEFAULT_RETRY_DELAY);
+    }
+
+    /**
+     * Create a configurable rejection handler.
+     *
+     * @param strategy rejection strategy
+     * @param maxRetries maximum retries for {@link RejectionStrategy#RETRY_BOUNDED}
+     * @param retryDelay delay in milliseconds between retries
+     */
+    public EventRejectedExecutionHandler(RejectionStrategy strategy, int maxRetries, long retryDelay) {
+        if (strategy == null) {
+            throw new IllegalArgumentException("Rejection strategy cannot be null");
+        }
+        if (maxRetries < 0) {
+            throw new IllegalArgumentException("Maximum retries cannot be negative");
+        }
+        if (retryDelay < 0) {
+            throw new IllegalArgumentException("Retry delay cannot be negative");
+        }
+        this.strategy = strategy;
+        this.maxRetries = maxRetries;
+        this.retryDelay = retryDelay;
+    }
     
     /** {@inheritDoc} */
     @Override
     public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-        try {
-            this.waitInSeconds(1);
-            // try once again
-            executor.execute(r);
-        } catch (InterruptedException e) {
-            // Trace error
-            System.err.println("Cannot send Audit Event");
+        if (strategy == RejectionStrategy.DISCARD) {
+            cancel(r);
+            return;
+        }
+
+        int retryCount = 0;
+        while (strategy == RejectionStrategy.RETRY_UNBOUNDED || retryCount < maxRetries) {
+            try {
+                waitInMillis(retryDelay);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                cancel(r);
+                return;
+            }
+            if (executor.isShutdown()) {
+                cancel(r);
+                return;
+            }
+            if (executor.getQueue().offer(r)) {
+                if (executor.isShutdown() && executor.remove(r)) {
+                    cancel(r);
+                }
+                return;
+            }
+            retryCount++;
+        }
+        cancel(r);
+    }
+
+    private void cancel(Runnable runnable) {
+        if (runnable instanceof Future<?>) {
+            ((Future<?>) runnable).cancel(false);
         }
     }
     
@@ -56,8 +142,18 @@ public class EventRejectedExecutionHandler implements RejectedExecutionHandler {
      *      interupted
      */
     public void waitInSeconds(int nbSecond) throws InterruptedException {
+        waitInMillis(1000L * nbSecond);
+    }
+
+    /**
+     * Wait between retries.
+     *
+     * @param milliseconds number of milliseconds to wait
+     * @throws InterruptedException interrupted
+     */
+    public void waitInMillis(long milliseconds) throws InterruptedException {
         if (mock) throw new InterruptedException();
-        Thread.sleep(1000 * nbSecond);
+        Thread.sleep(milliseconds);
     }
 
     public static boolean isMock() {
