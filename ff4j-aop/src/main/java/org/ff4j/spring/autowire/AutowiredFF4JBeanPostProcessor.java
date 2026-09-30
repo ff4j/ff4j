@@ -26,8 +26,13 @@ import org.apache.commons.logging.LogFactory;
 import org.ff4j.FF4j;
 import org.ff4j.core.Feature;
 import org.ff4j.property.Property;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.context.annotation.Role;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
@@ -40,10 +45,17 @@ import java.util.List;
 /**
  * When Proxified, analyze bean to eventually invoke ANOTHER implementation (flip up).
  *
+ * <p>The {@link FF4j} instance is resolved lazily, and only when a bean actually declares a field annotated with
+ * {@link FF4JFeature} or {@link FF4JProperty}. Injecting it eagerly would force Spring to instantiate the {@code FF4j}
+ * bean (and its whole dependency graph) while {@link BeanPostProcessor} instances are still being registered, making
+ * those beans ineligible for processing by all post-processors and producing {@code BeanPostProcessorChecker} warnings
+ * at startup.</p>
+ *
  * @author <a href="mailto:cedrick.lunven@gmail.com">Cedrick LUNVEN</a>
  */
 @Component("ff4j.autowiringpostprocessor")
-public class AutowiredFF4JBeanPostProcessor implements BeanPostProcessor {
+@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+public class AutowiredFF4JBeanPostProcessor implements BeanPostProcessor, BeanFactoryAware {
 
     /**
      * Logger for this class.
@@ -51,10 +63,66 @@ public class AutowiredFF4JBeanPostProcessor implements BeanPostProcessor {
     protected final Log logger = LogFactory.getLog(getClass());
 
     /**
-     * Injection of current FF4J bean.
+     * Current FF4J bean, when provided explicitly.
      */
-    @Autowired
     private FF4j ff4j;
+
+    /**
+     * Lazy provider for the FF4J bean, used when the post-processor is managed by a Spring container.
+     */
+    private ObjectProvider<FF4j> ff4jProvider;
+
+    /**
+     * Default constructor, the {@link FF4j} instance is then resolved lazily from the bean factory.
+     */
+    public AutowiredFF4JBeanPostProcessor() {
+        // FF4j is resolved lazily, see resolveFF4j()
+    }
+
+    /**
+     * Constructor for programmatic usage with an explicit {@link FF4j} instance.
+     *
+     * @param ff4j
+     *      current FF4J instance
+     */
+    public AutowiredFF4JBeanPostProcessor(FF4j ff4j) {
+        this.ff4j = ff4j;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        this.ff4jProvider = beanFactory.getBeanProvider(FF4j.class);
+    }
+
+    /**
+     * Setter accessor for attribute 'ff4j'.
+     *
+     * @param ff4j
+     *      new value for 'ff4j'
+     */
+    public void setFf4j(FF4j ff4j) {
+        this.ff4j = ff4j;
+    }
+
+    /**
+     * Resolve the {@link FF4j} instance, only invoked when an annotated field has been found.
+     *
+     * @return
+     *      current FF4J instance
+     */
+    private FF4j resolveFF4j() {
+        if (ff4j == null && ff4jProvider != null) {
+            ff4j = ff4jProvider.getObject();
+        }
+        if (ff4j == null) {
+            throw new IllegalStateException("Cannot autowire FF4J annotated fields as no FF4j instance is available,"
+                    + " please declare a bean of type org.ff4j.FF4j in your context");
+        }
+        return ff4j;
+    }
 
     /**
      * {@inheritDoc}
@@ -187,7 +255,8 @@ public class AutowiredFF4JBeanPostProcessor implements BeanPostProcessor {
     }
 
     private Feature readFeature(Field field, String featureName, boolean required) {
-        if (!ff4j.getFeatureStore().exist(featureName)) {
+        FF4j currentFF4j = resolveFF4j();
+        if (!currentFF4j.getFeatureStore().exist(featureName)) {
             if (required) {
                 throw new IllegalArgumentException("Cannot autowiring field '" + field.getName() + "' with FF4J property as"
                         + " target feature has not been found");
@@ -196,11 +265,12 @@ public class AutowiredFF4JBeanPostProcessor implements BeanPostProcessor {
                 return null;
             }
         }
-        return ff4j.getFeatureStore().read(featureName);
+        return currentFF4j.getFeatureStore().read(featureName);
     }
 
     private Property<?> readProperty(Field field, String propertyName, boolean required) {
-        if (!ff4j.getPropertiesStore().existProperty(propertyName)) {
+        FF4j currentFF4j = resolveFF4j();
+        if (!currentFF4j.getPropertiesStore().existProperty(propertyName)) {
             if (required) {
                 throw new IllegalArgumentException("Cannot autowiring field '" + field.getName() + "' with FF4J property as"
                         + " target property has not been found");
@@ -209,7 +279,7 @@ public class AutowiredFF4JBeanPostProcessor implements BeanPostProcessor {
                 return null;
             }
         }
-        return ff4j.getPropertiesStore().readProperty(propertyName);
+        return currentFF4j.getPropertiesStore().readProperty(propertyName);
     }
 
 }
