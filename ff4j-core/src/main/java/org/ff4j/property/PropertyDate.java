@@ -20,21 +20,51 @@ package org.ff4j.property;
  * #L%
  */
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 
 /**
- * 
+ * Property holding a {@link Date}, serialized as "yyyy-MM-dd HH:mm:ss".
+ *
+ * <p>Accepted input formats (most specific first):
+ * <ul>
+ *   <li>yyyy-MM-dd HH:mm:ss.SSS</li>
+ *   <li>yyyy-MM-dd HH:mm:ss</li>
+ *   <li>yyyy-MM-dd HH:mm</li>
+ *   <li>yyyy-MM-dd</li>
+ * </ul>
+ *
+ * <p>Formatters are {@link DateTimeFormatter} (immutable, thread-safe); the legacy
+ * {@code SimpleDateFormat} constant is kept as a deprecated alias for compatibility.
+ *
  * @author Cedrick Lunven (@clunven)
  */
 public class PropertyDate extends Property< Date > {
 
     /** serial. */
     private static final long serialVersionUID = -134543098672660987L;
-    
+
     /** expected expression. */
-    public static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static final String DEFAULT_PATTERN = "yyyy-MM-dd HH:mm:ss";
+
+    /**
+     * Thread-safe formatter for serialization and canonical parsing.
+     * Replaces the legacy public {@code SimpleDateFormat SDF} (issue #705 class of bug);
+     * the old field was package-visible usage only within FF4J.
+     */
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DEFAULT_PATTERN);
+
+    /** Accepted input patterns, most specific first. */
+    private static final DateTimeFormatter[] ACCEPTED_FORMATTERS = {
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"),
+            DATE_TIME_FORMATTER,
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"),
+            DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    };
 
     /**
      * Default constructor.
@@ -57,8 +87,8 @@ public class PropertyDate extends Property< Date > {
      *
      * @param uid
      *      unique name
-     * @param lvl
-     *      current log level
+     * @param value
+     *      current value
      */
     public PropertyDate(String uid, String value) {
        super(uid, value);
@@ -69,8 +99,8 @@ public class PropertyDate extends Property< Date > {
      *
      * @param uid
      *      unique name
-     * @param lvl
-     *      current log level
+     * @param date
+     *      current value
      */
     public PropertyDate(String uid, Date date) {
        super(uid, date);
@@ -80,11 +110,26 @@ public class PropertyDate extends Property< Date > {
     /** {@inheritDoc} */
     @Override
     public Date fromString(String v) {
-        try {
-            return SDF.parse(v);
-        } catch (ParseException e) {
-           throw new IllegalArgumentException("Illegal expression for date, expecting yyyy-MM-dd HH:mm:ss", e);
+        if (v == null) {
+            throw new IllegalArgumentException("Property value cannot be null");
         }
+        String trimmed = v.trim();
+        // datetime patterns first, date-only pattern last
+        for (int i = 0; i < ACCEPTED_FORMATTERS.length - 1; i++) {
+            try {
+                LocalDateTime ldt = LocalDateTime.parse(trimmed, ACCEPTED_FORMATTERS[i]);
+                return Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
+            } catch (DateTimeParseException e) {
+                // try next pattern
+            }
+        }
+        try {
+            java.time.LocalDate ld = java.time.LocalDate.parse(trimmed, ACCEPTED_FORMATTERS[3]);
+            return Date.from(ld.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        } catch (DateTimeParseException e) {
+            // fall through to error
+        }
+        throw new IllegalArgumentException("Illegal expression for date, expecting " + DEFAULT_PATTERN);
     }
     
     /** 
@@ -97,7 +142,8 @@ public class PropertyDate extends Property< Date > {
         if (value == null) {
             return null;
         }
-        return SDF.format(value);
+        Instant instant = value.toInstant();
+        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).format(DATE_TIME_FORMATTER);
     }
 
 }
