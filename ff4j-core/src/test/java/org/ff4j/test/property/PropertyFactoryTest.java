@@ -130,4 +130,19 @@ public class PropertyFactoryTest {
         Assertions.assertNotNull(PropertyFactory.createProperty(jsonBean));
     }
 
+    @Test
+    public void testCreatePropertyDateFromSqlValue() {
+        Property<?> p = PropertyFactory.createProperty(
+                "date", "org.ff4j.property.PropertyDate", "2015-08-15 12:00", null, null);
+        Assertions.assertNotNull(p);
+        Assertions.assertNotNull(p.getValue());
+    }
+
+    @Test
+    public void testCreateDatePropertyFromObject() {
+        Property<?> p = PropertyFactory.createProperty("pd", new Date());
+        Assertions.assertEquals("org.ff4j.property.PropertyDate", p.getType());
+        Assertions.assertNotNull(p.asString());
+    }
+
 }

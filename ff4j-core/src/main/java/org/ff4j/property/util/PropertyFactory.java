@@ -94,7 +94,7 @@ public class PropertyFactory {
         if (value instanceof Date) {
             return PropertyFactory.createProperty(pName, 
                     PropertyDate.class.getName(),
-                    PropertyDate.SDF.format(value), null, null);
+                    new PropertyDate(pName, (Date) value).asString(), null, null);
         }
         if (value instanceof Calendar) {
             Date valueDate = ((Calendar) value).getTime();

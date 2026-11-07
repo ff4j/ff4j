@@ -282,6 +282,33 @@ public class PropertyTest {
     }
     
     @Test
+    public void testPropertyDateAcceptedFormats() {
+        PropertyDate p = new PropertyDate("pd");
+        Assertions.assertNotNull(p.fromString("2015-08-15 12:00:00"));
+        Assertions.assertNotNull(p.fromString("2015-08-15 12:00:00.123"));
+        Assertions.assertNotNull(p.fromString("2015-08-15 12:00"));
+        Assertions.assertNotNull(p.fromString("2015-08-15"));
+        Assertions.assertNotNull(p.fromString(" 2015-08-15 12:00 "));
+    }
+    
+    @Test
+    public void testPropertyDateRoundTrip() {
+        PropertyDate p = new PropertyDate("pd", "2015-08-15 12:00:00");
+        String serialized = p.asString();
+        Assertions.assertEquals("2015-08-15 12:00:00", serialized);
+        Assertions.assertEquals(p.getValue().getTime(), p.fromString(serialized).getTime());
+    }
+    
+    @Test
+    public void testPropertyDateInvalidValues() {
+        PropertyDate p = new PropertyDate("pd");
+        assertThrows(IllegalArgumentException.class, () -> p.fromString("invalid"));
+        assertThrows(IllegalArgumentException.class, () -> p.fromString("2015-13-45 99:99"));
+        assertThrows(IllegalArgumentException.class, () -> p.fromString("15/08/2015"));
+        assertThrows(IllegalArgumentException.class, () -> p.fromString(null));
+    }
+    
+    @Test
     public void tesInitPropertyClass() {
         PropertyClass c0 = new PropertyClass();
         c0.fromString(String.class.getName());
